@@ -1,0 +1,22 @@
+{
+  "name": "ozds",
+  "displayName": "OZDS",
+  "description": "OZDS project recipe",
+  "author": "Altibiz",
+  "website": "altibiz.com",
+  "version": "0.0.1",
+  "issetuprecipe": true,
+  "categories": ["Module"],
+  "tags": ["Module"],
+  "steps": [
+    {
+      "name": "feature",
+      "enable": ["TheAdmin", "SafeMode", "Mess.Ozds"]
+    },
+    {
+      "name": "themes",
+      "admin": "TheAdmin",
+      "site": "Mess.Ozds"
+    }
+  ]
+}

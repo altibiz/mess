@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+
+abs() { echo "$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"; }
+HUSKY_DIR="$(dirname "$(abs "$0")")"
+
+. "$HUSKY_DIR/_/husky.sh"
+
+printf "[Mess] Checking the commit message...\n"
+yarn commitlint --edit "$1"
+printf "\n"

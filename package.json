@@ -1,0 +1,29 @@
+{
+  "name": "mess",
+  "version": "0.0.1",
+  "description": "Measurement Event Store (Something)",
+  "main": "index.js",
+  "repository": "https://github.com/altibiz",
+  "author": "Altibiz",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "lint-workspaces": "yarn workspaces foreach --parallel run lint",
+    "lint-format": "prettier --check --ignore-path .gitignore ./**/*.{md,json,yml,js,jsx,ts,tsx,css,scss,less}",
+    "lint-children": "run-p lint-workspaces lint-format",
+    "format": "prettier --write --ignore-path .gitignore ./**/*.{md,json,yml,js,jsx,ts,tsx,css,scss,less}",
+    "build": "yarn workspaces foreach --parallel run build",
+    "watch": "yarn workspaces foreach --parallel run watch"
+  },
+  "packageManager": "yarn@3.3.0",
+  "workspaces": [
+    "src/Mess.Client"
+  ],
+  "devDependencies": {
+    "@commitlint/cli": "^17.3.0",
+    "@commitlint/config-conventional": "^17.3.0",
+    "husky": "^8.0.2",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.8.1"
+  }
+}
