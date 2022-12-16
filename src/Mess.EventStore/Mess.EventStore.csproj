@@ -12,10 +12,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OrchardCore.Module.Targets" Version="1.5.0" />
-    <PackageReference Include="OrchardCore.ContentManagement" Version="1.5.0" />
-    <PackageReference Include="OrchardCore.ContentTypes.Abstractions" Version="1.5.0" />
-    <PackageReference Include="OrchardCore.DisplayManagement" Version="1.5.0" />
+    <PackageReference Include="OrchardCore.Module.Targets" Version="$(ORCHARD_VERSION)" />
+    <PackageReference Include="OrchardCore.ContentManagement" Version="$(ORCHARD_VERSION)" />
+    <PackageReference Include="OrchardCore.ContentTypes.Abstractions" Version="$(ORCHARD_VERSION)" />
+    <PackageReference Include="OrchardCore.DisplayManagement" Version="$(ORCHARD_VERSION)" />
+    <PackageReference Include="Marten" Version="5.11.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Mess.Util\Mess.Util.csproj" />
   </ItemGroup>
 
 </Project>

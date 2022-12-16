@@ -12,16 +12,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OrchardCore.Theme.Targets" Version="$(ORCHARD_VERSION)" />
+    <PackageReference Include="OrchardCore.Module.Targets" Version="$(ORCHARD_VERSION)" />
     <PackageReference Include="OrchardCore.ContentManagement" Version="$(ORCHARD_VERSION)" />
+    <PackageReference Include="OrchardCore.ContentTypes.Abstractions" Version="$(ORCHARD_VERSION)" />
     <PackageReference Include="OrchardCore.DisplayManagement" Version="$(ORCHARD_VERSION)" />
-    <PackageReference Include="OrchardCore.ResourceManagement" Version="$(ORCHARD_VERSION)" />
+    <!-- NOTE: Marten requires 6 -->
+    <PackageReference Include="Npgsql" Version="6.0.7" />
+    <PackageReference Include="OrchardCore.Logging.NLog" Version="$(ORCHARD_VERSION)" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Mess.Util\Mess.Util.csproj" />
     <ProjectReference Include="..\Mess.EventStore\Mess.EventStore.csproj" />
-    <ProjectReference Include="..\Mess.Timeseries\Mess.Timeseries.csproj" />
   </ItemGroup>
 
 </Project>

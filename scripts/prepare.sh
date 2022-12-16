@@ -4,6 +4,8 @@ abs() { echo "$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"; }
 SCRIPT_DIR="$(dirname "$(abs "$0")")"
 ROOT_DIR="$(dirname "$SCRIPT_DIR")"
 
+export ORCHARD_VERSION="1.5.0"
+
 export NODE_OPTIONS="--no-warnings"
 
 printf "[Mess] Installing dependencies with 'yarn'...\n"

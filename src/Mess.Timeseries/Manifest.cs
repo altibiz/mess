@@ -1,11 +1,11 @@
 using OrchardCore.Modules.Manifest;
 
 [assembly: Module(
-  Name = "Mess.EventStore",
+  Name = "Mess.Timeseries",
   Author = "Altibiz",
   Website = "https://altibiz.com",
   Version = "0.0.1",
-  Description = "Mess.EventStore",
+  Description = "Mess.Timeseries",
   Category = "Content Management",
-  Dependencies = new[] { "OrchardCore.Tenants" }
+  Dependencies = new[] { "OrchardCore.Tenants", "Mess.EventStore" }
 )]

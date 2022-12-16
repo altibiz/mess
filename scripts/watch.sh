@@ -7,6 +7,7 @@ ROOT_DIR="$(dirname "$SCRIPT_DIR")"
 export ASPNETCORE_ENVIRONMENT=Development
 export DOTNET_ENVIRONMENT=Development
 export ORCHARD_APP_DATA="$ROOT_DIR/App_Data"
+export ORCHARD_VERSION="1.5.0"
 
 export NODE_OPTIONS="--no-warnings"
 export NODE_ENV="development"

@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="OrchardCore.Data.YesSql.Abstractions" Version="$(ORCHARD_VERSION)" />
+    <PackageReference Include="OrchardCore.Recipes" Version="$(ORCHARD_VERSION)" />
+  </ItemGroup>
+
 </Project>
