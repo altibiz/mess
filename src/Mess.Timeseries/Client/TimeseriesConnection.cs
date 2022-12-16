@@ -1,11 +1,10 @@
 using Microsoft.Extensions.DependencyInjection;
-using OrchardCore.Environment.Shell.Scope;
-using Mess.Util.Extensions.OrchardCore;
+using Mess.Util.OrchardCore.Tenants;
 using Npgsql;
 
 namespace Mess.Timeseries.Client;
 
-internal sealed class TimeseriesConnection : IDisposable, IAsyncDisposable
+public sealed class TimeseriesConnection : IDisposable, IAsyncDisposable
 {
   public NpgsqlConnection Value
   {
@@ -16,11 +15,9 @@ internal sealed class TimeseriesConnection : IDisposable, IAsyncDisposable
       );
   }
 
-  public TimeseriesConnection()
+  public TimeseriesConnection(ITenantProvider tenant)
   {
-    _value = new NpgsqlConnection(
-      ShellScope.Current.GetTenantConnectionString()
-    );
+    _value = new NpgsqlConnection(tenant.GetTenantConnectionString());
   }
 
   private NpgsqlConnection? _value = null;
@@ -86,6 +83,7 @@ internal static class ConnectionServiceProviderExtensions
     await using var transaction =
       await connection.Value.BeginTransactionAsync();
     var result = await todo(transaction);
+    await transaction.CommitAsync();
     await connection.Value.CloseAsync();
     return result;
   }
@@ -101,6 +99,7 @@ internal static class ConnectionServiceProviderExtensions
     connection.Value.Open();
     using var transaction = connection.Value.BeginTransaction();
     var result = todo(transaction);
+    transaction.Commit();
     connection.Value.Close();
     return result;
   }

@@ -26,4 +26,8 @@
     <ProjectReference Include="..\Mess.EventStore\Mess.EventStore.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="../../test/Mess.Timeseries.Test/Mess.Timeseries.Test.csproj" />
+  </ItemGroup>
+
 </Project>

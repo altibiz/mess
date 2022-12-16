@@ -1,11 +1,10 @@
 using Microsoft.Extensions.DependencyInjection;
-using OrchardCore.Environment.Shell.Scope;
-using Mess.Util.Extensions.OrchardCore;
 using Marten;
+using Mess.Util.OrchardCore.Tenants;
 
 namespace Mess.EventStore.Client;
 
-internal sealed class EventStoreQuery : IDisposable, IAsyncDisposable
+public sealed class EventStoreQuery : IDisposable, IAsyncDisposable
 {
   public IQuerySession Value
   {
@@ -14,10 +13,11 @@ internal sealed class EventStoreQuery : IDisposable, IAsyncDisposable
       ?? throw new InvalidOperationException("Query has already been disposed");
   }
 
-  public EventStoreQuery(IServiceProvider services)
+  public EventStoreQuery(IServiceProvider services, ITenantProvider tenant)
   {
     var store = services.GetRequiredService<IDocumentStore>();
-    _value = store.QuerySession(ShellScope.Current.GetTenantName());
+    _value = store.QuerySession(tenant.GetTenantName());
+    Console.WriteLine($"Query {_value}");
   }
 
   private IQuerySession? _value = null;

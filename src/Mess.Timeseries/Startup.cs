@@ -6,6 +6,7 @@ using OrchardCore.Modules;
 using OrchardCore.ResourceManagement;
 using OrchardCore.Data.Migration;
 using Mess.Timeseries.Client;
+using Mess.Util.OrchardCore.Tenants;
 
 namespace Mess.Timeseries;
 
@@ -26,6 +27,8 @@ public class Startup : StartupBase
 
     services.AddScoped<TimeseriesConnection>();
     services.AddSingleton<ITimeseriesClient, TimeseriesClient>();
+
+    services.AddSingleton<ITenantProvider, ShellTenantProvider>();
   }
 
   public override void Configure(

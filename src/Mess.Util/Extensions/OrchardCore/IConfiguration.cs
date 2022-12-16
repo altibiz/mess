@@ -7,7 +7,7 @@ public static class IConfigurationExtensions
   public static IDictionary<
     string,
     IEnumerable<string>
-  > GetAutoSetupTenantNamesGroupedByConnectionString(
+  > GetOrchardAutoSetupTenantNamesGroupedByConnectionString(
     this IConfiguration configuration
   ) =>
     configuration

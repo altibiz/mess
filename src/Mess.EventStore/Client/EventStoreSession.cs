@@ -1,11 +1,10 @@
 using Microsoft.Extensions.DependencyInjection;
-using OrchardCore.Environment.Shell.Scope;
-using Mess.Util.Extensions.OrchardCore;
+using Mess.Util.OrchardCore.Tenants;
 using Marten;
 
 namespace Mess.EventStore.Client;
 
-internal sealed class EventStoreSession : IDisposable, IAsyncDisposable
+public sealed class EventStoreSession : IDisposable, IAsyncDisposable
 {
   public IDocumentSession Value
   {
@@ -16,10 +15,10 @@ internal sealed class EventStoreSession : IDisposable, IAsyncDisposable
       );
   }
 
-  public EventStoreSession(IServiceProvider services)
+  public EventStoreSession(IServiceProvider services, ITenantProvider tenant)
   {
     var store = services.GetRequiredService<IDocumentStore>();
-    _value = store.OpenSession(ShellScope.Current.GetTenantName());
+    _value = store.OpenSession(tenant.GetTenantName());
   }
 
   private IDocumentSession? _value = null;
@@ -52,7 +51,9 @@ internal static class EventStoreSessionServiceProviederExtensions
   {
     await using var scope = services.CreateAsyncScope();
     var session = scope.ServiceProvider.GetRequiredService<EventStoreSession>();
-    return await todo(session.Value);
+    var result = await todo(session.Value);
+    await session.Value.SaveChangesAsync();
+    return result;
   }
 
   public static T WithEventStoreSession<T>(
@@ -62,6 +63,8 @@ internal static class EventStoreSessionServiceProviederExtensions
   {
     using var scope = services.CreateScope();
     var session = scope.ServiceProvider.GetRequiredService<EventStoreSession>();
-    return todo(session.Value);
+    var result = todo(session.Value);
+    session.Value.SaveChanges();
+    return result;
   }
 }

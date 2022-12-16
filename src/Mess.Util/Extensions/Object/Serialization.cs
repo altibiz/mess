@@ -15,4 +15,11 @@ public static class ObjectSerializationExtensions
         ReferenceHandler = ReferenceHandler.IgnoreCycles,
       }
     );
+
+  public static T ConsoleLog<T>(this T @this)
+  {
+    var json = @this.ToJson();
+    Console.WriteLine(json);
+    return @this;
+  }
 }
