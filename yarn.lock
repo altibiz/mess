@@ -429,6 +429,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@shopify/prettier-plugin-liquid@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "@shopify/prettier-plugin-liquid@npm:1.0.2"
+  dependencies:
+    html-styles: ^1.0.0
+    line-column: ^1.0.2
+    ohm-js: ^16.3.0
+  peerDependencies:
+    prettier: ^2.0.0
+  checksum: f7045998c3465bd4fa72863d9cb97668c3a4ad1e50feeda06c193978d5f8584aa2c7a80a5630967bb1606cdca2f74b0da9fea17c4b2e35087eafb326f56fdf73
+  languageName: node
+  linkType: hard
+
 "@socket.io/component-emitter@npm:~3.1.0":
   version: 3.1.0
   resolution: "@socket.io/component-emitter@npm:3.1.0"
@@ -4693,6 +4706,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"html-styles@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "html-styles@npm:1.0.0"
+  checksum: e53ac1e3a9f70fbf9ca0c046a71de1dbb262f0e10aeb426df886ffc091a290b276a9e813f5b6a3695edf7eaa5426b2cefa2706f314ab4b2dd476549af774583a
+  languageName: node
+  linkType: hard
+
 "html-tags@npm:^3.2.0":
   version: 3.2.0
   resolution: "html-tags@npm:3.2.0"
@@ -5468,7 +5488,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"isarray@npm:1.0.0, isarray@npm:~1.0.0":
+"isarray@npm:1.0.0, isarray@npm:^1.0.0, isarray@npm:~1.0.0":
   version: 1.0.0
   resolution: "isarray@npm:1.0.0"
   checksum: f032df8e02dce8ec565cf2eb605ea939bdccea528dbcf565cdf92bfa2da9110461159d86a537388ef1acef8815a330642d7885b29010e8f7eac967c9993b65ab
@@ -5742,6 +5762,16 @@ __metadata:
   version: 1.1.5
   resolution: "limiter@npm:1.1.5"
   checksum: 2d51d3a8bef131aada820b76530f8223380a0079aa0fffdfd3ec47ac2f65763225cb4c62a2f22347f4898c5eeb248edfec991c4a4f5b608dfca0aaa37ac48071
+  languageName: node
+  linkType: hard
+
+"line-column@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "line-column@npm:1.0.2"
+  dependencies:
+    isarray: ^1.0.0
+    isobject: ^2.0.0
+  checksum: 7b71b3aaebf629cf79bea9b8356d5c3d3cc36129619f8248a95409206f26cd1cad9d758ea873cbf262fce780e31c1aa50ec85ee48dbd539bd3356523d535c8f5
   languageName: node
   linkType: hard
 
@@ -6171,6 +6201,7 @@ __metadata:
   dependencies:
     "@commitlint/cli": ^17.3.0
     "@commitlint/config-conventional": ^17.3.0
+    "@shopify/prettier-plugin-liquid": ^1.0.2
     husky: ^8.0.2
     npm-run-all: ^4.1.5
     prettier: ^2.8.1
@@ -6814,6 +6845,13 @@ __metadata:
     for-own: ^1.0.0
     make-iterator: ^1.0.0
   checksum: 71480cd250d092b89ea0e12db4589b3dac2ae712e47f2f2434749f49989b197ef0cae1cfdb249721c1221f661ac730438d146288d7a55587ddef3c48ce0e33f0
+  languageName: node
+  linkType: hard
+
+"ohm-js@npm:^16.3.0":
+  version: 16.6.0
+  resolution: "ohm-js@npm:16.6.0"
+  checksum: 692b82a2685d1ed00044b5dc04aabb3c4f0c2496877fc93e1999253623bf43071ed383766642c6fb274123342c909e3671560ec1bdabedd299b34ba6b6eba077
   languageName: node
   linkType: hard
 

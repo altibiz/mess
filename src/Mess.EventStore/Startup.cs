@@ -8,9 +8,11 @@ using Microsoft.AspNetCore.Builder;
 using OrchardCore.Modules;
 using OrchardCore.ResourceManagement;
 using OrchardCore.Data.Migration;
+using OrchardCore.Mvc.Core.Utilities;
 using Mess.Util.Extensions.OrchardCore;
 using Mess.Util.OrchardCore.Tenants;
 using Mess.EventStore.Extensions.Microsoft;
+using Mess.EventStore.Controllers;
 
 using Mess.EventStore.Client;
 
@@ -50,6 +52,17 @@ public class Startup : StartupBase
     {
       throw new InvalidOperationException("EventStore client not connected");
     }
+
+    routes.MapAreaControllerRoute(
+      name: "Push",
+      areaName: "Mess.EventStore",
+      pattern: "push",
+      defaults: new
+      {
+        controller = typeof(PushController).ControllerName(),
+        action = nameof(PushController.Index)
+      }
+    );
   }
 
   public Startup(
