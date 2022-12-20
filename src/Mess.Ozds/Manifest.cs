@@ -31,6 +31,7 @@ using OrchardCore.DisplayManagement.Manifest;
     "OrchardCore.Placements",
     "OrchardCore.Queries",
     "OrchardCore.BackgroundTasks",
+    "OrchardCore.Liquid",
     "Mess.EventStore",
     "Mess.Timeseries"
   }
