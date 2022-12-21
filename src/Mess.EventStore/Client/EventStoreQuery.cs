@@ -17,7 +17,6 @@ public sealed class EventStoreQuery : IDisposable, IAsyncDisposable
   {
     var store = services.GetRequiredService<IDocumentStore>();
     _value = store.QuerySession(tenant.GetTenantName());
-    Console.WriteLine($"Query {_value}");
   }
 
   private IQuerySession? _value = null;
