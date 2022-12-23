@@ -4,5 +4,5 @@ namespace Mess.EventStore.Parsers.Egauge;
 
 public interface IEgaugeParser
 {
-  public EgaugeMeasurement Parse(XDocument xml);
+  public EgaugeMeasurement? Parse(XDocument xml);
 }
