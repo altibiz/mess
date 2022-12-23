@@ -13,6 +13,7 @@ using Mess.Util.Extensions.OrchardCore;
 using Mess.Util.OrchardCore.Tenants;
 using Mess.EventStore.Extensions.Microsoft;
 using Mess.EventStore.Controllers;
+using Mess.EventStore.Parsers.Egauge;
 
 using Mess.EventStore.Client;
 
@@ -38,6 +39,8 @@ public class Startup : StartupBase
     services.AddSingleton<IEventStoreClient, EventStoreClient>();
 
     services.AddSingleton<ITenantProvider, ShellTenantProvider>();
+
+    services.AddSingleton<IEgaugeParser, EgaugeParser>();
   }
 
   public override void Configure(

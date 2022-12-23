@@ -22,9 +22,15 @@ dotnet user-secrets set --project "$ROOT_DIR/src/Mess.Web/Mess.Web.csproj" <"sec
 if [ ! -d "$ROOT_DIR/secrets" ]; then
   mkdir "$ROOT_DIR/secrets"
 fi
-cp ".env" "$ROOT_DIR/secrets"
-cp "secrets.json" "$ROOT_DIR/secrets"
-cp "secrets.sh" "$ROOT_DIR/secrets"
+cp "$ROOT_DIR/.env" "$ROOT_DIR/secrets"
+cp "$ROOT_DIR/secrets.json" "$ROOT_DIR/secrets"
+cp "$ROOT_DIR/secrets.sh" "$ROOT_DIR/secrets"
+if [ ! -d "$ROOT_DIR/secrets/test/Mess.EventStore.Test/assets" ]; then
+  mkdir -p "$ROOT_DIR/secrets/test/Mess.EventStore.Test"
+fi
+cp -r \
+  "$ROOT_DIR/test/Mess.EventStore.Test/assets" \
+  "$ROOT_DIR/secrets/test/Mess.EventStore.Test"
 printf "\n"
 
 if [ ! "$CI" ] && [ ! -f "$ROOT_DIR/.husky/_/husky.sh" ]; then

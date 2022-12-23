@@ -31,4 +31,8 @@
     <ProjectReference Include="..\..\src\Mess.Util\Mess.Util.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="assets/**/*" />
+  </ItemGroup>
+
 </Project>

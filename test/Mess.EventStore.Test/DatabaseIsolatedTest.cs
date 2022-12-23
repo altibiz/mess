@@ -7,7 +7,7 @@ namespace Mess.EventStore.Test;
 
 // TODO: use schemas for isolation https://stackoverflow.com/questions/39439879/npgsql-with-netcore-how-to-login-to-schema-not-just-to-database
 
-public class DatabaseIsolatedTest
+public record class DatabaseIsolatedTest
 {
   public DatabaseIsolatedTest(IEventStoreClient client, ITenantProvider tenant)
   {

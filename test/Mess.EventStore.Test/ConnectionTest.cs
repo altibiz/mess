@@ -4,7 +4,10 @@ using Mess.Util.OrchardCore.Tenants;
 
 namespace Mess.EventStore.Test;
 
-public class ConnectionTest : DatabaseIsolatedTest
+public record class ConnectionTest(
+  IEventStoreClient client,
+  ITenantProvider tenant
+) : DatabaseIsolatedTest(client, tenant)
 {
   [Fact]
   public async Task ConnectionCheckTestAsync()
@@ -17,7 +20,4 @@ public class ConnectionTest : DatabaseIsolatedTest
   {
     Assert.True(Client.CheckConnection());
   }
-
-  public ConnectionTest(IEventStoreClient client, ITenantProvider tenant)
-    : base(client, tenant) { }
 }

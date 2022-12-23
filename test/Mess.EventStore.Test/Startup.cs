@@ -3,6 +3,7 @@ using Xunit.DependencyInjection.Logging;
 using Mess.EventStore.Client;
 using Mess.Util.OrchardCore.Tenants;
 using Marten;
+using Mess.EventStore.Parsers.Egauge;
 
 // NOTE: leaving this here if someone else tries to test with mocks
 // using Mess.EventStore.Test.Extensions.Moq;
@@ -63,6 +64,8 @@ public class Startup
     services.AddScoped<EventStoreSession>();
     services.AddScoped<EventStoreQuery>();
     services.AddSingleton<IEventStoreClient, EventStoreClient>();
+
+    services.AddSingleton<IEgaugeParser, EgaugeParser>();
   }
 
   public void Configure(IServiceProvider services)
