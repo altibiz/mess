@@ -1,5 +1,7 @@
 namespace Mess.EventStore.Parsers.Egauge;
 
+// TODO: keys
+
 public enum EgaugeRegisterType
 {
   Irradiance,
