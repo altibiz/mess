@@ -31,18 +31,6 @@ public class TimeseriesClient : ITimeseriesClient
       }
     );
 
-  private void LogConenction(bool connected)
-  {
-    if (connected)
-    {
-      Logger.LogInformation("Connected to Timeseries server");
-    }
-    else
-    {
-      Logger.LogInformation("Failed connecting to Timeseries server");
-    }
-  }
-
   public Task AddMeasurementAsync(Measurement measurement) =>
     Services.WithTimeseriesContextAsync(async context =>
     {
@@ -60,6 +48,18 @@ public class TimeseriesClient : ITimeseriesClient
 
       return true;
     });
+
+  private void LogConenction(bool connected)
+  {
+    if (connected)
+    {
+      Logger.LogInformation("Connected to Timeseries server");
+    }
+    else
+    {
+      Logger.LogInformation("Failed connecting to Timeseries server");
+    }
+  }
 
   public TimeseriesClient(
     IServiceProvider services,
