@@ -1,3 +1,4 @@
+using Mess.Timeseries.Entities;
 using Microsoft.Extensions.Logging;
 
 namespace Mess.Timeseries.Client;
@@ -41,6 +42,24 @@ public class TimeseriesClient : ITimeseriesClient
       Logger.LogInformation("Failed connecting to Timeseries server");
     }
   }
+
+  public Task AddMeasurementAsync(Measurement measurement) =>
+    Services.WithTimeseriesContextAsync(async context =>
+    {
+      await context.Measurements.AddAsync(measurement);
+      await context.SaveChangesAsync();
+
+      return true;
+    });
+
+  public void AddMeasurement(Measurement measurement) =>
+    Services.WithTimeseriesContext(context =>
+    {
+      context.Measurements.Add(measurement);
+      context.SaveChanges();
+
+      return true;
+    });
 
   public TimeseriesClient(
     IServiceProvider services,

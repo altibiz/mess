@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Mess.Util.OrchardCore.Tenants;
 using Mess.Timeseries.Entities;
 using System.Reflection;
@@ -71,4 +72,29 @@ public class TimeseriesContext : DbContext
   }
 
   ITenantProvider Tenants { get; }
+}
+
+internal static class TimeseriesContextServiceProviderExtensions
+{
+  public static async Task<T> WithTimeseriesContextAsync<T>(
+    this IServiceProvider services,
+    Func<TimeseriesContext, Task<T>> todo
+  )
+  {
+    await using var scope = services.CreateAsyncScope();
+    var context = scope.ServiceProvider.GetRequiredService<TimeseriesContext>();
+    var result = await todo(context);
+    return result;
+  }
+
+  public static T WithTimeseriesContext<T>(
+    this IServiceProvider services,
+    Func<TimeseriesContext, T> todo
+  )
+  {
+    using var scope = services.CreateScope();
+    var context = scope.ServiceProvider.GetRequiredService<TimeseriesContext>();
+    var result = todo(context);
+    return result;
+  }
 }

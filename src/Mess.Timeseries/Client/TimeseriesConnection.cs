@@ -41,7 +41,7 @@ public sealed class TimeseriesConnection : IDisposable, IAsyncDisposable
   }
 }
 
-internal static class ConnectionServiceProviderExtensions
+internal static class TimeseriesConnectionServiceProviderExtensions
 {
   public static async Task<T> WithTimeseriesConnectionAsync<T>(
     this IServiceProvider services,
