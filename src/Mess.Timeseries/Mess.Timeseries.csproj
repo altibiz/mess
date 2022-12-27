@@ -17,7 +17,7 @@
     <PackageReference Include="OrchardCore.ContentTypes.Abstractions" Version="$(ORCHARD_VERSION)" />
     <PackageReference Include="OrchardCore.DisplayManagement" Version="$(ORCHARD_VERSION)" />
     <!-- NOTE: Marten requires 6 -->
-    <PackageReference Include="Npgsql" Version="6.0.7" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.7" />
     <PackageReference Include="OrchardCore.Logging.NLog" Version="$(ORCHARD_VERSION)" />
   </ItemGroup>
 

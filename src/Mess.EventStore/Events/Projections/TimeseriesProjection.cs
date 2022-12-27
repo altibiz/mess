@@ -9,10 +9,7 @@ public class TimeseriesProjection : IProjection
   public void Apply(
     IDocumentOperations operations,
     IReadOnlyList<StreamAction> streams
-  )
-  {
-    throw new NotImplementedException();
-  }
+  ) { }
 
   public Task ApplyAsync(
     IDocumentOperations operations,
@@ -20,6 +17,6 @@ public class TimeseriesProjection : IProjection
     CancellationToken cancellation
   )
   {
-    throw new NotImplementedException();
+    return Task.CompletedTask;
   }
 }

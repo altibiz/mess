@@ -21,5 +21,6 @@ git clean -Xd \
   -e '!secrets.sh' \
   -e '!secrets/' \
   -e '!secrets/**' \
+  -e '!**/*Test/assets' \
   $@
 printf "\n"
