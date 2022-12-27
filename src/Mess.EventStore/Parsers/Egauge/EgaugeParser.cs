@@ -28,7 +28,7 @@ public record class EgaugeParser(ILogger<EgaugeParser> logger) : IEgaugeParser
             registerName
           );
         var value = (decimal)column;
-        result[registerName] = new(type, value);
+        result[registerName] = new(type, type.Unit(), value);
       }
     }
     catch (Exception exception)

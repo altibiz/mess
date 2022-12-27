@@ -25,11 +25,11 @@ public record class EgaugeParserTest(
     var powerRegister = measurement?.registers.GetOrDefault("P");
     Assert.NotNull(powerRegister);
     Assert.Equal(EgaugeRegisterType.Power, powerRegister?.type);
-    Assert.Equal(EgaugeRegisterUnit.Watt, powerRegister?.type.Unit());
+    Assert.Equal(EgaugeRegisterUnit.Watt, powerRegister?.unit);
 
     var voltageRegister = measurement?.registers.GetOrDefault("L1 Voltage");
     Assert.NotNull(voltageRegister);
     Assert.Equal(EgaugeRegisterType.Voltage, voltageRegister?.type);
-    Assert.Equal(EgaugeRegisterUnit.Volt, voltageRegister?.type.Unit());
+    Assert.Equal(EgaugeRegisterUnit.Volt, voltageRegister?.unit);
   }
 }

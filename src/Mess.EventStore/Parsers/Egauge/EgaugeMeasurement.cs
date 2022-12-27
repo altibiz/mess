@@ -1,7 +1,5 @@
 namespace Mess.EventStore.Parsers.Egauge;
 
-// TODO: keys
-
 public enum EgaugeRegisterType
 {
   Irradiance,
@@ -25,6 +23,36 @@ public enum EgaugeRegisterType
   Charge
 }
 
+// NOTE: this is impossible to implement correctly because some types have the
+// same unit
+// public static class EgaugeRegisterUnitMethods
+// {
+//   public static EgaugeRegisterType Type(this EgaugeRegisterUnit unit) =>
+//     unit switch
+//     {
+//       EgaugeRegisterUnit.WattsPerSquareMeter => EgaugeRegisterType.Irradiance,
+//       EgaugeRegisterUnit.Hertz => EgaugeRegisterType.Frequency,
+//       EgaugeRegisterUnit.Ampere => EgaugeRegisterType.Current,
+//       EgaugeRegisterUnit.VoltAmpereReactive => EgaugeRegisterType.ReactivePower,
+//       EgaugeRegisterUnit.Pascal => EgaugeRegisterType.Pressure,
+//       EgaugeRegisterUnit.Watt => EgaugeRegisterType.Power,
+//       EgaugeRegisterUnit.Mm3ps => EgaugeRegisterType.VolumetricFlow,
+//       EgaugeRegisterUnit.GramPerSecond => EgaugeRegisterType.MassFlow,
+//       EgaugeRegisterUnit.Ohm => EgaugeRegisterType.Resistance,
+//       EgaugeRegisterUnit.VoltAmpere => EgaugeRegisterType.ApparentPower,
+//       EgaugeRegisterUnit.Percent => EgaugeRegisterType.TotalHarmonicDistortion,
+//       EgaugeRegisterUnit.Celsius => EgaugeRegisterType.Temperature,
+//       EgaugeRegisterUnit.Volt => EgaugeRegisterType.Voltage,
+//       EgaugeRegisterUnit.None => EgaugeRegisterType.Numeric,
+//       EgaugeRegisterUnit.CurrencyPerSecond => EgaugeRegisterType.Monetary,
+//       EgaugeRegisterUnit.Degrees => EgaugeRegisterType.Angle,
+//       EgaugeRegisterUnit.Percent => EgaugeRegisterType.RelativeHumidity,
+//       EgaugeRegisterUnit.MeterPerSecond => EgaugeRegisterType.Speed,
+//       EgaugeRegisterUnit.AmpereHours => EgaugeRegisterType.Charge,
+//       var _ => default
+//     };
+// }
+
 public enum EgaugeRegisterUnit
 {
   WattsPerSquareMeter,
@@ -47,7 +75,7 @@ public enum EgaugeRegisterUnit
   AmpereHours
 }
 
-public static class EgaugeRegisterTypeMethode
+public static class EgaugeRegisterTypeMethods
 {
   public static EgaugeRegisterUnit Unit(this EgaugeRegisterType type) =>
     type switch
@@ -127,6 +155,7 @@ public static class EgaugeRegisterTypeString
 
 public readonly record struct EgaugeRegister(
   EgaugeRegisterType type,
+  EgaugeRegisterUnit unit,
   decimal value
 );
 

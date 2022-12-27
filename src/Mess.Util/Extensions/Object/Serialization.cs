@@ -54,12 +54,28 @@ public static class ObjectSerializationExtensions
       }
     );
 
+  public static ValueTask<T?> FromJsonStreamAsync<T>(
+    this Stream @this,
+    CancellationToken token = default
+  ) =>
+    JsonSerializer.DeserializeAsync<T>(
+      @this,
+      new JsonSerializerOptions
+      {
+        AllowTrailingCommas = true,
+        WriteIndented = true,
+        ReferenceHandler = ReferenceHandler.IgnoreCycles,
+      },
+      token
+    );
+
   public static string ToXml<T>(this T @this)
   {
     var serializer = new XmlSerializer(typeof(T));
     string result = string.Empty;
     using var stream = new MemoryStream();
     serializer.Serialize(stream, @this);
+    stream.Seek(0, SeekOrigin.Begin);
     using var reader = new StreamReader(stream);
     result = reader.ReadToEnd();
     return result;
@@ -70,6 +86,7 @@ public static class ObjectSerializationExtensions
     var serializer = new XmlSerializer(typeof(T));
     var stream = new MemoryStream();
     serializer.Serialize(stream, @this);
+    stream.Seek(0, SeekOrigin.Begin);
     return stream;
   }
 
@@ -78,6 +95,7 @@ public static class ObjectSerializationExtensions
     string result = string.Empty;
     using var stream = new MemoryStream();
     @this.Save(stream);
+    stream.Seek(0, SeekOrigin.Begin);
     using var reader = new StreamReader(stream);
     result = reader.ReadToEnd();
     return result;
@@ -87,6 +105,7 @@ public static class ObjectSerializationExtensions
   {
     var stream = new MemoryStream();
     @this.Save(stream);
+    stream.Seek(0, SeekOrigin.Begin);
     return stream;
   }
 
@@ -115,6 +134,32 @@ public static class ObjectSerializationExtensions
   public static XDocument? FromXmlStream(this Stream @this)
   {
     var result = XDocument.Load(@this);
+    return result;
+  }
+
+  public static async ValueTask<XDocument?> FromXmlStreamAsync(
+    this Stream @this,
+    CancellationToken token = default
+  )
+  {
+    var result = await XDocument.LoadAsync(@this, new(), token);
+    return result;
+  }
+
+  public static string ToString(this Stream stream)
+  {
+    using var reader = new StreamReader(stream);
+    var result = reader.ReadToEnd();
+    return result;
+  }
+
+  public static async ValueTask<string> ToStringAsync(
+    this Stream stream,
+    CancellationToken token = default
+  )
+  {
+    using var reader = new StreamReader(stream);
+    var result = await reader.ReadToEndAsync(token);
     return result;
   }
 }

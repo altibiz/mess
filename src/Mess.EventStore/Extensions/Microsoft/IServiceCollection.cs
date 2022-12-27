@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Marten;
 using Weasel.Core;
+using System.Reflection;
 
 namespace Mess.EventStore.Extensions.Microsoft;
 
@@ -40,6 +41,23 @@ public static class IServiceCollectionExtensions
           if (isDevelopment)
           {
             options.AutoCreateSchemaObjects = AutoCreate.All;
+          }
+
+          options.AutoCreateSchemaObjects = AutoCreate.None;
+          foreach (
+            var eventType in Assembly
+              .GetExecutingAssembly()
+              .GetTypes()
+              .Where(
+                type =>
+                  type.Namespace == "Mess.EventStore.Events"
+                  && type.IsClass
+                  && !type.IsAbstract
+                  && type.IsPublic
+              )
+          )
+          {
+            options.Events.AddEventType(eventType);
           }
         }
       )

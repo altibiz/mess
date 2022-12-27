@@ -39,6 +39,26 @@ public class EventStoreClient : IEventStoreClient
       return connected;
     });
 
+  public void RecordEvents<T>(params object[] events) where T : class =>
+    Services.WithEventStoreSession(session =>
+    {
+      session.Events.StartStream<T>(Guid.NewGuid(), events);
+      session.SaveChanges();
+
+      return true;
+    });
+
+  public Task RecordEventsAsync<T>(params object[] events) where T : class =>
+    Services.WithEventStoreSessionAsync(
+      async (session) =>
+      {
+        session.Events.StartStream<T>(Guid.NewGuid(), events);
+        await session.SaveChangesAsync();
+
+        return true;
+      }
+    );
+
   private void LogConenction(bool connected)
   {
     if (connected)
