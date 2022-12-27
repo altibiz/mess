@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Marten;
 using Weasel.Core;
 using System.Reflection;
+using Mess.EventStore.Events.Projections;
 
 namespace Mess.EventStore.Extensions.Microsoft;
 
@@ -59,7 +60,15 @@ public static class IServiceCollectionExtensions
           {
             options.Events.AddEventType(eventType);
           }
+
+          options.Projections.Add(
+            new TimeseriesProjection(),
+            global::Marten.Events.Projections.ProjectionLifecycle.Async
+          );
         }
+      )
+      .AddAsyncDaemon(
+        global::Marten.Events.Daemon.Resiliency.DaemonMode.HotCold
       )
       .AssertDatabaseMatchesConfigurationOnStartup()
       .OptimizeArtifactWorkflow();

@@ -20,5 +20,6 @@ git clean -Xd \
   -e '!secrets.json' \
   -e '!secrets.sh' \
   -e '!secrets/' \
+  -e '!secrets/**' \
   $@
 printf "\n"

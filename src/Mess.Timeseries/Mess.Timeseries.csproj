@@ -23,7 +23,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Mess.Util\Mess.Util.csproj" />
-    <ProjectReference Include="..\Mess.EventStore\Mess.EventStore.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Mess.Util\Mess.Util.csproj" />
+    <ProjectReference Include="..\Mess.Timeseries\Mess.Timeseries.csproj" />
   </ItemGroup>
 
   <ItemGroup>
