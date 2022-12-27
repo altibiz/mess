@@ -5,13 +5,23 @@ using Microsoft.Extensions.Hosting;
 using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.Data.Migration;
 using OrchardCore.Recipes.Services;
+using Microsoft.EntityFrameworkCore;
+using Mess.Timeseries.Client;
 
 namespace Mess.Timeseries;
 
 public partial class Migrations : DataMigration
 {
-  public int Create()
+  public async Task<int> Create()
   {
+    var timeseries = await TimeseriesFactory.CreateDbContextAsync();
+    await timeseries.Database.MigrateAsync();
+    var created = await timeseries.Database.EnsureCreatedAsync();
+    if (created)
+    {
+      timeseries.ApplyHypertables();
+    }
+
     return 1;
   }
 
@@ -20,7 +30,8 @@ public partial class Migrations : DataMigration
     ILogger<Migrations> logger,
     IRecipeMigrator recipe,
     IContentDefinitionManager content,
-    ISession session
+    ISession session,
+    IDbContextFactory<TimeseriesContext> timeseriesFactory
   )
   {
     Env = env;
@@ -30,6 +41,8 @@ public partial class Migrations : DataMigration
 
     Recipe = recipe;
     Content = content;
+
+    TimeseriesFactory = timeseriesFactory;
   }
 
   private IHostEnvironment Env { get; }
@@ -43,4 +56,6 @@ public partial class Migrations : DataMigration
 
   private IRecipeMigrator Recipe { get; }
   private IContentDefinitionManager Content { get; }
+
+  private IDbContextFactory<TimeseriesContext> TimeseriesFactory { get; }
 }
