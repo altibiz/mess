@@ -14,6 +14,9 @@ public static class IServiceCollectionExtensions
     IDictionary<string, IEnumerable<string>> configuration
   )
   {
+    var timeseriesProjection = new TimeseriesProjection();
+    services.AddSingleton<TimeseriesProjection>(timeseriesProjection);
+
     services
       .AddMarten(
         (StoreOptions options) =>
@@ -62,7 +65,7 @@ public static class IServiceCollectionExtensions
           }
 
           options.Projections.Add(
-            new TimeseriesProjection(),
+            timeseriesProjection,
             global::Marten.Events.Projections.ProjectionLifecycle.Async
           );
         }

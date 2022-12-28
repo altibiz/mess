@@ -14,7 +14,6 @@ using Mess.Util.OrchardCore.Tenants;
 using Mess.EventStore.Extensions.Microsoft;
 using Mess.EventStore.Controllers;
 using Mess.EventStore.Parsers.Egauge;
-
 using Mess.EventStore.Client;
 
 namespace Mess.EventStore;
@@ -49,12 +48,8 @@ public class Startup : StartupBase
     IServiceProvider services
   )
   {
-    var client = services.GetRequiredService<IEventStoreClient>();
-    var connected = client.CheckConnection();
-    if (!connected)
-    {
-      throw new InvalidOperationException("EventStore client not connected");
-    }
+    services.UseEventStore();
+    services.UseTimeseriesProjection();
 
     routes.MapAreaControllerRoute(
       name: "Eguage",

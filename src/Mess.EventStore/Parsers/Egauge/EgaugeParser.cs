@@ -8,10 +8,20 @@ public record class EgaugeParser(ILogger<EgaugeParser> logger) : IEgaugeParser
   public EgaugeMeasurement? Parse(XDocument xml)
   {
     var result = new Dictionary<string, EgaugeRegister>();
+    DateTime? timestamp = null;
 
     try
     {
-      var data = xml.Descendants().First().Descendants().First();
+      var group = xml.Descendants().First();
+      timestamp = DateTimeOffset
+        .FromUnixTimeSeconds(
+          Convert.ToInt64(
+            ((string?)group.Attribute(XName.Get("time_stamp"))),
+            16
+          )
+        )
+        .UtcDateTime;
+      var data = group.Descendants().First();
       var registers = data.Descendants(XName.Get("cname"));
       var columns = data.Descendants(XName.Get("r"))
         .First()
@@ -37,6 +47,6 @@ public record class EgaugeParser(ILogger<EgaugeParser> logger) : IEgaugeParser
       return default;
     }
 
-    return new(result);
+    return new(result, timestamp.Value);
   }
 }

@@ -1,3 +1,5 @@
+using Mess.Util.Extensions.IDictionary;
+
 namespace Mess.EventStore.Parsers.Egauge;
 
 public enum EgaugeRegisterType
@@ -160,5 +162,11 @@ public readonly record struct EgaugeRegister(
 );
 
 public readonly record struct EgaugeMeasurement(
-  IDictionary<string, EgaugeRegister> registers
-);
+  IDictionary<string, EgaugeRegister> registers,
+  DateTime timestamp
+)
+{
+  public float Power => (float)registers.GetOrDefault("P").value;
+
+  public float Voltage => (float)registers.GetOrDefault("L1 Voltage").value;
+};
