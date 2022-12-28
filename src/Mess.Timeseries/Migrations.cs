@@ -24,6 +24,7 @@ public partial class Migrations : DataMigration
     {
       timeseries.ApplyHypertables();
     }
+    Logger.LogInformation("Timeseries migrated");
 
     return 1;
   }
