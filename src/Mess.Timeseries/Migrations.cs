@@ -1,6 +1,7 @@
 using YesSql;
 using YesSql.Sql;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.Data.Migration;
@@ -14,7 +15,9 @@ public partial class Migrations : DataMigration
 {
   public async Task<int> Create()
   {
-    var timeseries = await TimeseriesFactory.CreateDbContextAsync();
+    await using var scope = Services.CreateAsyncScope();
+    var timeseries =
+      scope.ServiceProvider.GetRequiredService<TimeseriesContext>();
     await timeseries.Database.MigrateAsync();
     var created = await timeseries.Database.EnsureCreatedAsync();
     if (created)
@@ -31,7 +34,7 @@ public partial class Migrations : DataMigration
     IRecipeMigrator recipe,
     IContentDefinitionManager content,
     ISession session,
-    IDbContextFactory<TimeseriesContext> timeseriesFactory
+    IServiceProvider services
   )
   {
     Env = env;
@@ -42,7 +45,7 @@ public partial class Migrations : DataMigration
     Recipe = recipe;
     Content = content;
 
-    TimeseriesFactory = timeseriesFactory;
+    Services = services;
   }
 
   private IHostEnvironment Env { get; }
@@ -57,5 +60,5 @@ public partial class Migrations : DataMigration
   private IRecipeMigrator Recipe { get; }
   private IContentDefinitionManager Content { get; }
 
-  private IDbContextFactory<TimeseriesContext> TimeseriesFactory { get; }
+  private IServiceProvider Services { get; }
 }

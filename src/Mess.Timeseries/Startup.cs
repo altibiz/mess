@@ -22,8 +22,6 @@ public class Startup : StartupBase
 
     // NOTE: use in scoped services
     services.AddDbContext<TimeseriesContext>();
-    // NOTE: use in singleton services
-    services.AddDbContextFactory<TimeseriesContext>();
 
     // TODO: change this to dependency injection with Npgsql 7
     // FIX: it must be run before any Npgsql operations
