@@ -13,20 +13,17 @@ public record class EgaugeParser(ILogger<EgaugeParser> logger) : IEgaugeParser
     try
     {
       var group = xml.Descendants().First();
+      var data = group.Descendants().First();
       timestamp = DateTimeOffset
         .FromUnixTimeSeconds(
           Convert.ToInt64(
-            ((string?)group.Attribute(XName.Get("time_stamp"))),
+            ((string?)data.Attribute(XName.Get("time_stamp"))),
             16
           )
         )
         .UtcDateTime;
-      var data = group.Descendants().First();
       var registers = data.Descendants(XName.Get("cname"));
-      var columns = data.Descendants(XName.Get("r"))
-        .First()
-        .Descendants()
-        .ToArray();
+      var columns = data.Descendants(XName.Get("r")).First().Descendants();
 
       foreach (var (register, column) in registers.Zip(columns))
       {

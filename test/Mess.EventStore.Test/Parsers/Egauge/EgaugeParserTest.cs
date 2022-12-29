@@ -31,5 +31,9 @@ public record class EgaugeParserTest(
     Assert.NotNull(voltageRegister);
     Assert.Equal(EgaugeRegisterType.Voltage, voltageRegister?.type);
     Assert.Equal(EgaugeRegisterUnit.Volt, voltageRegister?.unit);
+
+    var timestamp = measurement?.timestamp;
+    Assert.NotNull(timestamp);
+    Assert.True(timestamp?.Year > 2000);
   }
 }
