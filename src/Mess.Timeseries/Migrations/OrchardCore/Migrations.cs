@@ -8,8 +8,9 @@ using OrchardCore.Data.Migration;
 using OrchardCore.Recipes.Services;
 using Microsoft.EntityFrameworkCore;
 using Mess.Timeseries.Client;
+using Mess.Timeseries.Migrations.OrchardCore.M0;
 
-namespace Mess.Timeseries;
+namespace Mess.Timeseries.Migrations.OrchardCore;
 
 public partial class Migrations : DataMigration
 {
@@ -25,6 +26,8 @@ public partial class Migrations : DataMigration
       timeseries.ApplyHypertables();
     }
     Logger.LogInformation("Timeseries migrated");
+
+    Recipe.ExecuteTimeseriesMigration(this);
 
     return 1;
   }

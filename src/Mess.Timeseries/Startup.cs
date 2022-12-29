@@ -18,7 +18,10 @@ public class Startup : StartupBase
       IConfigureOptions<ResourceManagementOptions>,
       Resources
     >();
-    services.AddScoped<IDataMigration, Migrations>();
+    services.AddScoped<
+      IDataMigration,
+      Mess.Timeseries.Migrations.OrchardCore.Migrations
+    >();
 
     // NOTE: use in scoped services
     services.AddDbContext<TimeseriesContext>();
