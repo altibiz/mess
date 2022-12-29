@@ -4,6 +4,7 @@ using Mess.Util.OrchardCore.Tenants;
 using Mess.Timeseries.Entities;
 using System.Reflection;
 using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Mess.Timeseries.Client;
 
@@ -16,6 +17,25 @@ public class TimeseriesContext : DbContext
 
   protected override void OnModelCreating(ModelBuilder builder)
   {
+    CreateEntitiesWithBase(builder, typeof(TenantEntity));
+    CreateEntitiesWithBase(
+      builder,
+      typeof(HypertableEntity),
+      entity => entity.HasKey("Timestamp", "Id")
+    );
+    CreateEntitiesWithBase(
+      builder,
+      typeof(MeasurementEntity),
+      entity => entity.HasKey("Timestamp", "SourceId")
+    );
+  }
+
+  private void CreateEntitiesWithBase(
+    ModelBuilder builder,
+    Type @base,
+    Action<EntityTypeBuilder>? configuration = null
+  )
+  {
     foreach (
       var entityType in Assembly
         .GetExecutingAssembly()
@@ -25,12 +45,12 @@ public class TimeseriesContext : DbContext
             type.Namespace == "Mess.Timeseries.Entities"
             && type.IsClass
             && !type.IsAbstract
-            && type.IsAssignableTo(typeof(TenantEntity))
+            && type.IsAssignableTo(@base)
         )
     )
     {
       var entityParameter = Expression.Parameter(entityType);
-      builder
+      var entity = builder
         .Entity(entityType)
         .HasQueryFilter(
           Expression.Lambda(
@@ -44,68 +64,7 @@ public class TimeseriesContext : DbContext
             new List<ParameterExpression>() { entityParameter }
           )
         );
-    }
-
-    foreach (
-      var entityType in Assembly
-        .GetExecutingAssembly()
-        .GetTypes()
-        .Where(
-          type =>
-            type.Namespace == "Mess.Timeseries.Entities"
-            && type.IsClass
-            && !type.IsAbstract
-            && type.IsAssignableTo(typeof(HypertableEntity))
-        )
-    )
-    {
-      var entityParameter = Expression.Parameter(entityType);
-      builder
-        .Entity(entityType)
-        .HasQueryFilter(
-          Expression.Lambda(
-            Expression.Equal(
-              Expression.MakeMemberAccess(
-                entityParameter,
-                entityType.GetMember("Tenant").First()
-              ),
-              Expression.Constant(Tenants.GetTenantName())
-            ),
-            new List<ParameterExpression>() { entityParameter }
-          )
-        )
-        .HasKey("Timestamp", "Id");
-    }
-
-    foreach (
-      var entityType in Assembly
-        .GetExecutingAssembly()
-        .GetTypes()
-        .Where(
-          type =>
-            type.Namespace == "Mess.Timeseries.Entities"
-            && type.IsClass
-            && !type.IsAbstract
-            && type.IsAssignableTo(typeof(MeasurementEntity))
-        )
-    )
-    {
-      var entityParameter = Expression.Parameter(entityType);
-      builder
-        .Entity(entityType)
-        .HasQueryFilter(
-          Expression.Lambda(
-            Expression.Equal(
-              Expression.MakeMemberAccess(
-                entityParameter,
-                entityType.GetMember("Tenant").First()
-              ),
-              Expression.Constant(Tenants.GetTenantName())
-            ),
-            new List<ParameterExpression>() { entityParameter }
-          )
-        )
-        .HasKey("Timestamp", "SourceId");
+      configuration?.Invoke(entity);
     }
   }
 
