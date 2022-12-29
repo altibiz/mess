@@ -14,7 +14,7 @@ namespace Mess.Timeseries.Migrations.OrchardCore;
 
 public partial class Migrations : DataMigration
 {
-  public async Task<int> Create()
+  public async Task<int> CreateAsync()
   {
     await using var scope = Services.CreateAsyncScope();
     var timeseries =
