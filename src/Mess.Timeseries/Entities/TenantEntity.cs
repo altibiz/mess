@@ -8,6 +8,6 @@ public abstract class TenantEntity
   [Key]
   public string Id { get; set; } = default!;
 
-  [Column(TypeName = "string")]
+  [Column(TypeName = "varchar")]
   public string Tenant { get; set; } = default!;
 }

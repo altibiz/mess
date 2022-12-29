@@ -9,9 +9,9 @@ public abstract class MeasurementEntity
   [Column(TypeName = "timestamp with time zone")]
   public DateTime Timestamp { get; set; } = default!;
 
-  [Column(TypeName = "string")]
+  [Column(TypeName = "varchar")]
   public string SourceId { get; set; } = default!;
 
-  [Column(TypeName = "string")]
+  [Column(TypeName = "varchar")]
   public string Tenant { get; set; } = default!;
 }

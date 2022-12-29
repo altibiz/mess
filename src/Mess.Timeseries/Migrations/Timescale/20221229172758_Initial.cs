@@ -18,10 +18,10 @@ namespace Mess.Migrations.Timescale
               type: "timestamp with time zone",
               nullable: false
             ),
-            SourceId = table.Column<string>(type: "string", nullable: false),
+            SourceId = table.Column<string>(type: "varchar", nullable: false),
             Power = table.Column<float>(type: "float", nullable: false),
             Voltage = table.Column<float>(type: "float", nullable: false),
-            Tenant = table.Column<string>(type: "string", nullable: false)
+            Tenant = table.Column<string>(type: "varchar", nullable: false)
           },
         constraints: table =>
         {

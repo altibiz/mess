@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Mess.Migrations.Timescale
 {
     [DbContext(typeof(TimeseriesContext))]
-    [Migration("20221229172423_Initial")]
+    [Migration("20221229172758_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -30,14 +30,14 @@ namespace Mess.Migrations.Timescale
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("SourceId")
-                        .HasColumnType("string");
+                        .HasColumnType("varchar");
 
                     b.Property<float>("Power")
                         .HasColumnType("float");
 
                     b.Property<string>("Tenant")
                         .IsRequired()
-                        .HasColumnType("string");
+                        .HasColumnType("varchar");
 
                     b.Property<float>("Voltage")
                         .HasColumnType("float");

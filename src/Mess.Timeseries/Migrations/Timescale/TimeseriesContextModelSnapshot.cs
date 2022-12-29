@@ -28,14 +28,14 @@ namespace Mess.Migrations.Timescale
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("SourceId")
-                        .HasColumnType("string");
+                        .HasColumnType("varchar");
 
                     b.Property<float>("Power")
                         .HasColumnType("float");
 
                     b.Property<string>("Tenant")
                         .IsRequired()
-                        .HasColumnType("string");
+                        .HasColumnType("varchar");
 
                     b.Property<float>("Voltage")
                         .HasColumnType("float");

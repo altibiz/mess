@@ -9,9 +9,9 @@ public abstract class HypertableEntity
   [Column(TypeName = "timestamp")]
   public DateTime Timestamp { get; set; } = default!;
 
-  [Column(TypeName = "string")]
+  [Column(TypeName = "varchar")]
   public string Id { get; set; } = default!;
 
-  [Column(TypeName = "string")]
+  [Column(TypeName = "varchar")]
   public string Tenant { get; set; } = default!;
 }
