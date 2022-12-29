@@ -24,6 +24,12 @@ namespace Mess.Migrations.Timescale
 
             modelBuilder.Entity("Mess.Timeseries.Entities.Measurement", b =>
                 {
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("SourceId")
+                        .HasColumnType("string");
+
                     b.Property<float>("Power")
                         .HasColumnType("float");
 
@@ -31,8 +37,10 @@ namespace Mess.Migrations.Timescale
                         .IsRequired()
                         .HasColumnType("string");
 
-                    b.Property<DateTime>("Timestamp")
-                        .HasColumnType("timestamp");
+                    b.Property<float>("Voltage")
+                        .HasColumnType("float");
+
+                    b.HasKey("Timestamp", "SourceId");
 
                     b.ToTable("Measurements");
                 });

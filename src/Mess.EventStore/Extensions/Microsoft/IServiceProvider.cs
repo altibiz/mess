@@ -1,7 +1,9 @@
+using Marten;
 using Mess.EventStore.Client;
 using Mess.EventStore.Events.Projections;
 using Mess.Timeseries.Client;
 using Mess.Util.OrchardCore.Tenants;
+using Mess.EventStore.Extensions.Marten;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -30,5 +32,11 @@ public static class IServiceProviderExtensions
     timeseriesProjection.Logger = services.GetRequiredService<
       ILogger<TimeseriesProjection>
     >();
+
+    services
+      .GetRequiredService<IDocumentStore>()
+      .ShowDaemonDiagnostics(
+        services.GetRequiredService<ILogger<IDocumentStore>>()
+      );
   }
 }

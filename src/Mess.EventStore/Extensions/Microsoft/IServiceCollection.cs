@@ -42,11 +42,6 @@ public static class IServiceCollectionExtensions
             }
           });
 
-          if (isDevelopment)
-          {
-            options.AutoCreateSchemaObjects = AutoCreate.All;
-          }
-
           options.AutoCreateSchemaObjects = AutoCreate.None;
           foreach (
             var eventType in Assembly
@@ -66,13 +61,14 @@ public static class IServiceCollectionExtensions
 
           options.Projections.Add(
             timeseriesProjection,
-            global::Marten.Events.Projections.ProjectionLifecycle.Async
+            global::Marten.Events.Projections.ProjectionLifecycle.Inline
           );
         }
       )
-      .AddAsyncDaemon(
-        global::Marten.Events.Daemon.Resiliency.DaemonMode.HotCold
-      )
+      // NOTE: doesn't start?
+      // .AddAsyncDaemon(
+      //   global::Marten.Events.Daemon.Resiliency.DaemonMode.HotCold
+      // )
       .AssertDatabaseMatchesConfigurationOnStartup()
       .OptimizeArtifactWorkflow();
   }

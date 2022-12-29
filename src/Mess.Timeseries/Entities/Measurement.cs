@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Mess.Timeseries.Entities;
 
-public class Measurement : HypertableEntity
+public class Measurement : MeasurementEntity
 {
   [Column(TypeName = "float")]
   public float Power { get; set; } = default!;

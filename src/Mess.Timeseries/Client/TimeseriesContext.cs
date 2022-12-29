@@ -59,7 +59,53 @@ public class TimeseriesContext : DbContext
         )
     )
     {
-      builder.Entity(entityType).HasNoKey();
+      var entityParameter = Expression.Parameter(entityType);
+      builder
+        .Entity(entityType)
+        .HasQueryFilter(
+          Expression.Lambda(
+            Expression.Equal(
+              Expression.MakeMemberAccess(
+                entityParameter,
+                entityType.GetMember("Tenant").First()
+              ),
+              Expression.Constant(Tenants.GetTenantName())
+            ),
+            new List<ParameterExpression>() { entityParameter }
+          )
+        )
+        .HasKey("Timestamp", "Id");
+    }
+
+    foreach (
+      var entityType in Assembly
+        .GetExecutingAssembly()
+        .GetTypes()
+        .Where(
+          type =>
+            type.Namespace == "Mess.Timeseries.Entities"
+            && type.IsClass
+            && !type.IsAbstract
+            && type.IsAssignableTo(typeof(MeasurementEntity))
+        )
+    )
+    {
+      var entityParameter = Expression.Parameter(entityType);
+      builder
+        .Entity(entityType)
+        .HasQueryFilter(
+          Expression.Lambda(
+            Expression.Equal(
+              Expression.MakeMemberAccess(
+                entityParameter,
+                entityType.GetMember("Tenant").First()
+              ),
+              Expression.Constant(Tenants.GetTenantName())
+            ),
+            new List<ParameterExpression>() { entityParameter }
+          )
+        )
+        .HasKey("Timestamp", "SourceId");
     }
   }
 

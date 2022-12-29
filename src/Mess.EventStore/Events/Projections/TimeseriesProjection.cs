@@ -20,14 +20,17 @@ public class TimeseriesProjection : IProjection
   {
     if (Client is null)
     {
-      Logger?.LogError("TimeseriesClient is null");
-      return;
+      throw new InvalidOperationException("Client is null");
     }
 
     if (Tenants is null)
     {
-      Logger?.LogError("Tenants is null");
-      return;
+      throw new InvalidOperationException("Tenants is null");
+    }
+
+    if (Logger is null)
+    {
+      throw new InvalidOperationException("Logger is null");
     }
 
     var egaugeEvents = streams
@@ -44,12 +47,15 @@ public class TimeseriesProjection : IProjection
         new()
         {
           Tenant = Tenants.GetTenantName(),
+          SourceId = "egauge",
           Timestamp = DateTime.UtcNow,
           Power = egaugeEvent.measurement.Power,
           Voltage = egaugeEvent.measurement.Voltage
         }
       );
     }
+
+    Logger?.LogInformation("Applied {count} streams", streams.Count);
   }
 
   public async Task ApplyAsync(
@@ -60,14 +66,17 @@ public class TimeseriesProjection : IProjection
   {
     if (Client is null)
     {
-      Logger?.LogError("TimeseriesClient is null");
-      return;
+      throw new InvalidOperationException("Client is null");
     }
 
     if (Tenants is null)
     {
-      Logger?.LogError("Tenants is null");
-      return;
+      throw new InvalidOperationException("Tenants is null");
+    }
+
+    if (Logger is null)
+    {
+      throw new InvalidOperationException("Logger is null");
     }
 
     var egaugeEvents = streams
@@ -84,11 +93,14 @@ public class TimeseriesProjection : IProjection
         new()
         {
           Tenant = Tenants.GetTenantName(),
+          SourceId = "egauge",
           Timestamp = egaugeEvent.measurement.timestamp,
           Power = egaugeEvent.measurement.Power,
           Voltage = egaugeEvent.measurement.Voltage
         }
       );
     }
+
+    Logger?.LogInformation("Applied {count} streams", streams.Count);
   }
 }

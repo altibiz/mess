@@ -1,26 +1,32 @@
 using Marten;
 using Marten.Events.Daemon;
+using Microsoft.Extensions.Logging;
 
 namespace Mess.EventStore.Extensions.Marten;
 
+// NOTE: https://martendb.io/events/projections/async-daemon.html
+
 public static class IDocumentStoreExtensions
 {
-  // https://martendb.io/events/projections/async-daemon.html
-  public static async Task ShowDaemonDiagnostics(this IDocumentStore store)
+  public static async Task ShowDaemonDiagnosticsAsync(
+    this IDocumentStore store,
+    ILogger? logger = null
+  )
   {
     // This will tell you the current progress of each known projection shard
     // according to the latest recorded mark in the database
     var allProgress = await store.Advanced.AllProjectionProgress();
     foreach (var state in allProgress)
     {
-      Console.WriteLine($"{state.ShardName} is at {state.Sequence}");
+      Log($"{state.ShardName} is at {state.Sequence}", logger);
     }
 
     // This will allow you to retrieve some basic statistics about the event
     // store
     var stats = await store.Advanced.FetchEventStoreStatistics();
-    Console.WriteLine(
-      $"The event store highest sequence is {stats.EventSequenceNumber}"
+    Log(
+      $"The event store highest sequence is {stats.EventSequenceNumber}",
+      logger
     );
 
     // This will let you fetch the current shard state of a single projection
@@ -28,8 +34,47 @@ public static class IDocumentStoreExtensions
     var daemonHighWaterMark = await store.Advanced.ProjectionProgressFor(
       new ShardName(ShardState.HighWaterMark)
     );
-    Console.WriteLine(
-      $"The daemon high water sequence mark is {daemonHighWaterMark}"
+    Log(
+      $"The daemon high water sequence mark is {daemonHighWaterMark}",
+      logger
     );
+  }
+
+  public static void ShowDaemonDiagnostics(
+    this IDocumentStore store,
+    ILogger? logger = null
+  )
+  {
+    var allProgress = store.Advanced.AllProjectionProgress().Result;
+    foreach (var state in allProgress)
+    {
+      Log($"{state.ShardName} is at {state.Sequence}", logger);
+    }
+
+    var stats = store.Advanced.FetchEventStoreStatistics().Result;
+    Log(
+      $"The event store highest sequence is {stats.EventSequenceNumber}",
+      logger
+    );
+
+    var daemonHighWaterMark = store.Advanced
+      .ProjectionProgressFor(new ShardName(ShardState.HighWaterMark))
+      .Result;
+    Log(
+      $"The daemon high water sequence mark is {daemonHighWaterMark}",
+      logger
+    );
+  }
+
+  private static void Log(string message, ILogger? logger = null)
+  {
+    if (logger is null)
+    {
+      Console.WriteLine(message);
+    }
+    else
+    {
+      logger.LogInformation(message);
+    }
   }
 }

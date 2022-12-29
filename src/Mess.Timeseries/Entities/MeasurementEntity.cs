@@ -3,14 +3,14 @@ using Mess.Timeseries.Client;
 
 namespace Mess.Timeseries.Entities;
 
-public abstract class HypertableEntity
+public abstract class MeasurementEntity
 {
   [HypertableColumn]
-  [Column(TypeName = "timestamp")]
+  [Column(TypeName = "timestamp with time zone")]
   public DateTime Timestamp { get; set; } = default!;
 
   [Column(TypeName = "string")]
-  public string Id { get; set; } = default!;
+  public string SourceId { get; set; } = default!;
 
   [Column(TypeName = "string")]
   public string Tenant { get; set; } = default!;
