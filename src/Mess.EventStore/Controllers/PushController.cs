@@ -3,7 +3,7 @@ using Mess.EventStore.Parsers.Egauge;
 using Mess.EventStore.Events.Streams;
 using Mess.EventStore.Events;
 using Mess.EventStore.Client;
-using Mess.EventStore.Models;
+using Mess.EventStore.ViewModels;
 
 namespace Mess.EventStore.Controllers;
 
@@ -51,6 +51,6 @@ public class PushController : Controller
       return StatusCode(500, "No events");
     }
 
-    return View(new EgaugeDisplayModel(lastEvent));
+    return View(new EgaugeDisplayViewModel(lastEvent));
   }
 }

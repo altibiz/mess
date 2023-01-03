@@ -2,7 +2,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using OrchardCore.Modules;
 using OrchardCore.ResourceManagement;
-using OrchardCore.Data.Migration;
 
 namespace Mess.Ozds;
 
@@ -14,6 +13,5 @@ public class Startup : StartupBase
       IConfigureOptions<ResourceManagementOptions>,
       Resources
     >();
-    services.AddScoped<IDataMigration, Migrations>();
   }
 }
