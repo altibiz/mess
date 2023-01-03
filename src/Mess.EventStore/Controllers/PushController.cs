@@ -51,6 +51,6 @@ public class PushController : Controller
       return StatusCode(500, "No events");
     }
 
-    return View(new EgaugeDisplayViewModel(lastEvent));
+    return View(new EgaugeDisplayViewModel(lastEvent.timestamp));
   }
 }
