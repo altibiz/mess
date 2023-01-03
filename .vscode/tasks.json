@@ -2,30 +2,61 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "options": {
+        "env": {
+          "ASPNETCORE_ENVIRONMENT": "Development",
+          "DOTNET_ENVIRONMENT": "Development",
+          "ORCHARD_APP_DATA": "${workspaceFolder}/App_Data",
+          "ORCHARD_VERSION": "1.5"
+        }
+      },
       "label": "build",
       "command": "dotnet",
       "type": "process",
       "args": [
         "build",
         "${workspaceFolder}/src/Mess.Web/Mess.Web.csproj",
-        "/property:GenerateFullPaths=true",
-        "/consoleloggerparameters:NoSummary"
+        "--configuration",
+        "Debug",
+        "--property:GenerateFullPaths=true",
+        "--consoleloggerparameters:ErrorsOnly"
       ],
       "problemMatcher": "$msCompile"
     },
     {
+      "options": {
+        "env": {
+          "ASPNETCORE_ENVIRONMENT": "Production",
+          "DOTNET_ENVIRONMENT": "Production",
+          "ORCHARD_APP_DATA": "${workspaceFolder}/App_Data",
+          "ORCHARD_VERSION": "1.5"
+        }
+      },
       "label": "publish",
       "command": "dotnet",
       "type": "process",
       "args": [
         "publish",
         "${workspaceFolder}/src/Mess.Web/Mess.Web.csproj",
-        "/property:GenerateFullPaths=true",
-        "/consoleloggerparameters:NoSummary"
+        "--output",
+        "${workspaceFolder}/artifacts",
+        "--configuration",
+        "Release",
+        "--property:GenerateFullPaths=true",
+        "--property:IsWebConfigTransformDisabled=true",
+        "--consoleloggerparameters:ErrorsOnly"
       ],
       "problemMatcher": "$msCompile"
     },
     {
+      "options": {
+        "env": {
+          "ASPNETCORE_ENVIRONMENT": "Development",
+          "DOTNET_ENVIRONMENT": "Development",
+          "ORCHARD_APP_DATA": "${workspaceFolder}/App_Data",
+          "ORCHARD_VERSION": "1.5"
+        }
+      },
       "label": "watch",
       "command": "dotnet",
       "type": "process",
@@ -33,7 +64,10 @@
         "watch",
         "run",
         "--project",
-        "${workspaceFolder}/src/Mess.Web/Mess.Web.csproj"
+        "${workspaceFolder}/src/Mess.Web/Mess.Web.csproj",
+        "--configuration",
+        "Debug",
+        "--consoleloggerparameters:ErrorsOnly"
       ],
       "problemMatcher": "$msCompile"
     }
