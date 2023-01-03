@@ -1,5 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Marten.Schema;
+using Marten;
+using Mess.EventStore.Events;
 
 namespace Mess.EventStore.Client;
 
@@ -57,6 +59,24 @@ public class EventStoreClient : IEventStoreClient
 
         return true;
       }
+    );
+
+  public T? LastEvent<T>() where T : Event =>
+    Services.WithEventStoreQuery(
+      query =>
+        query
+          .Query<T>()
+          .OrderByDescending(@event => @event.timestamp)
+          .FirstOrDefault()
+    );
+
+  public Task<T?> LastEventAsync<T>() where T : Event =>
+    Services.WithEventStoreQueryAsync(
+      async (query) =>
+        await query
+          .Query<T>()
+          .OrderByDescending(@event => @event.timestamp)
+          .FirstOrDefaultAsync()
     );
 
   private void LogConenction(bool connected)

@@ -3,6 +3,7 @@ using Mess.EventStore.Parsers.Egauge;
 using Mess.EventStore.Events.Streams;
 using Mess.EventStore.Events;
 using Mess.EventStore.Client;
+using Mess.EventStore.Models;
 
 namespace Mess.EventStore.Controllers;
 
@@ -37,5 +38,19 @@ public class PushController : Controller
     );
 
     return Ok();
+  }
+
+  [HttpGet]
+  public async Task<IActionResult> Display(
+    [FromServices] IEventStoreClient store
+  )
+  {
+    var lastEvent = await store.LastEventAsync<EgaugeMeasured>();
+    if (lastEvent is null)
+    {
+      return StatusCode(500, "No events");
+    }
+
+    return View(new EgaugeDisplayModel(lastEvent));
   }
 }
