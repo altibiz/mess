@@ -1,11 +1,5 @@
 <Project>
     <PropertyGroup>
-        <MessDotnetVersion>net7.0</MessDotnetVersion>
         <MessOrchardVersion>1.5</MessOrchardVersion>
-    </PropertyGroup>
-
-    <PropertyGroup>
-        <Nullable>enable</Nullable>
-        <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
 </Project>
