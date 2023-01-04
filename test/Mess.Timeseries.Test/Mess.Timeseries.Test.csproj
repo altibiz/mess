@@ -1,9 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>$(MessDotnetVersion)</TargetFramework>
-  </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\src\Mess.Timeseries\Mess.Timeseries.csproj" />
     <ProjectReference Include="..\..\src\Mess.Util\Mess.Util.csproj" />

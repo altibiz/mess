@@ -1,9 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>$(MessDotnetVersion)</TargetFramework>
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="OrchardCore.Data.YesSql.Abstractions" Version="$(MessOrchardVersion)" />
     <PackageReference Include="OrchardCore.Recipes" Version="$(MessOrchardVersion)" />
