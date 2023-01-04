@@ -48,7 +48,7 @@ public class PushController : Controller
     var lastEvent = await store.LastEventAsync<EgaugeMeasured>();
     if (lastEvent is null)
     {
-      return StatusCode(500, "No events");
+      return View(new EgaugeDisplayViewModel(DateTime.UtcNow));
     }
 
     return View(new EgaugeDisplayViewModel(lastEvent.timestamp));
