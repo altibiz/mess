@@ -29,7 +29,6 @@ yarn watch; \
 dotnet watch run \
   --configuration Debug \
   --property:consoleLoggerParameters=ErrorsOnly \
-  --property:IsWebConfigTransformDisabled=true \
   --project '%s/src/Mess.Web/Mess.Web.csproj'; \
 
 " "$ROOT_DIR" | xargs -P3 -IR /usr/bin/env sh -c R

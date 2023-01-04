@@ -18,7 +18,6 @@
         "--configuration",
         "Debug",
         "--property:GenerateFullPaths=true",
-        "--property:IsWebConfigTransformDisabled=true",
         "--consoleloggerparameters:ErrorsOnly"
       ],
       "problemMatcher": "$msCompile"

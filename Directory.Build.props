@@ -1,0 +1,5 @@
+<Project>
+    <PropertyGroup>
+        <MessOrchardVersion>1.5</MessOrchardVersion>
+    </PropertyGroup>
+</Project>

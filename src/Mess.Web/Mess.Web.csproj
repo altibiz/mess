@@ -1,6 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <UserSecretsId>f7853954-c956-46c1-aef8-84ac07d11e31</UserSecretsId>
   </PropertyGroup>
@@ -22,6 +25,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Mess.Util\Mess.Util.csproj" />
     <ProjectReference Include="..\Mess.Ozds\Mess.Ozds.csproj" />
+    <ProjectReference Include="..\Mess.Timeseries\Mess.Timeseries.csproj" />
+    <ProjectReference Include="..\Mess.EventStore\Mess.EventStore.csproj" />
   </ItemGroup>
 
 </Project>
