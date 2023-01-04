@@ -2,7 +2,6 @@
 
 export ASPNETCORE_ENVIRONMENT=Development
 export DOTNET_ENVIRONMENT=Development
-export ORCHARD_VERSION="1.5.0"
 
 printf "[Mess] Running 'docker-compose up -d'...\n"
 docker-compose up -d

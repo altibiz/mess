@@ -17,7 +17,6 @@ fi
 export ASPNETCORE_ENVIRONMENT=Production
 export DOTNET_ENVIRONMENT=Production
 export ORCHARD_APP_DATA="$ROOT_DIR/App_Data"
-export ORCHARD_VERSION="1.5.0"
 
 export NODE_OPTIONS="--no-warnings"
 export NODE_ENV="production"

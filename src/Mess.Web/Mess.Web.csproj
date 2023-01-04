@@ -1,10 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>$(MessDotnetVersion)</TargetFramework>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>f7853954-c956-46c1-aef8-84ac07d11e31</UserSecretsId>
   </PropertyGroup>
 
@@ -13,14 +11,13 @@
     <Folder Include="Localization\" />
   </ItemGroup>
 
-  <!-- Watcher include and excludes -->
   <ItemGroup>
       <Watch Include="**\*.cs" Exclude="Recipes\**;Assets\**;node_modules\**\*;**\*.js.map;obj\**\*;bin\**\*" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OrchardCore.Logging.NLog" Version="$(ORCHARD_VERSION)" />
-    <PackageReference Include="OrchardCore.Application.Cms.Targets" Version="$(ORCHARD_VERSION)" />
+    <PackageReference Include="OrchardCore.Logging.NLog" Version="$(MessOrchardVersion)" />
+    <PackageReference Include="OrchardCore.Application.Cms.Targets" Version="$(MessOrchardVersion)" />
   </ItemGroup>
 
   <ItemGroup>

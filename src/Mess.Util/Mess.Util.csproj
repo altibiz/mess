@@ -1,14 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <TargetFramework>$(MessDotnetVersion)</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="OrchardCore.Data.YesSql.Abstractions" Version="$(ORCHARD_VERSION)" />
-    <PackageReference Include="OrchardCore.Recipes" Version="$(ORCHARD_VERSION)" />
+    <PackageReference Include="OrchardCore.Data.YesSql.Abstractions" Version="$(MessOrchardVersion)" />
+    <PackageReference Include="OrchardCore.Recipes" Version="$(MessOrchardVersion)" />
   </ItemGroup>
 
 </Project>
