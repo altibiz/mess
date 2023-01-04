@@ -5,15 +5,14 @@
       "name": "Dev",
       "type": "coreclr",
       "request": "launch",
-      "preLaunchTask": "build",
+      "preLaunchTask": "preLaunch",
       "program": "${workspaceFolder}/src/Mess.Web/bin/Debug/net7.0/Mess.Web.dll",
       "cwd": "${workspaceFolder}/src/Mess.Web",
       "stopAtEntry": false,
       "env": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "DOTNET_ENVIRONMENT": "Development",
-        "ORCHARD_APP_DATA": "${workspaceFolder}/App_Data",
-        "ORCHARD_VERSION": "1.5"
+        "ORCHARD_APP_DATA": "${workspaceFolder}/App_Data"
       }
     }
   ]

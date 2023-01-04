@@ -6,8 +6,7 @@
         "env": {
           "ASPNETCORE_ENVIRONMENT": "Development",
           "DOTNET_ENVIRONMENT": "Development",
-          "ORCHARD_APP_DATA": "${workspaceFolder}/App_Data",
-          "ORCHARD_VERSION": "1.5"
+          "ORCHARD_APP_DATA": "${workspaceFolder}/App_Data"
         }
       },
       "label": "build",
@@ -28,8 +27,7 @@
         "env": {
           "ASPNETCORE_ENVIRONMENT": "Production",
           "DOTNET_ENVIRONMENT": "Production",
-          "ORCHARD_APP_DATA": "${workspaceFolder}/App_Data",
-          "ORCHARD_VERSION": "1.5"
+          "ORCHARD_APP_DATA": "${workspaceFolder}/App_Data"
         }
       },
       "label": "publish",
@@ -53,8 +51,7 @@
         "env": {
           "ASPNETCORE_ENVIRONMENT": "Development",
           "DOTNET_ENVIRONMENT": "Development",
-          "ORCHARD_APP_DATA": "${workspaceFolder}/App_Data",
-          "ORCHARD_VERSION": "1.5"
+          "ORCHARD_APP_DATA": "${workspaceFolder}/App_Data"
         }
       },
       "label": "watch",
@@ -70,6 +67,10 @@
         "--consoleloggerparameters:ErrorsOnly"
       ],
       "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "preLaunch",
+      "dependsOn": ["build"]
     }
   ]
 }
