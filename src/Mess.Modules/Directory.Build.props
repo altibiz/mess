@@ -13,7 +13,6 @@
     <PackageReference Include="OrchardCore.ContentManagement" Version="$(MessOrchardVersion)" />
     <PackageReference Include="OrchardCore.ContentTypes.Abstractions" Version="$(MessOrchardVersion)" />
     <PackageReference Include="OrchardCore.DisplayManagement" Version="$(MessOrchardVersion)" />
-    <PackageReference Include="OrchardCore.Logging.NLog" Version="$(MessOrchardVersion)" />
   </ItemGroup>
 
 </Project>
