@@ -1,9 +1,6 @@
-<Project Sdk="Microsoft.NET.Sdk.Razor">
+<Project>
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
   </PropertyGroup>
 
@@ -16,18 +13,7 @@
     <PackageReference Include="OrchardCore.ContentManagement" Version="$(MessOrchardVersion)" />
     <PackageReference Include="OrchardCore.ContentTypes.Abstractions" Version="$(MessOrchardVersion)" />
     <PackageReference Include="OrchardCore.DisplayManagement" Version="$(MessOrchardVersion)" />
-    <!-- NOTE: Marten requires 6 -->
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.7" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.7" />
     <PackageReference Include="OrchardCore.Logging.NLog" Version="$(MessOrchardVersion)" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Mess.Util\Mess.Util.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <InternalsVisibleTo Include="../../test/Mess.Timeseries.Test/Mess.Timeseries.Test.csproj" />
   </ItemGroup>
 
 </Project>

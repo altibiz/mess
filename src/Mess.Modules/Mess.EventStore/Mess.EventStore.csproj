@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <ItemGroup>
+    <PackageReference Include="Marten" Version="$(MessMartenVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../../Mess.Util/Mess.Util.csproj" />
+    <ProjectReference Include="../Mess.Timeseries/Mess.Timeseries.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="../../../test/Mess.EventStore.Test/Mess.EventStore.Test.csproj" />
+  </ItemGroup>
+
+</Project>

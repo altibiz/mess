@@ -1,5 +1,17 @@
 <Project>
-    <PropertyGroup>
-        <MessOrchardVersion>1.5</MessOrchardVersion>
-    </PropertyGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <MessOrchardVersion>1.5</MessOrchardVersion>
+
+    <!-- NOTE: these are connected -->
+    <MessNpgsqlVersion>6.0.7</MessNpgsqlVersion>
+    <MessMartenVersion>5.11.0</MessMartenVersion>
+  </PropertyGroup>
+
 </Project>

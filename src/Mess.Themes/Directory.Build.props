@@ -1,0 +1,18 @@
+<Project>
+
+  <PropertyGroup>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="OrchardCore.Theme.Targets" Version="$(MessOrchardVersion)" />
+    <PackageReference Include="OrchardCore.ContentManagement" Version="$(MessOrchardVersion)" />
+    <PackageReference Include="OrchardCore.DisplayManagement" Version="$(MessOrchardVersion)" />
+    <PackageReference Include="OrchardCore.ResourceManagement" Version="$(MessOrchardVersion)" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <ItemGroup>
+    <!-- NOTE: Marten requires 6 -->
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="$(MessNpgsqlVersion)" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="$(MessNpgsqlVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../Mess.Util/Mess.Util.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="../../../test/Mess.Timeseries.Test/Mess.Timeseries.Test.csproj" />
+  </ItemGroup>
+
+</Project>
