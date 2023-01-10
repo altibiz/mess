@@ -25,13 +25,14 @@ public class Startup : StartupBase
 
     // NOTE: use in scoped services
     services.AddDbContext<TimeseriesContext>();
+    services.AddScoped<ITimeseriesMigrator, TimescaleMigrator>();
 
     // TODO: change this to dependency injection with Npgsql 7
     // FIX: it must be run before any Npgsql operations
     // NpgsqlLogManager.Provider = new NLogLoggingProvider();
     // NpgsqlLogManager.IsParameterLoggingEnabled = true;
 
-    services.AddScoped<TimeseriesConnection>();
+    services.AddScoped<ITimeseriesConnection, TimeseriesConnection>();
     services.AddSingleton<ITimeseriesClient, TimeseriesClient>();
 
     services.AddSingleton<ITenantProvider, ShellTenantProvider>();
@@ -43,11 +44,17 @@ public class Startup : StartupBase
     IServiceProvider services
   )
   {
-    var client = services.GetRequiredService<ITimeseriesClient>();
+    using var scope = services.CreateScope();
+
+    var client = scope.ServiceProvider.GetRequiredService<ITimeseriesClient>();
     var connected = client.CheckConnection();
     if (!connected)
     {
       throw new InvalidOperationException("Timeseries client not connected");
     }
+
+    var migrator =
+      scope.ServiceProvider.GetRequiredService<ITimeseriesMigrator>();
+    migrator.Migrate();
   }
 }

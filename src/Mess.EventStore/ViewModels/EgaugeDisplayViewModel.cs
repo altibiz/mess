@@ -1,3 +1,6 @@
 namespace Mess.EventStore.ViewModels;
 
-public record class EgaugeDisplayViewModel(DateTime timestamp);
+public class EgaugeDisplayViewModel
+{
+  public DateTime timestamp { get; set; }
+}

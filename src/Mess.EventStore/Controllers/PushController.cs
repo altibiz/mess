@@ -48,9 +48,9 @@ public class PushController : Controller
     var lastEvent = await store.LastEventAsync<EgaugeMeasured>();
     if (lastEvent is null)
     {
-      return View(new EgaugeDisplayViewModel(DateTime.UtcNow));
+      return View(new EgaugeDisplayViewModel { timestamp = DateTime.UtcNow });
     }
 
-    return View(new EgaugeDisplayViewModel(lastEvent.timestamp));
+    return View(new EgaugeDisplayViewModel { timestamp = lastEvent.timestamp });
   }
 }
