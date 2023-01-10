@@ -25,7 +25,7 @@ public class Startup : StartupBase
 
     // NOTE: use in scoped services
     services.AddDbContext<TimeseriesContext>();
-    services.AddScoped<ITimeseriesMigrator, TimescaleMigrator>();
+    services.AddScoped<ITimeseriesMigrator, TimeseriesMigrator>();
 
     // TODO: change this to dependency injection with Npgsql 7
     // FIX: it must be run before any Npgsql operations

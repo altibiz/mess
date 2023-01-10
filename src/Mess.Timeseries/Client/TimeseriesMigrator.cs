@@ -8,7 +8,7 @@ namespace Mess.Timeseries.Client;
 [AttributeUsage(AttributeTargets.Property)]
 public class HypertableColumnAttribute : Attribute { }
 
-public class TimescaleMigrator : ITimeseriesMigrator
+public class TimeseriesMigrator : ITimeseriesMigrator
 {
   public async Task MigrateAsync()
   {
@@ -102,9 +102,9 @@ public class TimescaleMigrator : ITimeseriesMigrator
     Logger.LogInformation("Timeseries migrated");
   }
 
-  public TimescaleMigrator(
+  public TimeseriesMigrator(
     IServiceProvider services,
-    ILogger<TimescaleMigrator> logger
+    ILogger<TimeseriesMigrator> logger
   )
   {
     Contexts = services.GetServicesInheriting<DbContext>().ToList();
