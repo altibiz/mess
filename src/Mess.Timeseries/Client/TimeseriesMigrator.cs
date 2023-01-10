@@ -14,13 +14,14 @@ public class TimescaleMigrator : ITimeseriesMigrator
   {
     foreach (var context in Contexts)
     {
+      await context.Database.MigrateAsync();
+
       var created = await context.Database.EnsureCreatedAsync();
       if (!created)
       {
         throw new InvalidOperationException("Database not created");
       }
 
-      await context.Database.MigrateAsync();
       Logger.LogDebug(
         "Migrated database {}",
         context.Database.GetConnectionString()
@@ -67,13 +68,14 @@ public class TimescaleMigrator : ITimeseriesMigrator
   {
     foreach (var context in Contexts)
     {
+      context.Database.Migrate();
+
       var created = context.Database.EnsureCreated();
       if (!created)
       {
         throw new InvalidOperationException("Database not created");
       }
 
-      context.Database.Migrate();
       Logger.LogDebug(
         "Migrated database {}",
         context.Database.GetConnectionString()
