@@ -1,7 +1,9 @@
 #!/usr/bin/env sh
 
-# shellcheck disable=SC2068
+abs() { echo "$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"; }
+SCRIPT_DIR="$(dirname "$(abs "$0")")"
 
+# shellcheck disable=SC2068
 git_clean() {
   git clean -Xd \
     \
@@ -47,3 +49,5 @@ case $yn in
     printf "\n"
     ;;
 esac
+
+"$SCRIPT_DIR/prepare.sh"
