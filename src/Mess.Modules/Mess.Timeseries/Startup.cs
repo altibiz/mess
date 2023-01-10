@@ -27,11 +27,6 @@ public class Startup : StartupBase
     services.AddDbContext<TimeseriesContext>();
     services.AddScoped<ITimeseriesMigrator, TimeseriesMigrator>();
 
-    // TODO: change this to dependency injection with Npgsql 7
-    // FIX: it must be run before any Npgsql operations
-    // NpgsqlLogManager.Provider = new NLogLoggingProvider();
-    // NpgsqlLogManager.IsParameterLoggingEnabled = true;
-
     services.AddScoped<ITimeseriesConnection, TimeseriesConnection>();
     services.AddSingleton<ITimeseriesClient, TimeseriesClient>();
 
