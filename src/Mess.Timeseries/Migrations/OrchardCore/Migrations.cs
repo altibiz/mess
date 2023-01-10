@@ -11,7 +11,7 @@ namespace Mess.Timeseries.Migrations.OrchardCore;
 
 public partial class Migrations : DataMigration
 {
-  public async Task<int> CreateAsync()
+  public int CreateAsync()
   {
     Recipe.ExecuteTimeseriesMigration(this);
 
