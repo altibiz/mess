@@ -1,4 +1,5 @@
 using System.Reflection;
+using Mess.Timeseries.Extensions.Microsoft;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -9,22 +10,6 @@ public class HypertableColumnAttribute : Attribute { }
 
 public class TimescaleMigrator : ITimeseriesMigrator
 {
-  public void Migrate()
-  {
-    foreach (var context in Contexts)
-    {
-      var created = context.Database.EnsureCreated();
-      if (!created)
-      {
-        throw new InvalidOperationException("Database not created");
-      }
-
-      context.Database.Migrate();
-      ApplyHypertables();
-    }
-    Logger.LogInformation("Timeseries migrated");
-  }
-
   public async Task MigrateAsync()
   {
     foreach (var context in Contexts)
@@ -36,15 +21,11 @@ public class TimescaleMigrator : ITimeseriesMigrator
       }
 
       await context.Database.MigrateAsync();
-      await ApplyHypertablesAsync();
-    }
-    Logger.LogInformation("Timeseries migrated");
-  }
+      Logger.LogDebug(
+        "Migrated database {}",
+        context.Database.GetConnectionString()
+      );
 
-  private async Task ApplyHypertablesAsync()
-  {
-    foreach (var context in Contexts)
-    {
       await context.Database.ExecuteSqlRawAsync(
         "CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;"
       );
@@ -78,16 +59,29 @@ public class TimescaleMigrator : ITimeseriesMigrator
         }
       }
     }
+
+    Logger.LogInformation("Timeseries migrated");
   }
 
-  private void ApplyHypertables()
+  public void Migrate()
   {
     foreach (var context in Contexts)
     {
+      var created = context.Database.EnsureCreated();
+      if (!created)
+      {
+        throw new InvalidOperationException("Database not created");
+      }
+
+      context.Database.Migrate();
+      Logger.LogDebug(
+        "Migrated database {}",
+        context.Database.GetConnectionString()
+      );
+
       context.Database.ExecuteSqlRaw(
         "CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;"
       );
-
       var entityTypes = context.Model.GetEntityTypes();
       foreach (var entityType in entityTypes)
       {
@@ -117,14 +111,15 @@ public class TimescaleMigrator : ITimeseriesMigrator
         }
       }
     }
+    Logger.LogInformation("Timeseries migrated");
   }
 
   public TimescaleMigrator(
-    IEnumerable<DbContext> contexts,
+    IServiceProvider services,
     ILogger<TimescaleMigrator> logger
   )
   {
-    Contexts = contexts;
+    Contexts = services.GetServicesInheriting<DbContext>().ToList();
     Logger = logger;
   }
 
