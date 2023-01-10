@@ -2,6 +2,7 @@ using System.Reflection;
 using Mess.Timeseries.Extensions.Microsoft;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Npgsql;
 
 namespace Mess.Timeseries.Client;
 
@@ -40,9 +41,20 @@ public class TimeseriesMigrator : ITimeseriesMigrator
 #pragma warning disable CS0618
             var columnName = property.GetColumnName();
 #pragma warning restore CS0618
-            await context.Database.ExecuteSqlRawAsync(
-              $"SELECT create_hypertable('\"{tableName}\"', '{columnName}');"
-            );
+            try
+            {
+              await context.Database.ExecuteSqlRawAsync(
+                $"SELECT create_hypertable('\"{tableName}\"', '{columnName}');"
+              );
+            }
+            catch (PostgresException exception)
+            {
+              // NOTE: hypertable already exists
+              if (exception.SqlState != "TS110")
+              {
+                throw exception;
+              }
+            }
 
             Logger.LogDebug(
               "Created hypertable {} for column {}",
@@ -86,9 +98,20 @@ public class TimeseriesMigrator : ITimeseriesMigrator
 #pragma warning disable CS0618
             var columnName = property.GetColumnName();
 #pragma warning restore CS0618
-            context.Database.ExecuteSqlRaw(
-              $"SELECT create_hypertable('\"{tableName}\"', '{columnName}');"
-            );
+            try
+            {
+              context.Database.ExecuteSqlRaw(
+                $"SELECT create_hypertable('\"{tableName}\"', '{columnName}');"
+              );
+            }
+            catch (PostgresException exception)
+            {
+              // NOTE: hypertable already exists
+              if (exception.SqlState != "TS110")
+              {
+                throw exception;
+              }
+            }
 
             Logger.LogDebug(
               "Created hypertable {} for column {}",
