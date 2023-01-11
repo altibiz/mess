@@ -36,7 +36,7 @@ cp -r \
 printf "\n"
 
 if [ ! "$CI" ] && [ ! -f "$ROOT_DIR/.husky/_/husky.sh" ]; then
-  printf "[OZDS] Setting up git hooks with 'husky'...\n"
+  printf "[Mess] Setting up git hooks with 'husky'...\n"
   yarn husky install
   printf "\n"
 fi
