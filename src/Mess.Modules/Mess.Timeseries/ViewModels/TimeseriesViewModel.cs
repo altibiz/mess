@@ -1,3 +1,3 @@
 namespace Mess.Timeseries.ViewModels;
 
-public class TimeseriesViewModel { }
+public record class TimeseriesViewModel();

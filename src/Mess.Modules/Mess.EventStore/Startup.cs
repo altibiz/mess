@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Builder;
 using OrchardCore.Modules;
 using OrchardCore.ResourceManagement;
-using OrchardCore.Data.Migration;
 using OrchardCore.Mvc.Core.Utilities;
 using Mess.Util.Extensions.OrchardCore;
 using Mess.Util.OrchardCore.Tenants;
@@ -15,6 +14,8 @@ using Mess.EventStore.Extensions.Microsoft;
 using Mess.EventStore.Controllers;
 using Mess.EventStore.Parsers.Egauge;
 using Mess.EventStore.Client;
+using OrchardCore.Admin;
+using OrchardCore.Navigation;
 
 namespace Mess.EventStore;
 
@@ -26,7 +27,7 @@ public class Startup : StartupBase
       IConfigureOptions<ResourceManagementOptions>,
       Resources
     >();
-    services.AddScoped<IDataMigration, Migrations>();
+    services.AddScoped<INavigationProvider, AdminMenu>();
 
     services.AddMartenFromTenantGroups(
       Environment.IsDevelopment(),
@@ -63,13 +64,13 @@ public class Startup : StartupBase
     );
 
     routes.MapAreaControllerRoute(
-      name: "Mess.EventStore.Push",
+      name: "Mess.EventStore.Admin",
       areaName: "Mess.EventStore",
-      pattern: "push",
+      pattern: $"{Admin.AdminUrlPrefix}/EventStore",
       defaults: new
       {
-        controller = typeof(PushController).ControllerName(),
-        action = nameof(PushController.Index)
+        controller = typeof(AdminController).ControllerName(),
+        action = nameof(AdminController.Index)
       }
     );
   }
@@ -77,15 +78,18 @@ public class Startup : StartupBase
   public Startup(
     IHostEnvironment environment,
     ILogger<Startup> logger,
-    IConfiguration configuration
+    IConfiguration configuration,
+    IOptions<AdminOptions> adminOptions
   )
   {
     Environment = environment;
     Logger = logger;
     Configuration = configuration;
+    Admin = adminOptions.Value;
   }
 
   private IHostEnvironment Environment { get; }
   private ILogger Logger { get; }
   private IConfiguration Configuration { get; }
+  private AdminOptions Admin { get; }
 }

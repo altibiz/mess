@@ -4,11 +4,12 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Builder;
 using OrchardCore.Modules;
 using OrchardCore.ResourceManagement;
-using OrchardCore.Data.Migration;
 using Mess.Timeseries.Client;
 using Mess.Util.OrchardCore.Tenants;
 using Mess.Timeseries.Controllers;
 using OrchardCore.Mvc.Core.Utilities;
+using OrchardCore.Admin;
+using OrchardCore.Navigation;
 
 namespace Mess.Timeseries;
 
@@ -20,10 +21,7 @@ public class Startup : StartupBase
       IConfigureOptions<ResourceManagementOptions>,
       Resources
     >();
-    services.AddScoped<
-      IDataMigration,
-      Mess.Timeseries.Migrations.OrchardCore.Migrations
-    >();
+    services.AddScoped<INavigationProvider, AdminMenu>();
 
     // NOTE: use in scoped services
     services.AddDbContext<TimeseriesContext>();
@@ -55,14 +53,21 @@ public class Startup : StartupBase
     migrator.Migrate();
 
     routes.MapAreaControllerRoute(
-      name: "Mess.Timeseries",
+      name: "Mess.Timeseries.Admin",
       areaName: "Mess.Timeseries",
-      pattern: "timeseries",
+      pattern: $"{Admin.AdminUrlPrefix}/timeseries",
       defaults: new
       {
-        controller = typeof(TimeseriesController).ControllerName(),
-        action = nameof(TimeseriesController.Index)
+        controller = typeof(AdminController).ControllerName(),
+        action = nameof(AdminController.Index)
       }
     );
   }
+
+  public Startup(IOptions<AdminOptions> adminOptions)
+  {
+    Admin = adminOptions.Value;
+  }
+
+  private AdminOptions Admin { get; }
 }

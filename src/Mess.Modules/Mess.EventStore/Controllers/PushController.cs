@@ -3,23 +3,11 @@ using Mess.EventStore.Parsers.Egauge;
 using Mess.EventStore.Events.Streams;
 using Mess.EventStore.Events;
 using Mess.EventStore.Client;
-using Mess.EventStore.ViewModels;
 
 namespace Mess.EventStore.Controllers;
 
 public class PushController : Controller
 {
-  public async Task<IActionResult> Index([FromServices] IEventStoreClient store)
-  {
-    var lastEvent = await store.LastEventAsync<EgaugeMeasured>();
-    if (lastEvent is null)
-    {
-      return View(new EgaugeDisplayViewModel { timestamp = DateTime.UtcNow });
-    }
-
-    return View(new EgaugeDisplayViewModel { timestamp = lastEvent.timestamp });
-  }
-
   [HttpPost]
   [IgnoreAntiforgeryToken]
   public async Task<IActionResult> Egauge(
