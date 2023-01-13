@@ -63,7 +63,7 @@ public class Startup : StartupBase
     );
 
     routes.MapAreaControllerRoute(
-      name: "Eguage",
+      name: "Push",
       areaName: "Mess.EventStore",
       pattern: "push",
       defaults: new
