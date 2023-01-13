@@ -1,4 +1,4 @@
-using Mess.Util.OrchardCore.Tenants;
+using Mess.Tenants;
 
 namespace Mess.Timeseries.Client;
 

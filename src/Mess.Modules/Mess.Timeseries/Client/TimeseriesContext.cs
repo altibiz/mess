@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Mess.Util.OrchardCore.Tenants;
+using Mess.Tenants;
 using Mess.Timeseries.Entities;
 using System.Reflection;
 using System.Linq.Expressions;

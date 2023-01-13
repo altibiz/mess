@@ -3,7 +3,7 @@ using Marten.Events;
 using Marten.Events.Projections;
 using Mess.Timeseries.Abstractions.Client;
 using Microsoft.Extensions.Logging;
-using Mess.Util.OrchardCore.Tenants;
+using Mess.Tenants;
 
 namespace Mess.EventStore.Events.Projections;
 

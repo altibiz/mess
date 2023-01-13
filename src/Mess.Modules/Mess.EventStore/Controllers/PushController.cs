@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Mess.EventStore.Parsers.Egauge;
 using Mess.EventStore.Events.Streams;
 using Mess.EventStore.Events;
-using Mess.EventStore.Client;
+using Mess.EventStore.Abstractions.Client;
 
 namespace Mess.EventStore.Controllers;
 

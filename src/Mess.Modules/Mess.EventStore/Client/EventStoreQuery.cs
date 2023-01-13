@@ -1,10 +1,14 @@
 using Microsoft.Extensions.DependencyInjection;
 using Marten;
-using Mess.Util.OrchardCore.Tenants;
+using Mess.Tenants;
+using Mess.EventStore.Abstractions.Client;
 
 namespace Mess.EventStore.Client;
 
-public sealed class EventStoreQuery : IDisposable, IAsyncDisposable
+public sealed class EventStoreQuery
+  : IEventStoreQuery,
+    IDisposable,
+    IAsyncDisposable
 {
   public IQuerySession Value
   {
@@ -37,28 +41,5 @@ public sealed class EventStoreQuery : IDisposable, IAsyncDisposable
       await _value.DisposeAsync();
       _value = null;
     }
-  }
-}
-
-internal static class EventStoreQueryServiceProviederExtensions
-{
-  public static async Task<T> WithEventStoreQueryAsync<T>(
-    this IServiceProvider services,
-    Func<IQuerySession, Task<T>> todo
-  )
-  {
-    await using var scope = services.CreateAsyncScope();
-    var session = scope.ServiceProvider.GetRequiredService<EventStoreQuery>();
-    return await todo(session.Value);
-  }
-
-  public static T WithEventStoreQuery<T>(
-    this IServiceProvider services,
-    Func<IQuerySession, T> todo
-  )
-  {
-    using var scope = services.CreateScope();
-    var session = scope.ServiceProvider.GetRequiredService<EventStoreQuery>();
-    return todo(session.Value);
   }
 }

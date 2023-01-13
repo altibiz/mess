@@ -1,4 +1,5 @@
 using Mess.EventStore.Parsers.Egauge;
+using Mess.EventStore.Abstractions.Events;
 
 namespace Mess.EventStore.Events;
 

@@ -4,13 +4,15 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Builder;
 using OrchardCore.Modules;
 using OrchardCore.ResourceManagement;
-using Mess.Timeseries.Client;
-using Mess.Util.OrchardCore.Tenants;
-using Mess.Timeseries.Controllers;
 using OrchardCore.Mvc.Core.Utilities;
 using OrchardCore.Admin;
 using OrchardCore.Navigation;
+using Mess.OrchardCore.Extensions.OrchardCore;
+using Mess.Tenants;
+using Mess.OrchardCore.Tenants;
+using Mess.Timeseries.Controllers;
 using Mess.Timeseries.Abstractions.Client;
+using Mess.Timeseries.Client;
 
 namespace Mess.Timeseries;
 

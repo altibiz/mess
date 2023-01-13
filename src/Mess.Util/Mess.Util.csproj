@@ -1,8 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
-  <ItemGroup>
-    <PackageReference Include="OrchardCore.Data.YesSql.Abstractions" Version="$(MessOrchardVersion)" />
-    <PackageReference Include="OrchardCore.Recipes" Version="$(MessOrchardVersion)" />
-  </ItemGroup>
-
-</Project>

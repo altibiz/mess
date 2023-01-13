@@ -1,4 +1,4 @@
-using Mess.Util.Extensions.IDictionary;
+using Mess.System.Extensions.IDictionary;
 
 namespace Mess.EventStore.Parsers.Egauge;
 

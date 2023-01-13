@@ -7,12 +7,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../Mess.Util/Mess.Util.csproj" />
     <ProjectReference Include="../../Mess.Abstractions/Mess.Timeseries.Abstractions/Mess.Timeseries.Abstractions.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="../../../test/Mess.Timeseries.Test/Mess.Timeseries.Test.csproj" />
+    <InternalsVisibleTo Include="../../../test/Mess.Modules/Mess.Timeseries.Test/Mess.Timeseries.Test.csproj" />
   </ItemGroup>
 
 </Project>

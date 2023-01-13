@@ -6159,9 +6159,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mess-client@workspace:src/Mess.Client":
+"mess-client@workspace:src/Mess.Workspaces/Mess.Client":
   version: 0.0.0-use.local
-  resolution: "mess-client@workspace:src/Mess.Client"
+  resolution: "mess-client@workspace:src/Mess.Workspaces/Mess.Client"
   dependencies:
     "@typescript-eslint/eslint-plugin": ^5.46.1
     "@typescript-eslint/parser": ^5.46.1

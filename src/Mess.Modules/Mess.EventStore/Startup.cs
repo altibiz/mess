@@ -8,14 +8,17 @@ using Microsoft.AspNetCore.Builder;
 using OrchardCore.Modules;
 using OrchardCore.ResourceManagement;
 using OrchardCore.Mvc.Core.Utilities;
-using Mess.Util.Extensions.OrchardCore;
-using Mess.Util.OrchardCore.Tenants;
-using Mess.EventStore.Extensions.Microsoft;
-using Mess.EventStore.Controllers;
-using Mess.EventStore.Parsers.Egauge;
-using Mess.EventStore.Client;
 using OrchardCore.Admin;
 using OrchardCore.Navigation;
+using Mess.EventStore.Extensions.Microsoft;
+using Mess.OrchardCore.Extensions.OrchardCore;
+using Mess.Tenants;
+using Mess.OrchardCore.Tenants;
+using Mess.EventStore.Abstractions.Parsers.Egauge;
+using Mess.EventStore.Parsers.Egauge;
+using Mess.EventStore.Abstractions.Client;
+using Mess.EventStore.Client;
+using Mess.EventStore.Controllers;
 
 namespace Mess.EventStore;
 
@@ -34,8 +37,8 @@ public class Startup : StartupBase
       Configuration.GetOrchardAutoSetupTenantNamesGroupedByConnectionString()
     );
 
-    services.AddScoped<EventStoreSession>();
-    services.AddScoped<EventStoreQuery>();
+    services.AddScoped<IEventStoreSession, EventStoreSession>();
+    services.AddScoped<IEventStoreQuery, EventStoreQuery>();
     services.AddSingleton<IEventStoreClient, EventStoreClient>();
 
     services.AddSingleton<ITenantProvider, ShellTenantProvider>();

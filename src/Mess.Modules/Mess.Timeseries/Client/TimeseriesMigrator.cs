@@ -1,13 +1,11 @@
 using System.Reflection;
 using Mess.Timeseries.Extensions.Microsoft;
+using Mess.Timeseries.Abstractions.Client;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Npgsql;
 
 namespace Mess.Timeseries.Client;
-
-[AttributeUsage(AttributeTargets.Property)]
-public class HypertableColumnAttribute : Attribute { }
 
 public class TimeseriesMigrator : ITimeseriesMigrator
 {

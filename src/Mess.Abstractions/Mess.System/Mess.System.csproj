@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="OrchardCore.Recipes" Version="$(MessOrchardVersion)" />
+  </ItemGroup>
+
+</Project>

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Mess.EventStore.Events;
-using Mess.EventStore.Client;
+using Mess.EventStore.Abstractions.Client;
 using OrchardCore.Admin;
 using Mess.EventStore.ViewModels;
 

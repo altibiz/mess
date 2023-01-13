@@ -17,7 +17,8 @@
   },
   "packageManager": "yarn@3.3.0",
   "workspaces": [
-    "src/Mess.Client"
+    "src/Mess.Workspaces/*",
+    "src/Mess.Modules/*/Mess.Workspaces/*"
   ],
   "devDependencies": {
     "@commitlint/cli": "^17.3.0",

@@ -19,9 +19,4 @@
     <PackageReference Include="OrchardCore.Application.Cms.Targets" Version="$(MessOrchardVersion)" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="../Mess.Util/Mess.Util.csproj" />
-    <ProjectReference Include="../Mess.Themes/Mess.Ozds/Mess.Ozds.csproj" />
-  </ItemGroup>
-
 </Project>

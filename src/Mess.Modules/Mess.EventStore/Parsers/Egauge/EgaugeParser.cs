@@ -1,5 +1,6 @@
 using System.Xml.Linq;
 using Microsoft.Extensions.Logging;
+using Mess.EventStore.Abstractions.Parsers.Egauge;
 
 namespace Mess.EventStore.Parsers.Egauge;
 

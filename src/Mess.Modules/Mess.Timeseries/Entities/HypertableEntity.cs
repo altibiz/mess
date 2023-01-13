@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using Mess.Timeseries.Client;
+using Mess.Timeseries.Abstractions.Client;
 
 namespace Mess.Timeseries.Entities;
 

@@ -11,6 +11,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="../Mess.Abstractions/Mess.System/Mess.System.csproj" />
+    <ProjectReference Include="../Mess.Abstractions/Mess.OrchardCore/Mess.OrchardCore.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="OrchardCore.Module.Targets" Version="$(MessOrchardVersion)" />
     <PackageReference Include="OrchardCore.ContentManagement" Version="$(MessOrchardVersion)" />
     <PackageReference Include="OrchardCore.ContentTypes.Abstractions" Version="$(MessOrchardVersion)" />
