@@ -5,7 +5,6 @@ namespace Mess.Timeseries.Controllers;
 
 public class TimeseriesController : Controller
 {
-  [HttpGet]
   public IActionResult Index()
   {
     return View(new TimeseriesViewModel { });

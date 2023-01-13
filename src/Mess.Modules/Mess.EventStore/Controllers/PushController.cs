@@ -9,7 +9,6 @@ namespace Mess.EventStore.Controllers;
 
 public class PushController : Controller
 {
-  [HttpGet]
   public async Task<IActionResult> Index([FromServices] IEventStoreClient store)
   {
     var lastEvent = await store.LastEventAsync<EgaugeMeasured>();
