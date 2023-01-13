@@ -159,7 +159,13 @@ public static class ObjectSerializationExtensions
   )
   {
     using var reader = new StreamReader(stream);
-    var result = await reader.ReadToEndAsync(token);
+#if NET6_0
+    var result = await Task.Run(() => reader.ReadToEnd(), token);
+#elif NET7_0
+    var result = await reader.ReadToEndAsync();
+#else
+#error Wrong target framwork
+#endif
     return result;
   }
 }
