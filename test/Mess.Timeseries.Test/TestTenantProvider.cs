@@ -8,11 +8,13 @@ namespace Mess.Timeseries.Test;
 
 public class TestTenantProvider : ITenantProvider
 {
-  public string GetTenantName() =>
-    $"{Tenant.GetValue<string>("Name")
-      ?? throw new InvalidOperationException(
-        $"Tenant must have a Name"
-      )}-{Test.GetTestIdentifier()}";
+  public string GetTenantName()
+  {
+    var tenantName =
+      Tenant.GetValue<string>("Name")
+      ?? throw new InvalidOperationException($"Tenant must have a Name");
+    return $"{tenantName}-{Test.GetTestIdentifier()}";
+  }
 
   public string GetTenantConnectionString() =>
     (

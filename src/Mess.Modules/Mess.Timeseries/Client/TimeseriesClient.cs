@@ -1,5 +1,4 @@
 using Mess.Timeseries.Abstractions.Client;
-using Mess.Timeseries.Entities;
 using Microsoft.Extensions.Logging;
 using AbstractMeasurement = Mess.Timeseries.Abstractions.Entities.Measurement;
 

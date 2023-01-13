@@ -1,6 +1,7 @@
 ﻿using Xunit.DependencyInjection;
 using Xunit.DependencyInjection.Logging;
 using Mess.Util.OrchardCore.Tenants;
+using Mess.Timeseries.Abstractions.Client;
 using Mess.Timeseries.Client;
 
 namespace Mess.Timeseries.Test;

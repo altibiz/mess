@@ -1,4 +1,4 @@
-using Mess.Timeseries.Client;
+using Mess.Timeseries.Abstractions.Client;
 using Mess.Util.OrchardCore.Tenants;
 using Mess.Timeseries.Test.Extensions.Npgsql;
 using Npgsql;
