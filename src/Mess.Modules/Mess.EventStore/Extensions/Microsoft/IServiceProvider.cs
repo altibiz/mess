@@ -1,7 +1,7 @@
 using Marten;
 using Mess.EventStore.Client;
 using Mess.EventStore.Events.Projections;
-using Mess.Timeseries.Client;
+using Mess.Timeseries.Abstractions.Client;
 using Mess.Util.OrchardCore.Tenants;
 using Mess.EventStore.Extensions.Marten;
 using Microsoft.Extensions.DependencyInjection;

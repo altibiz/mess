@@ -1,6 +1,6 @@
-using Mess.Timeseries.Entities;
+using Mess.Timeseries.Abstractions.Entities;
 
-namespace Mess.Timeseries.Client;
+namespace Mess.Timeseries.Abstractions.Client;
 
 public interface ITimeseriesClient
 {

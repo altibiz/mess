@@ -6,7 +6,8 @@
 
   <ItemGroup>
     <ProjectReference Include="../../Mess.Util/Mess.Util.csproj" />
-    <ProjectReference Include="../Mess.Timeseries/Mess.Timeseries.csproj" />
+    <ProjectReference Include="../../Mess.Abstractions/Mess.EventStore.Abstractions/Mess.EventStore.Abstractions.csproj" />
+    <ProjectReference Include="../../Mess.Abstractions/Mess.Timeseries.Abstractions/Mess.Timeseries.Abstractions.csproj" />
   </ItemGroup>
 
   <ItemGroup>

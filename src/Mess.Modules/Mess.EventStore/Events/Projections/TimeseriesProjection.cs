@@ -1,7 +1,7 @@
 using Marten;
 using Marten.Events;
 using Marten.Events.Projections;
-using Mess.Timeseries.Client;
+using Mess.Timeseries.Abstractions.Client;
 using Microsoft.Extensions.Logging;
 using Mess.Util.OrchardCore.Tenants;
 
@@ -44,14 +44,13 @@ public class TimeseriesProjection : IProjection
     foreach (var egaugeEvent in egaugeEvents)
     {
       Client.AddMeasurement(
-        new()
-        {
-          Tenant = Tenants.GetTenantName(),
-          SourceId = "egauge",
-          Timestamp = DateTime.UtcNow,
-          Power = egaugeEvent.measurement.Power,
-          Voltage = egaugeEvent.measurement.Voltage
-        }
+        new(
+          tenant: Tenants.GetTenantName(),
+          sourceId: "egauge",
+          timestamp: egaugeEvent.measurement.timestamp,
+          power: egaugeEvent.measurement.Power,
+          voltage: egaugeEvent.measurement.Voltage
+        )
       );
     }
 
@@ -90,14 +89,13 @@ public class TimeseriesProjection : IProjection
     foreach (var egaugeEvent in egaugeEvents)
     {
       await Client.AddMeasurementAsync(
-        new()
-        {
-          Tenant = Tenants.GetTenantName(),
-          SourceId = "egauge",
-          Timestamp = egaugeEvent.measurement.timestamp,
-          Power = egaugeEvent.measurement.Power,
-          Voltage = egaugeEvent.measurement.Voltage
-        }
+        new(
+          tenant: Tenants.GetTenantName(),
+          sourceId: "egauge",
+          timestamp: egaugeEvent.measurement.timestamp,
+          power: egaugeEvent.measurement.Power,
+          voltage: egaugeEvent.measurement.Voltage
+        )
       );
     }
 

@@ -10,6 +10,7 @@ using Mess.Timeseries.Controllers;
 using OrchardCore.Mvc.Core.Utilities;
 using OrchardCore.Admin;
 using OrchardCore.Navigation;
+using Mess.Timeseries.Abstractions.Client;
 
 namespace Mess.Timeseries;
 

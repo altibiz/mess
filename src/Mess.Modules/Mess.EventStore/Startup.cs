@@ -50,7 +50,6 @@ public class Startup : StartupBase
   )
   {
     services.UseEventStore();
-    services.UseTimeseriesProjection();
 
     routes.MapAreaControllerRoute(
       name: "Mess.EventStore.Push.Egauge",
@@ -92,4 +91,17 @@ public class Startup : StartupBase
   private ILogger Logger { get; }
   private IConfiguration Configuration { get; }
   private AdminOptions Admin { get; }
+
+  [RequireFeatures("Mess.Timeseries")]
+  public class TimeseriesStartup : StartupBase
+  {
+    public override void Configure(
+      IApplicationBuilder app,
+      IEndpointRouteBuilder routes,
+      IServiceProvider services
+    )
+    {
+      services.UseTimeseriesProjection();
+    }
+  }
 }
