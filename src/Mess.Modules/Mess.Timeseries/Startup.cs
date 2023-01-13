@@ -55,7 +55,7 @@ public class Startup : StartupBase
     migrator.Migrate();
 
     routes.MapAreaControllerRoute(
-      name: "Timeseries",
+      name: "Mess.Timeseries",
       areaName: "Mess.Timeseries",
       pattern: "timeseries",
       defaults: new

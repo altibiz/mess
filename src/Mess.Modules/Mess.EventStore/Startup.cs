@@ -52,7 +52,7 @@ public class Startup : StartupBase
     services.UseTimeseriesProjection();
 
     routes.MapAreaControllerRoute(
-      name: "EventStorePushEgauge",
+      name: "Mess.EventStore.Push.Egauge",
       areaName: "Mess.EventStore",
       pattern: "push/egauge",
       defaults: new
@@ -63,7 +63,7 @@ public class Startup : StartupBase
     );
 
     routes.MapAreaControllerRoute(
-      name: "EventStorePush",
+      name: "Mess.EventStore.Push",
       areaName: "Mess.EventStore",
       pattern: "push",
       defaults: new
