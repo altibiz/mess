@@ -6,5 +6,5 @@ namespace Mess.EventStore.Test.Assets;
 public static class EgaugeAssets
 {
   public static readonly XDocument Measurement =
-    Resources.GetXmlEmbeddedResource("assets.Egauge.xml");
+    EmbeddedResources.GetXmlEmbeddedResource("assets.Egauge.xml");
 }

@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Marten.Schema;
 using Marten;
-using Mess.EventStore.Events;
+using Mess.EventStore.Abstractions.Events;
 using Mess.EventStore.Abstractions.Client;
 
 namespace Mess.EventStore.Client;

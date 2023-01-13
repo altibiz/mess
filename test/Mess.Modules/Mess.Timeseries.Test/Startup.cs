@@ -26,7 +26,7 @@ public class Startup
   {
     services.AddScoped<ITenantProvider, TestTenantProvider>();
 
-    services.AddScoped<ITimeseriesConnections, TimeseriesConnection>();
+    services.AddScoped<ITimeseriesConnection, TimeseriesConnection>();
     services.AddSingleton<ITimeseriesClient, TimeseriesClient>();
   }
 

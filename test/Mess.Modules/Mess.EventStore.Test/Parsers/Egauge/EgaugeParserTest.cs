@@ -1,8 +1,8 @@
-using Xunit;
 using Mess.EventStore.Abstractions.Parsers.Egauge;
 using System.Xml.Linq;
 using Mess.EventStore.Test.Assets;
 using Mess.System.Extensions.IDictionary;
+using Mess.System.Extensions.Object;
 
 namespace Mess.EventStore.Test;
 

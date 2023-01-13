@@ -1,3 +1,5 @@
+using Marten;
+
 namespace Mess.EventStore.Abstractions.Client;
 
 public static class EventStoreSessionServiceProviederExtensions

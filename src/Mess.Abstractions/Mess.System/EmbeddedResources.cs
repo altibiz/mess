@@ -4,7 +4,7 @@ using Mess.System.Extensions.Object;
 
 namespace Mess.System;
 
-public static class Resources
+public static class EmbeddedResources
 {
   public static Stream GetEmbeddedResource(
     string name,

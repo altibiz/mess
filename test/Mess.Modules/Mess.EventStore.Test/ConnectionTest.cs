@@ -1,6 +1,4 @@
-using Xunit;
 using Mess.EventStore.Abstractions.Client;
-using Mess.Xunit.Tenants;
 
 namespace Mess.EventStore.Test;
 

@@ -1,5 +1,7 @@
 using Npgsql;
 using Mess.Tenants;
+using Mess.System.Extensions.String;
+using Mess.Xunit.Extensions.Npgsql;
 
 namespace Mess.Xunit.Tenants;
 

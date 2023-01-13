@@ -1,4 +1,5 @@
 using Xunit.Abstractions;
+using Mess.System.Extensions.String;
 
 namespace Mess.Xunit.Extensions.Xunit;
 

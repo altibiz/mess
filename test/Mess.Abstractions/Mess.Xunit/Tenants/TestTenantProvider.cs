@@ -2,6 +2,7 @@ using Xunit.DependencyInjection;
 using Xunit.Abstractions;
 using Mess.Xunit.Extensions.Xunit;
 using Mess.Xunit.Extensions.Npgsql;
+using Mess.System.Extensions.String;
 using Mess.Tenants;
 
 namespace Mess.Xunit.Tenants;

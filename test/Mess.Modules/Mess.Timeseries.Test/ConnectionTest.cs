@@ -1,7 +1,4 @@
-using Xunit;
 using Mess.Timeseries.Abstractions.Client;
-using Mess.Tenants;
-using Mess.Xunit.Tenants;
 
 namespace Mess.Timeseries.Test;
 
