@@ -6,6 +6,5 @@ using OrchardCore.Modules.Manifest;
   Website = "https://altibiz.com",
   Version = "0.0.1",
   Description = "Mess.Timeseries",
-  Category = "Content Management",
-  Dependencies = new[] { "OrchardCore.Tenants" }
+  Category = "Content Management"
 )]
