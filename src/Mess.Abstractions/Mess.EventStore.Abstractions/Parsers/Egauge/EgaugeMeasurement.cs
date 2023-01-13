@@ -1,6 +1,6 @@
 using Mess.System.Extensions.IDictionary;
 
-namespace Mess.EventStore.Parsers.Egauge;
+namespace Mess.EventStore.Abstractions.Parsers.Egauge;
 
 public enum EgaugeRegisterType
 {

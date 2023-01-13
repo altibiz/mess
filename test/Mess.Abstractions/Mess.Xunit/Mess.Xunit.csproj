@@ -1,6 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.System/Mess.System.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Tenants/Mess.Tenants.csproj" />
   </ItemGroup>
 

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Mess.Timeseries.Client;
 
+// TODO: inteface somehow
 public class TimeseriesContext : DbContext
 {
   public DbSet<Measurement> Measurements { get; set; } = default!;
@@ -79,7 +80,7 @@ public class TimeseriesContext : DbContext
   ITenantProvider Tenants { get; }
 }
 
-internal static class TimeseriesContextServiceProviderExtensions
+public static class TimeseriesContextServiceProviderExtensions
 {
   public static async Task<T> WithTimeseriesContextAsync<T>(
     this IServiceProvider services,

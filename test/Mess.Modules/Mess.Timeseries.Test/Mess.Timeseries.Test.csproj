@@ -1,8 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <ItemGroup>
-    <ProjectReference Include="../../src/Mess.Abstractions/Mess.Timeseries.Abstractions/Mess.Timeseries.Abstractions.csproj" />
-    <ProjectReference Include="../../src/Mess.Modules/Mess.Timeseries/Mess.Timeseries.csproj" />
+    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.System/Mess.System.csproj" />
+    <ProjectReference Include="../../Mess.Abstractions/Mess.Xunit/Mess.Xunit.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Timeseries.Abstractions/Mess.Timeseries.Abstractions.csproj" />
+    <ProjectReference Include="../../../src/Mess.Modules/Mess.Timeseries/Mess.Timeseries.csproj" />
   </ItemGroup>
 
 </Project>

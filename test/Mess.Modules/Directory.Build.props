@@ -8,11 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../src/Mess.Abstractions/Mess.System/Mess.System.csproj" />
-    <ProjectReference Include="../Mess.Abstractions/Mess.Xunit/Mess.Xunit.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.1" />
     <PackageReference Include="Moq" Version="4.18.3" />
     <PackageReference Include="xunit" Version="2.4.2" />

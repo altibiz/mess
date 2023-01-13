@@ -1,6 +1,6 @@
 <Project>
 
-  <Import Project="../../Directory.Build.props" />
+  <Import Project="../Directory.Build.props" />
 
   <PropertyGroup>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
@@ -8,11 +8,6 @@
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="../Mess.Abstractions/Mess.System/Mess.System.csproj" />
-    <ProjectReference Include="../Mess.Abstractions/Mess.OrchardCore/Mess.OrchardCore.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,6 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <ItemGroup>
+    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.System/Mess.System.csproj" />
+    <ProjectReference Include="../../Mess.Abstractions/Mess.Xunit/Mess.Xunit.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.EventStore.Abstractions/Mess.EventStore.Abstractions.csproj" />
     <ProjectReference Include="../../../src/Mess.Modules/Mess.EventStore/Mess.EventStore.csproj" />
   </ItemGroup>

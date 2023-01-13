@@ -15,6 +15,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="../Mess.Modules/*/*.csproj" />
+    <ProjectReference Include="../Mess.Themes/*/*.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="OrchardCore.Logging.NLog" Version="$(MessOrchardVersion)" />
     <PackageReference Include="OrchardCore.Application.Cms.Targets" Version="$(MessOrchardVersion)" />
   </ItemGroup>
