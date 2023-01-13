@@ -7,6 +7,8 @@ using OrchardCore.ResourceManagement;
 using OrchardCore.Data.Migration;
 using Mess.Timeseries.Client;
 using Mess.Util.OrchardCore.Tenants;
+using Mess.Timeseries.Controllers;
+using OrchardCore.Mvc.Core.Utilities;
 
 namespace Mess.Timeseries;
 
@@ -51,5 +53,16 @@ public class Startup : StartupBase
     var migrator =
       scope.ServiceProvider.GetRequiredService<ITimeseriesMigrator>();
     migrator.Migrate();
+
+    routes.MapAreaControllerRoute(
+      name: "Timeseries",
+      areaName: "Mess.Timeseries",
+      pattern: "timeseries",
+      defaults: new
+      {
+        controller = typeof(TimeseriesController).ControllerName(),
+        action = nameof(TimeseriesController.Index)
+      }
+    );
   }
 }

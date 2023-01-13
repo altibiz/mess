@@ -65,11 +65,11 @@ public class Startup : StartupBase
     routes.MapAreaControllerRoute(
       name: "Eguage",
       areaName: "Mess.EventStore",
-      pattern: "push/display",
+      pattern: "push",
       defaults: new
       {
         controller = typeof(PushController).ControllerName(),
-        action = nameof(PushController.Display)
+        action = nameof(PushController.Index)
       }
     );
   }

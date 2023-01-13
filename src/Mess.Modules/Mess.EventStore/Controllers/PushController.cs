@@ -9,6 +9,18 @@ namespace Mess.EventStore.Controllers;
 
 public class PushController : Controller
 {
+  [HttpGet]
+  public async Task<IActionResult> Index([FromServices] IEventStoreClient store)
+  {
+    var lastEvent = await store.LastEventAsync<EgaugeMeasured>();
+    if (lastEvent is null)
+    {
+      return View(new EgaugeDisplayViewModel { timestamp = DateTime.UtcNow });
+    }
+
+    return View(new EgaugeDisplayViewModel { timestamp = lastEvent.timestamp });
+  }
+
   [HttpPost]
   [IgnoreAntiforgeryToken]
   public async Task<IActionResult> Egauge(
@@ -38,19 +50,5 @@ public class PushController : Controller
     );
 
     return Ok();
-  }
-
-  [HttpGet]
-  public async Task<IActionResult> Display(
-    [FromServices] IEventStoreClient store
-  )
-  {
-    var lastEvent = await store.LastEventAsync<EgaugeMeasured>();
-    if (lastEvent is null)
-    {
-      return View(new EgaugeDisplayViewModel { timestamp = DateTime.UtcNow });
-    }
-
-    return View(new EgaugeDisplayViewModel { timestamp = lastEvent.timestamp });
   }
 }
