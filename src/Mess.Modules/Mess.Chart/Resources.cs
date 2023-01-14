@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Options;
 using OrchardCore.ResourceManagement;
 
-namespace Mess.Charts;
+namespace Mess.Chart;
 
 public class Resources : IConfigureOptions<ResourceManagementOptions>
 {
@@ -12,10 +12,10 @@ public class Resources : IConfigureOptions<ResourceManagementOptions>
     _manifest = new ResourceManifest();
 
     _manifest
-      .DefineScript("mess-charts")
+      .DefineScript("mess-chart")
       .SetUrl(
-        "~/Mess.Charts/assets/charts/charts.min.js",
-        "~/Mess.Charts/assets/charts/charts.js"
+        "~/Mess.Chart/assets/chart/chart.min.js",
+        "~/Mess.Chart/assets/chart/chart.js"
       );
   }
 

@@ -5,7 +5,7 @@ using Mess.Timeseries.Abstractions.Client;
 using Microsoft.Extensions.Logging;
 using Mess.Tenants;
 
-namespace Mess.EventStore.Events.Projections;
+namespace Mess.EventStore.Timeseries;
 
 public class TimeseriesProjection : IProjection
 {

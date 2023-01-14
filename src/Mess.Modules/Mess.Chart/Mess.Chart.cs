@@ -1,1 +1,1 @@
-namespace Mess.Charts;
+namespace Mess.Chart;

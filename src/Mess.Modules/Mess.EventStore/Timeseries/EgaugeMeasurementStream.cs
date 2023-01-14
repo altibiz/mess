@@ -1,3 +1,3 @@
-namespace Mess.EventStore.Events.Streams;
+namespace Mess.EventStore.Timeseries;
 
 public record class EgaugeMeasurementStream();

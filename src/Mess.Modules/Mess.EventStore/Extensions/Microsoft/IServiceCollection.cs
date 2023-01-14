@@ -2,7 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Marten;
 using Weasel.Core;
 using System.Reflection;
-using Mess.EventStore.Events.Projections;
+using Mess.EventStore.Timeseries;
 
 namespace Mess.EventStore.Extensions.Microsoft;
 
@@ -14,6 +14,7 @@ public static class IServiceCollectionExtensions
     IDictionary<string, IEnumerable<string>> configuration
   )
   {
+    // TODO: extract from here
     var timeseriesProjection = new TimeseriesProjection();
     services.AddSingleton<TimeseriesProjection>(timeseriesProjection);
 
