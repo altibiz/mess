@@ -7,9 +7,7 @@
     "../Mess.{Modules,Themes}/*/Assets"
   ],
   "scripts": {
-    "lint-bundle": "eslint src/**/*.{js,ts}",
-    "lint-styles": "stylelint src/**/*.{css,scss}",
-    "lint": "run-p lint-bundle lint-styles",
+    "lint": "gulp lint",
     "build": "gulp build",
     "watch": "gulp watch"
   },
