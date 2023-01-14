@@ -35,9 +35,12 @@ fi
 mkdir "$BASE_DIR"
 printf "\n"
 
-CSPROJ="$BASE_DIR/Mess.$NAME.csproj"
-PLACEHOLDER="$BASE_DIR/Mess.$NAME.cs"
 NAMESPACE="Mess.$NAME"
+CSPROJ="$BASE_DIR/$NAMESPACE.csproj"
+PLACEHOLDER="$BASE_DIR/$NAMESPACE.cs"
+RESOURCES="$BASE_DIR/Resources.cs"
+STARTUP="$BASE_DIR/Startup.cs"
+MANIFEST="$BASE_DIR/Manifest.cs"
 printf "[Mess] Adding new C# project '%s'\n" "$CSPROJ"
 cat <<END >"$CSPROJ"
 <Project Sdk="Microsoft.NET.Sdk.Razor">
@@ -47,6 +50,59 @@ END
 cat <<END >"$PLACEHOLDER"
 namespace $NAMESPACE;
 END
+cat <<END >"$MANIFEST"
+using OrchardCore.Modules.Manifest;
+
+[assembly: Module(
+  Name = "$NAMESPACE",
+  Author = "Altibiz",
+  Website = "https://altibiz.com",
+  Version = "0.0.1",
+  Description = "$NAMESPACE",
+  Category = "Content Management"
+)]
+END
+cat <<END >"$RESOURCES"
+using Microsoft.Extensions.Options;
+using OrchardCore.ResourceManagement;
+
+namespace $NAMESPACE;
+
+public class Resources : IConfigureOptions<ResourceManagementOptions>
+{
+  private static ResourceManifest _manifest;
+
+  static Resources()
+  {
+    _manifest = new ResourceManifest();
+  }
+
+  public void Configure(ResourceManagementOptions options)
+  {
+    options.ResourceManifests.Add(_manifest);
+  }
+}
+END
+cat <<END >"$STARTUP"
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using OrchardCore.Modules;
+using OrchardCore.ResourceManagement;
+
+namespace $NAMESPACE;
+
+public class Startup : StartupBase
+{
+  public override void ConfigureServices(IServiceCollection services)
+  {
+    services.AddTransient<
+      IConfigureOptions<ResourceManagementOptions>,
+      Resources
+    >();
+  }
+}
+END
+# TODO: better manifest control
 dotnet sln add "$CSPROJ"
 printf "\n"
 
