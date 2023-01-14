@@ -1,6 +1,9 @@
 {
-  "name": "mess-client",
+  "name": "mess-assets",
   "packageManager": "yarn@3.3.0",
+  "workspaces": [
+    "../Mess.{Modules,Themes}/*/Assets"
+  ],
   "scripts": {
     "lint-bundle": "eslint src/**/*.{js,ts}",
     "lint-styles": "stylelint src/**/*.{css,scss}",

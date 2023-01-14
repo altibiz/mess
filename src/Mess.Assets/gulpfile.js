@@ -22,6 +22,7 @@ const concat = require("gulp-concat");
 const merge = require("merge2");
 const gulpIf = require("gulp-if");
 
+const workspaceGlob = "../Mess.{Modules,Themes}/*/Assets";
 const styleGlob = "src/**/*.{css,scss}";
 const bundleGlob = "src/**/*.{js,ts}";
 const isDev = process.env.NODE_ENV === "development";
@@ -114,3 +115,10 @@ gulp.task(
     gulp.parallel("browserSync", "watchBundle", "watchStyles"),
   ),
 );
+
+function buildAssetGroups() {
+  const workspaces = glob.sync(workspaceGlob);
+  for (const workspace of workspaces) {
+    const bundles = glob.sync(`${workspace}/*`);
+  }
+}
