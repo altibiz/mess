@@ -1,9 +1,13 @@
 {
   "name": "@mess/event-store",
+  "dependencies": {
+    "lodash": "^4.17.21"
+  },
   "devDependencies": {
     "@mess/eslint-config-assets": "workspace:*",
     "@mess/stylelint-config-assets": "workspace:*",
     "@mess/typescript-config-assets": "workspace:*",
+    "@types/lodash": "^4.14.191",
     "@typescript-eslint/eslint-plugin": "^5.46.1",
     "@typescript-eslint/parser": "^5.46.1",
     "eslint": "^8.29.0",

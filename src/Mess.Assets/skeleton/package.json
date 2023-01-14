@@ -1,5 +1,6 @@
 {
   "name": "@mess/name-of-module-or-theme",
+  "dependencies": {},
   "devDependencies": {
     "@mess/eslint-config-assets": "workspace:*",
     "@mess/stylelint-config-assets": "workspace:*",

@@ -79,7 +79,7 @@ gulp.task("lintStyles", () =>
 );
 gulp.task("lint", gulp.parallel("lintScripts", "lintStyles"));
 
-gulp.task("bundleScripts", () =>
+gulp.task("bundleScripts", (done) => {
   bundles().forEach((bundle) => {
     const buildPipeline = ({ minified }) => {
       let pipeline = browserify({
@@ -108,14 +108,16 @@ gulp.task("bundleScripts", () =>
 
     buildPipeline({ minified: true });
     buildPipeline({ minified: false });
-  }),
-);
+  });
+
+  done();
+});
 gulp.task("watchScripts", () =>
   gulp.watch(bundleGlob, gulp.series("lintScripts", "bundleScripts")),
 );
 
 // FIX: sourcemaps
-gulp.task("bundleStyles", () =>
+gulp.task("bundleStyles", (done) => {
   bundles().forEach((bundle) => {
     const buildPipeline = ({ minified }) => {
       let pipeline = merge(
@@ -137,8 +139,9 @@ gulp.task("bundleStyles", () =>
 
     buildPipeline({ minified: true });
     buildPipeline({ minified: false });
-  }),
-);
+  });
+  done();
+});
 gulp.task("watchStyles", () =>
   gulp.watch(styleGlob, gulp.series("lintStyles", "bundleStyles")),
 );
