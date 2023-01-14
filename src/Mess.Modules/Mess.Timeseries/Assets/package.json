@@ -1,5 +1,6 @@
 {
   "name": "@mess/timeseries",
+  "dependencies": {},
   "devDependencies": {
     "@mess/eslint-config-assets": "workspace:*",
     "@mess/stylelint-config-assets": "workspace:*",
