@@ -1,3 +1,9 @@
 {
-  "extends": "@mess/typescript-config-assets"
+  "extends": "../../../Mess.Assets/tsconfig.json",
+  "files": [
+    "src/**/*.ts"
+  ],
+  "compilerOptions": {
+    "rootDir": "src"
+  }
 }
