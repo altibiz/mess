@@ -15,7 +15,7 @@
     "build": "yarn workspaces foreach --parallel run build",
     "watch": "yarn workspaces foreach --parallel run watch"
   },
-  "packageManager": "yarn@3.3.0",
+  "packageManager": "yarn@3.3.1",
   "workspaces": [
     "src/Mess.Assets"
   ],
