@@ -26,16 +26,17 @@ const package = require("./package.json");
 const path = require("path");
 
 const bundles = () =>
-  package.workspaces.flatMap(
-    workspaceGlob => glob
-      .sync(workspaceGlob)
-      .flatMap(workspace => 
-        glob.sync(`${workspace}/src/*`).map(bundle => ({
-            input: bundle,
-            output: `${path.parse(workspace).dir}/wwwroot/assets/${path.parse(bundle).base}`,
-            name: path.parse(bundle).base,
-        })),
-      ));
+  package.workspaces.flatMap((workspaceGlob) =>
+    glob.sync(workspaceGlob).flatMap((workspace) =>
+      glob.sync(`${workspace}/src/*`).map((bundle) => ({
+        input: bundle,
+        output: `${path.parse(workspace).dir}/wwwroot/assets/${
+          path.parse(bundle).base
+        }`,
+        name: path.parse(bundle).base,
+      })),
+    ),
+  );
 
 const styleGlob = "../Mess.{Modules,Themes}/*/Assets/src/**/*.{css,scss}";
 const scriptGlob = "../Mess.{Modules,Themes}/*/Assets/src/**/*.{js,ts}";
@@ -79,7 +80,7 @@ gulp.task("lintStyles", () =>
 gulp.task("lint", gulp.parallel("lintScripts", "lintStyles"));
 
 gulp.task("bundleScripts", () =>
-  bundles().forEach(bundle => {
+  bundles().forEach((bundle) => {
     const buildPipeline = ({ minified }) => {
       let pipeline = browserify({
         basedir: ".",
@@ -93,7 +94,7 @@ gulp.task("bundleScripts", () =>
         .on("error", fancyLog)
         .pipe(source(minified ? `${bundle.name}.min.js` : `${bundle.name}.js`))
         .pipe(buffer())
-        .pipe(gulpIf(isDev, sourcemaps.init()))
+        .pipe(gulpIf(isDev, sourcemaps.init()));
 
       if (minified) {
         pipeline = pipeline.pipe(terser());
@@ -102,12 +103,12 @@ gulp.task("bundleScripts", () =>
       pipeline
         .pipe(gulpIf(isDev, sourcemaps.write("./")))
         .pipe(gulp.dest(bundle.output))
-        .pipe(gulpIf(browserSync.active, browserSync.stream()))
-    }
+        .pipe(gulpIf(browserSync.active, browserSync.stream()));
+    };
 
     buildPipeline({ minified: true });
     buildPipeline({ minified: false });
-  })
+  }),
 );
 gulp.task("watchScripts", () =>
   gulp.watch(bundleGlob, gulp.series("lintScripts", "bundleScripts")),
@@ -115,34 +116,36 @@ gulp.task("watchScripts", () =>
 
 // FIX: sourcemaps
 gulp.task("bundleStyles", () =>
-  bundles().forEach(bundle => {
-    const buildPipeline = ({minified}) => {
+  bundles().forEach((bundle) => {
+    const buildPipeline = ({ minified }) => {
       let pipeline = merge(
-        gulp.src(`${bundle.input}/*.css`).pipe(gulpIf(isDev, sourcemaps.init())),
+        gulp
+          .src(`${bundle.input}/*.css`)
+          .pipe(gulpIf(isDev, sourcemaps.init())),
         gulp.src(`${bundle.input}/*.scss`).pipe(sass().on("error", fancyLog)),
-      )
-        .pipe(concat(minified ? `${bundle.name}.min.css` : `${bundle.name}.css`));
+      ).pipe(
+        concat(minified ? `${bundle.name}.min.css` : `${bundle.name}.css`),
+      );
       if (minified) {
-        pipeline = pipeline
-        .pipe(postcss([autoperfix, minify]))
+        pipeline = pipeline.pipe(postcss([autoperfix, minify]));
       }
       pipeline
-      .pipe(gulpIf(isDev, sourcemaps.write("./")))
-      .pipe(gulp.dest(bundle.output))
-      .pipe(gulpIf(browserSync.active, browserSync.stream()));
+        .pipe(gulpIf(isDev, sourcemaps.write("./")))
+        .pipe(gulp.dest(bundle.output))
+        .pipe(gulpIf(browserSync.active, browserSync.stream()));
+    };
 
-    }
-
-    buildPipeline({minified: true});
-    buildPipeline({minified: false});
-  }));
+    buildPipeline({ minified: true });
+    buildPipeline({ minified: false });
+  }),
+);
 gulp.task("watchStyles", () =>
   gulp.watch(styleGlob, gulp.series("lintStyles", "bundleStyles")),
 );
 
 gulp.task(
   "build",
-  gulp.series("lint", gulp.parallel("bundleScripts", "bundleStyles"))
+  gulp.series("lint", gulp.parallel("bundleScripts", "bundleStyles")),
 );
 gulp.task(
   "watch",

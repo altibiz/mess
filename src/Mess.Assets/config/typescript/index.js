@@ -1,1 +1,1 @@
-module.exports = require("../../tsconfig.json")
+module.exports = require("../../tsconfig.json");
