@@ -30,6 +30,7 @@ public class ChartPartSettingsDisplayDriver
       .Location("Content:20");
   }
 
+#pragma warning disable CS1998 // async method lacks await
   public override async Task<IDisplayResult> UpdateAsync(
     ContentTypePartDefinition contentTypePartDefinition,
     UpdateTypePartEditorContext context
@@ -48,4 +49,5 @@ public class ChartPartSettingsDisplayDriver
 
     return Edit(contentTypePartDefinition, context.Updater);
   }
+#pragma warning restore CS1998 // async method lacks await
 }

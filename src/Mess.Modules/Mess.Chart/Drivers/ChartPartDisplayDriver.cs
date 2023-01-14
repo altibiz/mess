@@ -50,6 +50,7 @@ public class ChartPartDisplayDriver : ContentPartDisplayDriver<ChartPart>
     );
   }
 
+#pragma warning disable CS1998 // async method lacks await
   public override async Task<IDisplayResult> UpdateAsync(
     ChartPart model,
     IUpdateModel updater,
@@ -124,4 +125,5 @@ public class ChartPartDisplayDriver : ContentPartDisplayDriver<ChartPart>
     //   }
     // );
   }
+#pragma warning restore CS1998 // async method lacks await
 }

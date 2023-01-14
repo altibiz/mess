@@ -4,7 +4,6 @@ using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.ContentManagement.Models;
 using Mess.Chart.Models;
 using Mess.Chart.Settings;
-using Mess.Chart.ViewModels;
 
 namespace Mess.Chart.Handlers;
 
@@ -17,6 +16,7 @@ public class ChartPartHandler : ContentPartHandler<ChartPart>
     _contentDefinitionManager = contentDefinitionManager;
   }
 
+#pragma warning disable CS1998 // async method lacks await
   public override Task GetContentItemAspectAsync(
     ContentItemAspectContext context,
     ChartPart part
@@ -76,4 +76,5 @@ public class ChartPartHandler : ContentPartHandler<ChartPart>
       }
     });
   }
+#pragma warning restore CS1998 // async method lacks await
 }

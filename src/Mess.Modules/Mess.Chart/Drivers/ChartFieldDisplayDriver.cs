@@ -20,6 +20,7 @@ public class ChartFieldDisplayDriver : ContentFieldDisplayDriver<ChartField>
     S = localizer;
   }
 
+#pragma warning disable CS1998 // async method lacks await
   public override IDisplayResult Display(
     ChartField field,
     BuildFieldDisplayContext context
@@ -122,4 +123,5 @@ public class ChartFieldDisplayDriver : ContentFieldDisplayDriver<ChartField>
 
     return Edit(field, context);
   }
+#pragma warning restore CS1998 // async method lacks await
 }
