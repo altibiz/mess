@@ -1,5 +1,5 @@
 {
-  "name": "@mess/event-store",
+  "name": "@mess/timeseries",
   "devDependencies": {
     "@mess/eslint-config-assets": "workspace:*",
     "@mess/stylelint-config-assets": "workspace:*",
