@@ -9,7 +9,7 @@
   "private": true,
   "scripts": {
     "lint-workspaces": "yarn workspaces foreach --parallel run lint",
-    "lint-format": "prettier --check --ignore-path .gitignore . '!**/wwwroot/' '!.yarn/'",
+    "lint-format": "prettier --check --ignore-path .gitignore . '!**/wwwroot/**/*.*' '!.yarn/**/*.*'",
     "lint-children": "run-p lint-workspaces lint-format",
     "format": "prettier --write --ignore-path .gitignore . '!**/wwwroot/**/*.*' '!.yarn/**/*.*'",
     "build": "yarn workspaces foreach --parallel run build",
