@@ -1,0 +1,7 @@
+{
+  "extends": "../../../Mess.Assets/tsconfig.json",
+  "files": ["src/**/*.ts"],
+  "compilerOptions": {
+    "rootDir": "src"
+  }
+}
