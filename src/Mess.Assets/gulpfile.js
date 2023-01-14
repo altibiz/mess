@@ -26,7 +26,7 @@ const path = require("path");
 
 const isDev = process.env.NODE_ENV === "Development";
 
-const scriptFileExtensions = "js,ts"
+const scriptFileExtensions = "js,ts";
 const scriptGlob = `../Mess.{Modules,Themes}/*/Assets/src/**/*.{${scriptFileExtensions}}`;
 const styleFileExtensions = "css,scss";
 const styleGlob = `../Mess.{Modules,Themes}/*/Assets/src/**/*.{${styleFileExtensions}}`;
@@ -72,19 +72,14 @@ const buildScriptBundlePipeline = (bundle) => {
 
   buildPipeline({ minified: true });
   buildPipeline({ minified: false });
-
-}
+};
 
 const buildStyleBundlePipeline = (bundle) => {
   const buildPipeline = ({ minified }) => {
     let pipeline = merge(
-      gulp
-        .src(`${bundle.input}/*.css`)
-        .pipe(gulpIf(isDev, sourcemaps.init())),
+      gulp.src(`${bundle.input}/*.css`).pipe(gulpIf(isDev, sourcemaps.init())),
       gulp.src(`${bundle.input}/*.scss`).pipe(sass().on("error", fancyLog)),
-    ).pipe(
-      concat(minified ? `${bundle.name}.min.css` : `${bundle.name}.css`),
-    );
+    ).pipe(concat(minified ? `${bundle.name}.min.css` : `${bundle.name}.css`));
     if (minified) {
       pipeline = pipeline.pipe(postcss([autoperfix, minify]));
     }
@@ -96,28 +91,24 @@ const buildStyleBundlePipeline = (bundle) => {
 
   buildPipeline({ minified: true });
   buildPipeline({ minified: false });
-}
+};
 
 const buildScriptLintPipeline = (bundle) => {
-
   gulp
     .src(`${bundle.input}/*.{${scriptFileExtensions}}`)
     .pipe(eslint())
     .pipe(eslint.format())
     .pipe(eslint.failAfterError());
-}
+};
 
 const buildStyleLintPipeline = (bundle) => {
-
-  gulp
-    .src(`${bundle.input}/*.{${styleFileExtensions}}`)
-  .pipe(
+  gulp.src(`${bundle.input}/*.{${styleFileExtensions}}`).pipe(
     stylelint({
       failAfterError: true,
       reporters: [{ formatter: "string", console: true }],
     }),
   );
-}
+};
 
 gulp.task("browserSync", () =>
   browserSync.init({
@@ -136,8 +127,7 @@ gulp.task("lintScripts", () =>
     .pipe(eslint.failAfterError()),
 );
 gulp.task("lintStyles", () =>
-  gulp.src(styleGlob)
-  .pipe(
+  gulp.src(styleGlob).pipe(
     stylelint({
       failAfterError: true,
       reporters: [{ formatter: "string", console: true }],
@@ -151,17 +141,23 @@ gulp.task("bundleScripts", (done) => {
   done();
 });
 gulp.task("watchScripts", (done) => {
-  bundles().forEach(bundle => 
-    gulp.watch(`${bundle.input}/*.{${scriptFileExtensions}}`, gulp.series((done) => {
-      buildScriptLintPipeline(bundle);
+  bundles().forEach((bundle) =>
+    gulp.watch(
+      `${bundle.input}/*.{${scriptFileExtensions}}`,
+      gulp.series(
+        (done) => {
+          buildScriptLintPipeline(bundle);
 
-      done();
-    }, (done) => {
-        buildScriptBundlePipeline(bundle);
+          done();
+        },
+        (done) => {
+          buildScriptBundlePipeline(bundle);
 
-        done();
-      }))
-  )
+          done();
+        },
+      ),
+    ),
+  );
 
   done();
 });
@@ -172,17 +168,23 @@ gulp.task("bundleStyles", (done) => {
   done();
 });
 gulp.task("watchStyles", (done) => {
-  bundles().forEach(bundle => 
-    gulp.watch(`${bundle.input}/*.{${styleFileExtensions}}`, gulp.series((done) => {
-      buildStyleLintPipeline(bundle);
+  bundles().forEach((bundle) =>
+    gulp.watch(
+      `${bundle.input}/*.{${styleFileExtensions}}`,
+      gulp.series(
+        (done) => {
+          buildStyleLintPipeline(bundle);
 
-      done();
-    }, (done) => {
-        buildStyleBundlePipeline(bundle);
+          done();
+        },
+        (done) => {
+          buildStyleBundlePipeline(bundle);
 
-        done();
-      }))
-  )
+          done();
+        },
+      ),
+    ),
+  );
 
   done();
 });
