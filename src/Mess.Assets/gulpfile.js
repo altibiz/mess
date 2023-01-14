@@ -32,7 +32,7 @@ const bundles = () =>
       .flatMap(workspace => 
         glob.sync(`${workspace}/src/*`).map(bundle => ({
             input: bundle,
-            output: `${path.parse(workspace).dir}/wwwroot/`,
+            output: `${path.parse(workspace).dir}/wwwroot/assets/${path.parse(bundle).base}`,
             name: path.parse(bundle).base,
         })),
       ));
