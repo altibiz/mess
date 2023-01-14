@@ -25,6 +25,7 @@
     "@shopify/prettier-plugin-liquid": "^1.0.2",
     "husky": "^8.0.2",
     "npm-run-all": "^4.1.5",
-    "prettier": "^2.8.1"
+    "prettier": "^2.8.1",
+    "typescript": "^4.9.4"
   }
 }
