@@ -38,9 +38,10 @@ printf "\n"
 NAMESPACE="Mess.$NAME"
 CSPROJ="$BASE_DIR/$NAMESPACE.csproj"
 PLACEHOLDER="$BASE_DIR/$NAMESPACE.cs"
-RESOURCES="$BASE_DIR/Resources.cs"
-STARTUP="$BASE_DIR/Startup.cs"
 MANIFEST="$BASE_DIR/Manifest.cs"
+STARTUP="$BASE_DIR/Startup.cs"
+RESOURCES="$BASE_DIR/Resources.cs"
+MIGRATIONS="$BASE_DIR/Migrations.cs"
 printf "[Mess] Adding new C# project '%s'\n" "$CSPROJ"
 cat <<END >"$CSPROJ"
 <Project Sdk="Microsoft.NET.Sdk.Razor">
@@ -61,6 +62,26 @@ using OrchardCore.Modules.Manifest;
   Description = "$NAMESPACE",
   Category = "Content Management"
 )]
+END
+cat <<END >"$STARTUP"
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using OrchardCore.Modules;
+using OrchardCore.ResourceManagement;
+
+namespace $NAMESPACE;
+
+public class Startup : StartupBase
+{
+  public override void ConfigureServices(IServiceCollection services)
+  {
+    services.AddDataMigration<Migrations>();
+    services.AddTransient<
+      IConfigureOptions<ResourceManagementOptions>,
+      Resources
+    >();
+  }
+}
 END
 cat <<END >"$RESOURCES"
 using Microsoft.Extensions.Options;
@@ -83,23 +104,28 @@ public class Resources : IConfigureOptions<ResourceManagementOptions>
   }
 }
 END
-cat <<END >"$STARTUP"
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using OrchardCore.Modules;
-using OrchardCore.ResourceManagement;
+cat <<END >"$MIGRATIONS"
+using OrchardCore.ContentManagement.Metadata;
+using OrchardCore.Data.Migration;
+using OrchardCore.Recipes.Services;
 
 namespace $NAMESPACE;
 
-public class Startup : StartupBase
+public class Migrations : DataMigration
 {
-  public override void ConfigureServices(IServiceCollection services)
+  public int Create()
   {
-    services.AddTransient<
-      IConfigureOptions<ResourceManagementOptions>,
-      Resources
-    >();
+    return 1;
   }
+
+  public Migrations(IContentDefinitionManager content, IRecipeMigrator recipe)
+  {
+    Content = content;
+    Recipe = recipe;
+  }
+
+  private IContentDefinitionManager Content { get; }
+  private IRecipeMigrator Recipe { get; }
 }
 END
 # TODO: better manifest control

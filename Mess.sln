@@ -41,7 +41,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.EventStore.Test", "tes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Timeseries.Test", "test\Mess.Modules\Mess.Timeseries.Test\Mess.Timeseries.Test.csproj", "{F8F8FB78-938D-4704-A82C-1559F57BA5B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Charts", "src\Mess.Modules\Mess.Charts\Mess.Charts.csproj", "{F1598F81-70FE-4F21-9216-65F6B56EDC81}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Chart", "src\Mess.Modules\Mess.Chart\Mess.Chart.csproj", "{F1598F81-70FE-4F21-9216-65F6B56EDC81}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

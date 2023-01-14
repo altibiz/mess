@@ -1,5 +1,5 @@
 {
-  "name": "@mess/charts",
+  "name": "@mess/chart",
   "devDependencies": {
     "@mess/eslint-config-assets": "workspace:*",
     "@mess/stylelint-config-assets": "workspace:*",

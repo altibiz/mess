@@ -10,6 +10,13 @@ public class Resources : IConfigureOptions<ResourceManagementOptions>
   static Resources()
   {
     _manifest = new ResourceManifest();
+
+    _manifest
+      .DefineScript("mess-charts")
+      .SetUrl(
+        "~/Mess.Charts/assets/charts/charts.min.js",
+        "~/Mess.Charts/assets/charts/charts.js"
+      );
   }
 
   public void Configure(ResourceManagementOptions options)
