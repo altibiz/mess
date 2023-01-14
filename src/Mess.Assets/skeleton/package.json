@@ -1,0 +1,9 @@
+{
+  "name": "@mess/module-or-theme-name",
+  "devDependencies": {
+    "@mess/assets": "workspace:*",
+    "@mess/eslint-assets-config": "workspace:*",
+    "@mess/stylelint-assets-config": "workspace:*",
+    "@mess/typescript-assets-config": "workspace:*"
+  }
+}

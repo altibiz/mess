@@ -40,6 +40,8 @@ const bundles = () =>
 const styleGlob = "../Mess.{Modules,Themes}/*/Assets/src/**/*.{css,scss}";
 const scriptGlob = "../Mess.{Modules,Themes}/*/Assets/src/**/*.{js,ts}";
 
+const isDev = process.env.NODE_ENV === "Development";
+
 Object.defineProperty(Object.prototype, "pipeToOutputDirs", {
   value: function () {
     let pipeline = this;
@@ -77,44 +79,63 @@ gulp.task("lintStyles", () =>
 gulp.task("lint", gulp.parallel("lintScripts", "lintStyles"));
 
 gulp.task("bundleScripts", () =>
-  bundles().forEach(bundle =>
-    browserify({
-      basedir: ".",
-      debug: isDev,
-      entries: glob.sync(`${bundle.input}/**/*.{js,ts}`),
-      cache: {},
-      packageCache: {},
-    })
-      .plugin(tsify)
-      .bundle()
-      .on("error", fancyLog)
-      .pipe(source(`${bundle.name}.js`))
-      .pipe(buffer())
-      .pipe(gulpIf(isDev, sourcemaps.init()))
-      .pipe(terser())
-      .pipe(gulpIf(isDev, sourcemaps.write("./")))
-      .pipe(gulp.dest(bundle.output))
-      .pipe(gulpIf(browserSync.active, browserSync.stream()))
-  )
+  bundles().forEach(bundle => {
+    const buildPipeline = ({ minified }) => {
+      let pipeline = browserify({
+        basedir: ".",
+        debug: isDev,
+        entries: glob.sync(`${bundle.input}/**/*.{js,ts}`),
+        cache: {},
+        packageCache: {},
+      })
+        .plugin(tsify)
+        .bundle()
+        .on("error", fancyLog)
+        .pipe(source(minified ? `${bundle.name}.min.js` : `${bundle.name}.js`))
+        .pipe(buffer())
+        .pipe(gulpIf(isDev, sourcemaps.init()))
+
+      if (minified) {
+        pipeline = pipeline.pipe(terser());
+      }
+
+      pipeline
+        .pipe(gulpIf(isDev, sourcemaps.write("./")))
+        .pipe(gulp.dest(bundle.output))
+        .pipe(gulpIf(browserSync.active, browserSync.stream()))
+    }
+
+    buildPipeline({ minified: true });
+    buildPipeline({ minified: false });
+  })
 );
 gulp.task("watchScripts", () =>
   gulp.watch(bundleGlob, gulp.series("lintScripts", "bundleScripts")),
 );
 
-// NOTE: fix sourcemaps
+// FIX: sourcemaps
 gulp.task("bundleStyles", () =>
-  bundles().forEach(bundle =>
-    merge(
-      gulp.src(`${bundle.input}/*.css`).pipe(gulpIf(isDev, sourcemaps.init())),
-      gulp.src(`${bundle.input}/*.scss`).pipe(sass().on("error", fancyLog)),
-    )
-      .pipe(concat(`${bundle.name}.css`))
-      .pipe(postcss([autoperfix, minify]))
+  bundles().forEach(bundle => {
+    const buildPipeline = ({minified}) => {
+      let pipeline = merge(
+        gulp.src(`${bundle.input}/*.css`).pipe(gulpIf(isDev, sourcemaps.init())),
+        gulp.src(`${bundle.input}/*.scss`).pipe(sass().on("error", fancyLog)),
+      )
+        .pipe(concat(minified ? `${bundle.name}.min.css` : `${bundle.name}.css`));
+      if (minified) {
+        pipeline = pipeline
+        .pipe(postcss([autoperfix, minify]))
+      }
+      pipeline
       .pipe(gulpIf(isDev, sourcemaps.write("./")))
       .pipe(gulp.dest(bundle.output))
-      .pipe(gulpIf(browserSync.active, browserSync.stream()))
-  )
-);
+      .pipe(gulpIf(browserSync.active, browserSync.stream()));
+
+    }
+
+    buildPipeline({minified: true});
+    buildPipeline({minified: false});
+  }));
 gulp.task("watchStyles", () =>
   gulp.watch(styleGlob, gulp.series("lintStyles", "bundleStyles")),
 );

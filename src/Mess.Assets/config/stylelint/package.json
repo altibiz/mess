@@ -1,0 +1,9 @@
+{
+  "name": "@mess/stylelint-config-assets",
+  "main": "index.js",
+  "peerDependencies": {
+    "sass": "^1.56.2",
+    "stylelint": "^14.16.0",
+    "stylelint-config-standard-scss": "^6.1.0"
+  }
+}

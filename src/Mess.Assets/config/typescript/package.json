@@ -1,0 +1,7 @@
+{
+  "name": "@mess/typescript-config-assets",
+  "main": "index.js",
+  "peerDependencies": {
+    "typescript": "^4.9.4"
+  }
+}

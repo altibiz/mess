@@ -1,0 +1,3 @@
+{
+  "extends": "@mess/eslint-assets-config"
+}
