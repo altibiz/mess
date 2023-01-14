@@ -1,5 +1,5 @@
 {
-  "name": "mess-assets",
+  "name": "@mess/assets",
   "packageManager": "yarn@3.3.0",
   "workspaces": [
     "../Mess.{Modules,Themes}/*/Assets"

@@ -1,5 +1,5 @@
 {
-  "name": "mess",
+  "name": "@mess/mess",
   "version": "0.0.1",
   "description": "Measurement Event Store (Something)",
   "main": "index.js",

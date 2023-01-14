@@ -22,14 +22,23 @@ const concat = require("gulp-concat");
 const merge = require("merge2");
 const gulpIf = require("gulp-if");
 
-const workspaceGlob = "../Mess.{Modules,Themes}/*/Assets";
-const styleGlob = "src/**/*.{css,scss}";
-const bundleGlob = "src/**/*.{js,ts}";
-const isDev = process.env.NODE_ENV === "development";
-const outputDirs = process.env.MESS_CLIENT_OUTPUT_DIRS
-  ? process.env.MESS_CLIENT_OUTPUT_DIRS.split(",")
-  : [];
-console.log(outputDirs);
+const package = require("./package.json");
+const path = require("path");
+
+const bundles = () =>
+  package.workspaces.flatMap(
+    workspaceGlob => glob
+      .sync(workspaceGlob)
+      .flatMap(workspace => 
+        glob.sync(`${workspace}/src/*`).map(bundle => ({
+            input: bundle,
+            output: `${path.parse(workspace).dir}/wwwroot/`,
+            name: path.parse(bundle).base,
+        })),
+      ));
+
+const styleGlob = "../Mess.{Modules,Themes}/*/Assets/src/**/*.{css,scss}";
+const scriptGlob = "../Mess.{Modules,Themes}/*/Assets/src/**/*.{js,ts}";
 
 Object.defineProperty(Object.prototype, "pipeToOutputDirs", {
   value: function () {
@@ -50,9 +59,9 @@ gulp.task("browserSync", () =>
   }),
 );
 
-gulp.task("lintBundle", () =>
+gulp.task("lintScripts", () =>
   gulp
-    .src(bundleGlob)
+    .src(scriptGlob)
     .pipe(eslint())
     .pipe(eslint.format())
     .pipe(eslint.failAfterError()),
@@ -65,60 +74,59 @@ gulp.task("lintStyles", () =>
     }),
   ),
 );
-gulp.task("lint", gulp.parallel("lintBundle", "lintStyles"));
+gulp.task("lint", gulp.parallel("lintScripts", "lintStyles"));
 
-gulp.task("bundle", () =>
-  browserify({
-    basedir: ".",
-    debug: isDev,
-    entries: glob.sync(bundleGlob),
-    cache: {},
-    packageCache: {},
-  })
-    .plugin(tsify)
-    .bundle()
-    .on("error", fancyLog)
-    .pipe(source("bundle.js"))
-    .pipe(buffer())
-    .pipe(gulpIf(isDev, sourcemaps.init()))
-    .pipe(terser())
-    .pipe(gulpIf(isDev, sourcemaps.write("./")))
-    .pipeToOutputDirs()
-    .pipe(gulpIf(browserSync.active, browserSync.stream())),
+gulp.task("bundleScripts", () =>
+  bundles().forEach(bundle =>
+    browserify({
+      basedir: ".",
+      debug: isDev,
+      entries: glob.sync(`${bundle.input}/**/*.{js,ts}`),
+      cache: {},
+      packageCache: {},
+    })
+      .plugin(tsify)
+      .bundle()
+      .on("error", fancyLog)
+      .pipe(source(`${bundle.name}.js`))
+      .pipe(buffer())
+      .pipe(gulpIf(isDev, sourcemaps.init()))
+      .pipe(terser())
+      .pipe(gulpIf(isDev, sourcemaps.write("./")))
+      .pipe(gulp.dest(bundle.output))
+      .pipe(gulpIf(browserSync.active, browserSync.stream()))
+  )
 );
-gulp.task("watchBundle", () =>
-  gulp.watch(bundleGlob, gulp.series("lintBundle", "bundle")),
+gulp.task("watchScripts", () =>
+  gulp.watch(bundleGlob, gulp.series("lintScripts", "bundleScripts")),
 );
 
 // NOTE: fix sourcemaps
-gulp.task("styles", () =>
-  merge(
-    gulp.src("src/**/*.css").pipe(gulpIf(isDev, sourcemaps.init())),
-    gulp.src("src/**/*.scss").pipe(sass().on("error", fancyLog)),
+gulp.task("bundleStyles", () =>
+  bundles().forEach(bundle =>
+    merge(
+      gulp.src(`${bundle.input}/*.css`).pipe(gulpIf(isDev, sourcemaps.init())),
+      gulp.src(`${bundle.input}/*.scss`).pipe(sass().on("error", fancyLog)),
+    )
+      .pipe(concat(`${bundle.name}.css`))
+      .pipe(postcss([autoperfix, minify]))
+      .pipe(gulpIf(isDev, sourcemaps.write("./")))
+      .pipe(gulp.dest(bundle.output))
+      .pipe(gulpIf(browserSync.active, browserSync.stream()))
   )
-    .pipe(concat("bundle.css"))
-    .pipe(postcss([autoperfix, minify]))
-    .pipe(gulpIf(isDev, sourcemaps.write("./")))
-    .pipeToOutputDirs()
-    .pipe(gulpIf(browserSync.active, browserSync.stream())),
 );
 gulp.task("watchStyles", () =>
-  gulp.watch(styleGlob, gulp.series("lintStyles", "styles")),
+  gulp.watch(styleGlob, gulp.series("lintStyles", "bundleStyles")),
 );
 
-gulp.task("build", gulp.series("lint", gulp.parallel("bundle", "styles")));
+gulp.task(
+  "build",
+  gulp.series("lint", gulp.parallel("bundleScripts", "bundleStyles"))
+);
 gulp.task(
   "watch",
   gulp.series(
-    "lint",
-    gulp.parallel("bundle", "styles"),
-    gulp.parallel("browserSync", "watchBundle", "watchStyles"),
+    "build",
+    gulp.parallel("browserSync", "watchScripts", "watchStyles"),
   ),
 );
-
-function buildAssetGroups() {
-  const workspaces = glob.sync(workspaceGlob);
-  for (const workspace of workspaces) {
-    const bundles = glob.sync(`${workspace}/*`);
-  }
-}

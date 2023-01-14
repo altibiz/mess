@@ -382,6 +382,61 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@mess/assets@workspace:src/Mess.Assets":
+  version: 0.0.0-use.local
+  resolution: "@mess/assets@workspace:src/Mess.Assets"
+  dependencies:
+    "@typescript-eslint/eslint-plugin": ^5.46.1
+    "@typescript-eslint/parser": ^5.46.1
+    autoprefixer: ^10.4.13
+    browser-sync: ^2.27.10
+    browserify: ^17.0.0
+    cssnano: ^5.1.14
+    eslint: ^8.29.0
+    fancy-log: ^2.0.0
+    glob: ^8.0.3
+    gulp: ^4.0.2
+    gulp-concat: ^2.6.1
+    gulp-eslint: ^6.0.0
+    gulp-if: ^3.0.0
+    gulp-postcss: ^9.0.1
+    gulp-sass: ^5.1.0
+    gulp-sourcemaps: ^3.0.0
+    gulp-stylelint: ^13.0.0
+    gulp-terser: ^2.1.0
+    gulp-typescript: ^6.0.0-alpha.1
+    merge2: ^1.4.1
+    npm-run-all: ^4.1.5
+    postcss: ^8.4.20
+    sass: ^1.56.2
+    stylelint: ^14.16.0
+    stylelint-config-standard-scss: ^6.1.0
+    tsify: ^5.0.4
+    typescript: ^4.9.4
+    vinyl-buffer: ^1.0.1
+    vinyl-source-stream: ^2.0.0
+  languageName: unknown
+  linkType: soft
+
+"@mess/event-store@workspace:src/Mess.Modules/Mess.EventStore/Assets":
+  version: 0.0.0-use.local
+  resolution: "@mess/event-store@workspace:src/Mess.Modules/Mess.EventStore/Assets"
+  languageName: unknown
+  linkType: soft
+
+"@mess/mess@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "@mess/mess@workspace:."
+  dependencies:
+    "@commitlint/cli": ^17.3.0
+    "@commitlint/config-conventional": ^17.3.0
+    "@shopify/prettier-plugin-liquid": ^1.0.2
+    husky: ^8.0.2
+    npm-run-all: ^4.1.5
+    prettier: ^2.8.1
+  languageName: unknown
+  linkType: soft
+
 "@nodelib/fs.scandir@npm:2.1.5":
   version: 2.1.5
   resolution: "@nodelib/fs.scandir@npm:2.1.5"
@@ -6158,55 +6213,6 @@ __metadata:
   checksum: 7268db63ed5169466540b6fb947aec313200bcf6d40c5ab722c22e242f651994619bcd85601602972d3c85bd2cc45a358a4c61937e9f11a061919a1da569b0c2
   languageName: node
   linkType: hard
-
-"mess-client@workspace:src/Mess.Workspaces/Mess.Client":
-  version: 0.0.0-use.local
-  resolution: "mess-client@workspace:src/Mess.Workspaces/Mess.Client"
-  dependencies:
-    "@typescript-eslint/eslint-plugin": ^5.46.1
-    "@typescript-eslint/parser": ^5.46.1
-    autoprefixer: ^10.4.13
-    browser-sync: ^2.27.10
-    browserify: ^17.0.0
-    cssnano: ^5.1.14
-    eslint: ^8.29.0
-    fancy-log: ^2.0.0
-    glob: ^8.0.3
-    gulp: ^4.0.2
-    gulp-concat: ^2.6.1
-    gulp-eslint: ^6.0.0
-    gulp-if: ^3.0.0
-    gulp-postcss: ^9.0.1
-    gulp-sass: ^5.1.0
-    gulp-sourcemaps: ^3.0.0
-    gulp-stylelint: ^13.0.0
-    gulp-terser: ^2.1.0
-    gulp-typescript: ^6.0.0-alpha.1
-    merge2: ^1.4.1
-    npm-run-all: ^4.1.5
-    postcss: ^8.4.20
-    sass: ^1.56.2
-    stylelint: ^14.16.0
-    stylelint-config-standard-scss: ^6.1.0
-    tsify: ^5.0.4
-    typescript: ^4.9.4
-    vinyl-buffer: ^1.0.1
-    vinyl-source-stream: ^2.0.0
-  languageName: unknown
-  linkType: soft
-
-"mess@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "mess@workspace:."
-  dependencies:
-    "@commitlint/cli": ^17.3.0
-    "@commitlint/config-conventional": ^17.3.0
-    "@shopify/prettier-plugin-liquid": ^1.0.2
-    husky: ^8.0.2
-    npm-run-all: ^4.1.5
-    prettier: ^2.8.1
-  languageName: unknown
-  linkType: soft
 
 "micromatch@npm:^3.0.4, micromatch@npm:^3.1.10, micromatch@npm:^3.1.4":
   version: 3.1.10
