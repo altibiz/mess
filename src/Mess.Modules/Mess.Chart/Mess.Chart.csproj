@@ -5,4 +5,8 @@
     <PackageReference Include="OrchardCore.ContentFields" Version="$(MessOrchardVersion)" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="../../Mess.Abstractions/Mess.Chart.Abstractions/Mess.Chart.Abstractions.csproj" />
+  </ItemGroup>
+
 </Project>
