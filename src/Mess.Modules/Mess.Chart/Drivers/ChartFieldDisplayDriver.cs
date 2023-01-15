@@ -6,21 +6,15 @@ using OrchardCore.DisplayManagement.Views;
 using Mess.Chart.Fields;
 using Mess.Chart.ViewModels;
 using Mess.Chart.Settings;
+using Mess.Chart.Abstractions.Providers;
+using OrchardCore.ContentManagement.Metadata.Models;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using OrchardCore.Mvc.ModelBinding;
 
 namespace Mess.Chart.Drivers;
 
 public class ChartFieldDisplayDriver : ContentFieldDisplayDriver<ChartField>
 {
-  private readonly IStringLocalizer S;
-
-  public ChartFieldDisplayDriver(
-    IStringLocalizer<ChartFieldDisplayDriver> localizer
-  )
-  {
-    S = localizer;
-  }
-
-#pragma warning disable CS1998 // async method lacks await
   public override IDisplayResult Display(
     ChartField field,
     BuildFieldDisplayContext context
@@ -28,38 +22,12 @@ public class ChartFieldDisplayDriver : ContentFieldDisplayDriver<ChartField>
   {
     return Initialize<DisplayChartFieldViewModel>(
         GetDisplayShapeType(context),
-        async model =>
+        m =>
         {
-          model.Type = field.Type;
-          model.Field = field;
-          model.Part = context.ContentPart;
-          model.PartFieldDefinition = context.PartFieldDefinition;
-
-          // TODO: settings
-          // var settings =
-          //   context.PartFieldDefinition.GetSettings<ChartFieldSettings>();
-          // if (!settings.SanitizeHtml)
-          // {
-          //   model.Html = await _liquidTemplateManager.RenderStringAsync(
-          //     field.Html,
-          //     _htmlEncoder,
-          //     model,
-          //     new Dictionary<string, FluidValue>()
-          //     {
-          //       ["ContentItem"] = new ObjectValue(field.ContentItem)
-          //     }
-          //   );
-          // }
-
-          // TODO: extra processing
-          // model.Html = await _shortcodeService.ProcessAsync(
-          //   model.Html,
-          //   new Context
-          //   {
-          //     ["ContentItem"] = field.ContentItem,
-          //     ["PartFieldDefinition"] = context.PartFieldDefinition
-          //   }
-          // );
+          m.Parameters = field.Parameters;
+          m.Field = field;
+          m.Part = context.ContentPart;
+          m.PartFieldDefinition = context.PartFieldDefinition;
         }
       )
       .Location("Detail", "Content")
@@ -71,11 +39,16 @@ public class ChartFieldDisplayDriver : ContentFieldDisplayDriver<ChartField>
     BuildFieldEditorContext context
   )
   {
+    var settings = context.TypePartDefinition.GetSettings<ChartPartSettings>();
+    var provider = _lookup.Get(settings.Provider);
+
     return Initialize<EditChartFieldViewModel>(
-      GetEditorShapeType(context),
+      provider is null
+        ? GetEditorShapeType(context)
+        : provider.GetFieldEditorShapeType(context),
       model =>
       {
-        model.Type = field.Type;
+        model.Parameters = field.Parameters;
         model.Field = field;
         model.Part = context.ContentPart;
         model.PartFieldDefinition = context.PartFieldDefinition;
@@ -94,34 +67,51 @@ public class ChartFieldDisplayDriver : ContentFieldDisplayDriver<ChartField>
     var settings =
       context.PartFieldDefinition.GetSettings<ChartFieldSettings>();
 
-    // TODO: validation
-    // if (await updater.TryUpdateModelAsync(viewModel, Prefix, f => f.Type))
-    // {
-    //   if (
-    //     !string.IsNullOrEmpty(viewModel.Html)
-    //     && !_liquidTemplateManager.Validate(viewModel.Html, out var errors)
-    //   )
-    //   {
-    //     var fieldName = context.PartFieldDefinition.DisplayName();
-    //     context.Updater.ModelState.AddModelError(
-    //       Prefix,
-    //       nameof(viewModel.Html),
-    //       S[
-    //         "{0} doesn't contain a valid Liquid expression. Details: {1}",
-    //         fieldName,
-    //         string.Join(" ", errors)
-    //       ]
-    //     );
-    //   }
-    //   else
-    //   {
-    //     field.Html = settings.SanitizeHtml
-    //       ? _htmlSanitizerService.Sanitize(viewModel.Html)
-    //       : viewModel.Html;
-    //   }
-    // }
+    var provider = _lookup.Get(settings.Provider);
+    if (provider is null)
+    {
+      var fieldName = context.PartFieldDefinition.DisplayName();
+      updater.ModelState.AddModelError(
+        Prefix,
+        nameof(settings.Provider),
+        S["{0} doesn't contain a valid Chart provider", fieldName]
+      );
+      return Edit(field, context);
+    }
+
+    if (await updater.TryUpdateModelAsync(viewModel, Prefix, t => t.Parameters))
+    {
+      var errors = await provider.ValidateParametersAsync(viewModel.Parameters);
+      if (errors is not null)
+      {
+        var fieldName = context.PartFieldDefinition.DisplayName();
+        updater.ModelState.AddModelError(
+          Prefix,
+          nameof(viewModel.Parameters),
+          S[
+            "{0} doesn't contain a valid parameters",
+            fieldName,
+            string.Join(" ", errors)
+          ]
+        );
+        return Edit(field, context);
+      }
+
+      field.Parameters = viewModel.Parameters;
+    }
 
     return Edit(field, context);
   }
-#pragma warning restore CS1998 // async method lacks await
+
+  public ChartFieldDisplayDriver(
+    IChartProviderLookup lookup,
+    IStringLocalizer<ChartFieldDisplayDriver> localizer
+  )
+  {
+    S = localizer;
+    _lookup = lookup;
+  }
+
+  private readonly IStringLocalizer S;
+  private readonly IChartProviderLookup _lookup;
 }

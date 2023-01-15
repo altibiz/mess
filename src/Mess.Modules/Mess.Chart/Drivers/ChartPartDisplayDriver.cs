@@ -1,58 +1,62 @@
+using Mess.Chart.Abstractions.Providers;
 using Mess.Chart.Models;
 using Mess.Chart.Settings;
 using Mess.Chart.ViewModels;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Localization;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
 using OrchardCore.ContentManagement.Display.Models;
+using OrchardCore.ContentManagement.Metadata.Models;
 using OrchardCore.DisplayManagement.ModelBinding;
 using OrchardCore.DisplayManagement.Views;
+using OrchardCore.Mvc.ModelBinding;
 
 namespace Mess.Chart.Drivers;
 
 public class ChartPartDisplayDriver : ContentPartDisplayDriver<ChartPart>
 {
-  private readonly IStringLocalizer S;
-
-  public ChartPartDisplayDriver(
-    IStringLocalizer<ChartPartDisplayDriver> localizer
-  )
-  {
-    S = localizer;
-  }
-
   public override IDisplayResult Display(
-    ChartPart ChartPart,
+    ChartPart part,
     BuildPartDisplayContext context
   )
   {
     return Initialize<ChartPartViewModel>(
         GetDisplayShapeType(context),
-        m => BuildViewModelAsync(m, ChartPart, context)
+        m =>
+        {
+          m.Parameters = part.Parameters;
+          m.ChartPart = part;
+          m.ContentItem = part.ContentItem;
+        }
       )
-      .Location("Detail", "Content:5")
-      .Location("Summary", "Content:10");
+      .Location("Detail", "Content")
+      .Location("Summary", "Content");
   }
 
   public override IDisplayResult Edit(
-    ChartPart ChartPart,
+    ChartPart part,
     BuildPartEditorContext context
   )
   {
+    var settings = context.TypePartDefinition.GetSettings<ChartPartSettings>();
+    var provider = _lookup.Get(settings.Provider);
+
     return Initialize<ChartPartViewModel>(
-      GetEditorShapeType(context),
+      provider is null
+        ? GetEditorShapeType(context)
+        : provider.GetPartEditorShapeType(context),
       model =>
       {
-        model.Type = ChartPart.Type;
-        model.ContentItem = ChartPart.ContentItem;
-        model.ChartPart = ChartPart;
+        model.Parameters = part.Parameters;
+        model.ContentItem = part.ContentItem;
+        model.ChartPart = part;
         model.TypePartDefinition = context.TypePartDefinition;
       }
     );
   }
 
-#pragma warning disable CS1998 // async method lacks await
   public override async Task<IDisplayResult> UpdateAsync(
-    ChartPart model,
+    ChartPart part,
     IUpdateModel updater,
     UpdatePartEditorContext context
   )
@@ -60,70 +64,51 @@ public class ChartPartDisplayDriver : ContentPartDisplayDriver<ChartPart>
     var viewModel = new ChartPartViewModel();
 
     var settings = context.TypePartDefinition.GetSettings<ChartPartSettings>();
+    var provider = _lookup.Get(settings.Provider);
+    if (provider is null)
+    {
+      var partName = context.TypePartDefinition.DisplayName();
+      updater.ModelState.AddModelError(
+        Prefix,
+        nameof(settings.Provider),
+        S["{0} doesn't contain a valid Chart provider", partName]
+      );
+      return Edit(part, context);
+    }
 
-    // TODO: processing
-    // if (await updater.TryUpdateModelAsync(viewModel, Prefix, t => t.Html))
-    // {
-    //   if (
-    //     !string.IsNullOrEmpty(viewModel.Html)
-    //     && !_liquidTemplateManager.Validate(viewModel.Html, out var errors)
-    //   )
-    //   {
-    //     var partName = context.TypePartDefinition.DisplayName();
-    //     updater.ModelState.AddModelError(
-    //       Prefix,
-    //       nameof(viewModel.Html),
-    //       S[
-    //         "{0} doesn't contain a valid Liquid expression. Details: {1}",
-    //         partName,
-    //         string.Join(" ", errors)
-    //       ]
-    //     );
-    //   }
-    //   else
-    //   {
-    //     model.Html = settings.SanitizeHtml
-    //       ? _htmlSanitizerService.Sanitize(viewModel.Html)
-    //       : viewModel.Html;
-    //   }
-    // }
+    if (await updater.TryUpdateModelAsync(viewModel, Prefix, t => t.Parameters))
+    {
+      var errors = await provider.ValidateParametersAsync(viewModel.Parameters);
+      if (errors is not null)
+      {
+        var partName = context.TypePartDefinition.DisplayName();
+        updater.ModelState.AddModelError(
+          Prefix,
+          nameof(viewModel.Parameters),
+          S[
+            "{0} doesn't contain a valid parameters",
+            partName,
+            string.Join(" ", errors)
+          ]
+        );
+        return Edit(part, context);
+      }
 
-    return Edit(model, context);
+      part.Parameters = viewModel.Parameters;
+    }
+
+    return Edit(part, context);
   }
 
-  private async ValueTask BuildViewModelAsync(
-    ChartPartViewModel model,
-    ChartPart chartPart,
-    BuildPartDisplayContext context
+  public ChartPartDisplayDriver(
+    IChartProviderLookup lookup,
+    IStringLocalizer<ChartPartDisplayDriver> localizer
   )
   {
-    model.Type = chartPart.Type;
-    model.ChartPart = chartPart;
-    model.ContentItem = chartPart.ContentItem;
-    var settings = context.TypePartDefinition.GetSettings<ChartPartSettings>();
-
-    // TODO: processing
-    // if (!settings.SanitizeHtml)
-    // {
-    //   model.Html = await _liquidTemplateManager.RenderStringAsync(
-    //     chartPart.Html,
-    //     _htmlEncoder,
-    //     model,
-    //     new Dictionary<string, FluidValue>()
-    //     {
-    //       ["ContentItem"] = new ObjectValue(model.ContentItem)
-    //     }
-    //   );
-    // }
-    //
-    // model.Html = await _shortcodeService.ProcessAsync(
-    //   model.Html,
-    //   new Context
-    //   {
-    //     ["ContentItem"] = chartPart.ContentItem,
-    //     ["TypePartDefinition"] = context.TypePartDefinition
-    //   }
-    // );
+    _lookup = lookup;
+    S = localizer;
   }
-#pragma warning restore CS1998 // async method lacks await
+
+  private readonly IStringLocalizer S;
+  private readonly IChartProviderLookup _lookup;
 }
