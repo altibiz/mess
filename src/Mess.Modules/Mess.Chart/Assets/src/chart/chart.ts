@@ -1,8 +1,5 @@
-import { Chart } from "chart.js";
-import {
-  ChartSpecification,
-  isLineChartSpecification,
-} from "./schema";
+import { Chart, ScaleOptionsByType } from "chart.js";
+import { ChartSpecification, isLineChartSpecification } from "./schema";
 
 export const bindChart = (
   id: string,
@@ -45,12 +42,14 @@ export const bindChart = (
               },
             },
           },
-          ...datasets.reduce((axes, dataset) => {
-            axes[dataset.id] = {
+          ...datasets.reduce((scales, dataset) => {
+            scales[dataset.id] = {
               type: "linear",
               position: "left",
             };
-          }, {} as any),
+
+            return scales;
+          }, {} as Record<string, Partial<ScaleOptionsByType<"linear">>>),
         },
       },
     });

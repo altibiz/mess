@@ -1,7 +1,4 @@
-import {
-  ChartSpecification,
-  chartSpecificationSchema,
-} from "./schema";
+import { ChartSpecification, chartSpecificationSchema } from "./schema";
 
 export const fetchChartSpecification = async (
   query: string,

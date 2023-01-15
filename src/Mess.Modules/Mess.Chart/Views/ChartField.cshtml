@@ -1,13 +1,30 @@
-@using OrchardCore.Mvc.Utilities;
+@model ChartFieldViewModel
 
-@model DisplayChartFieldViewModel
-
-@* TODO: processing
 @{
   var name = (Model.PartFieldDefinition.PartDefinition.Name + "-" + Model.PartFieldDefinition.Name).HtmlClassify();
 }
 
-<div class="field field-type-htmlfield field-name-@name">
-  @Html.Raw(Model.Html)
+<div class="field field-type-chartfield field-name-@name">
+  <canvas id="chart-@name"></canvas>
+  <span id="chart-error-@name"></span>
 </div>
-*@
+
+<script asp-name="mess-chart" at="Foot"></script>
+<script at="Foot">
+  $(function () {
+    var query = "@Model.Parameters";
+    fetchChartSpecification(query)
+      .then(function (chartSpecification) {
+        if (!chartSpecification) {
+          var errorSpan = document.getElementById("chart-error-@name");
+          errorSpan.innerHtml = '@T["Error occured while fetching chart data"]';
+        }
+
+        bindChart(
+          "chart-@name",
+          "@Html.Raw(Orchard.CultureName())",
+          chartSpecification);
+      })
+      .catch(console.error);
+  })
+</script>

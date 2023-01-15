@@ -1,6 +1,6 @@
 {
   "extends": "../../../Mess.Assets/tsconfig.json",
-  "files": ["src/**/*.ts"],
+  "include": ["src/**/*.ts"],
   "compilerOptions": {
     "rootDir": "src"
   }

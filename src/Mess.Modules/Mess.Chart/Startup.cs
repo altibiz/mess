@@ -34,7 +34,7 @@ public class Startup : StartupBase
     services.Configure<TemplateOptions>(o =>
     {
       o.MemberAccessStrategy.Register<ChartField>();
-      o.MemberAccessStrategy.Register<DisplayChartFieldViewModel>();
+      o.MemberAccessStrategy.Register<ChartFieldViewModel>();
     });
 
     services
