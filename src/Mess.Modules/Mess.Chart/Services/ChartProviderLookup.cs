@@ -15,6 +15,13 @@ public class ChartProviderLookup : IChartProviderLookup
     return null;
   }
 
+  public bool Exists(string id)
+  {
+    return _providers.ContainsKey(id);
+  }
+
+  public IReadOnlyList<string> Ids => _providers.Keys.ToList();
+
   public ChartProviderLookup(IServiceProvider services)
   {
     _providers = services

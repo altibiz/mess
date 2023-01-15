@@ -4,6 +4,8 @@ using OrchardCore.DisplayManagement.Views;
 using Mess.Chart.Fields;
 using Mess.Chart.Settings;
 using Mess.Chart.ViewModels;
+using Mess.Chart.Abstractions.Providers;
+using Microsoft.Extensions.Localization;
 
 namespace Mess.Chart.Drivers;
 
@@ -20,12 +22,10 @@ public class ChartFieldSettingsDriver
         {
           var settings = partFieldDefinition.GetSettings<ChartFieldSettings>();
 
-          // TODO: update
-          // model.SanitizeHtml = settings.SanitizeHtml;
-          // model.Hint = settings.Hint;
+          model.Provider = settings.Provider;
         }
       )
-      .Location("Content:20");
+      .Location("Content");
   }
 
   public override async Task<IDisplayResult> UpdateAsync(
@@ -36,14 +36,34 @@ public class ChartFieldSettingsDriver
     var model = new ChartFieldSettingsViewModel();
     var settings = new ChartFieldSettings();
 
-    await context.Updater.TryUpdateModelAsync(model, Prefix);
+    if (await context.Updater.TryUpdateModelAsync(model, Prefix))
+    {
+      if (!_lookup.Exists(model.Provider))
+      {
+        context.Updater.ModelState.AddModelError(
+          Prefix,
+          S["Provider does not exist"]
+        );
+        return Edit(partFieldDefinition);
+      }
 
-    // TODO: update
-    // settings.SanitizeHtml = model.SanitizeHtml;
-    // settings.Hint = model.Hint;
+      settings.Provider = model.Provider;
 
-    context.Builder.WithSettings(settings);
+      context.Builder.WithSettings(settings);
+    }
 
     return Edit(partFieldDefinition);
   }
+
+  public ChartFieldSettingsDriver(
+    IChartProviderLookup lookup,
+    IStringLocalizer<ChartFieldSettingsDriver> localizer
+  )
+  {
+    _lookup = lookup;
+    S = localizer;
+  }
+
+  private readonly IChartProviderLookup _lookup;
+  private readonly IStringLocalizer S;
 }

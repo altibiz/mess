@@ -1,3 +1,6 @@
 namespace Mess.Chart.ViewModels;
 
-public class ChartFieldSettingsViewModel { }
+public record class ChartFieldSettingsViewModel
+{
+  public string Provider { get; set; } = default!;
+};

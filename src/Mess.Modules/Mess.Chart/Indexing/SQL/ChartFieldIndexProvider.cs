@@ -10,7 +10,7 @@ namespace Mess.Chart.Indexing.SQL;
 
 public class ChartFieldIndex : ContentFieldIndex
 {
-  public string Type { get; set; } = default!;
+  public string Provider { get; set; } = default!;
 }
 
 public class ChartFieldIndexProvider : ContentFieldIndexProvider
@@ -62,7 +62,7 @@ public class ChartFieldIndexProvider : ContentFieldIndexProvider
         if (fieldDefinitions.Length == 0)
         {
           _ignoredTypes.Add(contentItem.ContentType);
-          return null;
+          return null!;
         }
 
         return fieldDefinitions
@@ -78,7 +78,7 @@ public class ChartFieldIndexProvider : ContentFieldIndexProvider
                 ContentType = contentItem.ContentType,
                 ContentPart = pair.Definition.PartDefinition.Name,
                 ContentField = pair.Definition.Name,
-                Type = pair.Field.Type,
+                Provider = pair.Field.Parameters.Provider,
               }
           );
       });

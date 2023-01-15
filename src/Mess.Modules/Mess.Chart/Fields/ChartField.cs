@@ -5,6 +5,5 @@ namespace Mess.Chart.Fields;
 
 public class ChartField : ContentField
 {
-  public string Type { get; set; } = default!;
   public ChartParameters Parameters { get; set; } = default!;
 }

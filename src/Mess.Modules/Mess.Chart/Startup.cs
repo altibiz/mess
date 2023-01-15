@@ -3,7 +3,6 @@ using Mess.Chart.Abstractions.Providers;
 using Mess.Chart.Controllers;
 using Mess.Chart.Drivers;
 using Mess.Chart.Fields;
-using Mess.Chart.Handlers;
 using Mess.Chart.Indexing;
 using Mess.Chart.Models;
 using Mess.Chart.Services;
@@ -49,8 +48,7 @@ public class Startup : StartupBase
 
     services
       .AddContentPart<ChartPart>()
-      .UseDisplayDriver<ChartPartDisplayDriver>()
-      .AddHandler<ChartPartHandler>();
+      .UseDisplayDriver<ChartPartDisplayDriver>();
     services.AddScoped<
       IContentTypePartDefinitionDisplayDriver,
       ChartPartSettingsDisplayDriver

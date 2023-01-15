@@ -5,6 +5,8 @@ using OrchardCore.DisplayManagement.Views;
 using Mess.Chart.Models;
 using Mess.Chart.ViewModels;
 using Mess.Chart.Settings;
+using Mess.Chart.Abstractions.Providers;
+using Microsoft.Extensions.Localization;
 
 namespace Mess.Chart.Drivers;
 
@@ -20,34 +22,51 @@ public class ChartPartSettingsDisplayDriver
         "ChartPartSettings_Edit",
         model =>
         {
-          // TODO: processing
-          // var settings =
-          //   contentTypePartDefinition.GetSettings<ChartPartSettings>();
-          //
-          // model.SanitizeHtml = settings.SanitizeHtml;
+          var settings =
+            contentTypePartDefinition.GetSettings<ChartPartSettings>();
+
+          model.Provider = settings.Provider;
         }
       )
-      .Location("Content:20");
+      .Location("Content");
   }
 
-#pragma warning disable CS1998 // async method lacks await
   public override async Task<IDisplayResult> UpdateAsync(
     ContentTypePartDefinition contentTypePartDefinition,
     UpdateTypePartEditorContext context
   )
   {
-    var model = new ChartPartSettingsViewModel();
-    var settings = new ChartPartSettings();
+    var model = new ChartFieldSettingsViewModel();
+    var settings = new ChartFieldSettings();
 
-    // TODO: processing
-    // if (await context.Updater.TryUpdateModelAsync(model, Prefix))
-    // {
-    //   settings.SanitizeHtml = model.SanitizeHtml;
-    //
-    //   context.Builder.WithSettings(settings);
-    // }
+    if (await context.Updater.TryUpdateModelAsync(model, Prefix))
+    {
+      if (!_lookup.Exists(model.Provider))
+      {
+        context.Updater.ModelState.AddModelError(
+          Prefix,
+          S["Provider does not exist"]
+        );
+        return Edit(contentTypePartDefinition);
+      }
 
-    return Edit(contentTypePartDefinition, context.Updater);
+      settings.Provider = model.Provider;
+
+      context.Builder.WithSettings(settings);
+    }
+
+    return Edit(contentTypePartDefinition);
   }
-#pragma warning restore CS1998 // async method lacks await
+
+  public ChartPartSettingsDisplayDriver(
+    IChartProviderLookup lookup,
+    IStringLocalizer<ChartFieldSettingsDriver> localizer
+  )
+  {
+    _lookup = lookup;
+    S = localizer;
+  }
+
+  private readonly IChartProviderLookup _lookup;
+  private readonly IStringLocalizer S;
 }

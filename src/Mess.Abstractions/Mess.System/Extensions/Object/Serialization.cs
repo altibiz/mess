@@ -8,25 +8,25 @@ namespace Mess.System.Extensions.Object;
 
 public static class ObjectSerializationExtensions
 {
-  public static string ToJson<T>(this T @this) =>
+  public static string ToJson<T>(this T @this, bool pretty = true) =>
     JsonSerializer.Serialize(
       @this,
       new JsonSerializerOptions
       {
         AllowTrailingCommas = true,
-        WriteIndented = true,
+        WriteIndented = pretty,
         ReferenceHandler = ReferenceHandler.IgnoreCycles,
       }
     );
 
-  public static Stream ToJsonStream<T>(this T @this) =>
+  public static Stream ToJsonStream<T>(this T @this, bool pretty = true) =>
     new MemoryStream(
       JsonSerializer.SerializeToUtf8Bytes(
         @this,
         new JsonSerializerOptions
         {
           AllowTrailingCommas = true,
-          WriteIndented = true,
+          WriteIndented = pretty,
           ReferenceHandler = ReferenceHandler.IgnoreCycles,
         }
       )
@@ -38,7 +38,6 @@ public static class ObjectSerializationExtensions
       new JsonSerializerOptions
       {
         AllowTrailingCommas = true,
-        WriteIndented = true,
         ReferenceHandler = ReferenceHandler.IgnoreCycles,
       }
     );
@@ -49,7 +48,6 @@ public static class ObjectSerializationExtensions
       new JsonSerializerOptions
       {
         AllowTrailingCommas = true,
-        WriteIndented = true,
         ReferenceHandler = ReferenceHandler.IgnoreCycles,
       }
     );
@@ -63,7 +61,6 @@ public static class ObjectSerializationExtensions
       new JsonSerializerOptions
       {
         AllowTrailingCommas = true,
-        WriteIndented = true,
         ReferenceHandler = ReferenceHandler.IgnoreCycles,
       },
       token
