@@ -7,6 +7,7 @@ using Microsoft.Extensions.Localization;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
 using OrchardCore.ContentManagement.Display.Models;
 using OrchardCore.ContentManagement.Metadata.Models;
+using OrchardCore.DisplayManagement;
 using OrchardCore.DisplayManagement.ModelBinding;
 using OrchardCore.DisplayManagement.Views;
 using OrchardCore.Mvc.ModelBinding;
@@ -22,11 +23,12 @@ public class ChartPartDisplayDriver : ContentPartDisplayDriver<ChartPart>
   {
     return Initialize<ChartPartViewModel>(
         GetDisplayShapeType(context),
-        m =>
+        model =>
         {
-          m.Parameters = part.Parameters;
-          m.ChartPart = part;
-          m.ContentItem = part.ContentItem;
+          model.Parameters = part.Parameters;
+          model.Part = part;
+          model.ContentItem = part.ContentItem;
+          model.TypePartDefinition = context.TypePartDefinition;
         }
       )
       .Location("Detail", "Content")
@@ -40,18 +42,25 @@ public class ChartPartDisplayDriver : ContentPartDisplayDriver<ChartPart>
   {
     var settings = context.TypePartDefinition.GetSettings<ChartPartSettings>();
     var provider = _lookup.Get(settings.Provider);
+    if (provider is null)
+    {
+      return Initialize<ChartPartViewModel>(
+        GetEditorShapeType(context),
+        model =>
+        {
+          model.Parameters = part.Parameters;
+          model.Part = part;
+          model.ContentItem = part.ContentItem;
+          model.TypePartDefinition = context.TypePartDefinition;
+        }
+      );
+    }
 
-    return Initialize<ChartPartViewModel>(
-      provider is null
-        ? GetEditorShapeType(context)
-        : provider.GetPartEditorShapeType(context),
-      model =>
-      {
-        model.Parameters = part.Parameters;
-        model.ContentItem = part.ContentItem;
-        model.ChartPart = part;
-        model.TypePartDefinition = context.TypePartDefinition;
-      }
+    var shapeType = provider.GetPartEditorShapeType(context);
+    var model = provider.CreatePartEditorModel(context, part, part.Parameters);
+    return Factory(
+      shapeType,
+      ctx => ctx.ShapeFactory.CreateAsync(shapeType, Arguments.From(model))
     );
   }
 

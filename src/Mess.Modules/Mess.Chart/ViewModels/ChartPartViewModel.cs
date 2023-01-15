@@ -11,10 +11,10 @@ public class ChartPartViewModel
   public ChartParameters Parameters { get; set; } = default!;
 
   [BindNever]
-  public ContentItem ContentItem { get; set; } = default!;
+  public ChartPart Part { get; set; } = default!;
 
   [BindNever]
-  public ChartPart ChartPart { get; set; } = default!;
+  public ContentItem ContentItem { get; set; } = default!;
 
   [BindNever]
   public ContentTypePartDefinition TypePartDefinition { get; set; } = default!;

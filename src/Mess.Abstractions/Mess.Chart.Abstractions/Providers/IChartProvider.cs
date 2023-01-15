@@ -1,4 +1,5 @@
 using Mess.Chart.Abstractions.Models;
+using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Display.Models;
 
 namespace Mess.Chart.Abstractions.Providers;
@@ -17,5 +18,17 @@ public interface IChartProvider
 
   public string GetFieldEditorShapeType(BuildFieldEditorContext context);
 
+  public object CreateFieldEditorModel(
+    BuildFieldEditorContext context,
+    ContentField field,
+    ChartParameters parameters
+  );
+
   public string GetPartEditorShapeType(BuildPartEditorContext context);
+
+  public object CreatePartEditorModel(
+    BuildPartEditorContext context,
+    ContentPart part,
+    ChartParameters parameters
+  );
 }

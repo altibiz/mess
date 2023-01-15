@@ -10,6 +10,7 @@ using Mess.Chart.Abstractions.Providers;
 using OrchardCore.ContentManagement.Metadata.Models;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using OrchardCore.Mvc.ModelBinding;
+using OrchardCore.DisplayManagement;
 
 namespace Mess.Chart.Drivers;
 
@@ -20,14 +21,15 @@ public class ChartFieldDisplayDriver : ContentFieldDisplayDriver<ChartField>
     BuildFieldDisplayContext context
   )
   {
-    return Initialize<DisplayChartFieldViewModel>(
+    return Initialize<ChartFieldViewModel>(
         GetDisplayShapeType(context),
-        m =>
+        model =>
         {
-          m.Parameters = field.Parameters;
-          m.Field = field;
-          m.Part = context.ContentPart;
-          m.PartFieldDefinition = context.PartFieldDefinition;
+          model.Parameters = field.Parameters;
+          model.Field = field;
+          model.Part = context.ContentPart;
+          model.ContentItem = context.ContentPart.ContentItem;
+          model.PartFieldDefinition = context.PartFieldDefinition;
         }
       )
       .Location("Detail", "Content")
@@ -41,18 +43,30 @@ public class ChartFieldDisplayDriver : ContentFieldDisplayDriver<ChartField>
   {
     var settings = context.TypePartDefinition.GetSettings<ChartPartSettings>();
     var provider = _lookup.Get(settings.Provider);
+    if (provider is null)
+    {
+      return Initialize<ChartFieldViewModel>(
+        GetEditorShapeType(context),
+        model =>
+        {
+          model.Parameters = field.Parameters;
+          model.Field = field;
+          model.Part = context.ContentPart;
+          model.ContentItem = context.ContentPart.ContentItem;
+          model.PartFieldDefinition = context.PartFieldDefinition;
+        }
+      );
+    }
 
-    return Initialize<EditChartFieldViewModel>(
-      provider is null
-        ? GetEditorShapeType(context)
-        : provider.GetFieldEditorShapeType(context),
-      model =>
-      {
-        model.Parameters = field.Parameters;
-        model.Field = field;
-        model.Part = context.ContentPart;
-        model.PartFieldDefinition = context.PartFieldDefinition;
-      }
+    var shapeType = provider.GetFieldEditorShapeType(context);
+    var model = provider.CreateFieldEditorModel(
+      context,
+      field,
+      field.Parameters
+    );
+    return Factory(
+      shapeType,
+      ctx => ctx.ShapeFactory.CreateAsync(shapeType, Arguments.From(model))
     );
   }
 
@@ -62,7 +76,7 @@ public class ChartFieldDisplayDriver : ContentFieldDisplayDriver<ChartField>
     UpdateFieldEditorContext context
   )
   {
-    var viewModel = new EditChartFieldViewModel();
+    var viewModel = new ChartFieldViewModel();
 
     var settings =
       context.PartFieldDefinition.GetSettings<ChartFieldSettings>();
