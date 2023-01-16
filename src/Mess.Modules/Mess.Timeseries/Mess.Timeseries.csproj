@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../../Mess.Abstractions/Mess.Timeseries.Abstractions/Mess.Timeseries.Abstractions.csproj" />
+    <ProjectReference Include="../../Mess.Abstractions/Mess.Chart.Abstractions/Mess.Chart.Abstractions.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -eo pipefail
 
 export ASPNETCORE_ENVIRONMENT=Development
 export DOTNET_ENVIRONMENT=Development
