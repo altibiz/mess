@@ -30,6 +30,7 @@ using OrchardCore.DisplayManagement.Manifest;
     "OrchardCore.BackgroundTasks",
     "OrchardCore.Liquid",
     "Mess.EventStore",
-    "Mess.Timeseries"
+    "Mess.Timeseries",
+    "Mess.MeasurementDevice"
   }
 )]
