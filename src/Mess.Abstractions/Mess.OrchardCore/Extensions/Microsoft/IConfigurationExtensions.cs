@@ -15,7 +15,7 @@ public static class IConfigurationExtensions
       .GetChildren()
       .GroupBy(
         tenant =>
-          tenant.GetValue<string>("ConnectionString")
+          tenant.GetValue<string>("DatabaseConnectionString")
           ?? throw new InvalidOperationException(
             "Tenant is missing a ConnectionString"
           )
