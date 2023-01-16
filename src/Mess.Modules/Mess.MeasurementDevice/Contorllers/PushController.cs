@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
-using Mess.EventStore.Abstractions.Parsers.Egauge;
-using Mess.EventStore.Timeseries;
+using Mess.MeasurementDevice.Abstractions.Parsers.Egauge;
 using Mess.EventStore.Abstractions.Client;
 using Mess.System.Extensions.Object;
+using Mess.MeasurementDevice.Events;
 
-namespace Mess.EventStore.Controllers;
+namespace Mess.MeasurementDevice.Controllers;
 
 public class PushController : Controller
 {
@@ -15,7 +15,6 @@ public class PushController : Controller
     [FromServices] IEventStoreClient store
   )
   {
-    // TODO: extract timeseries stuff
     if (!ModelState.IsValid)
     {
       return BadRequest(ModelState);
@@ -33,7 +32,7 @@ public class PushController : Controller
       return BadRequest("Measurement is invalid");
     }
 
-    await store.RecordEventsAsync<EgaugeMeasurementStream>(
+    await store.RecordEventsAsync<MeasurementStream>(
       new EgaugeMeasured(measurement.Value)
     );
 

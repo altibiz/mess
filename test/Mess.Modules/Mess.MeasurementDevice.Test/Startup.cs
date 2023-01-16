@@ -1,9 +1,15 @@
-﻿using Xunit.DependencyInjection;
+using Xunit.DependencyInjection;
 using Xunit.DependencyInjection.Logging;
-using Mess.Timeseries.Abstractions.Client;
-using Mess.Timeseries.Client;
+using Mess.MeasurementDevice.Abstractions.Parsers.Egauge;
+using Mess.MeasurementDevice.Parsers.Egauge;
 
-namespace Mess.Timeseries.Test;
+// NOTE: leaving this here if someone else tries to test with mocks
+// using Mess.EventStore.Test.Extensions.Moq;
+// using Marten;
+
+// TODO: try testcontainers when docker-compose and timescaledb are supported
+
+namespace Mess.MeasurementDevice.Test;
 
 public class Startup
 {
@@ -22,10 +28,7 @@ public class Startup
     HostBuilderContext hostBuilderContext
   )
   {
-    services.AddScoped<ITenantProvider, TestTenantProvider>();
-
-    services.AddScoped<ITimeseriesConnection, TimeseriesConnection>();
-    services.AddSingleton<ITimeseriesClient, TimeseriesClient>();
+    services.AddSingleton<IEgaugeParser, EgaugeParser>();
   }
 
   public void Configure(IServiceProvider services)

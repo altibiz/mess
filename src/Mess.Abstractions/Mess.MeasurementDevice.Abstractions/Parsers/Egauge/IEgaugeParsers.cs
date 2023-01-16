@@ -1,6 +1,6 @@
 using System.Xml.Linq;
 
-namespace Mess.EventStore.Abstractions.Parsers.Egauge;
+namespace Mess.MeasurementDevice.Abstractions.Parsers.Egauge;
 
 public interface IEgaugeParser
 {

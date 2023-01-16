@@ -1,12 +1,8 @@
 ﻿using Xunit.DependencyInjection;
 using Xunit.DependencyInjection.Logging;
 using Marten;
-using Mess.Tenants;
-using Mess.Xunit.Tenants;
 using Mess.EventStore.Abstractions.Client;
 using Mess.EventStore.Client;
-using Mess.EventStore.Abstractions.Parsers.Egauge;
-using Mess.EventStore.Parsers.Egauge;
 
 // NOTE: leaving this here if someone else tries to test with mocks
 // using Mess.EventStore.Test.Extensions.Moq;
@@ -67,8 +63,6 @@ public class Startup
     services.AddScoped<IEventStoreSession, EventStoreSession>();
     services.AddScoped<IEventStoreQuery, EventStoreQuery>();
     services.AddSingleton<IEventStoreClient, EventStoreClient>();
-
-    services.AddSingleton<IEgaugeParser, EgaugeParser>();
   }
 
   public void Configure(IServiceProvider services)

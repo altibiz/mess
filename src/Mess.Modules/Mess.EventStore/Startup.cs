@@ -14,11 +14,10 @@ using Mess.EventStore.Extensions.Microsoft;
 using Mess.OrchardCore.Extensions.OrchardCore;
 using Mess.Tenants;
 using Mess.OrchardCore.Tenants;
-using Mess.EventStore.Abstractions.Parsers.Egauge;
-using Mess.EventStore.Parsers.Egauge;
 using Mess.EventStore.Abstractions.Client;
 using Mess.EventStore.Client;
 using Mess.EventStore.Controllers;
+using Mess.EventStore.Services;
 
 namespace Mess.EventStore;
 
@@ -34,6 +33,7 @@ public class Startup : StartupBase
 
     services.AddMartenFromTenantGroups(
       Environment.IsDevelopment(),
+      // TODO: create configurable options for tenants
       Configuration.GetOrchardAutoSetupTenantNamesGroupedByConnectionString()
     );
 
@@ -42,8 +42,6 @@ public class Startup : StartupBase
     services.AddSingleton<IEventStoreClient, EventStoreClient>();
 
     services.AddSingleton<ITenantProvider, ShellTenantProvider>();
-
-    services.AddSingleton<IEgaugeParser, EgaugeParser>();
   }
 
   public override void Configure(
@@ -59,8 +57,11 @@ public class Startup : StartupBase
       throw new InvalidOperationException("EventStore client not connected");
     }
 
+    var projection = services.GetRequiredService<Projection>();
+    projection.Services = services;
+
     routes.MapAreaControllerRoute(
-      name: "Mess.EventStore.Admin",
+      name: "Mess.EventStore.AdminController.Index",
       areaName: "Mess.EventStore",
       pattern: $"{Admin.AdminUrlPrefix}/EventStore",
       defaults: new

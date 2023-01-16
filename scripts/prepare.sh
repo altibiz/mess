@@ -28,12 +28,12 @@ cp "$ROOT_DIR/.env" "$ROOT_DIR/secrets"
 cp "$ROOT_DIR/secrets.json" "$ROOT_DIR/secrets"
 cp "$ROOT_DIR/secrets.sh" "$ROOT_DIR/secrets"
 # TODO: with glob
-if [ ! -d "$ROOT_DIR/secrets/test/Mess.Modules/Mess.EventStore.Test/assets" ]; then
-  mkdir -p "$ROOT_DIR/secrets/test/Mess.Modules/Mess.EventStore.Test"
+if [ ! -d "$ROOT_DIR/secrets/test/Mess.Modules/Mess.MeasurementDevice.Test/assets" ]; then
+  mkdir -p "$ROOT_DIR/secrets/test/Mess.Modules/Mess.MeasurementDevice.Test"
 fi
 cp -r \
-  "$ROOT_DIR/test/Mess.Modules/Mess.EventStore.Test/assets" \
-  "$ROOT_DIR/secrets/test/Mess.Modules/Mess.EventStore.Test"
+  "$ROOT_DIR/test/Mess.Modules/Mess.MeasurementDevice.Test/assets" \
+  "$ROOT_DIR/secrets/test/Mess.Modules/Mess.MeasurementDevice.Test"
 printf "\n"
 
 if [ ! "$CI" ] && [ ! -f "$ROOT_DIR/.husky/_/husky.sh" ]; then

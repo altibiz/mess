@@ -1,8 +1,8 @@
 using System.Xml.Linq;
 using Microsoft.Extensions.Logging;
-using Mess.EventStore.Abstractions.Parsers.Egauge;
+using Mess.MeasurementDevice.Abstractions.Parsers.Egauge;
 
-namespace Mess.EventStore.Parsers.Egauge;
+namespace Mess.MeasurementDevice.Parsers.Egauge;
 
 public record class EgaugeParser(ILogger<EgaugeParser> logger) : IEgaugeParser
 {

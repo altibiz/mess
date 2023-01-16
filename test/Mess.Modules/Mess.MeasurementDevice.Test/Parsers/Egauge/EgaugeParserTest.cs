@@ -1,10 +1,10 @@
 using Mess.EventStore.Abstractions.Parsers.Egauge;
 using System.Xml.Linq;
-using Mess.EventStore.Test.Assets;
 using Mess.System.Extensions.IDictionary;
 using Mess.System.Extensions.Object;
+using Mess.MeasurementDevice.Test.Assets;
 
-namespace Mess.EventStore.Test;
+namespace Mess.MeasurementDevice.Test;
 
 public record class EgaugeParserTest(
   IEgaugeParser parser,
