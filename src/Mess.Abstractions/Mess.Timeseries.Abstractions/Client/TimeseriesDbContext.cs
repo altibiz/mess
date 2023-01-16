@@ -44,6 +44,7 @@ public abstract class TimeseriesDbContext : DbContext
                 entityParameter,
                 entityType.GetMember("Tenant").First()
               ),
+              // TODO: this has to be invoked and not a constant
               Expression.Constant(Tenants.GetTenantName())
             ),
             new List<ParameterExpression>() { entityParameter }
