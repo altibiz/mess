@@ -11,12 +11,15 @@ public class Migrations : DataMigration
     return 1;
   }
 
-  public Migrations(IContentDefinitionManager content, IRecipeMigrator recipe)
+  public Migrations(
+    IContentDefinitionManager contentDefinitionManager,
+    IRecipeMigrator recipeMigrator
+  )
   {
-    Content = content;
-    Recipe = recipe;
+    _contentDefinitionManager = contentDefinitionManager;
+    _recipeMigrator = recipeMigrator;
   }
 
-  private IContentDefinitionManager Content { get; }
-  private IRecipeMigrator Recipe { get; }
+  private readonly IContentDefinitionManager _contentDefinitionManager;
+  private readonly IRecipeMigrator _recipeMigrator;
 }

@@ -6,7 +6,6 @@ using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Builder;
 using OrchardCore.Modules;
-using OrchardCore.ResourceManagement;
 using OrchardCore.Mvc.Core.Utilities;
 using OrchardCore.Admin;
 using OrchardCore.Navigation;
@@ -25,10 +24,6 @@ public class Startup : StartupBase
 {
   public override void ConfigureServices(IServiceCollection services)
   {
-    services.AddTransient<
-      IConfigureOptions<ResourceManagementOptions>,
-      Resources
-    >();
     services.AddScoped<INavigationProvider, AdminMenu>();
 
     services.AddMartenFromTenantGroups(

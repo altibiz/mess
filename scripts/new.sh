@@ -92,8 +92,6 @@ namespace $NAMESPACE;
 
 public class Resources : IConfigureOptions<ResourceManagementOptions>
 {
-  private static ResourceManifest _manifest;
-
   static Resources()
   {
     _manifest = new ResourceManifest();
@@ -103,6 +101,8 @@ public class Resources : IConfigureOptions<ResourceManagementOptions>
   {
     options.ResourceManifests.Add(_manifest);
   }
+
+  private static ResourceManifest _manifest;
 }
 END
 cat <<END >"$MIGRATIONS"
@@ -119,14 +119,17 @@ public class Migrations : DataMigration
     return 1;
   }
 
-  public Migrations(IContentDefinitionManager content, IRecipeMigrator recipe)
+  public Migrations(
+    IContentDefinitionManager contentDefinitionManager,
+    IRecipeMigrator recipeMigrator
+  )
   {
-    Content = content;
-    Recipe = recipe;
+    _contentDefinitionManager = contentDefinitionManager;
+    _recipeMigrator = recipeMigrator;
   }
 
-  private IContentDefinitionManager Content { get; }
-  private IRecipeMigrator Recipe { get; }
+  private readonly IContentDefinitionManager _contentDefinitionManager;
+  private readonly IRecipeMigrator _recipeMigrator;
 }
 END
 # TODO: better manifest control

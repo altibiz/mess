@@ -1,4 +1,7 @@
+using Mess.Chart.Fields;
+using Mess.Chart.Settings;
 using OrchardCore.ContentManagement.Metadata;
+using OrchardCore.ContentManagement.Metadata.Settings;
 using OrchardCore.Data.Migration;
 using OrchardCore.Recipes.Services;
 
@@ -8,15 +11,31 @@ public class Migrations : DataMigration
 {
   public int Create()
   {
+    _contentDefinitionManager.MigrateFieldSettings<
+      ChartField,
+      ChartFieldSettings
+    >();
+
+    _contentDefinitionManager.AlterPartDefinition(
+      "Chart",
+      builder =>
+        builder
+          .Attachable()
+          .WithDescription("Provides a chart for your content item.")
+    );
+
     return 1;
   }
 
-  public Migrations(IContentDefinitionManager content, IRecipeMigrator recipe)
+  public Migrations(
+    IContentDefinitionManager contentDefinitionManager,
+    IRecipeMigrator recipeMigrator
+  )
   {
-    Content = content;
-    Recipe = recipe;
+    _contentDefinitionManager = contentDefinitionManager;
+    _recipeMigrator = recipeMigrator;
   }
 
-  private IContentDefinitionManager Content { get; }
-  private IRecipeMigrator Recipe { get; }
+  private readonly IContentDefinitionManager _contentDefinitionManager;
+  private readonly IRecipeMigrator _recipeMigrator;
 }
