@@ -9,25 +9,23 @@ namespace Mess.EventStore.Recipes;
 
 public class EventImportStep : IRecipeStepHandler
 {
-  /// <summary>
-  /// Example:
-  /// {
-  ///   "name": "EventImport",
-  ///   "Streams": [
-  ///     {
-  ///       "AggregateType": "Mess.EventStore.Events.EventStream",
-  ///       "Events": [
-  ///         {
-  ///           "EventType": "Mess.EventsStore.Events.Event",
-  ///           "Data": {
-  ///             "Property": "Value"
-  ///           }
-  ///         }
-  ///       ]
-  ///     }
-  ///   ]
-  /// }
-  /// </summary>
+  // Example:
+  // {
+  //   "name": "EventImport",
+  //   "Streams": [
+  //     {
+  //       "AggregateType": "Mess.EventStore.Events.EventStream",
+  //       "Events": [
+  //         {
+  //           "EventType": "Mess.EventsStore.Events.Event",
+  //           "Data": {
+  //             "Property": "Value"
+  //           }
+  //         }
+  //       ]
+  //     }
+  //   ]
+  // }
   public async Task ExecuteAsync(RecipeExecutionContext context)
   {
     if (

@@ -81,6 +81,20 @@ public class EventStoreClient : IEventStoreClient
       }
     );
 
+  public IReadOnlyList<(Type AggregateType, IReadOnlyList<IEvent>)> Export(
+    CancellationToken? cancellationToken = null
+  ) =>
+    throw new NotImplementedException(
+      "Marten has no way of exporting all events"
+    );
+
+  public Task<
+    IReadOnlyList<(Type AggregateType, IReadOnlyList<IEvent>)>
+  > ExportAsync(CancellationToken? cancellationToken = null) =>
+    throw new NotImplementedException(
+      "Marten has no way of exporting all events"
+    );
+
   private void LogConenction(bool connected)
   {
     if (connected)

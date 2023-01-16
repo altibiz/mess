@@ -15,4 +15,12 @@ public interface IEventStoreClient
   public void RecordEvents(Type aggregateType, params IEvent[] events);
 
   public Task RecordEventsAsync(Type aggregateType, params IEvent[] events);
+
+  public IReadOnlyList<(Type AggregateType, IReadOnlyList<IEvent>)> Export(
+    CancellationToken? cancellationToken = null
+  );
+
+  public Task<
+    IReadOnlyList<(Type AggregateType, IReadOnlyList<IEvent>)>
+  > ExportAsync(CancellationToken? cancellationToken = null);
 }
