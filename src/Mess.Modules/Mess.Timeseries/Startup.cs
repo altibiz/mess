@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Builder;
 using OrchardCore.Modules;
@@ -13,6 +14,7 @@ using Mess.Timeseries.Controllers;
 using Mess.Timeseries.Abstractions.Client;
 using Mess.Timeseries.Client;
 using Mess.Timeseries.Abstractions.Extensions.Microsoft;
+using Mess.Timeseries.Options;
 
 namespace Mess.Timeseries;
 
@@ -32,7 +34,11 @@ public class Startup : StartupBase
     services.AddScoped<ITimeseriesConnection, TimeseriesConnection>();
     services.AddSingleton<ITimeseriesClient, TimeseriesClient>();
 
-    services.AddSingleton<ITenantProvider, ShellTenantProvider>();
+    services.AddSingleton<ITenants, ShellTenantProvider>();
+
+    services.Configure<TimeseriesOptions>(
+      _configuration.GetRequiredSection("Mess").GetRequiredSection("EventStore")
+    );
   }
 
   public override void Configure(
@@ -57,7 +63,7 @@ public class Startup : StartupBase
     routes.MapAreaControllerRoute(
       name: "Mess.Timeseries.Admin",
       areaName: "Mess.Timeseries",
-      pattern: $"{Admin.AdminUrlPrefix}/timeseries",
+      pattern: $"{_adminOptions.AdminUrlPrefix}/timeseries",
       defaults: new
       {
         controller = typeof(AdminController).ControllerName(),
@@ -66,10 +72,15 @@ public class Startup : StartupBase
     );
   }
 
-  public Startup(IOptions<AdminOptions> adminOptions)
+  public Startup(
+    IOptions<AdminOptions> adminOptions,
+    IConfiguration configuration
+  )
   {
-    Admin = adminOptions.Value;
+    _adminOptions = adminOptions.Value;
+    _configuration = configuration;
   }
 
-  private AdminOptions Admin { get; }
+  private readonly AdminOptions _adminOptions;
+  private readonly IConfiguration _configuration;
 }

@@ -12,12 +12,13 @@ using OrchardCore.Admin;
 using OrchardCore.Navigation;
 using Mess.EventStore.Extensions.Microsoft;
 using Mess.OrchardCore.Extensions.OrchardCore;
-using Mess.Tenants;
 using Mess.OrchardCore.Tenants;
 using Mess.EventStore.Abstractions.Client;
 using Mess.EventStore.Client;
 using Mess.EventStore.Controllers;
 using Mess.EventStore.Services;
+using Mess.Tenants;
+using Mess.EventStore.Options;
 
 namespace Mess.EventStore;
 
@@ -41,7 +42,11 @@ public class Startup : StartupBase
     services.AddScoped<IEventStoreQuery, EventStoreQuery>();
     services.AddSingleton<IEventStoreClient, EventStoreClient>();
 
-    services.AddSingleton<ITenantProvider, ShellTenantProvider>();
+    services.AddSingleton<ITenants, ShellTenantProvider>();
+
+    services.Configure<EventStoreOptions>(
+      Configuration.GetRequiredSection("Mess").GetRequiredSection("EventStore")
+    );
   }
 
   public override void Configure(
