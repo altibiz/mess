@@ -22,7 +22,7 @@ public class Startup
     HostBuilderContext hostBuilderContext
   )
   {
-    services.AddScoped<ITenantProvider, TestTenantProvider>();
+    services.AddScoped<ITenants, TestTenants>();
 
     services.AddScoped<ITimeseriesConnection, TimeseriesConnection>();
     services.AddSingleton<ITimeseriesClient, TimeseriesClient>();

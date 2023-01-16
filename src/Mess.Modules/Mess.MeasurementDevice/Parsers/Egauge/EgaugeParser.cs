@@ -5,10 +5,8 @@ using Mess.Tenants;
 
 namespace Mess.MeasurementDevice.Parsers.Egauge;
 
-public record class EgaugeParser(
-  ILogger<EgaugeParser> Logger,
-  ITenantProvider Tenant
-) : IEgaugeParser
+public record class EgaugeParser(ILogger<EgaugeParser> Logger, ITenants Tenant)
+  : IEgaugeParser
 {
   public EgaugeMeasurement? Parse(XDocument xml)
   {
@@ -51,7 +49,7 @@ public record class EgaugeParser(
 
     return new(
       Registers: result,
-      Tenant: Tenant.GetTenantName(),
+      Tenant: Tenant.Current.Name,
       Source: "egauge", // TODO: extract source
       Timestamp: timestamp.Value
     );

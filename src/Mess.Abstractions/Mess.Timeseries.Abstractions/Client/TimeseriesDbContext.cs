@@ -9,7 +9,7 @@ namespace Mess.Timeseries.Abstractions.Client;
 public abstract class TimeseriesDbContext : DbContext
 {
   protected override void OnConfiguring(DbContextOptionsBuilder builder) =>
-    builder.UseNpgsql(Tenants.GetTenantConnectionString());
+    builder.UseNpgsql(_tenants.Current.ConnectionString);
 
   protected override void OnModelCreating(ModelBuilder builder)
   {
@@ -45,7 +45,7 @@ public abstract class TimeseriesDbContext : DbContext
                 entityType.GetMember("Tenant").First()
               ),
               // TODO: this has to be invoked and not a constant
-              Expression.Constant(Tenants.GetTenantName())
+              Expression.Constant(_tenants.Current.Name)
             ),
             new List<ParameterExpression>() { entityParameter }
           )
@@ -54,11 +54,11 @@ public abstract class TimeseriesDbContext : DbContext
     }
   }
 
-  public TimeseriesDbContext(DbContextOptions options, ITenantProvider tenants)
+  public TimeseriesDbContext(DbContextOptions options, ITenants tenants)
     : base(options)
   {
-    Tenants = tenants;
+    _tenants = tenants;
   }
 
-  ITenantProvider Tenants { get; }
+  private readonly ITenants _tenants;
 }

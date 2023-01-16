@@ -11,14 +11,13 @@ using OrchardCore.Mvc.Core.Utilities;
 using OrchardCore.Admin;
 using OrchardCore.Navigation;
 using Mess.EventStore.Extensions.Microsoft;
-using Mess.OrchardCore.Extensions.OrchardCore;
 using Mess.OrchardCore.Tenants;
+using Mess.OrchardCore.Extensions.Microsoft;
 using Mess.EventStore.Abstractions.Client;
 using Mess.EventStore.Client;
 using Mess.EventStore.Controllers;
 using Mess.EventStore.Services;
 using Mess.Tenants;
-using Mess.EventStore.Options;
 
 namespace Mess.EventStore;
 
@@ -33,20 +32,16 @@ public class Startup : StartupBase
     services.AddScoped<INavigationProvider, AdminMenu>();
 
     services.AddMartenFromTenantGroups(
-      Environment.IsDevelopment(),
-      // TODO: create configurable options for tenants
-      Configuration.GetOrchardAutoSetupTenantNamesGroupedByConnectionString()
+      _environment.IsDevelopment(),
+      // TODO: from shell settings somehow
+      _configuration.GetOrchardCoreAutoSetupTenantNamesGroupedByConnectionString()
     );
 
     services.AddScoped<IEventStoreSession, EventStoreSession>();
     services.AddScoped<IEventStoreQuery, EventStoreQuery>();
     services.AddSingleton<IEventStoreClient, EventStoreClient>();
 
-    services.AddSingleton<ITenants, ShellTenantProvider>();
-
-    services.Configure<EventStoreOptions>(
-      Configuration.GetRequiredSection("Mess").GetRequiredSection("EventStore")
-    );
+    services.AddSingleton<ITenants, ShellTenants>();
   }
 
   public override void Configure(
@@ -68,7 +63,7 @@ public class Startup : StartupBase
     routes.MapAreaControllerRoute(
       name: "Mess.EventStore.AdminController.Index",
       areaName: "Mess.EventStore",
-      pattern: $"{Admin.AdminUrlPrefix}/EventStore",
+      pattern: $"{_adminOptions.AdminUrlPrefix}/EventStore",
       defaults: new
       {
         controller = typeof(AdminController).ControllerName(),
@@ -84,14 +79,14 @@ public class Startup : StartupBase
     IOptions<AdminOptions> adminOptions
   )
   {
-    Environment = environment;
-    Logger = logger;
-    Configuration = configuration;
-    Admin = adminOptions.Value;
+    _environment = environment;
+    _logger = logger;
+    _configuration = configuration;
+    _adminOptions = adminOptions.Value;
   }
 
-  private IHostEnvironment Environment { get; }
-  private ILogger Logger { get; }
-  private IConfiguration Configuration { get; }
-  private AdminOptions Admin { get; }
+  private readonly IHostEnvironment _environment;
+  private readonly ILogger _logger;
+  private readonly IConfiguration _configuration;
+  private readonly AdminOptions _adminOptions;
 }

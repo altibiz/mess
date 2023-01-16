@@ -2,10 +2,8 @@ using Mess.Timeseries.Abstractions.Client;
 
 namespace Mess.Timeseries.Test;
 
-public record class ConnectionTest(
-  ITimeseriesClient client,
-  ITenantProvider tenant
-) : DatabaseIsolatedTest(tenant)
+public record class ConnectionTest(ITimeseriesClient client, ITenants tenants)
+  : DatabaseIsolatedTest(tenants)
 {
   [Fact]
   public async Task ConnectionCheckTestAsync()

@@ -2,10 +2,8 @@ using Mess.EventStore.Abstractions.Client;
 
 namespace Mess.EventStore.Test;
 
-public record class ConnectionTest(
-  IEventStoreClient client,
-  ITenantProvider tenant
-) : DatabaseIsolatedTest(tenant)
+public record class ConnectionTest(IEventStoreClient client, ITenants tenants)
+  : DatabaseIsolatedTest(tenants)
 {
   [Fact]
   public async Task ConnectionCheckTestAsync()

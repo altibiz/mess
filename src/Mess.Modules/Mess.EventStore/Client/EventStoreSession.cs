@@ -19,10 +19,10 @@ public sealed class EventStoreSession
       );
   }
 
-  public EventStoreSession(IServiceProvider services, ITenantProvider tenant)
+  public EventStoreSession(IServiceProvider services, ITenants tenants)
   {
     var store = services.GetRequiredService<IDocumentStore>();
-    _value = store.OpenSession(tenant.GetTenantName());
+    _value = store.OpenSession(tenants.Current.Name);
   }
 
   private IDocumentSession? _value = null;

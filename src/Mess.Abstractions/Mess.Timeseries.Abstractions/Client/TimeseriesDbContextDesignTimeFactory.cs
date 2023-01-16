@@ -16,7 +16,7 @@ public abstract class TimeseriesDbContextDesignTimeFactory<T>
         var parameters = constructor.GetParameters();
         return parameters.Length == 2
           && parameters[0].ParameterType == typeof(DbContextOptions<T>)
-          && parameters[1].ParameterType == typeof(ITenantProvider);
+          && parameters[1].ParameterType == typeof(ITenants);
       });
     if (constructor is null)
     {
@@ -32,9 +32,9 @@ public abstract class TimeseriesDbContextDesignTimeFactory<T>
         new object[]
         {
           optionsBuilder.Options,
-          new DesignTimeTenantProvider(
+          new DesignTimeTenants(
             tenantName: "Default",
-            // TODO: configurable
+            // TODO: configurable?
             connactionString: "Server=localhost;Port=5432;User Id=mess;Password=mess;Database=mess"
           )
         }

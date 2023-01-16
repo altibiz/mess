@@ -12,6 +12,6 @@ public class MeasurementDbContext : TimeseriesDbContext
 
   public MeasurementDbContext(
     DbContextOptions<MeasurementDbContext> options,
-    ITenantProvider tenants
+    ITenants tenants
   ) : base(options, tenants) { }
 }

@@ -32,7 +32,7 @@ public class Startup
     var environment = hostBuilderContext.HostingEnvironment;
     var configuration = hostBuilderContext.Configuration;
 
-    services.AddScoped<ITenantProvider, TestTenantProvider>();
+    services.AddScoped<ITenants, TestTenants>();
 
     // NOTE: leaving this here if someone else tries to test with mocks
     // services.AddMock<IDocumentStore>();
@@ -41,14 +41,14 @@ public class Startup
     // because we want a different IDocumentStore for each test
     services.AddScoped<IDocumentStore>(services =>
     {
-      var tenant = services.GetRequiredService<ITenantProvider>();
+      var tenant = services.GetRequiredService<ITenants>();
       return DocumentStore.For(options =>
       {
         options.MultiTenantedDatabases(databases =>
         {
           databases.AddSingleTenantDatabase(
-            tenant.GetTenantConnectionString(),
-            tenant.GetTenantName()
+            tenant.Current.ConnectionString,
+            tenant.Current.Name
           );
         });
       });

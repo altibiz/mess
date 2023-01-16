@@ -7,8 +7,25 @@ using Mess.Tenants;
 
 namespace Mess.Xunit.Tenants;
 
-public class TestTenantProvider : ITenantProvider
+public class TestTenants : ITenants
 {
+  public Tenant Current => new(GetTenantName(), GetTenantConnectionString());
+
+  // NOTE: not needed for tests
+  public IReadOnlyList<Tenant> All => throw new NotImplementedException();
+
+  // NOTE: not needed for tests
+  public void Impersonate(Tenant tenant, Action action)
+  {
+    throw new NotImplementedException();
+  }
+
+  // NOTE: not needed for tests
+  public Task ImpersonateAsync(Tenant tenant, Func<Task> action)
+  {
+    throw new NotImplementedException();
+  }
+
   public string GetTenantName()
   {
     var tenantName =
@@ -33,12 +50,11 @@ public class TestTenantProvider : ITenantProvider
     get =>
       Configuration
         .GetRequiredSection("Mess")
-        .GetRequiredSection("EventStore")
         .GetRequiredSection("Test")
         .GetRequiredSection("Tenant");
   }
 
-  public TestTenantProvider(
+  public TestTenants(
     IConfiguration configuration,
     ITestOutputHelperAccessor testAccessor
   )

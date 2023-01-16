@@ -18,9 +18,9 @@ public sealed class TimeseriesConnection
       );
   }
 
-  public TimeseriesConnection(ITenantProvider tenant)
+  public TimeseriesConnection(ITenants tenants)
   {
-    _value = new NpgsqlConnection(tenant.GetTenantConnectionString());
+    _value = new NpgsqlConnection(tenants.Current.ConnectionString);
   }
 
   private NpgsqlConnection? _value = null;

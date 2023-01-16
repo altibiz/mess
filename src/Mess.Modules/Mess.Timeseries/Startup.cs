@@ -14,7 +14,6 @@ using Mess.Timeseries.Controllers;
 using Mess.Timeseries.Abstractions.Client;
 using Mess.Timeseries.Client;
 using Mess.Timeseries.Abstractions.Extensions.Microsoft;
-using Mess.Timeseries.Options;
 
 namespace Mess.Timeseries;
 
@@ -34,11 +33,7 @@ public class Startup : StartupBase
     services.AddScoped<ITimeseriesConnection, TimeseriesConnection>();
     services.AddSingleton<ITimeseriesClient, TimeseriesClient>();
 
-    services.AddSingleton<ITenants, ShellTenantProvider>();
-
-    services.Configure<TimeseriesOptions>(
-      _configuration.GetRequiredSection("Mess").GetRequiredSection("EventStore")
-    );
+    services.AddSingleton<ITenants, ShellTenants>();
   }
 
   public override void Configure(

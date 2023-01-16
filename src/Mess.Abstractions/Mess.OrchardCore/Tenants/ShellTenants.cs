@@ -5,12 +5,13 @@ using Mess.OrchardCore.Extensions.OrchardCore;
 
 namespace Mess.OrchardCore.Tenants;
 
-public record class ShellTenantProvider(
-  IShellSettingsManager ShellSettingsManager
-) : ITenants
+public record class ShellTenants(IShellSettingsManager ShellSettingsManager)
+  : ITenants
 {
   public Tenant Current =>
-    ShellScope.Current.ShellContext.Settings.GetTenant();
+    _threadLocalTenant.Value
+    ?? _asyncLocalTenant.Value
+    ?? ShellScope.Current.ShellContext.Settings.GetTenant();
 
   public IReadOnlyList<Tenant> All =>
     ShellSettingsManager

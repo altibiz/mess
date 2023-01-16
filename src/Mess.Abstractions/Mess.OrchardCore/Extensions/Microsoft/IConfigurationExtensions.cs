@@ -1,11 +1,11 @@
-namespace Mess.OrchardCore.Extensions.OrchardCore;
+namespace Mess.OrchardCore.Extensions.Microsoft;
 
 public static class IConfigurationExtensions
 {
   public static IDictionary<
     string,
     IEnumerable<string>
-  > GetOrchardAutoSetupTenantNamesGroupedByConnectionString(
+  > GetOrchardCoreAutoSetupTenantNamesGroupedByConnectionString(
     this IConfiguration configuration
   ) =>
     configuration
@@ -15,7 +15,7 @@ public static class IConfigurationExtensions
       .GetChildren()
       .GroupBy(
         tenant =>
-          tenant.GetValue<string>("DatabaseConnectionString")
+          tenant.GetValue<string>("ConnectionString")
           ?? throw new InvalidOperationException(
             "Tenant is missing a ConnectionString"
           )
@@ -25,7 +25,7 @@ public static class IConfigurationExtensions
         group =>
           group.Select(
             tenant =>
-              tenant.GetValue<string>("ShellName")
+              tenant.GetValue<string>("Name")
               ?? throw new InvalidOperationException(
                 "Tenant is missing a ShellName"
               )

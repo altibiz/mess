@@ -17,10 +17,10 @@ public sealed class EventStoreQuery
       ?? throw new InvalidOperationException("Query has already been disposed");
   }
 
-  public EventStoreQuery(IServiceProvider services, ITenantProvider tenant)
+  public EventStoreQuery(IServiceProvider services, ITenants tenants)
   {
     var store = services.GetRequiredService<IDocumentStore>();
-    _value = store.QuerySession(tenant.GetTenantName());
+    _value = store.QuerySession(tenants.Current.Name);
   }
 
   private IQuerySession? _value = null;

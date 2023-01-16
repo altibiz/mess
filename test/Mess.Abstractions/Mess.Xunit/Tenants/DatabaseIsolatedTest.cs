@@ -9,9 +9,9 @@ namespace Mess.Xunit.Tenants;
 
 public record class DatabaseIsolatedTest
 {
-  public DatabaseIsolatedTest(ITenantProvider tenant)
+  public DatabaseIsolatedTest(ITenants tenant)
   {
-    var tenantConnectionString = tenant.GetTenantConnectionString();
+    var tenantConnectionString = tenant.Current.ConnectionString;
     var tenantDatabase = tenantConnectionString.RegexReplace(
       $".*{ConnectionStringExtensions.CONNECTION_STRING_DATABASE_REGEX}.*",
       @"$1"

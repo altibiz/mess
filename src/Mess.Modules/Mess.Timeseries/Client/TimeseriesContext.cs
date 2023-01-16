@@ -9,6 +9,6 @@ public class TimeseriesContext : TimeseriesDbContext
 {
   public TimeseriesContext(
     DbContextOptions<TimeseriesContext> options,
-    ITenantProvider tenants
+    ITenants tenants
   ) : base(options, tenants) { }
 }
