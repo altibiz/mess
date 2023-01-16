@@ -1,4 +1,4 @@
-# MESS
+# Mess
 
 Measure Event Store (Something).
 
@@ -21,3 +21,11 @@ install them and follow the setup instructions afterwards to run Mess.
 2. Run the [prepare](./scripts/prepare.sh) script with `bash`
 3. Run the [watch](./scripts/watch.sh) script with `bash`
 4. Open [Mess](https://localhost:3001)
+
+### Timeseries migrations
+
+When changing the timeseries model in any of the relevant projects run:
+
+```bash
+bash ./scripts/migrations.sh "<PROJECT_NAME>" "<MIGRATION_NAME>"
+```
