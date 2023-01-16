@@ -66,6 +66,7 @@ END
 cat <<END >"$STARTUP"
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using OrchardCore.Data.Migration;
 using OrchardCore.Modules;
 using OrchardCore.ResourceManagement;
 
@@ -139,3 +140,14 @@ printf "[Mess] Adding new NPM package '%s' in '%s'\n" "$PACKAGE_NAME" "$ASSETS"
 cp -r "$ROOT_DIR/src/Mess.Assets/skeleton" "$ASSETS"
 sed -i'' "s/name-of-module-or-theme/$LOWERCASE_NAME/" "$PACKAGE"
 printf "\n"
+
+printf "[Mess] Do you want to run 'prepare.sh'? (y/n) "
+read -r yn
+printf "\n"
+case $yn in
+  [Yy])
+    printf "[Mess] Running 'prepare.sh'...\n"
+    "$SCRIPT_DIR/prepare.sh"
+    printf "\n"
+    ;;
+esac
