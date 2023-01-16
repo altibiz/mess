@@ -1,5 +1,3 @@
-using Microsoft.Extensions.Configuration;
-
 namespace Mess.OrchardCore.Extensions.OrchardCore;
 
 public static class IConfigurationExtensions

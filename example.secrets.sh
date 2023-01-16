@@ -7,3 +7,6 @@ export OrchardCore__OrchardCore_AutoSetup__Tenants__0__DatabaseProvider="Postgre
 export OrchardCore__OrchardCore_AutoSetup__Tenants__0__DatabaseConnectionString="Server=localhost;Port=5432;User Id=mess;Password=mess;Database=mess",
 export OrchardCore__OrchardCore_AutoSetup__Tenants__0__DatabaseTablePrefix="ozds"
 export OrchardCore__OrchardCore_AutoSetup__Tenants__0__RequestUrlPrefix="ozds"
+
+export Mess__EventStore__Tenants__0__ConnectionString="Server=localhost;Port=5432;User Id=mess;Password=mess;Database=mess"
+export Mess__Timeseries__Tenants__0__ConnectionString="Server=localhost;Port=5432;User Id=mess;Password=mess;Database=mess"

@@ -1,27 +1,41 @@
 using OrchardCore.Environment.Shell.Scope;
 using OrchardCore.Environment.Shell;
 using Mess.Tenants;
+using Mess.OrchardCore.Extensions.OrchardCore;
 
 namespace Mess.OrchardCore.Tenants;
 
-public class ShellTenantProvider : ITenantProvider
+public record class ShellTenantProvider(
+  IShellSettingsManager ShellSettingsManager
+) : ITenants
 {
-  public string GetTenantName() => GetTenantName(ShellScope.Current);
+  public Tenant Current =>
+    ShellScope.Current.ShellContext.Settings.GetTenant();
 
-  public string GetTenantConnectionString() =>
-    GetTenantConnectionString(ShellScope.Current);
+  public IReadOnlyList<Tenant> All =>
+    ShellSettingsManager
+      .LoadSettingsAsync()
+      .Result.Select(ShellSettingsExtensions.GetTenant)
+      .ToList();
 
-  public string GetTenantName(ShellScope shellScope) =>
-    GetTenantName(shellScope?.ShellContext?.Settings);
+  public void Impersonate(Tenant tenant, Action action)
+  {
+    _threadLocalTenant.Value = tenant;
+    action();
+    _threadLocalTenant.Value = null;
+  }
 
-  public string GetTenantConnectionString(ShellScope? shellScope) =>
-    GetTenantConnectionString(shellScope?.ShellContext?.Settings);
+  public async Task ImpersonateAsync(Tenant tenant, Func<Task> action)
+  {
+    await Task.Run(async () =>
+    {
+      _asyncLocalTenant.Value = tenant;
+      await action();
+      _asyncLocalTenant.Value = null;
+    });
+  }
 
-  public string GetTenantName(ShellSettings? settings) =>
-    settings?.Name
-    ?? throw new InvalidOperationException("Tenant must be activated");
+  private AsyncLocal<Tenant?> _asyncLocalTenant { get; } = new();
 
-  public string GetTenantConnectionString(ShellSettings? settings) =>
-    settings?.ShellConfiguration?["ConnectionString"]
-    ?? throw new InvalidOperationException($"Tenant must be activated");
+  private ThreadLocal<Tenant?> _threadLocalTenant { get; } = new();
 }
