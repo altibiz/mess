@@ -3,6 +3,7 @@ using Mess.Chart.Abstractions.Models;
 namespace Mess.Timeseries.Chart;
 
 public record class TimeseriesChartProviderParameters(
+  string Source,
   TimeSpan HistorySpan,
   List<TimeseriesChartProviderParametersField> Fields
 ) : IChartProviderParameters
