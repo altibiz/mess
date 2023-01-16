@@ -17,7 +17,7 @@ public static class IConfigurationExtensions
         tenant =>
           tenant.GetValue<string>("DatabaseConnectionString")
           ?? throw new InvalidOperationException(
-            "Tenant is missing a ConnectionString"
+            "Tenant is missing a DatabaseConnectionString"
           )
       )
       .ToDictionary(
@@ -25,7 +25,7 @@ public static class IConfigurationExtensions
         group =>
           group.Select(
             tenant =>
-              tenant.GetValue<string>("Name")
+              tenant.GetValue<string>("ShellName")
               ?? throw new InvalidOperationException(
                 "Tenant is missing a ShellName"
               )

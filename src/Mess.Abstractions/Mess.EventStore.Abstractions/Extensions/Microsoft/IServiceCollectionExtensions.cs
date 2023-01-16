@@ -8,6 +8,6 @@ public static class IServiceCollectionExtensions
     this IServiceCollection services
   ) where T : class, IProjectionDispatcher
   {
-    services.AddScoped<IProjectionDispatcher>();
+    services.AddScoped<IProjectionDispatcher, T>();
   }
 }

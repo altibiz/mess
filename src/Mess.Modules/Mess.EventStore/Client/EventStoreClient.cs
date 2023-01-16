@@ -61,6 +61,26 @@ public class EventStoreClient : IEventStoreClient
       }
     );
 
+  public void RecordEvents(Type aggregateType, params IEvent[] events) =>
+    Services.WithEventStoreSession(session =>
+    {
+      session.Events.StartStream(aggregateType, Guid.NewGuid(), events);
+      session.SaveChanges();
+
+      return true;
+    });
+
+  public Task RecordEventsAsync(Type aggregateType, params IEvent[] events) =>
+    Services.WithEventStoreSessionAsync(
+      async (session) =>
+      {
+        session.Events.StartStream(aggregateType, Guid.NewGuid(), events);
+        await session.SaveChangesAsync();
+
+        return true;
+      }
+    );
+
   private void LogConenction(bool connected)
   {
     if (connected)

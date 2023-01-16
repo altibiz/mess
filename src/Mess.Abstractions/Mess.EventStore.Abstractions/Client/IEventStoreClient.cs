@@ -11,4 +11,8 @@ public interface IEventStoreClient
   public void RecordEvents<T>(params IEvent[] events) where T : class;
 
   public Task RecordEventsAsync<T>(params IEvent[] events) where T : class;
+
+  public void RecordEvents(Type aggregateType, params IEvent[] events);
+
+  public Task RecordEventsAsync(Type aggregateType, params IEvent[] events);
 }

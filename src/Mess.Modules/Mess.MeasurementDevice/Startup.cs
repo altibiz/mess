@@ -45,7 +45,7 @@ public class Startup : StartupBase
     routes.MapAreaControllerRoute(
       name: "Mess.MeasurementDevice.PushController.Egauge",
       areaName: "Mess.MeasurementDevice",
-      pattern: $"/push/egauge",
+      pattern: "/Push/Egauge",
       defaults: new
       {
         controller = typeof(PushController).ControllerName(),

@@ -13,17 +13,22 @@ public class AdminMenu : INavigationProvider
     }
 
     builder.Add(
-      S["Data"],
-      data =>
-        data.Add(
-          S["Timeseries"],
-          S["Timeseries"].PrefixPosition(),
-          entry =>
-            entry
-              .AddClass("timeseries")
-              .Id("timeseries")
-              .Action("Index", "Admin", new { area = "Mess.Timeseries" })
-              .LocalNav()
+      S["Configuration"],
+      S["Configuration"].PrefixPosition(),
+      configuration =>
+        configuration.Add(
+          S["Data"],
+          data =>
+            data.Add(
+              S["Timeseries"],
+              S["Timeseries"].PrefixPosition(),
+              entry =>
+                entry
+                  .AddClass("timeseries")
+                  .Id("timeseries")
+                  .Action("Index", "Admin", new { area = "Mess.Timeseries" })
+                  .LocalNav()
+            )
         )
     );
 

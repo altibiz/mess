@@ -13,17 +13,23 @@ public class AdminMenu : INavigationProvider
     }
 
     builder.Add(
-      S["Data"],
-      data =>
-        data.Add(
-          S["Event Store"],
-          S["Event Store"].PrefixPosition(),
-          entry =>
-            entry
-              .AddClass("event-store")
-              .Id("event-store")
-              .Action("Index", "Admin", new { area = "Mess.EventStore" })
-              .LocalNav()
+      S["Configuration"],
+      S["Configuration"].PrefixPosition(),
+      configuration =>
+        configuration.Add(
+          S["Data"],
+          S["Data"].PrefixPosition(),
+          data =>
+            data.Add(
+              S["Event Store"],
+              S["Event Store"].PrefixPosition(),
+              entry =>
+                entry
+                  .AddClass("event-store")
+                  .Id("event-store")
+                  .Action("Index", "Admin", new { area = "Mess.EventStore" })
+                  .LocalNav()
+            )
         )
     );
 
