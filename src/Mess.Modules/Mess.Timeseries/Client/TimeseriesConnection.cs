@@ -1,6 +1,6 @@
+using Npgsql;
 using Mess.Tenants;
 using Mess.Timeseries.Abstractions.Client;
-using Npgsql;
 
 namespace Mess.Timeseries.Client;
 

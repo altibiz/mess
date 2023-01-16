@@ -156,17 +156,19 @@ public static class EgaugeRegisterTypeString
 }
 
 public readonly record struct EgaugeRegister(
-  EgaugeRegisterType type,
-  EgaugeRegisterUnit unit,
-  decimal value
+  EgaugeRegisterType Type,
+  EgaugeRegisterUnit Unit,
+  decimal Value
 );
 
 public readonly record struct EgaugeMeasurement(
-  IDictionary<string, EgaugeRegister> registers,
-  DateTime timestamp
+  IDictionary<string, EgaugeRegister> Registers,
+  string Tenant,
+  string Source,
+  DateTime Timestamp
 )
 {
-  public float Power => (float)registers.GetOrDefault("P").value;
+  public float Power => (float)Registers.GetOrDefault("P").Value;
 
-  public float Voltage => (float)registers.GetOrDefault("L1 Voltage").value;
+  public float Voltage => (float)Registers.GetOrDefault("L1 Voltage").Value;
 };

@@ -1,6 +1,6 @@
 using Mess.Tenants;
 
-namespace Mess.Timeseries.Client;
+namespace Mess.Timeseries.Abstractions.Client;
 
 public record class DesignTimeTenantProvider(
   string tenantName,

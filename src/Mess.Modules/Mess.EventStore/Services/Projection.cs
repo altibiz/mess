@@ -22,12 +22,14 @@ public class Projection : IProjection
 
     using var scope = Services.CreateScope();
 
+    var events = new Events(streams);
+
     var dispatchers =
       scope.ServiceProvider.GetServices<IProjectionDispatcher>();
 
     foreach (var dispatcher in dispatchers)
     {
-      dispatcher.Apply(Services, streams);
+      dispatcher.Apply(Services, events);
     }
   }
 
@@ -44,12 +46,14 @@ public class Projection : IProjection
 
     await using var scope = Services.CreateAsyncScope();
 
+    var events = new Events(streams);
+
     var dispatchers =
       scope.ServiceProvider.GetServices<IProjectionDispatcher>();
 
     foreach (var dispatcher in dispatchers)
     {
-      await dispatcher.ApplyAsync(Services, streams, cancellationToken);
+      await dispatcher.ApplyAsync(Services, events, cancellationToken);
     }
   }
 }

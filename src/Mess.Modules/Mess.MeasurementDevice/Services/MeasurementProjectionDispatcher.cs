@@ -1,7 +1,6 @@
-using Marten.Events;
 using Mess.EventStore.Abstractions.Events;
+using Mess.MeasurementDevice.Abstractions.Client;
 using Mess.MeasurementDevice.Events;
-using Mess.Timeseries.Abstractions.Client;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -9,85 +8,59 @@ namespace Mess.MeasurementDevice.Services;
 
 public class MeasurementProjectionDispatcher : IProjectionDispatcher
 {
-  public void Apply(
-    IServiceProvider services,
-    IReadOnlyList<StreamAction> streams
-  )
+  public void Apply(IServiceProvider services, IEvents events)
   {
-    var timeseriesClient = services.GetRequiredService<ITimeseriesClient>();
+    var client = services.GetRequiredService<IMeasurementClient>();
     var logger = services.GetRequiredService<
       ILogger<MeasurementProjectionDispatcher>
     >();
 
-    var egaugeEvents = streams
-      .SelectMany(stream => stream.Events)
-      .Where(@event => @event.EventType == typeof(EgaugeMeasured))
-      .OrderBy(@event => @event.Sequence)
-      .Select(
-        @event => (Data: @event.Data as EgaugeMeasured, Tenant: @event.TenantId)
-      )
-      .Where(@event => @event.Data is not null)
-      .Cast<(EgaugeMeasured Data, string Tenant)>();
-
-    foreach (var egaugeEvent in egaugeEvents)
+    foreach (var egaugeEvent in events.OfType<EgaugeMeasured>())
     {
-      timeseriesClient.AddMeasurement(
+      client.AddEgaugeMeasurement(
         new(
-          tenant: egaugeEvent.Tenant,
-          sourceId: "egauge",
-          timestamp: egaugeEvent.Data.measurement.timestamp,
-          power: egaugeEvent.Data.measurement.Power,
-          voltage: egaugeEvent.Data.measurement.Voltage
+          Tenant: egaugeEvent.Tenant,
+          Timestamp: egaugeEvent.Timestamp,
+          Source: egaugeEvent.Source,
+          Power: egaugeEvent.Measurement.Power,
+          Voltage: egaugeEvent.Measurement.Voltage
         )
       );
     }
 
-    logger.LogInformation("Applied {count} streams", streams.Count);
+    logger.LogInformation("Applied events");
   }
 
   public async Task ApplyAsync(
     IServiceProvider services,
-    IReadOnlyList<StreamAction> streams,
+    IEvents events,
     CancellationToken cancellationToken
   )
   {
-    var timeseriesClient = services.GetRequiredService<ITimeseriesClient>();
+    var client = services.GetRequiredService<IMeasurementClient>();
     var logger = services.GetRequiredService<
       ILogger<MeasurementProjectionDispatcher>
     >();
 
-    var egaugeEvents = streams
-      .SelectMany(stream => stream.Events)
-      .Where(@event => @event.EventType == typeof(EgaugeMeasured))
-      .OrderBy(@event => @event.Sequence)
-      .Select(
-        @event => (Data: @event.Data as EgaugeMeasured, Tenant: @event.TenantId)
-      )
-      .Where(@event => @event.Data is not null)
-      .Cast<(EgaugeMeasured Data, string Tenant)>();
-
-    foreach (var egaugeEvent in egaugeEvents)
+    foreach (var egaugeEvent in events.OfType<EgaugeMeasured>())
     {
-      await timeseriesClient.AddMeasurementAsync(
+      await client.AddEgaugeMeasurementAsync(
         new(
-          tenant: egaugeEvent.Tenant,
-          sourceId: "egauge",
-          timestamp: egaugeEvent.Data.measurement.timestamp,
-          power: egaugeEvent.Data.measurement.Power,
-          voltage: egaugeEvent.Data.measurement.Voltage
+          Tenant: egaugeEvent.Tenant,
+          Timestamp: egaugeEvent.Timestamp,
+          Source: egaugeEvent.Source,
+          Power: egaugeEvent.Measurement.Power,
+          Voltage: egaugeEvent.Measurement.Voltage
         )
       );
 
       if (cancellationToken.IsCancellationRequested)
       {
-        logger.LogInformation(
-          "Applied {count} streams and cancelled",
-          streams.Count
-        );
+        logger.LogInformation("Applied events and cancelled");
         return;
       }
     }
 
-    logger.LogInformation("Applied {count} streams", streams.Count);
+    logger.LogInformation("Applied events");
   }
 }

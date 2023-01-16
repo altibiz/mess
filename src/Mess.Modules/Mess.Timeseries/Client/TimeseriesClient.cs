@@ -1,6 +1,6 @@
-using Mess.Timeseries.Abstractions.Client;
 using Microsoft.Extensions.Logging;
-using AbstractMeasurement = Mess.Timeseries.Abstractions.Entities.Measurement;
+using Mess.Timeseries.Abstractions.Client;
+using Mess.Timeseries.Abstractions.Extensions.Microsoft;
 
 namespace Mess.Timeseries.Client;
 
@@ -31,42 +31,6 @@ public class TimeseriesClient : ITimeseriesClient
         return connected;
       }
     );
-
-  public Task AddMeasurementAsync(AbstractMeasurement measurement) =>
-    Services.WithTimeseriesContextAsync(async context =>
-    {
-      await context.Measurements.AddAsync(
-        new()
-        {
-          Tenant = measurement.tenant,
-          SourceId = measurement.sourceId,
-          Timestamp = measurement.timestamp,
-          Power = measurement.power,
-          Voltage = measurement.voltage
-        }
-      );
-      await context.SaveChangesAsync();
-
-      return true;
-    });
-
-  public void AddMeasurement(AbstractMeasurement measurement) =>
-    Services.WithTimeseriesContext(context =>
-    {
-      context.Measurements.Add(
-        new()
-        {
-          Tenant = measurement.tenant,
-          SourceId = measurement.sourceId,
-          Timestamp = measurement.timestamp,
-          Power = measurement.power,
-          Voltage = measurement.voltage
-        }
-      );
-      context.SaveChanges();
-
-      return true;
-    });
 
   private void LogConenction(bool connected)
   {

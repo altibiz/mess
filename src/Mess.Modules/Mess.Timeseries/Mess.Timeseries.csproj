@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <ItemGroup>
-    <!-- NOTE: Marten requires 6 -->
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="$(MessNpgsqlVersion)" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="$(MessNpgsqlVersion)" />
     <PackageReference Include="OrchardCore.Admin.Abstractions" Version="$(MessOrchardVersion)" />

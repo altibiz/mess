@@ -7,12 +7,12 @@ using OrchardCore.ResourceManagement;
 using OrchardCore.Mvc.Core.Utilities;
 using OrchardCore.Admin;
 using OrchardCore.Navigation;
-using Mess.OrchardCore.Extensions.OrchardCore;
 using Mess.Tenants;
 using Mess.OrchardCore.Tenants;
 using Mess.Timeseries.Controllers;
 using Mess.Timeseries.Abstractions.Client;
 using Mess.Timeseries.Client;
+using Mess.Timeseries.Abstractions.Extensions.Microsoft;
 
 namespace Mess.Timeseries;
 
@@ -26,8 +26,7 @@ public class Startup : StartupBase
     >();
     services.AddScoped<INavigationProvider, AdminMenu>();
 
-    // NOTE: use in scoped services
-    services.AddDbContext<TimeseriesContext>();
+    services.RegisterTimeseriesDbContext<TimeseriesContext>();
     services.AddScoped<ITimeseriesMigrator, TimeseriesMigrator>();
 
     services.AddScoped<ITimeseriesConnection, TimeseriesConnection>();

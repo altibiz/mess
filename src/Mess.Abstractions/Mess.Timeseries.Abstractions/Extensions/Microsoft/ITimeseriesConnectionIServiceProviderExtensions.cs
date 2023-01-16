@@ -1,8 +1,9 @@
 using Npgsql;
+using Mess.Timeseries.Abstractions.Client;
 
-namespace Mess.Timeseries.Abstractions.Client;
+namespace Mess.Timeseries.Abstractions.Extensions.Microsoft;
 
-public static class TimeseriesConnectionServiceProviderExtensions
+public static class ITimeseriesConnectionIServiceProviderExtensions
 {
   public static async Task<T> WithTimeseriesConnectionAsync<T>(
     this IServiceProvider services,

@@ -8,17 +8,35 @@ export ASPNETCORE_ENVIRONMENT=Development
 export DOTNET_ENVIRONMENT=Development
 export ORCHARD_APP_DATA="$ROOT_DIR/App_Data"
 
-if [ ! "$1" ]; then
-  printf "Please name your migration\n"
+PROJECT="$1"
+if ! echo "$PROJECT" | grep -Eq '^[A-Za-z\.]+$'; then
+  printf "[Mess] The project name has to consist only of letters and dots\n"
   exit 1
 fi
 
-dotnet ef \
-  --startup-project "$ROOT_DIR/src/Mess.Web/Mess.Web.csproj" \
-  --project "$ROOT_DIR/src/Mess.Timeseries/Mess.Timeseries.csproj" \
-  migrations add \
-  --output-dir "Migrations/Timescale" \
-  --namespace "Mess.Migrations.Timescale" \
-  "$1"
+NAME="$2"
+if ! echo "$NAME" | grep -Eq '^[A-Za-z]+$'; then
+  printf "[Mess] The migration name has to consist only of letters\n"
+  exit 1
+fi
 
-dotnet csharpier "$ROOT_DIR/src/Mess.Timeseries/Migrations/Timescale"
+migrate_project() {
+  printf "[Mess] Migrating '%s'\n" "$1"
+  if [ ! -d "$ROOT_DIR/src/Mess.Modules/$1/Timeseries/Migrations" ]; then
+    mkdir -p "$ROOT_DIR/src/Mess.Modules/$1/Timeseries/Migrations"
+  fi
+  dotnet ef \
+    --startup-project "$ROOT_DIR/src/Mess.Web/Mess.Web.csproj" \
+    --project "$ROOT_DIR/src/Mess.Modules/$1/$1.csproj" \
+    migrations add \
+    --output-dir "Timeseries/Migrations" \
+    --namespace "$1.Timeseries.Migrations" \
+    "$NAME" \
+    ;
+  dotnet csharpier \
+    "$ROOT_DIR/src/Mess.Modules/$1/Timeseries/Migrations" \
+    ;
+  printf "\n"
+}
+
+migrate_project "$PROJECT"

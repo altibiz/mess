@@ -1,17 +1,12 @@
-using Marten.Events;
-
 namespace Mess.EventStore.Abstractions.Events;
 
 public interface IProjectionDispatcher
 {
-  public void Apply(
-    IServiceProvider services,
-    IReadOnlyList<StreamAction> streams
-  );
+  public void Apply(IServiceProvider services, IEvents events);
 
   public Task ApplyAsync(
     IServiceProvider services,
-    IReadOnlyList<StreamAction> streams,
+    IEvents events,
     CancellationToken cancellationToken
   );
 }

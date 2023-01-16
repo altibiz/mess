@@ -10,7 +10,7 @@ public abstract class HypertableEntity
   public DateTime Timestamp { get; set; } = default!;
 
   [Column(TypeName = "varchar")]
-  public string Id { get; set; } = default!;
+  public string SourceId { get; set; } = default!;
 
   [Column(TypeName = "varchar")]
   public string Tenant { get; set; } = default!;

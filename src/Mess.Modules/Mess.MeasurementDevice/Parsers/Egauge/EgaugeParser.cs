@@ -1,10 +1,14 @@
 using System.Xml.Linq;
 using Microsoft.Extensions.Logging;
 using Mess.MeasurementDevice.Abstractions.Parsers.Egauge;
+using Mess.Tenants;
 
 namespace Mess.MeasurementDevice.Parsers.Egauge;
 
-public record class EgaugeParser(ILogger<EgaugeParser> logger) : IEgaugeParser
+public record class EgaugeParser(
+  ILogger<EgaugeParser> Logger,
+  ITenantProvider Tenant
+) : IEgaugeParser
 {
   public EgaugeMeasurement? Parse(XDocument xml)
   {
@@ -41,10 +45,15 @@ public record class EgaugeParser(ILogger<EgaugeParser> logger) : IEgaugeParser
     }
     catch (Exception exception)
     {
-      logger.LogError(exception, "Failed parsing xml {file}", xml.BaseUri);
+      Logger.LogError(exception, "Failed parsing xml {file}", xml.BaseUri);
       return default;
     }
 
-    return new(result, timestamp.Value);
+    return new(
+      Registers: result,
+      Tenant: Tenant.GetTenantName(),
+      Source: "egauge", // TODO: extract source
+      Timestamp: timestamp.Value
+    );
   }
 }

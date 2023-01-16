@@ -9,7 +9,7 @@ namespace Mess.MeasurementDevice.Controllers;
 public class PushController : Controller
 {
   [HttpPost]
-  [IgnoreAntiforgeryToken]
+  [IgnoreAntiforgeryToken] // TODO: security
   public async Task<IActionResult> Egauge(
     [FromServices] IEgaugeParser parser,
     [FromServices] IEventStoreClient store

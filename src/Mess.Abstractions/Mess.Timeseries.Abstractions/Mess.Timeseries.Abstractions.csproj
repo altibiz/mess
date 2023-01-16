@@ -5,7 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Npgsql" Version="$(MessNpgsqlVersion)" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="$(MessNpgsqlVersion)" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="$(MessNpgsqlVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Mess.System/Mess.System.csproj" />
+    <ProjectReference Include="../Mess.Tenants/Mess.Tenants.csproj" />
   </ItemGroup>
 
 </Project>

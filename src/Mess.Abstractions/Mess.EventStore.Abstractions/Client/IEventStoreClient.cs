@@ -8,11 +8,7 @@ public interface IEventStoreClient
 
   public bool CheckConnection();
 
-  public void RecordEvents<T>(params object[] events) where T : class;
+  public void RecordEvents<T>(params IEvent[] events) where T : class;
 
-  public Task RecordEventsAsync<T>(params object[] events) where T : class;
-
-  public T? LastEvent<T>() where T : Event;
-
-  public Task<T?> LastEventAsync<T>() where T : Event;
+  public Task RecordEventsAsync<T>(params IEvent[] events) where T : class;
 }
