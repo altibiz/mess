@@ -11,7 +11,7 @@ public class TimeseriesMigrator : ITimeseriesMigrator
 {
   public async Task MigrateAsync()
   {
-    foreach (var context in Contexts)
+    foreach (var context in Services.GetServicesInheriting<DbContext>())
     {
       await context.Database.MigrateAsync();
       Logger.LogDebug(
@@ -69,7 +69,7 @@ public class TimeseriesMigrator : ITimeseriesMigrator
 
   public void Migrate()
   {
-    foreach (var context in Contexts)
+    foreach (var context in Services.GetServicesInheriting<DbContext>())
     {
       context.Database.Migrate();
       Logger.LogDebug(
@@ -128,10 +128,10 @@ public class TimeseriesMigrator : ITimeseriesMigrator
     ILogger<TimeseriesMigrator> logger
   )
   {
-    Contexts = services.GetServicesInheriting<DbContext>().ToList();
+    Services = services;
     Logger = logger;
   }
 
-  IEnumerable<DbContext> Contexts { get; }
+  IServiceProvider Services { get; }
   ILogger Logger { get; }
 }
