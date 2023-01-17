@@ -8,6 +8,7 @@
   <ItemGroup>
     <ProjectReference Include="../../Mess.Abstractions/Mess.EventStore.Abstractions/Mess.EventStore.Abstractions.csproj" />
     <ProjectReference Include="../../Mess.Abstractions/Mess.Timeseries.Abstractions/Mess.Timeseries.Abstractions.csproj" />
+    <ProjectReference Include="../../Mess.Abstractions/Mess.Chart.Abstractions/Mess.Chart.Abstractions.csproj" />
     <ProjectReference Include="../../Mess.Abstractions/Mess.MeasurementDevice.Abstractions/Mess.MeasurementDevice.Abstractions.csproj" />
   </ItemGroup>
 

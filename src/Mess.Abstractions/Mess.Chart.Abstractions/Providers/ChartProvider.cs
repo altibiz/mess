@@ -45,12 +45,9 @@ public abstract class ChartProvider<
     return await CreateChartAsync(providerParameters);
   }
 
-  public virtual Task<ChartSpecification?> CreateChartAsync(
+  public abstract Task<ChartSpecification?> CreateChartAsync(
     TProviderParameters providerParameters
-  )
-  {
-    return Task.FromResult(CreateChart(providerParameters));
-  }
+  );
 
   public object CreateFieldEditorModel(
     BuildFieldEditorContext context,

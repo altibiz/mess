@@ -2,6 +2,7 @@ using Mess.MeasurementDevice.Abstractions.Client;
 using Mess.MeasurementDevice.Abstractions.Models;
 using Mess.Timeseries.Abstractions.Extensions.Microsoft;
 using Mess.Timeseries.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Mess.MeasurementDevice.Client;
@@ -9,7 +10,7 @@ namespace Mess.MeasurementDevice.Client;
 public class MeasurementClient : IMeasurementClient
 {
   public Task<bool> CheckConnectionAsync() =>
-    Services.WithTimeseriesCommandAsync(
+    _services.WithTimeseriesCommandAsync(
       @"SELECT * FROM pg_stat_activity;",
       async command =>
       {
@@ -22,7 +23,7 @@ public class MeasurementClient : IMeasurementClient
     );
 
   public bool CheckConnection() =>
-    Services.WithTimeseriesCommand(
+    _services.WithTimeseriesCommand(
       @"SELECT * FROM pg_stat_activity;",
       command =>
       {
@@ -35,46 +36,68 @@ public class MeasurementClient : IMeasurementClient
     );
 
   public void AddEgaugeMeasurement(EgaugeMeasurementModel model) =>
-    Services.WithTimeseriesContext<MeasurementDbContext>(context =>
+    _services.WithTimeseriesContext<MeasurementDbContext>(context =>
     {
-      context.EgaugeMeasurements.Add(
-        new EgaugeMeasurementEntity
-        {
-          Tenant = model.Tenant,
-          Timestamp = model.Timestamp,
-          Source = model.Source,
-          Voltage = model.Voltage,
-          Power = model.Power
-        }
-      );
+      context.EgaugeMeasurements.Add(model.ToEntity());
       context.SaveChanges();
     });
 
   public Task AddEgaugeMeasurementAsync(EgaugeMeasurementModel model) =>
-    Services.WithTimeseriesContextAsync<MeasurementDbContext>(async context =>
+    _services.WithTimeseriesContextAsync<MeasurementDbContext>(async context =>
     {
-      context.EgaugeMeasurements.Add(
-        new EgaugeMeasurementEntity
-        {
-          Tenant = model.Tenant,
-          Timestamp = model.Timestamp,
-          Source = model.Source,
-          Voltage = model.Voltage,
-          Power = model.Power
-        }
-      );
+      context.EgaugeMeasurements.Add(model.ToEntity());
       await context.SaveChangesAsync();
+    });
+
+  public IReadOnlyList<EgaugeMeasurementModel> GetEgaugeMeasurements(
+    string source,
+    DateTime beginning,
+    DateTime end
+  ) =>
+    _services.WithTimeseriesContext<
+      MeasurementDbContext,
+      List<EgaugeMeasurementModel>
+    >(context =>
+    {
+      return context.EgaugeMeasurements
+        .Where(measurement => measurement.Source == source)
+        .Where(measurement => measurement.Timestamp > beginning)
+        .Where(measurement => measurement.Timestamp < end)
+        .OrderBy(measurement => measurement.Timestamp)
+        .Select(measurement => measurement.ToModel())
+        .ToList();
+    });
+
+  public async Task<
+    IReadOnlyList<EgaugeMeasurementModel>
+  > GetEgaugeMeasurementsAsync(
+    string source,
+    DateTime beginning,
+    DateTime end
+  ) =>
+    await _services.WithTimeseriesContextAsync<
+      MeasurementDbContext,
+      List<EgaugeMeasurementModel>
+    >(async context =>
+    {
+      return await context.EgaugeMeasurements
+        .Where(measurement => measurement.Source == source)
+        .Where(measurement => measurement.Timestamp > beginning)
+        .Where(measurement => measurement.Timestamp < end)
+        .OrderBy(measurement => measurement.Timestamp)
+        .Select(measurement => measurement.ToModel())
+        .ToListAsync();
     });
 
   private void LogConenction(bool connected)
   {
     if (connected)
     {
-      Logger.LogInformation("Connected to Timeseries server");
+      _logger.LogInformation("Connected to Timeseries server");
     }
     else
     {
-      Logger.LogInformation("Failed connecting to Timeseries server");
+      _logger.LogInformation("Failed connecting to Timeseries server");
     }
   }
 
@@ -83,10 +106,10 @@ public class MeasurementClient : IMeasurementClient
     ILogger<MeasurementClient> logger
   )
   {
-    Services = services;
-    Logger = logger;
+    _services = services;
+    _logger = logger;
   }
 
-  private IServiceProvider Services { get; }
-  private ILogger Logger { get; }
+  private readonly IServiceProvider _services;
+  private readonly ILogger _logger;
 }
