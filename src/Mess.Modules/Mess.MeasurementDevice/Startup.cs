@@ -6,6 +6,7 @@ using OrchardCore.Data.Migration;
 using OrchardCore.Modules;
 using OrchardCore.Mvc.Core.Utilities;
 using OrchardCore.ResourceManagement;
+using OrchardCore.ContentManagement;
 using Mess.EventStore.Abstractions.Extensions.Microsoft;
 using Mess.Timeseries.Abstractions.Extensions.Microsoft;
 using Mess.MeasurementDevice.Abstractions.Client;
@@ -14,6 +15,7 @@ using Mess.MeasurementDevice.Client;
 using Mess.MeasurementDevice.Controllers;
 using Mess.MeasurementDevice.Parsers.Egauge;
 using Mess.MeasurementDevice.Services;
+using Mess.MeasurementDevice.Models;
 
 namespace Mess.MeasurementDevice;
 
@@ -34,6 +36,8 @@ public class Startup : StartupBase
     services.AddSingleton<IEgaugeParser, EgaugeParser>();
 
     services.AddSingleton<IMeasurementClient, MeasurementClient>();
+
+    services.AddContentPart<MeasurementDevicePart>();
   }
 
   public override void Configure(

@@ -4,7 +4,6 @@ using OrchardCore.DisplayManagement.ModelBinding;
 using OrchardCore.DisplayManagement.Views;
 using Mess.Chart.Models;
 using Mess.Chart.ViewModels;
-using Mess.Chart.Settings;
 using Mess.Chart.Abstractions.Providers;
 using Microsoft.Extensions.Localization;
 

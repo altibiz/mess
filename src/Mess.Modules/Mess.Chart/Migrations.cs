@@ -1,9 +1,8 @@
-using Mess.Chart.Fields;
-using Mess.Chart.Settings;
 using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.ContentManagement.Metadata.Settings;
 using OrchardCore.Data.Migration;
 using OrchardCore.Recipes.Services;
+using Mess.Chart.Models;
 
 namespace Mess.Chart;
 

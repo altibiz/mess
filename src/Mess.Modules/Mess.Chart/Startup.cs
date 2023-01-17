@@ -1,12 +1,4 @@
 using Fluid;
-using Mess.Chart.Abstractions.Providers;
-using Mess.Chart.Controllers;
-using Mess.Chart.Drivers;
-using Mess.Chart.Fields;
-using Mess.Chart.Indexing;
-using Mess.Chart.Models;
-using Mess.Chart.Services;
-using Mess.Chart.ViewModels;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -18,6 +10,13 @@ using OrchardCore.Indexing;
 using OrchardCore.Modules;
 using OrchardCore.Mvc.Core.Utilities;
 using OrchardCore.ResourceManagement;
+using Mess.Chart.Abstractions.Providers;
+using Mess.Chart.Controllers;
+using Mess.Chart.Drivers;
+using Mess.Chart.Indexing;
+using Mess.Chart.Models;
+using Mess.Chart.Providers;
+using Mess.Chart.ViewModels;
 
 namespace Mess.Chart;
 

@@ -1,5 +1,5 @@
 using Mess.Chart.Abstractions.Models;
-using Mess.Chart.Fields;
+using Mess.Chart.Models;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Metadata.Models;

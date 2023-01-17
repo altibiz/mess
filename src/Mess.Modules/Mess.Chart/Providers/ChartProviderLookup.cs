@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Mess.Chart.Abstractions.Providers;
 
-namespace Mess.Chart.Services;
+namespace Mess.Chart.Providers;
 
 public class ChartProviderLookup : IChartProviderLookup
 {

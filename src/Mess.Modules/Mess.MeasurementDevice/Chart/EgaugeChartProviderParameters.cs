@@ -8,7 +8,7 @@ public record class EgaugeChartProviderParameters(
   List<EgaugeChartProviderParametersField> Fields
 ) : IChartProviderParameters
 {
-  public string Provider => nameof(EgaugeChartProvider);
+  public string Provider => EgaugeChartProvider.ProviderId;
 }
 
 public record class EgaugeChartProviderParametersField(

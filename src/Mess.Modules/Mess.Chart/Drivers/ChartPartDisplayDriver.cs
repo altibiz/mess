@@ -1,6 +1,5 @@
 using Mess.Chart.Abstractions.Providers;
 using Mess.Chart.Models;
-using Mess.Chart.Settings;
 using Mess.Chart.ViewModels;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Localization;

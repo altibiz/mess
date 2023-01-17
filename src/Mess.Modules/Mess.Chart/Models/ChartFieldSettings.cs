@@ -1,4 +1,4 @@
-namespace Mess.Chart.Settings;
+namespace Mess.Chart.Models;
 
 public class ChartFieldSettings
 {

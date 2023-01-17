@@ -18,7 +18,9 @@ public class EgaugeChartProvider
     EgaugeChartPartEditorViewModel
   >
 {
-  public override string Id => nameof(EgaugeChartProvider);
+  public const string ProviderId = "Egauge";
+
+  public override string Id => ProviderId;
 
   public override ChartSpecification? CreateChart(
     EgaugeChartProviderParameters providerParameters
