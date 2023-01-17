@@ -8,7 +8,7 @@ public record class TimeseriesChartProviderParameters(
   List<TimeseriesChartProviderParametersField> Fields
 ) : IChartProviderParameters
 {
-  public string Provider => nameof(Mess.Timeseries);
+  public string Provider => TimeseriesChartProvider.ProviderId;
 }
 
 public record class TimeseriesChartProviderParametersField(
