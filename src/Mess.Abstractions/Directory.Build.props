@@ -2,4 +2,8 @@
 
   <Import Project="../Directory.Build.props" />
 
+  <PropertyGroup>
+    <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
+  </PropertyGroup>
+
 </Project>
