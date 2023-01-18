@@ -18,7 +18,7 @@ public static class GetFieldOrPropertyValueExtensions
 
   private static T? GetFieldValue<O, T>(
     this O @this,
-    Type type,
+    global::System.Type type,
     string fieldOrPropertyName
   )
   {
@@ -39,7 +39,7 @@ public static class GetFieldOrPropertyValueExtensions
 
   private static T? GetPropertyValue<O, T>(
     this O @this,
-    Type type,
+    global::System.Type type,
     string fieldOrPropertyName
   )
   {

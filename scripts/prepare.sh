@@ -16,8 +16,8 @@ dotnet restore
 dotnet tool restore
 printf "\n"
 
-printf "[Mess] Creating containers with 'docker compose'...\n"
-docker compose create
+printf "[Mess] Creating containers with 'docker-compose'...\n"
+docker-compose create
 printf "\n"
 
 printf "[Mess] Setting up secrets with 'dotnet'...\n"

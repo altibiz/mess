@@ -3,7 +3,7 @@ using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.ContentManagement.Metadata.Models;
 using YesSql.Indexes;
-using Mess.Chart.Fields;
+using Mess.Chart.Models;
 using OrchardCore.ContentFields.Indexing.SQL;
 
 namespace Mess.Chart.Indexing.SQL;

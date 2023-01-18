@@ -1,5 +1,5 @@
 using OrchardCore.Indexing;
-using Mess.Chart.Fields;
+using Mess.Chart.Models;
 using Mess.System.Extensions.Object;
 
 namespace Mess.Chart.Indexing;

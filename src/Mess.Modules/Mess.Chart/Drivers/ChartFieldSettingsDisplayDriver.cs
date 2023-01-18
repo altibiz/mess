@@ -1,8 +1,7 @@
 using OrchardCore.ContentManagement.Metadata.Models;
 using OrchardCore.ContentTypes.Editors;
 using OrchardCore.DisplayManagement.Views;
-using Mess.Chart.Fields;
-using Mess.Chart.Settings;
+using Mess.Chart.Models;
 using Mess.Chart.ViewModels;
 using Mess.Chart.Abstractions.Providers;
 using Microsoft.Extensions.Localization;
