@@ -1,25 +1,15 @@
-using Mess.MeasurementDevice.Chart;
+using Mess.MeasurementDevice.Chart.Providers;
 using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.ContentManagement.Metadata.Settings;
 using OrchardCore.Data.Migration;
 using OrchardCore.Recipes.Services;
 
-namespace Mess.MeasurementDevice;
+namespace Mess.MeasurementDevice.Chart;
 
 public class Migrations : DataMigration
 {
   public int Create()
   {
-    _contentDefinitionManager.AlterPartDefinition(
-      "MeasurementDevicePart",
-      builder =>
-        builder
-          .Attachable()
-          .WithDescription(
-            "Provides neccessary fields for every measurement device."
-          )
-    );
-
     _contentDefinitionManager.AlterTypeDefinition(
       "EgaugeMeasurementDevice",
       builder =>
@@ -48,6 +38,16 @@ public class Migrations : DataMigration
             part =>
               part.WithDisplayName("Device")
                 .WithDescription("Neccessary device data.")
+          )
+          .WithPart(
+            "ChartPart",
+            part =>
+              part.WithDisplayName("Chart")
+                .WithDescription(
+                  "Line chart displaying measurements in the last 24 hours."
+                )
+                .WithPosition("2")
+                .WithSettings(new { Provider = EgaugeChartProvider.ProviderId })
           )
     );
 

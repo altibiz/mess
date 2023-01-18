@@ -16,14 +16,6 @@ public interface IChartProvider
 
   public Task<string?> ValidateParametersAsync(ChartParameters parameters);
 
-  public string GetFieldEditorShapeType(BuildFieldEditorContext context);
-
-  public object CreateFieldEditorModel(
-    BuildFieldEditorContext context,
-    ContentField field,
-    ChartParameters parameters
-  );
-
   public string GetPartEditorShapeType(BuildPartEditorContext context);
 
   public object CreatePartEditorModel(

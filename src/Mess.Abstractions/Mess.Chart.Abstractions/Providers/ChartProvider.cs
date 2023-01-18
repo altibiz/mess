@@ -4,13 +4,9 @@ using OrchardCore.ContentManagement.Display.Models;
 
 namespace Mess.Chart.Abstractions.Providers;
 
-public abstract class ChartProvider<
-  TProviderParameters,
-  TFieldEditorViewModel,
-  TPartEditorViewModel
-> : IChartProvider
+public abstract class ChartProvider<TProviderParameters, TPartEditorViewModel>
+  : IChartProvider
   where TProviderParameters : class, IChartProviderParameters
-  where TFieldEditorViewModel : notnull, new()
   where TPartEditorViewModel : notnull, new()
 {
   public abstract string Id { get; }
@@ -49,28 +45,6 @@ public abstract class ChartProvider<
     TProviderParameters providerParameters
   );
 
-  public object CreateFieldEditorModel(
-    BuildFieldEditorContext context,
-    ContentField field,
-    ChartParameters parameters
-  )
-  {
-    var providerParameters =
-      parameters.ProviderParameters as TProviderParameters;
-    if (providerParameters is null)
-    {
-      return new TFieldEditorViewModel();
-    }
-
-    return CreateFieldEditorModel(context, field, providerParameters);
-  }
-
-  public abstract TFieldEditorViewModel CreateFieldEditorModel(
-    BuildFieldEditorContext context,
-    ContentField field,
-    TProviderParameters providerParameters
-  );
-
   public object CreatePartEditorModel(
     BuildPartEditorContext context,
     ContentPart part,
@@ -87,17 +61,30 @@ public abstract class ChartProvider<
     return CreatePartEditorModel(context, part, providerParameters);
   }
 
-  public abstract TPartEditorViewModel CreatePartEditorModel(
+  public virtual TPartEditorViewModel CreatePartEditorModel(
     BuildPartEditorContext context,
-    ContentPart field,
+    ContentPart part,
     TProviderParameters providerParameters
-  );
+  )
+  {
+    var model = new TPartEditorViewModel();
 
-  public abstract string GetFieldEditorShapeType(
-    BuildFieldEditorContext context
-  );
+    var modelType = typeof(TPartEditorViewModel);
 
-  public abstract string GetPartEditorShapeType(BuildPartEditorContext context);
+    var parameterProperty = modelType.GetProperty("Parameters");
+    if (parameterProperty is null)
+    {
+      return model;
+    }
+
+    parameterProperty.SetValue(model, providerParameters);
+
+    return model;
+  }
+
+  public virtual string GetPartEditorShapeType(
+    BuildPartEditorContext context
+  ) => $"ChartPart_{Id}_Edit";
 
   public virtual string? ValidateParameters(ChartParameters parameters)
   {

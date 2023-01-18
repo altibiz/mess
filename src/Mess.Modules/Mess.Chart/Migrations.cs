@@ -10,11 +10,6 @@ public class Migrations : DataMigration
 {
   public int Create()
   {
-    _contentDefinitionManager.MigrateFieldSettings<
-      ChartField,
-      ChartFieldSettings
-    >();
-
     _contentDefinitionManager.AlterPartDefinition(
       "Chart",
       builder =>

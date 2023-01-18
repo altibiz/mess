@@ -12,7 +12,6 @@ using OrchardCore.Modules.Manifest;
   {
     "OrchardCore.ContentTypes",
     "OrchardCore.ContentFields",
-    "Mess.EventStore",
     "Mess.Timeseries",
   }
 )]

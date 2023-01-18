@@ -79,7 +79,7 @@ public class ChartPartDisplayDriver : ContentPartDisplayDriver<ChartPart>
       updater.ModelState.AddModelError(
         Prefix,
         nameof(settings.Provider),
-        S["{0} doesn't contain a valid Chart provider", partName]
+        S["{0} doesn't contain a valid chart provider", partName]
       );
       return Edit(part, context);
     }
@@ -94,7 +94,7 @@ public class ChartPartDisplayDriver : ContentPartDisplayDriver<ChartPart>
           Prefix,
           nameof(viewModel.Parameters),
           S[
-            "{0} doesn't contain a valid parameters",
+            "{0} doesn't contain valid chart parameters because {1}",
             partName,
             string.Join(" ", errors)
           ]

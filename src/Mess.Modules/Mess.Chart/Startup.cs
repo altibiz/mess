@@ -6,17 +6,16 @@ using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
 using OrchardCore.ContentTypes.Editors;
 using OrchardCore.Data.Migration;
-using OrchardCore.Indexing;
 using OrchardCore.Modules;
 using OrchardCore.Mvc.Core.Utilities;
 using OrchardCore.ResourceManagement;
 using Mess.Chart.Abstractions.Providers;
 using Mess.Chart.Controllers;
 using Mess.Chart.Drivers;
-using Mess.Chart.Indexing;
 using Mess.Chart.Models;
 using Mess.Chart.Providers;
-using Mess.Chart.ViewModels;
+using OrchardCore.Security.Permissions;
+using Mess.Chart.Abstractions;
 
 namespace Mess.Chart;
 
@@ -30,20 +29,7 @@ public class Startup : StartupBase
       Resources
     >();
 
-    services.Configure<TemplateOptions>(o =>
-    {
-      o.MemberAccessStrategy.Register<ChartField>();
-      o.MemberAccessStrategy.Register<ChartFieldViewModel>();
-    });
-
-    services
-      .AddContentField<ChartField>()
-      .UseDisplayDriver<ChartFieldDisplayDriver>();
-    services.AddScoped<
-      IContentPartFieldDefinitionDisplayDriver,
-      ChartFieldSettingsDriver
-    >();
-    services.AddScoped<IContentFieldIndexHandler, ChartFieldIndexHandler>();
+    services.AddScoped<IPermissionProvider, ChartPermissions>();
 
     services
       .AddContentPart<ChartPart>()
@@ -52,7 +38,6 @@ public class Startup : StartupBase
       IContentTypePartDefinitionDisplayDriver,
       ChartPartSettingsDisplayDriver
     >();
-    services.AddScoped<IContentPartIndexHandler, ChartPartIndexHandler>();
 
     services.AddScoped<IChartProviderLookup, ChartProviderLookup>();
   }

@@ -35,8 +35,8 @@ public class ChartPartSettingsDisplayDriver
     UpdateTypePartEditorContext context
   )
   {
-    var model = new ChartFieldSettingsViewModel();
-    var settings = new ChartFieldSettings();
+    var model = new ChartPartSettingsViewModel();
+    var settings = new ChartPartSettings();
 
     if (await context.Updater.TryUpdateModelAsync(model, Prefix))
     {
@@ -59,7 +59,7 @@ public class ChartPartSettingsDisplayDriver
 
   public ChartPartSettingsDisplayDriver(
     IChartProviderLookup lookup,
-    IStringLocalizer<ChartFieldSettingsDriver> localizer
+    IStringLocalizer<ChartPartSettingsDisplayDriver> localizer
   )
   {
     _lookup = lookup;
