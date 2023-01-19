@@ -1,3 +1,64 @@
-@model EgaugeChartPartEditorViewModel
+@using Mess.MeasurementDevice.Models
+@using Mess.System.Extensions.IEnumerable
+@using Mess.MeasurementDevice.Chart.Models
+@using OrchardCore.ContentManagement
+@using OrchardCore.ContentManagement.Display
+@using OrchardCore.DisplayManagement.ModelBinding
 
-@* TODO: user input *@
+@model EgaugeChartPartEditViewModel
+
+@inject IContentManager ContentManager
+@inject IContentItemDisplayManager ContentItemDisplayManager
+@inject IUpdateModelAccessor ModelUpdaterAccessor
+
+@{
+  var culture = await Orchard.GetContentCultureAsync(Model.Part.ContentItem);
+
+  var device = Model.Part.ContentItem.As<MeasurementDevicePart>();
+  if (device is not null)
+  {
+    Model.Parameters.Source = device.DeviceId.Text;
+  }
+}
+
+<div class="mb-3">
+  <label asp-for="Parameters.Source">@T["Source"]</label>
+  @if (device is null)
+  {
+    <input asp-for="Parameters.Source" class="form-control" dir="@culture.GetLanguageDirection()" />
+  }
+  else {
+    <input value="@device.DeviceId.Text" class="form-control" dir="@culture.GetLanguageDirection()" disabled="true" />
+  }
+  <span class="hint">@T["Identifier of the device from which measurements will be fetched."]</span>
+</div>
+
+<div class="mb-3">
+  <label asp-for="Parameters.History">@T["History"]</label>
+  <select asp-for="Parameters.History" asp-items="@Html.GetEnumSelectList<EgaugeChartHistory>()" />
+  <span class="hint">@T["How far back in history measurements will be displayed."]</span>
+</div>
+
+<div class="card mb-3">
+  <div class="card-body bg-primary p-3">
+    <a class="btn btn-primary btn-sm" 
+    asp-route-area="Mess.MeasurementDevice"
+    asp-route-controller="Admin"
+    asp-route-action="AddEgaugeChartField"
+    asp-route-chartContentItemId="@Model.Part.ContentItem.Id">
+      @T["Add Field"]
+    </a>
+  </div>
+</div>
+
+@{
+  var updater = ModelUpdaterAccessor.ModelUpdater;
+}
+
+<ol class="list-group my-3 mb-3">
+  @foreach (var field in Model.Parameters.Fields)
+  {
+    var shape = await ContentItemDisplayManager.BuildDisplayAsync(field, updater, "Admin");
+    @await DisplayAsync(shape);
+  }
+</ol>

@@ -5,7 +5,7 @@ using OrchardCore.ContentManagement.Metadata.Models;
 
 namespace Mess.MeasurementDevice.Chart.ViewModels;
 
-public class EgaugeChartPartEditorViewModel
+public class EgaugeChartPartEditViewModel
 {
   public EgaugeChartParameters Parameters { get; set; } = default!;
 

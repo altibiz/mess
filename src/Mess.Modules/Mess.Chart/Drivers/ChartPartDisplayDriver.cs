@@ -84,7 +84,7 @@ public class ChartPartDisplayDriver : ContentPartDisplayDriver<ChartPart>
       return Edit(part, context);
     }
 
-    if (await updater.TryUpdateModelAsync(viewModel, Prefix, t => t.Parameters))
+    if (await updater.TryUpdateModelAsync(viewModel, Prefix))
     {
       var errors = await provider.ValidateParametersAsync(viewModel.Parameters);
       if (errors is not null)

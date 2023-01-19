@@ -4,13 +4,13 @@ using OrchardCore.ContentManagement;
 
 namespace Mess.MeasurementDevice.Chart.Models;
 
-public record class EgaugeChartParameters(
-  string Source,
-  EgaugeChartHistory History,
-  List<ContentItem> Fields
-) : IChartProviderParameters
+public class EgaugeChartParameters : IChartProviderParameters
 {
   public string Provider => EgaugeChartProvider.ProviderId;
+
+  public string Source { get; set; } = default!;
+  public EgaugeChartHistory History { get; set; } = default!;
+  public List<ContentItem> Fields { get; set; } = default!;
 }
 
 public enum EgaugeChartHistory

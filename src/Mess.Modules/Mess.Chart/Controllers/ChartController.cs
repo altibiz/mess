@@ -1,15 +1,17 @@
 using Mess.Chart.Abstractions.Models;
 using Mess.Chart.Abstractions.Providers;
 using Microsoft.AspNetCore.Mvc;
-using OrchardCore.ContentManagement;
 
 namespace Mess.Chart.Controllers;
 
 public class ChartController : Controller
 {
-  public async Task<IActionResult> Index([FromQuery] ChartParameters parameters)
+  public async Task<IActionResult> Index(
+    [FromQuery] ChartParameters parameters,
+    [FromServices] IChartProviderLookup lookup
+  )
   {
-    var provider = _lookup.Get(parameters.Provider);
+    var provider = lookup.Get(parameters.Provider);
 
     if (provider is null)
     {
@@ -25,16 +27,4 @@ public class ChartController : Controller
 
     return Json(specification);
   }
-
-  public ChartController(
-    IContentManager contentManager,
-    IChartProviderLookup lookup
-  )
-  {
-    _contentManager = contentManager;
-    _lookup = lookup;
-  }
-
-  private readonly IContentManager _contentManager;
-  private readonly IChartProviderLookup _lookup;
 }

@@ -12,12 +12,10 @@ namespace Mess.MeasurementDevice.Chart.Controllers;
 public class AdminController : Controller
 {
   public async Task<IActionResult> AddEgaugeChartField(
-    string id,
-    string chartContentItemId,
-    string egaugeFieldItemId
+    string chartContentItemId
   )
   {
-    if (String.IsNullOrWhiteSpace(id))
+    if (String.IsNullOrWhiteSpace(chartContentItemId))
     {
       return NotFound();
     }
@@ -32,7 +30,7 @@ public class AdminController : Controller
       return Forbid();
     }
 
-    var contentItem = await _contentManager.NewAsync(id);
+    var contentItem = await _contentManager.NewAsync("EgaugeChartField");
 
     dynamic model = await _contentItemDisplayManager.BuildEditorAsync(
       contentItem,
@@ -41,7 +39,6 @@ public class AdminController : Controller
     );
 
     model.ChartContentItemId = chartContentItemId;
-    model.EgaugeFieldItemId = egaugeFieldItemId;
 
     return View(model);
   }

@@ -1,0 +1,36 @@
+@using Mess.MeasurementDevice.Abstractions.Models;
+@using Mess.System.Extensions.Type;
+@using Microsoft.AspNetCore.Mvc.Rendering;
+
+@model EgaugeChartFieldPartEditViewModel
+
+@{
+  var culture = await Orchard.GetContentCultureAsync(Model.Part.ContentItem);
+  var fieldOptions = typeof(EgaugeMeasurementModel)
+    .GetFieldAndPropertyNames()
+    .Select(name => new SelectListItem { Value = name, Text = name });
+}
+
+<div class="mb-3">
+  <label asp-for="Label">@T["Label"]</label>
+  <input asp-for="Label" class="form-control" dir="@culture.GetLanguageDirection()" />
+  <span class="hint">@T["Label for this field."]</span>
+</div>
+
+<div class="mb-3">
+  <label asp-for="Unit">@T["Unit"]</label>
+  <input asp-for="Unit" class="form-control" dir="@culture.GetLanguageDirection()" />
+  <span class="hint">@T["Unit for this field."]</span>
+</div>
+
+<div class="mb-3">
+  <label asp-for="Color">@T["Color"]</label>
+  <input asp-for="Color" class="form-control" dir="@culture.GetLanguageDirection()" />
+  <span class="hint">@T["Color for this field."]</span>
+</div>
+
+<div class="mb-3">
+  <label asp-for="Field">@T["Field"]</label>
+  <select asp-for="Field" asp-items="@fieldOptions" class="form-control" />
+  <span class="hint">@T["Name of the measurement field."]</span>
+</div>
