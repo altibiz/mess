@@ -5,8 +5,8 @@ namespace Mess.Chart.Abstractions.Extensions.Microsoft;
 public static class IServiceProviderExtensions
 {
   public static void RegisterChartProvider<T>(this IServiceCollection services)
-    where T : class, IChartProvider
+    where T : class, IChartDataProvider
   {
-    services.AddScoped<IChartProvider, T>();
+    services.AddScoped<IChartDataProvider, T>();
   }
 }

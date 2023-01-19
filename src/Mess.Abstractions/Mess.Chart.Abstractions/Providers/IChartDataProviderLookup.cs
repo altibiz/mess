@@ -1,8 +1,8 @@
 namespace Mess.Chart.Abstractions.Providers;
 
-public interface IChartProviderLookup
+public interface IChartDataProviderLookup
 {
-  public IChartProvider? Get(string id);
+  public IChartDataProvider? Get(string id);
 
   public bool Exists(string id);
 

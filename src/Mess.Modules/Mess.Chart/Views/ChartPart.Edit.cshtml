@@ -1,5 +1,11 @@
+@using Mess.Chart.Abstractions.Providers
+
 @model ChartPartViewModel
 
-@* NOTE: this should never render but is here just in case something terrible happens *@
+@inject IChartDataProviderLookup _lookup
 
-<p>Error</p>
+<div class="mb-3">
+  <label asp-for="Part.DataProviderId">@T["Data provider"]</label>
+  <select asp-for="Part.DataProviderId" asp-items="@_lookup.Options()" />
+  <span class="hint">@T["How data will be fetched for the chart."]</span>
+</div>

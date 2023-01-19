@@ -1,32 +1,3 @@
 @model ChartPartViewModel
 
-<script asp-name="jQuery-ui" at="Foot"></script>
-
-@* TODO: make it smaller or something? *@
-
-@{
-  var name = Model.TypePartDefinition.Name.HtmlClassify();
-}
-
-<canvas id="chart-@name"></canvas>
-<span id="chart-error-@name"></span>
-
-<script asp-name="mess-chart" at="Foot"></script>
-<script at="Foot">
-  $(function () {
-    var query = "@Model.Parameters";
-    fetchChartSpecification(query)
-      .then(function (chartSpecification) {
-        if (!chartSpecification) {
-          var errorSpan = document.getElementById("chart-error-@name");
-          errorSpan.innerHtml = '@T["Error occured while fetching chart data"]';
-        }
-
-        bindChart(
-          "chart-@name",
-          "@Html.Raw(Orchard.CultureName())",
-          chartSpecification);
-      })
-      .catch(console.error);
-  })
-</script>
+<span>@Model.Part.DataProviderId</span>

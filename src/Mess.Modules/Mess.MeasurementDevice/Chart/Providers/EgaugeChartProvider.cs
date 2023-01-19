@@ -12,7 +12,7 @@ using OrchardCore.ContentManagement;
 namespace Mess.MeasurementDevice.Chart.Providers;
 
 public class EgaugeChartProvider
-  : ChartProvider<EgaugeChartParameters, EgaugeChartPartEditViewModel>
+  : ChartDataProvider<EgaugeChartParameters, EgaugeChartPartEditViewModel>
 {
   public const string ProviderId = "Egauge";
 

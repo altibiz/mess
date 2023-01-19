@@ -4,20 +4,18 @@ namespace Mess.Chart.Abstractions.Extensions.System;
 
 public static class IEnumerableExtensions
 {
-  public static LineChartDataset ToLineChartDataset<T>(
+  public static TimeseriesChartDatasetModel ToTimeseriesChartDataset<T>(
     this IEnumerable<T> objects,
     string label,
-    string? unit,
     string color,
     string xField,
     string yField
   ) =>
-    new LineChartDataset(
+    new TimeseriesChartDatasetModel(
       Label: label,
-      Unit: unit,
       Color: color,
-      Data: objects
-        .Select(@object => @object.ToLineChartData(xField, yField))
+      Datapoints: objects
+        .Select(@object => @object.ToTimeseriesChartDatapoint(xField, yField))
         .ToList()
     );
 }

@@ -1,9 +1,11 @@
+@using Mess.System.Extensions.Object
+
 @model ChartPartViewModel
 
 <script asp-name="jQuery-ui" at="Foot"></script>
 
 @{
-  var name = Model.TypePartDefinition.Name.HtmlClassify();
+  var name = Model.Definition.Name.HtmlClassify();
 }
 
 <canvas id="chart-@name"></canvas>
@@ -12,18 +14,18 @@
 <script asp-name="mess-chart" at="Foot"></script>
 <script at="Foot">
   $(function () {
-    var query = "@Model.Parameters";
-    fetchChartSpecification(query)
-      .then(function (chartSpecification) {
-        if (!chartSpecification) {
+    var contentItem = "@Html.Raw(Model.Part.ContentItem.ToJson(pretty: false))";
+    createChart(contentItem)
+      .then(function (chart) {
+        if (!chart) {
           var errorSpan = document.getElementById("chart-error-@name");
-          errorSpan.innerHtml = '@T["Error occured while fetching chart data"]';
+          errorSpan.innerHtml = '@T["Error occured while creating chart"]';
         }
 
         bindChart(
           "chart-@name",
           "@Html.Raw(Orchard.CultureName())",
-          chartSpecification);
+          chart);
       })
       .catch(console.error);
   })

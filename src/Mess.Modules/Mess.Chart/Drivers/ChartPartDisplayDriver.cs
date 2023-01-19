@@ -6,7 +6,6 @@ using Microsoft.Extensions.Localization;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
 using OrchardCore.ContentManagement.Display.Models;
 using OrchardCore.ContentManagement.Metadata.Models;
-using OrchardCore.DisplayManagement;
 using OrchardCore.DisplayManagement.ModelBinding;
 using OrchardCore.DisplayManagement.Views;
 using OrchardCore.Mvc.ModelBinding;
@@ -21,17 +20,13 @@ public class ChartPartDisplayDriver : ContentPartDisplayDriver<ChartPart>
   )
   {
     return Initialize<ChartPartViewModel>(
-        GetDisplayShapeType(context),
-        model =>
-        {
-          model.Parameters = part.Parameters;
-          model.Part = part;
-          model.ContentItem = part.ContentItem;
-          model.TypePartDefinition = context.TypePartDefinition;
-        }
-      )
-      .Location("Detail", "Content")
-      .Location("Summary", "Content");
+      GetDisplayShapeType(context),
+      model =>
+      {
+        model.Part = part;
+        model.Definition = context.TypePartDefinition;
+      }
+    );
   }
 
   public override IDisplayResult Edit(
@@ -39,27 +34,13 @@ public class ChartPartDisplayDriver : ContentPartDisplayDriver<ChartPart>
     BuildPartEditorContext context
   )
   {
-    var settings = context.TypePartDefinition.GetSettings<ChartPartSettings>();
-    var provider = _lookup.Get(settings.Provider);
-    if (provider is null)
-    {
-      return Initialize<ChartPartViewModel>(
-        GetEditorShapeType(context),
-        model =>
-        {
-          model.Parameters = part.Parameters;
-          model.Part = part;
-          model.ContentItem = part.ContentItem;
-          model.TypePartDefinition = context.TypePartDefinition;
-        }
-      );
-    }
-
-    var shapeType = provider.GetPartEditorShapeType(context);
-    var model = provider.CreatePartEditorModel(context, part, part.Parameters);
-    return Factory(
-      shapeType,
-      ctx => ctx.ShapeFactory.CreateAsync(shapeType, Arguments.From(model))
+    return Initialize<ChartPartViewModel>(
+      GetEditorShapeType(context),
+      model =>
+      {
+        model.Part = part;
+        model.Definition = context.TypePartDefinition;
+      }
     );
   }
 
@@ -71,45 +52,26 @@ public class ChartPartDisplayDriver : ContentPartDisplayDriver<ChartPart>
   {
     var viewModel = new ChartPartViewModel();
 
-    var settings = context.TypePartDefinition.GetSettings<ChartPartSettings>();
-    var provider = _lookup.Get(settings.Provider);
-    if (provider is null)
-    {
-      var partName = context.TypePartDefinition.DisplayName();
-      updater.ModelState.AddModelError(
-        Prefix,
-        nameof(settings.Provider),
-        S["{0} doesn't contain a valid chart provider", partName]
-      );
-      return Edit(part, context);
-    }
-
     if (await updater.TryUpdateModelAsync(viewModel, Prefix))
     {
-      var errors = await provider.ValidateParametersAsync(viewModel.Parameters);
-      if (errors is not null)
+      var dataProvider = _lookup.Get(viewModel.Part.DataProviderId);
+      if (dataProvider is null)
       {
         var partName = context.TypePartDefinition.DisplayName();
         updater.ModelState.AddModelError(
           Prefix,
-          nameof(viewModel.Parameters),
-          S[
-            "{0} doesn't contain valid chart parameters because {1}",
-            partName,
-            string.Join(" ", errors)
-          ]
+          nameof(viewModel.Part.DataProviderId),
+          S["{0} doesn't contain a valid chart provider", partName]
         );
         return Edit(part, context);
       }
-
-      part.Parameters = viewModel.Parameters;
     }
 
     return Edit(part, context);
   }
 
   public ChartPartDisplayDriver(
-    IChartProviderLookup lookup,
+    IChartDataProviderLookup lookup,
     IStringLocalizer<ChartPartDisplayDriver> localizer
   )
   {
@@ -118,5 +80,5 @@ public class ChartPartDisplayDriver : ContentPartDisplayDriver<ChartPart>
   }
 
   private readonly IStringLocalizer S;
-  private readonly IChartProviderLookup _lookup;
+  private readonly IChartDataProviderLookup _lookup;
 }

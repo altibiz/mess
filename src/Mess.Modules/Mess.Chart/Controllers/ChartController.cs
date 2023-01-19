@@ -1,30 +1,36 @@
-using Mess.Chart.Abstractions.Models;
 using Mess.Chart.Abstractions.Providers;
+using Mess.Chart.Models;
 using Microsoft.AspNetCore.Mvc;
+using OrchardCore.ContentManagement;
 
 namespace Mess.Chart.Controllers;
 
 public class ChartController : Controller
 {
+  [HttpPost]
   public async Task<IActionResult> Index(
-    [FromQuery] ChartParameters parameters,
-    [FromServices] IChartProviderLookup lookup
+    [FromServices] IChartDataProviderLookup lookup,
+    [FromBody] ContentItem contentItem
   )
   {
-    var provider = lookup.Get(parameters.Provider);
+    var part = contentItem.As<ChartPart>();
+    if (part is null)
+    {
+      return BadRequest("Chart part not present");
+    }
 
-    if (provider is null)
+    var dataProvider = lookup.Get(part.DataProviderId);
+    if (dataProvider is null)
     {
       return BadRequest("Chart provider not found");
     }
 
-    var specification = await provider.CreateChartAsync(parameters);
-
-    if (specification is null)
+    var chart = await dataProvider.CreateChartAsync(part.Chart);
+    if (chart is null)
     {
-      return BadRequest("Chart specification failed");
+      return BadRequest("Chart creation failed");
     }
 
-    return Json(specification);
+    return Json(chart);
   }
 }

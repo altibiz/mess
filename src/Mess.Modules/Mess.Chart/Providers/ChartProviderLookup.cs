@@ -3,9 +3,9 @@ using Mess.Chart.Abstractions.Providers;
 
 namespace Mess.Chart.Providers;
 
-public class ChartProviderLookup : IChartProviderLookup
+public class ChartProviderLookup : IChartDataProviderLookup
 {
-  public IChartProvider? Get(string id)
+  public IChartDataProvider? Get(string id)
   {
     if (_providers.TryGetValue(id, out var provider))
     {
@@ -25,9 +25,9 @@ public class ChartProviderLookup : IChartProviderLookup
   public ChartProviderLookup(IServiceProvider services)
   {
     _providers = services
-      .GetServices<IChartProvider>()
+      .GetServices<IChartDataProvider>()
       .ToDictionary(provider => provider.Id);
   }
 
-  private readonly IDictionary<string, IChartProvider> _providers;
+  private readonly IDictionary<string, IChartDataProvider> _providers;
 }

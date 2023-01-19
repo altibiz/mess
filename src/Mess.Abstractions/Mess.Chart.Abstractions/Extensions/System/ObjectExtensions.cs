@@ -5,15 +5,15 @@ namespace Mess.Chart.Abstractions.Extensions.System;
 
 public static class ObjectExtensions
 {
-  public static LineChartData ToLineChartData<T>(
+  public static TimeseriesChartDatapointModel ToTimeseriesChartDatapoint<T>(
     this T @object,
     string xField,
     string yField
   )
   {
-    var x = @object.GetFieldOrPropertyValue<T, float>(xField);
+    var x = @object.GetFieldOrPropertyValue<T, DateTime>(xField);
     var y = @object.GetFieldOrPropertyValue<T, float>(yField);
 
-    return new LineChartData(x, y);
+    return new TimeseriesChartDatapointModel(x, y);
   }
 }

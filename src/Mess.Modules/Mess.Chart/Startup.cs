@@ -34,12 +34,8 @@ public class Startup : StartupBase
     services
       .AddContentPart<ChartPart>()
       .UseDisplayDriver<ChartPartDisplayDriver>();
-    services.AddScoped<
-      IContentTypePartDefinitionDisplayDriver,
-      ChartPartSettingsDisplayDriver
-    >();
 
-    services.AddScoped<IChartProviderLookup, ChartProviderLookup>();
+    services.AddSingleton<IChartDataProviderLookup, ChartProviderLookup>();
   }
 
   public override void Configure(
@@ -51,7 +47,7 @@ public class Startup : StartupBase
     routes.MapAreaControllerRoute(
       name: "Mess.Chart.Controllers.ChartController.Index",
       areaName: "Mess.Chart",
-      pattern: "Chart",
+      pattern: "/Chart",
       defaults: new
       {
         controller = typeof(ChartController).ControllerName(),
