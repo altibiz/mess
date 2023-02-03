@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <OutputType>Library</OutputType>
-  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="OrchardCore.ContentManagement.Display" Version="$(MessOrchardVersion)" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="../Mess.System/Mess.System.csproj" />

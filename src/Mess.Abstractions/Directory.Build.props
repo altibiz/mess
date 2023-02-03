@@ -3,6 +3,7 @@
   <Import Project="../Directory.Build.props" />
 
   <PropertyGroup>
+    <OutputType>Library</OutputType>
     <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
   </PropertyGroup>
 
