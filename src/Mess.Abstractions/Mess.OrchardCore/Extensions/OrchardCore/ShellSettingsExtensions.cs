@@ -7,8 +7,9 @@ public static class ShellSettingsExtensions
 {
   public static Tenant GetTenant(this ShellSettings settings) =>
     new(
-      GetTenantNameFromShellSettings(settings),
-      GetTenantConnectionStringFromShellSettings(settings)
+      Name: GetTenantNameFromShellSettings(settings),
+      ConnectionString: GetTenantConnectionStringFromShellSettings(settings),
+      TablePrefix: GetTenantTablePrefixFromShellSettings(settings)
     );
 
   private static string GetTenantNameFromShellSettings(
@@ -24,4 +25,10 @@ public static class ShellSettingsExtensions
     ?? throw new InvalidOperationException(
       $"Tenant must have a connection string"
     );
+
+  private static string GetTenantTablePrefixFromShellSettings(
+    ShellSettings settings
+  ) =>
+    settings?.ShellConfiguration?["TablePrefix"]
+    ?? throw new InvalidOperationException($"Tenant must have a table prefix");
 }
