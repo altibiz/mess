@@ -6,7 +6,6 @@ public static class IEnumerableIndexExtensions
     this IEnumerable<T> @this
   ) => @this.Select((item, index) => (item, index));
 
-  public static IEnumerable<int> Indices<T>(
-    this IEnumerable<T> @this
-  ) => @this.Select((item, index) => index);
+  public static IEnumerable<int> Indices<T>(this IEnumerable<T> @this) =>
+    @this.Select((item, index) => index);
 }

@@ -1,4 +1,8 @@
-import { Chart, ScaleOptionsByType, CartesianScaleTypeRegistry } from "chart.js";
+import {
+  Chart,
+  ScaleOptionsByType,
+  CartesianScaleTypeRegistry,
+} from "chart.js";
 import { ChartModel, isLineChartModel } from "./schema";
 
 export const bindChart = (
