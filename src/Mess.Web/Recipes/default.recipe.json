@@ -1,7 +1,7 @@
 {
-  "name": "ozds",
-  "displayName": "OZDS",
-  "description": "OZDS project recipe",
+  "name": "default",
+  "displayName": "Default",
+  "description": "Default tenant recipe",
   "author": "Altibiz",
   "website": "altibiz.com",
   "version": "0.0.1",
@@ -18,13 +18,13 @@
       "enable": [
         "TheAdmin",
         "SafeMode",
-        "Mess.Ozds"
+        "Mess.Default"
       ]
     },
     {
       "name": "themes",
       "admin": "TheAdmin",
-      "site": "Mess.Ozds"
+      "site": "Mess.Default"
     }
   ]
 }
