@@ -5,8 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Marten" Version="$(MessMartenVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.System/Mess.System.csproj" />
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Tenants/Mess.Tenants.csproj" />
+    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.EventStore.Abstractions/Mess.EventStore.Abstractions.csproj" />
+    <ProjectReference Include="../Mess.Xunit/Mess.Xunit.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,74 +1,41 @@
 using Xunit.DependencyInjection;
 using Xunit.Abstractions;
 using Mess.Xunit.Extensions.Xunit;
-using Mess.Xunit.Extensions.Npgsql;
-using Mess.System.Extensions.String;
 using Mess.Tenants;
 
 namespace Mess.Xunit.Tenants;
 
 public class TestTenants : ITenants
 {
-  public Tenant Current => new(GetTenantName(), GetTenantConnectionString());
-
-  // NOTE: not needed for tests
-  public IReadOnlyList<Tenant> All => throw new NotImplementedException();
-
-  // NOTE: not needed for tests
-  public void Impersonate(Tenant tenant, Action action)
-  {
-    throw new NotImplementedException();
-  }
-
-  // NOTE: not needed for tests
-  public Task ImpersonateAsync(Tenant tenant, Func<Task> action)
-  {
-    throw new NotImplementedException();
-  }
-
-  public string GetTenantName()
-  {
-    var tenantName =
-      Tenant.GetValue<string>("Name")
-      ?? throw new InvalidOperationException($"Tenant must have a Name");
-    return $"{tenantName}-{Test.GetTestIdentifier()}";
-  }
-
-  public string GetTenantConnectionString() =>
-    (
-      Tenant.GetValue<string>("ConnectionString")
-      ?? throw new InvalidOperationException(
-        $"Tenant must have a ConnectionString"
-      )
-    ).RegexReplace(
-      ConnectionStringExtensions.CONNECTION_STRING_DATABASE_REGEX,
-      $"Database=$1.{Test.GetTestIdentifier()}"
+  public Tenant Current =>
+    new(
+      $"{Test.GetTestIdentifier()} Test",
+      "Server=localhost;Port=5432;User Id=mess;Password=mess;Database=mess",
+      $"{Test.GetTestIdentifier()}_test"
     );
 
-  public IConfigurationSection Tenant
+  public IReadOnlyList<Tenant> All => new List<Tenant> { Current };
+
+  public void Impersonate(Tenant tenant, Action action)
   {
-    get =>
-      Configuration
-        .GetRequiredSection("Mess")
-        .GetRequiredSection("Test")
-        .GetRequiredSection("Tenant");
+    action();
   }
 
-  public TestTenants(
-    IConfiguration configuration,
-    ITestOutputHelperAccessor testAccessor
-  )
+  public async Task ImpersonateAsync(Tenant tenant, Func<Task> action)
   {
-    Configuration = configuration;
-    TestAccessor = testAccessor;
+    await action();
   }
 
-  private IConfiguration Configuration { get; }
-  private ITestOutputHelperAccessor TestAccessor { get; }
+  public TestTenants(ITestOutputHelperAccessor testAccessor)
+  {
+    _testAccessor = testAccessor;
+  }
+
+  private readonly ITestOutputHelperAccessor _testAccessor;
   private ITest Test
   {
     get =>
-      TestAccessor.Output.GetTest()
+      _testAccessor.Output.GetTest()
       ?? throw new InvalidOperationException("Test is null");
   }
 }

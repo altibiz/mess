@@ -2,6 +2,8 @@
 using Xunit.DependencyInjection.Logging;
 using Mess.Timeseries.Abstractions.Client;
 using Mess.Timeseries.Client;
+using Mess.Xunit.Extensions.Microsoft;
+using Mess.Timeseries.Test.Abstractions;
 
 namespace Mess.Timeseries.Test;
 
@@ -22,7 +24,8 @@ public class Startup
     HostBuilderContext hostBuilderContext
   )
   {
-    services.AddScoped<ITenants, TestTenants>();
+    services.RegisterTestTenants();
+    services.RegisterTimeseriesTestMigrator();
 
     services.AddScoped<ITimeseriesConnection, TimeseriesConnection>();
     services.AddSingleton<ITimeseriesClient, TimeseriesClient>();
