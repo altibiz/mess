@@ -6,20 +6,12 @@
   "website": "altibiz.com",
   "version": "0.0.1",
   "issetuprecipe": true,
-  "categories": [
-    "Module"
-  ],
-  "tags": [
-    "Module"
-  ],
+  "categories": ["Module"],
+  "tags": ["Module"],
   "steps": [
     {
       "name": "feature",
-      "enable": [
-        "TheAdmin",
-        "SafeMode",
-        "Mess.Default"
-      ]
+      "enable": ["TheAdmin", "SafeMode", "Mess.Default"]
     },
     {
       "name": "themes",
