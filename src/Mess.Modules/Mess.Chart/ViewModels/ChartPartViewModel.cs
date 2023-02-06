@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using OrchardCore.ContentManagement.Metadata.Models;
-using Mess.Chart.Models;
+using Mess.Chart.Abstractions.Models;
 
 namespace Mess.Chart.ViewModels;
 

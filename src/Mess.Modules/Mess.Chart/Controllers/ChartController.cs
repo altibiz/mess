@@ -1,5 +1,5 @@
 using Mess.Chart.Abstractions.Providers;
-using Mess.Chart.Models;
+using Mess.Chart.Abstractions.Models;
 using Microsoft.AspNetCore.Mvc;
 using OrchardCore.ContentManagement;
 

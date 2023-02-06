@@ -1,6 +1,6 @@
 using OrchardCore.ContentManagement;
 
-namespace Mess.Chart.Models;
+namespace Mess.Chart.Abstractions.Models;
 
 public class ChartPart : ContentPart
 {
