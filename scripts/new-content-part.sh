@@ -140,7 +140,7 @@ public class ${NAME}PartDisplayDriver : ContentPartDisplayDriver<${NAME}Part>
     BuildPartEditorContext context
   )
   {
-    return Initialize<ChartPartViewModel>(
+    return Initialize<${NAME}PartViewModel>(
       GetEditorShapeType(context),
       model =>
       {
@@ -166,9 +166,8 @@ public class ${NAME}PartDisplayDriver : ContentPartDisplayDriver<${NAME}Part>
     return Edit(part, context);
   }
 
-  public ChartPartDisplayDriver(
-    IChartDataProviderLookup lookup,
-    IStringLocalizer<ChartPartDisplayDriver> localizer
+  public ${NAME}PartDisplayDriver(
+    IStringLocalizer<${NAME}PartDisplayDriver> localizer
   )
   {
     S = localizer;
