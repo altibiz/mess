@@ -24,7 +24,7 @@ PART="$MODELS/${NAME}Part.cs"
 
 NAMESPACE="Mess.$MODULE"
 BASE_DIR="$ROOT_DIR/src/Mess.Modules/$NAMESPACE"
-VIEW_MODELS="$BASE_DIR/ViewMdoels"
+VIEW_MODELS="$BASE_DIR/ViewModels"
 VIEW_MODEL="$VIEW_MODELS/${NAME}PartViewModel.cs"
 VIEWS="$BASE_DIR/Views"
 DISPLAY_OPTIONS_VIEW="$VIEWS/${NAME}Part.DisplayOptions.cshtml"
@@ -68,7 +68,7 @@ using ${ABSTRACTIONS_NAMESPACE}.Models;
 
 namespace ${NAMESPACE}.ViewModels;
 
-public class ${NAME}ViewModel
+public class ${NAME}PartViewModel
 {
   [BindNever]
   public ${NAME}Part Part { get; set; } = default!;
@@ -105,14 +105,11 @@ cat <<END >"$SUMMARY_VIEW"
 END
 
 cat <<END >"$DISPLAY_DRIVER"
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Localization;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
 using OrchardCore.ContentManagement.Display.Models;
-using OrchardCore.ContentManagement.Metadata.Models;
 using OrchardCore.DisplayManagement.ModelBinding;
 using OrchardCore.DisplayManagement.Views;
-using OrchardCore.Mvc.ModelBinding;
 using ${ABSTRACTIONS_NAMESPACE}.Models;
 using ${NAMESPACE}.ViewModels;
 
