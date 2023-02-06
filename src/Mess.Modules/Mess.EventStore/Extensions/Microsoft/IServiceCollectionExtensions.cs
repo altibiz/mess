@@ -3,6 +3,7 @@ using Marten;
 using Weasel.Core;
 using System.Reflection;
 using Mess.EventStore.Services;
+using Mess.Tenants;
 
 namespace Mess.EventStore.Extensions.Microsoft;
 
@@ -11,7 +12,7 @@ public static class IServiceCollectionExtensions
   public static void AddMartenFromTenantGroups(
     this IServiceCollection services,
     bool isDevelopment,
-    IDictionary<string, IEnumerable<string>> configuration
+    IReadOnlyDictionary<string, IReadOnlyList<Tenant>> configuration
   )
   {
     var projection = new Projection();
@@ -30,14 +31,14 @@ public static class IServiceCollectionExtensions
               {
                 databases.AddSingleTenantDatabase(
                   connectionString,
-                  tenantsArray[0]
+                  tenantsArray[0].Name
                 );
               }
               else if (tenantsArray.Length > 0)
               {
                 databases
                   .AddMultipleTenantDatabase(connectionString)
-                  .ForTenants(tenants.ToArray());
+                  .ForTenants(tenants.Select(tenant => tenant.Name).ToArray());
               }
             }
           });

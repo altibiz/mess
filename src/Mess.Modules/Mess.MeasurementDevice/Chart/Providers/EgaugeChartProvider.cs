@@ -1,7 +1,4 @@
 using Mess.Tenants;
-using Mess.Chart.Abstractions.Models;
-using Mess.Chart.Abstractions.Providers;
-using Mess.Chart.Abstractions.Extensions.System;
 using Mess.MeasurementDevice.Chart.ViewModels;
 using Mess.MeasurementDevice.Chart.Models;
 using Mess.MeasurementDevice.Abstractions.Client;

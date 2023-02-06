@@ -37,6 +37,7 @@ public class Migrations : DataMigration
             "MeasurementDevicePart",
             part =>
               part.WithDisplayName("Device")
+                .WithPosition("2")
                 .WithDescription("Neccessary device data.")
           )
           .WithPart(
@@ -46,7 +47,7 @@ public class Migrations : DataMigration
                 .WithDescription(
                   "Line chart displaying measurements in the last 24 hours."
                 )
-                .WithPosition("2")
+                .WithPosition("3")
                 .WithSettings(new { Provider = EgaugeChartProvider.ProviderId })
           )
     );

@@ -1,4 +1,3 @@
-using Mess.Chart.Abstractions.Models;
 using Mess.MeasurementDevice.Chart.Providers;
 using OrchardCore.ContentManagement;
 
