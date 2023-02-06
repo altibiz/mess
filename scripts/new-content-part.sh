@@ -6,13 +6,13 @@ SCRIPT_DIR="$(dirname "$(abs "$0")")"
 ROOT_DIR="$(dirname "$SCRIPT_DIR")"
 
 MODULE="$1"
-if ! "$MODULE"; then
+if [ ! "$MODULE" ]; then
   printf "[Mess] First argument (module) must not be empty\n"
   exit 1
 fi
 
 NAME="$2"
-if ! "$NAME"; then
+if [ ! "$NAME" ]; then
   printf "[Mess] Second argument (name) must not be empty\n"
   exit 1
 fi
