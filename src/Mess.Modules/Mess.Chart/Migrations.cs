@@ -12,35 +12,60 @@ public class Migrations : DataMigration
     _contentDefinitionManager.AlterPartDefinition(
       "ChartPart",
       builder =>
-        builder
-          .Attachable()
-          .WithDescription("Provides a chart for your content item.")
+        builder.WithDescription("Provides a chart for your content item.")
     );
 
     _contentDefinitionManager.AlterPartDefinition(
-      "LineChartPar",
+      "LineChartPart",
       builder =>
-        builder
-          .Attachable()
-          .WithDescription("Provides a line chart for your chart.")
+        builder.WithDescription("Provides a line chart for your chart.")
     );
 
     _contentDefinitionManager.AlterPartDefinition(
       "LineChartDatasetPart",
       builder =>
-        builder
-          .Attachable()
-          .WithDescription("Provides a line chart dataset for your line chart.")
+        builder.WithDescription(
+          "Provides a line chart dataset for your line chart."
+        )
     );
 
     _contentDefinitionManager.AlterPartDefinition(
       "TimeseriesChartDatasetPart",
       builder =>
+        builder.WithDescription(
+          "Provides a timeseries property for your line chart dataset."
+        )
+    );
+
+    _contentDefinitionManager.AlterTypeDefinition(
+      "Chart",
+      builder => builder.WithDescription("A chart.").WithPart("ChartPart")
+    );
+
+    _contentDefinitionManager.AlterTypeDefinition(
+      "LineChart",
+      builder =>
         builder
-          .Attachable()
-          .WithDescription(
-            "Provides a timeseries property for your line chart dataset."
-          )
+          .Stereotype("Chart")
+          .WithDescription("A line chart.")
+          .WithPart("LineChartPart")
+    );
+
+    _contentDefinitionManager.AlterTypeDefinition(
+      "LineChartDataset",
+      builder =>
+        builder
+          .WithDescription("A line chart dataset.")
+          .WithPart("LineChartDatasetPart")
+    );
+
+    _contentDefinitionManager.AlterTypeDefinition(
+      "TimeseriesChartDataset",
+      builder =>
+        builder
+          .Stereotype("LineChartDataset")
+          .WithDescription("A timeseries line chart dataset.")
+          .WithPart("TimeseriesChartDatasetPart")
     );
 
     return 1;

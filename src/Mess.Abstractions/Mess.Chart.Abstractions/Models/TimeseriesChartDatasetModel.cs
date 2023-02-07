@@ -4,4 +4,4 @@ public record TimeseriesChartDatasetModel(
   string Label,
   string Color,
   IReadOnlyList<TimeseriesChartDatapointModel> Datapoints
-) : LineChartDatasetModel("Timeseries", Label, Color);
+) : LineChartDatasetModel(LineChartDatasetType.Timeseries, Label, Color);
