@@ -9,6 +9,7 @@ using OrchardCore.ContentManagement.Metadata.Models;
 using OrchardCore.DisplayManagement.ModelBinding;
 using OrchardCore.DisplayManagement.Views;
 using OrchardCore.Mvc.ModelBinding;
+using OrchardCore.ContentManagement.Metadata;
 
 namespace Mess.Chart.Drivers;
 
@@ -25,6 +26,13 @@ public class ChartPartDisplayDriver : ContentPartDisplayDriver<ChartPart>
       {
         model.Part = part;
         model.Definition = context.TypePartDefinition;
+        model.ProviderIds = _lookup.Ids;
+        model.ChartContentTypes = _contentDefinitionManager
+          .ListTypeDefinitions()
+          .Where(
+            contentTypeDefinition =>
+              contentTypeDefinition.GetStereotype() == "Chart"
+          );
       }
     );
   }
@@ -40,6 +48,13 @@ public class ChartPartDisplayDriver : ContentPartDisplayDriver<ChartPart>
       {
         model.Part = part;
         model.Definition = context.TypePartDefinition;
+        model.ProviderIds = _lookup.Ids;
+        model.ChartContentTypes = _contentDefinitionManager
+          .ListTypeDefinitions()
+          .Where(
+            contentTypeDefinition =>
+              contentTypeDefinition.GetStereotype() == "Chart"
+          );
       }
     );
   }
@@ -72,13 +87,16 @@ public class ChartPartDisplayDriver : ContentPartDisplayDriver<ChartPart>
 
   public ChartPartDisplayDriver(
     IChartDataProviderLookup lookup,
+    IContentDefinitionManager contentDefinitionManager,
     IStringLocalizer<ChartPartDisplayDriver> localizer
   )
   {
     _lookup = lookup;
+    _contentDefinitionManager = contentDefinitionManager;
     S = localizer;
   }
 
   private readonly IStringLocalizer S;
   private readonly IChartDataProviderLookup _lookup;
+  private readonly IContentDefinitionManager _contentDefinitionManager;
 }

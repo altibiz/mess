@@ -2,7 +2,6 @@ using Mess.Chart.Abstractions;
 using Mess.Chart.Abstractions.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
 using OrchardCore.Admin;
 using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Display;
@@ -13,63 +12,9 @@ using OrchardCore.DisplayManagement.ModelBinding;
 namespace Mess.Chart.Controllers;
 
 [Admin]
-public class AdminController : Controller
+public class ChartAdminController : Controller
 {
-  public async Task<IActionResult> CreateLineChartDataset(string contentType)
-  {
-    if (String.IsNullOrWhiteSpace(contentType))
-    {
-      return NotFound();
-    }
-
-    var contentTypeDefinition = _contentDefinitionManager.GetTypeDefinition(
-      contentType
-    );
-    if (contentTypeDefinition is null)
-    {
-      return NotFound();
-    }
-
-    var contentTypeSettings =
-      contentTypeDefinition.GetSettings<ContentTypeSettings>();
-    if (
-      contentTypeSettings is null
-      || String.IsNullOrEmpty(contentTypeSettings.Stereotype)
-      || !contentTypeSettings.Stereotype.Equals("LineChartDataset")
-    )
-    {
-      return NotFound();
-    }
-
-    if (
-      !await _authorizationService.AuthorizeAsync(
-        User,
-        ChartPermissions.ManageChart
-      )
-    )
-    {
-      return Forbid();
-    }
-
-    var lineChartDatasetContentItem = await _contentManager.NewAsync(
-      "LineChartDataset"
-    );
-    var lineChartDatasetPart =
-      lineChartDatasetContentItem.As<LineChartDatasetPart>();
-
-    var chartTypeContentItem = await _contentManager.NewAsync(contentType);
-    lineChartDatasetPart.Dataset = chartTypeContentItem;
-
-    dynamic model = await _contentItemDisplayManager.BuildEditorAsync(
-      chartTypeContentItem,
-      _updateModelAccessor.ModelUpdater,
-      true
-    );
-
-    return View(model);
-  }
-
-  public async Task<IActionResult> CreateChart(string contentType)
+  public async Task<IActionResult> Create(string contentType)
   {
     if (String.IsNullOrWhiteSpace(contentType))
     {
@@ -111,46 +56,26 @@ public class AdminController : Controller
     var chartTypeContentItem = await _contentManager.NewAsync(contentType);
     chartPart.Chart = chartTypeContentItem;
 
-    dynamic model = await _contentItemDisplayManager.BuildEditorAsync(
+    var editor = await _contentItemDisplayManager.BuildEditorAsync(
       chartContentItem,
       _updateModelAccessor.ModelUpdater,
       true
     );
 
-    return View(model);
+    return View(editor);
   }
 
-  private JObject? FindChart(JObject contentItem, string chartContentItemId)
+  public IActionResult Edit()
   {
-    if (contentItem["ContentItemId"]?.Value<string>() == chartContentItemId)
-    {
-      return contentItem;
-    }
-
-    var chartPart = contentItem.GetValue("ChartPart");
-    if (chartPart is not null)
-    {
-      var chart = chartPart["Chart"];
-      if (chart is not null)
-      {
-        if (chart["ContentItemId"]?.Value<string>() == chartContentItemId)
-        {
-          return contentItem;
-        }
-      }
-    }
-
-    // TODO: handle flows?
-    var flowPart = contentItem.GetValue("FlowPart");
-    if (flowPart is null)
-    {
-      return null;
-    }
-
-    return null;
+    throw new NotImplementedException();
   }
 
-  public AdminController(
+  public IActionResult Delete()
+  {
+    throw new NotImplementedException();
+  }
+
+  public ChartAdminController(
     IContentManager contentManager,
     IContentDefinitionManager contentDefinitionManager,
     IAuthorizationService authorizationService,

@@ -1,0 +1,53 @@
+<div 
+    class="
+      chart
+      chart-title
+      border
+      rounded
+      p-2
+      ps-3
+      mb-1
+      d-flex
+      flex-row
+      justify-content-between
+      align-items-center
+    ">
+  @if (Model.Content != null)
+  {
+    @await DisplayAsync(Model.Content)
+  }
+  else
+  {
+    @* For charts without a display driver *@
+    <span>
+      @Model.ContentItem.DisplayText
+      <span class="text-muted dashed">
+        @Model.ContentItem.ContentType
+      </span>
+    </span>
+  }
+  <div class="float-end">
+      <a
+          asp-route-area="Mess.Chart"
+          asp-controller="ChartAdmin"
+          asp-action="Edit"
+          class="btn btn-success btn-sm">
+        @T["Edit"]
+      </a>
+      <button
+          type="button"
+          class="btn btn-primary btn-sm"
+          data-bs-toggle="modal"
+          data-bs-target="#modalChartTypes">
+        @T["Add"]
+      </button>
+      <a 
+          asp-route-area="Mess.Chart"
+          asp-controller="ChartAdmin"
+          asp-action="Delete"
+          data-url-af="RemoveUrl UnsafeUrl"
+          class="btn btn-danger btn-sm">
+        @T["Delete"]
+      </a>
+  </div>
+</div>

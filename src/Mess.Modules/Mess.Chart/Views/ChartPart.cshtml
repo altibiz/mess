@@ -8,8 +8,8 @@
   var name = Model.Definition.Name.HtmlClassify();
 }
 
-<canvas id="chart-@name"></canvas>
-<span id="chart-error-@name"></span>
+<canvas id="chart-canvas-@name"></canvas>
+<span id="chart-canvas-error-@name"></span>
 
 <script asp-name="mess-chart" at="Foot"></script>
 <script at="Foot">
@@ -18,12 +18,12 @@
     createChart(contentItem)
       .then(function (chart) {
         if (!chart) {
-          var errorSpan = document.getElementById("chart-error-@name");
+          var errorSpan = document.getElementById("chart-canvas-error-@name");
           errorSpan.innerHtml = '@T["Error occured while creating chart"]';
         }
 
         bindChart(
-          "chart-@name",
+          "chart-canvas-error-@name",
           "@Html.Raw(Orchard.CultureName())",
           chart);
       })

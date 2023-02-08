@@ -1,11 +1,63 @@
-@using Mess.Chart.Abstractions.Providers
-
 @model ChartPartViewModel
 
-@inject IChartDataProviderLookup _lookup
+@inject OrchardCore.ContentManagement.IContentManager ContentManager
+@inject OrchardCore.ContentManagement.Display.IContentItemDisplayManager ContentItemDisplayManager
+@inject OrchardCore.DisplayManagement.ModelBinding.IUpdateModelAccessor ModelUpdaterAccessor
 
 <div class="mb-3">
   <label asp-for="Part.DataProviderId">@T["Data provider"]</label>
-  <select asp-for="Part.DataProviderId" asp-items="@_lookup.Options()" />
+  <select asp-for="Part.DataProviderId" asp-items="@Model.ProviderIds.Select(id => new SelectListItem { Value = id, Text = id })" />
   <span class="hint">@T["How data will be fetched for the chart."]</span>
 </div>
+
+@{
+    var updater = ModelUpdaterAccessor.ModelUpdater;
+}
+
+
+@if (Model.Part.Chart != null)
+{
+  dynamic chart = await ContentItemDisplayManager.BuildDisplayAsync(Model.Part.Chart, updater, "Admin");
+  
+  <div class="mb-3">
+    <label asp-for="Part.Chart">@T["Chart"]</label>
+    @await DisplayAsync(chart)
+    <span class="hint">@T["How the chart will be presented"]</span>
+  </div>
+}
+else
+{
+  <div class="card mb-3">
+    <div class="card-body bg-primary p-3">
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalChartTypes">
+          @T["Pick chart type"]
+      </button>
+    </div>
+  </div>
+
+  <div class="modal fade" id="modalChartTypes" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">@T["Available chart types"]</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row row-cols-1 row-cols-md-2 g-2">
+            @foreach (var type in Model.ChartContentTypes)
+            {
+              var chart = await ContentManager.NewAsync(type.Name);
+              dynamic thumbnail = await ContentItemDisplayManager.BuildDisplayAsync(chart, ModelUpdaterAccessor.ModelUpdater, "Thumbnail");
+              <div class="col">
+                @await DisplayAsync(thumbnail)
+              </div>
+            }
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@T["Cancel"]</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

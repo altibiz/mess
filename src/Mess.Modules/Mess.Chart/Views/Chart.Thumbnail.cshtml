@@ -1,0 +1,21 @@
+<div class="card h-100">
+  <div class="card-body">
+    @if (Model.Content != null)
+    {
+      @await DisplayAsync(Model.Content)
+    }
+    else
+    {
+      @* TODO: Add a default thumbnail for content types without a display driver. *@
+    }
+  </div>
+  <div class="card-footer text-muted text-sm-end">
+    <a 
+        class="btn btn-primary btn-sm thumbnail-link-create"
+        asp-route-area="Mess.Chart"
+        asp-route-controller="Admin"
+        asp-route-action="CreateChart">
+      @T["Add"]
+    </a>
+  </div>
+</div>

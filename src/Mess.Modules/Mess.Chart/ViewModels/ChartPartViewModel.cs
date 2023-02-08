@@ -11,4 +11,11 @@ public class ChartPartViewModel
 
   [BindNever]
   public ContentTypePartDefinition Definition { get; set; } = default!;
+
+  [BindNever]
+  public IEnumerable<string> ProviderIds { get; set; } = default!;
+
+  [BindNever]
+  public IEnumerable<ContentTypeDefinition> ChartContentTypes { get; set; } =
+    default!;
 }

@@ -67,13 +67,68 @@ public class Startup : StartupBase
     );
 
     routes.MapAreaControllerRoute(
-      name: "Mess.Chart.Controllers.AdminController.Index",
+      name: "Mess.Chart.Controllers.ChartAdminController.Create",
       areaName: "Mess.Chart",
-      pattern: _adminOptions.AdminUrlPrefix + "/",
+      pattern: _adminOptions.AdminUrlPrefix + "/Chart/Create",
       defaults: new
       {
-        controller = typeof(AdminController).ControllerName(),
-        action = nameof(AdminController.Index)
+        controller = typeof(ChartAdminController).ControllerName(),
+        action = nameof(ChartAdminController.Create)
+      }
+    );
+
+    routes.MapAreaControllerRoute(
+      name: "Mess.Chart.Controllers.ChartAdminController.Edit",
+      areaName: "Mess.Chart",
+      pattern: _adminOptions.AdminUrlPrefix + "/Chart/Edit",
+      defaults: new
+      {
+        controller = typeof(ChartAdminController).ControllerName(),
+        action = nameof(ChartAdminController.Edit)
+      }
+    );
+
+    routes.MapAreaControllerRoute(
+      name: "Mess.Chart.Controllers.ChartAdminController.Delete",
+      areaName: "Mess.Chart",
+      pattern: _adminOptions.AdminUrlPrefix + "/Chart/Delete",
+      defaults: new
+      {
+        controller = typeof(ChartAdminController).ControllerName(),
+        action = nameof(ChartAdminController.Delete)
+      }
+    );
+
+    routes.MapAreaControllerRoute(
+      name: "Mess.Chart.Controllers.LineChartDatasetAdminController.Create",
+      areaName: "Mess.Chart",
+      pattern: _adminOptions.AdminUrlPrefix + "/LineChartDataset/Create",
+      defaults: new
+      {
+        controller = typeof(LineChartDatasetAdminController).ControllerName(),
+        action = nameof(LineChartDatasetAdminController.Create)
+      }
+    );
+
+    routes.MapAreaControllerRoute(
+      name: "Mess.Chart.Controllers.LineChartDatasetAdminController.Edit",
+      areaName: "Mess.Chart",
+      pattern: _adminOptions.AdminUrlPrefix + "/LineChartDataset/Edit",
+      defaults: new
+      {
+        controller = typeof(LineChartDatasetAdminController).ControllerName(),
+        action = nameof(LineChartDatasetAdminController.Edit)
+      }
+    );
+
+    routes.MapAreaControllerRoute(
+      name: "Mess.Chart.Controllers.LineChartDatasetAdminController.Delete",
+      areaName: "Mess.Chart",
+      pattern: _adminOptions.AdminUrlPrefix + "/LineChartDataset/Delete",
+      defaults: new
+      {
+        controller = typeof(LineChartDatasetAdminController).ControllerName(),
+        action = nameof(LineChartDatasetAdminController.Delete)
       }
     );
   }
