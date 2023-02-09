@@ -6,6 +6,7 @@ using OrchardCore.Admin;
 using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Display;
 using OrchardCore.ContentManagement.Metadata;
+using OrchardCore.ContentManagement.Metadata.Models;
 using OrchardCore.ContentManagement.Metadata.Settings;
 using OrchardCore.DisplayManagement.ModelBinding;
 
@@ -16,38 +17,14 @@ public class ChartAdminController : Controller
 {
   public async Task<IActionResult> Create(string contentType)
   {
-    if (String.IsNullOrWhiteSpace(contentType))
-    {
-      return NotFound();
-    }
-
-    var contentTypeDefinition = _contentDefinitionManager.GetTypeDefinition(
-      contentType
-    );
-    if (contentTypeDefinition is null)
-    {
-      return NotFound();
-    }
-
-    var contentTypeSettings =
-      contentTypeDefinition.GetSettings<ContentTypeSettings>();
-    if (
-      contentTypeSettings is null
-      || String.IsNullOrEmpty(contentTypeSettings.Stereotype)
-      || !contentTypeSettings.Stereotype.Equals("Chart")
-    )
-    {
-      return NotFound();
-    }
-
-    if (
-      !await _authorizationService.AuthorizeAsync(
-        User,
-        ChartPermissions.ManageChart
-      )
-    )
+    if (!await IsAuthorizedAsync())
     {
       return Forbid();
+    }
+
+    if (!IsValidChartContentType(contentType))
+    {
+      return NotFound();
     }
 
     var chartContentItem = await _contentManager.NewAsync("Chart");
@@ -65,14 +42,224 @@ public class ChartAdminController : Controller
     return View(editor);
   }
 
-  public IActionResult Edit()
+  [HttpPost]
+  [ActionName("Create")]
+  public async Task<IActionResult> CreatePost(
+    string contentType,
+    string contentItemId
+  )
   {
-    throw new NotImplementedException();
+    if (!await IsAuthorizedAsync())
+    {
+      return Forbid();
+    }
+
+    if (!IsValidChartContentType(contentType))
+    {
+      return NotFound();
+    }
+
+    ContentItem chart;
+
+    var contentTypeDefinition = _contentDefinitionManager.GetTypeDefinition(
+      "Chart"
+    );
+
+    if (!contentTypeDefinition.IsDraftable())
+    {
+      chart = await _contentManager.GetAsync(
+        contentItemId,
+        VersionOptions.Latest
+      );
+    }
+    else
+    {
+      chart = await _contentManager.GetAsync(
+        contentItemId,
+        VersionOptions.DraftRequired
+      );
+    }
+
+    if (chart == null)
+    {
+      return NotFound();
+    }
+
+    var contentItem = await _contentManager.NewAsync(contentType);
+
+    dynamic model = await _contentItemDisplayManager.UpdateEditorAsync(
+      contentItem,
+      _updateModelAccessor.ModelUpdater,
+      true
+    );
+
+    if (!ModelState.IsValid)
+    {
+      return View(model);
+    }
+
+    chart.Alter<ChartPart>(part => part.Chart = contentItem);
+
+    await _contentManager.SaveDraftAsync(chart);
+
+    return RedirectToAction(
+      nameof(Edit),
+      "Admin",
+      new { area = "OrchardCore.Contents", contentItemId }
+    );
+  }
+
+  public async Task<IActionResult> Edit(string contentItemId)
+  {
+    if (!await IsAuthorizedAsync())
+    {
+      return Forbid();
+    }
+
+    var chart = await _contentManager.GetAsync(
+      contentItemId,
+      VersionOptions.Latest
+    );
+
+    if (chart is null)
+    {
+      return NotFound();
+    }
+
+    var contentItem = chart.As<ChartPart>().Chart;
+
+    if (contentItem is null)
+    {
+      return NotFound();
+    }
+
+    dynamic model = await _contentItemDisplayManager.BuildEditorAsync(
+      contentItem,
+      _updateModelAccessor.ModelUpdater,
+      false
+    );
+
+    return View(model);
+  }
+
+  [HttpPost]
+  [ActionName("Edit")]
+  public async Task<IActionResult> EditPost(string contentItemId)
+  {
+    if (!await IsAuthorizedAsync())
+    {
+      return Forbid();
+    }
+
+    ContentItem chart;
+
+    var contentTypeDefinition = _contentDefinitionManager.GetTypeDefinition(
+      "Chart"
+    );
+
+    if (!contentTypeDefinition.IsDraftable())
+    {
+      chart = await _contentManager.GetAsync(
+        contentItemId,
+        VersionOptions.Latest
+      );
+    }
+    else
+    {
+      chart = await _contentManager.GetAsync(
+        contentItemId,
+        VersionOptions.DraftRequired
+      );
+    }
+
+    if (chart == null)
+    {
+      return NotFound();
+    }
+
+    var existing = chart.As<ChartPart>().Chart;
+    var contentItem = await _contentManager.NewAsync(existing.ContentType);
+    contentItem.Merge(existing);
+
+    dynamic model = await _contentItemDisplayManager.UpdateEditorAsync(
+      contentItem,
+      _updateModelAccessor.ModelUpdater,
+      false
+    );
+
+    if (!ModelState.IsValid)
+    {
+      return View(model);
+    }
+
+    existing.Merge(
+      contentItem.Content,
+      new JsonMergeSettings
+      {
+        MergeArrayHandling = MergeArrayHandling.Replace,
+        MergeNullValueHandling = MergeNullValueHandling.Merge
+      }
+    );
+
+    // Merge doesn't copy the properties
+    menuItem[nameof(ContentItem.DisplayText)] = contentItem.DisplayText;
+
+    await _contentManager.SaveDraftAsync(chart);
+
+    return RedirectToAction(
+      nameof(Edit),
+      "Admin",
+      new { area = "OrchardCore.Contents", contentItemId = menuContentItemId }
+    );
   }
 
   public IActionResult Delete()
   {
     throw new NotImplementedException();
+  }
+
+  private bool IsValidChartContentType(string contentType)
+  {
+    if (String.IsNullOrWhiteSpace(contentType))
+    {
+      return false;
+    }
+
+    var contentTypeDefinition = _contentDefinitionManager.GetTypeDefinition(
+      contentType
+    );
+    if (contentTypeDefinition is null)
+    {
+      return false;
+    }
+
+    var contentTypeSettings =
+      contentTypeDefinition.GetSettings<ContentTypeSettings>();
+    if (
+      contentTypeSettings is null
+      || String.IsNullOrEmpty(contentTypeSettings.Stereotype)
+      || !contentTypeSettings.Stereotype.Equals("Chart")
+    )
+    {
+      return false;
+    }
+
+    return true;
+  }
+
+  private async Task<bool> IsAuthorizedAsync()
+  {
+    if (
+      !await _authorizationService.AuthorizeAsync(
+        User,
+        ChartPermissions.ManageChart
+      )
+    )
+    {
+      return false;
+    }
+
+    return true;
   }
 
   public ChartAdminController(
