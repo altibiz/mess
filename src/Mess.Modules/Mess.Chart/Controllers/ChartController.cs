@@ -14,7 +14,7 @@ public class ChartController : Controller
   )
   {
     var part = contentItem.As<ChartPart>();
-    if (part is null)
+    if (part is null || part.Chart is null)
     {
       return BadRequest("Chart part not present");
     }
@@ -28,7 +28,7 @@ public class ChartController : Controller
     var chart = await dataProvider.CreateChartAsync(part.Chart);
     if (chart is null)
     {
-      return BadRequest("Chart creation failed");
+      return StatusCode(500, "Chart creation failed");
     }
 
     return Json(chart);

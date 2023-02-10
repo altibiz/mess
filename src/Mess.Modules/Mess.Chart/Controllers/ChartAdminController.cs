@@ -2,6 +2,8 @@ using Mess.Chart.Abstractions;
 using Mess.Chart.Abstractions.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Localization;
+using Newtonsoft.Json.Linq;
 using OrchardCore.Admin;
 using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Display;
@@ -9,44 +11,16 @@ using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.ContentManagement.Metadata.Models;
 using OrchardCore.ContentManagement.Metadata.Settings;
 using OrchardCore.DisplayManagement.ModelBinding;
+using OrchardCore.DisplayManagement.Notify;
 
 namespace Mess.Chart.Controllers;
 
 [Admin]
 public class ChartAdminController : Controller
 {
-  public async Task<IActionResult> Create(string contentType)
-  {
-    if (!await IsAuthorizedAsync())
-    {
-      return Forbid();
-    }
-
-    if (!IsValidChartContentType(contentType))
-    {
-      return NotFound();
-    }
-
-    var chartContentItem = await _contentManager.NewAsync("Chart");
-    var chartPart = chartContentItem.As<ChartPart>();
-
-    var chartTypeContentItem = await _contentManager.NewAsync(contentType);
-    chartPart.Chart = chartTypeContentItem;
-
-    var editor = await _contentItemDisplayManager.BuildEditorAsync(
-      chartContentItem,
-      _updateModelAccessor.ModelUpdater,
-      true
-    );
-
-    return View(editor);
-  }
-
-  [HttpPost]
-  [ActionName("Create")]
-  public async Task<IActionResult> CreatePost(
-    string contentType,
-    string contentItemId
+  public async Task<IActionResult> Create(
+    string contentItemId,
+    string contentType
   )
   {
     if (!await IsAuthorizedAsync())
@@ -59,27 +33,44 @@ public class ChartAdminController : Controller
       return NotFound();
     }
 
-    ContentItem chart;
+    var chart = await GetChartAsync(contentItemId);
+    if (chart == null)
+    {
+      return NotFound();
+    }
 
-    var contentTypeDefinition = _contentDefinitionManager.GetTypeDefinition(
-      "Chart"
+    var contentItem = await _contentManager.NewAsync(contentType);
+
+    chart.Alter<ChartPart>(part => part.Chart = contentItem);
+    await _contentManager.SaveDraftAsync(chart);
+
+    var editor = await _contentItemDisplayManager.BuildEditorAsync(
+      contentItem,
+      _updateModelAccessor.ModelUpdater,
+      true
     );
 
-    if (!contentTypeDefinition.IsDraftable())
+    return View(editor);
+  }
+
+  [HttpPost]
+  [ActionName("Create")]
+  public async Task<IActionResult> CreatePost(
+    string contentItemId,
+    string contentType
+  )
+  {
+    if (!await IsAuthorizedAsync())
     {
-      chart = await _contentManager.GetAsync(
-        contentItemId,
-        VersionOptions.Latest
-      );
-    }
-    else
-    {
-      chart = await _contentManager.GetAsync(
-        contentItemId,
-        VersionOptions.DraftRequired
-      );
+      return Forbid();
     }
 
+    if (!IsValidChartContentType(contentType))
+    {
+      return NotFound();
+    }
+
+    var chart = await GetChartAsync(contentItemId);
     if (chart == null)
     {
       return NotFound();
@@ -92,14 +83,12 @@ public class ChartAdminController : Controller
       _updateModelAccessor.ModelUpdater,
       true
     );
-
     if (!ModelState.IsValid)
     {
       return View(model);
     }
 
     chart.Alter<ChartPart>(part => part.Chart = contentItem);
-
     await _contentManager.SaveDraftAsync(chart);
 
     return RedirectToAction(
@@ -120,14 +109,12 @@ public class ChartAdminController : Controller
       contentItemId,
       VersionOptions.Latest
     );
-
     if (chart is null)
     {
       return NotFound();
     }
 
     var contentItem = chart.As<ChartPart>().Chart;
-
     if (contentItem is null)
     {
       return NotFound();
@@ -151,33 +138,18 @@ public class ChartAdminController : Controller
       return Forbid();
     }
 
-    ContentItem chart;
-
-    var contentTypeDefinition = _contentDefinitionManager.GetTypeDefinition(
-      "Chart"
-    );
-
-    if (!contentTypeDefinition.IsDraftable())
-    {
-      chart = await _contentManager.GetAsync(
-        contentItemId,
-        VersionOptions.Latest
-      );
-    }
-    else
-    {
-      chart = await _contentManager.GetAsync(
-        contentItemId,
-        VersionOptions.DraftRequired
-      );
-    }
-
+    var chart = await GetChartAsync(contentItemId);
     if (chart == null)
     {
       return NotFound();
     }
 
     var existing = chart.As<ChartPart>().Chart;
+    if (existing == null)
+    {
+      return NotFound();
+    }
+
     var contentItem = await _contentManager.NewAsync(existing.ContentType);
     contentItem.Merge(existing);
 
@@ -186,36 +158,51 @@ public class ChartAdminController : Controller
       _updateModelAccessor.ModelUpdater,
       false
     );
-
     if (!ModelState.IsValid)
     {
       return View(model);
     }
 
     existing.Merge(
-      contentItem.Content,
+      contentItem.Content as object,
       new JsonMergeSettings
       {
         MergeArrayHandling = MergeArrayHandling.Replace,
         MergeNullValueHandling = MergeNullValueHandling.Merge
       }
     );
-
-    // Merge doesn't copy the properties
-    menuItem[nameof(ContentItem.DisplayText)] = contentItem.DisplayText;
-
+    chart.DisplayText = contentItem.DisplayText;
     await _contentManager.SaveDraftAsync(chart);
 
     return RedirectToAction(
       nameof(Edit),
       "Admin",
-      new { area = "OrchardCore.Contents", contentItemId = menuContentItemId }
+      new { area = "OrchardCore.Contents", contentItemId }
     );
   }
 
-  public IActionResult Delete()
+  public async Task<IActionResult> DeleteAsync(string contentItemId)
   {
-    throw new NotImplementedException();
+    if (!await IsAuthorizedAsync())
+    {
+      return Forbid();
+    }
+
+    var chart = await GetChartAsync(contentItemId);
+    if (chart == null)
+    {
+      return NotFound();
+    }
+
+    chart.Alter<ChartPart>(chart => chart.Chart = null);
+    await _contentManager.SaveDraftAsync(chart);
+
+    await _notifier.SuccessAsync(H["Chart deleted successfully."]);
+    return RedirectToAction(
+      nameof(Edit),
+      "Admin",
+      new { area = "OrchardCore.Contents", contentItemId }
+    );
   }
 
   private bool IsValidChartContentType(string contentType)
@@ -235,39 +222,34 @@ public class ChartAdminController : Controller
 
     var contentTypeSettings =
       contentTypeDefinition.GetSettings<ContentTypeSettings>();
-    if (
-      contentTypeSettings is null
-      || String.IsNullOrEmpty(contentTypeSettings.Stereotype)
-      || !contentTypeSettings.Stereotype.Equals("Chart")
-    )
-    {
-      return false;
-    }
 
-    return true;
+    return contentTypeSettings is not null
+      && !String.IsNullOrEmpty(contentTypeSettings.Stereotype)
+      && contentTypeSettings.Stereotype.Equals("Chart");
   }
 
-  private async Task<bool> IsAuthorizedAsync()
-  {
-    if (
-      !await _authorizationService.AuthorizeAsync(
-        User,
-        ChartPermissions.ManageChart
+  private async Task<bool> IsAuthorizedAsync() =>
+    await _authorizationService.AuthorizeAsync(
+      User,
+      ChartPermissions.ManageChart
+    );
+
+  private async Task<ContentItem> GetChartAsync(string contentItemId) =>
+    _contentDefinitionManager.GetTypeDefinition("Chart").IsDraftable()
+      ? await _contentManager.GetAsync(
+        contentItemId,
+        VersionOptions.DraftRequired
       )
-    )
-    {
-      return false;
-    }
-
-    return true;
-  }
+      : await _contentManager.GetAsync(contentItemId, VersionOptions.Latest);
 
   public ChartAdminController(
     IContentManager contentManager,
     IContentDefinitionManager contentDefinitionManager,
     IAuthorizationService authorizationService,
     IContentItemDisplayManager contentItemDisplayManager,
-    IUpdateModelAccessor updateModelAccessor
+    IUpdateModelAccessor updateModelAccessor,
+    INotifier notifier,
+    IHtmlLocalizer<ChartAdminController> localizer
   )
   {
     _contentManager = contentManager;
@@ -275,6 +257,8 @@ public class ChartAdminController : Controller
     _authorizationService = authorizationService;
     _contentItemDisplayManager = contentItemDisplayManager;
     _updateModelAccessor = updateModelAccessor;
+    _notifier = notifier;
+    H = localizer;
   }
 
   private readonly IContentManager _contentManager;
@@ -282,4 +266,6 @@ public class ChartAdminController : Controller
   private readonly IAuthorizationService _authorizationService;
   private readonly IContentItemDisplayManager _contentItemDisplayManager;
   private readonly IUpdateModelAccessor _updateModelAccessor;
+  private readonly INotifier _notifier;
+  private readonly IHtmlLocalizer H;
 }

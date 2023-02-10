@@ -95,7 +95,7 @@ public class Startup : StartupBase
       defaults: new
       {
         controller = typeof(ChartAdminController).ControllerName(),
-        action = nameof(ChartAdminController.Delete)
+        action = nameof(ChartAdminController.DeleteAsync)
       }
     );
 
