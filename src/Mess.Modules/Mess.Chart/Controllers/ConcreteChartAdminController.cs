@@ -9,14 +9,22 @@ using OrchardCore.DisplayManagement.Notify;
 namespace Mess.Chart.Controllers;
 
 [Admin]
-public class LineChartDatasetAdminController : Controller
+public class ConcreteChartAdminController : Controller
 {
   [HttpPost]
-  public async Task<IActionResult> Create(string contentItemId)
+  public async Task<IActionResult> Create(
+    string contentItemId,
+    string contentType
+  )
   {
     if (!await _chartService.IsAuthorizedAsync(User))
     {
       return Forbid();
+    }
+
+    if (!await _chartService.IsValidConcreteChartTypeAsync(contentType))
+    {
+      return NotFound();
     }
 
     var chart = await _chartService.GetChartAsync(contentItemId);
@@ -25,22 +33,19 @@ public class LineChartDatasetAdminController : Controller
       return NotFound();
     }
 
-    var lineChartDataset = await _chartService.CreateLineChartDatasetAsync(
-      chart
+    var concreteChart = await _chartService.CreateConcreteChartAsync(
+      chart,
+      contentType
     );
-    if (lineChartDataset is null)
+    if (concreteChart is null)
     {
-      await _notifier.ErrorAsync(
-        H["Failed creating concrete line chart dataset."]
-      );
+      await _notifier.ErrorAsync(H["Failed creating concrete chart."]);
     }
     else
     {
       await _chartService.SaveChartAsync(chart);
 
-      await _notifier.SuccessAsync(
-        H["Concrete line chart dataset created successfully."]
-      );
+      await _notifier.SuccessAsync(H["Concrete chart created successfully."]);
     }
 
     return RedirectToAction(
@@ -51,10 +56,7 @@ public class LineChartDatasetAdminController : Controller
   }
 
   [HttpPost]
-  public async Task<IActionResult> Edit(
-    string contentItemId,
-    string lineChartDatasetContentItemId
-  )
+  public async Task<IActionResult> Edit(string contentItemId)
   {
     if (!await _chartService.IsAuthorizedAsync(User))
     {
@@ -67,31 +69,26 @@ public class LineChartDatasetAdminController : Controller
       return NotFound();
     }
 
-    var lineChartDataaset = await _chartService.ReadLineChartDatasetAsync(
-      chart,
-      lineChartDatasetContentItemId
-    );
-    if (lineChartDataaset is null)
+    var concreteChart = await _chartService.ReadConcreteChartAsync(chart);
+    if (concreteChart is null)
     {
       return NotFound();
     }
 
     var model = await _contentItemDisplayManager.UpdateEditorAsync(
-      lineChartDataaset,
+      concreteChart,
       _updateModelAccessor.ModelUpdater,
       false
     );
     if (!ModelState.IsValid)
     {
-      await _notifier.ErrorAsync(H["Failed updating line chart dataset."]);
+      await _notifier.ErrorAsync(H["Failed updating concrete chart."]);
     }
     else
     {
-      await _chartService.UpdateLineChartDatasetAsync(chart, lineChartDataaset);
+      await _chartService.UpdateConcreteChartAsync(chart, concreteChart);
 
-      await _notifier.SuccessAsync(
-        H["Line chart dataset updated successfully."]
-      );
+      await _notifier.ErrorAsync(H["Concrete chart updated successfully."]);
     }
 
     return RedirectToAction(
@@ -102,10 +99,7 @@ public class LineChartDatasetAdminController : Controller
   }
 
   [HttpPost]
-  public async Task<IActionResult> Delete(
-    string contentItemId,
-    string lineChartDatasetContentItemId
-  )
+  public async Task<IActionResult> Delete(string contentItemId)
   {
     if (!await _chartService.IsAuthorizedAsync(User))
     {
@@ -118,21 +112,16 @@ public class LineChartDatasetAdminController : Controller
       return NotFound();
     }
 
-    var lineChartDataset = await _chartService.DeleteLineChartDatasetAsync(
-      chart,
-      lineChartDatasetContentItemId
-    );
-    if (lineChartDataset is null)
+    var concreteChart = await _chartService.DeleteConcreteChartAsync(chart);
+    if (concreteChart is null)
     {
-      await _notifier.ErrorAsync(H["Failed deleting line chart dataset."]);
+      await _notifier.ErrorAsync(H["Failed deleting concrete chart."]);
     }
     else
     {
       await _chartService.SaveChartAsync(chart);
 
-      await _notifier.SuccessAsync(
-        H["Line chart dataset deleted successfully."]
-      );
+      await _notifier.SuccessAsync(H["Concrete chart deleted successfully."]);
     }
 
     return RedirectToAction(
@@ -142,12 +131,12 @@ public class LineChartDatasetAdminController : Controller
     );
   }
 
-  public LineChartDatasetAdminController(
+  public ConcreteChartAdminController(
     IChartService chartService,
     IUpdateModelAccessor updateModelAccessor,
     IContentItemDisplayManager contentItemDisplayManager,
     INotifier notifier,
-    IHtmlLocalizer<LineChartDatasetAdminController> localizer
+    IHtmlLocalizer<ConcreteChartAdminController> localizer
   )
   {
     _chartService = chartService;

@@ -8,5 +8,5 @@ public class LineChartDatasetPart : ContentPart
 
   public string Color { get; set; } = default!;
 
-  public ContentItem Dataset { get; set; } = default!;
+  public ContentItem? Dataset { get; set; } = default!;
 }

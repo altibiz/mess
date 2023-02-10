@@ -46,7 +46,7 @@ public class Migrations : DataMigration
       "LineChart",
       builder =>
         builder
-          .Stereotype("Chart")
+          .Stereotype("ConcreteChart")
           .WithDescription("A line chart.")
           .WithPart("LineChartPart")
     );
@@ -63,7 +63,7 @@ public class Migrations : DataMigration
       "TimeseriesChartDataset",
       builder =>
         builder
-          .Stereotype("LineChartDataset")
+          .Stereotype("ConcreteLineChartDataset")
           .WithDescription("A timeseries line chart dataset.")
           .WithPart("TimeseriesChartDatasetPart")
     );
