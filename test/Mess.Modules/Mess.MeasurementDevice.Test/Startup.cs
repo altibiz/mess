@@ -1,10 +1,10 @@
 using Xunit.DependencyInjection;
 using Xunit.DependencyInjection.Logging;
-using Mess.MeasurementDevice.Abstractions.Parsers.Egauge;
 using Mess.MeasurementDevice.Parsers.Egauge;
 using Mess.Xunit.Extensions.Microsoft;
 using Mess.EventStore.Test.Abstractions;
 using Mess.Timeseries.Test.Abstractions;
+using Mess.MeasurementDevice.Abstractions.Parsers;
 
 namespace Mess.MeasurementDevice.Test;
 
@@ -29,7 +29,7 @@ public class Startup
     services.RegisterTestEventStore();
     services.RegisterTimeseriesTestMigrator();
 
-    services.AddSingleton<IEgaugeParser, EgaugeParser>();
+    services.AddSingleton<IMeasurementParser, EgaugeParser>();
   }
 
   public void Configure(IServiceProvider services)

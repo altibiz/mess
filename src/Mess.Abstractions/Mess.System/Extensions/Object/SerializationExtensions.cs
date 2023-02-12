@@ -52,11 +52,11 @@ public static class ObjectSerializationExtensions
       }
     );
 
-  public static ValueTask<T?> FromJsonStreamAsync<T>(
+  public static async Task<T?> FromJsonStreamAsync<T>(
     this Stream @this,
     CancellationToken token = default
   ) =>
-    JsonSerializer.DeserializeAsync<T>(
+    await JsonSerializer.DeserializeAsync<T>(
       @this,
       new JsonSerializerOptions
       {

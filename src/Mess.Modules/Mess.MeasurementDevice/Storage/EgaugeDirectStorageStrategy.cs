@@ -7,7 +7,7 @@ namespace Mess.MeasurementDevice.Storage;
 public record class EgaugeDirectStorageStrategy(IMeasurementClient client)
   : MeasurementStorageStrategy<EgaugeMeasurementModel>
 {
-  public const string StorageStrategyId = "EgaugeEventStorage";
+  public const string StorageStrategyId = "EgaugeDirectStorage";
 
   public override string Id => StorageStrategyId;
 
