@@ -8,7 +8,8 @@ using Mess.Chart.ViewModels;
 
 namespace Mess.Chart.Drivers;
 
-public class TimeseriesChartDatasetPartDisplayDriver : ContentPartDisplayDriver<TimeseriesChartDatasetPart>
+public class TimeseriesChartDatasetPartDisplayDriver
+  : ContentPartDisplayDriver<TimeseriesChartDatasetPart>
 {
   public override IDisplayResult Display(
     TimeseriesChartDatasetPart part,

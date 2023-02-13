@@ -1,5 +1,4 @@
 using Mess.MeasurementDevice.Abstractions.Models;
-using Mess.System;
 
 namespace Mess.MeasurementDevice.Abstractions.Storage;
 

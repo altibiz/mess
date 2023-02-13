@@ -1,111 +1,134 @@
 using Mess.Tenants;
-using Mess.MeasurementDevice.Chart.ViewModels;
-using Mess.MeasurementDevice.Chart.Models;
 using Mess.MeasurementDevice.Abstractions.Client;
-using Mess.MeasurementDevice.Abstractions.Models;
-using Mess.System.Extensions.Type;
 using OrchardCore.ContentManagement;
+using Mess.Chart.Abstractions.Providers;
+using Mess.Chart.Abstractions.Models;
+using Mess.MeasurementDevice.Models;
+using Mess.Chart.Abstractions.Extensions.System;
+using Mess.Timeseries.Abstractions.Entities;
+using Mess.System.Extensions.IEnumerable;
 
 namespace Mess.MeasurementDevice.Chart.Providers;
 
-public class EgaugeChartProvider
-  : ChartDataProvider<EgaugeChartParameters, EgaugeChartPartEditViewModel>
+public class EgaugeChartDataProvider : IChartDataProvider
 {
   public const string ProviderId = "Egauge";
 
-  public override string Id => ProviderId;
+  public string Id => ProviderId;
 
-  public override ChartSpecification? CreateChart(
-    EgaugeChartParameters providerParameters
-  )
+  public ChartModel? CreateChart(ContentItem contentItem)
   {
+    var chartPart = contentItem.As<ChartPart>();
+    if (chartPart is null)
+    {
+      return null;
+    }
+
+    var lineChart = chartPart.Chart?.As<LineChartPart>();
+    if (lineChart is null)
+    {
+      return null;
+    }
+
+    var measurementDevice = contentItem.As<MeasurementDevicePart>();
+    if (measurementDevice is null)
+    {
+      return null;
+    }
     var now = DateTime.UtcNow;
+    var contentItemDatasets = lineChart.Datasets;
+
     var measurements = _client.GetEgaugeMeasurements(
-      providerParameters.Source,
-      beginning: now.Subtract(providerParameters.History.ToTimeSpan()),
+      source: measurementDevice.DeviceId.Text,
+      beginning: now.Subtract(TimeSpan.FromDays(1)),
       end: now
     );
 
-    return CreateChart(providerParameters, measurements);
+    var datasets = lineChart.Datasets
+      .Select(contentItem => contentItem.As<LineChartDatasetPart>())
+      .Select(dataset =>
+      {
+        if (dataset is null)
+        {
+          return null;
+        }
+
+        var timesereiesDataset =
+          dataset.Dataset.As<TimeseriesChartDatasetPart>();
+        if (timesereiesDataset is null)
+        {
+          return null;
+        }
+
+        return measurements.ToTimeseriesChartDataset(
+            label: dataset.Label,
+            color: dataset.Color,
+            history: timesereiesDataset.History,
+            xField: nameof(HypertableEntity.Timestamp),
+            yField: timesereiesDataset.Property
+          ) as LineChartDatasetModel;
+      })
+      .WhereNotNull()
+      .ToList();
+
+    return new LineChartModel(datasets);
   }
 
-  public override async Task<ChartSpecification?> CreateChartAsync(
-    EgaugeChartParameters providerParameters
-  )
+  public async Task<ChartModel?> CreateChartAsync(ContentItem contentItem)
   {
+    var chartPart = contentItem.As<ChartPart>();
+    if (chartPart is null)
+    {
+      return null;
+    }
+
+    var lineChart = chartPart.Chart?.As<LineChartPart>();
+    if (lineChart is null)
+    {
+      return null;
+    }
+
+    var measurementDevice = contentItem.As<MeasurementDevicePart>();
+    if (measurementDevice is null)
+    {
+      return null;
+    }
     var now = DateTime.UtcNow;
+    var contentItemDatasets = lineChart.Datasets;
+
     var measurements = await _client.GetEgaugeMeasurementsAsync(
-      providerParameters.Source,
-      beginning: now.Subtract(providerParameters.History.ToTimeSpan()),
+      source: measurementDevice.DeviceId.Text,
+      beginning: now.Subtract(TimeSpan.FromDays(1)),
       end: now
     );
 
-    return CreateChart(providerParameters, measurements);
+    var datasets = lineChart.Datasets
+      .Select(contentItem => contentItem.As<LineChartDatasetPart>())
+      .Where(dataset => dataset is not null)
+      .Select(dataset =>
+      {
+        var timesereiesDataset =
+          dataset.Dataset.As<TimeseriesChartDatasetPart>();
+        if (timesereiesDataset is null)
+        {
+          return null;
+        }
+
+        return measurements.ToTimeseriesChartDataset(
+            label: dataset.Label,
+            color: dataset.Color,
+            history: timesereiesDataset.History,
+            xField: nameof(HypertableEntity.Timestamp),
+            yField: timesereiesDataset.Property
+          ) as LineChartDatasetModel;
+      })
+      .WhereNotNull()
+      .ToList();
+
+    return new LineChartModel(datasets);
   }
 
-  private ChartSpecification? CreateChart(
-    EgaugeChartParameters providerParameters,
-    IEnumerable<EgaugeMeasurementModel> measurements
-  ) =>
-    new(
-      ChartType.Line,
-      new LineChartSpecification(
-        providerParameters.Fields
-          .Select(field =>
-          {
-            var fieldPart = field.As<EgaugeChartFieldPart>();
-            return measurements.ToLineChartDataset(
-              label: fieldPart.Label,
-              unit: fieldPart.Unit,
-              color: fieldPart.Color,
-              nameof(EgaugeMeasurementModel.Timestamp),
-              fieldPart.Field
-            );
-          })
-          .ToList()
-      )
-    );
-
-  public override string? ValidateParameters(
-    EgaugeChartParameters providerParameters
-  )
-  {
-    // TODO: validate available from database?
-    if (String.IsNullOrWhiteSpace(providerParameters.Source))
-    {
-      return $"Field '{nameof(providerParameters.Source)}' is empty.";
-    }
-
-    var modelFieldAndPropertyNames =
-      typeof(EgaugeMeasurementModel).GetFieldAndPropertyNames();
-    foreach (var field in providerParameters.Fields)
-    {
-      var fieldPart = field.As<EgaugeChartFieldPart>();
-      if (String.IsNullOrWhiteSpace(fieldPart.Field))
-      {
-        return $"Field '{nameof(fieldPart.Field)}' is empty.";
-      }
-
-      if (!modelFieldAndPropertyNames.Any(name => name == fieldPart.Field))
-      {
-        return $"Field '{nameof(fieldPart.Field)}' must be one of {string.Join(", ", modelFieldAndPropertyNames)}";
-      }
-
-      if (String.IsNullOrWhiteSpace(fieldPart.Label))
-      {
-        return $"Field '{nameof(fieldPart.Label)}' is empty.";
-      }
-
-      if (String.IsNullOrWhiteSpace(fieldPart.Color))
-      {
-        return $"Field '{nameof(fieldPart.Color)}' is empty.";
-      }
-    }
-
-    return null;
-  }
-
-  public EgaugeChartProvider(ITenants tenants, IMeasurementClient client)
+  public EgaugeChartDataProvider(ITenants tenants, IMeasurementClient client)
   {
     _tenants = tenants;
     _client = client;

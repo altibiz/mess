@@ -2,8 +2,13 @@
 
   <Import Project="../Directory.Build.props" />
 
+  <!-- NOTE: this does not work and should be in down in abstractions csproj's
   <PropertyGroup>
     <OutputType>Library</OutputType>
+  </PropertyGroup>
+  -->
+
+  <PropertyGroup>
     <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
   </PropertyGroup>
 

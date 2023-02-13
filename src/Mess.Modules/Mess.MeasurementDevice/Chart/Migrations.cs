@@ -48,7 +48,9 @@ public class Migrations : DataMigration
                   "Line chart displaying measurements in the last 24 hours."
                 )
                 .WithPosition("3")
-                .WithSettings(new { Provider = EgaugeChartProvider.ProviderId })
+                .WithSettings(
+                  new { Provider = EgaugeChartDataProvider.ProviderId }
+                )
           )
     );
 

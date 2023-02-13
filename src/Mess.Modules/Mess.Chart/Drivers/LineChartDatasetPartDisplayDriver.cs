@@ -8,7 +8,8 @@ using Mess.Chart.ViewModels;
 
 namespace Mess.Chart.Drivers;
 
-public class LineChartDatasetPartDisplayDriver : ContentPartDisplayDriver<LineChartDatasetPart>
+public class LineChartDatasetPartDisplayDriver
+  : ContentPartDisplayDriver<LineChartDatasetPart>
 {
   public override IDisplayResult Display(
     LineChartDatasetPart part,

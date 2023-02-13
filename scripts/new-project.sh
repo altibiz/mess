@@ -167,6 +167,10 @@ END
   cat <<END >"$ABSTRACTIONS_CSPROJ"
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+
 </Project>
 END
   cat <<END >"$ABSTRACTIONS_PLACEHOLDER"
@@ -179,6 +183,10 @@ END
   TEST_ABSTRACTIONS_PLACEHOLDER="$TEST_ABSTRACTIONS_BASE_DIR/$TEST_ABSTRACTIONS_NAMESPACE.cs"
   cat <<END >"$TEST_ABSTRACTIONS_CSPROJ"
 <Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.System/Mess.System.csproj" />
