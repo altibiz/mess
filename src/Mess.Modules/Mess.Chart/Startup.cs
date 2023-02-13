@@ -49,7 +49,7 @@ public class Startup : StartupBase
       .AddContentPart<TimeseriesChartDatasetPart>()
       .UseDisplayDriver<TimeseriesChartDatasetPartDisplayDriver>();
 
-    services.AddSingleton<IChartDataProviderLookup, ChartProviderLookup>();
+    services.AddScoped<IChartDataProviderLookup, ChartProviderLookup>();
   }
 
   public override void Configure(

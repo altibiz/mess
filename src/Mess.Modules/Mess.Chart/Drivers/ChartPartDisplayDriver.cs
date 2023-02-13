@@ -10,6 +10,8 @@ using OrchardCore.DisplayManagement.ModelBinding;
 using OrchardCore.DisplayManagement.Views;
 using OrchardCore.Mvc.ModelBinding;
 using OrchardCore.ContentManagement.Metadata;
+using Mess.System.Extensions.Object;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Mess.Chart.Drivers;
 
@@ -26,7 +28,21 @@ public class ChartPartDisplayDriver : ContentPartDisplayDriver<ChartPart>
       {
         model.Part = part;
         model.Definition = context.TypePartDefinition;
-        model.ProviderIds = _lookup.Ids;
+        model.ProviderIds = _lookup.Ids
+          .Select(
+            (id, index) =>
+              new SelectListItem()
+              {
+                Value = id,
+                Text = id,
+                Selected = model.Part.DataProviderId is not null
+                  ? model.Part.DataProviderId == id
+                  : index == 0,
+                Disabled = false
+              }
+          )
+          .ToList();
+        model.Part.DataProviderId ??= model.ProviderIds.First().Value;
         model.ChartContentTypes = _contentDefinitionManager
           .ListTypeDefinitions()
           .Where(
@@ -48,7 +64,21 @@ public class ChartPartDisplayDriver : ContentPartDisplayDriver<ChartPart>
       {
         model.Part = part;
         model.Definition = context.TypePartDefinition;
-        model.ProviderIds = _lookup.Ids;
+        model.ProviderIds = _lookup.Ids
+          .Select(
+            (id, index) =>
+              new SelectListItem()
+              {
+                Value = id,
+                Text = id,
+                Selected = model.Part.DataProviderId is not null
+                  ? model.Part.DataProviderId == id
+                  : index == 0,
+                Disabled = false
+              }
+          )
+          .ToList();
+        model.Part.DataProviderId ??= model.ProviderIds.First().Value;
         model.ChartContentTypes = _contentDefinitionManager
           .ListTypeDefinitions()
           .Where(

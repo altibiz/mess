@@ -14,6 +14,7 @@ public class Migrations : DataMigration
       "EgaugeMeasurementDevice",
       builder =>
         builder
+          .Creatable()
           .DisplayedAs("Egauge measurement device")
           .WithDescription("An Egauge measurement device.")
           .WithPart(

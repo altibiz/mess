@@ -39,7 +39,8 @@ public class Migrations : DataMigration
 
     _contentDefinitionManager.AlterTypeDefinition(
       "Chart",
-      builder => builder.WithDescription("A chart.").WithPart("ChartPart")
+      builder =>
+        builder.Creatable().WithDescription("A chart.").WithPart("ChartPart")
     );
 
     _contentDefinitionManager.AlterTypeDefinition(

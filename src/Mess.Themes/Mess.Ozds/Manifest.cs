@@ -31,6 +31,7 @@ using OrchardCore.DisplayManagement.Manifest;
     "OrchardCore.Liquid",
     "Mess.EventStore",
     "Mess.Timeseries",
+    "Mess.Chart",
     "Mess.MeasurementDevice"
   }
 )]
