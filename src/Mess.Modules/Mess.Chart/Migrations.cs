@@ -12,35 +12,53 @@ public class Migrations : DataMigration
     _contentDefinitionManager.AlterPartDefinition(
       "ChartPart",
       builder =>
-        builder.WithDescription("Provides a chart for your content item.")
+        builder
+          .Attachable()
+          .WithDisplayName("Chart")
+          .WithDescription("Provides a chart for your content item.")
     );
 
     _contentDefinitionManager.AlterPartDefinition(
       "LineChartPart",
       builder =>
-        builder.WithDescription("Provides a line chart for your chart.")
+        builder
+          .Attachable()
+          .WithDisplayName("Line chart")
+          .WithDescription("Provides a line chart for your chart.")
     );
 
     _contentDefinitionManager.AlterPartDefinition(
       "LineChartDatasetPart",
       builder =>
-        builder.WithDescription(
-          "Provides a line chart dataset for your line chart."
-        )
+        builder
+          .Attachable()
+          .WithDisplayName("Line chart dataset")
+          .WithDescription("Provides a line chart dataset for your line chart.")
     );
 
     _contentDefinitionManager.AlterPartDefinition(
       "TimeseriesChartDatasetPart",
       builder =>
-        builder.WithDescription(
-          "Provides a timeseries property for your line chart dataset."
-        )
+        builder
+          .Attachable()
+          .WithDisplayName("Timeseries chart dataset")
+          .WithDescription(
+            "Provides a timeseries property for your line chart dataset."
+          )
     );
 
     _contentDefinitionManager.AlterTypeDefinition(
       "Chart",
       builder =>
-        builder.Creatable().WithDescription("A chart.").WithPart("ChartPart")
+        builder
+          .Creatable()
+          .Listable()
+          .Draftable()
+          .Versionable()
+          .DisplayedAs("Chart")
+          .WithDescription("A chart.")
+          .WithPart("TitlePart", builder => builder.WithPosition("0"))
+          .WithPart("ChartPart", builder => builder.WithPosition("1"))
     );
 
     _contentDefinitionManager.AlterTypeDefinition(
@@ -48,6 +66,7 @@ public class Migrations : DataMigration
       builder =>
         builder
           .Stereotype("ConcreteChart")
+          .DisplayedAs("Line chart")
           .WithDescription("A line chart.")
           .WithPart("LineChartPart")
     );
@@ -56,6 +75,7 @@ public class Migrations : DataMigration
       "LineChartDataset",
       builder =>
         builder
+          .DisplayedAs("Line chart dataset")
           .WithDescription("A line chart dataset.")
           .WithPart("LineChartDatasetPart")
     );
@@ -65,6 +85,7 @@ public class Migrations : DataMigration
       builder =>
         builder
           .Stereotype("ConcreteLineChartDataset")
+          .DisplayedAs("Timeseries chart dataset")
           .WithDescription("A timeseries line chart dataset.")
           .WithPart("TimeseriesChartDatasetPart")
     );

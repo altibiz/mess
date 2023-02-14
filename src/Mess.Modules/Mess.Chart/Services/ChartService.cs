@@ -32,7 +32,7 @@ public class ChartService : IChartService
       )
       : await _contentManager.GetAsync(contentItemId, VersionOptions.Latest);
 
-    if (!contentItem.Has<ChartPart>())
+    if (contentItem is null || !contentItem.Has<ChartPart>())
     {
       return null;
     }

@@ -16,13 +16,24 @@ public class LineChartPartDisplayDriver
     BuildPartDisplayContext context
   )
   {
-    return Initialize<LineChartPartViewModel>(
-      GetDisplayShapeType(context),
-      model =>
-      {
-        model.Part = part;
-        model.Definition = context.TypePartDefinition;
-      }
+    return Combine(
+      Dynamic(
+          "LineChartPart_Admin",
+          model =>
+          {
+            model.ContentItemId = part.ContentItem.ContentItemId;
+          }
+        )
+        .Location("Admin", "Content:10"),
+      Dynamic(
+          "LineChartPart_Thumbnail",
+          model =>
+          {
+            model.ContentItemId = part.ContentItem.ContentItemId;
+            model.ContentType = part.ContentItem.ContentType;
+          }
+        )
+        .Location("Thumbnail", "Content:10")
     );
   }
 
@@ -32,7 +43,7 @@ public class LineChartPartDisplayDriver
   )
   {
     return Initialize<LineChartPartViewModel>(
-      GetEditorShapeType(context),
+      "LineChartPart_Edit",
       model =>
       {
         model.Part = part;

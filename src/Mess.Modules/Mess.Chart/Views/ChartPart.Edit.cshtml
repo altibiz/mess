@@ -1,24 +1,25 @@
 @model ChartPartViewModel
 
-@using Mess.System.Extensions.Object
-
 @inject OrchardCore.ContentManagement.IContentManager ContentManager
 @inject OrchardCore.ContentManagement.Display.IContentItemDisplayManager ContentItemDisplayManager
 @inject OrchardCore.DisplayManagement.ModelBinding.IUpdateModelAccessor ModelUpdaterAccessor
 
-<div class="mb-3">
-  <label asp-for="Part.DataProviderId">@T["Data provider"]</label>
-  <select asp-for="Part.DataProviderId" asp-items="Model.ProviderIds" />
-  <span class="hint">@T["How data will be fetched for the chart."]</span>
+<div class="mb-3 row">
+  <div class="col-sm-6">
+    <label asp-for="DataProviderId">@T["Data provider"]</label>
+    <select class="form-select" asp-for="DataProviderId">
+      @foreach (var item in Model.ProviderIds)
+      {
+        <option value="@item.Value">@item.Text</option>
+      }
+    </select>
+    <span class="hint">@T["How data will be fetched for the chart."]</span>
+  </div>
 </div>
-
-@{
-  Console.WriteLine(Model.ToJson());
-}
 
 @if (Model.Part.Chart is not null)
 {
-  dynamic chart = await ContentItemDisplayManager.BuildDisplayAsync(Model.Part.Chart, ModelUpdaterAccessor.ModelUpdater, "Edit");
+  dynamic chart = await ContentItemDisplayManager.BuildDisplayAsync(Model.Part.Chart, ModelUpdaterAccessor.ModelUpdater, "Admin");
   
   <div class="mb-3">
     <label asp-for="Part.Chart">@T["Chart"]</label>
@@ -30,8 +31,13 @@ else
 {
   <div class="card mb-3">
     <div class="card-body bg-primary p-3">
-      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalChartTypes">
-          @T["Pick chart type"]
+      <button 
+          type="button"
+          class="btn btn-primary"
+          @(Model.Part.ContentItem.Id is not 0 ? null : "disabled=\"disabled\"")
+          data-bs-toggle="modal"
+          data-bs-target="#modalChartTypes">
+        @T["Pick chart type"]
       </button>
     </div>
   </div>
@@ -49,6 +55,8 @@ else
             {
               var chart = await ContentManager.NewAsync(type.Name);
               dynamic thumbnail = await ContentItemDisplayManager.BuildDisplayAsync(chart, ModelUpdaterAccessor.ModelUpdater, "Thumbnail");
+              thumbnail.ContentItemId = Model.Part.ContentItem.ContentItemId;
+              thumbnail.ContentType = type.Name;
               <div class="col">
                 @await DisplayAsync(thumbnail)
               </div>

@@ -27,24 +27,18 @@
     </span>
   }
   <div class="float-end">
-      <a
-          asp-route-area="Mess.Chart"
-          asp-controller="ChartAdmin"
-          asp-action="Edit"
-          class="btn btn-success btn-sm">
-        @T["Edit"]
-      </a>
       <button
           type="button"
           class="btn btn-primary btn-sm"
           data-bs-toggle="modal"
           data-bs-target="#modalChartTypes">
-        @T["Add"]
+        @T["Change Type"]
       </button>
       <a 
           asp-route-area="Mess.Chart"
-          asp-controller="ChartAdmin"
+          asp-controller="ConcreteChartAdmin"
           asp-action="Delete"
+          asp-route-contentItemId="@Model.ContentItemId"
           data-url-af="RemoveUrl UnsafeUrl"
           class="btn btn-danger btn-sm">
         @T["Delete"]

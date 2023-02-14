@@ -19,6 +19,22 @@ public static class ObjectSerializationExtensions
       }
     );
 
+  public static string ToJson(
+    this object @this,
+    global::System.Type type,
+    bool pretty = true
+  ) =>
+    JsonSerializer.Serialize(
+      @this,
+      type,
+      new JsonSerializerOptions
+      {
+        AllowTrailingCommas = true,
+        WriteIndented = pretty,
+        ReferenceHandler = ReferenceHandler.IgnoreCycles,
+      }
+    );
+
   public static Stream ToJsonStream<T>(this T @this, bool pretty = true) =>
     new MemoryStream(
       JsonSerializer.SerializeToUtf8Bytes(

@@ -1,14 +1,14 @@
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using OrchardCore.ContentManagement.Metadata.Models;
 using Mess.Chart.Abstractions.Models;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace Mess.Chart.ViewModels;
 
 public class LineChartDatasetPartViewModel
 {
-  [BindNever]
+  [ValidateNever]
   public LineChartDatasetPart Part { get; set; } = default!;
 
-  [BindNever]
+  [ValidateNever]
   public ContentTypePartDefinition Definition { get; set; } = default!;
 }

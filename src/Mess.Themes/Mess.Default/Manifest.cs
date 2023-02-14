@@ -30,6 +30,7 @@ using OrchardCore.Modules.Manifest;
     "OrchardCore.Queries",
     "OrchardCore.BackgroundTasks",
     "OrchardCore.Liquid",
+    "OrchardCore.Menu",
     "Mess.EventStore",
     "Mess.Timeseries",
     "Mess.Chart",
