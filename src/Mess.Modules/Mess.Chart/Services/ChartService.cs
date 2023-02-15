@@ -3,7 +3,9 @@ using Mess.Chart.Abstractions;
 using Mess.Chart.Abstractions.Models;
 using Mess.Chart.Abstractions.Services;
 using Mess.OrchardCore.Extensions.OrchardCore;
+using Mess.System.Extensions.Object;
 using Microsoft.AspNetCore.Authorization;
+using Newtonsoft.Json.Linq;
 using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.ContentManagement.Metadata.Models;
@@ -112,8 +114,19 @@ public class ChartService : IChartService
 
   public async Task<ContentItem?> DeleteConcreteChartAsync(ContentItem chart)
   {
-    chart.Alter<ChartPart>(part => part.Chart = null);
-    return await Task.FromResult(chart);
+    var concreteChart = chart.As<ChartPart>()?.Chart;
+    if (concreteChart is null)
+    {
+      return null;
+    }
+
+    chart.Alter<ChartPart>(part =>
+    {
+      part.Chart = null;
+      part.Content["Chart"] = null;
+    });
+
+    return await Task.FromResult(concreteChart);
   }
 
   public async Task<ContentItem?> CreateLineChartDatasetAsync(ContentItem chart)

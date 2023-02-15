@@ -6,7 +6,13 @@
     }
     else
     {
-      <span>Missing display driver</span>
+      @* For charts without a display driver *@
+      <span>
+        @Model.ContentItem.DisplayText
+        <span class="text-muted dashed">
+          @Model.ContentItem.ContentType
+        </span>
+      </span>
     }
   </div>
   <div class="card-footer text-muted text-sm-end">

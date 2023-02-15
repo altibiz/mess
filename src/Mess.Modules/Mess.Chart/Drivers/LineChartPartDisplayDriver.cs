@@ -21,7 +21,8 @@ public class LineChartPartDisplayDriver
           "LineChartPart_Admin",
           model =>
           {
-            model.ContentItemId = part.ContentItem.ContentItemId;
+            model.Part = part;
+            model.Definition = context.TypePartDefinition;
           }
         )
         .Location("Admin", "Content:10"),
@@ -29,8 +30,8 @@ public class LineChartPartDisplayDriver
           "LineChartPart_Thumbnail",
           model =>
           {
-            model.ContentItemId = part.ContentItem.ContentItemId;
-            model.ContentType = part.ContentItem.ContentType;
+            model.Part = part;
+            model.Definition = context.TypePartDefinition;
           }
         )
         .Location("Thumbnail", "Content:10")

@@ -19,12 +19,20 @@
 
 @if (Model.Part.Chart is not null)
 {
-  dynamic chart = await ContentItemDisplayManager.BuildDisplayAsync(Model.Part.Chart, ModelUpdaterAccessor.ModelUpdater, "Admin");
+  var contentItem = Model.Part.Chart;
+  dynamic chart = await ContentItemDisplayManager.BuildDisplayAsync(
+    contentItem,
+    ModelUpdaterAccessor.ModelUpdater,
+    "Admin"
+  );
+  chart.ContentItemId = Model.Part.ContentItem.ContentItemId;
   
   <div class="mb-3">
-    <label asp-for="Part.Chart">@T["Chart"]</label>
+    <h3>
+      @T[Model.Part.Chart.DisplayText ?? Model.Part.Chart.ContentType]
+    </h3>
     @await DisplayAsync(chart)
-    <span class="hint">@T["How the chart will be presented"]</span>
+    <span class="hint">@T["How the chart will be presented."]</span>
   </div>
 }
 else
@@ -34,39 +42,54 @@ else
       <button 
           type="button"
           class="btn btn-primary"
-          @(Model.Part.ContentItem.Id is not 0 ? null : "disabled=\"disabled\"")
+          @(
+            Model.Part.ContentItem.Id is not 0
+              ? null 
+              : "disabled=\"disabled\""
+          )
           data-bs-toggle="modal"
           data-bs-target="#modalChartTypes">
         @T["Pick chart type"]
       </button>
     </div>
   </div>
+}
 
-  <div class="modal fade" id="modalChartTypes" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">@T["Available chart types"]</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+<div class="modal fade" id="modalChartTypes" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">@T["Available chart types"]</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal">
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row row-cols-1 row-cols-md-2 g-2">
+          @foreach (var type in Model.ChartContentTypes)
+          {
+            var contentItem = await ContentManager.NewAsync(type.Name);
+            dynamic chart = await ContentItemDisplayManager
+              .BuildDisplayAsync(
+                contentItem,
+                ModelUpdaterAccessor.ModelUpdater,
+                "Thumbnail"
+              );
+            chart.ContentItemId = Model.Part.ContentItem.ContentItemId;
+            chart.ContentType = type.Name;
+            <div class="col">
+              @await DisplayAsync(chart)
+            </div>
+          }
         </div>
-        <div class="modal-body">
-          <div class="row row-cols-1 row-cols-md-2 g-2">
-            @foreach (var type in Model.ChartContentTypes)
-            {
-              var chart = await ContentManager.NewAsync(type.Name);
-              dynamic thumbnail = await ContentItemDisplayManager.BuildDisplayAsync(chart, ModelUpdaterAccessor.ModelUpdater, "Thumbnail");
-              thumbnail.ContentItemId = Model.Part.ContentItem.ContentItemId;
-              thumbnail.ContentType = type.Name;
-              <div class="col">
-                @await DisplayAsync(thumbnail)
-              </div>
-            }
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@T["Cancel"]</button>
-        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal">
+          @T["Cancel"]
+        </button>
       </div>
     </div>
   </div>
-}
+</div>

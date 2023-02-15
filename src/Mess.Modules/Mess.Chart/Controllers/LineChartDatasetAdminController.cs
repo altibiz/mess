@@ -11,7 +11,6 @@ namespace Mess.Chart.Controllers;
 [Admin]
 public class LineChartDatasetAdminController : Controller
 {
-  [HttpPost]
   public async Task<IActionResult> Create(string contentItemId)
   {
     if (!await _chartService.IsAuthorizedAsync(User))
