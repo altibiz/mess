@@ -4,8 +4,12 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace Mess.Chart.ViewModels;
 
-public class LineChartPartViewModel
+public class LineChartPartEditViewModel
 {
+  [ValidateNever]
+  public List<ContentTypeDefinition> DatasetContentTypes { get; set; } =
+    default!;
+
   [ValidateNever]
   public LineChartPart Part { get; set; } = default!;
 

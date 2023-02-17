@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace Mess.Chart.ViewModels;
 
-public class TimeseriesChartDatasetPartViewModel
+public class TimeseriesChartDatasetPartThumbnailViewModel
 {
   [ValidateNever]
   public TimeseriesChartDatasetPart Part { get; set; } = default!;

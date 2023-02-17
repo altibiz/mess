@@ -1,4 +1,4 @@
-@model ChartPartViewModel
+@model ChartPartEditViewModel
 
 @inject OrchardCore.ContentManagement.IContentManager ContentManager
 @inject OrchardCore.ContentManagement.Display.IContentItemDisplayManager ContentItemDisplayManager
@@ -8,7 +8,7 @@
   <div class="col-sm-6">
     <label asp-for="DataProviderId">@T["Data provider"]</label>
     <select class="form-select" asp-for="DataProviderId">
-      @foreach (var item in Model.ProviderIds)
+      @foreach (var item in Model.ProviderIdOptions)
       {
         <option value="@item.Value">@item.Text</option>
       }

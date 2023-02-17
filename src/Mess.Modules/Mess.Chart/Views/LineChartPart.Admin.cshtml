@@ -1,3 +1,5 @@
+@model LineChartPartEditViewModel
+
 @inject OrchardCore.ContentManagement.IContentManager ContentManager
 @inject OrchardCore.ContentManagement.Display.IContentItemDisplayManager ContentItemDisplayManager
 @inject OrchardCore.DisplayManagement.ModelBinding.IUpdateModelAccessor ModelUpdaterAccessor
@@ -13,7 +15,7 @@
         contentItem,
         ModelUpdaterAccessor.ModelUpdater
       );
-      <div class="col">
+      <div class="mb-3 row">
         @await DisplayAsync(dataset)
       </div>
     }
@@ -46,7 +48,7 @@
       </div>
       <div class="modal-body">
         <div class="row row-cols-1 row-cols-md-2 g-2">
-          @foreach (var type in Model.LineChartDatasetContentTypes)
+          @foreach (var type in Model.DatasetContentTypes)
           {
             var contentItem = await ContentManager.NewAsync(type.Name);
             dynamic lineChartDataset = await ContentItemDisplayManager

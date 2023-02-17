@@ -21,13 +21,13 @@ public class ChartPartDisplayDriver : ContentPartDisplayDriver<ChartPart>
     BuildPartEditorContext context
   )
   {
-    return Initialize<ChartPartViewModel>(
+    return Initialize<ChartPartEditViewModel>(
       GetEditorShapeType(context),
       model =>
       {
         model.Part = part;
         model.Definition = context.TypePartDefinition;
-        model.ProviderIds = _lookup.Ids
+        model.ProviderIdOptions = _lookup.Ids
           .Select(
             (id, index) =>
               new SelectListItem()
@@ -41,13 +41,14 @@ public class ChartPartDisplayDriver : ContentPartDisplayDriver<ChartPart>
               }
           )
           .ToList();
-        model.DataProviderId ??= model.ProviderIds.First().Value;
+        model.DataProviderId ??= model.ProviderIdOptions.First().Value;
         model.ChartContentTypes = _contentDefinitionManager
           .ListTypeDefinitions()
           .Where(
             contentTypeDefinition =>
               contentTypeDefinition.GetStereotype() == "ConcreteChart"
-          );
+          )
+          .ToList();
       }
     );
   }
@@ -58,7 +59,7 @@ public class ChartPartDisplayDriver : ContentPartDisplayDriver<ChartPart>
     UpdatePartEditorContext context
   )
   {
-    var viewModel = new ChartPartViewModel();
+    var viewModel = new ChartPartEditViewModel();
 
     if (
       await updater.TryUpdateModelAsync(

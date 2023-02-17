@@ -17,24 +17,24 @@ public class TimeseriesChartDatasetPartDisplayDriver
   )
   {
     return Combine(
-      Dynamic(
-          "LineChartPart_Admin",
+      Initialize<TimeseriesChartDatasetPartThumbnailViewModel>(
+          "TimeseriesChartDatasetPart_Thumbnail",
           model =>
           {
             model.Part = part;
             model.Definition = context.TypePartDefinition;
           }
         )
-        .Location("Admin", "Content:10"),
-      Dynamic(
-          "LineChartPart_Thumbnail",
+        .Location("Thumbnail", "Content"),
+      Initialize<TimeseriesChartDatasetPartEditViewModel>(
+          "TimeseriesChartDatasetPart_Admin",
           model =>
           {
             model.Part = part;
             model.Definition = context.TypePartDefinition;
           }
         )
-        .Location("Thumbnail", "Content:10")
+        .Location("Admin", "Content")
     );
   }
 
@@ -45,7 +45,7 @@ public class TimeseriesChartDatasetPartDisplayDriver
     UpdatePartEditorContext context
   )
   {
-    var viewModel = new TimeseriesChartDatasetPartViewModel();
+    var viewModel = new TimeseriesChartDatasetPartEditViewModel();
 
     if (await updater.TryUpdateModelAsync(viewModel, Prefix))
     {

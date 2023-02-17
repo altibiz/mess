@@ -19,23 +19,7 @@ public class LineChartPartDisplayDriver
   )
   {
     return Combine(
-      Dynamic(
-          "LineChartPart_Admin",
-          model =>
-          {
-            model.Part = part;
-            model.Definition = context.TypePartDefinition;
-            model.LineChartDatasetContentTypes = _contentDefinitionManager
-              .ListTypeDefinitions()
-              .Where(
-                contentTypeDefinition =>
-                  contentTypeDefinition.GetStereotype()
-                  == "ConcreteLineChartDataset"
-              );
-          }
-        )
-        .Location("Admin", "Content:10"),
-      Dynamic(
+      Initialize<LineChartPartThumbnailViewModel>(
           "LineChartPart_Thumbnail",
           model =>
           {
@@ -43,7 +27,24 @@ public class LineChartPartDisplayDriver
             model.Definition = context.TypePartDefinition;
           }
         )
-        .Location("Thumbnail", "Content:10")
+        .Location("Thumbnail", "Content"),
+      Initialize<LineChartPartEditViewModel>(
+          "LineChartPart_Admin",
+          model =>
+          {
+            model.Part = part;
+            model.Definition = context.TypePartDefinition;
+            model.DatasetContentTypes = _contentDefinitionManager
+              .ListTypeDefinitions()
+              .Where(
+                contentTypeDefinition =>
+                  contentTypeDefinition.GetStereotype()
+                  == "ConcreteLineChartDataset"
+              )
+              .ToList();
+          }
+        )
+        .Location("Admin", "Content")
     );
   }
 
