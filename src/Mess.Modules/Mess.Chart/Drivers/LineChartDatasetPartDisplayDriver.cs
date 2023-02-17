@@ -16,31 +16,18 @@ public class LineChartDatasetPartDisplayDriver
     BuildPartDisplayContext context
   )
   {
-    return Initialize<LineChartDatasetPartViewModel>(
-      GetDisplayShapeType(context),
-      model =>
-      {
-        model.Part = part;
-        model.Definition = context.TypePartDefinition;
-      }
-    );
+    return Dynamic(
+        "LineChartDatasetPart",
+        model =>
+        {
+          model.Part = part;
+          model.Definition = context.TypePartDefinition;
+        }
+      )
+      .Location("Content:10");
   }
 
-  public override IDisplayResult Edit(
-    LineChartDatasetPart part,
-    BuildPartEditorContext context
-  )
-  {
-    return Initialize<LineChartDatasetPartViewModel>(
-      GetEditorShapeType(context),
-      model =>
-      {
-        model.Part = part;
-        model.Definition = context.TypePartDefinition;
-      }
-    );
-  }
-
+  // TODO: validate color
   public override async Task<IDisplayResult> UpdateAsync(
     LineChartDatasetPart part,
     IUpdateModel updater,

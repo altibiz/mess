@@ -5,6 +5,8 @@ using OrchardCore.DisplayManagement.ModelBinding;
 using OrchardCore.DisplayManagement.Views;
 using Mess.Chart.Abstractions.Models;
 using Mess.Chart.ViewModels;
+using OrchardCore.ContentManagement.Metadata;
+using OrchardCore.ContentManagement.Metadata.Models;
 
 namespace Mess.Chart.Drivers;
 
@@ -23,6 +25,13 @@ public class LineChartPartDisplayDriver
           {
             model.Part = part;
             model.Definition = context.TypePartDefinition;
+            model.LineChartDatasetContentTypes = _contentDefinitionManager
+              .ListTypeDefinitions()
+              .Where(
+                contentTypeDefinition =>
+                  contentTypeDefinition.GetStereotype()
+                  == "ConcreteLineChartDataset"
+              );
           }
         )
         .Location("Admin", "Content:10"),
@@ -38,43 +47,15 @@ public class LineChartPartDisplayDriver
     );
   }
 
-  public override IDisplayResult Edit(
-    LineChartPart part,
-    BuildPartEditorContext context
-  )
-  {
-    return Initialize<LineChartPartViewModel>(
-      "LineChartPart_Edit",
-      model =>
-      {
-        model.Part = part;
-        model.Definition = context.TypePartDefinition;
-      }
-    );
-  }
-
-  public override async Task<IDisplayResult> UpdateAsync(
-    LineChartPart part,
-    IUpdateModel updater,
-    UpdatePartEditorContext context
-  )
-  {
-    var viewModel = new LineChartPartViewModel();
-
-    if (await updater.TryUpdateModelAsync(viewModel, Prefix))
-    {
-      return Edit(part, context);
-    }
-
-    return Edit(part, context);
-  }
-
   public LineChartPartDisplayDriver(
-    IStringLocalizer<LineChartPartDisplayDriver> localizer
+    IStringLocalizer<LineChartPartDisplayDriver> localizer,
+    IContentDefinitionManager contentDefinitionManager
   )
   {
     S = localizer;
+    _contentDefinitionManager = contentDefinitionManager;
   }
 
   private readonly IStringLocalizer S;
+  private readonly IContentDefinitionManager _contentDefinitionManager;
 }

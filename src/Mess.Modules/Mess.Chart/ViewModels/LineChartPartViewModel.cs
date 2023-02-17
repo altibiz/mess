@@ -7,9 +7,6 @@ namespace Mess.Chart.ViewModels;
 public class LineChartPartViewModel
 {
   [ValidateNever]
-  public string ContentItemId { get; set; } = default!;
-
-  [ValidateNever]
   public LineChartPart Part { get; set; } = default!;
 
   [ValidateNever]

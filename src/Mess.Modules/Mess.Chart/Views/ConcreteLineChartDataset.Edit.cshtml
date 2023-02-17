@@ -1,44 +1,49 @@
-<style
-    asp-src="~/OrchardCore.Contents/Styles/Contents.min.css"
-    debug-src="~/OrchardCore.Contents/Styles/Contents.css">
-</style>
-
-<div class="edit-container">
-  <div class="edit-body">
-    <div class="edit-item-primary">
-      @if (Model.Content != null)
-      {
-        <div class="edit-item-content">
-          @await DisplayAsync(Model.Content)
-        </div>
-      }
-    </div>
-    <div class="edit-item-parts">
-      @if (Model.Parts != null)
-      {
-          @await DisplayAsync(Model.Parts)
-      }
-    </div>
-
-    <div class="edit-item-secondary group">
-      @if (Model.Actions != null)
-      {
-        <div class="edit-item-actions">
-          @await DisplayAsync(Model.Actions)
-        </div>
-      }
-    </div>
+<div 
+    class="
+      d-flex
+      flex-column
+      justify-content-between
+    ">
+  <div
+      class="
+        border
+        rounded
+        p-2
+        ps-3
+        mb-1
+      ">
+    @if (Model.Content != null)
+    {
+      @await DisplayAsync(Model.Content)
+    }
+    else
+    {
+      @* For line chart datasets without a display driver *@
+      <span>
+        @Model.ContentItem.DisplayText
+        <span class="text-muted dashed">
+          @Model.ContentItem.ContentType
+        </span>
+      </span>
+    }
   </div>
-  @if (Model.Sidebar != null)
-  {
-    <div class="edit-sidebar-handler"></div>
-    <div class="edit-sidebar group">
-      @await DisplayAsync(Model.Sidebar)
-    </div>
-  }
+  <div class="float-end">
+      <button
+          type="button"
+          class="btn btn-primary btn-sm"
+          data-bs-toggle="modal"
+          data-bs-target="#modalLineChartDatasetTypes">
+        @T["Change Type"]
+      </button>
+      <a 
+          class="btn btn-danger btn-sm"
+          asp-route-area="Mess.Chart"
+          asp-controller="ConcreteLineChartDatasetAdmin"
+          asp-action="Delete"
+          asp-route-contentItemId="@Model.ContentItemId"
+          asp-route-lineChartDatasetContentItemId="Model.LineChartDatasetContentItemId"
+          data-url-af="RemoveUrl UnsafeUrl">
+        @T["Delete"]
+      </a>
+  </div>
 </div>
-
-@if (!String.IsNullOrWhiteSpace(Context.Request.Query["returnUrl"]))
-{
-  @Html.Hidden("returnUrl", Context.Request.Query["returnUrl"])
-}

@@ -16,31 +16,29 @@ public class TimeseriesChartDatasetPartDisplayDriver
     BuildPartDisplayContext context
   )
   {
-    return Initialize<TimeseriesChartDatasetPartViewModel>(
-      GetDisplayShapeType(context),
-      model =>
-      {
-        model.Part = part;
-        model.Definition = context.TypePartDefinition;
-      }
+    return Combine(
+      Dynamic(
+          "LineChartPart_Admin",
+          model =>
+          {
+            model.Part = part;
+            model.Definition = context.TypePartDefinition;
+          }
+        )
+        .Location("Admin", "Content:10"),
+      Dynamic(
+          "LineChartPart_Thumbnail",
+          model =>
+          {
+            model.Part = part;
+            model.Definition = context.TypePartDefinition;
+          }
+        )
+        .Location("Thumbnail", "Content:10")
     );
   }
 
-  public override IDisplayResult Edit(
-    TimeseriesChartDatasetPart part,
-    BuildPartEditorContext context
-  )
-  {
-    return Initialize<TimeseriesChartDatasetPartViewModel>(
-      GetEditorShapeType(context),
-      model =>
-      {
-        model.Part = part;
-        model.Definition = context.TypePartDefinition;
-      }
-    );
-  }
-
+  // TODO: validate property and history
   public override async Task<IDisplayResult> UpdateAsync(
     TimeseriesChartDatasetPart part,
     IUpdateModel updater,

@@ -1,1 +1,77 @@
-@model LineChartPartViewModel
+@inject OrchardCore.ContentManagement.IContentManager ContentManager
+@inject OrchardCore.ContentManagement.Display.IContentItemDisplayManager ContentItemDisplayManager
+@inject OrchardCore.DisplayManagement.ModelBinding.IUpdateModelAccessor ModelUpdaterAccessor
+
+<div class="mb-3 d-flex flex-column justify-content-between">
+  <h5>@T["Datasets"]</h5>
+  
+  @if (Model.Part.Datasets is not null && Model.Part.Datasets.Count > 0)
+  {
+    @foreach (var contentItem in Model.Part.Datasets)
+    {
+      dynamic dataset = await ContentItemDisplayManager.BuildDisplayAsync(
+        contentItem,
+        ModelUpdaterAccessor.ModelUpdater
+      );
+      <div class="col">
+        @await DisplayAsync(dataset)
+      </div>
+    }
+  }
+  else {
+    <span class="hint">
+      @T["No datasets found."]
+    </span>
+  }
+  
+  <div class="fload-end">
+    <a  
+        asp-route-area="Mess.Chart"
+        asp-controller="LineChartDatasetAdmin"
+        asp-action="Create"
+        asp-route-contentItemId="@Model.Part.RootContentItemId"
+        class="btn btn-success btn-sm">
+      @T["Create"]
+    </a>
+  </div>
+</div>
+
+<div class="modal fade" id="modalLineChartDatasetTypes" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">@T["Available line chart dataset types"]</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal">
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row row-cols-1 row-cols-md-2 g-2">
+          @foreach (var type in Model.LineChartDatasetContentTypes)
+          {
+            var contentItem = await ContentManager.NewAsync(type.Name);
+            dynamic lineChartDataset = await ContentItemDisplayManager
+              .BuildDisplayAsync(
+                contentItem,
+                ModelUpdaterAccessor.ModelUpdater,
+                "Thumbnail"
+              );
+            lineChartDataset.ContentItemId = Model.Part.RootContentItemId;
+            lineChartDataset.LineChartDatasetContentItemId = Model.Part.ContentItem.ContentItemId;
+            lineChartDataset.ContentType = type.Name;
+            <div class="col">
+              @await DisplayAsync(lineChartDataset)
+            </div>
+          }
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal">
+          @T["Cancel"]
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
