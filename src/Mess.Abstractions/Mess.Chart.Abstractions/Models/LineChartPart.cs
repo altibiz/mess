@@ -1,8 +1,10 @@
+using Newtonsoft.Json;
 using OrchardCore.ContentManagement;
 
 namespace Mess.Chart.Abstractions.Models;
 
-public class LineChartPart : ContentPart
+public class LineChartPart : NestedChartPart
 {
-  public List<ContentItem> Datasets { get; set; } = default!;
+  [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+  public List<ContentItem>? Datasets { get; set; } = default!;
 }

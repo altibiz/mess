@@ -85,6 +85,10 @@ public class ChartService : IChartService
     {
       return null;
     }
+    concreteChart.Alter<NestedChartPart>(
+      concreteChartContentType + "Part",
+      part => part.RootContentItemId = chart.ContentItemId
+    );
 
     chart.Alter<ChartPart>(part => part.Chart = concreteChart);
     return concreteChart;
@@ -122,8 +126,7 @@ public class ChartService : IChartService
 
     chart.Alter<ChartPart>(part =>
     {
-      part.Chart = null;
-      part.Content["Chart"] = null;
+      part.Remove("Chart");
     });
 
     return await Task.FromResult(concreteChart);
@@ -143,6 +146,10 @@ public class ChartService : IChartService
     {
       return null;
     }
+    lineChartDataset.Alter<NestedChartPart>(
+      LineChartDatasetContentType + "Part",
+      part => part.RootContentItemId = chart.ContentItemId
+    );
 
     chart.Alter<ChartPart>(
       chartPart =>
@@ -168,7 +175,7 @@ public class ChartService : IChartService
       chart
         .As<ChartPart>()
         ?.Chart?.As<LineChartPart>()
-        ?.Datasets.FirstOrDefault(
+        ?.Datasets?.FirstOrDefault(
           dataset => dataset.ContentItemId.Equals(lineChartDatasetContentItemId)
         )
     );
@@ -199,12 +206,21 @@ public class ChartService : IChartService
       chartPart =>
         chartPart.Chart.Alter<LineChartPart>(lineChartPart =>
         {
+          if (lineChartPart.Datasets is null)
+          {
+            return;
+          }
+
           var index = lineChartPart.Datasets.FindIndex(
             currentLineChartDataset =>
               currentLineChartDataset.ContentItemId.Equals(
                 existinglineChartDataset.ContentItemId
               )
           );
+          if (index == -1)
+          {
+            return;
+          }
 
           lineChartPart.Datasets[index] = existinglineChartDataset;
         })
@@ -236,6 +252,11 @@ public class ChartService : IChartService
       chartPart =>
         chartPart.Chart.Alter<LineChartPart>(lineChartPart =>
         {
+          if (lineChartPart.Datasets is null)
+          {
+            return;
+          }
+
           var index = lineChartPart.Datasets.FindIndex(
             currentLineChartDataset =>
               currentLineChartDataset.ContentItemId.Equals(
@@ -306,6 +327,10 @@ public class ChartService : IChartService
     {
       return null;
     }
+    concreteLineChartDataset.Alter<NestedChartPart>(
+      concreteLineChartDatasetContentType + "Part",
+      part => part.RootContentItemId = chart.ContentItemId
+    );
 
     lineChartDataset.Alter<LineChartDatasetPart>(
       lineChartDatasetPart =>

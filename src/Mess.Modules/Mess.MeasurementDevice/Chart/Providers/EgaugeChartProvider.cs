@@ -45,7 +45,7 @@ public class EgaugeChartDataProvider : IChartDataProvider
     );
 
     var datasets = lineChart.Datasets
-      .Select(contentItem => contentItem.As<LineChartDatasetPart>())
+      ?.Select(contentItem => contentItem.As<LineChartDatasetPart>())
       .Select(dataset =>
       {
         if (dataset is null)
@@ -71,7 +71,7 @@ public class EgaugeChartDataProvider : IChartDataProvider
       .WhereNotNull()
       .ToList();
 
-    return new LineChartModel(datasets);
+    return new LineChartModel(datasets ?? new List<LineChartDatasetModel>());
   }
 
   public async Task<ChartModel?> CreateChartAsync(ContentItem contentItem)
@@ -103,7 +103,7 @@ public class EgaugeChartDataProvider : IChartDataProvider
     );
 
     var datasets = lineChart.Datasets
-      .Select(contentItem => contentItem.As<LineChartDatasetPart>())
+      ?.Select(contentItem => contentItem.As<LineChartDatasetPart>())
       .Where(dataset => dataset is not null)
       .Select(dataset =>
       {
@@ -125,7 +125,7 @@ public class EgaugeChartDataProvider : IChartDataProvider
       .WhereNotNull()
       .ToList();
 
-    return new LineChartModel(datasets);
+    return new LineChartModel(datasets ?? new List<LineChartDatasetModel>());
   }
 
   public EgaugeChartDataProvider(ITenants tenants, IMeasurementClient client)

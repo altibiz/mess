@@ -1,8 +1,6 @@
-using OrchardCore.ContentManagement;
-
 namespace Mess.Chart.Abstractions.Models;
 
-public class TimeseriesChartDatasetPart : ContentPart
+public class TimeseriesChartDatasetPart : NestedChartPart
 {
   public string Property { get; set; } = default!;
 
