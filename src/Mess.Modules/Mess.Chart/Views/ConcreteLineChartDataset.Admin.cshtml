@@ -28,22 +28,22 @@
     }
   </div>
   <div class="float-end">
-      <button
-          type="button"
-          class="btn btn-primary btn-sm"
-          data-bs-toggle="modal"
-          data-bs-target="#modalLineChartDatasetTypes">
-        @T["Change Type"]
-      </button>
-      <a 
-          class="btn btn-danger btn-sm"
-          asp-route-area="Mess.Chart"
-          asp-controller="ConcreteLineChartDatasetAdmin"
-          asp-action="Delete"
-          asp-route-contentItemId="@Model.ContentItemId"
-          asp-route-lineChartDatasetContentItemId="Model.LineChartDatasetContentItemId"
-          data-url-af="RemoveUrl UnsafeUrl">
-        @T["Delete"]
-      </a>
+    <button
+        type="button"
+        class="btn btn-primary btn-sm"
+        data-bs-toggle="modal"
+        data-bs-target="#modalLineChartDatasetTypes">
+      @T["Change Type"]
+    </button>
+    <a 
+        class="btn btn-danger btn-sm"
+        asp-route-area="Mess.Chart"
+        asp-controller="ConcreteLineChartDatasetAdmin"
+        asp-action="Delete"
+        asp-route-contentItemId="@Model.ContentItemId"
+        asp-route-lineChartDatasetContentItemId="Model.LineChartDatasetContentItemId"
+        data-url-af="RemoveUrl UnsafeUrl">
+      @T["Delete"]
+    </a>
   </div>
 </div>

@@ -1,3 +1,64 @@
 @model LineChartDatasetPartEditViewModel
 
-<p>line chart dataset</p>
+@inject OrchardCore.ContentManagement.IContentManager ContentManager
+@inject OrchardCore.ContentManagement.Display.IContentItemDisplayManager ContentItemDisplayManager
+@inject OrchardCore.DisplayManagement.ModelBinding.IUpdateModelAccessor ModelUpdaterAccessor
+
+<strong class="mb-3">
+  @T[Model.Label ?? "Unlabeled dataset"] 
+</strong>
+
+<div 
+    class="
+      d-flex
+      flex-column
+      justify-content-between
+      border
+      rounded
+      p-2
+      ps-3
+      mb-1
+    ">
+  <div class="mb-3">
+      <label asp-for="Label">@T["Label"]</label>
+      <input asp-for="Label" class="form-control" />
+  </div>
+
+  <div class="mb-3">
+      <label asp-for="Color">@T["Color"]</label>
+      <input asp-for="Color" class="form-control" />
+  </div>
+
+  @if (Model.Part.Dataset is not null)
+  {
+    var contentItem = Model.Part.Dataset;
+    dynamic chart = await ContentItemDisplayManager.BuildDisplayAsync(
+      contentItem,
+      ModelUpdaterAccessor.ModelUpdater,
+      "Admin"
+    );
+    chart.ContentItemId = Model.Part.ContentItem.ContentItemId;
+    
+    <div class="mb-3">
+      <h3>
+        @T[Model.Part.Dataset.DisplayText ?? Model.Part.Dataset.ContentType]
+      </h3>
+      @await DisplayAsync(chart)
+      <span class="hint">@T["How the chart will be presented."]</span>
+    </div>
+  }
+  else
+  {
+    <div class="card mb-3">
+      <div class="card-body bg-primary p-3">
+        <button 
+            type="button"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#modalLineChartDatasetTypes">
+          @T["Pick dataset type"]
+        </button>
+      </div>
+    </div>
+  }
+</div>

@@ -6,6 +6,10 @@ namespace Mess.Chart.ViewModels;
 
 public class LineChartDatasetPartEditViewModel
 {
+  public string Label { get; set; } = default!;
+
+  public string Color { get; set; } = default!;
+
   [ValidateNever]
   public LineChartDatasetPart Part { get; set; } = default!;
 
