@@ -126,7 +126,8 @@ public class ChartService : IChartService
 
     chart.Alter<ChartPart>(part =>
     {
-      part.Remove("Chart");
+      part.Content.Chart = null;
+      part.Chart = null;
     });
 
     return await Task.FromResult(concreteChart);
