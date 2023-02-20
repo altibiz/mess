@@ -49,7 +49,6 @@ public class LineChartDatasetAdminController : Controller
     );
   }
 
-  [HttpPost]
   public async Task<IActionResult> Edit(
     string contentItemId,
     string lineChartDatasetContentItemId

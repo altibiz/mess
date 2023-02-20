@@ -35,14 +35,16 @@
           data-bs-target="#modalChartTypes">
         @T["Change Type"]
       </button>
-      <a 
-          class="btn btn-danger btn-sm"
-          asp-route-area="Mess.Chart"
-          asp-controller="ConcreteChartAdmin"
-          asp-action="Delete"
-          asp-route-contentItemId="@Model.ContentItemId"
-          data-url-af="RemoveUrl UnsafeUrl">
-        @T["Delete"]
-      </a>
+      @* TODO: just keeping if needed later on
+        <a 
+            class="btn btn-danger btn-sm"
+            asp-route-area="Mess.Chart"
+            asp-controller="ConcreteChartAdmin"
+            asp-action="Delete"
+            asp-route-contentItemId="@Model.ContentItemId"
+            data-url-af="RemoveUrl UnsafeUrl">
+          @T["Delete"]
+        </a>
+      *@
   </div>
 </div>

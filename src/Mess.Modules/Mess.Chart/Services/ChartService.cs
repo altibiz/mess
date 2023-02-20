@@ -423,7 +423,11 @@ public class ChartService : IChartService
     }
 
     lineChartDataset.Alter<LineChartDatasetPart>(
-      lineChartDatasetPart => lineChartDatasetPart.Dataset = null
+      lineChartDatasetPart =>
+      {
+        lineChartDatasetPart.Dataset = null;
+        lineChartDatasetPart.Content.Dataset = null;
+      }
     );
 
     await UpdateLineChartDatasetAsync(chart, lineChartDataset);

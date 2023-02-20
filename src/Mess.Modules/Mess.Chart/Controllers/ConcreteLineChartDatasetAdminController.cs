@@ -11,7 +11,6 @@ namespace Mess.Chart.Controllers;
 [Admin]
 public class ConcreteLineChartDatasetAdminController : Controller
 {
-  [HttpPost]
   public async Task<IActionResult> Create(
     string contentItemId,
     string lineChartDatasetContentItemId,
