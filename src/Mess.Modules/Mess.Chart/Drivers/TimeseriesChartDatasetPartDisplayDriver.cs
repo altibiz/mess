@@ -26,7 +26,7 @@ public class TimeseriesChartDatasetPartDisplayDriver
           }
         )
         .Location("Thumbnail", "Content"),
-      Initialize<TimeseriesChartDatasetPartEditViewModel>(
+      Initialize<TimeseriesChartDatasetPartAdminViewModel>(
           "TimeseriesChartDatasetPart_Admin",
           model =>
           {
@@ -45,7 +45,7 @@ public class TimeseriesChartDatasetPartDisplayDriver
     UpdatePartEditorContext context
   )
   {
-    var viewModel = new TimeseriesChartDatasetPartEditViewModel();
+    var viewModel = new TimeseriesChartDatasetPartAdminViewModel();
 
     if (await updater.TryUpdateModelAsync(viewModel, Prefix))
     {

@@ -28,7 +28,7 @@ public class LineChartPartDisplayDriver
           }
         )
         .Location("Thumbnail", "Content"),
-      Initialize<LineChartPartEditViewModel>(
+      Initialize<LineChartPartAdminViewModel>(
           "LineChartPart_Admin",
           model =>
           {

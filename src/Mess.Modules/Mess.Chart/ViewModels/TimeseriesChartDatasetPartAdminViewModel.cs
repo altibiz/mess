@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Mess.Chart.ViewModels;
 
-public class TimeseriesChartDatasetPartEditViewModel
+public class TimeseriesChartDatasetPartAdminViewModel
 {
   public string Property { get; set; } = default!;
 

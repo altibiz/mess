@@ -15,10 +15,11 @@ public class LineChartDatasetPartDisplayDriver
     BuildPartDisplayContext context
   )
   {
-    return Initialize<LineChartDatasetPartEditViewModel>(
+    return Initialize<LineChartDatasetPartViewModel>(
         "LineChartDatasetPart",
         model =>
         {
+          model.Label = part.Label;
           model.Part = part;
           model.Definition = context.TypePartDefinition;
         }
