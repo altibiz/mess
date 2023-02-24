@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Xml.Linq;
 using Mess.System.Extensions.Object;
+using Mess.System.Extensions.String;
 
 namespace Mess.System;
 
@@ -24,6 +25,13 @@ public static class EmbeddedResources
 
     return stream;
   }
+
+  public static string GetStringEmbeddedResource(
+    string name,
+    Assembly? assemblyName = null
+  ) =>
+    GetEmbeddedResource(name, assemblyName ?? Assembly.GetCallingAssembly())
+      .Encode();
 
   public static T GetJsonEmbeddedResource<T>(
     string name,

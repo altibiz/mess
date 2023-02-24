@@ -1,0 +1,95 @@
+@model LineChartDatasetPartViewModel
+
+@inject OrchardCore.ContentManagement.IContentManager ContentManager
+@inject OrchardCore.ContentManagement.Display.IContentItemDisplayManager ContentItemDisplayManager
+@inject OrchardCore.DisplayManagement.ModelBinding.IUpdateModelAccessor ModelUpdaterAccessor
+
+<strong class="mb-3">
+  @T[Model.Label ?? "Unlabeled dataset"] 
+</strong>
+
+<div 
+    class="
+      d-flex
+      flex-column
+      justify-content-between
+      border
+      rounded
+      p-2
+      ps-3
+      mb-1
+    ">
+  @{
+    var labelFor = $"ChartPart.Chart.LineChartPart.Datasets[{Model.Index}].LineChartDatasetPart.Label";
+  }
+  <div class="mb-3">
+    <label for="@labelFor">@T["Label"]</label>
+    <input name="@labelFor" class="form-control" />
+  </div>
+
+  @{
+    var colorFor = $"ChartPart.Chart.LineChartPart.Datasets[{Model.Index}].LineChartDatasetPart.Color";
+  }
+  <div class="mb-3">
+    <label for="@colorFor">@T["Color"]</label>
+    <input name="@colorFor" class="form-control" />
+  </div>
+
+  @if (Model.Part.Dataset is not null)
+  {
+    var contentItem = Model.Part.Dataset;
+    dynamic chart = await ContentItemDisplayManager.BuildDisplayAsync(
+      contentItem,
+      ModelUpdaterAccessor.ModelUpdater,
+      "Admin"
+    );
+    chart.ContentItemId = Model.Part.RootContentItemId;
+    chart.LineChartDatasetContentItemId = Model.Part.ContentItem.ContentItemId;
+
+    <div class="mb-3">
+      <h3>
+        @T[Model.Part.Dataset.DisplayText ?? Model.Part.Dataset.ContentType]
+      </h3>
+      @await DisplayAsync(chart)
+      <span class="hint">@T["How the chart will be presented."]</span>
+    </div>
+  }
+  else
+  {
+    @* NOTE: for some reason it doesn't work in the attribute *@
+    var modalId = $"#modalLineChartDatasetTypes{Model.Part.ContentItem.ContentItemId}";
+    <div class="card mb-3">
+      <div class="card-body bg-primary p-3">
+        <button 
+            type="button"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="@modalId">
+          @T["Pick dataset type"]
+        </button>
+      </div>
+    </div>
+  }
+      
+  <div class="mb-3">
+    <a
+        asp-route-area="Mess.Chart"
+        asp-controller="LineChartDatasetAdmin"
+        asp-action="Edit"
+        asp-route-contentItemId="@Model.Part.RootContentItemId"
+        asp-route-lineChartDatasetContentItemId="@Model.Part.ContentItem.ContentItemId"
+        class="btn btn-primary btn-sm">
+      @T["Save"]
+    </a>
+    <a
+        asp-route-area="Mess.Chart"
+        asp-controller="LineChartDatasetAdmin"
+        asp-action="Delete"
+        asp-route-contentItemId="@Model.Part.RootContentItemId"
+        asp-route-lineChartDatasetContentItemId="@Model.Part.ContentItem.ContentItemId"
+        class="btn btn-danger btn-sm"
+        data-url-af="RemoveUrl UnsafeUrl">
+      @T["Delete"]
+    </a>
+  </div>
+</div>

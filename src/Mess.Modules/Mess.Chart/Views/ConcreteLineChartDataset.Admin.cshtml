@@ -1,0 +1,55 @@
+<div 
+    class="
+      d-flex
+      flex-column
+      justify-content-between
+    ">
+  <div
+      class="
+        border
+        rounded
+        p-2
+        ps-3
+        mb-1
+      ">
+    @if (Model.Content != null)
+    {
+      @await DisplayAsync(Model.Content)
+    }
+    else
+    {
+      @* For line chart datasets without a display driver *@
+      <span>
+        @Model.ContentItem.DisplayText
+        <span class="text-muted dashed">
+          @Model.ContentItem.ContentType
+        </span>
+      </span>
+    }
+  </div>
+  <div class="float-end">
+    @{
+      @* NOTE: for some reason it doesn't work in the attribute *@
+      var modalId = $"#modalLineChartDatasetTypes{Model.LineChartDatasetContentItemId}";
+    }
+    <button
+        type="button"
+        class="btn btn-primary btn-sm"
+        data-bs-toggle="modal"
+        data-bs-target="@modalId">
+      @T["Change Type"]
+    </button>
+    @* NOTE: just keeping if needed later on
+      <a 
+          class="btn btn-danger btn-sm"
+          asp-route-area="Mess.Chart"
+          asp-controller="ConcreteLineChartDatasetAdmin"
+          asp-action="Delete"
+          asp-route-contentItemId="@Model.ContentItemId"
+          asp-route-lineChartDatasetContentItemId="@Model.LineChartDatasetContentItemId"
+          data-url-af="RemoveUrl UnsafeUrl">
+        @T["Delete"]
+      </a>
+    *@
+  </div>
+</div>

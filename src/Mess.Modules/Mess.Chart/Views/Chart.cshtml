@@ -1,0 +1,24 @@
+@* TODO: add name *@
+
+<canvas id="chart-canvas"></canvas>
+<span id="chart-canvas-error"></span>
+
+<script asp-name="mess-chart" at="Foot"></script>
+<script at="Foot">
+  $(function () {
+    var contentItem = "@Html.Raw(Model.ContentItem.ToJson(pretty: false))";
+    createChart(contentItem)
+      .then(function (chart) {
+        if (!chart) {
+          var errorSpan = document.getElementById("chart-canvas-error");
+          errorSpan.innerHtml = '@T["Error occured while creating chart"]';
+        }
+
+        bindChart(
+          "chart-canvas-error",
+          "@Html.Raw(Orchard.CultureName())",
+          chart);
+      })
+      .catch(console.error);
+  })
+</script>

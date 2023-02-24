@@ -3,11 +3,10 @@
   <ItemGroup>
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.System/Mess.System.csproj" />
     <ProjectReference Include="../../Mess.Abstractions/Mess.Xunit/Mess.Xunit.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.MeasurementDevice.Abstractions/Mess.MeasurementDevice.Abstractions.csproj" />
     <ProjectReference Include="../../../src/Mess.Modules/Mess.MeasurementDevice/Mess.MeasurementDevice.csproj" />
+    <ProjectReference Include="../../Mess.Abstractions/Mess.EventStore.Test.Abstractions/Mess.EventStore.Test.Abstractions.csproj" />
+    <ProjectReference Include="../../Mess.Abstractions/Mess.Timeseries.Test.Abstractions/Mess.Timeseries.Test.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

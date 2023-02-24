@@ -1,29 +1,29 @@
-import { Chart, ScaleOptionsByType } from "chart.js";
-import { ChartSpecification, isLineChartSpecification } from "./schema";
+import {
+  Chart,
+  ScaleOptionsByType,
+  CartesianScaleTypeRegistry,
+} from "chart.js";
+import { ChartModel, isLineChartModel } from "./schema";
 
 export const bindChart = (
   id: string,
   culture: string,
-  chartSpecification: ChartSpecification,
+  chart: ChartModel,
 ): Chart | null => {
-  const typeSpecification = chartSpecification.typeSpecification;
-  if (isLineChartSpecification(typeSpecification)) {
-    const datasets = typeSpecification.datasets;
+  if (isLineChartModel(chart)) {
     return new Chart(id, {
       type: "line",
       data: {
-        datasets: datasets.map((dataset) => ({
-          label: dataset.unit
-            ? `${dataset.label} (${dataset.unit})`
-            : dataset.label,
-          data: dataset.data,
+        datasets: chart.datasets.map(({ label, datapoints: data, color }) => ({
+          label,
+          data,
           parsing: {
             xAxisKey: "x",
             yAxisKey: "y",
           },
-          yAxisID: dataset.id,
-          borderColor: dataset.color,
-          backgroundColor: dataset.color,
+          yAxisID: label,
+          borderColor: color,
+          backgroundColor: color,
         })),
       },
       options: {
@@ -42,14 +42,14 @@ export const bindChart = (
               },
             },
           },
-          ...datasets.reduce((scales, dataset) => {
-            scales[dataset.id] = {
-              type: "linear",
+          ...chart.datasets.reduce((scales, { label }) => {
+            scales[label] = {
+              type: "timeseries",
               position: "left",
             };
 
             return scales;
-          }, {} as Record<string, Partial<ScaleOptionsByType<"linear">>>),
+          }, {} as Record<string, Partial<ScaleOptionsByType<keyof CartesianScaleTypeRegistry>>>),
         },
       },
     });

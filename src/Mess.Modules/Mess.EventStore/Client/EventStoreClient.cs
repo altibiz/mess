@@ -14,7 +14,7 @@ public class EventStoreConnectionCheckDocumentType
 public class EventStoreClient : IEventStoreClient
 {
   public Task<bool> CheckConnectionAsync() =>
-    Services.WithEventStoreQueryAsync(async query =>
+    _services.WithEventStoreQueryAsync(async query =>
     {
       var result = await query
         .Query<EventStoreConnectionCheckDocumentType>()
@@ -29,7 +29,7 @@ public class EventStoreClient : IEventStoreClient
     });
 
   public bool CheckConnection() =>
-    Services.WithEventStoreQuery(query =>
+    _services.WithEventStoreQuery(query =>
     {
       var result = query
         .Query<EventStoreConnectionCheckDocumentType>()
@@ -42,7 +42,7 @@ public class EventStoreClient : IEventStoreClient
     });
 
   public void RecordEvents<T>(params IEvent[] events) where T : class =>
-    Services.WithEventStoreSession(session =>
+    _services.WithEventStoreSession(session =>
     {
       session.Events.StartStream<T>(Guid.NewGuid(), events);
       session.SaveChanges();
@@ -51,7 +51,7 @@ public class EventStoreClient : IEventStoreClient
     });
 
   public Task RecordEventsAsync<T>(params IEvent[] events) where T : class =>
-    Services.WithEventStoreSessionAsync(
+    _services.WithEventStoreSessionAsync(
       async (session) =>
       {
         session.Events.StartStream<T>(Guid.NewGuid(), events);
@@ -61,15 +61,49 @@ public class EventStoreClient : IEventStoreClient
       }
     );
 
+  public void RecordEvents(Type aggregateType, params IEvent[] events) =>
+    _services.WithEventStoreSession(session =>
+    {
+      session.Events.StartStream(aggregateType, Guid.NewGuid(), events);
+      session.SaveChanges();
+
+      return true;
+    });
+
+  public Task RecordEventsAsync(Type aggregateType, params IEvent[] events) =>
+    _services.WithEventStoreSessionAsync(
+      async (session) =>
+      {
+        session.Events.StartStream(aggregateType, Guid.NewGuid(), events);
+        await session.SaveChangesAsync();
+
+        return true;
+      }
+    );
+
+  public IReadOnlyList<(Type AggregateType, IReadOnlyList<IEvent>)> Export(
+    CancellationToken? cancellationToken = null
+  ) =>
+    throw new NotImplementedException(
+      "Marten has no official way of exporting all events"
+    );
+
+  public Task<
+    IReadOnlyList<(Type AggregateType, IReadOnlyList<IEvent>)>
+  > ExportAsync(CancellationToken? cancellationToken = null) =>
+    throw new NotImplementedException(
+      "Marten has no official way of exporting all events"
+    );
+
   private void LogConenction(bool connected)
   {
     if (connected)
     {
-      Logger.LogInformation("Connected to EventStore server");
+      _logger.LogInformation("Connected to EventStore server");
     }
     else
     {
-      Logger.LogInformation("Failed connecting to EventStore server");
+      _logger.LogInformation("Failed connecting to EventStore server");
     }
   }
 
@@ -78,10 +112,10 @@ public class EventStoreClient : IEventStoreClient
     ILogger<EventStoreClient> logger
   )
   {
-    Services = services;
-    Logger = logger;
+    _services = services;
+    _logger = logger;
   }
 
-  private IServiceProvider Services { get; }
-  private ILogger Logger { get; }
+  private readonly IServiceProvider _services;
+  private readonly ILogger _logger;
 }

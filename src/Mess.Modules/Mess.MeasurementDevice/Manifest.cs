@@ -7,5 +7,11 @@ using OrchardCore.Modules.Manifest;
   Version = "0.0.1",
   Description = "Mess.MeasurementDevice",
   Category = "Content Management",
-  Dependencies = new[] { "Mess.EventStore, Mess.Timeseries", "Mess.Chart" }
+  // TODO: remove hard EventStore dependency
+  Dependencies = new[]
+  {
+    "OrchardCore.ContentTypes",
+    "OrchardCore.ContentFields",
+    "Mess.Timeseries",
+  }
 )]

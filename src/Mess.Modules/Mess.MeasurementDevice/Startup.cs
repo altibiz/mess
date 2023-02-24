@@ -6,14 +6,17 @@ using OrchardCore.Data.Migration;
 using OrchardCore.Modules;
 using OrchardCore.Mvc.Core.Utilities;
 using OrchardCore.ResourceManagement;
-using Mess.EventStore.Abstractions.Extensions.Microsoft;
+using OrchardCore.ContentManagement;
 using Mess.Timeseries.Abstractions.Extensions.Microsoft;
 using Mess.MeasurementDevice.Abstractions.Client;
-using Mess.MeasurementDevice.Abstractions.Parsers.Egauge;
 using Mess.MeasurementDevice.Client;
 using Mess.MeasurementDevice.Controllers;
 using Mess.MeasurementDevice.Parsers.Egauge;
-using Mess.MeasurementDevice.Services;
+using Mess.MeasurementDevice.Models;
+using Mess.MeasurementDevice.Abstractions.Parsers;
+using Mess.MeasurementDevice.Storage;
+using Mess.MeasurementDevice.Abstractions.Storage;
+using Mess.MeasurementDevice.Parsers;
 
 namespace Mess.MeasurementDevice;
 
@@ -29,11 +32,21 @@ public class Startup : StartupBase
 
     services.RegisterTimeseriesDbContext<MeasurementDbContext>();
 
-    services.RegisterProjectionDispatcher<MeasurementProjectionDispatcher>();
+    services.AddSingleton<IMeasurementParserLookup, MeasurementParserLookup>();
+    services.AddSingleton<IMeasurementParser, EgaugeParser>();
 
-    services.AddSingleton<IEgaugeParser, EgaugeParser>();
+    services.AddSingleton<
+      IMeasurementStorageStrategyLookup,
+      MeasurementStorageStrategyLookup
+    >();
+    services.AddSingleton<
+      IMeasurementStorageStrategy,
+      EgaugeDirectStorageStrategy
+    >();
 
     services.AddSingleton<IMeasurementClient, MeasurementClient>();
+
+    services.AddContentPart<MeasurementDevicePart>();
   }
 
   public override void Configure(
@@ -43,13 +56,13 @@ public class Startup : StartupBase
   )
   {
     routes.MapAreaControllerRoute(
-      name: "Mess.MeasurementDevice.PushController.Egauge",
+      name: "Mess.MeasurementDevice.PushController.Index",
       areaName: "Mess.MeasurementDevice",
-      pattern: $"/push/egauge",
+      pattern: "/Push/{parserId}",
       defaults: new
       {
         controller = typeof(PushController).ControllerName(),
-        action = nameof(PushController.Egauge)
+        action = nameof(PushController.Index)
       }
     );
   }

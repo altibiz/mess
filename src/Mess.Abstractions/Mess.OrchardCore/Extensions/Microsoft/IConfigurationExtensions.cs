@@ -1,10 +1,12 @@
+using Mess.Tenants;
+
 namespace Mess.OrchardCore.Extensions.Microsoft;
 
 public static class IConfigurationExtensions
 {
-  public static IDictionary<
+  public static IReadOnlyDictionary<
     string,
-    IEnumerable<string>
+    IReadOnlyList<Tenant>
   > GetOrchardCoreAutoSetupTenantNamesGroupedByConnectionString(
     this IConfiguration configuration
   ) =>
@@ -23,12 +25,7 @@ public static class IConfigurationExtensions
       .ToDictionary(
         group => group.Key,
         group =>
-          group.Select(
-            tenant =>
-              tenant.GetValue<string>("ShellName")
-              ?? throw new InvalidOperationException(
-                "Tenant is missing a ShellName"
-              )
-          )
+          group.Select(tenant => tenant.GetTenant()).ToList()
+          as IReadOnlyList<Tenant>
       );
 }

@@ -3,11 +3,12 @@ using Mess.Tenants;
 namespace Mess.Timeseries.Abstractions.Client;
 
 public record class DesignTimeTenants(
-  string tenantName,
-  string connactionString
+  string TenantName,
+  string ConnactionString,
+  string TablePrefix
 ) : ITenants
 {
-  public Tenant Current => new(tenantName, connactionString);
+  public Tenant Current => new(TenantName, ConnactionString, TablePrefix);
 
   // NOTE: not needed for design
   public IReadOnlyList<Tenant> All => throw new NotImplementedException();

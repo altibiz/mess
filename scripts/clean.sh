@@ -1,4 +1,5 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
+set -eo pipefail
 
 # shellcheck disable=SC2068
 git_clean() {

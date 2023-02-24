@@ -29,3 +29,7 @@ When changing the timeseries model in any of the relevant projects run:
 ```bash
 bash ./scripts/migrations.sh "<PROJECT_NAME>" "<MIGRATION_NAME>"
 ```
+
+## TODO
+
+Add RootContentItemId in LineChart and stuff.

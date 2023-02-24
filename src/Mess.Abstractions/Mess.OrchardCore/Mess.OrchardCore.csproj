@@ -7,6 +7,7 @@
   <ItemGroup>
     <PackageReference Include="OrchardCore.Abstractions" Version="$(MessOrchardVersion)" />
     <PackageReference Include="OrchardCore.Recipes.Abstractions" Version="$(MessOrchardVersion)" />
+    <PackageReference Include="OrchardCore.Contents" Version="$(MessOrchardVersion)" />
   </ItemGroup>
 
   <ItemGroup>

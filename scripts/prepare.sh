@@ -1,4 +1,5 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
+set -eo pipefail
 
 abs() { echo "$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"; }
 SCRIPT_DIR="$(dirname "$(abs "$0")")"
@@ -15,8 +16,8 @@ dotnet restore
 dotnet tool restore
 printf "\n"
 
-printf "[Mess] Creating containers with 'docker compose'...\n"
-docker compose create
+printf "[Mess] Creating containers with 'docker-compose'...\n"
+docker-compose up --no-start
 printf "\n"
 
 printf "[Mess] Setting up secrets with 'dotnet'...\n"

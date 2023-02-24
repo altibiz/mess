@@ -1,66 +1,55 @@
 using Mess.Chart.Abstractions.Providers;
-using Mess.Chart.Models;
-using Mess.Chart.Settings;
+using Mess.Chart.Abstractions.Models;
 using Mess.Chart.ViewModels;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Localization;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
 using OrchardCore.ContentManagement.Display.Models;
 using OrchardCore.ContentManagement.Metadata.Models;
-using OrchardCore.DisplayManagement;
 using OrchardCore.DisplayManagement.ModelBinding;
 using OrchardCore.DisplayManagement.Views;
 using OrchardCore.Mvc.ModelBinding;
+using OrchardCore.ContentManagement.Metadata;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Mess.Chart.Drivers;
 
 public class ChartPartDisplayDriver : ContentPartDisplayDriver<ChartPart>
 {
-  public override IDisplayResult Display(
-    ChartPart part,
-    BuildPartDisplayContext context
-  )
-  {
-    return Initialize<ChartPartViewModel>(
-        GetDisplayShapeType(context),
-        model =>
-        {
-          model.Parameters = part.Parameters;
-          model.Part = part;
-          model.ContentItem = part.ContentItem;
-          model.TypePartDefinition = context.TypePartDefinition;
-        }
-      )
-      .Location("Detail", "Content")
-      .Location("Summary", "Content");
-  }
-
   public override IDisplayResult Edit(
     ChartPart part,
     BuildPartEditorContext context
   )
   {
-    var settings = context.TypePartDefinition.GetSettings<ChartPartSettings>();
-    var provider = _lookup.Get(settings.Provider);
-    if (provider is null)
-    {
-      return Initialize<ChartPartViewModel>(
-        GetEditorShapeType(context),
-        model =>
-        {
-          model.Parameters = part.Parameters;
-          model.Part = part;
-          model.ContentItem = part.ContentItem;
-          model.TypePartDefinition = context.TypePartDefinition;
-        }
-      );
-    }
-
-    var shapeType = provider.GetPartEditorShapeType(context);
-    var model = provider.CreatePartEditorModel(context, part, part.Parameters);
-    return Factory(
-      shapeType,
-      ctx => ctx.ShapeFactory.CreateAsync(shapeType, Arguments.From(model))
+    return Initialize<ChartPartEditViewModel>(
+      GetEditorShapeType(context),
+      model =>
+      {
+        model.Part = part;
+        model.Definition = context.TypePartDefinition;
+        model.ProviderIdOptions = _lookup.Ids
+          .Select(
+            (id, index) =>
+              new SelectListItem()
+              {
+                Value = id,
+                Text = id,
+                Selected = model.Part.DataProviderId is not null
+                  ? model.Part.DataProviderId == id
+                  : index == 0,
+                Disabled = false
+              }
+          )
+          .ToList();
+        model.DataProviderId ??= model.ProviderIdOptions.First().Value;
+        model.ChartContentTypes = _contentDefinitionManager
+          .ListTypeDefinitions()
+          .Where(
+            contentTypeDefinition =>
+              contentTypeDefinition.GetStereotype() == "ConcreteChart"
+          )
+          .ToList();
+      }
     );
   }
 
@@ -70,54 +59,46 @@ public class ChartPartDisplayDriver : ContentPartDisplayDriver<ChartPart>
     UpdatePartEditorContext context
   )
   {
-    var viewModel = new ChartPartViewModel();
+    var viewModel = new ChartPartEditViewModel();
 
-    var settings = context.TypePartDefinition.GetSettings<ChartPartSettings>();
-    var provider = _lookup.Get(settings.Provider);
-    if (provider is null)
-    {
-      var partName = context.TypePartDefinition.DisplayName();
-      updater.ModelState.AddModelError(
+    if (
+      await updater.TryUpdateModelAsync(
+        viewModel,
         Prefix,
-        nameof(settings.Provider),
-        S["{0} doesn't contain a valid Chart provider", partName]
-      );
-      return Edit(part, context);
-    }
-
-    if (await updater.TryUpdateModelAsync(viewModel, Prefix, t => t.Parameters))
+        model => model.DataProviderId
+      ) && !String.IsNullOrWhiteSpace(viewModel.DataProviderId)
+    )
     {
-      var errors = await provider.ValidateParametersAsync(viewModel.Parameters);
-      if (errors is not null)
+      var dataProvider = _lookup.Get(viewModel.DataProviderId);
+      if (dataProvider is null)
       {
         var partName = context.TypePartDefinition.DisplayName();
         updater.ModelState.AddModelError(
           Prefix,
-          nameof(viewModel.Parameters),
-          S[
-            "{0} doesn't contain a valid parameters",
-            partName,
-            string.Join(" ", errors)
-          ]
+          nameof(viewModel.DataProviderId),
+          S["{0} doesn't contain a valid chart provider", partName]
         );
         return Edit(part, context);
       }
 
-      part.Parameters = viewModel.Parameters;
+      part.DataProviderId = viewModel.DataProviderId;
     }
 
     return Edit(part, context);
   }
 
   public ChartPartDisplayDriver(
-    IChartProviderLookup lookup,
+    IChartDataProviderLookup lookup,
+    IContentDefinitionManager contentDefinitionManager,
     IStringLocalizer<ChartPartDisplayDriver> localizer
   )
   {
     _lookup = lookup;
+    _contentDefinitionManager = contentDefinitionManager;
     S = localizer;
   }
 
   private readonly IStringLocalizer S;
-  private readonly IChartProviderLookup _lookup;
+  private readonly IChartDataProviderLookup _lookup;
+  private readonly IContentDefinitionManager _contentDefinitionManager;
 }

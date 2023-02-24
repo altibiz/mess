@@ -1,4 +1,5 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
+set -eo pipefail
 
 # shellcheck disable=SC1090
 
@@ -37,7 +38,7 @@ printf "\n"
 printf "[Mess] Publishing with 'dotnet'..."
 dotnet \
   publish \
-  --output "$PUBLISH_DIR" \
+  --property "PublishDir=$PUBLISH_DIR" \
   --property:consoleLoggerParameters=ErrorsOnly \
   --property:IsWebConfigTransformDisabled=true \
   --configuration Release

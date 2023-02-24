@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using Mess.MeasurementDevice.Abstractions.Parsers.Egauge;
-using Mess.EventStore.Abstractions.Client;
 using Mess.System.Extensions.Object;
-using Mess.MeasurementDevice.Events;
+using Mess.MeasurementDevice.Abstractions.Parsers;
+using Mess.MeasurementDevice.Abstractions.Storage;
+using Mess.System;
 
 namespace Mess.MeasurementDevice.Controllers;
 
@@ -10,31 +10,38 @@ public class PushController : Controller
 {
   [HttpPost]
   [IgnoreAntiforgeryToken] // TODO: security
-  public async Task<IActionResult> Egauge(
-    [FromServices] IEgaugeParser parser,
-    [FromServices] IEventStoreClient store
+  public async Task<IActionResult> Index(
+    [FromServices] IMeasurementParserLookup parserLookup,
+    [FromServices] IMeasurementStorageStrategyLookup storageStragegyLookup,
+    string parserId
   )
   {
-    if (!ModelState.IsValid)
+    var parser = parserLookup.Get(parserId);
+    if (parser is null)
     {
-      return BadRequest(ModelState);
+      return BadRequest($"Unknown parser for measurement");
     }
 
-    var xdocument = await Request.Body.FromXmlStreamAsync();
-    if (xdocument is null)
+    var body = await Request.Body.ToStringAsync();
+    var parsedMeasurement = await parser.ParseAsync(body);
+    if (parsedMeasurement is null)
     {
-      return BadRequest("Xml is invalid");
+      return BadRequest($"Failed parsing measurement");
     }
 
-    var measurement = parser.Parse(xdocument);
-    if (measurement is null)
-    {
-      return BadRequest("Measurement is invalid");
-    }
-
-    await store.RecordEventsAsync<MeasurementStream>(
-      new EgaugeMeasured(measurement.Value)
+    var storageStrategy = storageStragegyLookup.Get(
+      parsedMeasurement.Value.StorageStrategy
     );
+    if (storageStrategy is null)
+    {
+      return BadRequest($"Unknown storage strategy for measurement");
+    }
+
+    var storeError = await storageStrategy.StoreAsync(parsedMeasurement.Value);
+    if (storeError is not null)
+    {
+      return BadRequest($"Storage of measurement failed because {storeError}");
+    }
 
     return Ok();
   }

@@ -33,9 +33,9 @@ public abstract class TimeseriesDbContextDesignTimeFactory<T>
         {
           optionsBuilder.Options,
           new DesignTimeTenants(
-            tenantName: "Default",
-            // TODO: configurable?
-            connactionString: "Server=localhost;Port=5432;User Id=mess;Password=mess;Database=mess"
+            TenantName: "Default",
+            ConnactionString: "Server=localhost;Port=5432;User Id=mess;Password=mess;Database=mess",
+            TablePrefix: "default"
           )
         }
       ) as T;

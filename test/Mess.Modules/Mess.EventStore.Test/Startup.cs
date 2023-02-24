@@ -1,14 +1,9 @@
 ﻿using Xunit.DependencyInjection;
 using Xunit.DependencyInjection.Logging;
-using Marten;
 using Mess.EventStore.Abstractions.Client;
 using Mess.EventStore.Client;
-
-// NOTE: leaving this here if someone else tries to test with mocks
-// using Mess.EventStore.Test.Extensions.Moq;
-// using Marten;
-
-// TODO: try testcontainers when docker-compose and timescaledb are supported
+using Mess.Xunit.Extensions.Microsoft;
+using Mess.EventStore.Test.Abstractions;
 
 namespace Mess.EventStore.Test;
 
@@ -32,33 +27,8 @@ public class Startup
     var environment = hostBuilderContext.HostingEnvironment;
     var configuration = hostBuilderContext.Configuration;
 
-    services.AddScoped<ITenants, TestTenants>();
-
-    // NOTE: leaving this here if someone else tries to test with mocks
-    // services.AddMock<IDocumentStore>();
-
-    // NOTE: this is not intended to be scoped but we register it as scoped
-    // because we want a different IDocumentStore for each test
-    services.AddScoped<IDocumentStore>(services =>
-    {
-      var tenant = services.GetRequiredService<ITenants>();
-      return DocumentStore.For(options =>
-      {
-        options.MultiTenantedDatabases(databases =>
-        {
-          databases.AddSingleTenantDatabase(
-            tenant.Current.ConnectionString,
-            tenant.Current.Name
-          );
-        });
-      });
-    });
-    services.AddScoped<IDocumentSession>(
-      services => services.GetRequiredService<IDocumentStore>().OpenSession()
-    );
-    services.AddScoped<IQuerySession>(
-      services => services.GetRequiredService<IDocumentStore>().QuerySession()
-    );
+    services.RegisterTestTenants();
+    services.RegisterTestEventStore();
 
     services.AddScoped<IEventStoreSession, EventStoreSession>();
     services.AddScoped<IEventStoreQuery, EventStoreQuery>();

@@ -9,8 +9,4 @@
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Tenants/Mess.Tenants.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Npgsql" Version="$(MessNpgsqlVersion)" />
-  </ItemGroup>
-
 </Project>

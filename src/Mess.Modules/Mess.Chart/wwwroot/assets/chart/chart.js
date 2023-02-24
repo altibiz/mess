@@ -18321,74 +18321,6 @@ exports.NEVER = parseUtil_1.INVALID;
 
 },{"./ZodError":4,"./errors":5,"./helpers/errorUtil":7,"./helpers/parseUtil":8,"./helpers/util":10}],14:[function(require,module,exports){
 "use strict";
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.bindChart = void 0;
-var chart_js_1 = require("chart.js");
-var schema_1 = require("./schema");
-var bindChart = function (id, culture, chartSpecification) {
-    var typeSpecification = chartSpecification.typeSpecification;
-    if ((0, schema_1.isLineChartSpecification)(typeSpecification)) {
-        var datasets = typeSpecification.datasets;
-        return new chart_js_1.Chart(id, {
-            type: "line",
-            data: {
-                datasets: datasets.map(function (dataset) { return ({
-                    label: dataset.unit
-                        ? "".concat(dataset.label, " (").concat(dataset.unit, ")")
-                        : dataset.label,
-                    data: dataset.data,
-                    parsing: {
-                        xAxisKey: "x",
-                        yAxisKey: "y",
-                    },
-                    yAxisID: dataset.id,
-                    borderColor: dataset.color,
-                    backgroundColor: dataset.color,
-                }); }),
-            },
-            options: {
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false,
-                    },
-                },
-                scales: __assign({ x: {
-                        type: "time",
-                        adapters: {
-                            date: {
-                                locale: culture,
-                            },
-                        },
-                    } }, datasets.reduce(function (scales, dataset) {
-                    scales[dataset.id] = {
-                        type: "linear",
-                        position: "left",
-                    };
-                    return scales;
-                }, {})),
-            },
-        });
-    }
-    else {
-        return null;
-    }
-};
-exports.bindChart = bindChart;
-
-},{"./schema":16,"chart.js":2}],15:[function(require,module,exports){
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -18426,31 +18358,99 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fetchChartSpecification = void 0;
+exports.createChart = void 0;
 var schema_1 = require("./schema");
-var fetchChartSpecification = function (query) { return __awaiter(void 0, void 0, void 0, function () {
-    var response, specification, parsedSpecification;
+var createChart = function (providerId, contentItem) { return __awaiter(void 0, void 0, void 0, function () {
+    var response, rawChart, parsedChart;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, fetch("/Chart".concat(query))];
+            case 0: return [4 /*yield*/, fetch("/Chart/".concat(providerId), { body: contentItem })];
             case 1:
                 response = _a.sent();
                 return [4 /*yield*/, response.json()];
             case 2:
-                specification = _a.sent();
-                return [4 /*yield*/, schema_1.chartSpecificationSchema.safeParseAsync(specification)];
+                rawChart = _a.sent();
+                return [4 /*yield*/, schema_1.chartModelSchema.safeParseAsync(rawChart)];
             case 3:
-                parsedSpecification = _a.sent();
-                if (!parsedSpecification.success) {
+                parsedChart = _a.sent();
+                if (!parsedChart.success) {
                     return [2 /*return*/, null];
                 }
-                return [2 /*return*/, parsedSpecification.data];
+                return [2 /*return*/, parsedChart.data];
         }
     });
 }); };
-exports.fetchChartSpecification = fetchChartSpecification;
+exports.createChart = createChart;
 
-},{"./schema":16}],16:[function(require,module,exports){
+},{"./schema":16}],15:[function(require,module,exports){
+"use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.bindChart = void 0;
+var chart_js_1 = require("chart.js");
+var schema_1 = require("./schema");
+var bindChart = function (id, culture, chart) {
+    if ((0, schema_1.isLineChartModel)(chart)) {
+        return new chart_js_1.Chart(id, {
+            type: "line",
+            data: {
+                datasets: chart.datasets.map(function (_a) {
+                    var label = _a.label, data = _a.datapoints, color = _a.color;
+                    return ({
+                        label: label,
+                        data: data,
+                        parsing: {
+                            xAxisKey: "x",
+                            yAxisKey: "y",
+                        },
+                        yAxisID: label,
+                        borderColor: color,
+                        backgroundColor: color,
+                    });
+                }),
+            },
+            options: {
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false,
+                    },
+                },
+                scales: __assign({ x: {
+                        type: "time",
+                        adapters: {
+                            date: {
+                                locale: culture,
+                            },
+                        },
+                    } }, chart.datasets.reduce(function (scales, _a) {
+                    var label = _a.label;
+                    scales[label] = {
+                        type: "timeseries",
+                        position: "left",
+                    };
+                    return scales;
+                }, {})),
+            },
+        });
+    }
+    else {
+        return null;
+    }
+};
+exports.bindChart = bindChart;
+
+},{"./schema":16,"chart.js":2}],16:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -18476,30 +18476,26 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.chartSpecificationSchema = exports.lineChartSpecificationSchema = exports.isLineChartSpecification = void 0;
+exports.chartModelSchema = exports.lineChartModelSchema = exports.timeseriesChartDatasetModelSchema = exports.timeseriesChartDatapointModelScema = exports.isLineChartModel = void 0;
 var z = __importStar(require("zod"));
-var isLineChartSpecification = function (chartSpecification) {
-    return chartSpecification.type == "line";
+var isLineChartModel = function (chart) {
+    return chart.type == "Line";
 };
-exports.isLineChartSpecification = isLineChartSpecification;
-exports.lineChartSpecificationSchema = z.object({
-    type: z.literal("line"),
-    datasets: z.array(z.object({
-        id: z.string(),
-        label: z.string(),
-        unit: z.string(),
-        color: z.string(),
-        data: z.array(z.object({
-            x: z.number(),
-            y: z.number(),
-        })),
-    })),
+exports.isLineChartModel = isLineChartModel;
+exports.timeseriesChartDatapointModelScema = z.object({
+    x: z.date(),
+    y: z.number(),
 });
-exports.chartSpecificationSchema = z.object({
-    type: z.string(),
-    typeSpecification: z.discriminatedUnion("type", [
-        exports.lineChartSpecificationSchema,
-    ]),
+exports.timeseriesChartDatasetModelSchema = z.object({
+    type: z.literal("Timeseries"),
+    label: z.string(),
+    color: z.string(),
+    datapoints: z.array(exports.timeseriesChartDatapointModelScema),
 });
+exports.lineChartModelSchema = z.object({
+    type: z.literal("Line"),
+    datasets: z.array(exports.timeseriesChartDatasetModelSchema),
+});
+exports.chartModelSchema = exports.lineChartModelSchema;
 
 },{"zod":11}]},{},[14,15,16]);

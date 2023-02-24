@@ -1,4 +1,5 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
+set -eo pipefail
 
 abs() { echo "$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"; }
 SCRIPT_DIR="$(dirname "$(abs "$0")")"
@@ -18,7 +19,7 @@ printf "\n"
 printf "[Mess] Building with 'dotnet'...\n"
 dotnet \
   build \
-  --output "$ROOT_DIR/artifacts" \
+  --property "PublishDir=$ROOT_DIR/artifacts" \
   --property:TreatWarningsAsErrors=true \
   --configuration Release || exit 1
 printf "\n"

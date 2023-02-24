@@ -1,0 +1,22 @@
+{
+  "name": "default",
+  "displayName": "Default",
+  "description": "Default tenant recipe",
+  "author": "Altibiz",
+  "website": "altibiz.com",
+  "version": "0.0.1",
+  "issetuprecipe": true,
+  "categories": ["Module"],
+  "tags": ["Module"],
+  "steps": [
+    {
+      "name": "feature",
+      "enable": ["TheAdmin", "SafeMode", "Mess.Default"]
+    },
+    {
+      "name": "themes",
+      "admin": "TheAdmin",
+      "site": "Mess.Default"
+    }
+  ]
+}
