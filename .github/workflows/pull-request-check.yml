@@ -14,7 +14,7 @@ jobs:
           POSTGRES_USER: mess
           POSTGRES_PASSWORD: mess
         options: >-
-          --health-cmd pg_isready -d mess -U mess
+          --health-cmd "pg_isready -d mess -U mess"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -26,8 +26,9 @@ jobs:
       - uses: actions/setup-dotnet@v3
         with:
           global-json-file: global.json
-      - name: scripts
-        run: |
-          scripts/prepare.sh
-          scripts/lint.sh
-          scripts/test.sh
+      - name: prepare
+        run: scripts/prepare.sh
+      - name: lint
+        run: scripts/lint.sh
+      - name: test
+        run: scripts/test.sh
