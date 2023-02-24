@@ -5,10 +5,8 @@ export ASPNETCORE_ENVIRONMENT=Development
 export DOTNET_ENVIRONMENT=Development
 
 printf "[Mess] Running 'docker-compose up -d'...\n"
-if [ "$CI" ]; then
-  docker-compose up -d --env-file "$ROOT_DIR/ci.env"
-else
-  docker-compose up -d
+if [ ! "$CI" ]; then
+  docker-compose up --detach
 fi
 printf "\n"
 
@@ -23,9 +21,6 @@ else
 fi
 printf "\n"
 
-if [ "$CI" ]; then
-  docker-compose down --env-file "$ROOT_DIR/ci.env"
-else
-  printf "[Mess] Don't forget to run 'docker-compose down' when you stop testing\n"
-  printf "\n"
+if [ ! "$CI" ]; then
+  docker-compose down
 fi

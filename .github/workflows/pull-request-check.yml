@@ -4,15 +4,30 @@ jobs:
   check:
     name: Check
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: timescale/timescaledb-ha:pg14-latest
+        volumes:
+          - postgres_data:/home/postgres/pgdata/data
+        env:
+          POSTGRES_DB: mess
+          POSTGRES_USER: mess
+          POSTGRES_PASSWORD: mess
+        options: >-
+          --health-cmd pg_isready -d mess -U mess
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
       - uses: actions/setup-dotnet@v3
         with:
           global-json-file: global.json
-      - name: prepare
-        run: scripts/prepare.sh
-      - name: lint
-        run: scripts/lint.sh
-      - name: test
-        run: scripts/test.sh
+      - name: scripts
+        run: |
+          scripts/prepare.sh
+          scripts/lint.sh
+          scripts/test.sh

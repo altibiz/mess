@@ -24,13 +24,11 @@ dotnet restore
 dotnet tool restore
 printf "\n"
 
-printf "[Mess] Creating containers with 'docker-compose'...\n"
-if [ "$CI" ]; then
-  docker-compose up --no-start --env-file "$ROOT_DIR/ci.env"
-else
+if [ ! "$CI" ]; then
+  printf "[Mess] Creating containers with 'docker-compose'...\n"
   docker-compose up --no-start
+  printf "\n"
 fi
-printf "\n"
 
 if [ ! "$CI" ]; then
   printf "[Mess] Setting up secrets with 'dotnet'...\n"
