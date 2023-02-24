@@ -1,0 +1,39 @@
+name: Greška
+description: Prijavite grešku
+labels: [bug]
+assignees: HrvojeJuric
+body:
+  - type: textarea
+    attributes:
+      label: Problem
+      description: |
+        Kratko objašnjenje problema i zašto ga je bitno riješiti.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Željeno ponašanje
+      description: |
+        Detaljno objašnjenje kako bi se aplikacija trebala ponašati.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Koraci za reprodukciju
+      description: |
+        Korake koje je potrebno izvesti da bi greška bila vidljiva.
+
+        Ako je moguće, dodajte slike kojima su još jasnije opisani koraci za reprodukciju.
+      placeholder: |
+        1. Klik na 'topologija'
+        2. Klik na 'Visoki napon'
+        3. Prikazani su vodovi sa niskim naponom
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Implementacija (opcionalno)
+      description: |
+        Opcionalno upišite dodatne smjernice za implementaciju poput biblioteke koja treba biti korištena ili link na tutorial za implementaciju.
+    validations:
+      required: false
