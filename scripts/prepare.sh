@@ -25,7 +25,11 @@ dotnet tool restore
 printf "\n"
 
 printf "[Mess] Creating containers with 'docker-compose'...\n"
-docker-compose up --no-start
+if [ "$CI" ]; then
+  docker-compose up --no-start --env-file "$ROOT_DIR/ci.env"
+else
+  docker-compose up --no-start
+fi
 printf "\n"
 
 if [ ! "$CI" ]; then
