@@ -7,6 +7,14 @@ ROOT_DIR="$(dirname "$SCRIPT_DIR")"
 
 export NODE_OPTIONS="--no-warnings"
 
+printf "[Mess] Printing version information...\n"
+printf "bash version:\n%s\n\n" "$(bash --version)"
+printf "docker version:\n%s\n\n" "$(docker --version)"
+printf "docker-compose version:\n%s\n\n" "$(docker-compose --version)"
+printf "yarn version:\n%s\n\n" "$(yarn --version)"
+printf "dotnet version:\n%s\n\n" "$(dotnet --version)"
+printf "\n"
+
 printf "[Mess] Installing dependencies with 'yarn'...\n"
 yarn install
 printf "\n"
