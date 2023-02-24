@@ -19,17 +19,7 @@ else
 fi
 printf "\n"
 
-printf "[Mess] Don't forget to run 'docker-compose down' when you stop testing\n"
-printf "\n"
-
-# NOTE: just leave this here in case it becomes valuable in the future
-# printf "[Mess] Do you want to stop docker with 'docker-compose down'? (y/n) "
-# read -r yn
-# printf "\n"
-# case $yn in
-#   [Yy])
-#     printf "[Mess] Running 'docker-compose down'...\n"
-#     docker-compose down
-#     printf "\n "
-#     ;;
-# esac
+if [ ! "$CI" ]; then
+  printf "[Mess] Don't forget to run 'docker-compose down' when you stop testing\n"
+  printf "\n"
+fi
