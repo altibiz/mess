@@ -5,5 +5,5 @@ namespace Mess.MeasurementDevice.Test.Assets;
 public static class EgaugeAssets
 {
   public static readonly string Measurement =
-    EmbeddedResources.GetStringEmbeddedResource("assets.Egauge.xml");
+    EmbeddedResources.GetStringEmbeddedResource("Assets.Egauge.xml");
 }
