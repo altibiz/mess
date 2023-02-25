@@ -1,12 +1,9 @@
 using Mess.System.Extensions.Object;
-using Mess.MeasurementDevice.Test.Assets;
 using Mess.MeasurementDevice.Parsers.Egauge;
 using Mess.MeasurementDevice.Abstractions.Models;
 using OrchardCore.Environment.Shell;
 using Moq;
-using OrchardCore.Environment.Shell.Descriptor.Models;
 using OrchardCore.Environment.Extensions.Features;
-using Mess.MeasurementDevice.EventStore.Storage;
 using Xunit.DependencyInjection;
 using Mess.MeasurementDevice.Storage;
 
@@ -20,7 +17,7 @@ public record class EgaugeDirectStorageParserTest(
 )
 {
   [Theory]
-  [StaticData(typeof(EgaugeAssets), nameof(EgaugeAssets.Measurement))]
+  [StaticData(typeof(Assets), nameof(Assets.Measurement))]
   public void ParseToEventStoreTest(string unparsedMeasurement)
   {
     var measurement = Parser.Parse(unparsedMeasurement);
