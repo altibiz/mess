@@ -1,4 +1,3 @@
-using Mess.Tenants;
 using Mess.MeasurementDevice.Abstractions.Client;
 using OrchardCore.ContentManagement;
 using Mess.Chart.Abstractions.Providers;
@@ -128,12 +127,10 @@ public class EgaugeChartDataProvider : IChartDataProvider
     return new LineChartModel(datasets ?? new List<LineChartDatasetModel>());
   }
 
-  public EgaugeChartDataProvider(ITenants tenants, IMeasurementClient client)
+  public EgaugeChartDataProvider(IMeasurementClient client)
   {
-    _tenants = tenants;
     _client = client;
   }
 
-  private readonly ITenants _tenants;
   private readonly IMeasurementClient _client;
 }

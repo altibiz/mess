@@ -4,12 +4,13 @@ using Mess.MeasurementDevice.Parsers.Egauge;
 using Mess.MeasurementDevice.Abstractions.Models;
 using OrchardCore.Environment.Shell;
 using Moq;
-using OrchardCore.Environment.Shell.Descriptor.Models;
 using OrchardCore.Environment.Extensions.Features;
 using Mess.MeasurementDevice.EventStore.Storage;
+using Xunit.DependencyInjection;
 
 namespace Mess.MeasurementDevice.Test;
 
+[Startup(typeof(Startup), Shared = false)]
 public record class EgaugeEventStoreStorageParserTest(
   EgaugeParser Parser,
   ITenants Tenants,
@@ -37,18 +38,26 @@ public record class EgaugeEventStoreStorageParserTest(
     Assert.NotEqual(0, model.Voltage);
   }
 
-  public class Startup
+  public class Startup : Test.Startup
   {
-    public void ConfigureServices(IServiceCollection services)
+    public override void ConfigureServices(
+      IServiceCollection services,
+      HostBuilderContext hostBuilderContext
+    )
     {
-      services.AddSingleton<IShellFeaturesManager>(services =>
+      base.ConfigureServices(services, hostBuilderContext);
+
+      services.AddSingleton(services =>
       {
+        var eventStoreFeatureInfo = new Mock<IFeatureInfo>();
+        eventStoreFeatureInfo.Setup(x => x.Name).Returns("Mess.EventStore");
+
         var shellFeaturesManager = new Mock<IShellFeaturesManager>();
         shellFeaturesManager
           .Setup(x => x.GetEnabledFeaturesAsync())
           .Returns(
             Task.FromResult(
-              new ShellFeature[] { new() { Id = "Mess.EventStore" } }
+              new IFeatureInfo[] { eventStoreFeatureInfo.Object }
                 as IEnumerable<IFeatureInfo>
             )
           );

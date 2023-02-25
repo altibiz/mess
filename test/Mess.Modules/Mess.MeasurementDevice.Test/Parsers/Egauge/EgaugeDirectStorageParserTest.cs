@@ -7,9 +7,12 @@ using Moq;
 using OrchardCore.Environment.Shell.Descriptor.Models;
 using OrchardCore.Environment.Extensions.Features;
 using Mess.MeasurementDevice.EventStore.Storage;
+using Xunit.DependencyInjection;
+using Mess.MeasurementDevice.Storage;
 
 namespace Mess.MeasurementDevice.Test;
 
+[Startup(typeof(Startup), Shared = false)]
 public record class EgaugeDirectStorageParserTest(
   EgaugeParser Parser,
   ITenants Tenants,
@@ -23,7 +26,7 @@ public record class EgaugeDirectStorageParserTest(
     var measurement = Parser.Parse(unparsedMeasurement);
     Assert.NotNull(measurement);
     Assert.Equal(
-      EgaugeEventStoreStorageStrategy.StorageStrategyId,
+      EgaugeDirectStorageStrategy.StorageStrategyId,
       measurement.Value.StorageStrategy
     );
     Logger.LogInformation(measurement.ToJson());
@@ -37,18 +40,21 @@ public record class EgaugeDirectStorageParserTest(
     Assert.NotEqual(0, model.Voltage);
   }
 
-  public class Startup
+  public class Startup : Test.Startup
   {
-    public void ConfigureServices(IServiceCollection services)
+    public override void ConfigureServices(
+      IServiceCollection services,
+      HostBuilderContext hostBuilderContext
+    )
     {
-      services.AddSingleton<IShellFeaturesManager>(services =>
+      base.ConfigureServices(services, hostBuilderContext);
+
+      services.AddSingleton(services =>
       {
         var shellFeaturesManager = new Mock<IShellFeaturesManager>();
         shellFeaturesManager
           .Setup(x => x.GetEnabledFeaturesAsync())
-          .Returns(
-            Task.FromResult(new ShellFeature[] { } as IEnumerable<IFeatureInfo>)
-          );
+          .Returns(Task.FromResult(Enumerable.Empty<IFeatureInfo>()));
         return shellFeaturesManager.Object;
       });
     }

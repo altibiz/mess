@@ -72,11 +72,12 @@ public record class EgaugeParser(
       Timestamp: timestamp.Value
     );
 
-    var storageStrategyId = Features
-      .GetEnabledFeaturesAsync()
-      .Result.Any(feature => feature.Name == "Mess.EventStore")
-      ? "EgaugeEventStore"
-      : "EgaugeDirect";
+    var features = Features.GetEnabledFeaturesAsync().Result;
+    var storageStrategyId = features.Any(
+      feature => feature.Name == "Mess.EventStore"
+    )
+      ? EgaugeEventStoreStorageStrategy.StorageStrategyId
+      : EgaugeDirectStorageStrategy.StorageStrategyId;
 
     return new(
       storageStrategyId,
