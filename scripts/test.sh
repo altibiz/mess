@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 set -eo pipefail
 
-export ASPNETCORE_ENVIRONMENT=Development
-export DOTNET_ENVIRONMENT=Development
+# NOTE: this is messing it up somehow
+# export ASPNETCORE_ENVIRONMENT=Development
+# export DOTNET_ENVIRONMENT=Development
 
 printf "[Mess] Running 'docker-compose up -d'...\n"
 if [ ! "$CI" ]; then
@@ -13,11 +14,9 @@ printf "\n"
 printf "[Mess] Tesing with 'dotnet'...\n"
 if [ "$1" ]; then
   dotnet test \
-    --configuration Debug \
     --filter "FullyQualifiedName~$1"
 else
-  dotnet test \
-    --configuration Debug
+  dotnet test
 fi
 printf "\n"
 
