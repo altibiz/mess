@@ -20,8 +20,13 @@ yarn install
 printf "\n"
 
 printf "[Mess] Installing dependencies with 'dotnet'...\n"
-dotnet restore
 dotnet tool restore
+dotnet restore
+dotnet build
+# using a wildcard so that we don't have to specify the dotnet version here
+pwsh \
+  "$ROOT_DIR"/test/Mess.Abstractions/Mess.Test/bin/Debug/**/playwright.ps1 \
+  install --with-deps
 printf "\n"
 
 if [ ! "$CI" ]; then
@@ -36,16 +41,8 @@ if [ ! "$CI" ]; then
   if [ ! -d "$ROOT_DIR/secrets" ]; then
     mkdir "$ROOT_DIR/secrets"
   fi
-  cp "$ROOT_DIR/.env" "$ROOT_DIR/secrets"
   cp "$ROOT_DIR/secrets.json" "$ROOT_DIR/secrets"
   cp "$ROOT_DIR/secrets.sh" "$ROOT_DIR/secrets"
-  # TODO: with glob
-  if [ ! -d "$ROOT_DIR/secrets/test/Mess.Modules/Mess.MeasurementDevice.Test/assets" ]; then
-    mkdir -p "$ROOT_DIR/secrets/test/Mess.Modules/Mess.MeasurementDevice.Test"
-  fi
-  cp -r \
-    "$ROOT_DIR/test/Mess.Modules/Mess.MeasurementDevice.Test/assets" \
-    "$ROOT_DIR/secrets/test/Mess.Modules/Mess.MeasurementDevice.Test"
   printf "\n"
 fi
 

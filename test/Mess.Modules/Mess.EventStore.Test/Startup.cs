@@ -1,11 +1,11 @@
 ﻿using Mess.EventStore.Abstractions.Client;
 using Mess.EventStore.Client;
-using Mess.Xunit.Extensions.Microsoft;
+using Mess.Test.Extensions.Microsoft;
 using Mess.EventStore.Test.Abstractions;
 
 namespace Mess.EventStore.Test;
 
-public class Startup : Mess.Xunit.Startup
+public class Startup : Mess.Test.Startup
 {
   public override void ConfigureServices(
     IServiceCollection services,
@@ -14,7 +14,7 @@ public class Startup : Mess.Xunit.Startup
   {
     base.ConfigureServices(services, hostBuilderContext);
 
-    services.RegisterTestTenants();
+    services.RegisterTenantFixture();
     services.RegisterTestEventStore();
 
     services.AddScoped<IEventStoreSession, EventStoreSession>();

@@ -2,7 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.System/Mess.System.csproj" />
-    <ProjectReference Include="../../Mess.Abstractions/Mess.Xunit/Mess.Xunit.csproj" />
+    <ProjectReference Include="../../Mess.Abstractions/Mess.Test/Mess.Test.csproj" />
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.EventStore.Abstractions/Mess.EventStore.Abstractions.csproj" />
     <ProjectReference Include="../../../src/Mess.Modules/Mess.EventStore/Mess.EventStore.csproj" />
     <ProjectReference Include="../../Mess.Abstractions/Mess.EventStore.Test.Abstractions/Mess.EventStore.Test.Abstractions.csproj" />

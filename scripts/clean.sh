@@ -16,12 +16,10 @@ git_clean() {
     -e '!**/*.csproj.user' \
     -e '!.vscode/**' \
     \
-    -e '!.env' \
     -e '!secrets.json' \
     -e '!secrets.sh' \
     -e '!secrets/' \
     -e '!secrets/**' \
-    -e '!**/*Test/assets' \
     $@
 }
 
@@ -30,20 +28,20 @@ printf "[Mess] Do you want to clean these artifacts? (y/n) "
 read -r yn
 printf "\n"
 case $yn in
-  [Yy])
-    printf "[Mess] Cleaning artifacts...\n"
-    git_clean -f
-    printf "\n"
-    ;;
+[Yy])
+  printf "[Mess] Cleaning artifacts...\n"
+  git_clean -f
+  printf "\n"
+  ;;
 esac
 
 printf "[Mess] Do you want to clean docker containers and volumes? (y/n) "
 read -r yn
 printf "\n"
 case $yn in
-  [Yy])
-    printf "[Mess] Cleaning docker containers and volumes...\n"
-    docker-compose down -v
-    printf "\n"
-    ;;
+[Yy])
+  printf "[Mess] Cleaning docker containers and volumes...\n"
+  docker-compose down -v
+  printf "\n"
+  ;;
 esac

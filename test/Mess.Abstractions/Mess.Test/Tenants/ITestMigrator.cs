@@ -1,8 +1,8 @@
 using Mess.Tenants;
 
-namespace Mess.Xunit.Tenants;
+namespace Mess.Test.Tenants;
 
-public interface ITestMigrator
+public interface ITestTenantMigrator
 {
   public void Migrate(ITenants tenants) =>
     MigrateAsync(tenants).RunSynchronously();

@@ -1,10 +1,10 @@
 using Mess.Tenants;
 using Mess.Timeseries.Abstractions.Client;
-using Mess.Xunit.Tenants;
+using Mess.Test.Tenants;
 
 namespace Mess.Timeseries.Test.Abstractions.Tenants;
 
-public class TimeseriesTestMigrator : ITestMigrator
+public class TimeseriesTestTenantMigrator : ITestTenantMigrator
 {
   public void Migrate(ITenants tenants)
   {
@@ -16,7 +16,7 @@ public class TimeseriesTestMigrator : ITestMigrator
     await _migrator.MigrateAsync();
   }
 
-  public TimeseriesTestMigrator(ITimeseriesMigrator migrator)
+  public TimeseriesTestTenantMigrator(ITimeseriesMigrator migrator)
   {
     _migrator = migrator;
   }

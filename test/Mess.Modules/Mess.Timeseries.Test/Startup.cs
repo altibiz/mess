@@ -1,11 +1,11 @@
 ﻿using Mess.Timeseries.Abstractions.Client;
 using Mess.Timeseries.Client;
-using Mess.Xunit.Extensions.Microsoft;
+using Mess.Test.Extensions.Microsoft;
 using Mess.Timeseries.Test.Abstractions;
 
 namespace Mess.Timeseries.Test;
 
-public class Startup : Mess.Xunit.Startup
+public class Startup : Mess.Test.Startup
 {
   public override void ConfigureServices(
     IServiceCollection services,
@@ -14,7 +14,7 @@ public class Startup : Mess.Xunit.Startup
   {
     base.ConfigureServices(services, hostBuilderContext);
 
-    services.RegisterTestTenants();
+    services.RegisterTenantFixture();
     services.RegisterTestTimeseriesStore();
 
     services.AddScoped<ITimeseriesConnection, TimeseriesConnection>();

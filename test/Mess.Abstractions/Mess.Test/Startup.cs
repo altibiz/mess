@@ -1,8 +1,8 @@
 using Xunit.DependencyInjection;
 using Xunit.DependencyInjection.Logging;
-using Mess.Xunit.Extensions.Microsoft;
+using Mess.Test.Extensions.Microsoft;
 
-namespace Mess.Xunit;
+namespace Mess.Test;
 
 public class Startup
 {
@@ -21,9 +21,11 @@ public class Startup
     HostBuilderContext hostBuilderContext
   )
   {
-    services.RegisterTestTenants();
     services.UseDemystifyExceptionFilter();
     services.AddSkippableFactSupport();
+
+    services.RegisterTenantFixture();
+    services.RegisterE2eFixture();
   }
 
   public virtual void Configure(IServiceProvider services)

@@ -1,9 +1,9 @@
 using Xunit.DependencyInjection;
 using Xunit.Abstractions;
-using Mess.Xunit.Extensions.Xunit;
+using Mess.Test.Extensions.Xunit;
 using Mess.Tenants;
 
-namespace Mess.Xunit.Tenants;
+namespace Mess.Test.Tenants;
 
 public class TestTenants : ITenants
 {
@@ -11,7 +11,7 @@ public class TestTenants : ITenants
     new(
       $"{Test.GetTestIdentifier()} Test",
       "Server=localhost;Port=5432;User Id=mess;Password=mess;Database=mess",
-      $"{Test.GetTestIdentifier()}_test"
+      $"{Test.GetTestIdentifier()}-test"
     );
 
   public IReadOnlyList<Tenant> All => new List<Tenant> { Current };

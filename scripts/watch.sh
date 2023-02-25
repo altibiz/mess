@@ -32,5 +32,5 @@ dotnet watch run \
   --property:consoleLoggerParameters=ErrorsOnly \
   --project '%s/src/Mess.Web/Mess.Web.csproj'; \
 
-" "$ROOT_DIR" | xargs -o -P3 -IR /usr/bin/env sh -c R
+" "$ROOT_DIR" | xargs -o -P3 -IR /usr/bin/env bash -c R
 printf "\n"

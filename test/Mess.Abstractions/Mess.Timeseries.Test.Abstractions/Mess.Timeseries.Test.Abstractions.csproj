@@ -9,7 +9,7 @@
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Tenants/Mess.Tenants.csproj" />
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Timeseries.Abstractions/Mess.Timeseries.Abstractions.csproj" />
     <ProjectReference Include="../../../src/Mess.Modules/Mess.Timeseries/Mess.Timeseries.csproj" />
-    <ProjectReference Include="../Mess.Xunit/Mess.Xunit.csproj" />
+    <ProjectReference Include="../Mess.Test/Mess.Test.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,12 +1,12 @@
 using Mess.MeasurementDevice.Parsers.Egauge;
-using Mess.Xunit.Extensions.Microsoft;
+using Mess.Test.Extensions.Microsoft;
 using Mess.EventStore.Test.Abstractions;
 using Mess.Timeseries.Test.Abstractions;
 using Mess.MeasurementDevice.Abstractions.Parsers;
 
 namespace Mess.MeasurementDevice.Test;
 
-public class Startup : Mess.Xunit.Startup
+public class Startup : Mess.Test.Startup
 {
   public override void ConfigureServices(
     IServiceCollection services,
@@ -15,7 +15,7 @@ public class Startup : Mess.Xunit.Startup
   {
     base.ConfigureServices(services, hostBuilderContext);
 
-    services.RegisterTestTenants();
+    services.RegisterTenantFixture();
     services.RegisterTestEventStore();
     services.RegisterTestTimeseriesStore();
 
