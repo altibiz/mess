@@ -27,6 +27,7 @@ public class Startup
     services.RegisterTestTenants();
     services.RegisterTimeseriesTestMigrator();
 
+    services.AddScoped<ITimeseriesMigrator, TimeseriesMigrator>();
     services.AddScoped<ITimeseriesConnection, TimeseriesConnection>();
     services.AddSingleton<ITimeseriesClient, TimeseriesClient>();
   }
