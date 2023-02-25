@@ -5,6 +5,7 @@ using Mess.Xunit.Extensions.Microsoft;
 using Mess.EventStore.Test.Abstractions;
 using Mess.Timeseries.Test.Abstractions;
 using Mess.MeasurementDevice.Abstractions.Parsers;
+using Mess.Timeseries.Abstractions.Client;
 
 namespace Mess.MeasurementDevice.Test;
 
@@ -27,7 +28,7 @@ public class Startup
   {
     services.RegisterTestTenants();
     services.RegisterTestEventStore();
-    services.RegisterTimeseriesTestMigrator();
+    services.RegisterTestTimeseriesStore();
 
     services.AddSingleton<IMeasurementParser, EgaugeParser>();
   }
