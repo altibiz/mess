@@ -22,8 +22,7 @@ kill_services() {
     docker-compose down
   fi
 }
-
-trap "kill_services; exit 1" SIGINT
+trap 'kill_services' SIGINT
 
 if [ ! "$CI" ]; then
   printf "[Mess] Running 'docker-compose up --detach'...\n"

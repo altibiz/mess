@@ -21,16 +21,14 @@ stop() {
 }
 trap 'stop' SIGINT
 
-printf "[Mess] Running 'docker-compose up', 'yarn' and 'dotnet'...\n"
+printf "[Mess] Running 'docker-compose up' and 'dotnet'...\n"
 printf "
 docker-compose up; \
 
-yarn watch; \
-
-dotnet watch run \
+dotnet run \
   --configuration Debug \
   --property:consoleLoggerParameters=ErrorsOnly \
   --project '%s/src/Mess.Web/Mess.Web.csproj'; \
 
-" "$ROOT_DIR" | xargs -o -P3 -IR /usr/bin/env bash -c R
+" "$ROOT_DIR" | xargs -o -P2 -IR /usr/bin/env bash -c R
 printf "\n"
