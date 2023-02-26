@@ -5,8 +5,6 @@ abs() { echo "$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"; }
 SCRIPT_DIR="$(dirname "$(abs "$0")")"
 ROOT_DIR="$(dirname "$SCRIPT_DIR")"
 
-export ASPNETCORE_ENVIRONMENT=Development
-export DOTNET_ENVIRONMENT=Development
 export ORCHARD_APP_DATA="$ROOT_DIR/App_Data"
 
 PROJECT="$1"

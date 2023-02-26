@@ -1,0 +1,28 @@
+name: Funkcionalnost
+description: Zatraži novu funkcionalnost
+labels: [feature]
+assignees: HrvojeJuric
+body:
+  - type: textarea
+    attributes:
+      label: Ideja
+      description: |
+        Sažeto objašnjenje nove funkcionalnosti i zašto je potrebna.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Željeno stanje
+      description: |
+        Detaljno objašnjenje nove funkcionalnosti i kako bi trebala izgledati.
+
+        Ako je moguće, dodajte slike kojima je još jasnije opisana nova funkcionalnost.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Implementacija
+      description: |
+        Opcionalno upišite dodatne smjernice za implementaciju poput biblioteke koja treba biti korištena ili link na tutorial za implementaciju.
+    validations:
+      required: false

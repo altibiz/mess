@@ -3,19 +3,19 @@ using Mess.EventStore.Abstractions.Client;
 namespace Mess.EventStore.Test;
 
 public record class ConnectionTest(
-  IEventStoreClient client,
-  IServiceProvider services
-) : DatabaseIsolatedTest(services)
+  ITenantFixture TenantFixture,
+  IEventStoreClient EventStoreClient
+)
 {
   [Fact]
   public async Task ConnectionCheckTestAsync()
   {
-    Assert.True(await client.CheckConnectionAsync());
+    Assert.True(await EventStoreClient.CheckConnectionAsync());
   }
 
   [Fact]
   public void ConnectionCheckTest()
   {
-    Assert.True(client.CheckConnection());
+    Assert.True(EventStoreClient.CheckConnection());
   }
 }

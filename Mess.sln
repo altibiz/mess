@@ -33,7 +33,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{23F3ACB7-1
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mess.Abstractions", "Mess.Abstractions", "{D0DF296D-9309-4659-A9C0-4833F4201BAA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Xunit", "test\Mess.Abstractions\Mess.Xunit\Mess.Xunit.csproj", "{D43BEC0B-0EFE-45D9-9271-7CADA8DF1C4D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Test", "test\Mess.Abstractions\Mess.Test\Mess.Test.csproj", "{D43BEC0B-0EFE-45D9-9271-7CADA8DF1C4D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mess.Modules", "Mess.Modules", "{FF60624F-4E18-4E33-A4EF-62DFECAF3C75}"
 EndProject

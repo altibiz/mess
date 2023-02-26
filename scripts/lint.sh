@@ -13,7 +13,7 @@ export NODE_OPTIONS="--no-warnings"
 export NODE_ENV="production"
 
 printf "[Mess] Linting with 'yarn'...\n"
-yarn lint-children || exit 1
+yarn lint-children
 printf "\n"
 
 printf "[Mess] Building with 'dotnet'...\n"
@@ -21,9 +21,9 @@ dotnet \
   build \
   --property "PublishDir=$ROOT_DIR/artifacts" \
   --property:TreatWarningsAsErrors=true \
-  --configuration Release || exit 1
+  --configuration Release
 printf "\n"
 
 printf "[Mess] Checking with 'csharpier'...\n"
-dotnet csharpier . --check || exit 1
+dotnet csharpier . --check
 printf "\n"

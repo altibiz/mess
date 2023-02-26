@@ -1,0 +1,137 @@
+<!DOCTYPE group PUBLIC "-//ESL/DTD eGauge 1.0//EN" "http://www.egauge.net/DTD/egauge-hist.dtd"[]>
+<group serial="0x4e">
+  <data columns="65" time_stamp="0x63a59b88" time_delta="60" epoch="0x6154278c">
+    <cname t="V" did="0">L1 Voltage</cname>
+    <cname t="I" did="4">100A</cname>
+    <cname t="P" did="1">P</cname>
+    <cname t="S" did="3">S*</cname>
+    <cname t="V" did="2">Register 1</cname>
+    <cname t="V" did="5">Register 2</cname>
+    <cname t="I" did="6">Register 3</cname>
+    <cname t="I" did="7">Register 4</cname>
+    <cname t="I" did="8">Register 5</cname>
+    <cname t="I" did="9">Register 6</cname>
+    <cname t="I" did="10">Register 7</cname>
+    <cname t="I" did="11">Register 8</cname>
+    <cname t="I" did="12">Register 9</cname>
+    <cname t="I" did="13">Register 10</cname>
+    <cname t="I" did="14">Register 11</cname>
+    <cname t="I" did="15">Register 12</cname>
+    <cname t="I" did="16">Register 13</cname>
+    <cname t="I" did="17">Register 14</cname>
+    <cname t="I" did="18">Register 15</cname>
+    <cname t="I" did="19">Register 16</cname>
+    <cname t="P" did="20">Register 17</cname>
+    <cname t="P" did="21">Register 18</cname>
+    <cname t="P" did="22">Register 19</cname>
+    <cname t="P" did="23">Register 20</cname>
+    <cname t="P" did="24">Register 21</cname>
+    <cname t="P" did="25">Register 22</cname>
+    <cname t="P" did="26">Register 23</cname>
+    <cname t="P" did="27">Register 24</cname>
+    <cname t="P" did="28">Register 25</cname>
+    <cname t="P" did="29">Register 26</cname>
+    <cname t="P" did="30">Register 27</cname>
+    <cname t="P" did="31">Register 28</cname>
+    <cname t="P" did="32">Register 29</cname>
+    <cname t="P" did="33">Register 30</cname>
+    <cname t="S" did="34">Register 31*</cname>
+    <cname t="S" did="35">Register 32*</cname>
+    <cname t="S" did="36">Register 33*</cname>
+    <cname t="S" did="37">Register 34*</cname>
+    <cname t="S" did="38">Register 35*</cname>
+    <cname t="S" did="39">Register 36*</cname>
+    <cname t="S" did="40">Register 37*</cname>
+    <cname t="S" did="41">Register 38*</cname>
+    <cname t="S" did="42">Register 39*</cname>
+    <cname t="S" did="43">Register 40*</cname>
+    <cname t="S" did="44">Register 41*</cname>
+    <cname t="S" did="45">Register 42*</cname>
+    <cname t="S" did="46">Register 43*</cname>
+    <cname t="S" did="47">Register 44*</cname>
+    <cname t="S" did="48">Register 45*</cname>
+    <cname t="S" did="49">Register 46*</cname>
+    <cname t="P" did="50">Register 47</cname>
+    <cname t="P" did="51">Register 48</cname>
+    <cname t="P" did="52">Register 49</cname>
+    <cname t="P" did="53">Register 50</cname>
+    <cname t="P" did="54">Register 51</cname>
+    <cname t="P" did="55">Register 52</cname>
+    <cname t="P" did="56">Register 53</cname>
+    <cname t="P" did="57">Register 54</cname>
+    <cname t="P" did="58">Register 55</cname>
+    <cname t="P" did="59">Register 56</cname>
+    <cname t="P" did="60">Register 57</cname>
+    <cname t="P" did="61">Register 58</cname>
+    <cname t="P" did="62">Register 59</cname>
+    <cname t="P" did="63">Register 60</cname>
+    <cname t="P" did="64">Register 61</cname>
+    <r>
+      <c>4560858953370</c>
+      <c>94206477732</c>
+      <c>27848558872</c>
+      <c>325886143769</c>
+      <c>0</c>
+      <c>0</c>
+      <c>673480427</c>
+      <c>264426675</c>
+      <c>650565548</c>
+      <c>7436520013</c>
+      <c>642450817</c>
+      <c>6838261432</c>
+      <c>392879617</c>
+      <c>612005507</c>
+      <c>650251880</c>
+      <c>911806102</c>
+      <c>657045276</c>
+      <c>916797891</c>
+      <c>963651932</c>
+      <c>1194596262</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+      <c>0</c>
+    </r>
+  </data>
+</group>

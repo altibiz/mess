@@ -1,7 +1,7 @@
 using Marten;
 using Mess.EventStore.Test.Abstractions.Tenants;
 using Mess.Tenants;
-using Mess.Xunit.Tenants;
+using Mess.Test.Tenants;
 
 namespace Mess.EventStore.Test.Abstractions;
 
@@ -33,7 +33,7 @@ public static class IServiceCollectionExtensions
     services.AddScoped<IQuerySession>(
       services => services.GetRequiredService<IDocumentStore>().QuerySession()
     );
-    services.AddScoped<ITestMigrator, EventStoreTestMigrator>();
+    services.AddScoped<ITestTenantMigrator, EventStoreTestTenantMigrator>();
     return services;
   }
 }

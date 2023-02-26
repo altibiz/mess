@@ -12,7 +12,8 @@
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.System/Mess.System.csproj" />
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Tenants/Mess.Tenants.csproj" />
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.EventStore.Abstractions/Mess.EventStore.Abstractions.csproj" />
-    <ProjectReference Include="../Mess.Xunit/Mess.Xunit.csproj" />
+    <ProjectReference Include="../../../src/Mess.Modules/Mess.EventStore/Mess.EventStore.csproj" />
+    <ProjectReference Include="../Mess.Test/Mess.Test.csproj" />
   </ItemGroup>
 
 </Project>

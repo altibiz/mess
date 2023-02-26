@@ -22,13 +22,16 @@
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Xunit.DependencyInjection" Version="8.6.1" />
+    <PackageReference Include="Xunit.DependencyInjection" Version="8.7.0" />
     <PackageReference Include="Xunit.DependencyInjection.Logging" Version="8.0.1" />
+    <PackageReference Include="Xunit.DependencyInjection.Demystifier" Version="8.0.1" />
+    <PackageReference Include="Xunit.DependencyInjection.SkippableFact" Version="8.0.1" />
     <PackageReference Include="Moq" Version="4.18.4" />
+    <PackageReference Include="Microsoft.Playwright" Version="1.31.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="assets/**/*" />
+    <EmbeddedResource Include="Assets/**/*" />
   </ItemGroup>
 
 </Project>

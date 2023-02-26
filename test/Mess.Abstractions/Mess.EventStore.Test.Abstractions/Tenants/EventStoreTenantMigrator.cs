@@ -1,9 +1,9 @@
 using Mess.Tenants;
-using Mess.Xunit.Tenants;
+using Mess.Test.Tenants;
 
 namespace Mess.EventStore.Test.Abstractions.Tenants;
 
-public class EventStoreTestMigrator : ITestMigrator
+public class EventStoreTestTenantMigrator : ITestTenantMigrator
 {
   public void Migrate(ITenants tenants) { }
 

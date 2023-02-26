@@ -1,6 +1,6 @@
 using Xunit;
 
-namespace Mess.Xunit.Extensions.Xunit;
+namespace Mess.Test.Extensions.Xunit;
 
 public static class AssertExtensions
 {

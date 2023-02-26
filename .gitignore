@@ -331,6 +331,3 @@ secrets/
 # Generated
 src/Mess.Web/Localization/
 src/Mess.Web/Internal/Generated/
-
-# Test
-**/*Test/assets
