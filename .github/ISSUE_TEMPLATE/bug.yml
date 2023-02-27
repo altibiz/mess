@@ -1,6 +1,7 @@
-name: Greška
+name: greška
+title: Greška
 description: Prijavite grešku
-labels: [bug]
+labels: [greška]
 assignees: HrvojeJuric
 body:
   - type: textarea

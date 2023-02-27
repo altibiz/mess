@@ -1,6 +1,7 @@
-name: Funkcionalnost
+name: nova-funkcionalnost
+title: Nova funkcionalnost
 description: Zatraži novu funkcionalnost
-labels: [feature]
+labels: [nova-funkcionalnost]
 assignees: HrvojeJuric
 body:
   - type: textarea
