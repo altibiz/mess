@@ -1,0 +1,27 @@
+name: testiranje
+title: Testiranje
+description: Zatraži testiranje određene funkcionalnosti
+labels: [testiranje]
+assignees: HrvojeJuric
+body:
+  - type: textarea
+    attributes:
+      label: Servis ili modul
+      description: |
+        Sažeti popis servisa ili modula koje treba testirati.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Opis testova
+      description: |
+        Detaljno objašnjenje željenih testova za svaki od navedenih servisa i modula.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Rubni slučajevi (opcionalno)
+      description: |
+        Opcionalno upišite dodatne rubne slučejeve koje treba uzeti u obzir tijekom pisanja testova.
+    validations:
+      required: false
