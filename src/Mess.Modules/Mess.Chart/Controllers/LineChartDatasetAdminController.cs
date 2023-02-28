@@ -21,7 +21,7 @@ public class LineChartDatasetAdminController : Controller
 
     var contentItem = await _contentManager.NewAsync("LineChartDataset");
 
-    var model = await _contentItemDisplayManager.BuildEditorAsync(
+    dynamic model = await _contentItemDisplayManager.BuildEditorAsync(
       contentItem,
       _updateModelAccessor.ModelUpdater,
       true

@@ -38,15 +38,14 @@ public class LineChartDatasetPartDisplayDriver
   )
   {
     return Initialize<LineChartDatasetPartEditViewModel>(
-        GetEditorShapeType(context),
-        model =>
-        {
-          model.Label = S[part.Label ?? "Unlabeled"];
-          model.Part = part;
-          model.Definition = context.TypePartDefinition;
-        }
-      )
-      .Location("Edit", "Content");
+      GetEditorShapeType(context),
+      model =>
+      {
+        model.Label = S[part.Label ?? "Unlabeled"];
+        model.Part = part;
+        model.Definition = context.TypePartDefinition;
+      }
+    );
   }
 
   public override async Task<IDisplayResult> UpdateAsync(
