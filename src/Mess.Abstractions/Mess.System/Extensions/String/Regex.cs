@@ -28,4 +28,22 @@ public static partial class RegexExtensions
 
   public static string RegexRemove(this string str, string pattern) =>
     str.RegexReplace(pattern, "");
+
+  public static string RegexRemove(
+    this string str,
+    string pattern,
+    RegexOptions options
+  ) => str.RegexReplace(pattern, "", options);
+
+  public static bool RegexMatch(this string str, Regex pattern) =>
+    pattern.IsMatch(str);
+
+  public static bool RegexMatch(this string str, string pattern) =>
+    (new Regex(pattern)).IsMatch(str);
+
+  public static bool RegexMatch(
+    this string str,
+    string pattern,
+    RegexOptions options
+  ) => (new Regex(pattern, options)).IsMatch(str);
 }
