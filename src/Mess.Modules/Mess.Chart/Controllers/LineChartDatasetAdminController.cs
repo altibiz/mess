@@ -2,6 +2,7 @@ using Mess.Chart.Abstractions.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Localization;
 using OrchardCore.Admin;
+using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Display;
 using OrchardCore.DisplayManagement.ModelBinding;
 using OrchardCore.DisplayManagement.Notify;
@@ -11,7 +12,27 @@ namespace Mess.Chart.Controllers;
 [Admin]
 public class LineChartDatasetAdminController : Controller
 {
-  public async Task<IActionResult> Create(string contentItemId)
+  public async Task<IActionResult> Create()
+  {
+    if (!await _chartService.IsAuthorizedAsync(User))
+    {
+      return Forbid();
+    }
+
+    var contentItem = await _contentManager.NewAsync("LineChartDataset");
+
+    var model = await _contentItemDisplayManager.BuildEditorAsync(
+      contentItem,
+      _updateModelAccessor.ModelUpdater,
+      true
+    );
+
+    return View(model);
+  }
+
+  [HttpPost]
+  [ActionName("Create")]
+  public async Task<IActionResult> CreatePost(string contentItemId)
   {
     if (!await _chartService.IsAuthorizedAsync(User))
     {
@@ -24,21 +45,47 @@ public class LineChartDatasetAdminController : Controller
       return NotFound();
     }
 
+    var lineChart = await _chartService.ReadConcreteChartAsync(chart);
+    if (lineChart is null)
+    {
+      return NotFound();
+    }
+
     var lineChartDataset = await _chartService.CreateLineChartDatasetAsync(
-      chart
+      lineChart
     );
     if (lineChartDataset is null)
     {
-      await _notifier.ErrorAsync(
-        H["Failed creating concrete line chart dataset."]
+      await _notifier.ErrorAsync(H["Failed creating line chart dataset."]);
+      return RedirectToAction(
+        "Edit",
+        "Admin",
+        new { area = "OrchardCore.Contents", contentItemId }
       );
+    }
+
+    var model = await _contentItemDisplayManager.UpdateEditorAsync(
+      lineChartDataset,
+      _updateModelAccessor.ModelUpdater,
+      false
+    );
+    if (!ModelState.IsValid)
+    {
+      return View(model);
+    }
+
+    var updatedLineChartDataset =
+      await _chartService.UpdateLineChartDatasetAsync(chart, lineChartDataset);
+    if (updatedLineChartDataset is null)
+    {
+      await _notifier.ErrorAsync(H["Failed creating line chart dataset."]);
     }
     else
     {
       await _chartService.SaveChartAsync(chart);
 
       await _notifier.SuccessAsync(
-        H["Concrete line chart dataset created successfully."]
+        H["Line chart dataset created successfully."]
       );
     }
 
@@ -74,6 +121,42 @@ public class LineChartDatasetAdminController : Controller
       return NotFound();
     }
 
+    var model = await _contentItemDisplayManager.BuildEditorAsync(
+      lineChartDataaset,
+      _updateModelAccessor.ModelUpdater,
+      false
+    );
+
+    return View(model);
+  }
+
+  [HttpPost]
+  [ActionName("Edit")]
+  public async Task<IActionResult> EditPost(
+    string contentItemId,
+    string lineChartDatasetContentItemId
+  )
+  {
+    if (!await _chartService.IsAuthorizedAsync(User))
+    {
+      return Forbid();
+    }
+
+    var chart = await _chartService.GetChartAsync(contentItemId);
+    if (chart is null)
+    {
+      return NotFound();
+    }
+
+    var lineChartDataaset = await _chartService.ReadLineChartDatasetAsync(
+      chart,
+      lineChartDatasetContentItemId
+    );
+    if (lineChartDataaset is null)
+    {
+      return NotFound();
+    }
+
     var model = await _contentItemDisplayManager.UpdateEditorAsync(
       lineChartDataaset,
       _updateModelAccessor.ModelUpdater,
@@ -82,15 +165,23 @@ public class LineChartDatasetAdminController : Controller
     if (!ModelState.IsValid)
     {
       await _notifier.ErrorAsync(H["Failed updating line chart dataset."]);
+      return View(model);
     }
-    else
-    {
-      await _chartService.UpdateLineChartDatasetAsync(chart, lineChartDataaset);
 
-      await _notifier.SuccessAsync(
-        H["Line chart dataset updated successfully."]
+    var updatedLineChartDataset =
+      await _chartService.UpdateLineChartDatasetAsync(chart, lineChartDataaset);
+    if (updatedLineChartDataset is null)
+    {
+      await _notifier.ErrorAsync(H["Failed updating line chart dataset."]);
+
+      return RedirectToAction(
+        "Edit",
+        "Admin",
+        new { area = "OrchardCore.Contents", contentItemId }
       );
     }
+
+    await _chartService.SaveChartAsync(chart);
 
     return RedirectToAction(
       "Edit",
@@ -143,6 +234,7 @@ public class LineChartDatasetAdminController : Controller
   public LineChartDatasetAdminController(
     IChartService chartService,
     IUpdateModelAccessor updateModelAccessor,
+    IContentManager contentManager,
     IContentItemDisplayManager contentItemDisplayManager,
     INotifier notifier,
     IHtmlLocalizer<LineChartDatasetAdminController> localizer
@@ -150,6 +242,7 @@ public class LineChartDatasetAdminController : Controller
   {
     _chartService = chartService;
     _updateModelAccessor = updateModelAccessor;
+    _contentManager = contentManager;
     _contentItemDisplayManager = contentItemDisplayManager;
     _notifier = notifier;
     H = localizer;
@@ -157,6 +250,7 @@ public class LineChartDatasetAdminController : Controller
 
   private readonly IChartService _chartService;
   private readonly IUpdateModelAccessor _updateModelAccessor;
+  private readonly IContentManager _contentManager;
   private readonly IContentItemDisplayManager _contentItemDisplayManager;
   private readonly INotifier _notifier;
   private readonly IHtmlLocalizer H;
