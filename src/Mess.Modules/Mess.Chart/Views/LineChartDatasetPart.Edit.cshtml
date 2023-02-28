@@ -1,4 +1,4 @@
-@model LineChartDatasetPartViewModel
+@model LineChartDatasetPartEditViewModel
 
 @inject OrchardCore.ContentManagement.IContentManager ContentManager
 @inject OrchardCore.ContentManagement.Display.IContentItemDisplayManager ContentItemDisplayManager
@@ -19,20 +19,14 @@
       ps-3
       mb-1
     ">
-  @{
-    var labelFor = $"ChartPart.Chart.LineChartPart.Datasets[{Model.Index}].LineChartDatasetPart.Label";
-  }
   <div class="mb-3">
-    <label for="@labelFor">@T["Label"]</label>
-    <input name="@labelFor" class="form-control" />
+    <label asp-for="Part.Label">@T["Label"]</label>
+    <input asp-for="Part.Label" class="form-control" />
   </div>
 
-  @{
-    var colorFor = $"ChartPart.Chart.LineChartPart.Datasets[{Model.Index}].LineChartDatasetPart.Color";
-  }
   <div class="mb-3">
-    <label for="@colorFor">@T["Color"]</label>
-    <input name="@colorFor" class="form-control" />
+    <label asp-for="Part.Color">@T["Color"]</label>
+    <input asp-for="Part.Color" class="form-control" />
   </div>
 
   @if (Model.Part.Dataset is not null)

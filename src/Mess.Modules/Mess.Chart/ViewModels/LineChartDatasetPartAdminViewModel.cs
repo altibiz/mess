@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace Mess.Chart.ViewModels;
 
-public class LineChartDatasetPartViewModel
+public class LineChartDatasetPartAdminViewModel
 {
   [ValidateNever]
   public string Label { get; set; } = default!;
