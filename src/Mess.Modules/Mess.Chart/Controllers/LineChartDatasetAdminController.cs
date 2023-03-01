@@ -12,20 +12,35 @@ namespace Mess.Chart.Controllers;
 [Admin]
 public class LineChartDatasetAdminController : Controller
 {
-  public async Task<IActionResult> Create()
+  public async Task<IActionResult> Create(string contentItemId)
   {
     if (!await _chartService.IsAuthorizedAsync(User))
     {
       return Forbid();
     }
 
-    var contentItem = await _contentManager.NewAsync("LineChartDataset");
+    var chart = await _chartService.GetChartAsync(contentItemId);
+    if (chart is null)
+    {
+      return NotFound();
+    }
+
+    var lineChartDataset = await _chartService.CreateLineChartDatasetAsync(
+      chart
+    );
+    if (lineChartDataset is null)
+    {
+      return NotFound();
+    }
 
     dynamic model = await _contentItemDisplayManager.BuildEditorAsync(
-      contentItem,
+      lineChartDataset,
       _updateModelAccessor.ModelUpdater,
       true
     );
+
+    model.ContentItemId = contentItemId;
+    model.LineChartDatasetContentItemId = lineChartDataset.ContentItemId;
 
     return View(model);
   }
@@ -45,14 +60,8 @@ public class LineChartDatasetAdminController : Controller
       return NotFound();
     }
 
-    var lineChart = await _chartService.ReadConcreteChartAsync(chart);
-    if (lineChart is null)
-    {
-      return NotFound();
-    }
-
     var lineChartDataset = await _chartService.CreateLineChartDatasetAsync(
-      lineChart
+      chart
     );
     if (lineChartDataset is null)
     {
@@ -121,11 +130,14 @@ public class LineChartDatasetAdminController : Controller
       return NotFound();
     }
 
-    var model = await _contentItemDisplayManager.BuildEditorAsync(
+    dynamic model = await _contentItemDisplayManager.BuildEditorAsync(
       lineChartDataaset,
       _updateModelAccessor.ModelUpdater,
       false
     );
+
+    model.ContentItemId = contentItemId;
+    model.LineChartDatasetContentItemId = lineChartDataaset.ContentItemId;
 
     return View(model);
   }

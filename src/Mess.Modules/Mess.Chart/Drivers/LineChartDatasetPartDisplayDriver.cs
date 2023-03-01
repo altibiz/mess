@@ -24,12 +24,11 @@ public class LineChartDatasetPartDisplayDriver
         "LineChartDatasetPart_Admin",
         model =>
         {
-          model.Label = S[part.Label ?? "Unlabeled"];
           model.Part = part;
           model.Definition = context.TypePartDefinition;
         }
       )
-      .Location("Admin", "Content");
+      .Location("Content");
   }
 
   public override IDisplayResult Edit(
@@ -41,7 +40,6 @@ public class LineChartDatasetPartDisplayDriver
       GetEditorShapeType(context),
       model =>
       {
-        model.Label = S[part.Label ?? "Unlabeled"];
         model.Part = part;
         model.Definition = context.TypePartDefinition;
       }
@@ -60,12 +58,12 @@ public class LineChartDatasetPartDisplayDriver
       await updater.TryUpdateModelAsync(
         viewModel,
         Prefix,
-        model => model.Part.Label,
-        model => model.Part.Color
+        model => model.Label,
+        model => model.Color
       )
     )
     {
-      if (string.IsNullOrWhiteSpace(viewModel.Part.Label))
+      if (string.IsNullOrWhiteSpace(viewModel.Label))
       {
         var partName = context.TypePartDefinition.DisplayName();
         updater.ModelState.AddModelError(
@@ -76,7 +74,7 @@ public class LineChartDatasetPartDisplayDriver
         return Edit(part, context);
       }
 
-      if (string.IsNullOrWhiteSpace(viewModel.Part.Color))
+      if (string.IsNullOrWhiteSpace(viewModel.Color))
       {
         var partName = context.TypePartDefinition.DisplayName();
         updater.ModelState.AddModelError(
@@ -87,7 +85,7 @@ public class LineChartDatasetPartDisplayDriver
         return Edit(part, context);
       }
 
-      if (!viewModel.Part.Color.RegexMatch(@"^#[0-9a-fA-F]{6}$"))
+      if (!viewModel.Color.RegexMatch(@"^#[0-9a-fA-F]{6}$"))
       {
         var partName = context.TypePartDefinition.DisplayName();
         updater.ModelState.AddModelError(
@@ -98,8 +96,8 @@ public class LineChartDatasetPartDisplayDriver
         return Edit(part, context);
       }
 
-      part.Label = viewModel.Part.Label;
-      part.Color = viewModel.Part.Color;
+      part.Label = viewModel.Label;
+      part.Color = viewModel.Color;
     }
 
     return Edit(part, context);
