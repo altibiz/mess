@@ -13,11 +13,11 @@ public record class ContentItemTest
     var item = new OrchardContentItem();
     item.ContentType = "OnePart";
     item.Weld(
-      nameof(OnePart.StringPart),
+      nameof(OnePartItem.StringPart),
       new StringPart { Value = "TestValue" }
     );
 
-    var type = item.AsContent<OnePart>();
+    var type = item.AsContent<OnePartItem>();
     Assert.NotNull(type);
 
     Assert.NotNull(type.StringPart);
@@ -25,11 +25,11 @@ public record class ContentItemTest
     Assert.Equal("TestValue", type.StringPart.Value.Value);
   }
 
-  private class OnePart : ContentItem
+  private class OnePartItem : ContentItem
   {
     public Lazy<StringPart> StringPart { get; init; } = default!;
 
-    private OnePart(OrchardContentItem inner) : base(inner) { }
+    private OnePartItem(OrchardContentItem inner) : base(inner) { }
   }
 
   [Fact]
@@ -38,15 +38,15 @@ public record class ContentItemTest
     var item = new OrchardContentItem();
     item.ContentType = "TwoPart";
     item.Weld(
-      nameof(TwoPart.FirstStringPart),
+      nameof(TwoPartItem.FirstStringPart),
       new StringPart { Value = "FirstTestValue" }
     );
     item.Weld(
-      nameof(TwoPart.SecondStringPart),
+      nameof(TwoPartItem.SecondStringPart),
       new StringPart { Value = "SecondTestValue" }
     );
 
-    var type = item.AsContent<TwoPart>();
+    var type = item.AsContent<TwoPartItem>();
     Assert.NotNull(type);
 
     Assert.NotNull(type.FirstStringPart);
@@ -58,12 +58,12 @@ public record class ContentItemTest
     Assert.Equal("SecondTestValue", type.SecondStringPart.Value.Value);
   }
 
-  private class TwoPart : ContentItem
+  private class TwoPartItem : ContentItem
   {
     public Lazy<StringPart> FirstStringPart { get; init; } = default!;
     public Lazy<StringPart> SecondStringPart { get; init; } = default!;
 
-    private TwoPart(OrchardContentItem inner) : base(inner) { }
+    private TwoPartItem(OrchardContentItem inner) : base(inner) { }
   }
 
   [Fact]
@@ -72,16 +72,16 @@ public record class ContentItemTest
     var item = new OrchardContentItem();
     item.ContentType = "Contained";
     item.Weld(
-      nameof(Contained.StringPart),
+      nameof(ContainedItem.StringPart),
       new StringPart { Value = "TestValue" }
     );
 
     item.Weld(
-      nameof(Contained.ContainedPart),
+      nameof(ContainedItem.ContainedPart),
       new ContainedPart { ListContentItemId = "TestId", Order = 10 }
     );
 
-    var type = item.AsContent<Contained>();
+    var type = item.AsContent<ContainedItem>();
     Assert.NotNull(type);
 
     Assert.NotNull(type.StringPart);
@@ -94,11 +94,11 @@ public record class ContentItemTest
     Assert.Equal(10, type.ContainedPart.Value.Order);
   }
 
-  private class Contained : ContentItem
+  private class ContainedItem : ContentItem
   {
     public Lazy<StringPart> StringPart { get; init; } = default!;
 
-    private Contained(OrchardContentItem inner) : base(inner) { }
+    private ContainedItem(OrchardContentItem inner) : base(inner) { }
   }
 
   [Fact(Skip = "Not working yet")]
@@ -107,11 +107,11 @@ public record class ContentItemTest
     var item = new OrchardContentItem();
     item.ContentType = "Derived";
     item.Weld(
-      nameof(Derived.StringPart),
+      nameof(DerivedItem.StringPart),
       new StringPart { Value = "TestValue" }
     );
 
-    var type = item.AsContent<Derived>();
+    var type = item.AsContent<DerivedItem>();
     Assert.NotNull(type);
 
     Assert.NotNull(type.StringPart);
@@ -119,11 +119,11 @@ public record class ContentItemTest
     Assert.Equal("TestValue", type.StringPart.Value.Value);
   }
 
-  private class Derived : ContentItem<Derived>
+  private class DerivedItem : ContentItem<DerivedItem>
   {
     public Lazy<StringPart> StringPart { get; init; } = default!;
 
-    public Derived(OrchardContentItem inner) : base(inner) { }
+    public DerivedItem(OrchardContentItem inner) : base(inner) { }
   }
 
   private class StringPart : ContentPart
