@@ -35,7 +35,7 @@ public abstract class ContentItem<TDerived>
 public static class ContentItemExtensions
 {
   public static string ContentTypeName(this Type @this) =>
-    @this.Name.RegexRemove("Type$");
+    @this.Name.RegexRemove("Item$");
 
   public static string ContentTypeName<T>() => typeof(T).ContentTypeName();
 
