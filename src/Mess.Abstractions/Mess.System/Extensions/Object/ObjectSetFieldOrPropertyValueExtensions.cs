@@ -2,12 +2,6 @@ namespace Mess.System.Extensions.Object;
 
 public static class ObjectSetFieldOrPropertyValueExtensions
 {
-  public static object? SetFieldOrPropertyValue<O>(
-    this O @this,
-    string fieldOrPropertyName,
-    object? value
-  ) => SetFieldOrPropertyValue<O, object?>(@this, fieldOrPropertyName, value);
-
   public static T? SetFieldOrPropertyValue<O, T>(
     this O @this,
     string fieldOrPropertyName,
@@ -54,11 +48,9 @@ public static class ObjectSetFieldOrPropertyValueExtensions
   )
   {
     var property = type.GetProperty(fieldOrPropertyName);
-    if (property is null || property.PropertyType != typeof(T))
+    if (property is null)
     {
-      throw new InvalidOperationException(
-        $"Type '{type.FullName}' does not have a field or property '{fieldOrPropertyName}' of type '{typeof(T)}'"
-      );
+      return default(T?);
     }
 
     var previous = property.GetValue(@this);

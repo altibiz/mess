@@ -32,7 +32,7 @@ public abstract class ContentItem<TDerived>
   }
 }
 
-public static class ContentTypeBaseExtensions
+public static class ContentItemExtensions
 {
   public static string ContentTypeName(this Type @this) =>
     @this.Name.RegexRemove("Type$");
@@ -149,7 +149,7 @@ public static class ContentTypeBaseExtensions
         continue;
       }
 
-      var lazy = content.CreateLazy(partType, property.Name);
+      var lazy = content.Inner.CreateLazy(partType, property.Name);
       content.SetFieldOrPropertyValue(property.Name, lazy);
     }
 
@@ -157,7 +157,7 @@ public static class ContentTypeBaseExtensions
   }
 
   private static object CreateLazy(
-    this ContentItem contentItem,
+    this OrchardContentItem contentItem,
     Type partType,
     string partName
   )
@@ -184,8 +184,8 @@ public static class ContentTypeBaseExtensions
             new[]
             {
               () =>
-                contentItem.GetFieldOrPropertyValue(partName)
-                ?? contentItem.GetFieldOrPropertyValue(partName + "Part")
+                contentItem.Get(partType, partName)
+                ?? contentItem.Get(partType, partName + "Part")
             }
           )
       }
