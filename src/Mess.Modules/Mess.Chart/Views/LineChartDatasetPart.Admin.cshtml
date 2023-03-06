@@ -1,11 +1,11 @@
-@model LineChartDatasetPartViewModel
+@model LineChartDatasetPartAdminViewModel
 
 @inject OrchardCore.ContentManagement.IContentManager ContentManager
 @inject OrchardCore.ContentManagement.Display.IContentItemDisplayManager ContentItemDisplayManager
 @inject OrchardCore.DisplayManagement.ModelBinding.IUpdateModelAccessor ModelUpdaterAccessor
 
 <strong class="mb-3">
-  @T[Model.Label ?? "Unlabeled dataset"] 
+  @Model.Label
 </strong>
 
 <div 
@@ -19,20 +19,14 @@
       ps-3
       mb-1
     ">
-  @{
-    var labelFor = $"ChartPart.Chart.LineChartPart.Datasets[{Model.Index}].LineChartDatasetPart.Label";
-  }
   <div class="mb-3">
-    <label for="@labelFor">@T["Label"]</label>
-    <input name="@labelFor" class="form-control" />
+    <label>@T["Label"]</label>
+    <span>@Model.Part.Label</span>
   </div>
 
-  @{
-    var colorFor = $"ChartPart.Chart.LineChartPart.Datasets[{Model.Index}].LineChartDatasetPart.Color";
-  }
   <div class="mb-3">
-    <label for="@colorFor">@T["Color"]</label>
-    <input name="@colorFor" class="form-control" />
+    <label>@T["Color"]</label>
+    <span>@Model.Part.Color</span>
   </div>
 
   @if (Model.Part.Dataset is not null)
@@ -79,7 +73,7 @@
         asp-route-contentItemId="@Model.Part.RootContentItemId"
         asp-route-lineChartDatasetContentItemId="@Model.Part.ContentItem.ContentItemId"
         class="btn btn-primary btn-sm">
-      @T["Save"]
+      @T["Edit"]
     </a>
     <a
         asp-route-area="Mess.Chart"
