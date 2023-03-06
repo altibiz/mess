@@ -49,7 +49,7 @@ public static class ObjectGetFieldOrPropertyValueExtensions
   )
   {
     var property = type.GetProperty(fieldOrPropertyName);
-    if (property is null || property.PropertyType != typeof(T))
+    if (property is null)
     {
       return default(T?);
     }
