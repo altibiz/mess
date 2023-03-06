@@ -1,4 +1,4 @@
-using Mess.System.Extensions.IDictionary;
+using Mess.System.Extensions.Dictionary;
 
 namespace Mess.MeasurementDevice.Abstractions.Models;
 

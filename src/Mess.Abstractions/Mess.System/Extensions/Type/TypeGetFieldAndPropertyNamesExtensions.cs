@@ -1,6 +1,6 @@
 namespace Mess.System.Extensions.Type;
 
-public static class GetFieldAndPropertyNamesExtensions
+public static class TypeGetFieldAndPropertyNamesExtensions
 {
   public static IReadOnlyList<string> GetFieldAndPropertyNames(
     this global::System.Type type

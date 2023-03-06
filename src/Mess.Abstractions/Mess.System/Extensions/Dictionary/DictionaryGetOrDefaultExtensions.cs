@@ -1,6 +1,6 @@
-namespace Mess.System.Extensions.IDictionary;
+namespace Mess.System.Extensions.Dictionary;
 
-public static class IDictionaryGetOrDefaultExtensions
+public static class DictionaryGetOrDefaultExtensions
 {
   public static TOut? GetOrDefault<TIn, TOut>(
     this IDictionary<TIn, TOut> @this,
