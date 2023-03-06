@@ -5,7 +5,7 @@ using Mess.Chart.Abstractions.Models;
 using Mess.MeasurementDevice.Models;
 using Mess.Chart.Abstractions.Extensions.System;
 using Mess.Timeseries.Abstractions.Entities;
-using Mess.System.Extensions.IEnumerable;
+using Mess.System.Extensions.Enumerable;
 
 namespace Mess.MeasurementDevice.Chart.Providers;
 

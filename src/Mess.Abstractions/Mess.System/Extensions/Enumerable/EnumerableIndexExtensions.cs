@@ -1,6 +1,6 @@
-namespace Mess.System.Extensions.IEnumerable;
+namespace Mess.System.Extensions.Enumerable;
 
-public static class IEnumerableIndexExtensions
+public static class EnumerableIndexExtensions
 {
   public static IEnumerable<(T item, int index)> Index<T>(
     this IEnumerable<T> @this

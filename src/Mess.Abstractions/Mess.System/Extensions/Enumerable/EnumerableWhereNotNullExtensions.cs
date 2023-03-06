@@ -1,6 +1,6 @@
-namespace Mess.System.Extensions.IEnumerable;
+namespace Mess.System.Extensions.Enumerable;
 
-public static class IEnumerableWhereNotNullExtensions
+public static class EnumerableWhereNotNullExtensions
 {
   public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T?> @this)
     where T : class => @this.Where(@object => @object is not null).Cast<T>();

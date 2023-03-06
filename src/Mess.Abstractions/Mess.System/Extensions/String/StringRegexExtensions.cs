@@ -2,7 +2,7 @@ using System.Text.RegularExpressions;
 
 namespace Mess.System.Extensions.String;
 
-public static partial class RegexExtensions
+public static partial class StringRegexExtensions
 {
   public static string RegexReplace(
     this string str,
