@@ -3,9 +3,7 @@ using Mess.Chart.Abstractions;
 using Mess.Chart.Abstractions.Models;
 using Mess.Chart.Abstractions.Services;
 using Mess.OrchardCore.Extensions.OrchardCore;
-using Mess.System.Extensions.Object;
 using Microsoft.AspNetCore.Authorization;
-using Newtonsoft.Json.Linq;
 using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.ContentManagement.Metadata.Models;
@@ -73,7 +71,7 @@ public class ChartService : IChartService
     );
   }
 
-  public async Task<ContentItem?> CreateConcreteChartAsync(
+  public async Task<ContentItem?> CreateEphemeralConcreteChartAsync(
     ContentItem chart,
     string concreteChartContentType
   )
@@ -89,6 +87,23 @@ public class ChartService : IChartService
       concreteChartContentType + "Part",
       part => part.RootContentItemId = chart.ContentItemId
     );
+
+    return concreteChart;
+  }
+
+  public async Task<ContentItem?> CreateConcreteChartAsync(
+    ContentItem chart,
+    string concreteChartContentType
+  )
+  {
+    var concreteChart = await CreateEphemeralConcreteChartAsync(
+      chart,
+      concreteChartContentType
+    );
+    if (concreteChart is null)
+    {
+      return null;
+    }
 
     chart.Alter<ChartPart>(part => part.Chart = concreteChart);
     return concreteChart;
@@ -133,7 +148,9 @@ public class ChartService : IChartService
     return await Task.FromResult(concreteChart);
   }
 
-  public async Task<ContentItem?> CreateLineChartDatasetAsync(ContentItem chart)
+  public async Task<ContentItem?> CreateEphemeralLineChartDatasetAsync(
+    ContentItem chart
+  )
   {
     if (!await IsLineChartAsync(chart))
     {
@@ -151,6 +168,22 @@ public class ChartService : IChartService
       LineChartDatasetContentType + "Part",
       part => part.RootContentItemId = chart.ContentItemId
     );
+
+    return lineChartDataset;
+  }
+
+  public async Task<ContentItem?> CreateLineChartDatasetAsync(ContentItem chart)
+  {
+    if (!await IsLineChartAsync(chart))
+    {
+      return null;
+    }
+
+    var lineChartDataset = await CreateEphemeralLineChartDatasetAsync(chart);
+    if (lineChartDataset is null)
+    {
+      return null;
+    }
 
     chart.Alter<ChartPart>(
       chartPart =>
@@ -301,6 +334,32 @@ public class ChartService : IChartService
     );
   }
 
+  public async Task<ContentItem?> CreateEphemeralConcreteLineChartDatasetAsync(
+    ContentItem chart,
+    string lineChartDatasetContentItemId,
+    string concreteLineChartDatasetContentType
+  )
+  {
+    if (!await IsLineChartAsync(chart))
+    {
+      return null;
+    }
+
+    var concreteLineChartDataset = await _contentManager.NewAsync(
+      concreteLineChartDatasetContentType
+    );
+    if (concreteLineChartDataset is null)
+    {
+      return null;
+    }
+    concreteLineChartDataset.Alter<NestedChartPart>(
+      concreteLineChartDatasetContentType + "Part",
+      part => part.RootContentItemId = chart.ContentItemId
+    );
+
+    return concreteLineChartDataset;
+  }
+
   public async Task<ContentItem?> CreateConcreteLineChartDatasetAsync(
     ContentItem chart,
     string lineChartDatasetContentItemId,
@@ -321,17 +380,16 @@ public class ChartService : IChartService
       return null;
     }
 
-    var concreteLineChartDataset = await _contentManager.NewAsync(
-      concreteLineChartDatasetContentType
-    );
+    var concreteLineChartDataset =
+      await CreateEphemeralConcreteLineChartDatasetAsync(
+        chart,
+        lineChartDatasetContentItemId,
+        concreteLineChartDatasetContentType
+      );
     if (concreteLineChartDataset is null)
     {
       return null;
     }
-    concreteLineChartDataset.Alter<NestedChartPart>(
-      concreteLineChartDatasetContentType + "Part",
-      part => part.RootContentItemId = chart.ContentItemId
-    );
 
     lineChartDataset.Alter<LineChartDatasetPart>(
       lineChartDatasetPart =>

@@ -15,6 +15,11 @@ public interface IChartService
 
   public Task<bool> IsValidConcreteChartTypeAsync(string contentType);
 
+  public Task<ContentItem?> CreateEphemeralConcreteChartAsync(
+    ContentItem chart,
+    string concreteChartContentType
+  );
+
   public Task<ContentItem?> CreateConcreteChartAsync(
     ContentItem chart,
     string concreteChartContentType
@@ -30,6 +35,10 @@ public interface IChartService
   public Task<ContentItem?> DeleteConcreteChartAsync(ContentItem chart);
 
   // LineChartDataset
+
+  public Task<ContentItem?> CreateEphemeralLineChartDatasetAsync(
+    ContentItem lineChart
+  );
 
   public Task<ContentItem?> CreateLineChartDatasetAsync(ContentItem lineChart);
 
@@ -51,6 +60,12 @@ public interface IChartService
   // ConcreteLineChartDataset
 
   public Task<bool> IsValidLineChartDatasetContentTypeAsync(string contentType);
+
+  public Task<ContentItem?> CreateEphemeralConcreteLineChartDatasetAsync(
+    ContentItem chart,
+    string lineChartDatasetContentItemId,
+    string concreteLineChartDatasetContentType
+  );
 
   public Task<ContentItem?> CreateConcreteLineChartDatasetAsync(
     ContentItem chart,

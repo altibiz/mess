@@ -40,6 +40,8 @@ public class LineChartDatasetPartDisplayDriver
       GetEditorShapeType(context),
       model =>
       {
+        model.Label = part.Label;
+        model.Color = part.Color;
         model.Part = part;
         model.Definition = context.TypePartDefinition;
       }
@@ -68,10 +70,9 @@ public class LineChartDatasetPartDisplayDriver
         var partName = context.TypePartDefinition.DisplayName();
         updater.ModelState.AddModelError(
           Prefix,
-          nameof(viewModel.Part.Label),
+          nameof(viewModel.Label),
           S["{0} requires a label", partName]
         );
-        return Edit(part, context);
       }
 
       if (string.IsNullOrWhiteSpace(viewModel.Color))
@@ -79,10 +80,9 @@ public class LineChartDatasetPartDisplayDriver
         var partName = context.TypePartDefinition.DisplayName();
         updater.ModelState.AddModelError(
           Prefix,
-          nameof(viewModel.Part.Color),
+          nameof(viewModel.Color),
           S["{0} requires a color", partName]
         );
-        return Edit(part, context);
       }
 
       if (!viewModel.Color.RegexMatch(@"^#[0-9a-fA-F]{6}$"))
@@ -90,9 +90,13 @@ public class LineChartDatasetPartDisplayDriver
         var partName = context.TypePartDefinition.DisplayName();
         updater.ModelState.AddModelError(
           Prefix,
-          nameof(viewModel.Part.Color),
+          nameof(viewModel.Color),
           S["{0} requires a valid hex color", partName]
         );
+      }
+
+      if (!updater.ModelState.IsValid)
+      {
         return Edit(part, context);
       }
 

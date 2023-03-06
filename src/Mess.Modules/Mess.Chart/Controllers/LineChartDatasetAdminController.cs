@@ -25,9 +25,8 @@ public class LineChartDatasetAdminController : Controller
       return NotFound();
     }
 
-    var lineChartDataset = await _chartService.CreateLineChartDatasetAsync(
-      chart
-    );
+    var lineChartDataset =
+      await _chartService.CreateEphemeralLineChartDatasetAsync(chart);
     if (lineChartDataset is null)
     {
       return NotFound();
@@ -73,13 +72,16 @@ public class LineChartDatasetAdminController : Controller
       );
     }
 
-    var model = await _contentItemDisplayManager.UpdateEditorAsync(
+    dynamic model = await _contentItemDisplayManager.UpdateEditorAsync(
       lineChartDataset,
       _updateModelAccessor.ModelUpdater,
       false
     );
     if (!ModelState.IsValid)
     {
+      model.ContentItemId = contentItemId;
+      model.LineChartDatasetContentItemId = lineChartDataset.ContentItemId;
+
       return View(model);
     }
 
@@ -137,7 +139,7 @@ public class LineChartDatasetAdminController : Controller
     );
 
     model.ContentItemId = contentItemId;
-    model.LineChartDatasetContentItemId = lineChartDataaset.ContentItemId;
+    model.LineChartDatasetContentItemId = lineChartDatasetContentItemId;
 
     return View(model);
   }
@@ -169,14 +171,16 @@ public class LineChartDatasetAdminController : Controller
       return NotFound();
     }
 
-    var model = await _contentItemDisplayManager.UpdateEditorAsync(
+    dynamic model = await _contentItemDisplayManager.UpdateEditorAsync(
       lineChartDataaset,
       _updateModelAccessor.ModelUpdater,
       false
     );
     if (!ModelState.IsValid)
     {
-      await _notifier.ErrorAsync(H["Failed updating line chart dataset."]);
+      model.ContentItemId = contentItemId;
+      model.LineChartDatasetContentItemId = lineChartDatasetContentItemId;
+
       return View(model);
     }
 
