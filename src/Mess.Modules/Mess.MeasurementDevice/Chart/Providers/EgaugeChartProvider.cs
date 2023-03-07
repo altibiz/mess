@@ -60,9 +60,9 @@ public class EgaugeChartDataProvider : IChartDataProvider
         }
 
         return measurements.ToTimeseriesChartDataset(
-            label: dataset.Label,
-            color: dataset.Color,
-            history: timesereiesDataset.History,
+            label: dataset.Label.Text,
+            color: dataset.Color.Value,
+            history: timesereiesDataset.HistoryTimeSpan,
             xField: nameof(HypertableEntity.Timestamp),
             yField: timesereiesDataset.Property
           ) as LineChartDatasetModel;
@@ -114,9 +114,9 @@ public class EgaugeChartDataProvider : IChartDataProvider
         }
 
         return measurements.ToTimeseriesChartDataset(
-            label: dataset.Label,
-            color: dataset.Color,
-            history: timesereiesDataset.History,
+            label: dataset.Label.Text,
+            color: dataset.Color.Value,
+            history: timesereiesDataset.HistoryTimeSpan,
             xField: nameof(HypertableEntity.Timestamp),
             yField: timesereiesDataset.Property
           ) as LineChartDatasetModel;

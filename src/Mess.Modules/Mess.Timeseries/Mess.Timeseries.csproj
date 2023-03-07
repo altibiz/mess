@@ -8,11 +8,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../Mess.Abstractions/Mess.System/Mess.System.csproj" />
-    <ProjectReference Include="../../Mess.Abstractions/Mess.OrchardCore/Mess.OrchardCore.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="../../Mess.Abstractions/Mess.Timeseries.Abstractions/Mess.Timeseries.Abstractions.csproj" />
     <ProjectReference Include="../../Mess.Abstractions/Mess.Chart.Abstractions/Mess.Chart.Abstractions.csproj" />
   </ItemGroup>

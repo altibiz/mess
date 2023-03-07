@@ -18,34 +18,23 @@ public class LineChartPartDisplayDriver
     BuildPartDisplayContext context
   )
   {
-    return Combine(
-      Initialize<LineChartPartThumbnailViewModel>(
-          "LineChartPart_Thumbnail",
-          model =>
-          {
-            model.Part = part;
-            model.Definition = context.TypePartDefinition;
-          }
-        )
-        .Location("Thumbnail", "Content"),
-      Initialize<LineChartPartAdminViewModel>(
-          "LineChartPart_Admin",
-          model =>
-          {
-            model.Part = part;
-            model.Definition = context.TypePartDefinition;
-            model.DatasetContentTypes = _contentDefinitionManager
-              .ListTypeDefinitions()
-              .Where(
-                contentTypeDefinition =>
-                  contentTypeDefinition.GetStereotype()
-                  == "ConcreteLineChartDataset"
-              )
-              .ToList();
-          }
-        )
-        .Location("Admin", "Content")
-    );
+    return Initialize<LineChartPartViewModel>(
+        GetDisplayShapeType(context),
+        model =>
+        {
+          model.Part = part;
+          model.Definition = context.TypePartDefinition;
+          model.DatasetContentTypes = _contentDefinitionManager
+            .ListTypeDefinitions()
+            .Where(
+              contentTypeDefinition =>
+                contentTypeDefinition.GetStereotype()
+                == "ConcreteLineChartDataset"
+            )
+            .ToList();
+        }
+      )
+      .Location("Content");
   }
 
   public LineChartPartDisplayDriver(

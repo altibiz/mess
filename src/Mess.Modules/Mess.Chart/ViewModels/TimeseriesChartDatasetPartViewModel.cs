@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace Mess.Chart.ViewModels;
 
-public class LineChartPartThumbnailViewModel
+public class TimeseriesChartDatasetPartViewModel
 {
   [ValidateNever]
-  public LineChartPart Part { get; set; } = default!;
+  public TimeseriesChartDatasetPart Part { get; set; } = default!;
 
   [ValidateNever]
   public ContentTypePartDefinition Definition { get; set; } = default!;

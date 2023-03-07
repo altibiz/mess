@@ -11,7 +11,39 @@
   "steps": [
     {
       "name": "feature",
-      "enable": ["TheAdmin", "SafeMode", "Mess.Default"]
+      "enable": [
+        "OrchardCore.Features",
+        "OrchardCore.Recipes",
+        "OrchardCore.Resources",
+        "OrchardCore.Settings",
+        "OrchardCore.Themes",
+        "OrchardCore.Roles",
+        "OrchardCore.Users",
+        "OrchardCore.Users.Registration",
+        "OrchardCore.Users.ResetPassword",
+        "OrchardCore.Admin",
+        "OrchardCore.AdminMenu",
+        "OrchardCore.Navigation",
+        "OrchardCore.ContentFields",
+        "OrchardCore.ContentPreview",
+        "OrchardCore.Contents",
+        "OrchardCore.ContentTypes",
+        "OrchardCore.Deployment",
+        "OrchardCore.Placements",
+        "OrchardCore.Queries",
+        "OrchardCore.BackgroundTasks",
+        "OrchardCore.Liquid",
+        "OrchardCore.Menu",
+        "Mess.EventStore",
+        "Mess.Timeseries",
+        "Mess.Chart",
+        "Mess.MeasurementDevice",
+        "Etch.OrchardCore.Fields.Colour",
+        "Etch.OrchardCore.Fields.MultiSelect",
+
+        "TheAdmin",
+        "Mess.Default"
+      ]
     },
     {
       "name": "themes",
