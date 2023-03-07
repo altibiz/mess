@@ -39,17 +39,15 @@
         data-bs-target="@modalId">
       @T["Change dataset type"]
     </button>
-    @* NOTE: just keeping if needed later on
-      <a 
-          class="btn btn-danger btn-sm"
-          asp-route-area="Mess.Chart"
-          asp-controller="ConcreteLineChartDatasetAdmin"
-          asp-action="Delete"
-          asp-route-contentItemId="@Model.ContentItemId"
-          asp-route-lineChartDatasetContentItemId="@Model.LineChartDatasetContentItemId"
-          data-url-af="RemoveUrl UnsafeUrl">
-        @T["Delete"]
-      </a>
-    *@
+    <a
+        asp-route-area="Mess.Chart"
+        asp-controller="ConcreteLineChartDatasetAdmin"
+        asp-action="Edit"
+        asp-route-contentItemId="@Model.ContentItemId"
+        asp-route-lineChartDatasetContentItemId="@Model.LineChartDatasetContentItemId"
+        asp-route-contentType="@Model.ContentType"
+        class="btn btn-primary btn-sm">
+      @T["Edit concrete dataset"]
+    </a>
   </div>
 </div>

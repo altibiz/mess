@@ -7,7 +7,9 @@ public interface IChartDataProvider
 {
   public string Id { get; }
 
-  public ChartModel? CreateChart(ContentItem contentItem);
-
   public Task<ChartModel?> CreateChartAsync(ContentItem contentItem);
+
+  public bool IsValidTimeseriesChartDatasetProperty(string property);
+
+  public IReadOnlyList<string> GetTimeseriesChartDatasetProperties();
 }

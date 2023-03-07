@@ -10,7 +10,7 @@ public class TimeseriesChartDatasetPartEditViewModel
   public string Property { get; set; } = default!;
 
   [ValidateNever]
-  public List<string> PropertyOptions { get; set; } = default!;
+  public List<SelectListItem> PropertyOptions { get; set; } = default!;
 
   [ValidateNever]
   public TimeseriesChartDatasetPart Part { get; set; } = default!;

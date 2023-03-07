@@ -22,11 +22,47 @@ public class ConcreteLineChartDatasetAdminController : Controller
       return Forbid();
     }
 
-    if (
-      !await _chartService.IsValidLineChartDatasetContentTypeAsync(contentType)
-    )
+    var chart = await _chartService.GetChartAsync(contentItemId);
+    if (chart is null)
     {
       return NotFound();
+    }
+
+    var concreteLineChartDataset =
+      await _chartService.CreateEphemeralConcreteLineChartDatasetAsync(
+        chart,
+        lineChartDatasetContentItemId,
+        contentType
+      );
+    if (concreteLineChartDataset is null)
+    {
+      return NotFound();
+    }
+
+    dynamic model = await _contentItemDisplayManager.BuildEditorAsync(
+      concreteLineChartDataset,
+      _updateModelAccessor.ModelUpdater,
+      true
+    );
+
+    model.ContentItemId = contentItemId;
+    model.LineChartDatasetContentItemId = lineChartDatasetContentItemId;
+    model.ContentType = contentType;
+
+    return View(model);
+  }
+
+  [HttpPost]
+  [ActionName("Create")]
+  public async Task<IActionResult> CreatePost(
+    string contentItemId,
+    string lineChartDatasetContentItemId,
+    string contentType
+  )
+  {
+    if (!await _chartService.IsAuthorizedAsync(User))
+    {
+      return Forbid();
     }
 
     var chart = await _chartService.GetChartAsync(contentItemId);
@@ -46,13 +82,43 @@ public class ConcreteLineChartDatasetAdminController : Controller
       await _notifier.ErrorAsync(
         H["Failed creating concrete line chart dataset."]
       );
+      return RedirectToAction(
+        "Edit",
+        "Admin",
+        new { area = "OrchardCore.Contents", contentItemId }
+      );
+    }
+
+    dynamic model = await _contentItemDisplayManager.UpdateEditorAsync(
+      concreteLineChartDataset,
+      _updateModelAccessor.ModelUpdater,
+      false
+    );
+    if (!ModelState.IsValid)
+    {
+      model.ContentItemId = contentItemId;
+      model.LineChartDatasetContentItemId = lineChartDatasetContentItemId;
+      model.ContentType = contentType;
+
+      return View(model);
+    }
+
+    var updatedConcreteLineChartDataset =
+      await _chartService.UpdateConcreteLineChartDatasetAsync(
+        chart,
+        lineChartDatasetContentItemId,
+        concreteLineChartDataset
+      );
+    if (updatedConcreteLineChartDataset is null)
+    {
+      await _notifier.ErrorAsync(H["Failed creating line chart dataset."]);
     }
     else
     {
       await _chartService.SaveChartAsync(chart);
 
       await _notifier.SuccessAsync(
-        H["Concrete line chart dataset created successfully."]
+        H["Line chart dataset created successfully."]
       );
     }
 
@@ -63,10 +129,10 @@ public class ConcreteLineChartDatasetAdminController : Controller
     );
   }
 
-  [HttpPost]
   public async Task<IActionResult> Edit(
     string contentItemId,
-    string lineChartDatasetContentItemId
+    string lineChartDatasetContentItemId,
+    string contentType
   )
   {
     if (!await _chartService.IsAuthorizedAsync(User))
@@ -90,39 +156,25 @@ public class ConcreteLineChartDatasetAdminController : Controller
       return NotFound();
     }
 
-    var model = await _contentItemDisplayManager.UpdateEditorAsync(
+    dynamic model = await _contentItemDisplayManager.BuildEditorAsync(
       concreteLineChartDataset,
       _updateModelAccessor.ModelUpdater,
       false
     );
-    if (!ModelState.IsValid)
-    {
-      await _notifier.ErrorAsync(H["Failed updating line chart dataset."]);
-    }
-    else
-    {
-      await _chartService.UpdateConcreteLineChartDatasetAsync(
-        chart,
-        lineChartDatasetContentItemId,
-        concreteLineChartDataset
-      );
 
-      await _notifier.SuccessAsync(
-        H["Line chart dataset updated successfully."]
-      );
-    }
+    model.ContentItemId = contentItemId;
+    model.LineChartDatasetContentItemId = lineChartDatasetContentItemId;
+    model.ContentType = concreteLineChartDataset.ContentType;
 
-    return RedirectToAction(
-      "Edit",
-      "Admin",
-      new { area = "OrchardCore.Contents", contentItemId }
-    );
+    return View(model);
   }
 
   [HttpPost]
-  public async Task<IActionResult> Delete(
+  [ActionName("Edit")]
+  public async Task<IActionResult> EditPost(
     string contentItemId,
-    string lineChartDatasetContentItemId
+    string lineChartDatasetContentItemId,
+    string contentType
   )
   {
     if (!await _chartService.IsAuthorizedAsync(User))
@@ -137,22 +189,47 @@ public class ConcreteLineChartDatasetAdminController : Controller
     }
 
     var concreteLineChartDataset =
-      await _chartService.DeleteConcreteLineChartDatasetAsync(
+      await _chartService.ReadConcreteLineChartDatasetAsync(
         chart,
         lineChartDatasetContentItemId
       );
     if (concreteLineChartDataset is null)
     {
-      await _notifier.ErrorAsync(H["Failed deleting line chart dataset."]);
+      return NotFound();
     }
-    else
-    {
-      await _chartService.SaveChartAsync(chart);
 
-      await _notifier.SuccessAsync(
-        H["Line chart dataset deleted successfully."]
+    dynamic model = await _contentItemDisplayManager.UpdateEditorAsync(
+      concreteLineChartDataset,
+      _updateModelAccessor.ModelUpdater,
+      false
+    );
+    if (!ModelState.IsValid)
+    {
+      model.ContentItemId = contentItemId;
+      model.LineChartDatasetContentItemId = lineChartDatasetContentItemId;
+      model.ContentType = concreteLineChartDataset.ContentType;
+
+      return View(model);
+    }
+
+    var updatedLineChartDataset =
+      await _chartService.UpdateConcreteLineChartDatasetAsync(
+        chart,
+        lineChartDatasetContentItemId,
+        concreteLineChartDataset
+      );
+    if (updatedLineChartDataset is null)
+    {
+      await _notifier.ErrorAsync(H["Failed updating line chart dataset."]);
+
+      return RedirectToAction(
+        "Edit",
+        "Admin",
+        new { area = "OrchardCore.Contents", contentItemId }
       );
     }
+
+    await _chartService.SaveChartAsync(chart);
 
     return RedirectToAction(
       "Edit",

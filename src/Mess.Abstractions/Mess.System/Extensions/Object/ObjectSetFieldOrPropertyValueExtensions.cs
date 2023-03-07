@@ -25,7 +25,7 @@ public static class ObjectSetFieldOrPropertyValueExtensions
   )
   {
     var field = type.GetField(fieldOrPropertyName);
-    if (field is null || field.FieldType != typeof(T))
+    if (field is null)
     {
       return SetPropertyValue<O, T>(@this, type, fieldOrPropertyName, value);
     }

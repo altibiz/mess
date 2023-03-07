@@ -1,4 +1,14 @@
 @model TimeseriesChartDatasetPartEditViewModel
 
-@* TODO: property edit *@
-<p>timeseries chart dataset edit</p>
+<div class="mb-3 row">
+  <div class="col-sm-6">
+    <label asp-for="Property">@T["Property"]</label>
+    <select class="form-select" asp-for="Property">
+      @foreach (var item in Model.PropertyOptions)
+      {
+        <option value="@item.Value">@item.Text</option>
+      }
+    </select>
+    <span class="hint">@T["What property will be used to fetch data."]</span>
+  </div>
+</div>
