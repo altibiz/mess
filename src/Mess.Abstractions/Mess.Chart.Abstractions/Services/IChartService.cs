@@ -3,6 +3,7 @@ using OrchardCore.ContentManagement;
 
 namespace Mess.Chart.Abstractions.Services;
 
+// TODO: use strongly typed content item where possible
 public interface IChartService
 {
   public Task<bool> IsAuthorizedAsync(ClaimsPrincipal user);

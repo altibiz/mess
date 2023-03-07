@@ -81,63 +81,6 @@ public class Startup : StartupBase
     );
 
     routes.MapAreaControllerRoute(
-      name: "Mess.Chart.Controllers.ConcreteChartAdminController.Edit",
-      areaName: "Mess.Chart",
-      pattern: _adminOptions.AdminUrlPrefix + "/ConcreteChart/Edit",
-      defaults: new
-      {
-        controller = typeof(ConcreteChartAdminController).ControllerName(),
-        action = nameof(ConcreteChartAdminController.Edit)
-      }
-    );
-
-    routes.MapAreaControllerRoute(
-      name: "Mess.Chart.Controllers.ConcreteChartAdminController.Delete",
-      areaName: "Mess.Chart",
-      pattern: _adminOptions.AdminUrlPrefix + "/ConcreteChart/Delete",
-      defaults: new
-      {
-        controller = typeof(ConcreteChartAdminController).ControllerName(),
-        action = nameof(ConcreteChartAdminController.Delete)
-      }
-    );
-
-    routes.MapAreaControllerRoute(
-      name: "Mess.Chart.Controllers.ConcreteLineChartDatasetAdminController.Create",
-      areaName: "Mess.Chart",
-      pattern: _adminOptions.AdminUrlPrefix
-        + "/ConcreteLineChartDataset/Create",
-      defaults: new
-      {
-        controller = typeof(ConcreteLineChartDatasetAdminController).ControllerName(),
-        action = nameof(ConcreteLineChartDatasetAdminController.Create)
-      }
-    );
-
-    routes.MapAreaControllerRoute(
-      name: "Mess.Chart.Controllers.ConcreteLineChartDatasetAdminController.Edit",
-      areaName: "Mess.Chart",
-      pattern: _adminOptions.AdminUrlPrefix + "/ConcreteLineChartDataset/Edit",
-      defaults: new
-      {
-        controller = typeof(ConcreteLineChartDatasetAdminController).ControllerName(),
-        action = nameof(ConcreteLineChartDatasetAdminController.Edit)
-      }
-    );
-
-    routes.MapAreaControllerRoute(
-      name: "Mess.Chart.Controllers.ConcreteLineChartDatasetAdminController.Delete",
-      areaName: "Mess.Chart",
-      pattern: _adminOptions.AdminUrlPrefix
-        + "/ConcreteLineChartDataset/Delete",
-      defaults: new
-      {
-        controller = typeof(ConcreteLineChartDatasetAdminController).ControllerName(),
-        action = nameof(ConcreteLineChartDatasetAdminController.Delete)
-      }
-    );
-
-    routes.MapAreaControllerRoute(
       name: "Mess.Chart.Controllers.LineChartDatasetAdminController.Create",
       areaName: "Mess.Chart",
       pattern: _adminOptions.AdminUrlPrefix + "/LineChartDataset/Create",
@@ -167,6 +110,29 @@ public class Startup : StartupBase
       {
         controller = typeof(LineChartDatasetAdminController).ControllerName(),
         action = nameof(LineChartDatasetAdminController.Delete)
+      }
+    );
+
+    routes.MapAreaControllerRoute(
+      name: "Mess.Chart.Controllers.ConcreteLineChartDatasetAdminController.Create",
+      areaName: "Mess.Chart",
+      pattern: _adminOptions.AdminUrlPrefix
+        + "/ConcreteLineChartDataset/Create",
+      defaults: new
+      {
+        controller = typeof(ConcreteLineChartDatasetAdminController).ControllerName(),
+        action = nameof(ConcreteLineChartDatasetAdminController.Create)
+      }
+    );
+
+    routes.MapAreaControllerRoute(
+      name: "Mess.Chart.Controllers.ConcreteLineChartDatasetAdminController.Edit",
+      areaName: "Mess.Chart",
+      pattern: _adminOptions.AdminUrlPrefix + "/ConcreteLineChartDataset/Edit",
+      defaults: new
+      {
+        controller = typeof(ConcreteLineChartDatasetAdminController).ControllerName(),
+        action = nameof(ConcreteLineChartDatasetAdminController.Edit)
       }
     );
   }

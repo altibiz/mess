@@ -85,7 +85,11 @@ public class ChartService : IChartService
     }
     concreteChart.Alter<NestedChartPart>(
       concreteChartContentType + "Part",
-      part => part.RootContentItemId = chart.ContentItemId
+      part =>
+      {
+        part.RootContentItemId = chart.ContentItemId;
+        part.ChartDataProviderId = chart.As<ChartPart>().DataProviderId;
+      }
     );
 
     return concreteChart;
@@ -166,7 +170,11 @@ public class ChartService : IChartService
     }
     lineChartDataset.Alter<NestedChartPart>(
       LineChartDatasetContentType + "Part",
-      part => part.RootContentItemId = chart.ContentItemId
+      part =>
+      {
+        part.RootContentItemId = chart.ContentItemId;
+        part.ChartDataProviderId = chart.As<ChartPart>().DataProviderId;
+      }
     );
 
     return lineChartDataset;
@@ -354,7 +362,11 @@ public class ChartService : IChartService
     }
     concreteLineChartDataset.Alter<NestedChartPart>(
       concreteLineChartDatasetContentType + "Part",
-      part => part.RootContentItemId = chart.ContentItemId
+      part =>
+      {
+        part.RootContentItemId = chart.ContentItemId;
+        part.ChartDataProviderId = chart.As<ChartPart>().DataProviderId;
+      }
     );
 
     return concreteLineChartDataset;
