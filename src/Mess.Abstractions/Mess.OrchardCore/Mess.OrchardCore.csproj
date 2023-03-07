@@ -7,11 +7,13 @@
   <ItemGroup>
     <PackageReference Include="OrchardCore.Abstractions" Version="$(MessOrchardVersion)" />
     <PackageReference Include="OrchardCore.Recipes.Abstractions" Version="$(MessOrchardVersion)" />
+    <PackageReference Include="OrchardCore.Lists" Version="$(MessOrchardVersion)" />
     <PackageReference Include="OrchardCore.Contents" Version="$(MessOrchardVersion)" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="../Mess.Tenants/Mess.Tenants.csproj" />
+    <ProjectReference Include="../Mess.System/Mess.System.csproj" />
   </ItemGroup>
 
 </Project>

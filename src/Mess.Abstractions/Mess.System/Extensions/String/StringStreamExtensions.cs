@@ -2,7 +2,7 @@ using System.Text;
 
 namespace Mess.System.Extensions.String;
 
-public static class StreamExtensions
+public static class StringStreamExtensions
 {
   public static string Encode(this Stream stream, Encoding? encoding = null)
   {
