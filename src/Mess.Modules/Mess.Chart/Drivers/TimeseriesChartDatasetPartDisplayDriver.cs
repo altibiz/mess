@@ -16,39 +16,50 @@ public class TimeseriesChartDatasetPartDisplayDriver
     BuildPartDisplayContext context
   )
   {
-    return Combine(
-      Initialize<TimeseriesChartDatasetPartThumbnailViewModel>(
-          "TimeseriesChartDatasetPart_Thumbnail",
-          model =>
-          {
-            model.Part = part;
-            model.Definition = context.TypePartDefinition;
-          }
-        )
-        .Location("Thumbnail", "Content"),
-      Initialize<TimeseriesChartDatasetPartAdminViewModel>(
-          "TimeseriesChartDatasetPart_Admin",
-          model =>
-          {
-            model.Part = part;
-            model.Definition = context.TypePartDefinition;
-          }
-        )
-        .Location("Admin", "Content")
+    return Initialize<TimeseriesChartDatasetPartViewModel>(
+        GetDisplayShapeType(context),
+        model =>
+        {
+          model.Part = part;
+          model.Definition = context.TypePartDefinition;
+        }
+      )
+      .Location("Content");
+  }
+
+  public override IDisplayResult Edit(
+    TimeseriesChartDatasetPart part,
+    BuildPartEditorContext context
+  )
+  {
+    return Initialize<TimeseriesChartDatasetPartEditViewModel>(
+      GetEditorShapeType(context),
+      model =>
+      {
+        // TODO: prop and options
+        model.Part = part;
+        model.Definition = context.TypePartDefinition;
+      }
     );
   }
 
-  // TODO: validate property and history
   public override async Task<IDisplayResult> UpdateAsync(
     TimeseriesChartDatasetPart part,
     IUpdateModel updater,
     UpdatePartEditorContext context
   )
   {
-    var viewModel = new TimeseriesChartDatasetPartAdminViewModel();
+    var viewModel = new TimeseriesChartDatasetPartEditViewModel();
 
-    if (await updater.TryUpdateModelAsync(viewModel, Prefix))
+    if (
+      await updater.TryUpdateModelAsync(
+        viewModel,
+        Prefix,
+        model => model.Property
+      )
+    )
     {
+      // TODO: validate property
       return Edit(part, context);
     }
 

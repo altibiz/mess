@@ -1,10 +1,17 @@
 using OrchardCore.Modules.Manifest;
+using ManifestConstants = Mess.OrchardCore.ManifestConstants;
 
 [assembly: Module(
-  Name = "Mess.EventStore",
-  Author = "Altibiz",
-  Website = "https://altibiz.com",
-  Version = "0.0.1",
-  Description = "Mess.EventStore",
-  Category = "Content Management"
+  Name = "Event Store",
+  Author = ManifestConstants.Author,
+  Website = ManifestConstants.Website,
+  Version = ManifestConstants.Version,
+  Tags = new[] { ManifestConstants.MessTag, ManifestConstants.OzdsTag }
+)]
+
+[assembly: Feature(
+  Id = "Mess.EventStore",
+  Name = "Event Store",
+  Description = "The Event Store module enables the usage of an event store using MartenDb.",
+  Category = ManifestConstants.Category
 )]

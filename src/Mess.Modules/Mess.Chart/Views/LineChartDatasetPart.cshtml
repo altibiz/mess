@@ -1,0 +1,81 @@
+@model LineChartDatasetPartViewModel
+
+@inject OrchardCore.ContentManagement.IContentManager ContentManager
+@inject OrchardCore.ContentManagement.Display.IContentItemDisplayManager ContentItemDisplayManager
+@inject OrchardCore.DisplayManagement.ModelBinding.IUpdateModelAccessor ModelUpdaterAccessor
+
+<div class="mb-3 d-flex flex-column">
+  <div class="d-flex flex-row align-items-center">
+    <label>Label:</label>&nbsp;
+    <span>@Model.Part.Label.Text</span>
+  </div>
+
+  <div class="d-flex flex-row align-items-center">
+    <label>Color:</label>&nbsp;
+    <div style="
+        width: 1em;
+        height: 1em;
+        background: @(Model.Part.Color.Value);
+        border: 1px solid grey; @* TODO: border color that takes care of light/dark mode *@
+        border-radius: 5px;
+      " >
+    </div>
+  </div>
+</div>
+
+@if (Model.Part.Dataset is not null)
+{
+  var contentItem = Model.Part.Dataset;
+  dynamic chart = await ContentItemDisplayManager.BuildDisplayAsync(
+    contentItem,
+    ModelUpdaterAccessor.ModelUpdater
+  );
+  chart.ContentItemId = Model.Part.RootContentItemId;
+  chart.LineChartDatasetContentItemId = Model.Part.ContentItem.ContentItemId;
+
+  <div class="mb-3">
+    <h3>
+      @T[Model.Part.Dataset.DisplayText ?? Model.Part.Dataset.ContentType]
+    </h3>
+    @await DisplayAsync(chart)
+    <span class="hint">@T["How the chart will be presented."]</span>
+  </div>
+}
+else
+{
+  @* NOTE: for some reason it doesn't work in the attribute *@
+  var modalId = $"#modalLineChartDatasetTypes{Model.Part.ContentItem.ContentItemId}";
+  <div class="card mb-3">
+    <div class="card-body bg-primary p-3">
+      <button 
+          type="button"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="@modalId">
+        @T["Pick dataset type"]
+      </button>
+    </div>
+  </div>
+}
+    
+<div class="mb-3">
+  <a
+      asp-route-area="Mess.Chart"
+      asp-controller="LineChartDatasetAdmin"
+      asp-action="Edit"
+      asp-route-contentItemId="@Model.Part.RootContentItemId"
+      asp-route-lineChartDatasetContentItemId="@Model.Part.ContentItem.ContentItemId"
+      class="btn btn-primary btn-sm">
+    @T["Edit dataset"]
+  </a>
+  <a
+      asp-route-area="Mess.Chart"
+      asp-controller="LineChartDatasetAdmin"
+      asp-action="Delete"
+      asp-route-contentItemId="@Model.Part.RootContentItemId"
+      asp-route-lineChartDatasetContentItemId="@Model.Part.ContentItem.ContentItemId"
+      class="btn btn-danger btn-sm"
+      data-url-af="RemoveUrl UnsafeUrl">
+    @T["Delete dataset"]
+  </a>
+</div>

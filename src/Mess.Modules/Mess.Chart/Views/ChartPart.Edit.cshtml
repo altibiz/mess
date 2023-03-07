@@ -22,8 +22,7 @@
   var contentItem = Model.Part.Chart;
   dynamic chart = await ContentItemDisplayManager.BuildDisplayAsync(
     contentItem,
-    ModelUpdaterAccessor.ModelUpdater,
-    "Admin"
+    ModelUpdaterAccessor.ModelUpdater
   );
   chart.ContentItemId = Model.Part.ContentItem.ContentItemId;
   

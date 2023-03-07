@@ -8,6 +8,7 @@
 
   <PropertyGroup>
     <MessOrchardVersion>1.5</MessOrchardVersion>
+    <MessEtchVersion>1.4</MessEtchVersion>
 
     <!-- NOTE: these are connected -->
     <MessNpgsqlVersion>6.0.7</MessNpgsqlVersion>

@@ -1,13 +1,19 @@
 using OrchardCore.Modules.Manifest;
+using ManifestConstants = Mess.OrchardCore.ManifestConstants;
 
 [assembly: Module(
-  Name = "Mess.MeasurementDevice",
-  Author = "Altibiz",
-  Website = "https://altibiz.com",
-  Version = "0.0.1",
-  Description = "Mess.MeasurementDevice",
-  Category = "Content Management",
-  // TODO: remove hard EventStore dependency
+  Name = "Measurement Device",
+  Author = ManifestConstants.Author,
+  Website = ManifestConstants.Website,
+  Version = ManifestConstants.Version,
+  Tags = new[] { ManifestConstants.MessTag, ManifestConstants.OzdsTag }
+)]
+
+[assembly: Feature(
+  Id = "Mess.MeasurementDevice",
+  Name = "Measurement Device",
+  Description = "The Measurement Device module adds support for push and pull type measurement devices.",
+  Category = ManifestConstants.Category,
   Dependencies = new[]
   {
     "OrchardCore.ContentTypes",

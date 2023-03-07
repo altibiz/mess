@@ -1,4 +1,4 @@
-@model LineChartPartAdminViewModel
+@model LineChartPartViewModel
 @using Mess.System.Extensions.Enumerable
 
 @inject OrchardCore.ContentManagement.IContentManager ContentManager
@@ -18,7 +18,19 @@
       );
       dataset.Index = index;
       <div class="mb-3 row">
-        @await DisplayAsync(dataset)
+        <div 
+            class="
+              d-flex
+              flex-column
+              justify-content-between
+              border
+              rounded
+              p-2
+              ps-3
+              mb-1
+            ">
+          @await DisplayAsync(dataset)
+        </div>
       </div>
     }
   }
@@ -35,7 +47,7 @@
         asp-action="Create"
         asp-route-contentItemId="@Model.Part.RootContentItemId"
         class="btn btn-success btn-sm">
-      @T["Create"]
+      @T["Create dataset"]
     </a>
   </div>
 </div>

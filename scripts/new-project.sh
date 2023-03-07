@@ -7,12 +7,12 @@ ROOT_DIR="$(dirname "$SCRIPT_DIR")"
 
 TYPE="$1"
 NAME="$2"
-if ! echo "$TYPE" | grep -Eq "(module|theme)"; then
+if ! echo "$TYPE" | grep -Eq "^(module|theme)$"; then
   printf "[Mess] First argument (type) must be either 'module' or 'theme'\n"
   exit 1
 fi
 
-if ! echo "$NAME" | grep -Eq "[A-Za-z]+"; then
+if ! echo "$NAME" | grep -Eq "^[A-Za-z]+$"; then
   printf "[Mess] Second argument (name) must consist only of letters\n"
   exit 1
 fi
@@ -21,6 +21,12 @@ LOWERCASE_NAME="$(
     sed 's/\(.\)\([A-Z]\)/\1-\2/g' |
     tr '[:upper:]' '[:lower:]'
 )"
+LONG_NAME="${NAME//\([a-z]\)\([A-Z]\)/\1 \2/g}"
+
+if ! echo "$DESCRIPTION" | grep -Eq "^[0-9A-Za-z \.,']+$"; then
+  printf "[Mess] Third argument (description) must consist only of letters, numbers, spaces and punctuation\n"
+  exit 1
+fi
 
 if [ "$TYPE" = "module" ]; then
   BASE_DIR="$ROOT_DIR/src/Mess.Modules/Mess.$NAME"
@@ -57,15 +63,17 @@ cat <<END >"$PLACEHOLDER"
 namespace $NAMESPACE;
 END
 cat <<END >"$MANIFEST"
-using OrchardCore.Modules.Manifest;
+using OrchardCore.DisplayManagement.Manifest;
+using Mess.OrchardCore;
 
-[assembly: Module(
-  Name = "$NAMESPACE",
-  Author = "Altibiz",
-  Website = "https://altibiz.com",
-  Version = "0.0.1",
-  Description = "$NAMESPACE",
-  Category = "Content Management"
+[assembly: Theme(
+  Name = "The $LONG_NAME Theme",
+  Author = ManifestConstants.Author,
+  Website = ManifestConstants.Website,
+  Version = ManifestConstants.Version,
+  Description = "$DESCRIPTION",
+  Category = ManifestConstants.Category,
+  Tags = new[] { ManifestConstants.MessTag, ManifestConstants.OzdsTag }
 )]
 END
 cat <<END >"$STARTUP"
@@ -154,6 +162,25 @@ if [ "$TYPE" == "module" ]; then
   ABSTRACTIONS_BASE_DIR="$ROOT_DIR/src/Mess.Abstractions/$ABSTRACTIONS_NAMESPACE"
   ABSTRACTIONS_CSPROJ="$ABSTRACTIONS_BASE_DIR/$ABSTRACTIONS_NAMESPACE.csproj"
   ABSTRACTIONS_PLACEHOLDER="$ABSTRACTIONS_BASE_DIR/$ABSTRACTIONS_NAMESPACE.cs"
+  cat <<END >"$MANIFEST"
+using OrchardCore.Modules.Manifest;
+using ManifestConstants = Mess.OrchardCore.ManifestConstants;
+
+[assembly: Module(
+  Name = "$LONG_NAME",
+  Author = ManifestConstants.Author,
+  Website = ManifestConstants.Website,
+  Version = ManifestConstants.Version,
+  Tags = new[] { ManifestConstants.MessTag, ManifestConstants.OzdsTag }
+)]
+
+[assembly: Feature(
+  Id = "$NAMESPACE",
+  Name = "$LONG_NAME",
+  Description = "$DESCRIPTION",
+  Category = ManifestConstants.Category
+)]
+END
   cat <<END >"$CSPROJ"
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
