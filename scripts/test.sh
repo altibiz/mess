@@ -48,11 +48,8 @@ if [ ! "$1" ]; then
 fi
 
 printf "[Mess] Testing with 'dotnet'...\n"
-if [ "$1" ]; then
-  dotnet test --filter "FullyQualifiedName~$1"
-else
-  dotnet test
-fi
+#shellcheck disable=SC2068
+dotnet test $@
 EXIT_CODE=$?
 printf "\n"
 
