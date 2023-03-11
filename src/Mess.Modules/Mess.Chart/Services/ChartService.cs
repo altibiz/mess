@@ -76,6 +76,11 @@ public class ChartService : IChartService
     string concreteChartContentType
   )
   {
+    if (string.IsNullOrEmpty(concreteChartContentType))
+    {
+      return null;
+    }
+
     var concreteChart = await _contentManager.NewAsync(
       concreteChartContentType
     );
@@ -132,7 +137,7 @@ public class ChartService : IChartService
     existingConcreteChart.Merge(concreteChart);
 
     chart.Alter<ChartPart>(part => part.Chart = existingConcreteChart);
-    return await Task.FromResult(chart);
+    return await Task.FromResult(existingConcreteChart);
   }
 
   public async Task<ContentItem?> DeleteConcreteChartAsync(ContentItem chart)
