@@ -1,3 +1,4 @@
+using Mess.Chart.Abstractions.Providers;
 using Microsoft.AspNetCore.Authorization;
 using Moq;
 using OrchardCore.ContentManagement;
@@ -17,6 +18,7 @@ public class Startup : Test.Startup
     var authorizationService = new Mock<IAuthorizationService>();
     var contentManager = new Mock<IContentManager>();
     var contentDefinitionManager = new Mock<IContentDefinitionManager>();
+    var chartDataProviderLookup = new Mock<IChartDataProviderLookup>();
 
     services.AddScoped<IAuthorizationService>(
       services => authorizationService.Object
@@ -25,6 +27,9 @@ public class Startup : Test.Startup
     services.AddScoped<IContentDefinitionManager>(
       services => contentDefinitionManager.Object
     );
+    services.AddScoped<IChartDataProviderLookup>(
+      services => chartDataProviderLookup.Object
+    );
 
     services.AddScoped<Mock<IAuthorizationService>>(
       services => authorizationService
@@ -32,6 +37,9 @@ public class Startup : Test.Startup
     services.AddScoped<Mock<IContentManager>>(services => contentManager);
     services.AddScoped<Mock<IContentDefinitionManager>>(
       services => contentDefinitionManager
+    );
+    services.AddScoped<Mock<IChartDataProviderLookup>>(
+      services => chartDataProviderLookup
     );
 
     services.AddScoped<Mess.Chart.Services.ChartService>();

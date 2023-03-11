@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Mess.Chart.Abstractions;
 using Mess.Chart.Abstractions.Models;
+using Mess.Chart.Abstractions.Providers;
 using Mess.Chart.Abstractions.Services;
 using Mess.OrchardCore.Extensions.OrchardCore;
 using Microsoft.AspNetCore.Authorization;
@@ -32,7 +33,7 @@ public class ChartService : IChartService
       )
       : await _contentManager.GetAsync(contentItemId, VersionOptions.Latest);
 
-    if (contentItem is null || !contentItem.Has<ChartPart>())
+    if (!await IsValidChartAsync(contentItem))
     {
       return null;
     }
@@ -48,11 +49,6 @@ public class ChartService : IChartService
 
   public async Task<bool> IsValidConcreteChartTypeAsync(string contentType)
   {
-    if (String.IsNullOrWhiteSpace(contentType))
-    {
-      return false;
-    }
-
     var contentTypeDefinition = _contentDefinitionManager.GetTypeDefinition(
       contentType
     );
@@ -76,11 +72,6 @@ public class ChartService : IChartService
     string concreteChartContentType
   )
   {
-    if (string.IsNullOrEmpty(concreteChartContentType))
-    {
-      return null;
-    }
-
     var concreteChart = await _contentManager.NewAsync(
       concreteChartContentType
     );
@@ -88,6 +79,7 @@ public class ChartService : IChartService
     {
       return null;
     }
+
     concreteChart.Alter<NestedChartPart>(
       concreteChartContentType + "Part",
       part =>
@@ -161,7 +153,7 @@ public class ChartService : IChartService
     ContentItem chart
   )
   {
-    if (!await IsLineChartAsync(chart))
+    if (!await IsValidLineChartAsync(chart))
     {
       return null;
     }
@@ -187,7 +179,7 @@ public class ChartService : IChartService
 
   public async Task<ContentItem?> CreateLineChartDatasetAsync(ContentItem chart)
   {
-    if (!await IsLineChartAsync(chart))
+    if (!await IsValidLineChartAsync(chart))
     {
       return null;
     }
@@ -233,7 +225,7 @@ public class ChartService : IChartService
     ContentItem lineChartDataset
   )
   {
-    if (!await IsLineChartAsync(chart))
+    if (!await IsValidLineChartAsync(chart))
     {
       return null;
     }
@@ -273,7 +265,7 @@ public class ChartService : IChartService
         })
     );
 
-    return lineChartDataset;
+    return existinglineChartDataset;
   }
 
   public async Task<ContentItem?> DeleteLineChartDatasetAsync(
@@ -281,7 +273,7 @@ public class ChartService : IChartService
     string lineChartDatasetContentItemId
   )
   {
-    if (!await IsLineChartAsync(chart))
+    if (!await IsValidLineChartAsync(chart))
     {
       return null;
     }
@@ -353,7 +345,7 @@ public class ChartService : IChartService
     string concreteLineChartDatasetContentType
   )
   {
-    if (!await IsLineChartAsync(chart))
+    if (!await IsValidLineChartAsync(chart))
     {
       return null;
     }
@@ -383,7 +375,7 @@ public class ChartService : IChartService
     string concreteLineChartDatasetContentType
   )
   {
-    if (!await IsLineChartAsync(chart))
+    if (!await IsValidLineChartAsync(chart))
     {
       return null;
     }
@@ -436,7 +428,7 @@ public class ChartService : IChartService
     ContentItem concreteLineChartDataset
   )
   {
-    if (!await IsLineChartAsync(chart))
+    if (!await IsValidLineChartAsync(chart))
     {
       return null;
     }
@@ -475,7 +467,7 @@ public class ChartService : IChartService
     string lineChartDatasetContentItemId
   )
   {
-    if (!await IsLineChartAsync(chart))
+    if (!await IsValidLineChartAsync(chart))
     {
       return null;
     }
@@ -508,10 +500,21 @@ public class ChartService : IChartService
     return concreteLineChartDataset;
   }
 
-  private async Task<bool> IsLineChartAsync(ContentItem chart)
+  private async Task<bool> IsValidChartAsync(ContentItem contentItem)
+  {
+    var chartPart = contentItem.As<ChartPart>();
+    return await Task.FromResult(
+      chartPart is not null
+        && !string.IsNullOrEmpty(chartPart.DataProviderId)
+        && _chartDataProviderLookup.Exists(chartPart.DataProviderId)
+    );
+  }
+
+  private async Task<bool> IsValidLineChartAsync(ContentItem chart)
   {
     return await Task.FromResult(
-      chart.As<ChartPart>()?.Chart?.Has<LineChartPart>() is true
+      await IsValidChartAsync(chart)
+        && chart.As<ChartPart>().Chart?.Has<LineChartPart>() is true
     );
   }
 
@@ -527,15 +530,18 @@ public class ChartService : IChartService
   public ChartService(
     IContentManager contentManager,
     IContentDefinitionManager contentDefinitionManager,
-    IAuthorizationService authorizationService
+    IAuthorizationService authorizationService,
+    IChartDataProviderLookup chartDataProviderLookup
   )
   {
     _contentManager = contentManager;
     _contentDefinitionManager = contentDefinitionManager;
     _authorizationService = authorizationService;
+    _chartDataProviderLookup = chartDataProviderLookup;
   }
 
   private readonly IContentManager _contentManager;
   private readonly IContentDefinitionManager _contentDefinitionManager;
   private readonly IAuthorizationService _authorizationService;
+  private readonly IChartDataProviderLookup _chartDataProviderLookup;
 }
