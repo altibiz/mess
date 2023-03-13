@@ -1,4 +1,4 @@
-using Mess.System.Extensions.Object;
+using Mess.System.Extensions.Objects;
 using Mess.MeasurementDevice.Parsers.Egauge;
 using Mess.MeasurementDevice.Abstractions.Models;
 using OrchardCore.Environment.Shell;
@@ -12,7 +12,7 @@ namespace Mess.MeasurementDevice.Test;
 [Startup(typeof(Startup), Shared = false)]
 public record class EgaugeEventStoreStorageParserTest(
   EgaugeParser Parser,
-  ITenants Tenants,
+  ITenantFixture Fixture,
   ILogger<EgaugeEventStoreStorageParserTest> Logger
 )
 {
@@ -30,7 +30,7 @@ public record class EgaugeEventStoreStorageParserTest(
 
     var model = (EgaugeMeasurementModel)measurement.Value.Model;
     Logger.LogInformation(model.ToJson());
-    Assert.Equal(Tenants.Current.Name, model.Tenant);
+    Assert.Equal(Fixture.Tenants.Current.Name, model.Tenant);
     Assert.NotEmpty(model.Source);
     Assert.True(model.Timestamp.Year > 2000);
     Assert.NotEqual(0, model.Power);

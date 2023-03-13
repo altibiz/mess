@@ -15,10 +15,24 @@ public record CreateLineChartDatasetAsyncTests(
     new[]
     {
       new[] { new ContentItem() },
-      new[] { new ContentItem().Weld(new ChartPart()) },
+      new[]
+      {
+        new ContentItem().Weld(
+          new ChartPart() { DataProviderId = "TestDataProviderId" }
+        )
+      },
       new[]
       {
         new ContentItem().Weld(new ChartPart() { Chart = new ContentItem() })
+      },
+      new[]
+      {
+        new ContentItem().Weld(
+          new ChartPart()
+          {
+            Chart = new ContentItem().Weld(new LineChartPart())
+          }
+        )
       },
     };
 

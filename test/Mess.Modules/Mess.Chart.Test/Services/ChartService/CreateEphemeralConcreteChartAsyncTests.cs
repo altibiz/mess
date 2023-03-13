@@ -1,4 +1,3 @@
-using Mess.Chart.Abstractions.Models;
 using Moq;
 using OrchardCore.ContentManagement;
 using Xunit.DependencyInjection;
@@ -8,7 +7,8 @@ namespace Mess.Chart.Test.Services.ChartService;
 [Startup(typeof(Startup))]
 public record CreateEphemeralConcreteChartAsyncTests(
   Mess.Chart.Services.ChartService chartService,
-  Mock<IContentManager> contentManager
+  Mock<IContentManager> contentManager,
+  ISnapshotFixture snapshotFixture
 )
 {
   public static readonly object[][] DoesntCreateConcreteChartWhenContentTypeIsInvalidData =
@@ -21,99 +21,68 @@ public record CreateEphemeralConcreteChartAsyncTests(
   [Theory]
   [StaticData(
     typeof(CreateEphemeralConcreteChartAsyncTests),
-    nameof(
-      CreateEphemeralConcreteChartAsyncTests.DoesntCreateConcreteChartWhenContentTypeIsInvalidData
-    )
+    nameof(DoesntCreateConcreteChartWhenContentTypeIsInvalidData)
   )]
   public async Task DoesntCreateConcreteChartWhenContentTypeIsInvalid(
     string setupContentType,
     string contentType
   )
   {
+    var verificationHash = await snapshotFixture.MakeVerificationHash(
+      setupContentType,
+      contentType
+    );
+
     Setup(setupContentType);
 
     var chart = new ContentItem();
 
-    var result = await chartService.CreateEphemeralConcreteChartAsync(
-      new ContentItem(),
+    var result = await chartService.CreateConcreteChartAsync(
+      chart,
       contentType
     );
 
-    Assert.Null(result);
+    result.Should().BeNull();
+
+    await snapshotFixture.Verify(new { result, chart }, verificationHash);
   }
 
-  public static readonly object[][] DoesntCreateConcreteChartWhenChartIsInvalidData =
-    new[]
-    {
-      new object[] { new ContentItem() },
-      new object[] { new ContentItem().Weld(new ChartPart()) },
-    };
-
   [Theory]
-  [StaticData(
-    typeof(CreateEphemeralConcreteChartAsyncTests),
-    nameof(
-      CreateEphemeralConcreteChartAsyncTests.DoesntCreateConcreteChartWhenChartIsInvalidData
-    )
-  )]
+  [NewtonsoftJsonAssetData]
   public async Task DoesntCreateConcreteChartWhenChartIsInvalid(
-    ContentItem contentItem
+    ContentItem chart
   )
   {
+    var verificationHash = await snapshotFixture.MakeVerificationHash(chart);
+
     Setup("TestContentType");
 
-    var result = await chartService.CreateEphemeralConcreteChartAsync(
-      contentItem,
-      "TestContentType"
-    );
-
-    Assert.Null(result);
-  }
-
-  public static readonly object[][] CreatesConcreteChartWhenChartIsValidData =
-    new[]
-    {
-      new object[]
-      {
-        new ContentItem().Weld(
-          new ChartPart() { DataProviderId = "TestDataProviderId" }
-        )
-      },
-      new object[]
-      {
-        new ContentItem().Weld(
-          new ChartPart()
-          {
-            DataProviderId = "TestDataProviderId",
-            Chart = new ContentItem()
-          }
-        )
-      },
-    };
-
-  [Theory]
-  [StaticData(
-    typeof(CreateEphemeralConcreteChartAsyncTests),
-    nameof(
-      CreateEphemeralConcreteChartAsyncTests.CreatesConcreteChartWhenChartIsValidData
-    )
-  )]
-  public async Task CreatesConcreteChartWhenChartIsValid(ContentItem chart)
-  {
-    Setup("TestContentType");
-
-    var result = await chartService.CreateEphemeralConcreteChartAsync(
+    var result = await chartService.CreateConcreteChartAsync(
       chart,
       "TestContentType"
     );
 
-    Assert.NotNull(result);
-    var nestedChartPart = result.Get<NestedChartPart>("TestContentTypePart");
-    Assert.NotNull(nestedChartPart);
-    Assert.Equal("TestContentItemId", nestedChartPart.RootContentItemId);
-    Assert.Equal("TestDataProviderId", nestedChartPart.ChartDataProviderId);
-    var chartPart = chart.As<ChartPart>();
-    Assert.NotEqual(chartPart.Chart, result);
+    result.Should().BeNull();
+
+    await snapshotFixture.Verify(new { result, chart }, verificationHash);
+  }
+
+  [Theory]
+  [NewtonsoftJsonAssetData]
+  public async Task CreatesConcreteChartWhenChartIsValid(ContentItem chart)
+  {
+    var verificationHash = await snapshotFixture.MakeVerificationHash(chart);
+
+    Setup("TestContentType");
+
+    var result = await chartService.CreateConcreteChartAsync(
+      chart,
+      "TestContentType"
+    );
+
+    result.Should().NotBeNull();
+
+    await snapshotFixture.Verify(new { result, chart }, verificationHash);
   }
 
   private void Setup(string contentType)

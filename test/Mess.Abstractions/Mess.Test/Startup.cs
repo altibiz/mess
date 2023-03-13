@@ -26,6 +26,7 @@ public class Startup
 
     services.RegisterTenantFixture();
     services.RegisterE2eFixture();
+    services.RegisterSnapshotFixture();
   }
 
   public virtual void Configure(IServiceProvider services)

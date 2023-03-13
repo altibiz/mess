@@ -2,7 +2,7 @@ using System.Xml.Linq;
 using Microsoft.Extensions.Logging;
 using Mess.Tenants;
 using Mess.MeasurementDevice.Abstractions.Models;
-using Mess.System.Extensions.Object;
+using Mess.System.Extensions.Objects;
 using Mess.MeasurementDevice.Abstractions.Parsers;
 using OrchardCore.Environment.Shell;
 using Mess.MeasurementDevice.Storage;

@@ -4,6 +4,5 @@ using System.Diagnostics.CodeAnalysis;
   "CodeQuality",
   "xUnit1013:Public method should be marked as test",
   Justification = "Deconstruct on record class test types",
-  Scope = "namespaceanddescendants",
-  Target = "~N:Mess.Chart.Test"
+  Scope = "module"
 )]

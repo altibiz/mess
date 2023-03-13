@@ -15,10 +15,24 @@ public record CreateEphemeralLineChartDatasetAsyncTests(
     new[]
     {
       new[] { new ContentItem() },
-      new[] { new ContentItem().Weld(new ChartPart()) },
+      new[]
+      {
+        new ContentItem().Weld(
+          new ChartPart() { DataProviderId = "TestDataProviderId" }
+        )
+      },
       new[]
       {
         new ContentItem().Weld(new ChartPart() { Chart = new ContentItem() })
+      },
+      new[]
+      {
+        new ContentItem().Weld(
+          new ChartPart()
+          {
+            Chart = new ContentItem().Weld(new LineChartPart())
+          }
+        )
       },
     };
 
@@ -38,18 +52,57 @@ public record CreateEphemeralLineChartDatasetAsyncTests(
     Assert.Null(result);
   }
 
-  [Fact]
-  public async Task CreatesDatasetWhenChartIsLineChart()
+  public static object[][] CreatesDatasetWhenChartIsLineChartData = new[]
+  {
+    new[]
+    {
+      new ContentItem() { ContentItemId = "TestContentItemId" }.Weld(
+        new ChartPart()
+        {
+          DataProviderId = "TestDataProviderId",
+          Chart = new ContentItem().Weld(new LineChartPart())
+        }
+      )
+    },
+    new[]
+    {
+      new ContentItem() { ContentItemId = "TestContentItemId" }.Weld(
+        new ChartPart()
+        {
+          DataProviderId = "TestDataProviderId",
+          Chart = new ContentItem().Weld(
+            new LineChartPart() { Datasets = new List<ContentItem>() }
+          )
+        }
+      )
+    },
+    new[]
+    {
+      new ContentItem() { ContentItemId = "TestContentItemId" }.Weld(
+        new ChartPart()
+        {
+          DataProviderId = "TestDataProviderId",
+          Chart = new ContentItem().Weld(
+            new LineChartPart()
+            {
+              Datasets = new List<ContentItem>() { new ContentItem() }
+            }
+          )
+        }
+      )
+    }
+  };
+
+  [Theory]
+  [StaticData(
+    typeof(CreateEphemeralLineChartDatasetAsyncTests),
+    nameof(
+      CreateEphemeralLineChartDatasetAsyncTests.CreatesDatasetWhenChartIsLineChartData
+    )
+  )]
+  public async Task CreatesDatasetWhenChartIsLineChart(ContentItem chart)
   {
     Setup(new ContentItem());
-
-    var chart = new ContentItem() { ContentItemId = "TestContentItemId" }.Weld(
-      new ChartPart()
-      {
-        DataProviderId = "TestDataProviderId",
-        Chart = new ContentItem().Weld(new LineChartPart())
-      }
-    );
 
     var result = await chartService.CreateEphemeralLineChartDatasetAsync(chart);
 

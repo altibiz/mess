@@ -1,0 +1,17 @@
+[
+  [
+    {
+      "ChartPart": {
+        "DataProviderId": "TestDataProviderId"
+      }
+    }
+  ],
+  [
+    {
+      "ChartPart": {
+        "DataProviderId": "TestDataProviderId",
+        "Chart": {}
+      }
+    }
+  ]
+]

@@ -1,5 +1,5 @@
 using Mess.Chart.Abstractions.Models;
-using Mess.System.Extensions.Object;
+using Mess.System.Extensions.Objects;
 
 namespace Mess.Chart.Abstractions.Extensions.System;
 

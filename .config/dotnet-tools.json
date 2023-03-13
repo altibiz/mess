@@ -9,6 +9,10 @@
     "dotnet-ef": {
       "version": "6.0.7",
       "commands": ["dotnet-ef"]
+    },
+    "diffenginetray": {
+      "version": "11.2.0",
+      "commands": ["DiffEngineTray"]
     }
   }
 }

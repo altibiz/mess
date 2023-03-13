@@ -1,4 +1,3 @@
-using Mess.Chart.Abstractions.Models;
 using Moq;
 using OrchardCore.ContentManagement;
 using Xunit.DependencyInjection;
@@ -8,61 +7,82 @@ namespace Mess.Chart.Test.Services.ChartService;
 [Startup(typeof(Startup))]
 public record CreateConcreteChartAsyncTests(
   Mess.Chart.Services.ChartService chartService,
-  Mock<IContentManager> contentManager
+  Mock<IContentManager> contentManager,
+  ISnapshotFixture snapshotFixture
 )
 {
-  [Fact]
-  public async Task ReturnsNullWhenContentTypeIsEmpty()
+  public static readonly object[][] DoesntCreateConcreteChartWhenContentTypeIsInvalidData =
+    new[]
+    {
+      new object[] { "TestContentType", string.Empty },
+      new object[] { "TestContentType", "InvalidContentType" },
+    };
+
+  [Theory]
+  [StaticData(
+    typeof(CreateConcreteChartAsyncTests),
+    nameof(DoesntCreateConcreteChartWhenContentTypeIsInvalidData)
+  )]
+  public async Task DoesntCreateConcreteChartWhenContentTypeIsInvalid(
+    string setupContentType,
+    string contentType
+  )
   {
-    Setup("TestContentType");
+    var verificationHash = await snapshotFixture.MakeVerificationHash(
+      setupContentType,
+      contentType
+    );
+
+    Setup(setupContentType);
 
     var chart = new ContentItem();
 
     var result = await chartService.CreateConcreteChartAsync(
       chart,
-      string.Empty
+      contentType
     );
 
-    Assert.Null(result);
+    result.Should().BeNull();
+
+    await snapshotFixture.Verify(new { result, chart }, verificationHash);
   }
 
-  [Fact]
-  public async Task ReturnsNullWhenContentTypeIsInvalid()
+  [Theory]
+  [NewtonsoftJsonAssetData]
+  public async Task DoesntCreateConcreteChartWhenChartIsInvalid(
+    ContentItem chart
+  )
   {
+    var verificationHash = await snapshotFixture.MakeVerificationHash(chart);
+
     Setup("TestContentType");
-
-    var chart = new ContentItem();
-
-    var result = await chartService.CreateConcreteChartAsync(
-      chart,
-      "InvalidContentType"
-    );
-
-    Assert.Null(result);
-  }
-
-  [Fact]
-  public async Task ReturnsBoundContentItemWhenContentTypeIsValid()
-  {
-    Setup("TestContentType");
-
-    var chart = new ContentItem();
-    chart.ContentItemId = "TestContentItemId";
-    chart.Weld(new ChartPart() { DataProviderId = "TestDataProviderId" });
 
     var result = await chartService.CreateConcreteChartAsync(
       chart,
       "TestContentType"
     );
 
-    Assert.NotNull(result);
-    var nestedChartPart = result.Get<NestedChartPart>("TestContentTypePart");
-    Assert.NotNull(nestedChartPart);
-    Assert.Equal("TestContentItemId", nestedChartPart.RootContentItemId);
-    Assert.Equal("TestDataProviderId", nestedChartPart.ChartDataProviderId);
-    var chartPart = chart.As<ChartPart>();
-    Assert.NotNull(chartPart);
-    Assert.Equal(result, chartPart.Chart);
+    result.Should().BeNull();
+
+    await snapshotFixture.Verify(new { result, chart }, verificationHash);
+  }
+
+  [Theory]
+  [NewtonsoftJsonAssetData]
+  public async Task CreatesConcreteChartWhenChartIsValid(ContentItem chart)
+  {
+    var verificationHash = await snapshotFixture.MakeVerificationHash(chart);
+
+    Setup("TestContentType");
+
+    var result = await chartService.CreateConcreteChartAsync(
+      chart,
+      "TestContentType"
+    );
+
+    result.Should().NotBeNull();
+
+    await snapshotFixture.Verify(new { result, chart }, verificationHash);
   }
 
   private void Setup(string contentType)

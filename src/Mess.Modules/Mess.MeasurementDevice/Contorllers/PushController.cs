@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using Mess.System.Extensions.Object;
+using Mess.System.Extensions.Strings;
 using Mess.MeasurementDevice.Abstractions.Parsers;
 using Mess.MeasurementDevice.Abstractions.Storage;
-using Mess.System;
 
 namespace Mess.MeasurementDevice.Controllers;
 
@@ -22,7 +21,7 @@ public class PushController : Controller
       return BadRequest($"Unknown parser for measurement");
     }
 
-    var body = await Request.Body.ToStringAsync();
+    var body = await Request.Body.EncodeAsync();
     var parsedMeasurement = await parser.ParseAsync(body);
     if (parsedMeasurement is null)
     {

@@ -4,7 +4,7 @@ using Mess.Timeseries.Test.Abstractions;
 
 namespace Mess.Chart.Test;
 
-public class Startup : Mess.Test.Startup
+public class Startup : Mess.OrchardCore.Test.Startup
 {
   public override void ConfigureServices(
     IServiceCollection services,

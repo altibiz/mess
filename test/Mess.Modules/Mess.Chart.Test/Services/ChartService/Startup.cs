@@ -8,6 +8,8 @@ namespace Mess.Chart.Test.Services.ChartService;
 
 public class Startup : Test.Startup
 {
+  public const string TestDataProviderId = "TestDataProviderId";
+
   public override void ConfigureServices(
     IServiceCollection services,
     HostBuilderContext hostBuilderContext
@@ -19,6 +21,13 @@ public class Startup : Test.Startup
     var contentManager = new Mock<IContentManager>();
     var contentDefinitionManager = new Mock<IContentDefinitionManager>();
     var chartDataProviderLookup = new Mock<IChartDataProviderLookup>();
+
+    chartDataProviderLookup
+      .Setup(
+        chartDataProviderLookup =>
+          chartDataProviderLookup.Exists(TestDataProviderId)
+      )
+      .Returns(true);
 
     services.AddScoped<IAuthorizationService>(
       services => authorizationService.Object

@@ -1,5 +1,5 @@
 using Mess.Chart.Abstractions.Models;
-using Mess.OrchardCore.Extensions.Object;
+using Mess.OrchardCore.Extensions.Objects;
 using OrchardCore.ContentManagement;
 using Xunit.DependencyInjection;
 

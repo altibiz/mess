@@ -72,6 +72,11 @@ public class ChartService : IChartService
     string concreteChartContentType
   )
   {
+    if (!await IsValidChartAsync(chart))
+    {
+      return null;
+    }
+
     var concreteChart = await _contentManager.NewAsync(
       concreteChartContentType
     );

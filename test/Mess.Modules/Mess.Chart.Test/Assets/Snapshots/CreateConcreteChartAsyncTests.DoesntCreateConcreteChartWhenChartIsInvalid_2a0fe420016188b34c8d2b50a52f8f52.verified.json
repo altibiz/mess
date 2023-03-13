@@ -1,0 +1,12 @@
+﻿{
+  "chart": {
+    "Content": {
+      "ChartPart": {
+        "DataProviderId": "InvalidDataProviderId",
+        "Chart": null
+      }
+    },
+    "Latest": false,
+    "Published": false
+  }
+}

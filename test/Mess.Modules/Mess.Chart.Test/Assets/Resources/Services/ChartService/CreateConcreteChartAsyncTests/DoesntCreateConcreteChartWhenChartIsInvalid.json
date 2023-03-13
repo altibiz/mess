@@ -1,0 +1,23 @@
+[
+  [{}],
+  [
+    {
+      "ChartPart": {}
+    }
+  ],
+  [
+    {
+      "ChartPart": {
+        "DataProviderId": "InvalidDataProviderId"
+      }
+    }
+  ],
+  [
+    {
+      "ChartPart": {
+        "DataProviderId": "InvalidDataProviderId",
+        "Chart": null
+      }
+    }
+  ]
+]

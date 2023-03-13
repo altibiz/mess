@@ -1,6 +1,4 @@
 using Mess.Tenants;
-using Mess.Test.E2e;
-using Mess.Test.Tenants;
 
 namespace Mess.Test.Extensions.Microsoft;
 
@@ -21,5 +19,10 @@ public static class IServiceCollectionExtensions
   public static void RegisterE2eFixture(this IServiceCollection services)
   {
     services.AddScoped<IE2eFixture, E2eFixture>();
+  }
+
+  public static void RegisterSnapshotFixture(this IServiceCollection services)
+  {
+    services.AddScoped<ISnapshotFixture, SnapshotFixture>();
   }
 }

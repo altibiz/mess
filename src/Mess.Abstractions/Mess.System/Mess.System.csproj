@@ -3,5 +3,9 @@
   <PropertyGroup>
     <OutputType>Library</OutputType>
   </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="HashDepot" Version="3.1.0" />
+  </ItemGroup>
 
 </Project>

@@ -1,7 +1,9 @@
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
+using Mess.OrchardCore.Json;
+using Mess.System.Extensions.Streams;
+using Mess.OrchardCore.Extensions.Streams;
 
-namespace Mess.OrchardCore.Extensions.Object;
+namespace Mess.OrchardCore.Extensions.Objects;
 
 public static class ObjectSerializationExtensions
 {
@@ -11,46 +13,44 @@ public static class ObjectSerializationExtensions
   ) =>
     JsonConvert.SerializeObject(
       @this,
-      pretty ? Formatting.Indented : Formatting.None
-    );
-
-  public static Stream ToNewtonsoftJsonStream(
-    this object? @this,
-    bool pretty = true
-  )
-  {
-    var serializer = JsonSerializer.Create(
       new JsonSerializerSettings
       {
         ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
         Formatting = pretty ? Formatting.Indented : Formatting.None,
+        Converters = new[] { new TupleJsonConverter() }
       }
     );
 
-    var stream = new MemoryStream();
-    using var streamWriter = new StreamWriter(stream);
-    using var jsonWriter = new JsonTextWriter(streamWriter);
-    serializer.Serialize(jsonWriter, @this);
-
-    return stream;
-  }
-
   public static T? FromNewtonsoftJson<T>(this string @this) =>
-    JsonConvert.DeserializeObject<T>(@this);
-
-  public static T? FromNewtonsoftJsonStream<T>(this Stream @this)
-  {
-    var serializer = JsonSerializer.Create(
+    JsonConvert.DeserializeObject<T>(
+      @this,
       new JsonSerializerSettings
       {
         ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+        Converters = new[] { new TupleJsonConverter() }
       }
     );
 
-    using var streamWriter = new StreamReader(@this);
-    using var jsonReader = new JsonTextReader(streamWriter);
-    var result = serializer.Deserialize<T>(jsonReader);
+  public static object? FromNewtonsoftJson(this string @this, Type type) =>
+    JsonConvert.DeserializeObject(
+      @this,
+      type,
+      new JsonSerializerSettings
+      {
+        ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+        Converters = new[] { new TupleJsonConverter() }
+      }
+    );
 
-    return result;
+  public static string GetNewtonsoftJsonSha256Hash(this object @this)
+  {
+    using var stream = @this.ToNewtonsoftJsonStream(pretty: false);
+    return StreamHashExtensions.GetSha256Hash(stream);
+  }
+
+  public static string GetNewtonsoftJsonMurMurHash(this object @this)
+  {
+    using var stream = @this.ToNewtonsoftJsonStream(pretty: false);
+    return StreamHashExtensions.GetMurMurHash(stream);
   }
 }

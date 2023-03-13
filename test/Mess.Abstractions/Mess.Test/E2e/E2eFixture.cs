@@ -5,7 +5,7 @@ using Microsoft.Playwright;
 
 namespace Mess.Test.E2e;
 
-public class E2eFixture : IE2eFixture, IAsyncDisposable, IDisposable
+internal class E2eFixture : IE2eFixture, IAsyncDisposable, IDisposable
 {
   public IPage Page { get; } = default!;
 
