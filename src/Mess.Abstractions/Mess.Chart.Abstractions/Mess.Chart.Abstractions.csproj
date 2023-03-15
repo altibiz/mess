@@ -7,6 +7,7 @@
   <ItemGroup>
     <PackageReference Include="OrchardCore.ContentManagement.Display" Version="$(MessOrchardVersion)" />
     <PackageReference Include="OrchardCore.Title" Version="$(MessOrchardVersion)" />
+    <PackageReference Include="OrchardCore.Flows" Version="$(MessOrchardVersion)" />
     <PackageReference Include="OrchardCore.ContentFields" Version="$(MessOrchardVersion)" />
     <PackageReference Include="Etch.OrchardCore.Fields" Version="$(MessEtchVersion)" />
   </ItemGroup>

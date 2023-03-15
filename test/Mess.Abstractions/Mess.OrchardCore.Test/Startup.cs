@@ -12,5 +12,6 @@ public class Startup : Mess.Test.Startup
     base.ConfigureServices(services, hostBuilderContext);
 
     services.RegisterOrchardSnapshotFixture();
+    services.RegisterOrchardE2eFixture();
   }
 }

@@ -2,7 +2,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Xml.Linq;
 using System.Xml.Serialization;
-using Mess.System.Text.Json;
+using Mess.System.Json;
 
 namespace Mess.System.Extensions.Streams;
 
@@ -18,7 +18,11 @@ public static class StreamSerializationExtensions
           AllowTrailingCommas = true,
           WriteIndented = pretty,
           ReferenceHandler = ReferenceHandler.IgnoreCycles,
-          Converters = { new TupleJsonConverterFactory(), }
+          Converters =
+          {
+            new TupleJsonConverterFactory(),
+            new TimeSpanConverter(),
+          }
         }
       )
     );
@@ -30,7 +34,11 @@ public static class StreamSerializationExtensions
       {
         AllowTrailingCommas = true,
         ReferenceHandler = ReferenceHandler.IgnoreCycles,
-        Converters = { new TupleJsonConverterFactory(), }
+        Converters =
+        {
+          new TupleJsonConverterFactory(),
+          new TimeSpanConverter(),
+        }
       }
     );
 
@@ -45,7 +53,11 @@ public static class StreamSerializationExtensions
       {
         AllowTrailingCommas = true,
         ReferenceHandler = ReferenceHandler.IgnoreCycles,
-        Converters = { new TupleJsonConverterFactory(), }
+        Converters =
+        {
+          new TupleJsonConverterFactory(),
+          new TimeSpanConverter(),
+        }
       }
     );
 
@@ -59,7 +71,11 @@ public static class StreamSerializationExtensions
       {
         AllowTrailingCommas = true,
         ReferenceHandler = ReferenceHandler.IgnoreCycles,
-        Converters = { new TupleJsonConverterFactory(), }
+        Converters =
+        {
+          new TupleJsonConverterFactory(),
+          new TimeSpanConverter(),
+        }
       },
       token
     );
@@ -76,7 +92,11 @@ public static class StreamSerializationExtensions
       {
         AllowTrailingCommas = true,
         ReferenceHandler = ReferenceHandler.IgnoreCycles,
-        Converters = { new TupleJsonConverterFactory(), }
+        Converters =
+        {
+          new TupleJsonConverterFactory(),
+          new TimeSpanConverter(),
+        }
       },
       token
     );

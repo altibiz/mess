@@ -1,6 +1,3 @@
-// NOTE: for GetRandomUnusedPort
-// using System.Net;
-// using System.Net.Sockets;
 using Microsoft.Playwright;
 
 namespace Mess.Test.E2e;
@@ -9,10 +6,19 @@ internal class E2eFixture : IE2eFixture, IAsyncDisposable, IDisposable
 {
   public IPage Page { get; } = default!;
 
-  public E2eFixture()
+  public E2eFixture(string baseUrl, Func<CancellationToken, Task> makeAppTask)
   {
+    BaseUrl = baseUrl;
+
+    ExecutionLock.Wait(TimeSpan.FromMilliseconds(100));
+
+    AppCancellationTokenSource = new();
+    AppTask = makeAppTask(AppCancellationTokenSource.Token);
+
     Playwright = Microsoft.Playwright.Playwright.CreateAsync().Result;
-    Browser = Playwright.Chromium.LaunchAsync().Result;
+    Browser = Playwright.Chromium
+      .LaunchAsync(new BrowserTypeLaunchOptions { Headless = IsCi, })
+      .Result;
     Page = Browser
       .NewPageAsync(new BrowserNewPageOptions { BaseURL = BaseUrl })
       .Result;
@@ -29,6 +35,14 @@ internal class E2eFixture : IE2eFixture, IAsyncDisposable, IDisposable
     {
       Playwright.Dispose();
     }
+
+    if (AppTask is not null)
+    {
+      AppCancellationTokenSource.Cancel();
+      await AppTask;
+    }
+
+    ExecutionLock.Release();
   }
 
   void IDisposable.Dispose()
@@ -43,34 +57,30 @@ internal class E2eFixture : IE2eFixture, IAsyncDisposable, IDisposable
     {
       Playwright.Dispose();
     }
+
+    if (AppTask is not null)
+    {
+      AppCancellationTokenSource.Cancel();
+      // TODO: better
+      AppTask.RunSynchronously();
+    }
+
+    ExecutionLock.Release();
   }
+
+  // NOTE: https://playwright.dev/dotnet/docs/test-runners#xunit-support
+  private static SemaphoreSlim ExecutionLock { get; } = new(0, 1);
+
+  private static bool IsCi => Environment.GetEnvironmentVariable("CI") != null;
+
+  private CancellationTokenSource AppCancellationTokenSource { get; } =
+    default!;
+
+  private Task AppTask { get; } = default!;
 
   private IBrowser Browser { get; } = default!;
 
   private IPlaywright Playwright { get; } = default!;
 
-  private string BaseUrl { get; } = $"http://localhost:5000";
-
-  // NOTE: leaving this here if
-  // https://github.com/pengweiqhca/Xunit.DependencyInjection/issues/67 gets
-  // resolved
-  // async Task IAsyncLifetime.InitializeAsync()
-  // {
-  //   Playwright = await Microsoft.Playwright.Playwright.CreateAsync();
-  //   Browser = await Playwright.Chromium.LaunchAsync();
-  //   Page = await Browser.NewPageAsync();
-  // }
-  // Task IAsyncLifetime.DisposeAsync() =>
-  //   (this as IAsyncDisposable).DisposeAsync().AsTask();
-
-  // NOTE: might come in handy
-  //
-  // private static int GetRandomUnusedPort()
-  // {
-  //   var listener = new TcpListener(IPAddress.Any, 0);
-  //   listener.Start();
-  //   var port = ((IPEndPoint)listener.LocalEndpoint).Port;
-  //   listener.Stop();
-  //   return port;
-  // }
+  private string BaseUrl { get; } = default!;
 }

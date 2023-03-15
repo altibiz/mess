@@ -16,6 +16,23 @@ namespace Mess.Chart.Drivers;
 
 public class ChartPartDisplayDriver : ContentPartDisplayDriver<ChartPart>
 {
+  public override IDisplayResult Display(
+    ChartPart part,
+    BuildPartDisplayContext context
+  )
+  {
+    return Initialize<ChartPartViewModel>(
+      GetDisplayShapeType(context),
+      model =>
+      {
+        model.DataProviderId = part.DataProviderId;
+        model.ChartContentItemId = part.ChartContentItemId;
+        model.Part = part;
+        model.Definition = context.TypePartDefinition;
+      }
+    );
+  }
+
   public override IDisplayResult Edit(
     ChartPart part,
     BuildPartEditorContext context
@@ -25,30 +42,18 @@ public class ChartPartDisplayDriver : ContentPartDisplayDriver<ChartPart>
       GetEditorShapeType(context),
       model =>
       {
+        model.DataProviderId = part.DataProviderId;
+        model.DataProviderIdOptions = new List<SelectListItem>
+        {
+          new SelectListItem { Text = "Test", Value = "test" }
+        };
+        model.ChartContentItemId = part.ChartContentItemId;
+        model.ChartContentItemIdOptions = new List<SelectListItem>
+        {
+          new SelectListItem { Text = "Test", Value = "test" }
+        };
         model.Part = part;
         model.Definition = context.TypePartDefinition;
-        model.ProviderIdOptions = _lookup.Ids
-          .Select(
-            (id, index) =>
-              new SelectListItem()
-              {
-                Value = id,
-                Text = id,
-                Selected = model.Part.DataProviderId is not null
-                  ? model.Part.DataProviderId == id
-                  : index == 0,
-                Disabled = false
-              }
-          )
-          .ToList();
-        model.DataProviderId ??= model.ProviderIdOptions.First().Value;
-        model.ChartContentTypes = _contentDefinitionManager
-          .ListTypeDefinitions()
-          .Where(
-            contentTypeDefinition =>
-              contentTypeDefinition.GetStereotype() == "ConcreteChart"
-          )
-          .ToList();
       }
     );
   }
@@ -65,40 +70,27 @@ public class ChartPartDisplayDriver : ContentPartDisplayDriver<ChartPart>
       await updater.TryUpdateModelAsync(
         viewModel,
         Prefix,
-        model => model.DataProviderId
-      ) && !String.IsNullOrWhiteSpace(viewModel.DataProviderId)
+        model => model.DataProviderId,
+        model => model.ChartContentItemId
+      )
     )
     {
-      var dataProvider = _lookup.Get(viewModel.DataProviderId);
-      if (dataProvider is null)
-      {
-        var partName = context.TypePartDefinition.DisplayName();
-        updater.ModelState.AddModelError(
-          Prefix,
-          nameof(viewModel.DataProviderId),
-          S["{0} doesn't contain a valid chart provider", partName]
-        );
-        return Edit(part, context);
-      }
-
       part.DataProviderId = viewModel.DataProviderId;
+      part.ChartContentItemId = viewModel.ChartContentItemId;
     }
 
     return Edit(part, context);
   }
 
   public ChartPartDisplayDriver(
-    IChartDataProviderLookup lookup,
     IContentDefinitionManager contentDefinitionManager,
     IStringLocalizer<ChartPartDisplayDriver> localizer
   )
   {
-    _lookup = lookup;
     _contentDefinitionManager = contentDefinitionManager;
     S = localizer;
   }
 
   private readonly IStringLocalizer S;
-  private readonly IChartDataProviderLookup _lookup;
   private readonly IContentDefinitionManager _contentDefinitionManager;
 }

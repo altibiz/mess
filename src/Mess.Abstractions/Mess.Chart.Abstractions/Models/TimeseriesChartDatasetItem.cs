@@ -1,12 +1,15 @@
 using Mess.OrchardCore;
-using OrchardContentItem = OrchardCore.ContentManagement.ContentItem;
+using OrchardCore.ContentManagement;
 
 namespace Mess.Chart.Abstractions.Models;
 
-public class TimeseriesChartDatasetItem : ContentItem
+public class TimeseriesChartDatasetItem : ContentItemBase
 {
-  public Lazy<TimeseriesChartDatasetPart> TimeseriesChartDatasetPart { get; set; } =
+  public const string ContentType = "TimeseriesChartDataset";
+
+  public Lazy<TimeseriesChartDatasetPart> TimeseriesChartDataset { get; set; } =
     default!;
 
-  private TimeseriesChartDatasetItem(OrchardContentItem inner) : base(inner) { }
+  private TimeseriesChartDatasetItem(ContentItem contentItem)
+    : base(contentItem) { }
 }

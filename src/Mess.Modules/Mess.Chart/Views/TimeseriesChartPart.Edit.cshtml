@@ -1,0 +1,52 @@
+@model TimeseriesChartPartEditViewModel
+
+@inject OrchardCore.ContentManagement.IContentManager ContentManager
+@inject OrchardCore.ContentManagement.Display.IContentItemDisplayManager ContentItemDisplayManager
+@inject OrchardCore.DisplayManagement.ModelBinding.IUpdateModelAccessor ModelUpdaterAccessor
+
+<div class="mb-3 d-flex flex-column justify-content-between">
+  <h5>@T["Datasets"]</h5>
+  
+  @if (Model.Part.Datasets is not null && Model.Part.Datasets.Count > 0)
+  {
+    @foreach (var contentItem in Model.Part.Datasets)
+    {
+      dynamic dataset = await ContentItemDisplayManager.BuildDisplayAsync(
+        contentItem,
+        ModelUpdaterAccessor.ModelUpdater
+      );
+      <div class="mb-3 row">
+        <div 
+            class="
+              d-flex
+              flex-column
+              justify-content-between
+              border
+              rounded
+              p-2
+              ps-3
+              mb-1
+            ">
+          @await DisplayAsync(dataset)
+        </div>
+      </div>
+    }
+  }
+  else {
+    <span class="hint">
+      @T["No datasets found."]
+    </span>
+  }
+  
+  <div class="float-end">
+    <a
+        asp-route-area="Mess.Chart"
+        asp-controller="TimeseriesChartDatasetAdmin"
+        asp-action="Create"
+        asp-route-contentItemId="TODO"
+        asp-route-chartContentItemId="TODO"
+        class="btn btn-success btn-sm">
+      @T["Create dataset"]
+    </a>
+  </div>
+</div>

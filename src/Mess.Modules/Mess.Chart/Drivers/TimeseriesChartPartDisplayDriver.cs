@@ -10,36 +10,20 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Mess.Chart.Drivers;
 
-public class TimeseriesChartDatasetPartDisplayDriver
-  : ContentPartDisplayDriver<TimeseriesChartDatasetPart>
+public class TimeseriesChartPartDisplayDriver
+  : ContentPartDisplayDriver<TimeseriesChartPart>
 {
-  public override IDisplayResult Display(
-    TimeseriesChartDatasetPart part,
-    BuildPartDisplayContext context
-  )
-  {
-    return Initialize<TimeseriesChartDatasetPartViewModel>(
-      GetDisplayShapeType(context),
-      model =>
-      {
-        model.Property = part.Property;
-        model.Part = part;
-        model.Definition = context.TypePartDefinition;
-      }
-    );
-  }
-
   public override IDisplayResult Edit(
-    TimeseriesChartDatasetPart part,
+    TimeseriesChartPart part,
     BuildPartEditorContext context
   )
   {
-    return Initialize<TimeseriesChartDatasetPartEditViewModel>(
+    return Initialize<TimeseriesChartPartEditViewModel>(
       GetEditorShapeType(context),
       model =>
       {
-        model.Property = part.Property;
-        model.PropertyOptions = new List<SelectListItem>
+        model.DataProviderId = part.DataProviderId;
+        model.DataProviderIdOptions = new List<SelectListItem>
         {
           new SelectListItem { Text = "Test", Value = "test" }
         };
@@ -50,29 +34,29 @@ public class TimeseriesChartDatasetPartDisplayDriver
   }
 
   public override async Task<IDisplayResult> UpdateAsync(
-    TimeseriesChartDatasetPart part,
+    TimeseriesChartPart part,
     IUpdateModel updater,
     UpdatePartEditorContext context
   )
   {
-    var viewModel = new TimeseriesChartDatasetPartEditViewModel();
+    var viewModel = new TimeseriesChartPartEditViewModel();
 
     if (
       await updater.TryUpdateModelAsync(
         viewModel,
         Prefix,
-        model => model.Property
+        model => model.DataProviderId
       )
     )
     {
-      part.Property = viewModel.Property;
+      part.DataProviderId = viewModel.DataProviderId;
     }
 
     return Edit(part, context);
   }
 
-  public TimeseriesChartDatasetPartDisplayDriver(
-    IStringLocalizer<TimeseriesChartDatasetPartDisplayDriver> localizer,
+  public TimeseriesChartPartDisplayDriver(
+    IStringLocalizer<TimeseriesChartPartDisplayDriver> localizer,
     IContentDefinitionManager contentDefinitionManager
   )
   {

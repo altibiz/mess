@@ -18,6 +18,7 @@ using ManifestConstants = Mess.OrchardCore.ManifestConstants;
   {
     "OrchardCore.ContentTypes",
     "OrchardCore.ContentFields",
+    "OrchardCore.Flows",
     "Etch.OrchardCore.Fields.Colour",
     "Etch.OrchardCore.Fields.MultiSelect"
   }

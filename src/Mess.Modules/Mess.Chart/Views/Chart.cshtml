@@ -1,24 +1,30 @@
-@* TODO: add name *@
-
-<canvas id="chart-canvas"></canvas>
-<span id="chart-canvas-error"></span>
-
-<script asp-name="mess-chart" at="Foot"></script>
-<script at="Foot">
-  $(function () {
-    var contentItem = "@Html.Raw(Model.ContentItem.ToJson(pretty: false))";
-    createChart(contentItem)
-      .then(function (chart) {
-        if (!chart) {
-          var errorSpan = document.getElementById("chart-canvas-error");
-          errorSpan.innerHtml = '@T["Error occured while creating chart"]';
-        }
-
-        bindChart(
-          "chart-canvas-error",
-          "@Html.Raw(Orchard.CultureName())",
-          chart);
-      })
-      .catch(console.error);
-  })
-</script>
+<div 
+    class="
+      d-flex
+      flex-column
+      justify-content-between
+    ">
+  <div
+      class="
+        border
+        rounded
+        p-2
+        ps-3
+        mb-1
+      ">
+    @if (Model.Content != null)
+    {
+      @await DisplayAsync(Model.Content)
+    }
+    else
+    {
+      @* For charts without a display driver *@
+      <span>
+        @Model.ContentItem.DisplayText
+        <span class="text-muted dashed">
+          @Model.ContentItem.ContentType
+        </span>
+      </span>
+    }
+  </div>
+</div>

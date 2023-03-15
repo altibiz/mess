@@ -1,4 +1,4 @@
-using Mess.Chart.Abstractions.Models;
+using Mess.Chart.Abstractions.Descriptors;
 using OrchardCore.ContentManagement;
 
 namespace Mess.Chart.Abstractions.Providers;
@@ -7,9 +7,10 @@ public interface IChartDataProvider
 {
   public string Id { get; }
 
-  public Task<ChartModel?> CreateChartAsync(ContentItem contentItem);
+  public Task<ChartDescriptor?> CreateChartAsync(
+    ContentItem metadata,
+    ContentItem chart
+  );
 
-  public bool IsValidTimeseriesChartDatasetProperty(string property);
-
-  public IReadOnlyList<string> GetTimeseriesChartDatasetProperties();
+  public IEnumerable<string> TimeseriesChartDatasetProperties { get; }
 }

@@ -2,5 +2,20 @@
 
 <div class="mb-3">
   <label>Property:</label>&nbsp;
-  <span>@Model.Part.Property</span>
+  <span>@Model.Property</span>
+</div>
+
+<div>
+  <div class="float-end">
+    <a
+        asp-route-area="Mess.Chart"
+        asp-controller="TimeseriesChartDatasetAdmin"
+        asp-action="Edit"
+        asp-route-contentItemId="TODO"
+        asp-route-chartContentItemId="TODO"
+        asp-route-datasetContentItemId="@Model.Part.ContentItem.ContentItemId"
+        class="btn btn-primary btn-sm">
+      @T["Edit"]
+    </a>
+  </div>
 </div>

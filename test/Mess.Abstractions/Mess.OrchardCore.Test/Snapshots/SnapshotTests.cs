@@ -1,4 +1,4 @@
-using OrchardContentItem = OrchardCore.ContentManagement.ContentItem;
+using OrchardCore.ContentManagement;
 
 namespace Mess.OrchardCore.Test.Snapshots;
 
@@ -45,7 +45,7 @@ public record SnapshotTests(ISnapshotFixture snapshotFixture)
 
   [Theory]
   [NewtonsoftJsonAssetData]
-  public async Task MatchesContentItem(OrchardContentItem contentItem)
+  public async Task MatchesContentItem(ContentItem contentItem)
   {
     var verificationHash = await snapshotFixture.MakeVerificationHash(
       contentItem

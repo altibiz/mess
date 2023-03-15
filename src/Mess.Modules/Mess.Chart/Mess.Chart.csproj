@@ -7,6 +7,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="../../Mess.Abstractions/Mess.OrchardCore/Mess.OrchardCore.csproj" />
     <ProjectReference Include="../../Mess.Abstractions/Mess.Chart.Abstractions/Mess.Chart.Abstractions.csproj" />
   </ItemGroup>
 

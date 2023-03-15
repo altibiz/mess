@@ -11,7 +11,7 @@ public class SnapshotFixture : ISnapshotFixture, IDisposable, IAsyncDisposable
 {
   public Task<string> MakeVerificationHash(params object?[]? parameters)
   {
-    var verificationHash = MakeParameterHash(parameters);
+    var verificationHash = _makeParameterHash(parameters);
     return Task.FromResult(verificationHash);
   }
 
@@ -50,18 +50,23 @@ public class SnapshotFixture : ISnapshotFixture, IDisposable, IAsyncDisposable
 
   public SnapshotFixture(
     IServiceProvider serviceProvider,
-    ITestOutputHelperAccessor testOutputHelperAccessor
+    Func<object?[]?, string> makeParameterHash
   )
   {
-    _testOutputHelper = testOutputHelperAccessor.Output!;
+    _testOutputHelper = serviceProvider
+      .GetRequiredService<ITestOutputHelperAccessor>()
+      .Output!;
     _test = _testOutputHelper.GetTest();
     _local = UsesVerifyAttributeExtensions.GetMethodStorage();
     _local.Value = _test.TestCase.TestMethod.Method.ToRuntimeMethod();
+    _makeParameterHash = makeParameterHash;
   }
 
   private readonly ITestOutputHelper _testOutputHelper;
   private readonly ITest _test;
   private readonly AsyncLocal<MethodInfo?> _local;
+
+  private readonly Func<object?[]?, string> _makeParameterHash;
 
   // TODO: use when we can get to the parameters here
   // private string GetParameterHash()

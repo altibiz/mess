@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 using System.Xml.Linq;
 using Mess.System.Extensions.Streams;
-using Mess.System.Text.Json;
+using Mess.System.Json;
 
 namespace Mess.System.Extensions.Objects;
 
@@ -18,7 +18,11 @@ public static class ObjectSerializationExtensions
         AllowTrailingCommas = true,
         WriteIndented = pretty,
         ReferenceHandler = ReferenceHandler.IgnoreCycles,
-        Converters = { new TupleJsonConverterFactory(), }
+        Converters =
+        {
+          new TupleJsonConverterFactory(),
+          new TimeSpanConverter(),
+        }
       }
     );
 
@@ -35,7 +39,11 @@ public static class ObjectSerializationExtensions
         AllowTrailingCommas = true,
         WriteIndented = pretty,
         ReferenceHandler = ReferenceHandler.IgnoreCycles,
-        Converters = { new TupleJsonConverterFactory(), }
+        Converters =
+        {
+          new TupleJsonConverterFactory(),
+          new TimeSpanConverter(),
+        }
       }
     );
 
@@ -46,7 +54,11 @@ public static class ObjectSerializationExtensions
       {
         AllowTrailingCommas = true,
         ReferenceHandler = ReferenceHandler.IgnoreCycles,
-        Converters = { new TupleJsonConverterFactory(), }
+        Converters =
+        {
+          new TupleJsonConverterFactory(),
+          new TimeSpanConverter(),
+        }
       }
     );
 

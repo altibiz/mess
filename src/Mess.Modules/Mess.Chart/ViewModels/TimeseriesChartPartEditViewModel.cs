@@ -1,26 +1,20 @@
 using OrchardCore.ContentManagement.Metadata.Models;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Mess.Chart.Abstractions.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Mess.Chart.ViewModels;
 
-public class ChartPartEditViewModel
+public class TimeseriesChartPartEditViewModel
 {
   [ValidateNever]
-  public ChartPart Part { get; set; } = default!;
+  public TimeseriesChartPart Part { get; set; } = default!;
 
   [ValidateNever]
   public ContentTypePartDefinition Definition { get; set; } = default!;
 
   public string DataProviderId { get; set; } = default!;
 
-  public string ChartContentItemId { get; set; } = default!;
-
   [ValidateNever]
   public List<SelectListItem> DataProviderIdOptions { get; set; } = default!;
-
-  [ValidateNever]
-  public List<SelectListItem> ChartContentItemIdOptions { get; set; } =
-    default!;
 }
