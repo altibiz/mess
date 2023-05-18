@@ -3,6 +3,10 @@
     "noImplicitAny": true,
     "target": "es5",
     "esModuleInterop": true,
-    "lib": ["ESNext", "DOM"]
-  }
+    "lib": ["ESNext", "DOM"],
+    "resolveJsonModule": true,
+    "strict": true,
+    "typeRoots": ["./types"]
+  },
+  "include": ["gulpfile.ts", "webpack.config.ts"]
 }

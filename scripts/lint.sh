@@ -12,8 +12,16 @@ export ORCHARD_APP_DATA="$ROOT_DIR/App_Data"
 export NODE_OPTIONS="--no-warnings"
 export NODE_ENV="production"
 
+printf "[Mess] Checking with 'csharpier'...\n"
+dotnet csharpier . --check
+printf "\n"
+
+printf "[Mess] Checking with 'prettier'...\n"
+yarn lint:prettier
+printf "\n"
+
 printf "[Mess] Linting with 'yarn'...\n"
-yarn lint-children
+yarn lint:workspaces
 printf "\n"
 
 printf "[Mess] Building with 'dotnet'...\n"
@@ -22,8 +30,4 @@ dotnet \
   --property "PublishDir=$ROOT_DIR/artifacts" \
   --property:TreatWarningsAsErrors=true \
   --configuration Release
-printf "\n"
-
-printf "[Mess] Checking with 'csharpier'...\n"
-dotnet csharpier . --check
 printf "\n"

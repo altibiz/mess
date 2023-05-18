@@ -1,4 +1,3 @@
-using Mess.Test.Extensions.Microsoft;
 using Mess.EventStore.Test.Abstractions;
 using Mess.Timeseries.Test.Abstractions;
 
@@ -13,8 +12,7 @@ public class Startup : Mess.OrchardCore.Test.Startup
   {
     base.ConfigureServices(services, hostBuilderContext);
 
-    services.RegisterTenantFixture();
-    services.RegisterTestEventStore();
-    services.RegisterTestTimeseriesStore();
+    services.AddTestEventStore();
+    services.AddTestTimeseriesStore();
   }
 }

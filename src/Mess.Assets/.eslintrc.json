@@ -5,9 +5,5 @@
   "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
   "env": {
     "shared-node-browser": true
-  },
-  "rules": {
-    "arrow-body-style": "off",
-    "prefer-arrow-callback": "off"
   }
 }

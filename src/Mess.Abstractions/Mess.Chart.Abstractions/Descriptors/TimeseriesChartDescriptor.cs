@@ -4,4 +4,4 @@ public record TimeseriesChartDescriptor(
   TimeSpan RefreshInterval,
   TimeSpan History,
   IReadOnlyCollection<TimeseriesChartDatasetDescriptor> Datasets
-) : ChartDescriptor(RefreshInterval);
+) : ChartDescriptor("timeseries", RefreshInterval);

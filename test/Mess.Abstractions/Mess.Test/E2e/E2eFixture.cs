@@ -6,14 +6,12 @@ internal class E2eFixture : IE2eFixture, IAsyncDisposable, IDisposable
 {
   public IPage Page { get; } = default!;
 
-  public E2eFixture(string baseUrl, Func<CancellationToken, Task> makeAppTask)
+  public E2eFixture(string baseUrl, E2eTestServer testServer)
   {
+    TestServer = testServer;
     BaseUrl = baseUrl;
 
     ExecutionLock.Wait(TimeSpan.FromMilliseconds(100));
-
-    AppCancellationTokenSource = new();
-    AppTask = makeAppTask(AppCancellationTokenSource.Token);
 
     Playwright = Microsoft.Playwright.Playwright.CreateAsync().Result;
     Browser = Playwright.Chromium
@@ -36,12 +34,6 @@ internal class E2eFixture : IE2eFixture, IAsyncDisposable, IDisposable
       Playwright.Dispose();
     }
 
-    if (AppTask is not null)
-    {
-      AppCancellationTokenSource.Cancel();
-      await AppTask;
-    }
-
     ExecutionLock.Release();
   }
 
@@ -58,29 +50,18 @@ internal class E2eFixture : IE2eFixture, IAsyncDisposable, IDisposable
       Playwright.Dispose();
     }
 
-    if (AppTask is not null)
-    {
-      AppCancellationTokenSource.Cancel();
-      // TODO: better
-      AppTask.RunSynchronously();
-    }
-
     ExecutionLock.Release();
   }
 
-  // NOTE: https://playwright.dev/dotnet/docs/test-runners#xunit-support
   private static SemaphoreSlim ExecutionLock { get; } = new(0, 1);
 
   private static bool IsCi => Environment.GetEnvironmentVariable("CI") != null;
-
-  private CancellationTokenSource AppCancellationTokenSource { get; } =
-    default!;
-
-  private Task AppTask { get; } = default!;
 
   private IBrowser Browser { get; } = default!;
 
   private IPlaywright Playwright { get; } = default!;
 
   private string BaseUrl { get; } = default!;
+
+  private E2eTestServer TestServer { get; } = default!;
 }

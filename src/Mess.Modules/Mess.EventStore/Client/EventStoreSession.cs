@@ -22,7 +22,7 @@ public sealed class EventStoreSession
   public EventStoreSession(IServiceProvider services, ITenants tenants)
   {
     var store = services.GetRequiredService<IDocumentStore>();
-    _value = store.OpenSession(tenants.Current.Name);
+    _value = store.IdentitySession(tenants.Current.Name);
   }
 
   private IDocumentSession? _value = null;

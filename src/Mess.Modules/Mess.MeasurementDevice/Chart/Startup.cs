@@ -10,6 +10,6 @@ public class Startup : StartupBase
 {
   public override void ConfigureServices(IServiceCollection services)
   {
-    services.RegisterChartProvider<EgaugeChartDataProvider>();
+    services.AddChartProvider<EgaugeChartDataProvider>();
   }
 }

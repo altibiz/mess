@@ -3,15 +3,17 @@ import {
   ScaleOptionsByType,
   CartesianScaleTypeRegistry,
 } from "chart.js";
-import { ChartModel, isLineChartModel } from "./schema";
+import { ChartDescriptor, isTimeseriesChartDescriptor } from "./schema";
+
+export type BoundChart = Chart<"line", { x: Date; y: number }[], string>;
 
 export const bindChart = (
   id: string,
   culture: string,
-  chart: ChartModel,
-): Chart | null => {
-  if (isLineChartModel(chart)) {
-    return new Chart(id, {
+  chart: ChartDescriptor,
+): BoundChart | null => {
+  if (isTimeseriesChartDescriptor(chart)) {
+    return new Chart<"line", { x: Date; y: number }[], string>(id, {
       type: "line",
       data: {
         datasets: chart.datasets.map(({ label, datapoints: data, color }) => ({

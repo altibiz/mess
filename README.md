@@ -30,6 +30,7 @@ When changing the timeseries model in any of the relevant projects run:
 bash ./scripts/migrations.sh "<PROJECT_NAME>" "<MIGRATION_NAME>"
 ```
 
-## TODO
+### Known issues
 
-Add RootContentItemId in LineChart and stuff.
+- [ ] Custom Startup classes for Xunit.DependencyInjection don't work
+      properly

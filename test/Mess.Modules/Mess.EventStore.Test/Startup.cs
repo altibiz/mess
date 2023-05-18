@@ -1,6 +1,5 @@
 ﻿using Mess.EventStore.Abstractions.Client;
 using Mess.EventStore.Client;
-using Mess.Test.Extensions.Microsoft;
 using Mess.EventStore.Test.Abstractions;
 
 namespace Mess.EventStore.Test;
@@ -14,8 +13,7 @@ public class Startup : Mess.OrchardCore.Test.Startup
   {
     base.ConfigureServices(services, hostBuilderContext);
 
-    services.RegisterTenantFixture();
-    services.RegisterTestEventStore();
+    services.AddTestEventStore();
 
     services.AddScoped<IEventStoreSession, EventStoreSession>();
     services.AddScoped<IEventStoreQuery, EventStoreQuery>();

@@ -1,10 +1,10 @@
 {
   "name": "@mess/stylelint-config-assets",
   "main": "index.js",
-  "peerDependencies": {
-    "postcss": "^8.4.20",
-    "sass": "^1.56.2",
-    "stylelint": "^14.16.0",
-    "stylelint-config-standard-scss": "^6.1.0"
+  "devDependencies": {
+    "postcss": "^8.4.23",
+    "sass": "^1.62.1",
+    "stylelint": "^15.6.2",
+    "stylelint-config-standard-scss": "^9.0.0"
   }
 }

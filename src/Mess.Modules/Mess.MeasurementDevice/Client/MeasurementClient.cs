@@ -1,5 +1,5 @@
 using Mess.MeasurementDevice.Abstractions.Client;
-using Mess.MeasurementDevice.Abstractions.Models;
+using Mess.MeasurementDevice.Abstractions.Dispatchers;
 using Mess.Timeseries.Abstractions.Extensions.Microsoft;
 using Mess.Timeseries.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -35,28 +35,28 @@ public class MeasurementClient : IMeasurementClient
       }
     );
 
-  public void AddEgaugeMeasurement(EgaugeMeasurementModel model) =>
+  public void AddEgaugeMeasurement(DispatchedEgaugeMeasurement model) =>
     _services.WithTimeseriesContext<MeasurementDbContext>(context =>
     {
       context.EgaugeMeasurements.Add(model.ToEntity());
       context.SaveChanges();
     });
 
-  public Task AddEgaugeMeasurementAsync(EgaugeMeasurementModel model) =>
+  public Task AddEgaugeMeasurementAsync(DispatchedEgaugeMeasurement model) =>
     _services.WithTimeseriesContextAsync<MeasurementDbContext>(async context =>
     {
       context.EgaugeMeasurements.Add(model.ToEntity());
       await context.SaveChangesAsync();
     });
 
-  public IReadOnlyList<EgaugeMeasurementModel> GetEgaugeMeasurements(
+  public IReadOnlyList<DispatchedEgaugeMeasurement> GetEgaugeMeasurements(
     string source,
     DateTime beginning,
     DateTime end
   ) =>
     _services.WithTimeseriesContext<
       MeasurementDbContext,
-      List<EgaugeMeasurementModel>
+      List<DispatchedEgaugeMeasurement>
     >(context =>
     {
       return context.EgaugeMeasurements
@@ -69,7 +69,7 @@ public class MeasurementClient : IMeasurementClient
     });
 
   public async Task<
-    IReadOnlyList<EgaugeMeasurementModel>
+    IReadOnlyList<DispatchedEgaugeMeasurement>
   > GetEgaugeMeasurementsAsync(
     string source,
     DateTime beginning,
@@ -77,7 +77,7 @@ public class MeasurementClient : IMeasurementClient
   ) =>
     await _services.WithTimeseriesContextAsync<
       MeasurementDbContext,
-      List<EgaugeMeasurementModel>
+      List<DispatchedEgaugeMeasurement>
     >(async context =>
     {
       return await context.EgaugeMeasurements

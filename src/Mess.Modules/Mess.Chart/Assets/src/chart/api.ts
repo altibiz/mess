@@ -1,13 +1,13 @@
-import { ChartModel, chartModelSchema } from "./schema";
+import { ChartDescriptor, chartSescriptorSchema } from "./schema";
 
 export const createChart = async (
   providerId: string,
   contentItem: string,
-): Promise<ChartModel | null> => {
-  const response = await fetch(`/Chart/${providerId}`, { body: contentItem });
+): Promise<ChartDescriptor | null> => {
+  const response = await fetch(`/chart/${providerId}`, { body: contentItem });
   const rawChart = await response.json();
 
-  const parsedChart = await chartModelSchema.safeParseAsync(rawChart);
+  const parsedChart = await chartSescriptorSchema.safeParseAsync(rawChart);
   if (!parsedChart.success) {
     return null;
   }

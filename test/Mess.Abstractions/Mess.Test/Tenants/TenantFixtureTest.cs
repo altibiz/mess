@@ -1,5 +1,3 @@
-using Xunit;
-
 namespace Mess.Test.Tenants;
 
 public record class TenantFixtureTest(ITenantFixture TenantFixture)

@@ -6,11 +6,9 @@ namespace Mess.OrchardCore.Test.Extensions.Microsoft;
 
 public static class IServiceCollectionExtensions
 {
-  public static void RegisterOrchardSnapshotFixture(
-    this IServiceCollection services
-  )
+  public static void AddOrchardSnapshotFixture(this IServiceCollection services)
   {
-    services.RegisterSnapshotFixture(
+    services.AddSnapshotFixture(
       parameters =>
         parameters is null or { Length: 0 }
           ? "empty-parameters"
@@ -27,15 +25,8 @@ public static class IServiceCollectionExtensions
     );
   }
 
-  public static void RegisterOrchardE2eFixture(this IServiceCollection services)
+  public static void AddOrchardE2eFixture(this IServiceCollection services)
   {
-    // TODO: actually spawn orchard core
-    services.RegisterE2eFixture(
-      "",
-      token =>
-      {
-        return Task.CompletedTask;
-      }
-    );
+    services.AddE2eFixture();
   }
 }

@@ -1,7 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Mess.System.Extensions.Strings;
-using Mess.MeasurementDevice.Abstractions.Parsers;
-using Mess.MeasurementDevice.Abstractions.Storage;
+using Mess.MeasurementDevice.Abstractions.Dispatchers;
+using OrchardCore.Environment.Shell;
+using Microsoft.Extensions.DependencyInjection;
+using Mess.EventStore.Abstractions.Client;
+using Mess.MeasurementDevice.EventStore;
+using Mess.Tenants;
 
 namespace Mess.MeasurementDevice.Controllers;
 
@@ -10,36 +14,38 @@ public class PushController : Controller
   [HttpPost]
   [IgnoreAntiforgeryToken] // TODO: security
   public async Task<IActionResult> Index(
-    [FromServices] IMeasurementParserLookup parserLookup,
-    [FromServices] IMeasurementStorageStrategyLookup storageStragegyLookup,
-    string parserId
+    [FromServices] IShellFeaturesManager shellFeaturesManager,
+    [FromServices] IServiceProvider services,
+    [FromServices] ITenants tenants,
+    string dispatcherId
   )
   {
-    var parser = parserLookup.Get(parserId);
-    if (parser is null)
+    var dispatcher = services
+      .GetServices<IMeasurementDispatcher>()
+      .FirstOrDefault(dispatcher => dispatcher.Id == dispatcherId);
+    if (dispatcher is null)
     {
-      return BadRequest($"Unknown parser for measurement");
+      return BadRequest($"Unknown dispatcher");
     }
 
-    var body = await Request.Body.EncodeAsync();
-    var parsedMeasurement = await parser.ParseAsync(body);
-    if (parsedMeasurement is null)
-    {
-      return BadRequest($"Failed parsing measurement");
-    }
+    var measurement = await Request.Body.EncodeAsync();
 
-    var storageStrategy = storageStragegyLookup.Get(
-      parsedMeasurement.Value.StorageStrategy
-    );
-    if (storageStrategy is null)
+    var features = await shellFeaturesManager.GetEnabledFeaturesAsync();
+    if (features.Any(feature => feature.Id == "EventStore"))
     {
-      return BadRequest($"Unknown storage strategy for measurement");
+      var client = services.GetRequiredService<IEventStoreClient>();
+      await client.RecordEventsAsync<Measurements>(
+        new Measured(
+          tenants.Current.Name,
+          DateTime.UtcNow,
+          dispatcherId,
+          measurement
+        )
+      );
     }
-
-    var storeError = await storageStrategy.StoreAsync(parsedMeasurement.Value);
-    if (storeError is not null)
+    else
     {
-      return BadRequest($"Storage of measurement failed because {storeError}");
+      dispatcher.Dispatch(measurement);
     }
 
     return Ok();

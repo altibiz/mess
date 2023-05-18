@@ -14,8 +14,7 @@ public class Startup : Mess.OrchardCore.Test.Startup
   {
     base.ConfigureServices(services, hostBuilderContext);
 
-    services.RegisterTenantFixture();
-    services.RegisterTestTimeseriesStore();
+    services.AddTestTimeseriesStore();
 
     services.AddScoped<ITimeseriesConnection, TimeseriesConnection>();
     services.AddSingleton<ITimeseriesClient, TimeseriesClient>();

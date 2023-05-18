@@ -17,7 +17,11 @@ public static class ObjectSerializationExtensions
       {
         ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
         Formatting = pretty ? Formatting.Indented : Formatting.None,
-        Converters = new[] { new TupleJsonConverter() }
+        Converters = new JsonConverter[]
+        {
+          new TupleJsonConverter(),
+          new TimeSpanConverter()
+        }
       }
     );
 
@@ -27,7 +31,11 @@ public static class ObjectSerializationExtensions
       new JsonSerializerSettings
       {
         ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-        Converters = new[] { new TupleJsonConverter() }
+        Converters = new JsonConverter[]
+        {
+          new TupleJsonConverter(),
+          new TimeSpanConverter()
+        }
       }
     );
 
@@ -38,7 +46,11 @@ public static class ObjectSerializationExtensions
       new JsonSerializerSettings
       {
         ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-        Converters = new[] { new TupleJsonConverter() }
+        Converters = new JsonConverter[]
+        {
+          new TupleJsonConverter(),
+          new TimeSpanConverter()
+        }
       }
     );
 

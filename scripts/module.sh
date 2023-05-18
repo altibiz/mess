@@ -151,10 +151,12 @@ printf "\n"
 
 ASSETS="$BASE_DIR/Assets"
 PACKAGE="$ASSETS/package.json"
+TSCONFIG="$ASSETS/tsconfig.json"
 PACKAGE_NAME="@mess/$LOWERCASE_NAME"
 printf "[Mess] Adding new NPM package '%s' in '%s'\n" "$PACKAGE_NAME" "$ASSETS"
 cp -r "$ROOT_DIR/src/Mess.Assets/skeleton" "$ASSETS"
-sed -i'' "s/name-of-module-or-theme/$LOWERCASE_NAME/" "$PACKAGE"
+sed -i'' "s/\.\.\/tsconfig.json/../../../Mess.Assets/tsconfig.json/" "$TSCONFIG"
+sed -i'' "s/skeleton/$LOWERCASE_NAME/" "$PACKAGE"
 printf "\n"
 
 if [ "$TYPE" == "module" ]; then
@@ -235,7 +237,6 @@ END
   TEST_CSPROJ="$TEST_BASE_DIR/$TEST_NAMESPACE.csproj"
   TEST_PLACEHOLDER="$TEST_BASE_DIR/$TEST_NAMESPACE.cs"
   TEST_STARTUP="$TEST_BASE_DIR/Startup.cs"
-  TEST_GLOBAL_USINGS="$TEST_BASE_DIR/GlobalUsings.cs"
   cat <<END >"$TEST_CSPROJ"
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
@@ -291,9 +292,6 @@ public class Startup
       );
   }
 }
-END
-  cat <<END >"$TEST_GLOBAL_USINGS"
-global using Xunit;
 END
 fi
 

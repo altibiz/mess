@@ -2,7 +2,7 @@ using Mess.MeasurementDevice.Abstractions.Client;
 using OrchardCore.ContentManagement;
 using Mess.Chart.Abstractions.Providers;
 using Mess.Chart.Abstractions.Descriptors;
-using Mess.MeasurementDevice.Abstractions.Models;
+using Mess.MeasurementDevice.Abstractions.Dispatchers;
 
 namespace Mess.MeasurementDevice.Chart.Providers;
 
@@ -29,8 +29,8 @@ public class EgaugeChartDataProvider : IChartDataProvider
   public IEnumerable<string> TimeseriesChartDatasetProperties =>
     new[]
     {
-      nameof(EgaugeMeasurementModel.Power),
-      nameof(EgaugeMeasurementModel.Voltage)
+      nameof(DispatchedEgaugeMeasurement.Power),
+      nameof(DispatchedEgaugeMeasurement.Voltage)
     };
 
   public EgaugeChartDataProvider(IMeasurementClient client)
