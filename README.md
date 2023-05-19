@@ -32,5 +32,6 @@ bash ./scripts/migrations.sh "<PROJECT_NAME>" "<MIGRATION_NAME>"
 
 ### Known issues
 
-- [ ] Custom Startup classes for Xunit.DependencyInjection don't work
-      properly
+- Custom Startup classes for Xunit.DependencyInjection don't work properly
+- Source maps are present in production builds
+- Webpack generates an empty js file alongside css files which is annoying

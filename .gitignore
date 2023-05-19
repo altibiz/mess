@@ -334,3 +334,7 @@ src/Mess.Web/Internal/Generated/
 
 # Verify
 *.received.*
+
+# Sourcemaps
+*.js.map
+*.css.map

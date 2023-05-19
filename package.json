@@ -11,8 +11,8 @@
     "lint:workspaces": "yarn workspaces foreach -ip run lint",
     "lint:prettier": "prettier --check --ignore-path .gitignore . '!**/wwwroot/**/*.*' '!.yarn/**/*.*' '!**/Snapshots/**/*.{received,verified}.json'",
     "format": "prettier --write --ignore-path .gitignore . '!**/wwwroot/**/*.*' '!.yarn/**/*.*' '!**/Snapshots/**/*.{received,verified}.json'",
-    "build": "yarn workspaces foreach --parallel run build",
-    "watch": "yarn workspaces foreach --parallel run watch",
+    "build": "yarn workspaces foreach -ip run build",
+    "watch": "yarn workspaces foreach -ip run watch",
     "eval": "yarn ts-node"
   },
   "packageManager": "yarn@3.5.1",

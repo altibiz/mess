@@ -14,3 +14,5 @@ export const createChart = async (
 
   return parsedChart.data;
 };
+
+window.createChart = createChart;

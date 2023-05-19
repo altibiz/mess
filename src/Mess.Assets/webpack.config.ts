@@ -9,8 +9,6 @@ import ESLintPlugin from "eslint-webpack-plugin";
 import StylelintPlugin from "stylelint-webpack-plugin";
 import BrowserSyncPlugin from "browser-sync-webpack-plugin";
 
-const development = process.env.NODE_ENV !== "production";
-
 const configuration: Configuration = {
   entry: () => {
     const workspaces = glob.sync("../Mess.{Modules,Themes}/*/Assets", {
@@ -23,15 +21,18 @@ const configuration: Configuration = {
       });
 
       bundles.forEach((bundle) => {
-        const bundleName = path.parse(bundle).base;
+        const bundleName = path.parse(bundle).name;
         const scriptFiles = glob.sync(`${bundle}/**/*.{js,ts}`);
         const styleFiles = glob.sync(`${bundle}/**/*.{css,scss}`);
-        const allFiles = scriptFiles.concat(styleFiles);
 
-        if (allFiles.length > 0) {
-          entries[
-            `../${workspace}/../wwwroot/assets/${bundleName}/${bundleName}`
-          ] = allFiles;
+        if (scriptFiles.length > 0) {
+          entries[`../${workspace}/../wwwroot/assets/scripts/${bundleName}`] =
+            scriptFiles;
+        }
+
+        if (styleFiles.length > 0) {
+          entries[`../${workspace}/../wwwroot/assets/styles/${bundleName}`] =
+            styleFiles;
         }
       });
 
@@ -59,7 +60,7 @@ const configuration: Configuration = {
       {
         test: /\.(sa|sc|c)ss$/,
         use: [
-          development ? "style-loader" : MiniCssExtractPlugin.loader,
+          MiniCssExtractPlugin.loader,
           "css-loader",
           {
             loader: "postcss-loader",
@@ -93,7 +94,7 @@ const configuration: Configuration = {
   optimization: {
     minimizer: [new TerserPlugin(), new CssMinimizerPlugin()],
   },
-  devtool: development ? "source-map" : false,
+  devtool: "source-map",
   resolve: {
     extensions: [".ts", ".js"],
   },
