@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <ItemGroup>
-    <PackageReference Include="OrchardCore.Indexing.Abstractions" Version="$(MessOrchardVersion)" />
     <PackageReference Include="OrchardCore.ContentFields" Version="$(MessOrchardVersion)" />
     <PackageReference Include="Etch.OrchardCore.Fields" Version="$(MessEtchVersion)" />
   </ItemGroup>

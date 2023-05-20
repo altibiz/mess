@@ -6,10 +6,10 @@ namespace Mess.Timeseries.Entities;
 
 public class EgaugeMeasurementEntity : HypertableEntity
 {
-  [Column(TypeName = "float")]
+  [Column(TypeName = "float4")]
   public float Power { get; set; } = default!;
 
-  [Column(TypeName = "float")]
+  [Column(TypeName = "float4")]
   public float Voltage { get; set; } = default!;
 }
 

@@ -1,0 +1,34 @@
+@model ChartViewModel
+
+@{
+  var isPreview = Model.IsPreview;
+  var contentItemId = Model.ContentItemId;
+  var canvasId = contentItemId + "-chart-canvas";
+  var errorSpanId = contentItemId + "-chart-canvas-error";
+  var culture = Orchard.CultureName();
+}
+
+<canvas id="@canvasId" width="400" height="400"></canvas>
+<span id="@errorSpanId"></span>
+
+<script asp-name="jQuery"></script>
+<script asp-name="mess-chart"></script>
+<script>
+  $(function () {
+    window.mess.chart.create(
+      "@contentItemId",
+      {
+        isPreview: @isPreview.ToString().ToLower()
+      })
+      .then(function (chart) {
+        if (!chart) {
+          var errorSpan = document.getElementById("@errorSpanId");
+          errorSpan.innerHtml = '@T["Error occured while creating chart"]';
+          return;
+        }
+
+        window.mess.chart.bind("@canvasId", "@culture", chart);
+      })
+      .catch(console.error);
+  })
+</script>

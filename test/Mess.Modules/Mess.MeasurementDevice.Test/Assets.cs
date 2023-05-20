@@ -19,7 +19,7 @@ public static class Assets
           "mess.measurement-device.test.egauge-measurement-dispatcher-test.dispatch Test",
         Timestamp = DateTime.FromBinary(638073944400000000),
         Voltage = 4560858953370,
-        Power = 4560858953370
+        Power = 27848558872
       },
     }
   };

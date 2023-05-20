@@ -1,7 +1,6 @@
 using System.Reflection;
 using OrchardCore.ContentManagement;
 using OrchardCore.Lists.Models;
-using OrchardContentItem = OrchardCore.ContentManagement.ContentItem;
 using Mess.System.Extensions.Objects;
 using Mess.System.Extensions.Functions;
 using Mess.System.Extensions.Strings;
@@ -12,16 +11,16 @@ namespace Mess.OrchardCore;
 
 public abstract class ContentItemBase
 {
-  protected ContentItemBase(OrchardContentItem contentItem)
+  protected ContentItemBase(ContentItem contentItem)
   {
     Inner = contentItem;
   }
 
-  public OrchardContentItem Inner { get; init; }
+  public ContentItem Inner { get; init; }
 
   public Lazy<ContainedPart?> ContainedPart { get; init; } = default!;
 
-  public static implicit operator OrchardContentItem(ContentItemBase @this) =>
+  public static implicit operator ContentItem(ContentItemBase @this) =>
     @this.Inner;
 
   public string ContentItemId => Inner.ContentItemId;
@@ -30,9 +29,11 @@ public abstract class ContentItemBase
 // NOTE: don't use for now - needs more testing
 public abstract class ContentItemBase<TDerived>
   : ContentItemBase,
-    IContentTypeBaseDerivedIndicator where TDerived : ContentItemBase<TDerived>
+    IContentTypeBaseDerivedIndicator
+  where TDerived : ContentItemBase<TDerived>
 {
-  protected ContentItemBase(OrchardContentItem item) : base(item)
+  protected ContentItemBase(ContentItem item)
+    : base(item)
   {
     (this as TDerived)!.PopulateContent();
   }
@@ -45,13 +46,15 @@ public static class ContentItemExtensions
 
   public static string ContentTypeName<T>() => typeof(T).ContentTypeName();
 
-  public static T? AsContent<T>(this OrchardContentItem @this)
+  public static T AsContent<T>(this ContentItem @this)
     where T : ContentItemBase
   {
     var contentTypeName = ContentTypeName<T>();
     if (@this.ContentType != contentTypeName)
     {
-      return null;
+      throw new InvalidOperationException(
+        $"Content type mismatch: expected {contentTypeName}, got {@this.ContentType}"
+      );
     }
 
     var contentItem = (T?)
@@ -69,7 +72,9 @@ public static class ContentItemExtensions
         .IsAssignableTo(typeof(IContentTypeBaseDerivedIndicator))
     )
     {
-      return null;
+      throw new InvalidOperationException(
+        $"Could not create content item of type {typeof(T)}"
+      );
     }
 
     return contentItem.PopulateContent();
@@ -83,9 +88,11 @@ public static class ContentItemExtensions
     where TItem : ContentItemBase
     where TPart : ContentPart, new()
   {
+    var property = GetProperty(@this, expression);
     var part = @this.Inner.GetOrCreate<TPart>();
     await action(part);
     @this.Inner.Apply(part);
+    PopulateContent(@this, property);
     return @this;
   }
 
@@ -97,36 +104,61 @@ public static class ContentItemExtensions
     where TItem : ContentItemBase
     where TPart : ContentPart, new()
   {
+    var property = GetProperty(@this, expression);
     var part = @this.Inner.GetOrCreate<TPart>();
     action(part);
     @this.Inner.Apply(part);
+    PopulateContent(@this, property);
     return @this;
   }
 
-  public static async Task<T?> NewContentAsync<T>(this IContentManager content)
+  public static async Task<T> NewContentAsync<T>(this IContentManager content)
     where T : ContentItemBase
   {
     var orchardContentItem = await content.NewAsync(
-      typeof(T).Name.RegexRemove(@"Type$")
+      typeof(T).ContentTypeName()
     );
+    if (orchardContentItem is null)
+    {
+      throw new InvalidOperationException(
+        $"Could not create content item of type {typeof(T)}"
+      );
+    }
+
     return orchardContentItem.AsContent<T>();
   }
 
   public static async Task<T?> CloneContentAsync<T>(
     this IContentManager content,
-    OrchardContentItem item
-  ) where T : ContentItemBase
+    ContentItem item
+  )
+    where T : ContentItemBase
   {
     var orchardContentItem = await content.CloneAsync(item);
+    if (orchardContentItem is null)
+    {
+      throw new InvalidOperationException(
+        $"Could not clone content item of type {typeof(T)}"
+      );
+    }
+
     return orchardContentItem.AsContent<T>();
   }
 
   public static async Task<T?> GetContentAsync<T>(
     this IContentManager content,
     string id
-  ) where T : ContentItemBase
+  )
+    where T : ContentItemBase
   {
     var orchardContentItem = await content.GetAsync(id);
+    if (orchardContentItem is null)
+    {
+      throw new InvalidOperationException(
+        $"Could not get content item of type {typeof(T)} with id {id}"
+      );
+    }
+
     return orchardContentItem.AsContent<T>();
   }
 
@@ -134,64 +166,116 @@ public static class ContentItemExtensions
     this IContentManager content,
     string id,
     VersionOptions options
-  ) where T : ContentItemBase
+  )
+    where T : ContentItemBase
   {
     var orchardContentItem = await content.GetAsync(id, options);
+    if (orchardContentItem is null)
+    {
+      throw new InvalidOperationException(
+        $"Could not get content item of type {typeof(T)} with id {id}"
+      );
+    }
+
     return orchardContentItem.AsContent<T>();
   }
 
   public static async Task<T?> GetVersionedContentAsync<T>(
     this IContentManager content,
     string id
-  ) where T : ContentItemBase
+  )
+    where T : ContentItemBase
   {
     var orchardContentItem = await content.GetVersionAsync(id);
+    if (orchardContentItem is null)
+    {
+      throw new InvalidOperationException(
+        $"Could not get content item of type {typeof(T)} with id {id}"
+      );
+    }
+
     return orchardContentItem.AsContent<T>();
   }
 
   public static async Task<IEnumerable<T>> GetContentAsync<T>(
     this IContentManager content,
     params string[] ids
-  ) where T : ContentItemBase
+  )
+    where T : ContentItemBase
   {
     var orchardContentItems = await content.GetAsync(ids);
+    if (orchardContentItems is null)
+    {
+      throw new InvalidOperationException(
+        $"Could not get content items of type {typeof(T)} with ids {string.Join(", ", ids)}"
+      );
+    }
+
     return orchardContentItems
       .Select(orchardContentItem => orchardContentItem.AsContent<T>())
       .WhereNotNull();
   }
 
-  internal static T PopulateContent<T>(this T content) where T : ContentItemBase
+  internal static PropertyInfo GetProperty<TItem, TPart>(
+    this TItem @this,
+    Expression<Func<TItem, Lazy<TPart>>> expression
+  )
+    where TItem : ContentItemBase
+  {
+    if (expression.Body is not MemberExpression memberExpression)
+    {
+      throw new InvalidOperationException(
+        $"Expression {expression} is not a member expression"
+      );
+    }
+
+    if (memberExpression.Member is not PropertyInfo property)
+    {
+      throw new InvalidOperationException(
+        $"Expression {expression} is not a property expression"
+      );
+    }
+
+    return property;
+  }
+
+  internal static T PopulateContent<T>(this T content)
+    where T : ContentItemBase
   {
     foreach (var property in typeof(T).GetProperties())
     {
-      if (
-        !property.PropertyType.IsGenericType
-        || !Equals(
-          property.PropertyType.GetGenericTypeDefinition(),
-          typeof(Lazy<>)
-        )
-      )
-      {
-        continue;
-      }
-
-      var partType = property.PropertyType
-        .GetGenericArguments()
-        .FirstOrDefault();
-      if (partType is null || !partType.IsAssignableTo(typeof(ContentElement)))
-      {
-        continue;
-      }
-
-      var lazy = content.Inner.CreateLazy(partType, property.Name);
-      content.SetFieldOrPropertyValue(property.Name, lazy);
+      PopulateContent(content, property);
     }
 
     return content;
   }
 
+  internal static void PopulateContent<T>(this T content, PropertyInfo property)
+    where T : ContentItemBase
+  {
+    if (
+      !property.PropertyType.IsGenericType
+      || !Equals(
+        property.PropertyType.GetGenericTypeDefinition(),
+        typeof(Lazy<>)
+      )
+    )
+    {
+      return;
+    }
+
+    var partType = property.PropertyType.GetGenericArguments().FirstOrDefault();
+    if (partType is null || !partType.IsAssignableTo(typeof(ContentElement)))
+    {
+      return;
+    }
+
+    var lazy = CreateLazy(content.Inner, partType, property.Name);
+    content.SetFieldOrPropertyValue(property.Name, lazy);
+  }
+
   private static object CreateLazy(
-    this OrchardContentItem contentItem,
+    ContentItem contentItem,
     Type partType,
     string partName
   )
@@ -208,7 +292,7 @@ public static class ContentItemExtensions
       );
     }
 
-    return constructor.Invoke(
+    var lazy = constructor.Invoke(
       new[]
       {
         LazyFactoryCaster
@@ -224,6 +308,8 @@ public static class ContentItemExtensions
           )
       }
     );
+
+    return lazy;
   }
 
   private static readonly MethodInfo LazyFactoryCaster =

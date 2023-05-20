@@ -8,9 +8,11 @@ public class TimeseriesChartItem : ContentItemBase
 {
   public const string ContentType = "TimeseriesChart";
 
-  public Lazy<TitlePart> Title { get; set; } = default!;
+  public Lazy<TitlePart> TitlePart { get; private set; } = default!;
 
-  public Lazy<TimeseriesChartPart> TimeseriesChart { get; set; } = default!;
+  public Lazy<TimeseriesChartPart> TimeseriesChartPart { get; private set; } =
+    default!;
 
-  private TimeseriesChartItem(ContentItem contentItem) : base(contentItem) { }
+  private TimeseriesChartItem(ContentItem contentItem)
+    : base(contentItem) { }
 }

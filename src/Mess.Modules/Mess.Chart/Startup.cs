@@ -13,6 +13,10 @@ using OrchardCore.Security.Permissions;
 using Mess.Chart.Abstractions;
 using Mess.Chart.Abstractions.Models;
 using OrchardCore.Admin;
+using Mess.Chart.Abstractions.Providers;
+using Mess.Chart.Providers;
+using YesSql.Indexes;
+using Mess.Chart.Indexes;
 
 namespace Mess.Chart;
 
@@ -28,6 +32,8 @@ public class Startup : StartupBase
 
     services.AddScoped<IPermissionProvider, ChartPermissions>();
 
+    services.AddScoped<IChartDataProvider, PreviewChartDataProvider>();
+
     services
       .AddContentPart<ChartPart>()
       .UseDisplayDriver<ChartPartDisplayDriver>();
@@ -39,6 +45,8 @@ public class Startup : StartupBase
     services
       .AddContentPart<TimeseriesChartDatasetPart>()
       .UseDisplayDriver<TimeseriesChartDatasetPartDisplayDriver>();
+
+    services.AddSingleton<IIndexProvider, ChartIndexProvider>();
   }
 
   public override void Configure(
@@ -50,11 +58,22 @@ public class Startup : StartupBase
     routes.MapAreaControllerRoute(
       name: "Mess.Chart.Controllers.ChartController.Index",
       areaName: "Mess.Chart",
-      pattern: "/Chart",
+      pattern: "/Chart/{contentItemId}",
       defaults: new
       {
         controller = typeof(ChartController).ControllerName(),
         action = nameof(ChartController.Index)
+      }
+    );
+
+    routes.MapAreaControllerRoute(
+      name: "Mess.Chart.Controllers.ChartController.Preview",
+      areaName: "Mess.Chart",
+      pattern: "/Chart/Preview/{contentItemId}",
+      defaults: new
+      {
+        controller = typeof(ChartController).ControllerName(),
+        action = nameof(ChartController.Preview)
       }
     );
 

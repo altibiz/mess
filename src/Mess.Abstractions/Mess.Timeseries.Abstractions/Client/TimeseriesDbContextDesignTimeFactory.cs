@@ -5,7 +5,8 @@ using Mess.Tenants;
 namespace Mess.Timeseries.Abstractions.Client;
 
 public abstract class TimeseriesDbContextDesignTimeFactory<T>
-  : IDesignTimeDbContextFactory<T> where T : TimeseriesDbContext
+  : IDesignTimeDbContextFactory<T>
+  where T : TimeseriesDbContext
 {
   public T CreateDbContext(string[] args)
   {

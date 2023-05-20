@@ -7,8 +7,11 @@ public class TimeseriesChartDatasetItem : ContentItemBase
 {
   public const string ContentType = "TimeseriesChartDataset";
 
-  public Lazy<TimeseriesChartDatasetPart> TimeseriesChartDataset { get; set; } =
-    default!;
+  public Lazy<TimeseriesChartDatasetPart> TimeseriesChartDatasetPart
+  {
+    get;
+    private set;
+  } = default!;
 
   private TimeseriesChartDatasetItem(ContentItem contentItem)
     : base(contentItem) { }

@@ -11,7 +11,6 @@ export ORCHARD_APP_DATA="$ROOT_DIR/App_Data"
 
 export NODE_OPTIONS="--no-warnings"
 export NODE_ENV="development"
-export MESS_CLIENT_OUTPUT_DIRS="$ROOT_DIR/src/Mess.Client/dist"
 
 stop() {
   printf "\n"

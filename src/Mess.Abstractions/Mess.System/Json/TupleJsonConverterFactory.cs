@@ -20,7 +20,8 @@ public class TupleJsonConverterFactory : JsonConverterFactory
       )!;
   }
 
-  private class ValueTupleConverter<T> : JsonConverter<T> where T : ITuple
+  private class ValueTupleConverter<T> : JsonConverter<T>
+    where T : ITuple
   {
     public override void Write(
       Utf8JsonWriter writer,

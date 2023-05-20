@@ -8,16 +8,19 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "lint:workspaces": "yarn workspaces foreach -ip run lint",
+    "lint:workspaces": "yarn workspaces foreach -ip --exclude @mess/mess run lint",
     "lint:prettier": "prettier --check --ignore-path .gitignore . '!**/wwwroot/**/*.*' '!.yarn/**/*.*' '!**/Snapshots/**/*.{received,verified}.json'",
+    "lint": "run-s lint:prettier lint:workspaces",
     "format": "prettier --write --ignore-path .gitignore . '!**/wwwroot/**/*.*' '!.yarn/**/*.*' '!**/Snapshots/**/*.{received,verified}.json'",
     "build": "yarn workspaces foreach -ip run build",
     "watch": "yarn workspaces foreach -ip run watch",
-    "eval": "yarn ts-node"
+    "eval": "yarn ts-node",
+    "publisher": "yarn workspace @mess/publisher start"
   },
   "packageManager": "yarn@3.5.1",
   "workspaces": [
-    "src/Mess.Assets"
+    "src/Mess.Assets",
+    "src/Mess.Publisher"
   ],
   "devDependencies": {
     "@commitlint/cli": "^17.6.3",

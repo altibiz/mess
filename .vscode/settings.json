@@ -1,10 +1,25 @@
 {
   "search.exclude": {
     "**/.yarn": true,
-    "**/.pnp.*": true
+    "**/.pnp.*": true,
+    "**/Localization": true,
+    "**/Internal/Generated": true,
+    "**/bin": true,
+    "**/obj": true,
+    "App_Data": true,
+    "**/Snapshots": true,
+    "**/wwwroot": true
   },
   "prettier.prettierPath": ".yarn/sdks/prettier/index.js",
   "typescript.tsdk": ".yarn/sdks/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
-  "eslint.nodePath": ".yarn/sdks"
+  "eslint.nodePath": ".yarn/sdks",
+  "npm.packageManager": "yarn",
+  "eslint.packageManager": "yarn",
+  "stylelint.packageManager": "yarn",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[csharp]": {
+    "editor.defaultFormatter": "csharpier.csharpier-vscode"
+  },
+  "editor.formatOnSave": true
 }

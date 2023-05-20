@@ -18,6 +18,7 @@ using ManifestConstants = Mess.OrchardCore.ManifestConstants;
   {
     "OrchardCore.ContentTypes",
     "OrchardCore.ContentFields",
+    "OrchardCore.Title",
     "Mess.Timeseries",
   }
 )]

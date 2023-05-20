@@ -35,17 +35,19 @@ public class TimeseriesChartDatasetAdminController : Controller
     if (chartContentItemId is null)
     {
       chart = await _contentManager.GetContentAsync<TimeseriesChartItem>(
-        contentItemId
+        contentItemId,
+        VersionOptions.DraftRequired
       );
     }
     else
     {
       dashboard = await _contentManager.GetContentAsync<DashboardItem>(
-        contentItemId
+        contentItemId,
+        VersionOptions.DraftRequired
       );
       if (dashboard is not null)
       {
-        chart = dashboard.Flow.Value.Widgets
+        chart = dashboard.FlowPart.Value.Widgets
           .FirstOrDefault(chart => chart.ContentItemId == chartContentItemId)
           ?.AsContent<TimeseriesChartItem>();
       }
@@ -62,6 +64,10 @@ public class TimeseriesChartDatasetAdminController : Controller
       return StatusCode(500);
     }
 
+    timeseriesChartDataset.Inner.Content.ChartDataProviderId = chart
+      .TimeseriesChartPart
+      .Value
+      .ChartDataProviderId;
     dynamic model = await _contentItemDisplayManager.BuildEditorAsync(
       timeseriesChartDataset,
       _updateModelAccessor.ModelUpdater,
@@ -70,7 +76,7 @@ public class TimeseriesChartDatasetAdminController : Controller
 
     model.ContentItemId = contentItemId;
     model.ChartContentItemId = chartContentItemId;
-    model.DataProviderId = chart.TimeseriesChart.Value.DataProviderId;
+    model.DataProviderId = chart.TimeseriesChartPart.Value.ChartDataProviderId;
 
     return View(model);
   }
@@ -97,17 +103,19 @@ public class TimeseriesChartDatasetAdminController : Controller
     if (chartContentItemId is null)
     {
       chart = await _contentManager.GetContentAsync<TimeseriesChartItem>(
-        contentItemId
+        contentItemId,
+        VersionOptions.DraftRequired
       );
     }
     else
     {
       dashboard = await _contentManager.GetContentAsync<DashboardItem>(
-        contentItemId
+        contentItemId,
+        VersionOptions.DraftRequired
       );
       if (dashboard is not null)
       {
-        chart = dashboard.Flow.Value.Widgets
+        chart = dashboard.FlowPart.Value.Widgets
           .FirstOrDefault(chart => chart.ContentItemId == chartContentItemId)
           ?.AsContent<TimeseriesChartItem>();
       }
@@ -123,28 +131,35 @@ public class TimeseriesChartDatasetAdminController : Controller
       return StatusCode(500);
     }
 
+    timeseriesChartDataset.Inner.Content.ChartDataProviderId = chart
+      .TimeseriesChartPart
+      .Value
+      .ChartDataProviderId;
     dynamic model = await _contentItemDisplayManager.UpdateEditorAsync(
       timeseriesChartDataset,
       _updateModelAccessor.ModelUpdater,
-      false
+      true
     );
     if (!ModelState.IsValid)
     {
       model.ContentItemId = contentItemId;
       model.ChartContentItemId = chartContentItemId;
-      model.DataProviderId = chart.TimeseriesChart.Value.DataProviderId;
+      model.DataProviderId = chart
+        .TimeseriesChartPart
+        .Value
+        .ChartDataProviderId;
 
       return View(model);
     }
 
     chart.Alter(
-      chart => chart.TimeseriesChart,
+      chart => chart.TimeseriesChartPart,
       timeseriesChart => timeseriesChart.Datasets.Add(timeseriesChartDataset)
     );
     if (dashboard is not null)
     {
       dashboard.Alter(
-        dashboard => dashboard.Flow,
+        dashboard => dashboard.FlowPart,
         flow =>
           flow.Widgets = flow.Widgets
             .Select(
@@ -160,7 +175,9 @@ public class TimeseriesChartDatasetAdminController : Controller
       await _contentManager.SaveDraftAsync(chart);
     }
 
-    await _notifier.SuccessAsync(H["Line chart dataset created successfully."]);
+    await _notifier.SuccessAsync(
+      H["Timeseries chart dataset created successfully."]
+    );
     return RedirectToAction(
       "Edit",
       "Admin",
@@ -189,17 +206,19 @@ public class TimeseriesChartDatasetAdminController : Controller
     if (chartContentItemId is null)
     {
       chart = await _contentManager.GetContentAsync<TimeseriesChartItem>(
-        contentItemId
+        contentItemId,
+        VersionOptions.DraftRequired
       );
     }
     else
     {
       dashboard = await _contentManager.GetContentAsync<DashboardItem>(
-        contentItemId
+        contentItemId,
+        VersionOptions.DraftRequired
       );
       if (dashboard is not null)
       {
-        chart = dashboard.Flow.Value.Widgets
+        chart = dashboard.FlowPart.Value.Widgets
           .FirstOrDefault(chart => chart.ContentItemId == chartContentItemId)
           ?.AsContent<TimeseriesChartItem>();
       }
@@ -209,7 +228,7 @@ public class TimeseriesChartDatasetAdminController : Controller
       return NotFound();
     }
     var timeseriesChartDataset =
-      chart.TimeseriesChart.Value.Datasets.FirstOrDefault(
+      chart.TimeseriesChartPart.Value.Datasets.FirstOrDefault(
         dataset => dataset.ContentItemId == datasetContentItemId
       );
     if (timeseriesChartDataset is null)
@@ -217,6 +236,10 @@ public class TimeseriesChartDatasetAdminController : Controller
       return NotFound();
     }
 
+    timeseriesChartDataset.Content.ChartDataProviderId = chart
+      .TimeseriesChartPart
+      .Value
+      .ChartDataProviderId;
     dynamic model = await _contentItemDisplayManager.BuildEditorAsync(
       timeseriesChartDataset,
       _updateModelAccessor.ModelUpdater,
@@ -225,7 +248,7 @@ public class TimeseriesChartDatasetAdminController : Controller
     model.ContentItemId = contentItemId;
     model.ChartContentItemId = chartContentItemId;
     model.DatasetContentItemId = datasetContentItemId;
-    model.DataProviderId = chart.TimeseriesChart.Value.DataProviderId;
+    model.DataProviderId = chart.TimeseriesChartPart.Value.ChartDataProviderId;
     return View(model);
   }
 
@@ -252,17 +275,19 @@ public class TimeseriesChartDatasetAdminController : Controller
     if (chartContentItemId is null)
     {
       chart = await _contentManager.GetContentAsync<TimeseriesChartItem>(
-        contentItemId
+        contentItemId,
+        VersionOptions.DraftRequired
       );
     }
     else
     {
       dashboard = await _contentManager.GetContentAsync<DashboardItem>(
-        contentItemId
+        contentItemId,
+        VersionOptions.DraftRequired
       );
       if (dashboard is not null)
       {
-        chart = dashboard.Flow.Value.Widgets
+        chart = dashboard.FlowPart.Value.Widgets
           .FirstOrDefault(chart => chart.ContentItemId == chartContentItemId)
           ?.AsContent<TimeseriesChartItem>();
       }
@@ -272,31 +297,36 @@ public class TimeseriesChartDatasetAdminController : Controller
       return NotFound();
     }
     var timeseriesChartDataset =
-      chart.TimeseriesChart.Value.Datasets.FirstOrDefault(
-        dataset => dataset.ContentItemId == datasetContentItemId
-      );
+      await _contentManager.NewContentAsync<TimeseriesChartDatasetItem>();
     if (timeseriesChartDataset is null)
     {
-      return NotFound();
+      return StatusCode(500);
     }
 
+    timeseriesChartDataset.Inner.Content.ChartDataProviderId = chart
+      .TimeseriesChartPart
+      .Value
+      .ChartDataProviderId;
     dynamic model = await _contentItemDisplayManager.UpdateEditorAsync(
       timeseriesChartDataset,
       _updateModelAccessor.ModelUpdater,
-      false
+      true
     );
     if (!ModelState.IsValid)
     {
       model.ContentItemId = contentItemId;
       model.ChartContentItemId = chartContentItemId;
       model.DatasetContentItemId = datasetContentItemId;
-      model.DataProviderId = chart.TimeseriesChart.Value.DataProviderId;
+      model.DataProviderId = chart
+        .TimeseriesChartPart
+        .Value
+        .ChartDataProviderId;
 
       return View(model);
     }
 
     chart.Alter(
-      chart => chart.TimeseriesChart,
+      chart => chart.TimeseriesChartPart,
       timeseriesChart =>
         timeseriesChart.Datasets = timeseriesChart.Datasets
           .Select(
@@ -310,7 +340,7 @@ public class TimeseriesChartDatasetAdminController : Controller
     if (dashboard is not null)
     {
       dashboard.Alter(
-        dashboard => dashboard.Flow,
+        dashboard => dashboard.FlowPart,
         flow =>
           flow.Widgets = flow.Widgets
             .Select(
@@ -326,7 +356,9 @@ public class TimeseriesChartDatasetAdminController : Controller
       await _contentManager.SaveDraftAsync(chart);
     }
 
-    await _notifier.SuccessAsync(H["Line chart dataset edited successfully."]);
+    await _notifier.SuccessAsync(
+      H["Timeseries chart dataset edited successfully."]
+    );
     return RedirectToAction(
       "Edit",
       "Admin",
@@ -356,17 +388,19 @@ public class TimeseriesChartDatasetAdminController : Controller
     if (chartContentItemId is null)
     {
       chart = await _contentManager.GetContentAsync<TimeseriesChartItem>(
-        contentItemId
+        contentItemId,
+        VersionOptions.DraftRequired
       );
     }
     else
     {
       dashboard = await _contentManager.GetContentAsync<DashboardItem>(
-        contentItemId
+        contentItemId,
+        VersionOptions.DraftRequired
       );
       if (dashboard is not null)
       {
-        chart = dashboard.Flow.Value.Widgets
+        chart = dashboard.FlowPart.Value.Widgets
           .FirstOrDefault(chart => chart.ContentItemId == chartContentItemId)
           ?.AsContent<TimeseriesChartItem>();
       }
@@ -376,7 +410,7 @@ public class TimeseriesChartDatasetAdminController : Controller
       return NotFound();
     }
     var timeseriesChartDataset =
-      chart.TimeseriesChart.Value.Datasets.FirstOrDefault(
+      chart.TimeseriesChartPart.Value.Datasets.FirstOrDefault(
         dataset => dataset.ContentItemId == datasetContentItemId
       );
     if (timeseriesChartDataset is null)
@@ -385,7 +419,7 @@ public class TimeseriesChartDatasetAdminController : Controller
     }
 
     chart.Alter(
-      chart => chart.TimeseriesChart,
+      chart => chart.TimeseriesChartPart,
       timeseriesChart =>
         timeseriesChart.Datasets = timeseriesChart.Datasets
           .Where(dataset => dataset.ContentItemId != datasetContentItemId)
@@ -394,7 +428,7 @@ public class TimeseriesChartDatasetAdminController : Controller
     if (dashboard is not null)
     {
       dashboard.Alter(
-        dashboard => dashboard.Flow,
+        dashboard => dashboard.FlowPart,
         flow =>
           flow.Widgets = flow.Widgets
             .Select(
@@ -410,7 +444,9 @@ public class TimeseriesChartDatasetAdminController : Controller
       await _contentManager.SaveDraftAsync(chart);
     }
 
-    await _notifier.SuccessAsync(H["Line chart dataset deleted successfully."]);
+    await _notifier.SuccessAsync(
+      H["Timeseries chart dataset deleted successfully."]
+    );
     return RedirectToAction(
       "Edit",
       "Admin",

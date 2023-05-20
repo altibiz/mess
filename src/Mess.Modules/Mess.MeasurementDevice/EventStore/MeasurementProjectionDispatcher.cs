@@ -27,8 +27,6 @@ public class MeasurementProjectionDispatcher : IProjectionDispatcher
 
       dispatcher.Dispatch(measured.Measurement);
     }
-
-    logger.LogInformation("Applied events");
   }
 
   public async Task ApplyAsync(
@@ -56,11 +54,8 @@ public class MeasurementProjectionDispatcher : IProjectionDispatcher
 
       if (cancellationToken.IsCancellationRequested)
       {
-        logger.LogInformation("Applied events and cancelled");
         return;
       }
     }
-
-    logger.LogInformation("Applied events");
   }
 }

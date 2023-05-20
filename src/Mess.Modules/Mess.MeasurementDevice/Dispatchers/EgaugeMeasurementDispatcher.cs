@@ -14,7 +14,7 @@ public record class EgaugeMeasurementDispatcher(
   IMeasurementClient Client
 ) : IMeasurementDispatcher
 {
-  public const string ParserId = "Egauge";
+  public const string ParserId = "egauge";
 
   public string Id => ParserId;
 
@@ -66,7 +66,7 @@ public record class EgaugeMeasurementDispatcher(
     var parsedModel = new ParsedEgaugeMeasurementModel(
       Registers: result,
       Tenant: Tenant.Current.Name,
-      Source: "egauge", // TODO: extract source
+      Source: "egauge",
       Timestamp: timestamp.Value
     );
 
@@ -75,7 +75,7 @@ public record class EgaugeMeasurementDispatcher(
       Tenant: parsedModel.Tenant,
       Timestamp: parsedModel.Timestamp,
       Voltage: parsedModel.Voltage,
-      Power: parsedModel.Voltage
+      Power: parsedModel.Power
     );
 
     Client.AddEgaugeMeasurement(model);
@@ -129,7 +129,7 @@ public record class EgaugeMeasurementDispatcher(
     var parsedModel = new ParsedEgaugeMeasurementModel(
       Registers: result,
       Tenant: Tenant.Current.Name,
-      Source: "egauge", // TODO: extract source
+      Source: "egauge",
       Timestamp: timestamp.Value
     );
 
@@ -138,7 +138,7 @@ public record class EgaugeMeasurementDispatcher(
       Tenant: parsedModel.Tenant,
       Timestamp: parsedModel.Timestamp,
       Voltage: parsedModel.Voltage,
-      Power: parsedModel.Voltage
+      Power: parsedModel.Power
     );
 
     await Client.AddEgaugeMeasurementAsync(model);
@@ -167,36 +167,6 @@ public enum EgaugeRegisterType
   Speed,
   Charge
 }
-
-// NOTE: this is impossible to implement correctly because some types have the
-// same unit
-// public static class EgaugeRegisterUnitMethods
-// {
-//   public static EgaugeRegisterType Type(this EgaugeRegisterUnit unit) =>
-//     unit switch
-//     {
-//       EgaugeRegisterUnit.WattsPerSquareMeter => EgaugeRegisterType.Irradiance,
-//       EgaugeRegisterUnit.Hertz => EgaugeRegisterType.Frequency,
-//       EgaugeRegisterUnit.Ampere => EgaugeRegisterType.Current,
-//       EgaugeRegisterUnit.VoltAmpereReactive => EgaugeRegisterType.ReactivePower,
-//       EgaugeRegisterUnit.Pascal => EgaugeRegisterType.Pressure,
-//       EgaugeRegisterUnit.Watt => EgaugeRegisterType.Power,
-//       EgaugeRegisterUnit.Mm3ps => EgaugeRegisterType.VolumetricFlow,
-//       EgaugeRegisterUnit.GramPerSecond => EgaugeRegisterType.MassFlow,
-//       EgaugeRegisterUnit.Ohm => EgaugeRegisterType.Resistance,
-//       EgaugeRegisterUnit.VoltAmpere => EgaugeRegisterType.ApparentPower,
-//       EgaugeRegisterUnit.Percent => EgaugeRegisterType.TotalHarmonicDistortion,
-//       EgaugeRegisterUnit.Celsius => EgaugeRegisterType.Temperature,
-//       EgaugeRegisterUnit.Volt => EgaugeRegisterType.Voltage,
-//       EgaugeRegisterUnit.None => EgaugeRegisterType.Numeric,
-//       EgaugeRegisterUnit.CurrencyPerSecond => EgaugeRegisterType.Monetary,
-//       EgaugeRegisterUnit.Degrees => EgaugeRegisterType.Angle,
-//       EgaugeRegisterUnit.Percent => EgaugeRegisterType.RelativeHumidity,
-//       EgaugeRegisterUnit.MeterPerSecond => EgaugeRegisterType.Speed,
-//       EgaugeRegisterUnit.AmpereHours => EgaugeRegisterType.Charge,
-//       var _ => default
-//     };
-// }
 
 public enum EgaugeRegisterUnit
 {

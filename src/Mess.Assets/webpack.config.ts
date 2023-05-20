@@ -1,4 +1,4 @@
-import { Configuration } from "webpack";
+import { Configuration, EntryObject } from "webpack";
 import * as path from "path";
 import * as glob from "glob";
 import autoprefixer from "autoprefixer";
@@ -7,7 +7,6 @@ import TerserPlugin from "terser-webpack-plugin";
 import CssMinimizerPlugin from "css-minimizer-webpack-plugin";
 import ESLintPlugin from "eslint-webpack-plugin";
 import StylelintPlugin from "stylelint-webpack-plugin";
-import BrowserSyncPlugin from "browser-sync-webpack-plugin";
 
 const configuration: Configuration = {
   entry: () => {
@@ -16,28 +15,37 @@ const configuration: Configuration = {
     });
 
     const entries = workspaces.reduce((entries, workspace) => {
+      const project = workspace.split("/")[2];
       const bundles = glob.sync(`${workspace}/src/*`, {
         posix: true,
       });
 
       bundles.forEach((bundle) => {
         const bundleName = path.parse(bundle).name;
-        const scriptFiles = glob.sync(`${bundle}/**/*.{js,ts}`);
-        const styleFiles = glob.sync(`${bundle}/**/*.{css,scss}`);
+        const scriptFiles = glob
+          .sync(`${bundle}/**/*.{js,ts}`)
+          .map((file) => path.resolve(file));
+        const styleFiles = glob
+          .sync(`${bundle}/**/*.{css,scss}`)
+          .map((file) => path.resolve(file));
 
         if (scriptFiles.length > 0) {
-          entries[`../${workspace}/../wwwroot/assets/scripts/${bundleName}`] =
-            scriptFiles;
+          entries[`../${workspace}/../wwwroot/assets/scripts/${bundleName}`] = {
+            import: scriptFiles,
+            publicPath: `/${project}/assets/scripts/${bundleName}.js`,
+          };
         }
 
         if (styleFiles.length > 0) {
-          entries[`../${workspace}/../wwwroot/assets/styles/${bundleName}`] =
-            styleFiles;
+          entries[`../${workspace}/../wwwroot/assets/styles/${bundleName}`] = {
+            import: styleFiles,
+            publicPath: `/${project}/assets/styles/${bundleName}.css`,
+          };
         }
       });
 
       return entries;
-    }, {} as { [key: string]: string[] });
+    }, {} as EntryObject);
 
     return entries;
   },
@@ -48,7 +56,7 @@ const configuration: Configuration = {
   module: {
     rules: [
       {
-        test: /\.ts$/,
+        test: /\.(js|ts)$/,
         exclude: /node_modules/,
         use: {
           loader: "babel-loader",
@@ -84,11 +92,6 @@ const configuration: Configuration = {
     }),
     new StylelintPlugin({
       files: "../Mess.{Modules,Themes}/*/Assets/src/**/*.{css,scss}",
-    }),
-    new BrowserSyncPlugin({
-      host: "localhost",
-      port: 3001,
-      proxy: "https://localhost:5001",
     }),
   ],
   optimization: {

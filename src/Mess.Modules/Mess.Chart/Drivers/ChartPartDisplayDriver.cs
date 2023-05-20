@@ -1,16 +1,17 @@
-using Mess.Chart.Abstractions.Providers;
 using Mess.Chart.Abstractions.Models;
 using Mess.Chart.ViewModels;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Localization;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
 using OrchardCore.ContentManagement.Display.Models;
-using OrchardCore.ContentManagement.Metadata.Models;
 using OrchardCore.DisplayManagement.ModelBinding;
 using OrchardCore.DisplayManagement.Views;
-using OrchardCore.Mvc.ModelBinding;
 using OrchardCore.ContentManagement.Metadata;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Mess.Chart.Abstractions.Providers;
+using Microsoft.Extensions.DependencyInjection;
+using YesSql;
+using Mess.Chart.Indexes;
+using Mess.Chart.Providers;
 
 namespace Mess.Chart.Drivers;
 
@@ -22,36 +23,56 @@ public class ChartPartDisplayDriver : ContentPartDisplayDriver<ChartPart>
   )
   {
     return Initialize<ChartPartViewModel>(
-      GetDisplayShapeType(context),
-      model =>
-      {
-        model.DataProviderId = part.DataProviderId;
-        model.ChartContentItemId = part.ChartContentItemId;
-        model.Part = part;
-        model.Definition = context.TypePartDefinition;
-      }
-    );
+        GetDisplayShapeType(context),
+        model =>
+        {
+          model.ChartDataProviderId = part.ChartDataProviderId;
+          model.ChartContentItemId = part.ChartContentItemId;
+          model.Part = part;
+          model.Definition = context.TypePartDefinition;
+        }
+      )
+      .Location("Detail", "Content");
   }
 
-  public override IDisplayResult Edit(
+  public override async Task<IDisplayResult> EditAsync(
     ChartPart part,
     BuildPartEditorContext context
   )
   {
+    var charts = await _session.QueryIndex<ChartIndex>().ListAsync();
+    var chartDataProviders = _serviceProvider
+      .GetServices<IChartDataProvider>()
+      .Where(provider => provider.Id != PreviewChartDataProvider.ProviderId);
+
     return Initialize<ChartPartEditViewModel>(
       GetEditorShapeType(context),
       model =>
       {
-        model.DataProviderId = part.DataProviderId;
-        model.DataProviderIdOptions = new List<SelectListItem>
-        {
-          new SelectListItem { Text = "Test", Value = "test" }
-        };
-        model.ChartContentItemId = part.ChartContentItemId;
-        model.ChartContentItemIdOptions = new List<SelectListItem>
-        {
-          new SelectListItem { Text = "Test", Value = "test" }
-        };
+        model.ChartDataProviderId =
+          part.ChartDataProviderId ?? chartDataProviders.First().Id;
+        model.ChartDataProviderIdOptions = chartDataProviders
+          .Select(
+            dataProvider =>
+              new SelectListItem
+              {
+                Text = dataProvider.Id,
+                Value = dataProvider.Id
+              }
+          )
+          .ToList();
+        model.ChartContentItemId =
+          part.ChartContentItemId ?? charts.First().ChartContentItemId!;
+        model.ChartContentItemIdOptions = charts
+          .Select(
+            chart =>
+              new SelectListItem
+              {
+                Text = chart.Title ?? chart.ChartContentItemId,
+                Value = chart.ChartContentItemId
+              }
+          )
+          .ToList();
         model.Part = part;
         model.Definition = context.TypePartDefinition;
       }
@@ -70,12 +91,12 @@ public class ChartPartDisplayDriver : ContentPartDisplayDriver<ChartPart>
       await updater.TryUpdateModelAsync(
         viewModel,
         Prefix,
-        model => model.DataProviderId,
+        model => model.ChartDataProviderId,
         model => model.ChartContentItemId
       )
     )
     {
-      part.DataProviderId = viewModel.DataProviderId;
+      part.ChartDataProviderId = viewModel.ChartDataProviderId;
       part.ChartContentItemId = viewModel.ChartContentItemId;
     }
 
@@ -83,14 +104,20 @@ public class ChartPartDisplayDriver : ContentPartDisplayDriver<ChartPart>
   }
 
   public ChartPartDisplayDriver(
+    IServiceProvider serviceProvider,
     IContentDefinitionManager contentDefinitionManager,
-    IStringLocalizer<ChartPartDisplayDriver> localizer
+    IStringLocalizer<ChartPartDisplayDriver> localizer,
+    ISession session
   )
   {
+    _serviceProvider = serviceProvider;
     _contentDefinitionManager = contentDefinitionManager;
+    _session = session;
     S = localizer;
   }
 
   private readonly IStringLocalizer S;
   private readonly IContentDefinitionManager _contentDefinitionManager;
+  private readonly IServiceProvider _serviceProvider;
+  private readonly ISession _session;
 }

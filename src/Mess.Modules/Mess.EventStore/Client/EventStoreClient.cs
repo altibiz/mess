@@ -41,7 +41,8 @@ public class EventStoreClient : IEventStoreClient
       return connected;
     });
 
-  public void RecordEvents<T>(params IEvent[] events) where T : class =>
+  public void RecordEvents<T>(params IEvent[] events)
+    where T : class =>
     _services.WithEventStoreSession(session =>
     {
       session.Events.StartStream<T>(Guid.NewGuid(), events);
@@ -50,7 +51,8 @@ public class EventStoreClient : IEventStoreClient
       return true;
     });
 
-  public Task RecordEventsAsync<T>(params IEvent[] events) where T : class =>
+  public Task RecordEventsAsync<T>(params IEvent[] events)
+    where T : class =>
     _services.WithEventStoreSessionAsync(
       async (session) =>
       {

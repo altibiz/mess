@@ -15,13 +15,16 @@ else
   PUBLISH_DIR="$ROOT_DIR/artifacts"
 fi
 
+if [ ! -d "$PUBLISH_DIR" ]; then
+  mkdir -p "$PUBLISH_DIR"
+fi
+
 export ASPNETCORE_ENVIRONMENT=Production
 export DOTNET_ENVIRONMENT=Production
 export ORCHARD_APP_DATA="$ROOT_DIR/App_Data"
 
 export NODE_OPTIONS="--no-warnings"
 export NODE_ENV="production"
-export MESS_CLIENT_OUTPUT_DIRS="$ROOT_DIR/src/Mess.Client/dist"
 
 stop() {
   printf "\n"
@@ -44,6 +47,8 @@ dotnet \
   --configuration Release
 
 printf "[Mess] Running 'docker-compose up' and 'dotnet'...\n"
+wd="$(pwd)"
+cd "$PUBLISH_DIR" || exit
 printf "
 docker-compose up; \
 
@@ -54,4 +59,5 @@ cd '%s'; \
 
 " "$SECRETS" "$PUBLISH_DIR" "$WORKING_DIR" |
   xargs -P2 -IR /usr/bin/env sh -c R
+cd "$wd" || exit
 printf "\n"

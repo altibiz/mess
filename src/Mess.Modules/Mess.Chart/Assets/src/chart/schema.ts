@@ -21,7 +21,7 @@ export const isTimeseriesChartDescriptor = (
 ): chart is TimeseriesChartDescriptor => chart.type == "timeseries";
 
 export const timeseriesChartDatapointDescriptorScema = z.object({
-  x: z.date(),
+  x: z.string(),
   y: z.number(),
 });
 

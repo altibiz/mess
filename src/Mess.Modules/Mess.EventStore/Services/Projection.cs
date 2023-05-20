@@ -6,20 +6,13 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Mess.EventStore.Services;
 
-public class Projection : IProjection
+public record class Projection(IServiceProvider Services) : IProjection
 {
-  public IServiceProvider? Services { get; set; }
-
   public void Apply(
     IDocumentOperations operations,
     IReadOnlyList<StreamAction> streams
   )
   {
-    if (Services is null)
-    {
-      throw new InvalidOperationException("No services");
-    }
-
     using var scope = Services.CreateScope();
 
     var events = new Events(streams);
@@ -29,7 +22,7 @@ public class Projection : IProjection
 
     foreach (var dispatcher in dispatchers)
     {
-      dispatcher.Apply(Services, events);
+      dispatcher.Apply(scope.ServiceProvider, events);
     }
   }
 
@@ -39,11 +32,6 @@ public class Projection : IProjection
     CancellationToken cancellationToken
   )
   {
-    if (Services is null)
-    {
-      throw new InvalidOperationException("No services");
-    }
-
     await using var scope = Services.CreateAsyncScope();
 
     var events = new Events(streams);
@@ -53,7 +41,11 @@ public class Projection : IProjection
 
     foreach (var dispatcher in dispatchers)
     {
-      await dispatcher.ApplyAsync(Services, events, cancellationToken);
+      await dispatcher.ApplyAsync(
+        scope.ServiceProvider,
+        events,
+        cancellationToken
+      );
     }
   }
 }

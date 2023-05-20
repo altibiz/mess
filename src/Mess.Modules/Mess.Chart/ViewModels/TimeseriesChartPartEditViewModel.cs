@@ -13,8 +13,9 @@ public class TimeseriesChartPartEditViewModel
   [ValidateNever]
   public ContentTypePartDefinition Definition { get; set; } = default!;
 
-  public string DataProviderId { get; set; } = default!;
+  public string ChartDataProviderId { get; set; } = default!;
 
   [ValidateNever]
-  public List<SelectListItem> DataProviderIdOptions { get; set; } = default!;
+  public List<SelectListItem> ChartDataProviderIdOptions { get; set; } =
+    default!;
 }

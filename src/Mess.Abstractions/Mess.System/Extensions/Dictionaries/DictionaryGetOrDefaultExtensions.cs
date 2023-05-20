@@ -25,7 +25,8 @@ public static class DictionaryGetOrDefaultExtensions
   public static TOut? GetOrDefaultValue<TIn, TOut>(
     this IDictionary<TIn, TOut> @this,
     TIn? key
-  ) where TOut : struct
+  )
+    where TOut : struct
   {
     if (key is null)
     {

@@ -12,7 +12,7 @@ public class ChartPartViewModel
   [ValidateNever]
   public ContentTypePartDefinition Definition { get; set; } = default!;
 
-  public string DataProviderId { get; set; } = default!;
+  public string ChartDataProviderId { get; set; } = default!;
 
   public string ChartContentItemId { get; set; } = default!;
 }

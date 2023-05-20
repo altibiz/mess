@@ -1,12 +1,14 @@
 {
   "compilerOptions": {
-    "noImplicitAny": true,
-    "target": "es5",
+    "target": "ES2015",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "downlevelIteration": true,
+    "isolatedModules": true,
     "esModuleInterop": true,
-    "lib": ["ESNext", "DOM"],
     "resolveJsonModule": true,
-    "strict": true,
-    "typeRoots": ["./types"]
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "strict": true
   },
-  "include": ["gulpfile.ts", "webpack.config.ts"]
+  "include": ["webpack.config.ts"]
 }

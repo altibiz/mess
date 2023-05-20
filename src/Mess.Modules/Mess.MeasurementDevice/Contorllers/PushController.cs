@@ -31,7 +31,7 @@ public class PushController : Controller
     var measurement = await Request.Body.EncodeAsync();
 
     var features = await shellFeaturesManager.GetEnabledFeaturesAsync();
-    if (features.Any(feature => feature.Id == "EventStore"))
+    if (features.Any(feature => feature.Id == "Mess.EventStore"))
     {
       var client = services.GetRequiredService<IEventStoreClient>();
       await client.RecordEventsAsync<Measurements>(

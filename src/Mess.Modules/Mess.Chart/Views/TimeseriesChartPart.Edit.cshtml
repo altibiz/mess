@@ -4,6 +4,24 @@
 @inject OrchardCore.ContentManagement.Display.IContentItemDisplayManager ContentItemDisplayManager
 @inject OrchardCore.DisplayManagement.ModelBinding.IUpdateModelAccessor ModelUpdaterAccessor
 
+<div class="mb-3 row">
+  <div class="col-sm-6">
+    <label asp-for="ChartDataProviderId">@T["Data provider"]</label>
+    <select class="form-select" asp-for="ChartDataProviderId">
+      @foreach (var item in Model.ChartDataProviderIdOptions)
+      {
+        <option value="@item.Value">@item.Text</option>
+      }
+    </select>
+    <span class="hint">@T["If changed, it will remove all datasets."]</span>
+  </div>
+</div>
+
+@if (Model.Part.ContentItem.Id == 0)
+{
+  return;
+}
+
 <div class="mb-3 d-flex flex-column justify-content-between">
   <h5>@T["Datasets"]</h5>
   
@@ -11,6 +29,8 @@
   {
     @foreach (var contentItem in Model.Part.Datasets)
     {
+      contentItem.Content.ContentItemId = Model.Part.ContentItem.ContentItemId;
+      contentItem.Content.DataProviderId = Model.Part.ChartDataProviderId;
       dynamic dataset = await ContentItemDisplayManager.BuildDisplayAsync(
         contentItem,
         ModelUpdaterAccessor.ModelUpdater
@@ -39,12 +59,17 @@
   }
   
   <div class="float-end">
+    @{
+      var contentItemId = Model.Part.ContentItem.ContentItemId;
+      string? chartContentItemId = null; // TODO
+    }
+
     <a
         asp-route-area="Mess.Chart"
         asp-controller="TimeseriesChartDatasetAdmin"
         asp-action="Create"
-        asp-route-contentItemId="TODO"
-        asp-route-chartContentItemId="TODO"
+        asp-route-contentItemId="@contentItemId"
+        asp-route-chartContentItemId="@chartContentItemId"
         class="btn btn-success btn-sm">
       @T["Create dataset"]
     </a>

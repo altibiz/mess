@@ -2,15 +2,9 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "options": {
-        "env": {
-          "ASPNETCORE_ENVIRONMENT": "Development",
-          "DOTNET_ENVIRONMENT": "Development",
-          "ORCHARD_APP_DATA": "${workspaceFolder}/App_Data"
-        }
-      },
       "label": "build",
       "command": "dotnet",
+      "problemMatcher": "$msCompile",
       "type": "process",
       "args": [
         "build",
@@ -20,57 +14,13 @@
         "--property:GenerateFullPaths=true",
         "--consoleloggerparameters:ErrorsOnly"
       ],
-      "problemMatcher": "$msCompile"
-    },
-    {
-      "options": {
-        "env": {
-          "ASPNETCORE_ENVIRONMENT": "Production",
-          "DOTNET_ENVIRONMENT": "Production",
-          "ORCHARD_APP_DATA": "${workspaceFolder}/App_Data"
-        }
-      },
-      "label": "publish",
-      "command": "dotnet",
-      "type": "process",
-      "args": [
-        "publish",
-        "${workspaceFolder}/src/Mess.Web/Mess.Web.csproj",
-        "--output",
-        "${workspaceFolder}/artifacts",
-        "--configuration",
-        "Release",
-        "--property:GenerateFullPaths=true",
-        "--property:IsWebConfigTransformDisabled=true",
-        "--consoleloggerparameters:ErrorsOnly"
-      ],
-      "problemMatcher": "$msCompile"
-    },
-    {
       "options": {
         "env": {
           "ASPNETCORE_ENVIRONMENT": "Development",
           "DOTNET_ENVIRONMENT": "Development",
           "ORCHARD_APP_DATA": "${workspaceFolder}/App_Data"
         }
-      },
-      "label": "watch",
-      "command": "dotnet",
-      "type": "process",
-      "args": [
-        "watch",
-        "run",
-        "--project",
-        "${workspaceFolder}/src/Mess.Web/Mess.Web.csproj",
-        "--configuration",
-        "Debug",
-        "--consoleloggerparameters:ErrorsOnly"
-      ],
-      "problemMatcher": "$msCompile"
-    },
-    {
-      "label": "preLaunch",
-      "dependsOn": ["build"]
+      }
     }
   ]
 }

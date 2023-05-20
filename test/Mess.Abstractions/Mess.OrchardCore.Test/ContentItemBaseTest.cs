@@ -28,7 +28,8 @@ public record class ContentItemBaseTest
   {
     public Lazy<StringPart> StringPart { get; init; } = default!;
 
-    private OnePartItem(OrchardContentItem inner) : base(inner) { }
+    private OnePartItem(OrchardContentItem inner)
+      : base(inner) { }
   }
 
   [Fact]
@@ -62,7 +63,8 @@ public record class ContentItemBaseTest
     public Lazy<StringPart> FirstStringPart { get; init; } = default!;
     public Lazy<StringPart> SecondStringPart { get; init; } = default!;
 
-    private TwoPartItem(OrchardContentItem inner) : base(inner) { }
+    private TwoPartItem(OrchardContentItem inner)
+      : base(inner) { }
   }
 
   [Fact]
@@ -97,7 +99,8 @@ public record class ContentItemBaseTest
   {
     public Lazy<StringPart> StringPart { get; init; } = default!;
 
-    private ContainedItem(OrchardContentItem inner) : base(inner) { }
+    private ContainedItem(OrchardContentItem inner)
+      : base(inner) { }
   }
 
   [Fact(Skip = "Not working yet")]
@@ -122,7 +125,8 @@ public record class ContentItemBaseTest
   {
     public Lazy<StringPart> StringPart { get; init; } = default!;
 
-    public DerivedItem(OrchardContentItem inner) : base(inner) { }
+    public DerivedItem(OrchardContentItem inner)
+      : base(inner) { }
   }
 
   private class StringPart : ContentPart

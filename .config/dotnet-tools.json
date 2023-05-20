@@ -3,11 +3,11 @@
   "isRoot": true,
   "tools": {
     "csharpier": {
-      "version": "0.21.0",
+      "version": "0.24.2",
       "commands": ["dotnet-csharpier"]
     },
     "dotnet-ef": {
-      "version": "6.0.7",
+      "version": "7.0.5",
       "commands": ["dotnet-ef"]
     },
     "diffenginetray": {

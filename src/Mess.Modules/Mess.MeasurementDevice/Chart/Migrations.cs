@@ -1,8 +1,8 @@
-using Mess.MeasurementDevice.Chart.Providers;
 using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.ContentManagement.Metadata.Settings;
 using OrchardCore.Data.Migration;
 using OrchardCore.Recipes.Services;
+using OrchardCore.Title.Models;
 
 namespace Mess.MeasurementDevice.Chart;
 
@@ -15,6 +15,9 @@ public class Migrations : DataMigration
       builder =>
         builder
           .Creatable()
+          .Listable()
+          .Draftable()
+          .Securable()
           .DisplayedAs("Egauge measurement device")
           .WithDescription("An Egauge measurement device.")
           .WithPart(
@@ -25,33 +28,31 @@ public class Migrations : DataMigration
                   "Title displaying the identifier of the Egauge measurement device."
                 )
                 .WithPosition("1")
-                .WithSettings(
-                  new
+                .WithSettings<TitlePartSettings>(
+                  new()
                   {
                     RenderTitle = true,
-                    Options = 1, // NOTE: GeneratedDisabled
-                    Pattern = @"{%- ContentItem.Content.MeasurementDevicePart.DeviceId -%}"
+                    Options = TitlePartOptions.GeneratedDisabled,
+                    Pattern =
+                      @"{%- ContentItem.Content.EgaugeMeasurementDevicePart.DeviceId.Text -%}"
                   }
                 )
           )
           .WithPart(
-            "MeasurementDevicePart",
+            "EgaugeMeasurementDevicePart",
             part =>
-              part.WithDisplayName("Device")
+              part.WithDisplayName("Egauge measurement device")
+                .WithDescription("An Egauge measurement device.")
                 .WithPosition("2")
-                .WithDescription("Neccessary device data.")
           )
           .WithPart(
             "ChartPart",
             part =>
               part.WithDisplayName("Chart")
                 .WithDescription(
-                  "Line chart displaying measurements in the last 24 hours."
+                  "Chart displaying the Egauge measurement device data."
                 )
                 .WithPosition("3")
-                .WithSettings(
-                  new { Provider = EgaugeChartDataProvider.ProviderId }
-                )
           )
     );
 

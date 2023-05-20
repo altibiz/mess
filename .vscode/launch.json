@@ -2,17 +2,20 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug",
+      "name": "debug",
       "type": "coreclr",
       "request": "launch",
-      "preLaunchTask": "preLaunch",
       "program": "${workspaceFolder}/src/Mess.Web/bin/Debug/net7.0/Mess.Web.dll",
+      "preLaunchTask": "build",
       "cwd": "${workspaceFolder}/src/Mess.Web",
       "stopAtEntry": false,
       "env": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "DOTNET_ENVIRONMENT": "Development",
         "ORCHARD_APP_DATA": "${workspaceFolder}/App_Data"
+      },
+      "logging": {
+        "moduleLoad": false
       }
     }
   ]

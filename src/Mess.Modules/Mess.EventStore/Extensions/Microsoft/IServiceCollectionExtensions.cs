@@ -4,6 +4,9 @@ using Weasel.Core;
 using System.Reflection;
 using Mess.EventStore.Services;
 using Mess.Tenants;
+using Marten.Events.Projections;
+
+// using Marten.Events.Daemon.Resiliency;
 
 namespace Mess.EventStore.Extensions.Microsoft;
 
@@ -15,13 +18,12 @@ public static class IServiceCollectionExtensions
     IReadOnlyDictionary<string, IReadOnlyList<Tenant>> configuration
   )
   {
-    var projection = new Projection();
-    services.AddSingleton<Projection>(projection);
-
     services
       .AddMarten(
-        (StoreOptions options) =>
+        (IServiceProvider services) =>
         {
+          var options = new StoreOptions();
+
           options.MultiTenantedDatabases(databases =>
           {
             foreach (var (connectionString, tenants) in configuration)
@@ -60,16 +62,14 @@ public static class IServiceCollectionExtensions
             options.Events.AddEventType(eventType);
           }
 
-          options.Projections.Add(
-            projection,
-            global::Marten.Events.Projections.ProjectionLifecycle.Inline
-          );
+          var projection = new Projection(services);
+          options.Projections.Add(projection, ProjectionLifecycle.Inline);
+
+          return options;
         }
       )
       // NOTE: doesn't start?
-      // .AddAsyncDaemon(
-      //   global::Marten.Events.Daemon.Resiliency.DaemonMode.HotCold
-      // )
+      // .AddAsyncDaemon(DaemonMode.HotCold)
       .AssertDatabaseMatchesConfigurationOnStartup()
       .OptimizeArtifactWorkflow();
   }

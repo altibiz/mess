@@ -1,3 +1,5 @@
+using System.Reflection;
+
 namespace Mess.System.Extensions.Objects;
 
 public static class ObjectSetFieldOrPropertyValueExtensions
@@ -24,7 +26,10 @@ public static class ObjectSetFieldOrPropertyValueExtensions
     T value
   )
   {
-    var field = type.GetField(fieldOrPropertyName);
+    var field = type.GetField(
+      fieldOrPropertyName,
+      BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance
+    );
     if (field is null)
     {
       return SetPropertyValue<O, T>(@this, type, fieldOrPropertyName, value);
@@ -47,7 +52,10 @@ public static class ObjectSetFieldOrPropertyValueExtensions
     T value
   )
   {
-    var property = type.GetProperty(fieldOrPropertyName);
+    var property = type.GetProperty(
+      fieldOrPropertyName,
+      BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance
+    );
     if (property is null)
     {
       return default(T?);
