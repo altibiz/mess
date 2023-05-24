@@ -1,10 +1,10 @@
 {
-  "name": "@mess/measurement-device-module-assets",
+  "name": "@mess/document-module-assets",
   "scripts": {
     "lint:tsc": "tsc --noEmit",
     "lint:eslint": "eslint ./src/**/*.{js,ts}",
     "lint:stylelint": "stylelint ./src/**/*.{sass,scss,css}",
-    "lint": "run-s lint:tsc lint:eslint lint:stylelint"
+    "lint": "run-p lint:tsc lint:eslint lint:stylelint"
   },
   "devDependencies": {
     "@mess/eslint-config-assets": "workspace:*",

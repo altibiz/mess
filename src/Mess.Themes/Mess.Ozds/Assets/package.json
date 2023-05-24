@@ -1,5 +1,5 @@
 {
-  "name": "@mess/ozds",
+  "name": "@mess/ozds-theme-assets",
   "scripts": {
     "lint:tsc": "tsc --noEmit",
     "lint:eslint": "eslint ./src/**/*.{js,ts}",
