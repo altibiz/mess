@@ -5,7 +5,7 @@ using Mess.Timeseries.Test.Abstractions;
 
 namespace Mess.Timeseries.Test;
 
-public class Startup : Mess.Test.Startup
+public class Startup : Mess.OrchardCore.Test.Startup
 {
   public override void ConfigureServices(
     IServiceCollection services,
@@ -14,8 +14,7 @@ public class Startup : Mess.Test.Startup
   {
     base.ConfigureServices(services, hostBuilderContext);
 
-    services.RegisterTenantFixture();
-    services.RegisterTestTimeseriesStore();
+    services.AddTestTimeseriesStore();
 
     services.AddScoped<ITimeseriesConnection, TimeseriesConnection>();
     services.AddSingleton<ITimeseriesClient, TimeseriesClient>();

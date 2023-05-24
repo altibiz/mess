@@ -1,0 +1,47 @@
+<Project>
+
+  <PropertyGroup>
+    <MessTestCopyCondition>false</MessTestCopyCondition>
+    <MessTestCopyCondition 
+        Condition="
+              '$(SolutionDir)' != '*Undefined*'
+          AND '$(MsBuildProjectName)' != 'Mess.Test'
+        ">true</MessTestCopyCondition>
+  </PropertyGroup>
+
+  <!-- TODO: shorten -->
+  <PropertyGroup>
+    <MessTestProjectDir>$(SolutionDir)test/Mess.Abstractions/Mess.Test/</MessTestProjectDir>
+  </PropertyGroup>
+
+  <Target
+      Name="CopyGlobalSuppressions"
+      BeforeTargets="PreBuildEvent"
+      Condition="$(MessTestCopyCondition)">
+    <Copy 
+      SourceFiles="$(MessTestProjectDir)GlobalSuppressions.cs"
+      DestinationFolder="$(ProjectDir)"
+    />
+  </Target>
+
+  <Target
+      Name="CopyGlobalUsings"
+      BeforeTargets="PreBuildEvent"
+      Condition="$(MessTestCopyCondition)">
+    <Copy 
+      SourceFiles="$(MessTestProjectDir)GlobalUsings.cs"
+      DestinationFolder="$(ProjectDir)"
+    />
+  </Target>
+  
+  <Target
+      Name="CopySnapshotInitializer"
+      BeforeTargets="PreBuildEvent"
+      Condition="$(MessTestCopyCondition)">
+    <Copy 
+      SourceFiles="$(MessTestProjectDir)SnapshotInitializer.cs"
+      DestinationFolder="$(ProjectDir)"
+    />
+  </Target>
+
+</Project>

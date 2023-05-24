@@ -7,7 +7,7 @@ namespace Mess.Timeseries.Test.Abstractions;
 
 public static class IServiceCollectionExtensions
 {
-  public static IServiceCollection RegisterTestTimeseriesStore(
+  public static IServiceCollection AddTestTimeseriesStore(
     this IServiceCollection services
   )
   {

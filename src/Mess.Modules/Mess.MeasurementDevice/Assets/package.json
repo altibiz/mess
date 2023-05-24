@@ -1,16 +1,25 @@
 {
   "name": "@mess/measurement-device",
+  "scripts": {
+    "lint:tsc": "tsc --noEmit",
+    "lint:eslint": "eslint ./src/**/*.{js,ts}",
+    "lint:stylelint": "stylelint ./src/**/*.{sass,scss,css}",
+    "lint": "run-s lint:tsc lint:eslint lint:stylelint"
+  },
   "devDependencies": {
     "@mess/eslint-config-assets": "workspace:*",
     "@mess/stylelint-config-assets": "workspace:*",
     "@mess/typescript-config-assets": "workspace:*",
-    "@typescript-eslint/eslint-plugin": "^5.46.1",
-    "@typescript-eslint/parser": "^5.46.1",
-    "eslint": "^8.29.0",
-    "postcss": "^8.4.20",
-    "sass": "^1.56.2",
-    "stylelint": "^14.16.0",
-    "stylelint-config-standard-scss": "^6.1.0",
-    "typescript": "^4.9.4"
+    "@shopify/prettier-plugin-liquid": "^1.0.6",
+    "@typescript-eslint/eslint-plugin": "^5.59.6",
+    "@typescript-eslint/parser": "^5.59.6",
+    "eslint": "^8.40.0",
+    "npm-run-all": "^4.1.5",
+    "postcss": "^8.4.23",
+    "prettier": "^2.8.8",
+    "sass": "^1.62.1",
+    "stylelint": "^15.6.2",
+    "stylelint-config-standard-scss": "^9.0.0",
+    "typescript": "^5.0.4"
   }
 }

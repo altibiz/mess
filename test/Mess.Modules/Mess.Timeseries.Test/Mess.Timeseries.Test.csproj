@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.System/Mess.System.csproj" />
     <ProjectReference Include="../../Mess.Abstractions/Mess.Test/Mess.Test.csproj" />
+    <ProjectReference Include="../../Mess.Abstractions/Mess.OrchardCore.Test/Mess.OrchardCore.Test.csproj" />
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Timeseries.Abstractions/Mess.Timeseries.Abstractions.csproj" />
     <ProjectReference Include="../../../src/Mess.Modules/Mess.Timeseries/Mess.Timeseries.csproj" />
     <ProjectReference Include="../../Mess.Abstractions/Mess.Timeseries.Test.Abstractions/Mess.Timeseries.Test.Abstractions.csproj" />

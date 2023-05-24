@@ -17,7 +17,7 @@ namespace Mess.MeasurementDevice.Timeseries.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.7")
+                .HasAnnotation("ProductVersion", "7.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -25,19 +25,19 @@ namespace Mess.MeasurementDevice.Timeseries.Migrations
             modelBuilder.Entity("Mess.Timeseries.Entities.EgaugeMeasurementEntity", b =>
                 {
                     b.Property<string>("Tenant")
-                        .HasColumnType("varchar");
+                        .HasColumnType("text");
 
                     b.Property<string>("Source")
-                        .HasColumnType("varchar");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("Timestamp")
-                        .HasColumnType("timestamp");
+                        .HasColumnType("timestamptz");
 
                     b.Property<float>("Power")
-                        .HasColumnType("float");
+                        .HasColumnType("float4");
 
                     b.Property<float>("Voltage")
-                        .HasColumnType("float");
+                        .HasColumnType("float4");
 
                     b.HasKey("Tenant", "Source", "Timestamp");
 

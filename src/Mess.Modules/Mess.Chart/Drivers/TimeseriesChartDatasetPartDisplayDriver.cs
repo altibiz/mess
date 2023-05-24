@@ -5,14 +5,10 @@ using OrchardCore.DisplayManagement.ModelBinding;
 using OrchardCore.DisplayManagement.Views;
 using Mess.Chart.Abstractions.Models;
 using Mess.Chart.ViewModels;
-using Mess.Chart.Abstractions.Services;
-using Mess.Chart.Abstractions.Providers;
-using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Metadata;
-using OrchardCore.ContentManagement.Metadata.Models;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using OrchardCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.DependencyInjection;
+using Mess.Chart.Abstractions.Providers;
 
 namespace Mess.Chart.Drivers;
 
@@ -28,6 +24,7 @@ public class TimeseriesChartDatasetPartDisplayDriver
         GetDisplayShapeType(context),
         model =>
         {
+          model.Property = part.Property;
           model.Part = part;
           model.Definition = context.TypePartDefinition;
         }
@@ -40,36 +37,26 @@ public class TimeseriesChartDatasetPartDisplayDriver
     BuildPartEditorContext context
   )
   {
-    var chartDataProvider = _chartDataProviderLookup.Get(
-      part.ChartDataProviderId
-    );
-    if (chartDataProvider is null)
-    {
-      throw new InvalidOperationException(
-        "Chart doesn't have a valid data provider"
-      );
-    }
+    var chartDataProviderId = (string)
+      part.ContentItem.Content.ChartDataProviderId;
+    var chartDataProvider = _serviceProvider
+      .GetServices<IChartDataProvider>()
+      .First(x => x.Id == chartDataProviderId);
 
     return Initialize<TimeseriesChartDatasetPartEditViewModel>(
       GetEditorShapeType(context),
       model =>
       {
-        model.Property = part.Property;
-        model.PropertyOptions = chartDataProvider
-          .GetTimeseriesChartDatasetProperties()
-          .Select(
-            (option, index) =>
-              new SelectListItem()
-              {
-                Value = option,
-                Text = option,
-                Selected = model.Property is not null
-                  ? model.Property == option
-                  : index == 0,
-                Disabled = false
-              }
-          )
-          .ToList();
+        model.Property =
+          part.Property
+          ?? chartDataProvider.TimeseriesChartDatasetProperties.First();
+        model.PropertyOptions =
+          chartDataProvider.TimeseriesChartDatasetProperties
+            .Select(
+              property =>
+                new SelectListItem { Text = property, Value = property }
+            )
+            .ToList();
         model.Part = part;
         model.Definition = context.TypePartDefinition;
       }
@@ -92,31 +79,6 @@ public class TimeseriesChartDatasetPartDisplayDriver
       )
     )
     {
-      var chartDataProvider = _chartDataProviderLookup.Get(
-        part.ChartDataProviderId
-      );
-      if (chartDataProvider is null)
-      {
-        throw new InvalidOperationException(
-          "Chart doesn't have a valid data provider"
-        );
-      }
-
-      if (
-        !chartDataProvider.IsValidTimeseriesChartDatasetProperty(
-          viewModel.Property
-        )
-      )
-      {
-        var partName = context.TypePartDefinition.DisplayName();
-        updater.ModelState.AddModelError(
-          Prefix,
-          nameof(viewModel.Property),
-          S["{0} doesn't contain a valid property", partName]
-        );
-        return Edit(part, context);
-      }
-
       part.Property = viewModel.Property;
     }
 
@@ -124,17 +86,17 @@ public class TimeseriesChartDatasetPartDisplayDriver
   }
 
   public TimeseriesChartDatasetPartDisplayDriver(
+    IServiceProvider serviceProvider,
     IStringLocalizer<TimeseriesChartDatasetPartDisplayDriver> localizer,
-    IChartDataProviderLookup chartDataProviderLookup,
     IContentDefinitionManager contentDefinitionManager
   )
   {
     S = localizer;
-    _chartDataProviderLookup = chartDataProviderLookup;
     _contentDefinitionManager = contentDefinitionManager;
+    _serviceProvider = serviceProvider;
   }
 
   private readonly IStringLocalizer S;
-  private readonly IChartDataProviderLookup _chartDataProviderLookup;
   private readonly IContentDefinitionManager _contentDefinitionManager;
+  private readonly IServiceProvider _serviceProvider;
 }

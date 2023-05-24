@@ -2,21 +2,49 @@ import {
   Chart,
   ScaleOptionsByType,
   CartesianScaleTypeRegistry,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  TimeScale,
+  TimeSeriesScale,
+  LineController,
 } from "chart.js";
-import { ChartModel, isLineChartModel } from "./schema";
+import "chartjs-adapter-luxon";
+import { DateTime } from "luxon";
+import { ChartDescriptor, isTimeseriesChartDescriptor } from "./schema";
+
+Chart.register(
+  CategoryScale,
+  LinearScale,
+  TimeScale,
+  TimeSeriesScale,
+  PointElement,
+  LineElement,
+  LineController,
+  Title,
+  Tooltip,
+  Legend,
+);
+
+export type BoundChart = Chart<"line", { x: DateTime; y: number }[], string>;
 
 export const bindChart = (
   id: string,
   culture: string,
-  chart: ChartModel,
-): Chart | null => {
-  if (isLineChartModel(chart)) {
-    return new Chart(id, {
+  chart: ChartDescriptor,
+): BoundChart | null => {
+  let boundChart: BoundChart | null = null;
+  if (isTimeseriesChartDescriptor(chart)) {
+    boundChart = new Chart<"line", { x: DateTime; y: number }[], string>(id, {
       type: "line",
       data: {
         datasets: chart.datasets.map(({ label, datapoints: data, color }) => ({
           label,
-          data,
+          data: data.map(({ x, y }) => ({ x: DateTime.fromISO(x), y })),
           parsing: {
             xAxisKey: "x",
             yAxisKey: "y",
@@ -27,7 +55,6 @@ export const bindChart = (
         })),
       },
       options: {
-        maintainAspectRatio: false,
         plugins: {
           legend: {
             display: false,
@@ -36,6 +63,7 @@ export const bindChart = (
         scales: {
           x: {
             type: "time",
+            position: "bottom",
             adapters: {
               date: {
                 locale: culture,
@@ -44,7 +72,7 @@ export const bindChart = (
           },
           ...chart.datasets.reduce((scales, { label }) => {
             scales[label] = {
-              type: "timeseries",
+              type: "linear",
               position: "left",
             };
 
@@ -53,7 +81,7 @@ export const bindChart = (
         },
       },
     });
-  } else {
-    return null;
   }
+
+  return boundChart;
 };

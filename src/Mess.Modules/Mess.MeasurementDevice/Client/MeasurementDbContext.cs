@@ -13,5 +13,6 @@ public class MeasurementDbContext : TimeseriesDbContext
   public MeasurementDbContext(
     DbContextOptions<MeasurementDbContext> options,
     ITenants tenants
-  ) : base(options, tenants) { }
+  )
+    : base(options, tenants) { }
 }

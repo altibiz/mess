@@ -1,5 +1,9 @@
 @model TimeseriesChartDatasetPartEditViewModel
 
+@inject OrchardCore.ContentManagement.IContentManager ContentManager
+@inject OrchardCore.ContentManagement.Display.IContentItemDisplayManager ContentItemDisplayManager
+@inject OrchardCore.DisplayManagement.ModelBinding.IUpdateModelAccessor ModelUpdaterAccessor
+
 <div class="mb-3 row">
   <div class="col-sm-6">
     <label asp-for="Property">@T["Property"]</label>
@@ -9,6 +13,6 @@
         <option value="@item.Value">@item.Text</option>
       }
     </select>
-    <span class="hint">@T["What property will be used to fetch data."]</span>
+    <span class="hint">@T["The property from which the data will be extracted"]</span>
   </div>
 </div>

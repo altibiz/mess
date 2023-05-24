@@ -52,9 +52,6 @@ public class Startup : StartupBase
       throw new InvalidOperationException("EventStore client not connected");
     }
 
-    var projection = services.GetRequiredService<Projection>();
-    projection.Services = services;
-
     routes.MapAreaControllerRoute(
       name: "Mess.EventStore.AdminController.Index",
       areaName: "Mess.EventStore",

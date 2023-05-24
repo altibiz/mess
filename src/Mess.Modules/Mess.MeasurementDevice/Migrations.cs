@@ -1,8 +1,9 @@
-using Mess.MeasurementDevice.Chart;
+using OrchardCore.ContentFields.Settings;
 using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.ContentManagement.Metadata.Settings;
 using OrchardCore.Data.Migration;
 using OrchardCore.Recipes.Services;
+using OrchardCore.Title.Models;
 
 namespace Mess.MeasurementDevice;
 
@@ -11,12 +12,27 @@ public class Migrations : DataMigration
   public int Create()
   {
     _contentDefinitionManager.AlterPartDefinition(
-      "MeasurementDevicePart",
+      "EgaugeMeasurementDevicePart",
       builder =>
         builder
           .Attachable()
-          .WithDescription(
-            "Provides neccessary fields for every measurement device."
+          .WithDescription("An Egauge measurement device.")
+          .WithDisplayName("Egauge measurement device")
+          .WithField(
+            "DeviceId",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("TextField")
+                .WithDisplayName("Device identifier")
+                .WithDescription(
+                  "The identifier of the Egauge measurement device."
+                )
+                .WithSettings(
+                  new TextFieldSettings
+                  {
+                    Hint = "The identifier of the Egauge measurement device."
+                  }
+                )
           )
     );
 
@@ -25,6 +41,9 @@ public class Migrations : DataMigration
       builder =>
         builder
           .Creatable()
+          .Listable()
+          .Draftable()
+          .Securable()
           .DisplayedAs("Egauge measurement device")
           .WithDescription("An Egauge measurement device.")
           .WithPart(
@@ -35,20 +54,22 @@ public class Migrations : DataMigration
                   "Title displaying the identifier of the Egauge measurement device."
                 )
                 .WithPosition("1")
-                .WithSettings(
-                  new
+                .WithSettings<TitlePartSettings>(
+                  new()
                   {
                     RenderTitle = true,
-                    Options = 1, // NOTE: GeneratedDisabled
-                    Pattern = @"{%- ContentItem.Content.MeasurementDevicePart.DeviceId -%}"
+                    Options = TitlePartOptions.GeneratedDisabled,
+                    Pattern =
+                      @"{%- ContentItem.Content.EgaugeMeasurementDevicePart.DeviceId.Text -%}"
                   }
                 )
           )
           .WithPart(
-            "MeasurementDevicePart",
+            "EgaugeMeasurementDevicePart",
             part =>
-              part.WithDisplayName("Device")
-                .WithDescription("Neccessary device data.")
+              part.WithDisplayName("Egauge measurement device")
+                .WithDescription("An Egauge measurement device.")
+                .WithPosition("2")
           )
     );
 

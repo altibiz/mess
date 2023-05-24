@@ -1,12 +1,13 @@
-using Mess.MeasurementDevice.Parsers.Egauge;
-using Mess.Test.Extensions.Microsoft;
 using Mess.EventStore.Test.Abstractions;
 using Mess.Timeseries.Test.Abstractions;
-using Mess.MeasurementDevice.Abstractions.Parsers;
+using Mess.MeasurementDevice.Abstractions.Dispatchers;
+using Mess.MeasurementDevice.Dispatchers;
+using Moq;
+using Mess.MeasurementDevice.Abstractions.Client;
 
 namespace Mess.MeasurementDevice.Test;
 
-public class Startup : Mess.Test.Startup
+public class Startup : Mess.OrchardCore.Test.Startup
 {
   public override void ConfigureServices(
     IServiceCollection services,
@@ -15,11 +16,14 @@ public class Startup : Mess.Test.Startup
   {
     base.ConfigureServices(services, hostBuilderContext);
 
-    services.RegisterTenantFixture();
-    services.RegisterTestEventStore();
-    services.RegisterTestTimeseriesStore();
+    services.AddTestEventStore();
+    services.AddTestTimeseriesStore();
 
-    services.AddScoped<EgaugeParser>();
-    services.AddScoped<IMeasurementParser, EgaugeParser>();
+    services.AddScoped<EgaugeMeasurementDispatcher>();
+    services.AddScoped<IMeasurementDispatcher, EgaugeMeasurementDispatcher>();
+
+    var measurementClient = new Mock<IMeasurementClient>();
+    services.AddSingleton(measurementClient);
+    services.AddSingleton(measurementClient.Object);
   }
 }

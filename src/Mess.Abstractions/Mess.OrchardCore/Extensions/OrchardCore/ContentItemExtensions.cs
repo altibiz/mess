@@ -4,13 +4,13 @@ namespace Mess.OrchardCore.Extensions.OrchardCore;
 
 public static class ContentItemExtensions
 {
-  public static ContentItem Merge(
-    this ContentItem contentItem,
-    ContentItem other
+  public static ContentItemBase Merge(
+    this ContentItemBase contentItem,
+    ContentItemBase other
   )
   {
     global::OrchardCore.ContentManagement.ContentItemExtensions.Merge(
-      contentItem.Inner,
+      contentItem.Inner.Merge(other.Inner),
       other.Inner
     );
     contentItem.Inner.DisplayText = other.Inner.DisplayText;

@@ -22,7 +22,7 @@ public class Startup : StartupBase
   {
     services.AddScoped<INavigationProvider, AdminMenu>();
 
-    services.RegisterTimeseriesDbContext<TimeseriesContext>();
+    services.AddTimeseriesDbContext<TimeseriesContext>();
     services.AddScoped<ITimeseriesMigrator, TimeseriesMigrator>();
 
     services.AddScoped<ITimeseriesConnection, TimeseriesConnection>();

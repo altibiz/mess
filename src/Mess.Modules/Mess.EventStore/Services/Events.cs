@@ -13,7 +13,8 @@ public class Events : IEvents
     _streams = streams;
   }
 
-  public IReadOnlyList<T> OfType<T>() where T : IEvent =>
+  public IReadOnlyList<T> OfType<T>()
+    where T : IEvent =>
     _streams
       .SelectMany(stream => stream.Events)
       .Where(@event => @event.EventType == typeof(T))

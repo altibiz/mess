@@ -1,27 +1,47 @@
 import * as z from "zod";
 
-export type ChartModel = typeof chartModelSchema._type;
+const baseChartDescriptorSchema = z.object({
+  type: z.literal("timeseries"),
+  refreshInterval: z.string(),
+});
 
-export type LineChartModel = typeof lineChartModelSchema._type;
+export type ChartDescriptor = typeof chartSescriptorSchema._type;
 
-export const isLineChartModel = (chart: ChartModel): chart is LineChartModel =>
-  chart.type == "Line";
+export type TimeseriesChartDescriptor =
+  typeof timeseriesChartDescriptorSchema._type;
 
-export const timeseriesChartDatapointModelScema = z.object({
-  x: z.date(),
+export type TimeseriesChartDatasetDescriptor =
+  typeof timeseriesChartDatasetDescriptorSchema._type;
+
+export type TimeseriesChartDatapointDescriptor =
+  typeof timeseriesChartDatapointDescriptorScema._type;
+
+export const isTimeseriesChartDescriptor = (
+  chart: ChartDescriptor,
+): chart is TimeseriesChartDescriptor => chart.type == "timeseries";
+
+export const timeseriesChartDatapointDescriptorScema = z.object({
+  x: z.string(),
   y: z.number(),
 });
 
-export const timeseriesChartDatasetModelSchema = z.object({
-  type: z.literal("Timeseries"),
+export const timeseriesChartDatasetDescriptorSchema = z.object({
   label: z.string(),
   color: z.string(),
-  datapoints: z.array(timeseriesChartDatapointModelScema),
+  datapoints: z.array(timeseriesChartDatapointDescriptorScema),
 });
 
-export const lineChartModelSchema = z.object({
-  type: z.literal("Line"),
-  datasets: z.array(timeseriesChartDatasetModelSchema),
-});
+export const timeseriesChartDescriptorSchema = z.intersection(
+  baseChartDescriptorSchema,
+  z.object({
+    type: z.literal("timeseries"),
+    // better types for timespans?
+    history: z.string(),
+    datasets: z.array(timeseriesChartDatasetDescriptorSchema),
+  }),
+);
 
-export const chartModelSchema = lineChartModelSchema;
+export const chartSescriptorSchema = z.intersection(
+  timeseriesChartDescriptorSchema,
+  baseChartDescriptorSchema,
+);

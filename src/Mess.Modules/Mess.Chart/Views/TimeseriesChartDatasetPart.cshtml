@@ -2,5 +2,29 @@
 
 <div class="mb-3">
   <label>Property:</label>&nbsp;
-  <span>@Model.Part.Property</span>
+  <span>@Model.Property</span>
+</div>
+
+<div>
+  <div class="float-end">
+    <a
+        asp-route-area="Mess.Chart"
+        asp-controller="TimeseriesChartDatasetAdmin"
+        asp-action="Edit"
+        asp-route-contentItemId="@Model.Part.ContentItem.Content.ContentItemId"
+        asp-route-datasetContentItemId="@Model.Part.ContentItem.ContentItemId"
+        class="btn btn-primary btn-sm">
+      @T["Edit"]
+    </a>
+    <a
+        asp-route-area="Mess.Chart"
+        asp-controller="TimeseriesChartDatasetAdmin"
+        asp-action="Delete"
+        asp-route-contentItemId="@Model.Part.ContentItem.Content.ContentItemId"
+        asp-route-datasetContentItemId="@Model.Part.ContentItem.ContentItemId"
+        data-url-af="RemoveUrl UnsafeUrl"
+        class="btn btn-danger btn-sm">
+      @T["Delete"]
+    </a>
+  </div>
 </div>

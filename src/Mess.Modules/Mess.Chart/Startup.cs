@@ -7,16 +7,16 @@ using OrchardCore.Data.Migration;
 using OrchardCore.Modules;
 using OrchardCore.Mvc.Core.Utilities;
 using OrchardCore.ResourceManagement;
-using Mess.Chart.Abstractions.Providers;
 using Mess.Chart.Controllers;
 using Mess.Chart.Drivers;
-using Mess.Chart.Providers;
 using OrchardCore.Security.Permissions;
 using Mess.Chart.Abstractions;
 using Mess.Chart.Abstractions.Models;
 using OrchardCore.Admin;
-using Mess.Chart.Abstractions.Services;
-using Mess.Chart.Services;
+using Mess.Chart.Abstractions.Providers;
+using Mess.Chart.Providers;
+using YesSql.Indexes;
+using Mess.Chart.Indexes;
 
 namespace Mess.Chart;
 
@@ -31,25 +31,22 @@ public class Startup : StartupBase
     >();
 
     services.AddScoped<IPermissionProvider, ChartPermissions>();
-    services.AddScoped<IChartService, ChartService>();
+
+    services.AddScoped<IChartDataProvider, PreviewChartDataProvider>();
 
     services
       .AddContentPart<ChartPart>()
       .UseDisplayDriver<ChartPartDisplayDriver>();
 
     services
-      .AddContentPart<LineChartPart>()
-      .UseDisplayDriver<LineChartPartDisplayDriver>();
-
-    services
-      .AddContentPart<LineChartDatasetPart>()
-      .UseDisplayDriver<LineChartDatasetPartDisplayDriver>();
+      .AddContentPart<TimeseriesChartPart>()
+      .UseDisplayDriver<TimeseriesChartPartDisplayDriver>();
 
     services
       .AddContentPart<TimeseriesChartDatasetPart>()
       .UseDisplayDriver<TimeseriesChartDatasetPartDisplayDriver>();
 
-    services.AddScoped<IChartDataProviderLookup, ChartProviderLookup>();
+    services.AddSingleton<IIndexProvider, ChartIndexProvider>();
   }
 
   public override void Configure(
@@ -61,7 +58,7 @@ public class Startup : StartupBase
     routes.MapAreaControllerRoute(
       name: "Mess.Chart.Controllers.ChartController.Index",
       areaName: "Mess.Chart",
-      pattern: "/Chart",
+      pattern: "/Chart/{contentItemId}",
       defaults: new
       {
         controller = typeof(ChartController).ControllerName(),
@@ -70,69 +67,46 @@ public class Startup : StartupBase
     );
 
     routes.MapAreaControllerRoute(
-      name: "Mess.Chart.Controllers.ConcreteChartAdminController.Create",
+      name: "Mess.Chart.Controllers.ChartController.Preview",
       areaName: "Mess.Chart",
-      pattern: _adminOptions.AdminUrlPrefix + "/ConcreteChart/Create",
+      pattern: "/Chart/Preview/{contentItemId}",
       defaults: new
       {
-        controller = typeof(ConcreteChartAdminController).ControllerName(),
-        action = nameof(ConcreteChartAdminController.Create)
+        controller = typeof(ChartController).ControllerName(),
+        action = nameof(ChartController.Preview)
       }
     );
 
     routes.MapAreaControllerRoute(
-      name: "Mess.Chart.Controllers.LineChartDatasetAdminController.Create",
+      name: "Mess.Chart.Controllers.TimeseriesChartDatasetAdminController.Create",
       areaName: "Mess.Chart",
-      pattern: _adminOptions.AdminUrlPrefix + "/LineChartDataset/Create",
+      pattern: _adminOptions.AdminUrlPrefix + "/TimeseriesChartDataset/Create",
       defaults: new
       {
-        controller = typeof(LineChartDatasetAdminController).ControllerName(),
-        action = nameof(LineChartDatasetAdminController.Create)
+        controller = typeof(TimeseriesChartDatasetAdminController).ControllerName(),
+        action = nameof(TimeseriesChartDatasetAdminController.Create)
       }
     );
 
     routes.MapAreaControllerRoute(
-      name: "Mess.Chart.Controllers.LineChartDatasetAdminController.Edit",
+      name: "Mess.Chart.Controllers.TimeseriesChartDatasetAdminController.Edit",
       areaName: "Mess.Chart",
-      pattern: _adminOptions.AdminUrlPrefix + "/LineChartDataset/Edit",
+      pattern: _adminOptions.AdminUrlPrefix + "/TimeseriesChartDataset/Edit",
       defaults: new
       {
-        controller = typeof(LineChartDatasetAdminController).ControllerName(),
-        action = nameof(LineChartDatasetAdminController.Edit)
+        controller = typeof(TimeseriesChartDatasetAdminController).ControllerName(),
+        action = nameof(TimeseriesChartDatasetAdminController.Edit)
       }
     );
 
     routes.MapAreaControllerRoute(
-      name: "Mess.Chart.Controllers.LineChartDatasetAdminController.Delete",
+      name: "Mess.Chart.Controllers.TimeseriesChartDatasetAdminController.Delete",
       areaName: "Mess.Chart",
-      pattern: _adminOptions.AdminUrlPrefix + "/LineChartDataset/Delete",
+      pattern: _adminOptions.AdminUrlPrefix + "/TimeseriesChartDataset/Delete",
       defaults: new
       {
-        controller = typeof(LineChartDatasetAdminController).ControllerName(),
-        action = nameof(LineChartDatasetAdminController.Delete)
-      }
-    );
-
-    routes.MapAreaControllerRoute(
-      name: "Mess.Chart.Controllers.ConcreteLineChartDatasetAdminController.Create",
-      areaName: "Mess.Chart",
-      pattern: _adminOptions.AdminUrlPrefix
-        + "/ConcreteLineChartDataset/Create",
-      defaults: new
-      {
-        controller = typeof(ConcreteLineChartDatasetAdminController).ControllerName(),
-        action = nameof(ConcreteLineChartDatasetAdminController.Create)
-      }
-    );
-
-    routes.MapAreaControllerRoute(
-      name: "Mess.Chart.Controllers.ConcreteLineChartDatasetAdminController.Edit",
-      areaName: "Mess.Chart",
-      pattern: _adminOptions.AdminUrlPrefix + "/ConcreteLineChartDataset/Edit",
-      defaults: new
-      {
-        controller = typeof(ConcreteLineChartDatasetAdminController).ControllerName(),
-        action = nameof(ConcreteLineChartDatasetAdminController.Edit)
+        controller = typeof(TimeseriesChartDatasetAdminController).ControllerName(),
+        action = nameof(TimeseriesChartDatasetAdminController.Delete)
       }
     );
   }

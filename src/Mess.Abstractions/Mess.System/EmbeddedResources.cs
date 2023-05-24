@@ -1,11 +1,11 @@
 using System.Reflection;
 using System.Xml.Linq;
-using Mess.System.Extensions.Object;
-using Mess.System.Extensions.String;
+using Mess.System.Extensions.Streams;
+using Mess.System.Extensions.Strings;
 
 namespace Mess.System;
 
-public static class EmbeddedResources
+public static partial class EmbeddedResources
 {
   public static Stream GetEmbeddedResource(
     string name,
@@ -19,7 +19,9 @@ public static class EmbeddedResources
     if (stream is null)
     {
       throw new InvalidOperationException(
-        $"Resource {fullName} does not exist"
+        $"Resource {fullName} does not exist. "
+          + $"Here are the available resources for the given assembly '{assembly.GetName().Name}':\n"
+          + string.Join("\n", assembly.GetManifestResourceNames())
       );
     }
 
@@ -39,6 +41,17 @@ public static class EmbeddedResources
   ) =>
     GetEmbeddedResource(name, assemblyName ?? Assembly.GetCallingAssembly())
       .FromJsonStream<T>()
+    ?? throw new InvalidOperationException(
+      $"Resource {name} couldn't be parsed"
+    );
+
+  public static object GetJsonEmbeddedResource(
+    string name,
+    Type type,
+    Assembly? assemblyName = null
+  ) =>
+    GetEmbeddedResource(name, assemblyName ?? Assembly.GetCallingAssembly())
+      .FromJsonStream(type)
     ?? throw new InvalidOperationException(
       $"Resource {name} couldn't be parsed"
     );

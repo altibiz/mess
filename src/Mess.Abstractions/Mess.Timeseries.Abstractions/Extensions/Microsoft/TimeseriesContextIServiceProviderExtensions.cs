@@ -7,7 +7,8 @@ public static class TimeseriesContextIServiceProviderExtensions
   public static async Task<T> WithTimeseriesContextAsync<C, T>(
     this IServiceProvider services,
     Func<C, Task<T>> todo
-  ) where C : TimeseriesDbContext
+  )
+    where C : TimeseriesDbContext
   {
     await using var scope = services.CreateAsyncScope();
     var context = scope.ServiceProvider.GetRequiredService<C>();
@@ -18,7 +19,8 @@ public static class TimeseriesContextIServiceProviderExtensions
   public static T WithTimeseriesContext<C, T>(
     this IServiceProvider services,
     Func<C, T> todo
-  ) where C : TimeseriesDbContext
+  )
+    where C : TimeseriesDbContext
   {
     using var scope = services.CreateScope();
     var context = scope.ServiceProvider.GetRequiredService<C>();
@@ -29,7 +31,8 @@ public static class TimeseriesContextIServiceProviderExtensions
   public static async Task WithTimeseriesContextAsync<C>(
     this IServiceProvider services,
     Func<C, Task> todo
-  ) where C : TimeseriesDbContext
+  )
+    where C : TimeseriesDbContext
   {
     await using var scope = services.CreateAsyncScope();
     var context = scope.ServiceProvider.GetRequiredService<C>();
@@ -39,7 +42,8 @@ public static class TimeseriesContextIServiceProviderExtensions
   public static void WithTimeseriesContext<C>(
     this IServiceProvider services,
     Action<C> todo
-  ) where C : TimeseriesDbContext
+  )
+    where C : TimeseriesDbContext
   {
     using var scope = services.CreateScope();
     var context = scope.ServiceProvider.GetRequiredService<C>();

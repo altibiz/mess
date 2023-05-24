@@ -1,18 +1,19 @@
 <Project>
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
+    <LangVersion>11</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <PropertyGroup>
     <MessOrchardVersion>1.5</MessOrchardVersion>
-    <MessEtchVersion>1.4</MessEtchVersion>
+    <MessEtchVersion>1.4.3</MessEtchVersion>
 
     <!-- NOTE: these are connected -->
-    <MessNpgsqlVersion>6.0.7</MessNpgsqlVersion>
-    <MessMartenVersion>5.11.0</MessMartenVersion>
+    <MessNpgsqlVersion>7.0.4</MessNpgsqlVersion>
+    <MessMartenVersion>6.0.0</MessMartenVersion>
   </PropertyGroup>
 
 </Project>

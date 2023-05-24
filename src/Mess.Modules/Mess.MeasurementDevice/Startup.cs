@@ -11,12 +11,10 @@ using Mess.Timeseries.Abstractions.Extensions.Microsoft;
 using Mess.MeasurementDevice.Abstractions.Client;
 using Mess.MeasurementDevice.Client;
 using Mess.MeasurementDevice.Controllers;
-using Mess.MeasurementDevice.Parsers.Egauge;
 using Mess.MeasurementDevice.Models;
-using Mess.MeasurementDevice.Abstractions.Parsers;
-using Mess.MeasurementDevice.Storage;
-using Mess.MeasurementDevice.Abstractions.Storage;
-using Mess.MeasurementDevice.Parsers;
+using Mess.MeasurementDevice.Abstractions.Dispatchers;
+using Mess.MeasurementDevice.Dispatchers;
+using Mess.MeasurementDevice.Abstractions.Models;
 
 namespace Mess.MeasurementDevice;
 
@@ -30,21 +28,16 @@ public class Startup : StartupBase
       Resources
     >();
 
-    services.RegisterTimeseriesDbContext<MeasurementDbContext>();
+    services.AddContentPart<EgaugeMeasurementDevicePart>();
 
-    services.AddSingleton<IMeasurementParserLookup, MeasurementParserLookup>();
-    services.AddSingleton<IMeasurementParser, EgaugeParser>();
+    services.AddTimeseriesDbContext<MeasurementDbContext>();
 
-    services.AddSingleton<
-      IMeasurementStorageStrategyLookup,
-      MeasurementStorageStrategyLookup
-    >();
-    services.AddSingleton<
-      IMeasurementStorageStrategy,
-      EgaugeDirectStorageStrategy
-    >();
+    services.AddScoped<IMeasurementDispatcher, EgaugeMeasurementDispatcher>();
 
     services.AddSingleton<IMeasurementClient, MeasurementClient>();
+    services.AddSingleton<IMeasurementQuery>(
+      services => services.GetRequiredService<IMeasurementClient>()
+    );
 
     services.AddContentPart<MeasurementDevicePart>();
   }
@@ -58,7 +51,7 @@ public class Startup : StartupBase
     routes.MapAreaControllerRoute(
       name: "Mess.MeasurementDevice.PushController.Index",
       areaName: "Mess.MeasurementDevice",
-      pattern: "/Push/{parserId}",
+      pattern: "/Push/{dispatcherId}",
       defaults: new
       {
         controller = typeof(PushController).ControllerName(),

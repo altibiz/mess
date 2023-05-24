@@ -2,7 +2,7 @@ using Mess.Tenants;
 
 namespace Mess.Test.Tenants;
 
-public record class TenantFixture : ITenantFixture
+internal class TenantFixture : ITenantFixture
 {
   public ITenants Tenants { get; }
 
