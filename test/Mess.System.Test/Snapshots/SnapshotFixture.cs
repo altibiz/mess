@@ -2,7 +2,6 @@ using System.Reflection;
 using Mess.System.Extensions.Objects;
 using Mess.System.Test.Extensions.Verify;
 using Mess.System.Test.Extensions.Xunit;
-using VerifyXunit;
 using Xunit.Abstractions;
 using Xunit.DependencyInjection;
 

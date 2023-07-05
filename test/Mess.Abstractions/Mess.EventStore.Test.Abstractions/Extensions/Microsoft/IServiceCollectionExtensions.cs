@@ -1,6 +1,5 @@
 using Marten;
-using Mess.System.Test.Extensions.Xunit;
-using Xunit.DependencyInjection;
+using Mess.System.Test.Extensions.Microsoft;
 
 namespace Mess.EventStore.Test.Abstractions;
 
@@ -12,10 +11,7 @@ public static class IServiceCollectionExtensions
   {
     services.AddScoped<IDocumentStore>(services =>
     {
-      var testId = services
-        .GetRequiredService<ITestOutputHelperAccessor>()
-        .Output.GetTest()
-        .GetTestIdentifier();
+      var testId = services.GetTestId();
 
       return DocumentStore.For(
         (options) =>

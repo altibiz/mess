@@ -5,15 +5,15 @@ using OrchardCore.ContentManagement;
 
 namespace Mess.MeasurementDevice.Test;
 
-public record class EgaugeMeasurementDispatcherTest(
+public record class EgaugePushHandlerTest(
   EgaugePushHandler Handler,
   Mock<ITimeseriesClient> MeasurementClientMock,
-  ILogger<EgaugeMeasurementDispatcherTest> Logger
+  ILogger<EgaugePushHandlerTest> Logger
 )
 {
   [Theory]
   [StaticData(typeof(Assets), nameof(Assets.EgaugeMeasurements))]
-  public void DispatchTest(string request, EgaugeMeasurement measurement)
+  public void HandleTest(string request, EgaugeMeasurement measurement)
   {
     Handler.Handle("", new ContentItem(), request);
 

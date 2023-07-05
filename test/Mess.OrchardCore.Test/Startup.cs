@@ -11,6 +11,7 @@ public class Startup : Mess.System.Test.Startup
   {
     base.ConfigureServices(services, hostBuilderContext);
 
+    services.AddOrchardCoreShellSettings();
     services.AddOrchardSnapshotFixture();
   }
 }

@@ -28,7 +28,7 @@ public class Startup
     );
   }
 
-  public virtual void ConfigureServices(IServiceProvider serviceProvider)
+  public virtual void Configure(IServiceProvider serviceProvider)
   {
     using var scope = serviceProvider.CreateScope();
     var migrators = scope.ServiceProvider.GetServices<ITestMigrator>();
