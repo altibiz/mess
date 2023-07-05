@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="@Orchard.CultureName()">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>@RenderTitleSegments(Site.SiteName, "before")</title>
+
+    <link
+        type="image/x-icon"
+        rel="shortcut icon"
+        href="~/Mess.Nilavasa/assets/favicon.ico">
+    
+    <style asp-name="mess-nilavasa"></style>
+    <script asp-name="mess-nilavasa"></script>
+
+    <resources type="Meta" />
+    <resources type="HeadLink" />
+    <resources type="Stylesheet" />
+    <resources type="HeadScript" />
+
+    @await RenderSectionAsync("HeadMeta", required: false)
+  </head>
+
+  <body dir="@Orchard.CultureDir()">
+    <nav class="navbar" id="nav-root">
+      <div class="container px-4 px-lg-5">
+        <a href="~/" class="navbar-brand">
+          <img
+              src="~/Ozds.Themes.Ozds/assets/images/logo.png"
+              alt="Logo"
+              class="logo-img">
+        </a>
+
+        @*
+          <button
+              type="button"
+              class="navbar-toggler"
+              data-bs-toggle="collapse"
+              data-bs-target="#nav-menu"
+              data-bs-parent="#nav-root"
+              aria-expanded="false"
+              aria-controls="nav-menu"
+              aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+          </button>
+
+          <div class="collapse navbar-collapse" id="nav-menu">
+            @if (User.IsInRole("User"))
+            {
+              <partial name="MainMenu" />
+            }
+            <partial name="LoginMenu" />
+            <shape type="ContentCulturePicker" />
+          </div>
+        *@
+      </div>
+    </nav>
+
+    @*
+      <script>
+        var navMenu = document.getElementById('nav-menu')
+
+        navMenu.addEventListener(
+          'show.bs.collapse',
+          () => document
+            .getElementById('nav-root')
+            .classList
+            .add('navbar-shown'))
+
+        navMenu.addEventListener(
+          'hidden.bs.collapse',
+          () => document
+            .getElementById('nav-root')
+            .classList
+            .remove('navbar-shown'))
+      </script>
+    *@
+
+    @await RenderSectionAsync("Header", required: false)
+    @await RenderSectionAsync("Login", required: false)
+
+    <div class="container px-4 px-lg-5 mb-4">
+      <div class="row gx-4 gx-lg-5 justify-content-center">
+        <div class="col-sm-11 col-md-10 col-lg-9">
+          @await RenderSectionAsync("Messages", required: false)
+          @await RenderBodyAsync()
+        </div>
+      </div>
+    </div>
+
+    @if (IsSectionDefined("Footer"))
+    {
+      <footer>
+        <div class="container">
+          @await RenderSectionAsync("Footer", required: false)
+        </div>
+      </footer>
+    }
+
+    <resources type="FootScript" />
+  </body>
+</html>

@@ -40,7 +40,7 @@ public class TimeseriesChartDatasetPartDisplayDriver
     var chartDataProviderId = (string)
       part.ContentItem.Content.ChartDataProviderId;
     var chartDataProvider = _serviceProvider
-      .GetServices<IChartDataProvider>()
+      .GetServices<IChartProvider>()
       .First(x => x.Id == chartDataProviderId);
 
     return Initialize<TimeseriesChartDatasetPartEditViewModel>(

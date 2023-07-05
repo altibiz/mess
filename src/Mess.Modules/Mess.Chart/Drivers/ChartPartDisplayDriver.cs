@@ -42,7 +42,7 @@ public class ChartPartDisplayDriver : ContentPartDisplayDriver<ChartPart>
   {
     var charts = await _session.QueryIndex<ChartIndex>().ListAsync();
     var chartDataProviders = _serviceProvider
-      .GetServices<IChartDataProvider>()
+      .GetServices<IChartProvider>()
       .Where(provider => provider.Id != PreviewChartDataProvider.ProviderId);
 
     return Initialize<ChartPartEditViewModel>(

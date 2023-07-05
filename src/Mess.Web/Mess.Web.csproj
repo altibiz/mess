@@ -21,8 +21,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../Mess.Modules/*/*.csproj" />
-    <ProjectReference Include="../Mess.Themes/*/*.csproj" />
+    <ProjectReference Include="../../src/Mess.Modules/*/*.csproj" />
+    <ProjectReference Include="../../src/Mess.Themes/*/*.csproj" />
   </ItemGroup>
 
 </Project>

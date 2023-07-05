@@ -1,5 +1,5 @@
 {
-  "name": "@mess/skeleton",
+  "name": "@mess/assets-skeleton",
   "scripts": {
     "lint:tsc": "tsc --noEmit",
     "lint:eslint": "eslint ./src/**/*.{js,ts}",

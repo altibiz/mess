@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="OrchardCore.Lists" Version="$(MessOrchardVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/Mess.System/Mess.System.csproj" />
+    <ProjectReference Include="../../src/Mess.OrchardCore/Mess.OrchardCore.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../test/Mess.System.Test/Mess.System.Test.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -6,7 +6,7 @@ namespace Mess.Chart.Abstractions.Models;
 
 public class TimeseriesChartPart : ContentPart
 {
-  public string ChartDataProviderId { get; set; } = default!;
+  public string ChartProviderId { get; set; } = default!;
 
   public MultiSelectField History { get; set; } = default!;
 

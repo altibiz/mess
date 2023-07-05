@@ -1,6 +1,6 @@
 using Marten;
-using Mess.EventStore.Test.Abstractions.Tenants;
-using Mess.Tenants;
+using Mess.System.Test.Extensions.Xunit;
+using Xunit.DependencyInjection;
 
 namespace Mess.EventStore.Test.Abstractions;
 
@@ -10,21 +10,25 @@ public static class IServiceCollectionExtensions
     this IServiceCollection services
   )
   {
-    // NOTE: this is meant to be a singleton but here we want a scoped service
-    // because of tenants
     services.AddScoped<IDocumentStore>(services =>
     {
-      var tenant = services.GetRequiredService<ITenants>();
-      return DocumentStore.For(options =>
-      {
-        options.MultiTenantedDatabases(databases =>
+      var testId = services
+        .GetRequiredService<ITestOutputHelperAccessor>()
+        .Output.GetTest()
+        .GetTestIdentifier();
+
+      return DocumentStore.For(
+        (options) =>
         {
-          databases.AddSingleTenantDatabase(
-            tenant.Current.ConnectionString,
-            tenant.Current.Name
-          );
-        });
-      });
+          options.MultiTenantedDatabases(databases =>
+          {
+            databases.AddSingleTenantDatabase(
+              "Server=localhost;Port=5432;User Id=mess;Password=mess;Database=mess",
+              $"{testId}-test"
+            );
+          });
+        }
+      );
     });
     services.AddScoped<IDocumentSession>(
       services =>
@@ -33,7 +37,6 @@ public static class IServiceCollectionExtensions
     services.AddScoped<IQuerySession>(
       services => services.GetRequiredService<IDocumentStore>().QuerySession()
     );
-    services.AddScoped<ITestTenantMigrator, EventStoreTestTenantMigrator>();
     return services;
   }
 }

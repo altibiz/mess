@@ -7,8 +7,8 @@ public static class IServiceCollectionExtensions
   public static void AddProjectionDispatcher<T>(
     this IServiceCollection services
   )
-    where T : class, IProjectionDispatcher
+    where T : class, IProjectionApplicator
   {
-    services.AddScoped<IProjectionDispatcher, T>();
+    services.AddScoped<IProjectionApplicator, T>();
   }
 }

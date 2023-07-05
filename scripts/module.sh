@@ -46,29 +46,30 @@ else
   BASE_DIR="$ROOT_DIR/src/Mess.Themes/Mess.$NAME"
   printf "[Mess] Creating new theme in '%s'\n" "$BASE_DIR"
 fi
-if [ -d "$BASE_DIR" ]; then
-  printf "[Mess] Directory '%s' already exists\n" "$BASE_DIR"
-  exit 1
-fi
+ensuredir() {
+  if [ -d "$1" ]; then
+    printf "[Mess] Directory '%s' already exists.\n" "$1"
+    printf "       Would you like to delete it? (y/n) "
+    read -r yn
+    printf "\n"
+    case $yn in
+    [Yy])
+      printf "[Mess] Removing '%s'...\n" "$1"
+      rm -r "$1"
+      printf "\n"
+      return
+      ;;
+    esac
+
+    exit 1
+  fi
+  mkdir "$1"
+}
+ensuredir "$BASE_DIR"
 if [ "$TYPE" = "module" ]; then
-  if [ -d "$ABSTRACTIONS_BASE_DIR" ]; then
-    printf "[Mess] Directory '%s' already exists\n" "$ABSTRACTIONS_BASE_DIR"
-    exit 1
-  fi
-  if [ -d "$TEST_BASE_DIR" ]; then
-    printf "[Mess] Directory '%s' already exists\n" "$TEST_BASE_DIR"
-    exit 1
-  fi
-  if [ -d "$TEST_ABSTRACTIONS_BASE_DIR" ]; then
-    printf "[Mess] Directory '%s' already exists\n" "$TEST_ABSTRACTIONS_BASE_DIR"
-    exit 1
-  fi
-fi
-mkdir "$BASE_DIR"
-if [ "$TYPE" = "module" ]; then
-  mkdir "$ABSTRACTIONS_BASE_DIR"
-  mkdir "$TEST_BASE_DIR"
-  mkdir "$TEST_ABSTRACTIONS_BASE_DIR"
+  ensuredir "$ABSTRACTIONS_BASE_DIR"
+  ensuredir "$TEST_BASE_DIR"
+  ensuredir "$TEST_ABSTRACTIONS_BASE_DIR"
 fi
 printf "\n"
 
@@ -83,12 +84,6 @@ printf "[Mess] Adding new C# project '%s'\n" "$CSPROJ"
 cat <<END >"$CSPROJ"
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
-<ItemGroup>
-  <ProjectReference Include="../../../src/Mess.Abstractions/Mess.System/Mess.System.csproj" />
-  <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Tenants/Mess.Tenants.csproj" />
-  <ProjectReference Include="../../../src/Mess.Abstractions/Mess.OrchardCore/Mess.OrchardCore.csproj" />
-</ItemGroup>
-
 </Project>
 END
 cat <<END >"$PLACEHOLDER"
@@ -99,20 +94,20 @@ using OrchardCore.DisplayManagement.Manifest;
 using Mess.OrchardCore;
 
 [assembly: Theme(
+  Id = "$NAMESPACE",
   Name = "The $LONG_NAME Theme",
+  Description = "$DESCRIPTION",
   Author = ManifestConstants.Author,
   Website = ManifestConstants.Website,
   Version = ManifestConstants.Version,
-  Description = "$DESCRIPTION",
   Category = ManifestConstants.Category,
   Tags = new string[] { ManifestConstants.MessTag }
 )]
 END
 cat <<END >"$STARTUP"
-using Microsoft.AspNetCore.Builder;
+using Mess.OrchardCore.Extensions.Microsoft;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using OrchardCore.Data.Migration;
 using OrchardCore.Modules;
 using OrchardCore.ResourceManagement;
 
@@ -122,19 +117,7 @@ public class Startup : StartupBase
 {
   public override void ConfigureServices(IServiceCollection services)
   {
-    services.AddDataMigration<Migrations>();
-    services.AddTransient<
-      IConfigureOptions<ResourceManagementOptions>,
-      Resources
-    >();
-  }
-
-  public override void Configure(
-    IApplicationBuilder app,
-    Microsoft.AspNetCore.Routing.IEndpointRouteBuilder routes,
-    IServiceProvider serviceProvider
-  )
-  {
+    services.AddResources<Resources>();
   }
 }
 END
@@ -194,19 +177,22 @@ PACKAGE="$ASSETS/package.json"
 TSCONFIG="$ASSETS/tsconfig.json"
 if [ "$TYPE" == "module" ]; then
   PACKAGE_NAME="@mess/$LOWERCASE_NAME-module-assets"
+  SED_PACKAGE_NAME="@mess\/$LOWERCASE_NAME-module-assets"
 else
   PACKAGE_NAME="@mess/$LOWERCASE_NAME-theme-assets"
+  SED_PACKAGE_NAME="@mess\/$LOWERCASE_NAME-theme-assets"
 fi
 printf "[Mess] Adding new NPM package '%s' in '%s'\n" "$PACKAGE_NAME" "$ASSETS"
 cp -r "$ROOT_DIR/src/Mess.Assets/skeleton" "$ASSETS"
 sed -i'' 's/\.\.\/tsconfig.json/..\/..\/..\/Mess.Assets\/tsconfig.json/' "$TSCONFIG"
-sed -i'' "s/@mess\/assets-skeleton/$PACKAGE_NAME/" "$PACKAGE"
+sed -i'' "s/@mess\/assets-skeleton/$SED_PACKAGE_NAME/" "$PACKAGE"
 printf "\n"
 
 if [ "$TYPE" == "module" ]; then
   ABSTRACTIONS_NAMESPACE="Mess.$NAME.Abstractions"
   ABSTRACTIONS_CSPROJ="$ABSTRACTIONS_BASE_DIR/$ABSTRACTIONS_NAMESPACE.csproj"
   ABSTRACTIONS_PLACEHOLDER="$ABSTRACTIONS_BASE_DIR/$ABSTRACTIONS_NAMESPACE.cs"
+  printf "[Mess] Adding new C# project '%s'\n" "$ABSTRACTIONS_CSPROJ"
   cat <<END >"$ABSTRACTIONS_CSPROJ"
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
@@ -214,34 +200,52 @@ if [ "$TYPE" == "module" ]; then
     <OutputType>Library</OutputType>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.System/Mess.System.csproj" />
-    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Tenants/Mess.Tenants.csproj" />
-    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.OrchardCore/Mess.OrchardCore.csproj" />
-  </ItemGroup>
-
 </Project>
 END
   cat <<END >"$ABSTRACTIONS_PLACEHOLDER"
 namespace $ABSTRACTIONS_NAMESPACE;
 END
+  dotnet sln add "$ABSTRACTIONS_CSPROJ"
+  printf "\n"
+
+  TEST_ABSTRACTIONS_NAMESPACE="Mess.$NAME.Test.Abstractions"
+  TEST_ABSTRACTIONS_CSPROJ="$TEST_ABSTRACTIONS_BASE_DIR/$TEST_ABSTRACTIONS_NAMESPACE.csproj"
+  TEST_ABSTRACTIONS_PLACEHOLDER="$TEST_ABSTRACTIONS_BASE_DIR/$TEST_ABSTRACTIONS_NAMESPACE.cs"
+  printf "[Mess] Adding new C# project '%s'\n" "$TEST_ABSTRACTIONS_CSPROJ"
+  cat <<END >"$TEST_ABSTRACTIONS_CSPROJ"
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../../src/Mess.Abstractions/$ABSTRACTIONS_NAMESPACE/$ABSTRACTIONS_NAMESPACE.csproj" />
+  </ItemGroup>
+
+</Project>
+END
+  cat <<END >"$TEST_ABSTRACTIONS_PLACEHOLDER"
+namespace $TEST_ABSTRACTIONS_NAMESPACE;
+END
+  dotnet sln add "$TEST_ABSTRACTIONS_CSPROJ"
+  printf "\n"
 
   TEST_NAMESPACE="Mess.$NAME.Test"
   TEST_BASE_DIR="$ROOT_DIR/test/Mess.Modules/$TEST_NAMESPACE"
   TEST_CSPROJ="$TEST_BASE_DIR/$TEST_NAMESPACE.csproj"
   TEST_PLACEHOLDER="$TEST_BASE_DIR/$TEST_NAMESPACE.cs"
   TEST_STARTUP="$TEST_BASE_DIR/Startup.cs"
+  printf "[Mess] Adding new C# project '%s'\n" "$ABSTRACTIONS_CSPROJ"
   cat <<END >"$TEST_CSPROJ"
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <ItemGroup>
-    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.System/Mess.System.csproj" />
-    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Tenants/Mess.Tenants.csproj" />
-    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.OrchardCore/Mess.OrchardCore.csproj" />
     <ProjectReference Include="../../../src/Mess.Abstractions/$ABSTRACTIONS_NAMESPACE/$ABSTRACTIONS_NAMESPACE.csproj" />
     <ProjectReference Include="../../../src/Mess.Modules/$NAMESPACE/$NAMESPACE.csproj" />
-    <ProjectReference Include="../../../test/Mess.Abstractions/Mess.Test/Mess.Test.csproj" />
-    <ProjectReference Include="../../../test/Mess.Abstractions/Mess.OrchardCore.Test/Mess.OrchardCore.Test.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="../../../test/Mess.Abstractions/$TEST_ABSTRACTIONS_NAMESPACE/$TEST_ABSTRACTIONS_NAMESPACE.csproj" />
   </ItemGroup>
 
@@ -264,49 +268,22 @@ public class Startup : Mess.OrchardCore.Test.Startup
   }
 }
 END
-
-  TEST_ABSTRACTIONS_NAMESPACE="Mess.$NAME.Test.Abstractions"
-  TEST_ABSTRACTIONS_CSPROJ="$TEST_ABSTRACTIONS_BASE_DIR/$TEST_ABSTRACTIONS_NAMESPACE.csproj"
-  TEST_ABSTRACTIONS_PLACEHOLDER="$TEST_ABSTRACTIONS_BASE_DIR/$TEST_ABSTRACTIONS_NAMESPACE.cs"
-  cat <<END >"$TEST_ABSTRACTIONS_CSPROJ"
-<Project Sdk="Microsoft.NET.Sdk.Web">
-
-  <PropertyGroup>
-    <OutputType>Library</OutputType>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.System/Mess.System.csproj" />
-    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Tenants/Mess.Tenants.csproj" />
-    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.OrchardCore/Mess.OrchardCore.csproj" />
-    <ProjectReference Include="../../../src/Mess.Abstractions/$ABSTRACTIONS_NAMESPACE/$ABSTRACTIONS_NAMESPACE.csproj" />
-    <ProjectReference Include="../../../test/Mess.Abstractions/Mess.Test/Mess.Test.csproj" />
-    <ProjectReference Include="../../../test/Mess.Abstractions/Mess.OrchardCore.Test/Mess.OrchardCore.Test.csproj" />
-  </ItemGroup>
-
-</Project>
-END
-  cat <<END >"$TEST_ABSTRACTIONS_PLACEHOLDER"
-namespace $TEST_ABSTRACTIONS_NAMESPACE;
-END
+  dotnet sln add "$TEST_CSPROJ"
+  printf "\n"
 
   cat <<END >"$MANIFEST"
 using OrchardCore.Modules.Manifest;
 using ManifestConstants = Mess.OrchardCore.ManifestConstants;
 
 [assembly: Module(
-  Name = "$LONG_NAME",
-  Author = ManifestConstants.Author,
-  Website = ManifestConstants.Website,
-  Version = ManifestConstants.Version,
-  Tags = new string[] { ManifestConstants.MessTag }
-)]
-
-[assembly: Feature(
   Id = "$NAMESPACE",
   Name = "$LONG_NAME",
   Description = "$DESCRIPTION",
+  Author = ManifestConstants.Author,
+  Website = ManifestConstants.Website,
+  Version = ManifestConstants.Version,
   Category = ManifestConstants.Category,
+  Tags = new string[] { ManifestConstants.MessTag },
   Dependencies = new string[] { }
 )]
 END
@@ -314,30 +291,39 @@ END
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <ItemGroup>
-    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.System/Mess.System.csproj" />
-    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Tenants/Mess.Tenants.csproj" />
-    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.OrchardCore/Mess.OrchardCore.csproj" />
     <ProjectReference Include="../../../src/Mess.Abstractions/$ABSTRACTIONS_NAMESPACE/$ABSTRACTIONS_NAMESPACE.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <InternalsVisibleTo Include="../../../test/Mess.Modules/$TEST_NAMESPACE/$TEST_NAMESPACE.csproj" />
   </ItemGroup>
 
 </Project>
 END
-fi
+  cat <<END >"$STARTUP"
+using Mess.OrchardCore.Extensions.Microsoft;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using OrchardCore.Data.Migration;
+using OrchardCore.Modules;
+using OrchardCore.ResourceManagement;
 
-printf "[Mess] Do you want to run 'format.sh'? (y/n) "
-read -r yn
-printf "\n"
-case $yn in
-[Yy])
-  printf "[Mess] Running 'format.sh'...\n"
-  "$SCRIPT_DIR/format.sh"
-  printf "\n"
-  ;;
-esac
+namespace $NAMESPACE;
+
+public class Startup : StartupBase
+{
+  public override void ConfigureServices(IServiceCollection services)
+  {
+    services.AddDataMigration<Migrations>();
+    services.AddResources<Resources>();
+  }
+
+  public override void Configure(
+    IApplicationBuilder app,
+    IEndpointRouteBuilder routes,
+    IServiceProvider serviceProvider
+  ) { }
+}
+END
+fi
 
 printf "[Mess] Do you want to run 'prepare.sh'? (y/n) "
 read -r yn
@@ -346,6 +332,17 @@ case $yn in
 [Yy])
   printf "[Mess] Running 'prepare.sh'...\n"
   "$SCRIPT_DIR/prepare.sh"
+  printf "\n"
+  ;;
+esac
+
+printf "[Mess] Do you want to run 'format.sh'? (y/n) "
+read -r yn
+printf "\n"
+case $yn in
+[Yy])
+  printf "[Mess] Running 'format.sh'...\n"
+  "$SCRIPT_DIR/format.sh"
   printf "\n"
   ;;
 esac

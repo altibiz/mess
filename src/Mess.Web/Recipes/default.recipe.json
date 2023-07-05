@@ -12,43 +12,28 @@
     {
       "name": "feature",
       "enable": [
-        "OrchardCore.Features",
-        "OrchardCore.Recipes",
-        "OrchardCore.Resources",
-        "OrchardCore.Settings",
+        "OrchardCore.ContentTypes",
+        "OrchardCore.ContentPreview",
         "OrchardCore.Themes",
-        "OrchardCore.Roles",
-        "OrchardCore.Users",
-        "OrchardCore.Users.Registration",
-        "OrchardCore.Users.ResetPassword",
         "OrchardCore.Admin",
         "OrchardCore.AdminMenu",
         "OrchardCore.Navigation",
-        "OrchardCore.ContentFields",
-        "OrchardCore.ContentPreview",
-        "OrchardCore.Contents",
-        "OrchardCore.ContentTypes",
-        "OrchardCore.Deployment",
-        "OrchardCore.Placements",
-        "OrchardCore.Queries",
-        "OrchardCore.BackgroundTasks",
-        "OrchardCore.Liquid",
-        "OrchardCore.Menu",
+        "OrchardCore.Roles",
+        "OrchardCore.Users",
         "Mess.EventStore",
+        "Mess.Relational",
         "Mess.Timeseries",
         "Mess.Chart",
         "Mess.MeasurementDevice",
-        "Etch.OrchardCore.Fields.Colour",
-        "Etch.OrchardCore.Fields.MultiSelect",
-
+        "Mess.Document",
         "TheAdmin",
-        "Mess.Default"
+        "Mess.Demo"
       ]
     },
     {
       "name": "themes",
       "admin": "TheAdmin",
-      "site": "Mess.Default"
+      "site": "Mess.Demo"
     }
   ]
 }

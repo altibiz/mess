@@ -6,17 +6,15 @@ using OrchardCore.ContentManagement.Display.ContentDisplay;
 using OrchardCore.Data.Migration;
 using OrchardCore.Modules;
 using OrchardCore.Mvc.Core.Utilities;
-using OrchardCore.ResourceManagement;
 using Mess.Chart.Controllers;
 using Mess.Chart.Drivers;
-using OrchardCore.Security.Permissions;
 using Mess.Chart.Abstractions;
 using Mess.Chart.Abstractions.Models;
 using OrchardCore.Admin;
-using Mess.Chart.Abstractions.Providers;
 using Mess.Chart.Providers;
-using YesSql.Indexes;
 using Mess.Chart.Indexes;
+using Mess.Chart.Abstractions.Extensions.Microsoft;
+using Mess.OrchardCore.Extensions.Microsoft;
 
 namespace Mess.Chart;
 
@@ -25,15 +23,11 @@ public class Startup : StartupBase
   public override void ConfigureServices(IServiceCollection services)
   {
     services.AddDataMigration<Migrations>();
-    services.AddTransient<
-      IConfigureOptions<ResourceManagementOptions>,
-      Resources
-    >();
+    services.AddResources<Resources>();
 
-    services.AddScoped<IPermissionProvider, ChartPermissions>();
-
-    services.AddScoped<IChartDataProvider, PreviewChartDataProvider>();
-
+    services.AddPermissionProvider<ChartPermissions>();
+    services.AddIndexProvider<ChartIndexProvider>();
+    services.AddChartProvider<PreviewChartDataProvider>();
     services
       .AddContentPart<ChartPart>()
       .UseDisplayDriver<ChartPartDisplayDriver>();
@@ -45,8 +39,6 @@ public class Startup : StartupBase
     services
       .AddContentPart<TimeseriesChartDatasetPart>()
       .UseDisplayDriver<TimeseriesChartDatasetPartDisplayDriver>();
-
-    services.AddSingleton<IIndexProvider, ChartIndexProvider>();
   }
 
   public override void Configure(

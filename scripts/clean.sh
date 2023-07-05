@@ -19,6 +19,7 @@ git_clean() {
     -e '!.vs/**' \
     -e '!**/*.csproj.user' \
     -e '!.vscode/**' \
+    -e '!.env' \
     \
     -e '!secrets.json' \
     -e '!secrets.sh' \

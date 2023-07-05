@@ -1,0 +1,81 @@
+@using OrchardCore.ContentManagement.Display
+@using OrchardCore.DisplayManagement.ModelBinding
+
+@model EorMeasurementDeviceListViewModel
+
+@inject IContentItemDisplayManager ContentItemDisplayManager
+@inject IUpdateModelAccessor ModelUpdaterAccessor
+
+<div>
+  <table class="table">
+    <thead>
+      <th scope="col"></th>
+      <th scope="col">@T["Sampling time"]</th>
+      <th scope="col">@T["Manufacturer date"]</th>
+      <th scope="col">@T["Manufacturer"]</th>
+      <th scope="col"></th>
+    </thead>
+    <tbody>
+      @foreach (var eorMeasurementDevice in Model.EorMeasurementDevices)
+      {
+        if (!Model.EorMeasurementDeviceSummaries.TryGetValue(
+          eorMeasurementDevice.MeasurementDevicePart.Value.DeviceId.Text,
+          out var summary) || summary.LastMeasurement is null)
+        {
+          continue;
+        }
+
+        <tr>
+          <th scope="row">
+            <a
+                asp-route-area="Mess.Eor"
+                asp-controller="EorMeasurementDeviceAdmin"
+                asp-action="Detail"
+                asp-route-contentItemId="@eorMeasurementDevice.ContentItemId">
+              <span>
+                @eorMeasurementDevice.TitlePart.Value.Title
+              </span>
+            </a>
+          </th>
+          <td>
+            <span>
+              @summary.LastMeasurement.Timestamp
+            </span>
+          </td>
+          <td>
+            <span>
+              @eorMeasurementDevice.EorMeasurementDevicePart.Value.ManufactureDate.Value
+            </span>
+          </td>
+          <td>
+            <span>
+              @eorMeasurementDevice.EorMeasurementDevicePart.Value.Manufacturer.Text
+            </span>
+          </td>
+          <td>
+            <a
+                asp-route-area="Mess.Eor"
+                asp-controller="EorMeasurementDeviceAdmin"
+                asp-action="Edit"
+                asp-route-contentItemId="@eorMeasurementDevice.ContentItemId"
+                class="btn btn-primary btn-sm">
+              <span>
+                @T["Edit"]
+              </span>
+            </a>
+            <a
+                asp-route-area="Mess.Eor"
+                asp-controller="EorMeasurementDeviceAdmin"
+                asp-action="Delete"
+                asp-route-contentItemId="@eorMeasurementDevice.ContentItemId"
+                class="btn btn-danger btn-sm">
+              <span>
+                @T["Delete"]
+              </span>
+            </a>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

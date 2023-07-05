@@ -4,10 +4,4 @@
     <OutputType>Library</OutputType>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.System/Mess.System.csproj" />
-    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Tenants/Mess.Tenants.csproj" />
-    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.OrchardCore/Mess.OrchardCore.csproj" />
-  </ItemGroup>
-
 </Project>

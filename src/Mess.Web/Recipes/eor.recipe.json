@@ -1,0 +1,36 @@
+{
+  "name": "eor",
+  "displayName": "EOR",
+  "description": "EOR project recipe",
+  "author": "Altibiz",
+  "website": "altibiz.com",
+  "version": "0.0.1",
+  "issetuprecipe": true,
+  "categories": ["Module"],
+  "tags": ["Module"],
+  "steps": [
+    {
+      "name": "feature",
+      "enable": [
+        "OrchardCore.Themes",
+        "OrchardCore.Admin",
+        "OrchardCore.Navigation",
+        "OrchardCore.Roles",
+        "OrchardCore.Users",
+        "OrchardCore.Users.Registration",
+        "OrchardCore.Users.ResetPassword",
+        "Mess.EventStore",
+        "Mess.Chart",
+        "Mess.MeasurementDevice",
+        "Mess.Eor",
+        "TheAdmin",
+        "Mess.Nilavasa"
+      ]
+    },
+    {
+      "name": "themes",
+      "admin": "TheAdmin",
+      "site": "Mess.Nilavasa"
+    }
+  ]
+}

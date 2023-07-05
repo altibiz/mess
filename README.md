@@ -35,3 +35,18 @@ bash ./scripts/migrations.sh "<PROJECT_NAME>" "<MIGRATION_NAME>"
 - Custom Startup classes for Xunit.DependencyInjection don't work properly
 - Source maps are present in production builds
 - Webpack generates an empty js file alongside css files which is annoying
+- Modules that should exist:
+  - [ ] Mess.EntityFrameworkCore
+        (with Mess.EntityFrameworkCore.Postgres feature)
+  - [ ] Mess.Mqtt
+  - [ ] Mess.Modbus
+- Tenants in tests don't mean the same thing as tenants in server
+- Tests shouldn't care about tenants there should be no tenant fixture
+- E2E Tests should be able to run somewhat in parallel
+- scripts should be in typescript and we should get rid of bash dependency
+- Mess.System should be top level project
+- Mess.Tenants shouldn't be a thing
+- Mess.OrchardCore should be a top-level project
+- we should only use Newtonsoft.Json for JSON serialization
+- Mess.System.Test should be a top-level test project
+- Mess.OrchardCore.Test should be a top-level test project

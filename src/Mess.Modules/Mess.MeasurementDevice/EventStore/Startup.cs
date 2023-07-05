@@ -9,6 +9,7 @@ public class Startup : StartupBase
 {
   public override void ConfigureServices(IServiceCollection services)
   {
-    services.AddProjectionDispatcher<MeasurementProjectionDispatcher>();
+    services.AddProjectionDispatcher<PushProjectionApplicator>();
+    services.AddProjectionDispatcher<UpdateProjectionApplicator>();
   }
 }

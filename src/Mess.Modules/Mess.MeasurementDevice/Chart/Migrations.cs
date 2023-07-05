@@ -1,14 +1,23 @@
+using Mess.Chart.Abstractions.Models;
+using Microsoft.Extensions.Hosting;
+using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.ContentManagement.Metadata.Settings;
 using OrchardCore.Data.Migration;
 using OrchardCore.Recipes.Services;
 using OrchardCore.Title.Models;
+using Mess.OrchardCore;
+using Mess.MeasurementDevice.Chart.Providers;
+using Mess.MeasurementDevice.Abstractions.Models;
+using Mess.MeasurementDevice.Abstractions.Client;
+using YesSql;
+using Mess.MeasurementDevice.Abstractions.Indexes;
 
 namespace Mess.MeasurementDevice.Chart;
 
 public class Migrations : DataMigration
 {
-  public int Create()
+  public async Task<int> CreateAsync()
   {
     _contentDefinitionManager.AlterTypeDefinition(
       "EgaugeMeasurementDevice",
@@ -39,11 +48,18 @@ public class Migrations : DataMigration
                 )
           )
           .WithPart(
+            "MeasurementDevicePart",
+            part =>
+              part.WithDisplayName("Measurement device")
+                .WithDescription("A measurement device.")
+                .WithPosition("2")
+          )
+          .WithPart(
             "EgaugeMeasurementDevicePart",
             part =>
               part.WithDisplayName("Egauge measurement device")
                 .WithDescription("An Egauge measurement device.")
-                .WithPosition("2")
+                .WithPosition("3")
           )
           .WithPart(
             "ChartPart",
@@ -52,22 +68,85 @@ public class Migrations : DataMigration
                 .WithDescription(
                   "Chart displaying the Egauge measurement device data."
                 )
-                .WithPosition("3")
+                .WithPosition("4")
           )
     );
+
+    if (_hostEnvironment.IsDevelopment())
+    {
+      var eguagePowerDataset =
+        await _contentManager.NewContentAsync<TimeseriesChartDatasetItem>();
+      eguagePowerDataset.Alter(
+        eguagePowerDataset => eguagePowerDataset.TimeseriesChartDatasetPart,
+        timeseriesChartDatasetPart =>
+        {
+          timeseriesChartDatasetPart.Color = new() { Value = "#ff0000" };
+          timeseriesChartDatasetPart.Label = new() { Text = "Power" };
+          timeseriesChartDatasetPart.Property = nameof(EgaugeMeasurement.Power);
+        }
+      );
+      var egaugeChart =
+        await _contentManager.NewContentAsync<TimeseriesChartItem>();
+      egaugeChart.Alter(
+        egaugeChart => egaugeChart.TimeseriesChartPart,
+        timeseriesChartPart =>
+        {
+          timeseriesChartPart.ChartProviderId =
+            EgaugeChartProvider.ChartProviderId;
+          timeseriesChartPart.Datasets = new() { eguagePowerDataset };
+        }
+      );
+      await _contentManager.PublishAsync(egaugeChart);
+
+      var egaugeMeasurementDevice =
+        (
+          await _session
+            .Query<ContentItem, MeasurementDeviceIndex>()
+            .Where(index => index.DeviceId == "egauge")
+            .FirstOrDefaultAsync()
+        )?.AsContent<EgaugeMeasurementDeviceItem>()
+        ?? await _contentManager.NewContentAsync<EgaugeMeasurementDeviceItem>();
+      egaugeMeasurementDevice.Alter(
+        egaugeMeasurementDevice =>
+          egaugeMeasurementDevice.MeasurementDevicePart,
+        measurementDevicePart =>
+        {
+          measurementDevicePart.DeviceId = new() { Text = "egauge" };
+          measurementDevicePart.DefaultPushHandlerId = "egauge";
+        }
+      );
+      egaugeMeasurementDevice.Alter(
+        egaugeMeasurementDevice => egaugeMeasurementDevice.ChartPart,
+        chartPart =>
+        {
+          chartPart.ChartDataProviderId = EgaugeChartProvider.ChartProviderId;
+          chartPart.ChartContentItemId = egaugeChart.ContentItemId;
+        }
+      );
+      await _contentManager.PublishAsync(egaugeMeasurementDevice);
+    }
 
     return 1;
   }
 
   public Migrations(
     IContentDefinitionManager contentDefinitionManager,
-    IRecipeMigrator recipeMigrator
+    IRecipeMigrator recipeMigrator,
+    IHostEnvironment hostEnvironment,
+    IContentManager contentManager,
+    ISession session
   )
   {
     _contentDefinitionManager = contentDefinitionManager;
     _recipeMigrator = recipeMigrator;
+    _hostEnvironment = hostEnvironment;
+    _contentManager = contentManager;
+    _session = session;
   }
 
   private readonly IContentDefinitionManager _contentDefinitionManager;
   private readonly IRecipeMigrator _recipeMigrator;
+  private readonly IContentManager _contentManager;
+  private readonly IHostEnvironment _hostEnvironment;
+  private readonly ISession _session;
 }

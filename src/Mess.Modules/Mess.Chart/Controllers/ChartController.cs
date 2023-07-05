@@ -28,7 +28,7 @@ public class ChartController : Controller
     }
 
     var dataProvider = serviceProvider
-      .GetServices<IChartDataProvider>()
+      .GetServices<IChartProvider>()
       .FirstOrDefault(
         dataProvider => dataProvider.Id == metadataPart.ChartDataProviderId
       );
@@ -74,7 +74,7 @@ public class ChartController : Controller
     }
 
     var dataProvider = serviceProvider
-      .GetServices<IChartDataProvider>()
+      .GetServices<IChartProvider>()
       .FirstOrDefault(
         dataProvider => dataProvider.Id == PreviewChartDataProvider.ProviderId
       );

@@ -1,34 +1,65 @@
 using Microsoft.AspNetCore.Mvc;
 using Mess.System.Extensions.Strings;
-using Mess.MeasurementDevice.Abstractions.Dispatchers;
+using Mess.MeasurementDevice.Abstractions.Pushing;
 using OrchardCore.Environment.Shell;
 using Microsoft.Extensions.DependencyInjection;
 using Mess.EventStore.Abstractions.Client;
 using Mess.MeasurementDevice.EventStore;
-using Mess.Tenants;
+using OrchardCore.Environment.Shell.Scope;
+using YesSql;
+using Mess.MeasurementDevice.Abstractions.Indexes;
+using Mess.MeasurementDevice.Abstractions.Models;
+using OrchardCore.ContentManagement;
 
 namespace Mess.MeasurementDevice.Controllers;
 
 public class PushController : Controller
 {
   [HttpPost]
-  [IgnoreAntiforgeryToken] // TODO: security
+  [IgnoreAntiforgeryToken]
   public async Task<IActionResult> Index(
     [FromServices] IShellFeaturesManager shellFeaturesManager,
     [FromServices] IServiceProvider services,
-    [FromServices] ITenants tenants,
-    string dispatcherId
+    [FromServices] ISession session,
+    [FromQuery] string deviceId,
+    [FromQuery] string? handlerId
   )
   {
-    var dispatcher = services
-      .GetServices<IMeasurementDispatcher>()
-      .FirstOrDefault(dispatcher => dispatcher.Id == dispatcherId);
-    if (dispatcher is null)
+    // TODO: on each push add a timer that will notify if there was no push
+    // on next push just remove the timer
+
+    var contentItem = await session
+      .Query<ContentItem, MeasurementDeviceIndex>()
+      .Where(index => index.DeviceId == deviceId)
+      .FirstOrDefaultAsync();
+    if (contentItem is null)
     {
-      return BadRequest($"Unknown dispatcher");
+      return BadRequest($"Unknown device");
     }
 
-    var measurement = await Request.Body.EncodeAsync();
+    if (handlerId is null)
+    {
+      var defaultHandlerId = contentItem
+        .As<MeasurementDevicePart>()
+        ?.DefaultPushHandlerId;
+
+      if (defaultHandlerId is null)
+      {
+        return BadRequest($"Unknown handler");
+      }
+
+      handlerId = defaultHandlerId;
+    }
+
+    var handler = services
+      .GetServices<IPushHandler>()
+      .FirstOrDefault(handler => handler.Id == handlerId);
+    if (handler is null)
+    {
+      return BadRequest($"Unknown handler");
+    }
+
+    var request = await Request.Body.EncodeAsync();
 
     var features = await shellFeaturesManager.GetEnabledFeaturesAsync();
     if (features.Any(feature => feature.Id == "Mess.EventStore"))
@@ -36,18 +67,23 @@ public class PushController : Controller
       var client = services.GetRequiredService<IEventStoreClient>();
       await client.RecordEventsAsync<Measurements>(
         new Measured(
-          tenants.Current.Name,
-          DateTime.UtcNow,
-          dispatcherId,
-          measurement
+          Tenant: ShellScope.Current.ShellContext.Settings.Name,
+          Timestamp: DateTime.UtcNow,
+          HandlerId: handlerId,
+          DeviceId: deviceId,
+          Payload: request
         )
       );
     }
     else
     {
-      dispatcher.Dispatch(measurement);
+      var handled = handler.Handle(deviceId, contentItem, request);
+      if (!handled)
+      {
+        return BadRequest($"Handler {handlerId} returned false");
+      }
     }
 
-    return Ok();
+    return Ok("measured");
   }
 }

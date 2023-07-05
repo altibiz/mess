@@ -8,8 +8,4 @@
     <PackageReference Include="Marten" Version="$(MessMartenVersion)" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="../Mess.System/Mess.System.csproj" />
-  </ItemGroup>
-
 </Project>

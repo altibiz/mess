@@ -1,0 +1,44 @@
+@using OrchardCore.ContentManagement.Display
+@using OrchardCore.DisplayManagement.ModelBinding
+
+@model EorMeasurementDeviceListViewModel
+
+@inject IContentItemDisplayManager ContentItemDisplayManager
+@inject IUpdateModelAccessor ModelUpdaterAccessor
+
+<div>
+  @foreach (var eorMeasurementDevice in Model.EorMeasurementDevices)
+  {
+    
+    <a
+        asp-route-area="Mess.Eor"
+        asp-controller="EorMeasurementDevice"
+        asp-action="Detail"
+        asp-route-contentItemId="@eorMeasurementDevice.ContentItemId">
+      <span>
+        @eorMeasurementDevice.TitlePart.Value.Title
+      </span>
+    </a>
+    
+    var summary = Model.EorMeasurementDeviceSummaries[
+      eorMeasurementDevice.MeasurementDevicePart.Value.DeviceId.Text
+    ];
+
+    if (summary.Status is null || summary.LastMeasurement is null) {
+      <span>Summary not found</span>
+      continue;
+    }
+    
+    <span>
+      @summary.Status.Mode
+    </span>
+
+    <span>
+      @summary.LastMeasurement.Voltage
+    </span>
+
+    <span>
+      @summary.LastMeasurement.Current
+    </span>
+  }
+</div>

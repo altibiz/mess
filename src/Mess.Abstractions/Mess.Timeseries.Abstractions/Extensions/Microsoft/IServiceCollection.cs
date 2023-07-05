@@ -1,4 +1,4 @@
-using Mess.Timeseries.Abstractions.Client;
+using Mess.Timeseries.Abstractions.Context;
 
 namespace Mess.Timeseries.Abstractions.Extensions.Microsoft;
 

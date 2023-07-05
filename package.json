@@ -9,18 +9,20 @@
   "private": true,
   "scripts": {
     "lint:workspaces": "yarn workspaces foreach -ip --exclude @mess/mess run lint",
-    "lint:prettier": "prettier --check --ignore-path .gitignore . '!**/wwwroot/**/*.*' '!.yarn/**/*.*' '!**/Snapshots/**/*.{received,verified}.json'",
+    "lint:prettier": "prettier --check --ignore-path .gitignore . '!**/wwwroot/**/*.*' '!.yarn/**/*.*' '!**/Snapshots/**/*.{received,verified}.json' '!vendor/'",
     "lint": "run-s lint:prettier lint:workspaces",
-    "format": "prettier --write --ignore-path .gitignore . '!**/wwwroot/**/*.*' '!.yarn/**/*.*' '!**/Snapshots/**/*.{received,verified}.json'",
+    "format": "prettier --write --ignore-path .gitignore . '!**/wwwroot/**/*.*' '!.yarn/**/*.*' '!**/Snapshots/**/*.{received,verified}.json' '!vendor/'",
     "build": "yarn workspaces foreach -ip run build",
     "watch": "yarn workspaces foreach -ip run watch",
     "eval": "yarn ts-node",
-    "publisher": "yarn workspace @mess/publisher start"
+    "dev:publishing": "yarn workspace @mess/publishing dev",
+    "build:publishing": "yarn workspace @mess/publishing build",
+    "start:publishing": "yarn workspace @mess/publishing start"
   },
   "packageManager": "yarn@3.5.1",
   "workspaces": [
     "src/Mess.Assets",
-    "src/Mess.Publisher"
+    "src/Mess.Publishing"
   ],
   "devDependencies": {
     "@commitlint/cli": "^17.6.3",

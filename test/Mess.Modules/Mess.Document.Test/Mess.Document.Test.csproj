@@ -1,14 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <ItemGroup>
-    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.System/Mess.System.csproj" />
-    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Tenants/Mess.Tenants.csproj" />
-    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.OrchardCore/Mess.OrchardCore.csproj" />
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Document.Abstractions/Mess.Document.Abstractions.csproj" />
     <ProjectReference Include="../../../src/Mess.Modules/Mess.Document/Mess.Document.csproj" />
-    <ProjectReference Include="../../../test/Mess.Abstractions/Mess.Test/Mess.Test.csproj" />
-    <ProjectReference Include="../../../test/Mess.Abstractions/Mess.OrchardCore.Test/Mess.OrchardCore.Test.csproj" />
-    <ProjectReference Include="../../../test/Mess.Abstractions//.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../../test/Mess.Abstractions/Mess.Document.Test.Abstractions/Mess.Document.Test.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

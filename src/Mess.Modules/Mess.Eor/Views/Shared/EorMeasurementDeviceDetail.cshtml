@@ -1,0 +1,338 @@
+@using Mess.Eor.Abstractions.Client
+
+@model EorMeasurementDeviceDetailViewModel
+
+<div>
+  <div>
+    <div>
+      <span>
+        <h3>
+          @Model.EorMeasurementDevice.TitlePart.Value.Title
+        </h3>
+      </span>
+      @if (Model.EorMeasurementDeviceSummary.Status is not null)
+      {
+        <span>
+          @Model.EorMeasurementDeviceSummary.Status.Error
+        </span>
+      }
+    </div>
+    
+    <div>
+      @if (Model.EorMeasurementDeviceSummary.Status is not null)
+      {
+        <button 
+            type="button"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#modeModal">
+          <span>
+            @T["Mode"]
+          </span>
+          <span>
+            @Model.EorMeasurementDeviceSummary.Status.Mode
+            @if (
+              Model.EorMeasurementDeviceSummary.Status.Mode != 
+              Model.EorMeasurementDevice.EorMeasurementDevicePart.Value.Mode
+              ) {
+              <span>
+                (@Model.EorMeasurementDevice.EorMeasurementDevicePart.Value.Mode)
+              </span>
+            }
+          </span>
+        </button>
+
+        <div class="modal fade" id="modeModal" tabindex="-1" role="dialog">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <form 
+                  asp-route-area="Mess.Eor"
+                  asp-controller="EorMeasurementDeviceAdmin"
+                  asp-action="SetMode"
+                  asp-route-contentItemId="@Model.EorMeasurementDevice.ContentItemId">
+                <div class="modal-header">
+                  <h5 class="modal-title">@T["Mode"]</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal">
+                    <span>&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <div class="form-group">
+                    <label for="mode">@T["Mode"]</label>
+                    <input 
+                        for="mode"
+                        class="form-control"
+                        type="number"
+                        name="mode"
+                        value="@Model.EorMeasurementDevice.EorMeasurementDevicePart.Value.Mode" />
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button 
+                      type="button"
+                      class="btn btn-secondary"
+                      data-bs-dismiss="modal">
+                    Close
+                  </button>
+                  <button
+                      type="submit"
+                      class="btn btn-primary">
+                    Save
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <form
+            asp-route-area="Mess.Eor"
+            asp-controller="EorMeasurementDeviceAdmin"
+            asp-action="ToggleRunState"
+            asp-route-contentItemId="@Model.EorMeasurementDevice.ContentItemId">
+          <button 
+              type="submit"
+              class='btn btn-sm @(
+                Model.EorMeasurementDevice.EorMeasurementDevicePart.Value.RunState ==
+                EorMeasurementDeviceRunState.Started
+                  ? "btn-danger"
+                  : "btn-success"
+              )'>
+            @if (
+              Model.EorMeasurementDevice.EorMeasurementDevicePart.Value.RunState ==
+              EorMeasurementDeviceRunState.Started
+            ) {
+              <span>
+                @T["Stop"]
+              </span>
+            } else {
+              <span>
+                @T["Start"]
+              </span>
+            }
+            <span>
+              @T[
+                Model.EorMeasurementDeviceSummary.Status.RunState.ToString("g")
+              ]
+              @if (
+                Model.EorMeasurementDeviceSummary.Status.RunState != 
+                Model.EorMeasurementDevice.EorMeasurementDevicePart.Value.RunState
+                ) {
+                <span>
+                  (@T[
+                    Model
+                      .EorMeasurementDevice
+                      .EorMeasurementDevicePart
+                      .Value
+                      .RunState
+                      .ToString("g")
+                  ])
+                </span>
+              }
+            </span>
+          </button>
+        </form>
+
+        <form
+            asp-route-area="Mess.Eor"
+            asp-controller="EorMeasurementDeviceAdmin"
+            asp-action="Reset"
+            asp-route-contentItemId="@Model.EorMeasurementDevice.ContentItemId">
+          <button
+              type="submit"
+              class="btn btn-sm btn-danger">
+            <span>
+              @T["Reset"]
+            </span>
+            <span>
+              @T[
+                Model.EorMeasurementDeviceSummary.Status.ResetState.ToString("g")
+              ]
+              @if (
+                Model.EorMeasurementDeviceSummary.Status.ResetState != 
+                Model.EorMeasurementDevice.EorMeasurementDevicePart.Value.ResetState
+                ) {
+                <span>
+                  (@T[
+                    Model
+                      .EorMeasurementDevice
+                      .EorMeasurementDevicePart
+                      .Value
+                      .ResetState
+                      .ToString("g")
+                  ])
+                </span>
+              }
+            </span>
+          </button>
+        </form>
+      }
+    </div>
+    
+    <div>
+      @if (Model.EorMeasurementDeviceSummary.LastMeasurement is not null)
+      {
+        <p>
+          <span>
+            @T["Voltage"]
+          </span>
+          <span>
+            @Model.EorMeasurementDeviceSummary.LastMeasurement.Voltage
+          </span>
+        </p>
+        <p>
+          <span>
+            @T["Current"]
+          </span>
+          <span>
+            @Model.EorMeasurementDeviceSummary.LastMeasurement.Current
+          </span>
+        </p>
+        <p>
+          <span>
+            @T["Temperature"]
+          </span>
+          <span>
+            @Model.EorMeasurementDeviceSummary.LastMeasurement.Temperature
+          </span>
+        </p>
+      }
+    </div>
+  </div>
+
+  <div>
+    <h5>
+      @T["Signalization"]
+    </h5>
+    
+    <div>
+      <div>
+        @if (Model.EorMeasurementDeviceSummary.Status is not null)
+        {
+          <p>
+            <span>
+              @T["Communication faults"]
+            </span>
+            <span>
+              @Model.EorMeasurementDeviceSummary.Status.CommunicationFaults
+            </span>
+          </p>
+          <p>
+            <span>
+              @T["Process faults"]
+            </span>
+            <span>
+              @Model.EorMeasurementDeviceSummary.Status.ProcessFaults
+            </span>
+          </p>
+          <p>
+            <span>
+              @T["Status"]
+            </span>
+            <span>
+              @T[Model.EorMeasurementDeviceSummary.Status.PowerState.ToString("g")]
+            </span>
+          </p>
+          <p>
+            <span>
+              @T["Door state"]
+            </span>
+            <span>
+              @T[Model.EorMeasurementDeviceSummary.Status.DoorState.ToString("g")]
+            </span>
+          </p>
+          <p>
+            <span>
+              @T["Main circuit breaker"]
+            </span>
+            <span>
+              @T[
+                Model.EorMeasurementDeviceSummary.Status.MainCircuitBreakerState
+                  .ToString("g")
+              ]
+            </span>
+          </p>
+          <p>
+            <span>
+              @T["Diode bridge 1 temperature switch"]
+            </span>
+            <span>
+              @T[
+                Model.EorMeasurementDeviceSummary.Status.FirstDiodeBridgeState
+                  .ToString("g")
+              ]
+            </span>
+          </p>
+          <p>
+            <span>
+              @T["Diode bridge 2 temperature switch"]
+            </span>
+            <span>
+              @T[
+                Model.EorMeasurementDeviceSummary.Status.SecondDiodeBridgeState
+                  .ToString("g")
+              ]
+            </span>
+          </p>
+        }
+      </div>
+      
+      <div>
+        @if (Model.EorMeasurementDeviceSummary.LastMeasurement is not null)
+        {
+          <p>
+            <span>
+              @T["Cooling fan"]
+            </span>
+            <span>
+              @Model.EorMeasurementDeviceSummary.LastMeasurement.CoolingFans
+            </span>
+          </p>
+          <p>
+            <span>
+              @T["Heatsink fan"]
+            </span>
+            <span>
+              @Model.EorMeasurementDeviceSummary.LastMeasurement.HeatsinkFans
+            </span>
+          </p>
+        }
+      </div>
+    </div>
+    
+    <div>
+      <p>
+        <span>
+          @T["Manufacture date"]
+        </span>
+        <span>
+          @Model.EorMeasurementDevice.EorMeasurementDevicePart.Value.ManufactureDate.Value
+        </span>
+      </p>
+      <p>
+        <span>
+          @T["Manufacturer"]
+        </span>
+        <span>
+          @Model.EorMeasurementDevice.EorMeasurementDevicePart.Value.Manufacturer.Text
+        </span>
+      </p>
+      <p>
+        <span>
+          @T["Commision date"]
+        </span>
+        <span>
+          @Model.EorMeasurementDevice.EorMeasurementDevicePart.Value.CommisionDate.Value
+        </span>
+      </p>
+      <p>
+        <span>
+          @T["Product number"]
+        </span>
+        <span>
+          @Model.EorMeasurementDevice.EorMeasurementDevicePart.Value.ProductNumber.Text
+        </span>
+      </p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Relational.Abstractions/Mess.Relational.Abstractions.csproj" />
+    <ProjectReference Include="../../../src/Mess.Modules/Mess.Relational/Mess.Relational.csproj" />
+  </ItemGroup>
+
+</Project>

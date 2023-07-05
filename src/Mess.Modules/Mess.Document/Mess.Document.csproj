@@ -1,14 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <ItemGroup>
-    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.System/Mess.System.csproj" />
-    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Tenants/Mess.Tenants.csproj" />
-    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.OrchardCore/Mess.OrchardCore.csproj" />
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Document.Abstractions/Mess.Document.Abstractions.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <InternalsVisibleTo Include="../../../test/Mess.Modules/Mess.Document.Test/Mess.Document.Test.csproj" />
   </ItemGroup>
 
 </Project>

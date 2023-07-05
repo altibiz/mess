@@ -8,11 +8,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../Mess.Abstractions/Mess.EventStore.Abstractions/Mess.EventStore.Abstractions.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <InternalsVisibleTo Include="../../../test/Mess.Modules/Mess.EventStore.Test/Mess.EventStore.Test.csproj" />
+    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.EventStore.Abstractions/Mess.EventStore.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>
