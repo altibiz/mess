@@ -1,5 +1,7 @@
-name: "Pull request check"
+name: Check
+
 on: [pull_request]
+
 jobs:
   check:
     name: Check

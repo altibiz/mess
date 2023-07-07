@@ -28,5 +28,8 @@
   "files.associations": {
     "*.json.hbs": "json",
     "*.xml.hbs": "xml"
+  },
+  "yaml.schemas": {
+    "https://json.schemastore.org/github-workflow.json": "file:///c%3A/tools/src/9b3dc/repos/mess/work/mess-main/.github/workflows/deploy.yml"
   }
 }
