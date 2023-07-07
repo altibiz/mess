@@ -3,7 +3,7 @@ using Microsoft.Extensions.Options;
 using OrchardCore.Modules;
 using OrchardCore.ResourceManagement;
 
-namespace Mess.Demo;
+namespace Mess.Management;
 
 public class Startup : StartupBase
 {

@@ -1,7 +1,7 @@
 {
-  "name": "default",
-  "displayName": "Default",
-  "description": "Default tenant recipe",
+  "name": "management",
+  "displayName": "Management",
+  "description": "Management tenant recipe",
   "author": "Altibiz",
   "website": "altibiz.com",
   "version": "0.0.1",
@@ -20,20 +20,18 @@
         "OrchardCore.Navigation",
         "OrchardCore.Roles",
         "OrchardCore.Users",
+        "OrchardCore.Tenants",
         "Mess.EventStore",
         "Mess.Relational",
         "Mess.Timeseries",
-        "Mess.Chart",
-        "Mess.MeasurementDevice",
-        "Mess.Document",
         "TheAdmin",
-        "Mess.Demo"
+        "Mess.Management"
       ]
     },
     {
       "name": "themes",
       "admin": "TheAdmin",
-      "site": "Mess.Demo"
+      "site": "Mess.Management"
     }
   ]
 }

@@ -1917,9 +1917,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@mess/demo-theme-assets@workspace:src/Mess.Themes/Mess.Demo/Assets":
+"@mess/demo-theme-assets@workspace:src/Mess.Themes/Mess.Management/Assets":
   version: 0.0.0-use.local
-  resolution: "@mess/demo-theme-assets@workspace:src/Mess.Themes/Mess.Demo/Assets"
+  resolution: "@mess/demo-theme-assets@workspace:src/Mess.Themes/Mess.Management/Assets"
   dependencies:
     "@mess/eslint-config-assets": "workspace:*"
     "@mess/stylelint-config-assets": "workspace:*"

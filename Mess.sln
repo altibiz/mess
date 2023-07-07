@@ -53,7 +53,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Eor", "src\Mess.Module
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Nilavasa", "src\Mess.Themes\Mess.Nilavasa\Mess.Nilavasa.csproj", "{2A5E30F3-5700-4C56-AE3E-2136325F31CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Demo", "src\Mess.Themes\Mess.Demo\Mess.Demo.csproj", "{DA4ECB74-DD06-41EA-88D7-ABBC2FAD880B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Management", "src\Mess.Themes\Mess.Management\Mess.Management.csproj", "{DA4ECB74-DD06-41EA-88D7-ABBC2FAD880B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Relational", "src\Mess.Modules\Mess.Relational\Mess.Relational.csproj", "{232B322A-44EF-4F80-84C4-E5A37D30AA84}"
 EndProject

@@ -2,7 +2,7 @@ using OrchardCore.DisplayManagement.Manifest;
 using Mess.OrchardCore;
 
 [assembly: Theme(
-  Id = "Mess.Demo",
+  Id = "Mess.Management",
   Name = "The Mess Demonstartion Theme",
   Author = ManifestConstants.Author,
   Website = ManifestConstants.Website,
