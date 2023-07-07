@@ -11,20 +11,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-
-      - name: Set up .NET Core
-        uses: actions/setup-dotnet@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+      - uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: "7.0.200"
+          global-json-file: global.json
 
-      - name: Build with dotnet
-        run: dotnet build --configuration Release
+      - name: prepare
+        run: scripts/prepare.sh
 
-      - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+      - name: publish
+        run: scripts/publish.sh ${{env.DOTNET_ROOT}}/myapp
 
-      - name: Upload artifact for deployment job
+      - name: upload
         uses: actions/upload-artifact@v2
         with:
           name: .net-app
@@ -38,12 +37,12 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
-      - name: Download artifact from build job
+      - name: download
         uses: actions/download-artifact@v2
         with:
           name: .net-app
 
-      - name: Deploy to Azure Web App
+      - name: deploy
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:

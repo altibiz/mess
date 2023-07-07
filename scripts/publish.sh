@@ -46,10 +46,11 @@ dotnet \
   --property:IsWebConfigTransformDisabled=true \
   --configuration Release
 
-printf "[Mess] Running 'docker-compose up' and 'dotnet'...\n"
-wd="$(pwd)"
-cd "$PUBLISH_DIR" || exit
-printf "
+if [ ! "$1" ]; then
+  printf "[Mess] Running 'docker-compose up' and 'dotnet'...\n"
+  wd="$(pwd)"
+  cd "$PUBLISH_DIR" || exit
+  printf "
 docker-compose up; \
 
 . '%s'; \
@@ -58,6 +59,7 @@ dotnet 'Mess.Web.dll'; \
 cd '%s'; \
 
 " "$SECRETS" "$PUBLISH_DIR" "$WORKING_DIR" |
-  xargs -P2 -IR /usr/bin/env sh -c R
-cd "$wd" || exit
-printf "\n"
+    xargs -P2 -IR /usr/bin/env sh -c R
+  cd "$wd" || exit
+  printf "\n"
+fi
