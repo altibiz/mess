@@ -12,9 +12,4 @@
     <PackageReference Include="Etch.OrchardCore.Fields" Version="$(MessEtchVersion)" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="../Mess.System/Mess.System.csproj" />
-    <ProjectReference Include="../Mess.OrchardCore/Mess.OrchardCore.csproj" />
-  </ItemGroup>
-
 </Project>

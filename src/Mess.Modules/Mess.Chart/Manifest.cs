@@ -2,21 +2,18 @@ using OrchardCore.Modules.Manifest;
 using ManifestConstants = Mess.OrchardCore.ManifestConstants;
 
 [assembly: Module(
-  Name = "Chart",
-  Author = ManifestConstants.Author,
-  Website = ManifestConstants.Website,
-  Version = ManifestConstants.Version,
-  Tags = new[] { ManifestConstants.MessTag, ManifestConstants.OzdsTag }
-)]
-
-[assembly: Feature(
   Id = "Mess.Chart",
   Name = "Chart",
   Description = "The Chart module enables the creation and display of charts using Chart.js.",
+  Author = ManifestConstants.Author,
+  Website = ManifestConstants.Website,
+  Version = ManifestConstants.Version,
   Category = ManifestConstants.Category,
+  Tags = new[] { ManifestConstants.MessTag },
   Dependencies = new[]
   {
-    "OrchardCore.ContentTypes",
+    "OrchardCore.Resources",
+    "OrchardCore.Contents",
     "OrchardCore.ContentFields",
     "OrchardCore.Flows",
     "OrchardCore.Title",

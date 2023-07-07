@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using Mess.MeasurementDevice.Abstractions.Dispatchers;
+using Mess.MeasurementDevice.Abstractions.Client;
 using Mess.Timeseries.Abstractions.Entities;
 
-namespace Mess.Timeseries.Entities;
+namespace Mess.MeasurementDevice.Entities;
 
 public class EgaugeMeasurementEntity : HypertableEntity
 {
@@ -16,23 +16,23 @@ public class EgaugeMeasurementEntity : HypertableEntity
 public static class EgaugeMeasurementEntityExtensions
 {
   public static EgaugeMeasurementEntity ToEntity(
-    this DispatchedEgaugeMeasurement model
+    this EgaugeMeasurement model
   ) =>
     new EgaugeMeasurementEntity
     {
       Tenant = model.Tenant,
       Timestamp = model.Timestamp,
-      Source = model.Source,
+      Source = model.DeviceId,
       Voltage = model.Voltage,
       Power = model.Power
     };
 
-  public static DispatchedEgaugeMeasurement ToModel(
+  public static EgaugeMeasurement ToModel(
     this EgaugeMeasurementEntity entity
   ) =>
-    new DispatchedEgaugeMeasurement(
+    new EgaugeMeasurement(
       Tenant: entity.Tenant,
-      Source: entity.Source,
+      DeviceId: entity.Source,
       Timestamp: entity.Timestamp,
       Power: entity.Power,
       Voltage: entity.Voltage

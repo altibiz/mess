@@ -1,27 +1,26 @@
 #!/usr/bin/env bash
 set -o pipefail
 
-abs() { echo "$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"; }
-SCRIPT_DIR="$(dirname "$(abs "$0")")"
-ROOT_DIR="$(dirname "$SCRIPT_DIR")"
-
 export ASPNETCORE_ENVIRONMENT=Development
 export DOTNET_ENVIRONMENT=Development
-export ORCHARD_APP_DATA="$ROOT_DIR/App_Data/run"
 
+start_services() {
+  if [ ! "$CI" ] && [ ! "$1" ]; then
+    printf "[Mess] Running 'docker-compose up --detach'...\n"
+    docker-compose up --detach || exit 1
+    printf "\n"
+  fi
+}
 kill_services() {
   if [ ! "$CI" ] && [ ! "$1" ]; then
     printf "[Mess] Running 'docker-compose down'...\n"
     docker-compose down
+    printf "\n"
   fi
 }
-trap 'kill_services $1' SIGINT
 
-if [ ! "$CI" ] && [ ! "$1" ]; then
-  printf "[Mess] Running 'docker-compose up --detach'...\n"
-  docker-compose up --detach || exit 1
-fi
-printf "\n"
+start_services "$1"
+trap 'kill_services $1' SIGINT
 
 printf "[Mess] Testing with 'dotnet'...\n"
 dotnet test "$@"

@@ -2,14 +2,13 @@
 
   <Import Project="../Directory.Build.props" />
 
-  <!-- NOTE: this does not work and should be in down in abstractions csproj's
-  <PropertyGroup>
-    <OutputType>Library</OutputType>
-  </PropertyGroup>
-  -->
-
   <PropertyGroup>
     <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../../src/Mess.System/Mess.System.csproj" />
+    <ProjectReference Include="../../../src/Mess.OrchardCore/Mess.OrchardCore.csproj" />
+  </ItemGroup>
 
 </Project>

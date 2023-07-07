@@ -23,9 +23,8 @@ printf "[Mess] Installing dependencies with 'dotnet'...\n"
 dotnet tool restore
 dotnet restore
 dotnet build
-# using a wildcard so that we don't have to specify the dotnet version here
 pwsh \
-  "$ROOT_DIR"/test/Mess.Abstractions/Mess.Test/bin/Debug/**/playwright.ps1 \
+  "$ROOT_DIR"/test/Mess.System.Test/bin/Debug/**/playwright.ps1 \
   install --with-deps
 printf "\n"
 

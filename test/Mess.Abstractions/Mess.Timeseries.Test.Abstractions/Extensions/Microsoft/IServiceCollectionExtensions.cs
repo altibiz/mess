@@ -1,7 +1,8 @@
-using Mess.Timeseries.Abstractions.Client;
-using Mess.Timeseries.Client;
-using Mess.Timeseries.Test.Abstractions.Tenants;
-using Mess.Test.Tenants;
+using Mess.Relational.Test.Abstractions.Extensions.Microsoft;
+using Mess.Timeseries.Migrations;
+using Mess.Timeseries.Abstractions.Connection;
+using Mess.Timeseries.Connection;
+using Mess.Relational.Abstractions.Migrations;
 
 namespace Mess.Timeseries.Test.Abstractions;
 
@@ -11,8 +12,9 @@ public static class IServiceCollectionExtensions
     this IServiceCollection services
   )
   {
-    services.AddScoped<ITimeseriesMigrator, TimeseriesMigrator>();
-    services.AddScoped<ITestTenantMigrator, TimeseriesTestTenantMigrator>();
+    services.AddTestRelationalStore();
+    services.AddScoped<IRelationalDbMigrator, TimeseriesDbMigrator>();
+    services.AddScoped<ITimeseriesDbConnection, TimeseriesDbConnection>();
     return services;
   }
 }

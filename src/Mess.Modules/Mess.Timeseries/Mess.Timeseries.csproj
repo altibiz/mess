@@ -8,12 +8,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../Mess.Abstractions/Mess.Timeseries.Abstractions/Mess.Timeseries.Abstractions.csproj" />
-    <ProjectReference Include="../../Mess.Abstractions/Mess.Chart.Abstractions/Mess.Chart.Abstractions.csproj" />
+    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Timeseries.Abstractions/Mess.Timeseries.Abstractions.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="../../../test/Mess.Modules/Mess.Timeseries.Test/Mess.Timeseries.Test.csproj" />
+    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Relational.Abstractions/Mess.Relational.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

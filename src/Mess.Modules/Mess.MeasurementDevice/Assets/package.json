@@ -1,5 +1,5 @@
 {
-  "name": "@mess/measurement-device",
+  "name": "@mess/measurement-device-module-assets",
   "scripts": {
     "lint:tsc": "tsc --noEmit",
     "lint:eslint": "eslint ./src/**/*.{js,ts}",

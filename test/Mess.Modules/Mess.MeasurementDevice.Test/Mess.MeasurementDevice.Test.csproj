@@ -1,13 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <ItemGroup>
-    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.System/Mess.System.csproj" />
-    <ProjectReference Include="../../Mess.Abstractions/Mess.Test/Mess.Test.csproj" />
-    <ProjectReference Include="../../Mess.Abstractions/Mess.OrchardCore.Test/Mess.OrchardCore.Test.csproj" />
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.MeasurementDevice.Abstractions/Mess.MeasurementDevice.Abstractions.csproj" />
     <ProjectReference Include="../../../src/Mess.Modules/Mess.MeasurementDevice/Mess.MeasurementDevice.csproj" />
-    <ProjectReference Include="../../Mess.Abstractions/Mess.EventStore.Test.Abstractions/Mess.EventStore.Test.Abstractions.csproj" />
-    <ProjectReference Include="../../Mess.Abstractions/Mess.Timeseries.Test.Abstractions/Mess.Timeseries.Test.Abstractions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../../test/Mess.Abstractions/Mess.MeasurementDevice.Test.Abstractions/Mess.MeasurementDevice.Test.Abstractions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../../test/Mess.Abstractions/Mess.EventStore.Test.Abstractions/Mess.EventStore.Test.Abstractions.csproj" />
+    <ProjectReference Include="../../../test/Mess.Abstractions/Mess.Timeseries.Test.Abstractions/Mess.Timeseries.Test.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

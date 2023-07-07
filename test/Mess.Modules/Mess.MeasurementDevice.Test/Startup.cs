@@ -1,7 +1,7 @@
 using Mess.EventStore.Test.Abstractions;
 using Mess.Timeseries.Test.Abstractions;
-using Mess.MeasurementDevice.Abstractions.Dispatchers;
-using Mess.MeasurementDevice.Dispatchers;
+using Mess.MeasurementDevice.Abstractions.Pushing;
+using Mess.MeasurementDevice.Pushing;
 using Moq;
 using Mess.MeasurementDevice.Abstractions.Client;
 
@@ -19,10 +19,10 @@ public class Startup : Mess.OrchardCore.Test.Startup
     services.AddTestEventStore();
     services.AddTestTimeseriesStore();
 
-    services.AddScoped<EgaugeMeasurementDispatcher>();
-    services.AddScoped<IMeasurementDispatcher, EgaugeMeasurementDispatcher>();
+    services.AddScoped<EgaugePushHandler>();
+    services.AddScoped<IPushHandler, EgaugePushHandler>();
 
-    var measurementClient = new Mock<IMeasurementClient>();
+    var measurementClient = new Mock<ITimeseriesClient>();
     services.AddSingleton(measurementClient);
     services.AddSingleton(measurementClient.Object);
   }

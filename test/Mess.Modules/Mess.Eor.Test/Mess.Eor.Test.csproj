@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Eor.Abstractions/Mess.Eor.Abstractions.csproj" />
+    <ProjectReference Include="../../../src/Mess.Modules/Mess.Eor/Mess.Eor.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../../test/Mess.Abstractions/Mess.Eor.Test.Abstractions/Mess.Eor.Test.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>

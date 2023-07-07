@@ -5,7 +5,7 @@ using OrchardCore.ContentManagement;
 
 namespace Mess.Chart.Providers;
 
-public class PreviewChartDataProvider : ChartDataProvider
+public class PreviewChartDataProvider : ChartProvider
 {
   public const string ProviderId = "Preview";
 

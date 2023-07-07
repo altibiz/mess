@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <ItemGroup>
+    <PackageReference Include="OrchardCore.ContentFields" Version="$(MessOrchardVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Eor.Abstractions/Mess.Eor.Abstractions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Timeseries.Abstractions/Mess.Timeseries.Abstractions.csproj" />
+    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.MeasurementDevice.Abstractions/Mess.MeasurementDevice.Abstractions.csproj" />
+    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Chart.Abstractions/Mess.Chart.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>

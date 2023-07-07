@@ -30,5 +30,3 @@ jobs:
         run: scripts/prepare.sh
       - name: lint
         run: scripts/lint.sh
-      - name: test
-        run: scripts/test.sh

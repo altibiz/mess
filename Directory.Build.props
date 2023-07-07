@@ -10,6 +10,7 @@
   <PropertyGroup>
     <MessOrchardVersion>1.5</MessOrchardVersion>
     <MessEtchVersion>1.4.3</MessEtchVersion>
+    <MessNewtonsoftJsonVersion>13.0.1</MessNewtonsoftJsonVersion>
 
     <!-- NOTE: these are connected -->
     <MessNpgsqlVersion>7.0.4</MessNpgsqlVersion>

@@ -1,22 +1,22 @@
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.AspNetCore.Builder;
 using OrchardCore.Modules;
-using OrchardCore.Mvc.Core.Utilities;
-using OrchardCore.Admin;
-using OrchardCore.Navigation;
-using Mess.EventStore.Extensions.Microsoft;
-using Mess.OrchardCore.Tenants;
-using Mess.OrchardCore.Extensions.Microsoft;
 using Mess.EventStore.Abstractions.Client;
 using Mess.EventStore.Client;
-using Mess.EventStore.Controllers;
-using Mess.EventStore.Services;
-using Mess.Tenants;
+using Marten;
+using Marten.Events.Projections;
+using Mess.EventStore.Projections;
+using Mess.EventStore.Abstractions.Session;
+using Mess.EventStore.Session;
+using Mess.OrchardCore.Extensions.OrchardCore;
+using OrchardCore.Environment.Shell;
+using Mess.System.Extensions.Microsoft;
+using Mess.EventStore.Abstractions.Events;
+using JasperFx.CodeGeneration;
+using Microsoft.Extensions.Hosting;
+using Marten.Services.Json.Transformations;
+using Microsoft.Extensions.Logging;
+
+// using Mess.EventStore.Extensions.Marten;
 
 namespace Mess.EventStore;
 
@@ -24,61 +24,80 @@ public class Startup : StartupBase
 {
   public override void ConfigureServices(IServiceCollection services)
   {
-    services.AddScoped<INavigationProvider, AdminMenu>();
+    services
+      .AddMarten(
+        (IServiceProvider services) =>
+        {
+          var shellSettings = services.GetRequiredService<ShellSettings>();
+          var databaseTablePrefix = shellSettings.GetDatabaseTablePrefix();
+          var databaseConnectionString =
+            shellSettings.GetDatabaseConnectionString();
 
-    services.AddMartenFromTenantGroups(
-      _environment.IsDevelopment(),
-      // TODO: from shell settings somehow
-      _configuration.GetOrchardCoreAutoSetupTenantNamesGroupedByConnectionString()
-    );
+          var options = new StoreOptions();
+
+          options.MultiTenantedDatabases(databases =>
+          {
+            databases
+              .AddMultipleTenantDatabase(databaseConnectionString)
+              .ForTenants(new[] { databaseTablePrefix });
+          });
+
+          var eventTypes = AppDomain.CurrentDomain
+            .FindTypesAssignableTo<IEvent>()
+            .Where(type => !type.IsAbstract)
+            .ToArray();
+          var upcasters = AppDomain.CurrentDomain
+            .FindTypesAssignableTo<IEventUpcaster>()
+            .Where(type => !type.IsAbstract)
+            .Select(type =>
+            {
+              try
+              {
+                return Activator.CreateInstance(type, new[] { services });
+              }
+              catch (Exception exception)
+              {
+                var logger = (
+                  services.GetRequiredService(
+                    typeof(ILogger<>).MakeGenericType(type)
+                  ) as ILogger
+                )!;
+                logger.LogError(exception, "Error activating");
+                return null;
+              }
+            })
+            .Cast<IEventUpcaster>()
+            .Where(upcaster => upcaster != null)
+            .ToArray();
+          options.Events.AddEventTypes(eventTypes);
+          options.Events.Upcast(upcasters);
+
+          var projection = new Projection(services);
+          options.Projections.Add(
+            projection,
+            // ProjectionLifecycle.Async
+            ProjectionLifecycle.Inline
+          );
+
+          return options;
+        }
+      )
+      // .AddOrchardCoreAsyncProjectionDaemon()
+      .OptimizeArtifactWorkflow(
+        _hostEnvironment.IsDevelopment()
+          ? TypeLoadMode.Auto
+          : TypeLoadMode.Static
+      );
 
     services.AddScoped<IEventStoreSession, EventStoreSession>();
     services.AddScoped<IEventStoreQuery, EventStoreQuery>();
     services.AddSingleton<IEventStoreClient, EventStoreClient>();
-
-    services.AddSingleton<ITenants, ShellTenants>();
   }
 
-  public override void Configure(
-    IApplicationBuilder app,
-    IEndpointRouteBuilder routes,
-    IServiceProvider services
-  )
+  public Startup(IHostEnvironment hostEnvironment)
   {
-    var client = services.GetRequiredService<IEventStoreClient>();
-    var connected = client.CheckConnection();
-    if (!connected)
-    {
-      throw new InvalidOperationException("EventStore client not connected");
-    }
-
-    routes.MapAreaControllerRoute(
-      name: "Mess.EventStore.AdminController.Index",
-      areaName: "Mess.EventStore",
-      pattern: $"{_adminOptions.AdminUrlPrefix}/EventStore",
-      defaults: new
-      {
-        controller = typeof(AdminController).ControllerName(),
-        action = nameof(AdminController.Index)
-      }
-    );
+    _hostEnvironment = hostEnvironment;
   }
 
-  public Startup(
-    IHostEnvironment environment,
-    ILogger<Startup> logger,
-    IConfiguration configuration,
-    IOptions<AdminOptions> adminOptions
-  )
-  {
-    _environment = environment;
-    _logger = logger;
-    _configuration = configuration;
-    _adminOptions = adminOptions.Value;
-  }
-
-  private readonly IHostEnvironment _environment;
-  private readonly ILogger _logger;
-  private readonly IConfiguration _configuration;
-  private readonly AdminOptions _adminOptions;
+  private readonly IHostEnvironment _hostEnvironment;
 }

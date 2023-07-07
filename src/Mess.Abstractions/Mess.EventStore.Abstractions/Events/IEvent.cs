@@ -11,5 +11,5 @@ public interface IEvent
   public DateTime Timestamp { get; }
 
   [JsonIgnore]
-  public string Measurement { get; }
+  public string Payload { get; }
 }

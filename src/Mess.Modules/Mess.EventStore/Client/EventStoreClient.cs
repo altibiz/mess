@@ -2,6 +2,7 @@ using Microsoft.Extensions.Logging;
 using Marten.Schema;
 using Mess.EventStore.Abstractions.Client;
 using Mess.EventStore.Abstractions.Events;
+using Mess.EventStore.Abstractions.Extensions.Microsoft;
 
 namespace Mess.EventStore.Client;
 
@@ -13,34 +14,6 @@ public class EventStoreConnectionCheckDocumentType
 
 public class EventStoreClient : IEventStoreClient
 {
-  public Task<bool> CheckConnectionAsync() =>
-    _services.WithEventStoreQueryAsync(async query =>
-    {
-      var result = await query
-        .Query<EventStoreConnectionCheckDocumentType>()
-        .FirstOrDefaultAsync<EventStoreConnectionCheckDocumentType>(
-          CancellationToken.None
-        );
-      var connected = true;
-
-      LogConenction(connected);
-
-      return connected;
-    });
-
-  public bool CheckConnection() =>
-    _services.WithEventStoreQuery(query =>
-    {
-      var result = query
-        .Query<EventStoreConnectionCheckDocumentType>()
-        .FirstOrDefault();
-      var connected = true;
-
-      LogConenction(connected);
-
-      return connected;
-    });
-
   public void RecordEvents<T>(params IEvent[] events)
     where T : class =>
     _services.WithEventStoreSession(session =>
@@ -96,18 +69,6 @@ public class EventStoreClient : IEventStoreClient
     throw new NotImplementedException(
       "Marten has no official way of exporting all events"
     );
-
-  private void LogConenction(bool connected)
-  {
-    if (connected)
-    {
-      _logger.LogInformation("Connected to EventStore server");
-    }
-    else
-    {
-      _logger.LogInformation("Failed connecting to EventStore server");
-    }
-  }
 
   public EventStoreClient(
     IServiceProvider services,

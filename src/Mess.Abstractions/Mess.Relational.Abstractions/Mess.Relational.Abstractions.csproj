@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="OrchardCore.Abstractions" Version="$(MessOrchardVersion)" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="$(MessNpgsqlVersion)" />
+    <PackageReference Include="Z.EntityFramework.Plus.EFCore" Version="7.22.3" />
+  </ItemGroup>
+
+</Project>

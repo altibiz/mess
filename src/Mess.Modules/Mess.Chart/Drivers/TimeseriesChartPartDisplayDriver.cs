@@ -22,7 +22,7 @@ public class TimeseriesChartPartDisplayDriver
   )
   {
     var chartDataProviders = _serviceProvider
-      .GetServices<IChartDataProvider>()
+      .GetServices<IChartProvider>()
       .Where(
         chartDataProvider =>
           chartDataProvider.Id != PreviewChartDataProvider.ProviderId
@@ -32,7 +32,7 @@ public class TimeseriesChartPartDisplayDriver
       model =>
       {
         model.ChartDataProviderId =
-          part.ChartDataProviderId ?? chartDataProviders.First().Id;
+          part.ChartProviderId ?? chartDataProviders.First().Id;
         model.ChartDataProviderIdOptions = chartDataProviders
           .Select(
             chartDataProvider =>
@@ -65,10 +65,10 @@ public class TimeseriesChartPartDisplayDriver
       )
     )
     {
-      if (part.ChartDataProviderId != viewModel.ChartDataProviderId)
+      if (part.ChartProviderId != viewModel.ChartDataProviderId)
       {
         part.Datasets = new();
-        part.ChartDataProviderId = viewModel.ChartDataProviderId;
+        part.ChartProviderId = viewModel.ChartDataProviderId;
       }
     }
 

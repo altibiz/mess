@@ -67,7 +67,7 @@ public class TimeseriesChartDatasetAdminController : Controller
     timeseriesChartDataset.Inner.Content.ChartDataProviderId = chart
       .TimeseriesChartPart
       .Value
-      .ChartDataProviderId;
+      .ChartProviderId;
     dynamic model = await _contentItemDisplayManager.BuildEditorAsync(
       timeseriesChartDataset,
       _updateModelAccessor.ModelUpdater,
@@ -76,7 +76,7 @@ public class TimeseriesChartDatasetAdminController : Controller
 
     model.ContentItemId = contentItemId;
     model.ChartContentItemId = chartContentItemId;
-    model.DataProviderId = chart.TimeseriesChartPart.Value.ChartDataProviderId;
+    model.DataProviderId = chart.TimeseriesChartPart.Value.ChartProviderId;
 
     return View(model);
   }
@@ -134,7 +134,7 @@ public class TimeseriesChartDatasetAdminController : Controller
     timeseriesChartDataset.Inner.Content.ChartDataProviderId = chart
       .TimeseriesChartPart
       .Value
-      .ChartDataProviderId;
+      .ChartProviderId;
     dynamic model = await _contentItemDisplayManager.UpdateEditorAsync(
       timeseriesChartDataset,
       _updateModelAccessor.ModelUpdater,
@@ -144,10 +144,7 @@ public class TimeseriesChartDatasetAdminController : Controller
     {
       model.ContentItemId = contentItemId;
       model.ChartContentItemId = chartContentItemId;
-      model.DataProviderId = chart
-        .TimeseriesChartPart
-        .Value
-        .ChartDataProviderId;
+      model.DataProviderId = chart.TimeseriesChartPart.Value.ChartProviderId;
 
       return View(model);
     }
@@ -239,7 +236,7 @@ public class TimeseriesChartDatasetAdminController : Controller
     timeseriesChartDataset.Content.ChartDataProviderId = chart
       .TimeseriesChartPart
       .Value
-      .ChartDataProviderId;
+      .ChartProviderId;
     dynamic model = await _contentItemDisplayManager.BuildEditorAsync(
       timeseriesChartDataset,
       _updateModelAccessor.ModelUpdater,
@@ -248,7 +245,7 @@ public class TimeseriesChartDatasetAdminController : Controller
     model.ContentItemId = contentItemId;
     model.ChartContentItemId = chartContentItemId;
     model.DatasetContentItemId = datasetContentItemId;
-    model.DataProviderId = chart.TimeseriesChartPart.Value.ChartDataProviderId;
+    model.DataProviderId = chart.TimeseriesChartPart.Value.ChartProviderId;
     return View(model);
   }
 
@@ -306,7 +303,7 @@ public class TimeseriesChartDatasetAdminController : Controller
     timeseriesChartDataset.Inner.Content.ChartDataProviderId = chart
       .TimeseriesChartPart
       .Value
-      .ChartDataProviderId;
+      .ChartProviderId;
     dynamic model = await _contentItemDisplayManager.UpdateEditorAsync(
       timeseriesChartDataset,
       _updateModelAccessor.ModelUpdater,
@@ -317,10 +314,7 @@ public class TimeseriesChartDatasetAdminController : Controller
       model.ContentItemId = contentItemId;
       model.ChartContentItemId = chartContentItemId;
       model.DatasetContentItemId = datasetContentItemId;
-      model.DataProviderId = chart
-        .TimeseriesChartPart
-        .Value
-        .ChartDataProviderId;
+      model.DataProviderId = chart.TimeseriesChartPart.Value.ChartProviderId;
 
       return View(model);
     }

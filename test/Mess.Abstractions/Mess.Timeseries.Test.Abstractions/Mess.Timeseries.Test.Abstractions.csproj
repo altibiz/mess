@@ -5,11 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.System/Mess.System.csproj" />
-    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Tenants/Mess.Tenants.csproj" />
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Timeseries.Abstractions/Mess.Timeseries.Abstractions.csproj" />
     <ProjectReference Include="../../../src/Mess.Modules/Mess.Timeseries/Mess.Timeseries.csproj" />
-    <ProjectReference Include="../Mess.Test/Mess.Test.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Relational.Abstractions/Mess.Relational.Abstractions.csproj" />
+    <ProjectReference Include="../../../test/Mess.Abstractions/Mess.Relational.Test.Abstractions/Mess.Relational.Test.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

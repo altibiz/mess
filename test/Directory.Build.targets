@@ -5,13 +5,13 @@
     <MessTestCopyCondition 
         Condition="
               '$(SolutionDir)' != '*Undefined*'
-          AND '$(MsBuildProjectName)' != 'Mess.Test'
+          AND '$(MsBuildProjectName)' != 'Mess.System.Test'
         ">true</MessTestCopyCondition>
   </PropertyGroup>
 
   <!-- TODO: shorten -->
   <PropertyGroup>
-    <MessTestProjectDir>$(SolutionDir)test/Mess.Abstractions/Mess.Test/</MessTestProjectDir>
+    <MessTestProjectDir>$(SolutionDir)test/Mess.System.Test/</MessTestProjectDir>
   </PropertyGroup>
 
   <Target

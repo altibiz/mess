@@ -21,5 +21,12 @@
   "[csharp]": {
     "editor.defaultFormatter": "csharpier.csharpier-vscode"
   },
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "[dockerfile]": {
+    "editor.defaultFormatter": "ms-azuretools.vscode-docker"
+  },
+  "files.associations": {
+    "*.json.hbs": "json",
+    "*.xml.hbs": "xml"
+  }
 }

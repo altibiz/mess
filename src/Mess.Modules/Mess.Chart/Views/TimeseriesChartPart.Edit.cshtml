@@ -30,7 +30,7 @@
     @foreach (var contentItem in Model.Part.Datasets)
     {
       contentItem.Content.ContentItemId = Model.Part.ContentItem.ContentItemId;
-      contentItem.Content.DataProviderId = Model.Part.ChartDataProviderId;
+      contentItem.Content.DataProviderId = Model.Part.ChartProviderId;
       dynamic dataset = await ContentItemDisplayManager.BuildDisplayAsync(
         contentItem,
         ModelUpdaterAccessor.ModelUpdater
