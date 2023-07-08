@@ -10,6 +10,7 @@ using YesSql;
 using Mess.MeasurementDevice.Abstractions.Indexes;
 using Mess.MeasurementDevice.Abstractions.Models;
 using OrchardCore.ContentManagement;
+using Microsoft.Extensions.Logging;
 
 namespace Mess.MeasurementDevice.Controllers;
 
@@ -21,12 +22,15 @@ public class PushController : Controller
     [FromServices] IShellFeaturesManager shellFeaturesManager,
     [FromServices] IServiceProvider services,
     [FromServices] ISession session,
+    [FromServices] ILogger<PushController> logger,
     [FromQuery] string deviceId,
     [FromQuery] string? handlerId
   )
   {
     // TODO: on each push add a timer that will notify if there was no push
     // on next push just remove the timer
+
+    logger.LogInformation($"Push from {deviceId} to {handlerId}");
 
     var contentItem = await session
       .Query<ContentItem, MeasurementDeviceIndex>()
