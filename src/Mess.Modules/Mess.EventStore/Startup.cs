@@ -15,6 +15,7 @@ using JasperFx.CodeGeneration;
 using Microsoft.Extensions.Hosting;
 using Marten.Services.Json.Transformations;
 using Microsoft.Extensions.Logging;
+using Weasel.Core;
 
 // using Mess.EventStore.Extensions.Marten;
 
@@ -28,12 +29,17 @@ public class Startup : StartupBase
       .AddMarten(
         (IServiceProvider services) =>
         {
+          var hostEnvironment = services.GetRequiredService<IHostEnvironment>();
           var shellSettings = services.GetRequiredService<ShellSettings>();
           var databaseTablePrefix = shellSettings.GetDatabaseTablePrefix();
           var databaseConnectionString =
             shellSettings.GetDatabaseConnectionString();
 
           var options = new StoreOptions();
+
+          options.AutoCreateSchemaObjects = hostEnvironment.IsDevelopment()
+            ? AutoCreate.All
+            : AutoCreate.CreateOrUpdate;
 
           options.MultiTenantedDatabases(databases =>
           {
