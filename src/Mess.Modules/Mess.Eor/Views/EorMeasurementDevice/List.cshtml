@@ -7,38 +7,77 @@
 @inject IUpdateModelAccessor ModelUpdaterAccessor
 
 <div>
-  @foreach (var eorMeasurementDevice in Model.EorMeasurementDevices)
-  {
-    
-    <a
-        asp-route-area="Mess.Eor"
-        asp-controller="EorMeasurementDevice"
-        asp-action="Detail"
-        asp-route-contentItemId="@eorMeasurementDevice.ContentItemId">
-      <span>
-        @eorMeasurementDevice.TitlePart.Value.Title
-      </span>
-    </a>
-    
-    var summary = Model.EorMeasurementDeviceSummaries[
-      eorMeasurementDevice.MeasurementDevicePart.Value.DeviceId.Text
-    ];
+  <table class="table">
+    <thead>
+      <th scope="col"></th>
+      <th scope="col">@T["Mode"]</th>
+      <th scope="col">@T["Voltage"]</th>
+      <th scope="col">@T["Current"]</th>
+      <th scope="col"></th>
+    </thead>
+    <tbody>
+      @foreach (var eorMeasurementDevice in Model.EorMeasurementDevices)
+      {
+        if (!Model.EorMeasurementDeviceSummaries.TryGetValue(
+            eorMeasurementDevice.MeasurementDevicePart.Value.DeviceId.Text,
+          out var summary) || 
+          summary.LastMeasurement is null ||
+          summary.Status is null)
+        {
+          continue;
+        }
 
-    if (summary.Status is null || summary.LastMeasurement is null) {
-      <span>Summary not found</span>
-      continue;
-    }
-    
-    <span>
-      @summary.Status.Mode
-    </span>
-
-    <span>
-      @summary.LastMeasurement.Voltage
-    </span>
-
-    <span>
-      @summary.LastMeasurement.Current
-    </span>
-  }
+        <tr>
+          <th scope="row">
+            <a
+                asp-route-area="Mess.Eor"
+                asp-controller="EorMeasurementDeviceAdmin"
+                asp-action="Detail"
+                asp-route-contentItemId="@eorMeasurementDevice.ContentItemId">
+              <span>
+                @eorMeasurementDevice.TitlePart.Value.Title
+              </span>
+            </a>
+          </th>
+          <td>
+            <span>
+              @summary.Status.Mode
+            </span>
+          </td>
+          <td>
+            <span>
+              @summary.LastMeasurement.Voltage
+            </span>
+          </td>
+          <td>
+            <span>
+              @summary.LastMeasurement.Current
+            </span>
+          </td>
+          <td>
+            <a
+                asp-route-area="Mess.Eor"
+                asp-controller="EorMeasurementDeviceAdmin"
+                asp-action="Edit"
+                asp-route-contentItemId="@eorMeasurementDevice.ContentItemId"
+                class="btn btn-primary btn-sm">
+              <span>
+                @T["Edit"]
+              </span>
+            </a>
+            <a
+                asp-route-area="Mess.Eor"
+                asp-controller="EorMeasurementDeviceAdmin"
+                asp-action="Delete"
+                asp-route-contentItemId="@eorMeasurementDevice.ContentItemId"
+                class="btn btn-danger btn-sm">
+              <span>
+                @T["Delete"]
+              </span>
+            </a>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
 </div>

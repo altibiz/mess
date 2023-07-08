@@ -1,0 +1,20 @@
+@model ApiKeyFieldViewModel
+
+@using OrchardCore.Mvc.Utilities
+
+@{
+    var name = (Model.PartFieldDefinition.PartDefinition.Name + "-" + Model.PartFieldDefinition.Name).HtmlClassify();
+}
+
+<div class="field field-name-@name">
+  @if(
+    String.IsNullOrEmpty(Model.Field.Hash) || 
+    Model.Field.Salt is null
+  )
+  {
+    <span>@T["Api key missing"]</span>
+  }
+  else {
+    <span>@T["Api key generated"]</span>
+  }
+</div>

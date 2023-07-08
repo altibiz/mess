@@ -12,6 +12,8 @@ using Mess.MeasurementDevice.Abstractions.Models;
 using Mess.MeasurementDevice.Abstractions.Client;
 using YesSql;
 using Mess.MeasurementDevice.Abstractions.Indexes;
+using Mess.MeasurementDevice.Abstractions.Security;
+using Mess.MeasurementDevice.Abstractions.Extensions;
 
 namespace Mess.MeasurementDevice.Chart;
 
@@ -112,7 +114,10 @@ public class Migrations : DataMigration
         measurementDevicePart =>
         {
           measurementDevicePart.DeviceId = new() { Text = "egauge" };
-          measurementDevicePart.DefaultPushHandlerId = "egauge";
+          measurementDevicePart.PushHandlerId = "egauge";
+
+          measurementDevicePart.ApiKey =
+            _measurementDeviceGuard.HashApiKeyField("egauge");
         }
       );
       egaugeMeasurementDevice.Alter(
@@ -134,7 +139,8 @@ public class Migrations : DataMigration
     IRecipeMigrator recipeMigrator,
     IHostEnvironment hostEnvironment,
     IContentManager contentManager,
-    ISession session
+    ISession session,
+    IMeasurementDeviceGuard measurementDeviceGuard
   )
   {
     _contentDefinitionManager = contentDefinitionManager;
@@ -142,6 +148,7 @@ public class Migrations : DataMigration
     _hostEnvironment = hostEnvironment;
     _contentManager = contentManager;
     _session = session;
+    _measurementDeviceGuard = measurementDeviceGuard;
   }
 
   private readonly IContentDefinitionManager _contentDefinitionManager;
@@ -149,4 +156,5 @@ public class Migrations : DataMigration
   private readonly IContentManager _contentManager;
   private readonly IHostEnvironment _hostEnvironment;
   private readonly ISession _session;
+  private readonly IMeasurementDeviceGuard _measurementDeviceGuard;
 }

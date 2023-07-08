@@ -1,0 +1,62 @@
+* {
+  border: none;
+  padding: 0;
+  margin: 0;
+  text-decoration: none;
+  background: none;
+}
+
+.container {
+  margin: 0 auto;
+  max-width: var(--breakpoint-desktop);
+  padding-inline: 22px;
+}
+
+header {
+  min-height: var(--min-header-height);
+  padding-top: 12px;
+  padding-bottom: 22px;
+  box-sizing: border-box;
+  background-color: var(--darker-background);
+  color: var(--inverse-foreground);
+  z-index: var(--level-header);
+}
+
+header > .container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+main {
+  /* idk why the 14px but ok */
+  min-height: calc(
+    100vh - var(--min-header-height) - var(--min-footer-height) - 14px
+  );
+  padding-top: 32px;
+  padding-bottom: 48px;
+  box-sizing: border-box;
+  background-color: var(--background);
+  color: var(--foreground);
+  z-index: var(--level-content);
+  background-image: url("../images/background.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+footer {
+  min-height: var(--min-footer-height);
+  padding-top: 48px;
+  padding-bottom: 22px;
+  box-sizing: border-box;
+  background-color: var(--primary);
+  color: var(--inverse-foreground);
+  z-index: var(--level-header);
+}
+
+footer > .container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}

@@ -1,0 +1,56 @@
+button {
+  cursor: pointer;
+  padding-block: 8px;
+  padding-inline: 12px;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.button-primary {
+  background-color: var(--primary);
+  color: var(--inverse-foreground);
+}
+
+.button-primary:hover {
+  background-color: var(--inverse-foreground);
+  color: var(--primary);
+}
+
+.button-secondary {
+  background-color: var(--secondary);
+  color: var(--foreground);
+}
+
+.button-secondary:hover {
+  background-color: var(--foreground);
+  color: var(--secondary);
+}
+
+.button-success {
+  background-color: var(--success);
+  color: var(--inverse-foreground);
+}
+
+.button-success:hover {
+  background-color: var(--inverse-foreground);
+  color: var(--success);
+}
+
+.button-warning {
+  background-color: var(--warning);
+  color: var(--foreground);
+}
+
+.button-warning:hover {
+  background-color: var(--foreground);
+  color: var(--warning);
+}
+
+.button-danger {
+  background-color: var(--danger);
+  color: var(--inverse-foreground);
+}
+
+.button-danger:hover {
+  background-color: var(--inverse-foreground);
+  color: var(--danger);
+}

@@ -14,7 +14,7 @@
     "lint:workspaces": "yarn workspaces foreach -ip --exclude @mess/assets run lint",
     "lint": "run-s lint:tsc lint:eslint lint:stylelint lint:workspaces",
     "build": "webpack --mode production",
-    "watch": "webpack --mode production --watch"
+    "watch": "webpack --mode development --watch"
   },
   "devDependencies": {
     "@babel/core": "^7.21.8",

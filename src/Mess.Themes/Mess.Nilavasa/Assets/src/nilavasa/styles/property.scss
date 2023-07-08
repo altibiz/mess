@@ -1,0 +1,103 @@
+.property-table {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.property {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.property:last-child {
+  margin-bottom: 0;
+}
+
+@media screen and (min-width >= 480px) {
+  .property {
+    flex-direction: row;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--darker-background);
+  }
+}
+
+.property > strong {
+  width: auto;
+  margin-bottom: 8px;
+}
+
+@media screen and (min-width >= 480px) {
+  .property > strong {
+    width: 300px;
+    margin-bottom: 0;
+  }
+}
+
+.property > span {
+  padding-left: 4px;
+}
+
+@media screen and (min-width >= 480px) {
+  .property > span {
+    padding-left: 0;
+  }
+}
+
+.property-metadata {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease-in-out;
+  background-color: var(--darker-background);
+  color: var(--inverse-foreground);
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: var(--level-tooltip);
+  padding-top: 12px;
+  padding-bottom: 18px;
+  padding-inline: 8px;
+  pointer-events: none;
+}
+
+.property:hover > .property-metadata {
+  visibility: visible;
+  opacity: 1;
+}
+
+.property-metadata-list > li {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+}
+
+@media screen and (min-width >= 768px) {
+  .property-metadata-list > li {
+    flex-direction: row;
+    justify-content: start;
+  }
+}
+
+.property-metadata-list > li > strong {
+  display: inline-block;
+  min-width: 128px;
+}
+
+.property-metadata-list > li > strong::after {
+  content: ":";
+}
+
+.property-metadata-list-small > li > strong {
+  min-width: 88px;
+}
+
+@media screen and (min-width >= 480px) {
+  .property-metadata-list-small > li {
+    flex-direction: row;
+    justify-content: start;
+  }
+}

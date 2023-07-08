@@ -21,7 +21,7 @@ fi
 
 export ASPNETCORE_ENVIRONMENT=Production
 export DOTNET_ENVIRONMENT=Production
-export ORCHARD_APP_DATA="$ROOT_DIR/App_Data"
+export ORCHARD_APP_DATA="$PUBLISH_DIR/App_Data"
 
 export NODE_OPTIONS="--no-warnings"
 export NODE_ENV="production"
@@ -42,8 +42,10 @@ printf "[Mess] Publishing with 'dotnet'..."
 dotnet \
   publish \
   --property "PublishDir=$PUBLISH_DIR" \
-  --property:consoleLoggerParameters=ErrorsOnly \
-  --property:IsWebConfigTransformDisabled=true \
+  --property "ConsoleLoggerParameters=ErrorsOnly" \
+  --property "IsWebConfigTransformDisabled=true" \
+  --property "DebugType=None" \
+  --property "DebugSymbols=false" \
   --configuration Release
 
 if [ ! "$1" ]; then

@@ -6,6 +6,8 @@ using Mess.Eor.Chart.Providers;
 using Mess.Eor.MeasurementDevice.Pushing;
 using Mess.Eor.MeasurementDevice.Updating;
 using Mess.MeasurementDevice.Abstractions.Indexes;
+using Mess.MeasurementDevice.Abstractions.Security;
+using Mess.MeasurementDevice.Abstractions.Extensions;
 using Mess.OrchardCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Hosting;
@@ -367,12 +369,12 @@ public class Migrations : DataMigration
         measurementDevicePart =>
         {
           measurementDevicePart.DeviceId = new() { Text = "eor" };
-          measurementDevicePart.DefaultPushHandlerId =
-            EorPushHandler.PushHandlerId;
-          measurementDevicePart.DefaultPollHandlerId =
-            EorPollHandler.PollHandlerId;
-          measurementDevicePart.DefaultUpdateHandlerId =
+          measurementDevicePart.PushHandlerId = EorPushHandler.PushHandlerId;
+          measurementDevicePart.PollHandlerId = EorPollHandler.PollHandlerId;
+          measurementDevicePart.UpdateHandlerId =
             EorStatusHandler.UpdateHandlerId;
+          measurementDevicePart.ApiKey =
+            _measurementDeviceGuard.HashApiKeyField("eor");
         }
       );
       eorMeasurementDevice.Alter(
@@ -415,7 +417,8 @@ public class Migrations : DataMigration
     IContentManager contentManager,
     IHostEnvironment hostEnvironment,
     ISession session,
-    IUserService userService
+    IUserService userService,
+    IMeasurementDeviceGuard measurementDeviceGuard
   )
   {
     _contentDefinitionManager = contentDefinitionManager;
@@ -425,6 +428,7 @@ public class Migrations : DataMigration
     _hostEnvironment = hostEnvironment;
     _session = session;
     _userService = userService;
+    _measurementDeviceGuard = measurementDeviceGuard;
   }
 
   private readonly IContentDefinitionManager _contentDefinitionManager;
@@ -434,4 +438,5 @@ public class Migrations : DataMigration
   private readonly IHostEnvironment _hostEnvironment;
   private readonly ISession _session;
   private readonly IUserService _userService;
+  private readonly IMeasurementDeviceGuard _measurementDeviceGuard;
 }

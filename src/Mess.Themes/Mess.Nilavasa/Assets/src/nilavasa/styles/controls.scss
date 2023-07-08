@@ -1,0 +1,50 @@
+.start-stop-reset-controls {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-bottom: 22px;
+
+  > * {
+    margin-bottom: 22px;
+  }
+
+  > *:last-child {
+    margin-bottom: 0;
+  }
+}
+
+@media screen and (min-width >= 480px) {
+  .start-stop-reset-controls {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 322px;
+
+    > * {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.input-controls {
+  max-width: 322px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.input-controls > form {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+@media screen and (min-width >= 480px) {
+  .input-controls {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}

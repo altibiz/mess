@@ -12,6 +12,8 @@ using YesSql.Sql;
 using Microsoft.Extensions.Hosting;
 using Mess.MeasurementDevice.Chart.Providers;
 using Mess.MeasurementDevice.Pushing;
+using Mess.MeasurementDevice.Abstractions.Security;
+using Mess.MeasurementDevice.Abstractions.Extensions;
 
 namespace Mess.MeasurementDevice;
 
@@ -39,6 +41,14 @@ public class Migrations : DataMigration
                     Hint = "The identifier of the measurement device."
                   }
                 )
+          )
+          .WithField(
+            "ApiKey",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("ApiKeyField")
+                .WithDisplayName("API key")
+                .WithDescription("The API key of the measurement device.")
           )
     );
 
@@ -119,8 +129,10 @@ public class Migrations : DataMigration
         measurementDevicePart =>
         {
           measurementDevicePart.DeviceId = new() { Text = "egauge" };
-          measurementDevicePart.DefaultPushHandlerId =
-            EgaugePushHandler.PushHandlerId;
+          measurementDevicePart.PushHandlerId = EgaugePushHandler.PushHandlerId;
+
+          measurementDevicePart.ApiKey =
+            _measurementDeviceGuard.HashApiKeyField("egauge");
         }
       );
       egaugeMeasurementDevice.Alter(
@@ -140,17 +152,20 @@ public class Migrations : DataMigration
     IContentDefinitionManager contentDefinitionManager,
     IContentManager contentManager,
     IHostEnvironment hostEnvironment,
-    IRecipeMigrator recipeMigrator
+    IRecipeMigrator recipeMigrator,
+    IMeasurementDeviceGuard measurementDeviceGuard
   )
   {
     _contentDefinitionManager = contentDefinitionManager;
     _contentManager = contentManager;
     _recipeMigrator = recipeMigrator;
     _hostEnvironment = hostEnvironment;
+    _measurementDeviceGuard = measurementDeviceGuard;
   }
 
   private readonly IContentDefinitionManager _contentDefinitionManager;
   private readonly IContentManager _contentManager;
   private readonly IRecipeMigrator _recipeMigrator;
   private readonly IHostEnvironment _hostEnvironment;
+  private readonly IMeasurementDeviceGuard _measurementDeviceGuard;
 }

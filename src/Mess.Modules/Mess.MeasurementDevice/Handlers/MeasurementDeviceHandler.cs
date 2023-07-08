@@ -17,7 +17,7 @@ public class MeasurementDevicePartHandler
 
     if (contentItem.ContentType == EgaugeMeasurementDeviceItem.ContentType)
     {
-      part.DefaultPushHandlerId ??= EgaugePushHandler.PushHandlerId;
+      part.PushHandlerId ??= EgaugePushHandler.PushHandlerId;
     }
 
     part.Apply();
