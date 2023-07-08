@@ -25,69 +25,70 @@ public class Startup : StartupBase
 {
   public override void ConfigureServices(IServiceCollection services)
   {
-    services
-      .AddMarten(
-        (IServiceProvider services) =>
+    services.AddMarten(
+      (IServiceProvider services) =>
+      {
+        var hostEnvironment = services.GetRequiredService<IHostEnvironment>();
+        var shellSettings = services.GetRequiredService<ShellSettings>();
+        var databaseTablePrefix = shellSettings.GetDatabaseTablePrefix();
+        var databaseConnectionString =
+          shellSettings.GetDatabaseConnectionString();
+
+        var options = new StoreOptions();
+
+        options.AutoCreateSchemaObjects = hostEnvironment.IsDevelopment()
+          ? AutoCreate.All
+          : AutoCreate.CreateOrUpdate;
+        options.GeneratedCodeMode = TypeLoadMode.Auto;
+
+        options.MultiTenantedDatabases(databases =>
         {
-          var hostEnvironment = services.GetRequiredService<IHostEnvironment>();
-          var shellSettings = services.GetRequiredService<ShellSettings>();
-          var databaseTablePrefix = shellSettings.GetDatabaseTablePrefix();
-          var databaseConnectionString =
-            shellSettings.GetDatabaseConnectionString();
+          databases
+            .AddMultipleTenantDatabase(databaseConnectionString)
+            .ForTenants(new[] { databaseTablePrefix });
+        });
 
-          var options = new StoreOptions();
-
-          options.AutoCreateSchemaObjects = AutoCreate.All;
-
-          options.MultiTenantedDatabases(databases =>
+        var eventTypes = AppDomain.CurrentDomain
+          .FindTypesAssignableTo<IEvent>()
+          .Where(type => !type.IsAbstract)
+          .ToArray();
+        var upcasters = AppDomain.CurrentDomain
+          .FindTypesAssignableTo<IEventUpcaster>()
+          .Where(type => !type.IsAbstract)
+          .Select(type =>
           {
-            databases
-              .AddMultipleTenantDatabase(databaseConnectionString)
-              .ForTenants(new[] { databaseTablePrefix });
-          });
-
-          var eventTypes = AppDomain.CurrentDomain
-            .FindTypesAssignableTo<IEvent>()
-            .Where(type => !type.IsAbstract)
-            .ToArray();
-          var upcasters = AppDomain.CurrentDomain
-            .FindTypesAssignableTo<IEventUpcaster>()
-            .Where(type => !type.IsAbstract)
-            .Select(type =>
+            try
             {
-              try
-              {
-                return Activator.CreateInstance(type, new[] { services });
-              }
-              catch (Exception exception)
-              {
-                var logger = (
-                  services.GetRequiredService(
-                    typeof(ILogger<>).MakeGenericType(type)
-                  ) as ILogger
-                )!;
-                logger.LogError(exception, "Error activating");
-                return null;
-              }
-            })
-            .Cast<IEventUpcaster>()
-            .Where(upcaster => upcaster != null)
-            .ToArray();
-          options.Events.AddEventTypes(eventTypes);
-          options.Events.Upcast(upcasters);
+              return Activator.CreateInstance(type, new[] { services });
+            }
+            catch (Exception exception)
+            {
+              var logger = (
+                services.GetRequiredService(
+                  typeof(ILogger<>).MakeGenericType(type)
+                ) as ILogger
+              )!;
+              logger.LogError(exception, "Error activating");
+              return null;
+            }
+          })
+          .Cast<IEventUpcaster>()
+          .Where(upcaster => upcaster != null)
+          .ToArray();
+        options.Events.AddEventTypes(eventTypes);
+        options.Events.Upcast(upcasters);
 
-          var projection = new Projection(services);
-          options.Projections.Add(
-            projection,
-            // ProjectionLifecycle.Async
-            ProjectionLifecycle.Inline
-          );
+        var projection = new Projection(services);
+        options.Projections.Add(
+          projection,
+          // ProjectionLifecycle.Async
+          ProjectionLifecycle.Inline
+        );
 
-          return options;
-        }
-      )
-      // .AddOrchardCoreAsyncProjectionDaemon()
-      .OptimizeArtifactWorkflow(TypeLoadMode.Auto);
+        return options;
+      }
+    );
+    // .AddOrchardCoreAsyncProjectionDaemon();
 
     services.AddScoped<IEventStoreSession, EventStoreSession>();
     services.AddScoped<IEventStoreQuery, EventStoreQuery>();
