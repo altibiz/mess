@@ -37,9 +37,7 @@ public class Startup : StartupBase
 
           var options = new StoreOptions();
 
-          options.AutoCreateSchemaObjects = hostEnvironment.IsDevelopment()
-            ? AutoCreate.All
-            : AutoCreate.CreateOrUpdate;
+          options.AutoCreateSchemaObjects = AutoCreate.All;
 
           options.MultiTenantedDatabases(databases =>
           {
@@ -89,11 +87,7 @@ public class Startup : StartupBase
         }
       )
       // .AddOrchardCoreAsyncProjectionDaemon()
-      .OptimizeArtifactWorkflow(
-        _hostEnvironment.IsDevelopment()
-          ? TypeLoadMode.Auto
-          : TypeLoadMode.Static
-      );
+      .OptimizeArtifactWorkflow(TypeLoadMode.Auto);
 
     services.AddScoped<IEventStoreSession, EventStoreSession>();
     services.AddScoped<IEventStoreQuery, EventStoreQuery>();
