@@ -30,13 +30,6 @@ public class PushController : Controller
     // TODO: on each push add a timer that will notify if there was no push
     // on next push just remove the timer
 
-    logger.LogInformation(
-      "Push from {deviceId} to {handlerId}: {body}",
-      deviceId,
-      handlerId,
-      await Request.Body.EncodeAsync()
-    );
-
     var contentItem = await session
       .Query<ContentItem, MeasurementDeviceIndex>()
       .Where(index => index.DeviceId == deviceId)
