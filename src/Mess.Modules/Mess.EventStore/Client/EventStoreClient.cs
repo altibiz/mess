@@ -6,12 +6,6 @@ using Mess.EventStore.Abstractions.Extensions.Microsoft;
 
 namespace Mess.EventStore.Client;
 
-public class EventStoreConnectionCheckDocumentType
-{
-  [Identity]
-  public string? Id = null;
-}
-
 public class EventStoreClient : IEventStoreClient
 {
   public void RecordEvents<T>(params IEvent[] events)
