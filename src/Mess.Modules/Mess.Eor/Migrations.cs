@@ -6,8 +6,7 @@ using Mess.Eor.Chart.Providers;
 using Mess.Eor.MeasurementDevice.Pushing;
 using Mess.Eor.MeasurementDevice.Updating;
 using Mess.MeasurementDevice.Abstractions.Indexes;
-using Mess.MeasurementDevice.Abstractions.Security;
-using Mess.MeasurementDevice.Abstractions.Extensions;
+using Mess.ContentFields.Abstractions.Extensions;
 using Mess.OrchardCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Hosting;
@@ -25,6 +24,9 @@ using OrchardCore.Users.Models;
 using OrchardCore.Users.Services;
 using YesSql;
 using YesSql.Sql;
+using Microsoft.Extensions.Options;
+using Mess.Eor.Options;
+using Mess.ContentFields.Abstractions.Services;
 
 namespace Mess.Eor;
 
@@ -151,6 +153,14 @@ public class Migrations : DataMigration
                     Hint = "Longitude."
                   }
                 )
+          )
+          .WithField(
+            "ApiKey",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("ApiKeyField")
+                .WithDisplayName("API key")
+                .WithDescription("API key.")
           )
     );
 
@@ -347,13 +357,15 @@ public class Migrations : DataMigration
           };
         }
       );
-      await _contentManager.PublishAsync(eorChart);
+      await _contentManager.CreateAsync(eorChart, VersionOptions.Latest);
 
+      var eorDeviceId = _eorOptions.Development.DeviceId;
+      var eorApiKey = _eorOptions.Development.ApiKey;
       var eorMeasurementDevice =
         (
           await _session
             .Query<ContentItem, MeasurementDeviceIndex>()
-            .Where(index => index.DeviceId == "eor")
+            .Where(index => index.DeviceId == eorDeviceId)
             .FirstOrDefaultAsync()
         )?.AsContent<EorMeasurementDeviceItem>()
         ?? await _contentManager.NewContentAsync<EorMeasurementDeviceItem>();
@@ -361,20 +373,18 @@ public class Migrations : DataMigration
         eorMeasurementDevice => eorMeasurementDevice.TitlePart,
         titlePart =>
         {
-          titlePart.Title = "eor";
+          titlePart.Title = eorDeviceId;
         }
       );
       eorMeasurementDevice.Alter(
         eorMeasurementDevice => eorMeasurementDevice.MeasurementDevicePart,
         measurementDevicePart =>
         {
-          measurementDevicePart.DeviceId = new() { Text = "eor" };
-          measurementDevicePart.PushHandlerId = EorPushHandler.PushHandlerId;
-          measurementDevicePart.PollHandlerId = EorPollHandler.PollHandlerId;
+          measurementDevicePart.PushHandlerId = EorPushHandler.PushContentType;
+          measurementDevicePart.PollHandlerId = EorPollHandler.PollContentType;
           measurementDevicePart.UpdateHandlerId =
-            EorStatusHandler.UpdateHandlerId;
-          measurementDevicePart.ApiKey =
-            _measurementDeviceGuard.HashApiKeyField("eor");
+            EorStatusHandler.UpdateContentType;
+          measurementDevicePart.DeviceId = new() { Text = eorDeviceId };
         }
       );
       eorMeasurementDevice.Alter(
@@ -402,9 +412,15 @@ public class Migrations : DataMigration
           eorMeasurementDevice.ProductNumber = new() { Text = "123456789" };
           eorMeasurementDevice.Longitude = new() { Value = -100.784430m };
           eorMeasurementDevice.Latitude = new() { Value = 31.697256m };
+          eorMeasurementDevice.ApiKey = _apiKeyFieldService.HashApiKeyField(
+            eorApiKey
+          );
         }
       );
-      await _contentManager.PublishAsync(eorMeasurementDevice);
+      await _contentManager.CreateAsync(
+        eorMeasurementDevice,
+        VersionOptions.Latest
+      );
     }
 
     return 1;
@@ -418,7 +434,8 @@ public class Migrations : DataMigration
     IHostEnvironment hostEnvironment,
     ISession session,
     IUserService userService,
-    IMeasurementDeviceGuard measurementDeviceGuard
+    IApiKeyFieldService apiKeyFieldService,
+    IOptions<EorOptions> eorOptions
   )
   {
     _contentDefinitionManager = contentDefinitionManager;
@@ -428,7 +445,8 @@ public class Migrations : DataMigration
     _hostEnvironment = hostEnvironment;
     _session = session;
     _userService = userService;
-    _measurementDeviceGuard = measurementDeviceGuard;
+    _apiKeyFieldService = apiKeyFieldService;
+    _eorOptions = eorOptions.Value;
   }
 
   private readonly IContentDefinitionManager _contentDefinitionManager;
@@ -438,5 +456,6 @@ public class Migrations : DataMigration
   private readonly IHostEnvironment _hostEnvironment;
   private readonly ISession _session;
   private readonly IUserService _userService;
-  private readonly IMeasurementDeviceGuard _measurementDeviceGuard;
+  private readonly IApiKeyFieldService _apiKeyFieldService;
+  private readonly EorOptions _eorOptions;
 }

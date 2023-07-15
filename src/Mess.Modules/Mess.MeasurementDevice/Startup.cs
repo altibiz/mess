@@ -17,12 +17,6 @@ using Mess.MeasurementDevice.Abstractions.Extensions.Microsoft;
 using Mess.MeasurementDevice.Indexes;
 using YesSql.Indexes;
 using Mess.MeasurementDevice.Context;
-using Mess.MeasurementDevice.Abstractions.Security;
-using Mess.MeasurementDevice.Security;
-using Fluid;
-using Mess.MeasurementDevice.Abstractions.Fields;
-using Mess.MeasurementDevice.Drivers;
-using OrchardCore.ContentManagement.Display.ContentDisplay;
 
 namespace Mess.MeasurementDevice;
 
@@ -48,17 +42,7 @@ public class Startup : StartupBase
     services.AddSingleton<IIndexProvider, MeasurementDeviceIndexProvider>();
 
     services.AddContentPart<EgaugeMeasurementDevicePart>();
-    services.AddPushHandler<EgaugePushHandler>();
-
-    services.AddSingleton<IMeasurementDeviceGuard, MeasurementDeviceGuard>();
-
-    services.Configure<TemplateOptions>(options =>
-    {
-      options.MemberAccessStrategy.Register<ApiKeyField>();
-    });
-    services
-      .AddContentField<ApiKeyField>()
-      .UseDisplayDriver<ApiKeyFieldDisplayDriver>();
+    services.AddMeasurementDevicePushHandler<EgaugePushHandler>();
   }
 
   public override void Configure(

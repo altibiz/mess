@@ -5,11 +5,11 @@ using OrchardCore.ContentManagement;
 
 namespace Mess.Eor.MeasurementDevice.Pushing;
 
-public class EorPushHandler : JsonPushHandler<EorMeasurement>
+public class EorPushHandler : JsonMeasurementDevicePushHandler<EorMeasurement>
 {
-  public const string PushHandlerId = "eor";
+  public const string PushContentType = "EorMeasuremetDevice";
 
-  public override string Id => PushHandlerId;
+  public override string ContentType => PushContentType;
 
   protected override void Handle(
     string deviceId,
@@ -30,7 +30,7 @@ public class EorPushHandler : JsonPushHandler<EorMeasurement>
   }
 
   public EorPushHandler(
-    ILogger<JsonPushHandler<EorMeasurement>> logger,
+    ILogger<JsonMeasurementDevicePushHandler<EorMeasurement>> logger,
     IEorTimeseriesClient measurementClient
   )
     : base(logger)

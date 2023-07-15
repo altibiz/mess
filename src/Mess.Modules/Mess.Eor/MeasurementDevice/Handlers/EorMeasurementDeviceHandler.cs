@@ -20,9 +20,9 @@ public class EorMeasurementDevicePartHandler
 
     if (contentItem.ContentType == EorMeasurementDeviceItem.ContentType)
     {
-      part.PushHandlerId ??= EorPushHandler.PushHandlerId;
-      part.PollHandlerId ??= EorPollHandler.PollHandlerId;
-      part.UpdateHandlerId ??= EorStatusHandler.UpdateHandlerId;
+      part.PushHandlerId ??= EorPushHandler.PushContentType;
+      part.PollHandlerId ??= EorPollHandler.PollContentType;
+      part.UpdateHandlerId ??= EorStatusHandler.UpdateContentType;
     }
 
     part.Apply();

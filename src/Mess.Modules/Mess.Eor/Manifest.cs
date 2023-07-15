@@ -15,6 +15,7 @@ using ManifestConstants = Mess.OrchardCore.ManifestConstants;
     "OrchardCore.Users",
     "OrchardCore.Roles",
     "Mess.MeasurementDevice",
-    "Mess.Chart"
+    "Mess.Chart",
+    "Mess.ContentFields",
   }
 )]

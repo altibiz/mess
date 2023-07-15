@@ -1,3 +1,4 @@
+using Mess.ContentFields.Abstractions.Fields;
 using Mess.Eor.Abstractions.Client;
 using OrchardCore.ContentFields.Fields;
 using OrchardCore.ContentManagement;
@@ -27,4 +28,6 @@ public class EorMeasurementDevicePart : ContentPart
 
   public EorMeasurementDeviceResetState ResetState { get; set; } =
     EorMeasurementDeviceResetState.ShouldntReset;
+
+  public ApiKeyField ApiKey { get; set; } = default!;
 }

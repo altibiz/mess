@@ -12,8 +12,6 @@ using Mess.MeasurementDevice.Abstractions.Models;
 using Mess.MeasurementDevice.Abstractions.Client;
 using YesSql;
 using Mess.MeasurementDevice.Abstractions.Indexes;
-using Mess.MeasurementDevice.Abstractions.Security;
-using Mess.MeasurementDevice.Abstractions.Extensions;
 
 namespace Mess.MeasurementDevice.Chart;
 
@@ -98,7 +96,7 @@ public class Migrations : DataMigration
           timeseriesChartPart.Datasets = new() { eguagePowerDataset };
         }
       );
-      await _contentManager.PublishAsync(egaugeChart);
+      await _contentManager.CreateAsync(egaugeChart, VersionOptions.Latest);
 
       var egaugeMeasurementDevice =
         (
@@ -115,9 +113,6 @@ public class Migrations : DataMigration
         {
           measurementDevicePart.DeviceId = new() { Text = "egauge" };
           measurementDevicePart.PushHandlerId = "egauge";
-
-          measurementDevicePart.ApiKey =
-            _measurementDeviceGuard.HashApiKeyField("egauge");
         }
       );
       egaugeMeasurementDevice.Alter(
@@ -128,7 +123,10 @@ public class Migrations : DataMigration
           chartPart.ChartContentItemId = egaugeChart.ContentItemId;
         }
       );
-      await _contentManager.PublishAsync(egaugeMeasurementDevice);
+      await _contentManager.CreateAsync(
+        egaugeMeasurementDevice,
+        VersionOptions.Latest
+      );
     }
 
     return 1;
@@ -139,8 +137,7 @@ public class Migrations : DataMigration
     IRecipeMigrator recipeMigrator,
     IHostEnvironment hostEnvironment,
     IContentManager contentManager,
-    ISession session,
-    IMeasurementDeviceGuard measurementDeviceGuard
+    ISession session
   )
   {
     _contentDefinitionManager = contentDefinitionManager;
@@ -148,7 +145,6 @@ public class Migrations : DataMigration
     _hostEnvironment = hostEnvironment;
     _contentManager = contentManager;
     _session = session;
-    _measurementDeviceGuard = measurementDeviceGuard;
   }
 
   private readonly IContentDefinitionManager _contentDefinitionManager;
@@ -156,5 +152,4 @@ public class Migrations : DataMigration
   private readonly IContentManager _contentManager;
   private readonly IHostEnvironment _hostEnvironment;
   private readonly ISession _session;
-  private readonly IMeasurementDeviceGuard _measurementDeviceGuard;
 }

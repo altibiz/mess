@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <ItemGroup>
+    <PackageReference Include="OrchardCore.ContentFields" Version="$(MessOrchardVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.ContentFields.Abstractions/Mess.ContentFields.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -12,8 +12,6 @@ using YesSql.Sql;
 using Microsoft.Extensions.Hosting;
 using Mess.MeasurementDevice.Chart.Providers;
 using Mess.MeasurementDevice.Pushing;
-using Mess.MeasurementDevice.Abstractions.Security;
-using Mess.MeasurementDevice.Abstractions.Extensions;
 
 namespace Mess.MeasurementDevice;
 
@@ -41,14 +39,6 @@ public class Migrations : DataMigration
                     Hint = "The identifier of the measurement device."
                   }
                 )
-          )
-          .WithField(
-            "ApiKey",
-            fieldBuilder =>
-              fieldBuilder
-                .OfType("ApiKeyField")
-                .WithDisplayName("API key")
-                .WithDescription("The API key of the measurement device.")
           )
     );
 
@@ -129,10 +119,8 @@ public class Migrations : DataMigration
         measurementDevicePart =>
         {
           measurementDevicePart.DeviceId = new() { Text = "egauge" };
-          measurementDevicePart.PushHandlerId = EgaugePushHandler.PushHandlerId;
-
-          measurementDevicePart.ApiKey =
-            _measurementDeviceGuard.HashApiKeyField("egauge");
+          measurementDevicePart.PushHandlerId =
+            EgaugePushHandler.PushContentType;
         }
       );
       egaugeMeasurementDevice.Alter(
@@ -142,7 +130,10 @@ public class Migrations : DataMigration
           chartPart.ChartDataProviderId = EgaugeChartProvider.ChartProviderId;
         }
       );
-      await _contentManager.PublishAsync(egaugeMeasurementDevice);
+      await _contentManager.CreateAsync(
+        egaugeMeasurementDevice,
+        VersionOptions.Latest
+      );
     }
 
     return 1;
@@ -152,20 +143,17 @@ public class Migrations : DataMigration
     IContentDefinitionManager contentDefinitionManager,
     IContentManager contentManager,
     IHostEnvironment hostEnvironment,
-    IRecipeMigrator recipeMigrator,
-    IMeasurementDeviceGuard measurementDeviceGuard
+    IRecipeMigrator recipeMigrator
   )
   {
     _contentDefinitionManager = contentDefinitionManager;
     _contentManager = contentManager;
     _recipeMigrator = recipeMigrator;
     _hostEnvironment = hostEnvironment;
-    _measurementDeviceGuard = measurementDeviceGuard;
   }
 
   private readonly IContentDefinitionManager _contentDefinitionManager;
   private readonly IContentManager _contentManager;
   private readonly IRecipeMigrator _recipeMigrator;
   private readonly IHostEnvironment _hostEnvironment;
-  private readonly IMeasurementDeviceGuard _measurementDeviceGuard;
 }

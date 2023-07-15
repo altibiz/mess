@@ -22,8 +22,8 @@ public class PushProjectionApplicator : IProjectionApplicator
     foreach (var @event in events.OfType<Measured>())
     {
       var handler = services
-        .GetServices<IPushHandler>()
-        .FirstOrDefault(handler => handler.Id == @event.HandlerId);
+        .GetServices<IMeasurementDevicePushHandler>()
+        .FirstOrDefault(handler => handler.ContentType == @event.ContentType);
       if (handler is null)
       {
         continue;
@@ -58,8 +58,8 @@ public class PushProjectionApplicator : IProjectionApplicator
     foreach (var @event in events.OfType<Measured>())
     {
       var handler = services
-        .GetServices<IPushHandler>()
-        .FirstOrDefault(handler => handler.Id == @event.HandlerId);
+        .GetServices<IMeasurementDevicePushHandler>()
+        .FirstOrDefault(handler => handler.ContentType == @event.ContentType);
       if (handler is null)
       {
         continue;

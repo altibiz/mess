@@ -9,11 +9,11 @@ using Mess.Eor.Abstractions.Client;
 
 namespace Msss.Eor.MeasurementDevice.Polling;
 
-public class EorPollHandler : JsonPollHandler<EorPollResponse>
+public class EorPollHandler : JsonMeasurementDevicePollHandler<EorPollResponse>
 {
-  public const string PollHandlerId = "eor";
+  public const string PollContentType = "EorMeasurementDevice";
 
-  public override string Id => PollHandlerId;
+  public override string ContentType => PollContentType;
 
   protected override EorPollResponse MakeResponse(
     string deviceId,

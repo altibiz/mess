@@ -21,6 +21,10 @@ using Mess.Timeseries.Abstractions.Extensions.Microsoft;
 using Mess.MeasurementDevice.Client;
 using Mess.Eor.Abstractions.Client;
 using Mess.Eor.MeasurementDevice.Updating;
+using OrchardCore.Environment.Shell.Configuration;
+using System.Reflection;
+using Mess.Eor.Options;
+using Mess.Eor.MeasurementDevice.Security;
 
 namespace Mess.Eor;
 
@@ -28,6 +32,15 @@ public class Startup : StartupBase
 {
   public override void ConfigureServices(IServiceCollection services)
   {
+    var sectionName = Assembly.GetExecutingAssembly()?.GetName().Name;
+    if (sectionName is null)
+    {
+      throw new InvalidProgramException("Could not get assembly name");
+    }
+
+    var configuration = _shellConfiguration.GetSection(sectionName);
+    services.Configure<EorOptions>(configuration);
+
     services.AddDataMigration<Migrations>();
     services.AddResources<Resources>();
 
@@ -38,9 +51,10 @@ public class Startup : StartupBase
     );
 
     services.AddContentPart<EorMeasurementDevicePart>();
-    services.AddPushHandler<EorPushHandler>();
-    services.AddPollHandler<EorPollHandler>();
-    services.AddUpdateHandler<EorStatusHandler>();
+    services.AddMeasurementDevicePushHandler<EorPushHandler>();
+    services.AddMeasurementDevicePollHandler<EorPollHandler>();
+    services.AddMeasurementDeviceUpdateHandler<EorStatusHandler>();
+    services.AddMeasurementDeviceAuthorizationHandler<EorAuthorizationHandler>();
     services.AddChartProvider<EorChartProvider>();
     services.AddIndexProvider<EorMeasurementDeviceIndexProvider>();
   }
@@ -173,4 +187,11 @@ public class Startup : StartupBase
     //     .AddRewrite("/", "/Devices", false)
     // );
   }
+
+  public Startup(IShellConfiguration shellConfiguration)
+  {
+    _shellConfiguration = shellConfiguration;
+  }
+
+  public readonly IShellConfiguration _shellConfiguration;
 }

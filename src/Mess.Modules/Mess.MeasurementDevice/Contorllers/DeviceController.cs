@@ -18,7 +18,7 @@ using Mess.MeasurementDevice.Filters;
 namespace Mess.MeasurementDevice.Controllers;
 
 [IgnoreAntiforgeryToken]
-[MeasurementDeviceApiKey]
+[MeasurementDeviceAuthorization]
 public class DeviceController : Controller
 {
   [HttpPost]
@@ -36,15 +36,11 @@ public class DeviceController : Controller
       return BadRequest($"Unknown device");
     }
 
-    var handlerId = contentItem.As<MeasurementDevicePart>()?.PushHandlerId;
-    if (handlerId is null)
-    {
-      return BadRequest($"Unknown handler");
-    }
-
     var handler = _services
-      .GetServices<IPushHandler>()
-      .FirstOrDefault(handler => handler.Id == handlerId);
+      .GetServices<IMeasurementDevicePushHandler>()
+      .FirstOrDefault(
+        handler => handler.ContentType == contentItem.ContentType
+      );
     if (handler is null)
     {
       return BadRequest($"Unknown handler");
@@ -60,7 +56,7 @@ public class DeviceController : Controller
         new Measured(
           Tenant: ShellScope.Current.ShellContext.Settings.Name,
           Timestamp: DateTime.UtcNow,
-          HandlerId: handlerId,
+          ContentType: contentItem.ContentType,
           DeviceId: deviceId,
           Payload: request
         )
@@ -71,7 +67,9 @@ public class DeviceController : Controller
       var handled = handler.Handle(deviceId, contentItem, request);
       if (!handled)
       {
-        return BadRequest($"Handler {handlerId} returned false");
+        return BadRequest(
+          $"Handler for {contentItem.ContentType} returned false"
+        );
       }
     }
 
@@ -90,15 +88,11 @@ public class DeviceController : Controller
       return BadRequest($"Unknown device");
     }
 
-    var handlerId = contentItem.As<MeasurementDevicePart>()?.UpdateHandlerId;
-    if (handlerId is null)
-    {
-      return BadRequest($"Unknown handler");
-    }
-
     var handler = _services
-      .GetServices<IUpdateHandler>()
-      .FirstOrDefault(handler => handler.Id == handlerId);
+      .GetServices<IMeasurementDeviceUpdateHandler>()
+      .FirstOrDefault(
+        handler => handler.ContentType == contentItem.ContentType
+      );
     if (handler is null)
     {
       return BadRequest($"Unknown handler");
@@ -114,7 +108,7 @@ public class DeviceController : Controller
         new Updated(
           Tenant: ShellScope.Current.ShellContext.Settings.Name,
           Timestamp: DateTime.UtcNow,
-          HandlerId: handlerId,
+          ContentType: contentItem.ContentType,
           DeviceId: deviceId,
           Payload: request
         )
@@ -125,7 +119,9 @@ public class DeviceController : Controller
       var handled = handler.Handle(deviceId, contentItem, request);
       if (!handled)
       {
-        return BadRequest($"Handler {handlerId} returned false");
+        return BadRequest(
+          $"Handler for {contentItem.ContentType} returned false"
+        );
       }
     }
 
@@ -147,15 +143,11 @@ public class DeviceController : Controller
       return BadRequest($"Unknown device");
     }
 
-    var handlerId = contentItem.As<MeasurementDevicePart>()?.PollHandlerId;
-    if (handlerId is null)
-    {
-      return BadRequest($"Unknown handler");
-    }
-
     var handler = _services
-      .GetServices<IPollHandler>()
-      .FirstOrDefault(handler => handler.Id == handlerId);
+      .GetServices<IMeasurementDevicePollHandler>()
+      .FirstOrDefault(
+        handler => handler.ContentType == contentItem.ContentType
+      );
     if (handler is null)
     {
       return BadRequest($"Unknown handler");
@@ -165,7 +157,7 @@ public class DeviceController : Controller
 
     if (response is null)
     {
-      return BadRequest($"Handler {handlerId} returned null");
+      return BadRequest($"Handler for {contentItem.ContentType} returned null");
     }
 
     return Ok(response);

@@ -8,11 +8,12 @@ using OrchardCore.ContentManagement;
 
 namespace Mess.MeasurementDevice.Pushing;
 
-public class EgaugePushHandler : XmlPushHandler<EgaugeMeasurement>
+public class EgaugePushHandler
+  : XmlMeasurementDevicePushHandler<EgaugeMeasurement>
 {
-  public const string PushHandlerId = "egauge";
+  public const string PushContentType = "EgaugeMeasurementDevice";
 
-  public override string Id => PushHandlerId;
+  public override string ContentType => PushContentType;
 
   protected override void Handle(
     string deviceId,

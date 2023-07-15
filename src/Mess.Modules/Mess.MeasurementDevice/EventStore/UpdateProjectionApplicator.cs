@@ -22,8 +22,8 @@ public class UpdateProjectionApplicator : IProjectionApplicator
     foreach (var @event in events.OfType<Updated>())
     {
       var handler = services
-        .GetServices<IUpdateHandler>()
-        .FirstOrDefault(handler => handler.Id == @event.HandlerId);
+        .GetServices<IMeasurementDeviceUpdateHandler>()
+        .FirstOrDefault(handler => handler.ContentType == @event.ContentType);
       if (handler is null)
       {
         continue;
@@ -58,8 +58,8 @@ public class UpdateProjectionApplicator : IProjectionApplicator
     foreach (var @event in events.OfType<Updated>())
     {
       var handler = services
-        .GetServices<IUpdateHandler>()
-        .FirstOrDefault(handler => handler.Id == @event.HandlerId);
+        .GetServices<IMeasurementDeviceUpdateHandler>()
+        .FirstOrDefault(handler => handler.ContentType == @event.ContentType);
       if (handler is null)
       {
         continue;

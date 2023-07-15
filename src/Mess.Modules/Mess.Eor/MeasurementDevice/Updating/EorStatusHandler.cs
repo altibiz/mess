@@ -2,17 +2,16 @@ using Mess.Eor.Abstractions.Client;
 using Mess.Eor.Abstractions.Models;
 using Mess.MeasurementDevice.Abstractions.Updating;
 using Mess.OrchardCore;
-using Mess.System.Extensions.Enums;
 using Microsoft.Extensions.Logging;
 using OrchardCore.ContentManagement;
 
 namespace Mess.Eor.MeasurementDevice.Updating;
 
-public class EorStatusHandler : JsonUpdateHandler<EorStatus>
+public class EorStatusHandler : JsonMeasurementDeviceUpdateHandler<EorStatus>
 {
-  public const string UpdateHandlerId = "eor.status";
+  public const string UpdateContentType = "EorMeasurementDevice";
 
-  public override string Id => UpdateHandlerId;
+  public override string ContentType => UpdateContentType;
 
   protected override void Handle(
     string deviceId,

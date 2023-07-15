@@ -5,7 +5,7 @@ namespace Mess.MeasurementDevice.EventStore;
 public record Updated(
   string Tenant,
   DateTime Timestamp,
-  string HandlerId,
+  string ContentType,
   string DeviceId,
   string Payload
 ) : IEvent;
