@@ -30,6 +30,22 @@ public class BooleanJsonConverter : JsonConverter<bool>
     {
       return reader.GetBoolean();
     }
+    else if (reader.TokenType == JsonTokenType.Number)
+    {
+      var numberValue = reader.GetInt32();
+      if (numberValue == 0)
+      {
+        return false;
+      }
+      else if (numberValue == 1)
+      {
+        return true;
+      }
+      else
+      {
+        throw new JsonException("Invalid value for boolean.");
+      }
+    }
     else
     {
       throw new JsonException("Invalid token type.");

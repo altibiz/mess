@@ -6,19 +6,31 @@ namespace Mess.MeasurementDevice.Abstractions.Polling;
 public abstract class JsonMeasurementDevicePollHandler<TResponse>
   : IMeasurementDevicePollHandler
 {
-  public string? Handle(string deviceId, ContentItem contentItem)
+  public string? Handle(
+    string deviceId,
+    string tenant,
+    DateTime timestamp,
+    ContentItem contentItem
+  )
   {
-    var response = MakeResponse(deviceId, contentItem);
+    var response = MakeResponse(deviceId, tenant, timestamp, contentItem);
 
     return response.ToJson();
   }
 
   public async Task<string?> HandleAsync(
     string deviceId,
+    string tenant,
+    DateTime timestamp,
     ContentItem contentItem
   )
   {
-    var response = await MakeResponseAsync(deviceId, contentItem);
+    var response = await MakeResponseAsync(
+      deviceId,
+      tenant,
+      timestamp,
+      contentItem
+    );
 
     return response.ToJson();
   }
@@ -27,11 +39,15 @@ public abstract class JsonMeasurementDevicePollHandler<TResponse>
 
   protected abstract TResponse MakeResponse(
     string deviceId,
+    string tenant,
+    DateTime timestamp,
     ContentItem contentItem
   );
 
   protected abstract Task<TResponse> MakeResponseAsync(
     string deviceId,
+    string tenant,
+    DateTime timestamp,
     ContentItem contentItem
   );
 

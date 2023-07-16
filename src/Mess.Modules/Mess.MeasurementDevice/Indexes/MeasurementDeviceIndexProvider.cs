@@ -21,9 +21,6 @@ public class MeasurementDeviceIndexProvider : IndexProvider<ContentItem>
         {
           ContentItemId = contentItem.ContentItemId,
           DeviceId = measurementDevicePart.DeviceId.Text,
-          DefaultPushHandlerId = measurementDevicePart.PushHandlerId,
-          DefaultPollHandlerId = measurementDevicePart.PollHandlerId,
-          DefaultUpdateHandlerId = measurementDevicePart.UpdateHandlerId,
         };
       });
   }

@@ -112,7 +112,6 @@ public class Migrations : DataMigration
         measurementDevicePart =>
         {
           measurementDevicePart.DeviceId = new() { Text = "egauge" };
-          measurementDevicePart.PushHandlerId = "egauge";
         }
       );
       egaugeMeasurementDevice.Alter(

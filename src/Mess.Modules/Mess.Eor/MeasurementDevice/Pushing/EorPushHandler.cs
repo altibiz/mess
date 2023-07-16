@@ -5,28 +5,36 @@ using OrchardCore.ContentManagement;
 
 namespace Mess.Eor.MeasurementDevice.Pushing;
 
-public class EorPushHandler : JsonMeasurementDevicePushHandler<EorMeasurement>
+public class EorPushHandler : JsonMeasurementDevicePushHandler<EorPushRequest>
 {
-  public const string PushContentType = "EorMeasuremetDevice";
+  public const string PushContentType = "EorMeasurementDevice";
 
   public override string ContentType => PushContentType;
 
   protected override void Handle(
     string deviceId,
+    string tenant,
+    DateTime timestamp,
     ContentItem contentItem,
-    EorMeasurement measurement
+    EorPushRequest request
   )
   {
-    _measurementClient.AddEorMeasurement(measurement);
+    _measurementClient.AddEorMeasurement(
+      request.ToMeasurement(deviceId, tenant)
+    );
   }
 
   protected override async Task HandleAsync(
     string deviceId,
+    string tenant,
+    DateTime timestamp,
     ContentItem contentItem,
-    EorMeasurement measurement
+    EorPushRequest request
   )
   {
-    await _measurementClient.AddEorMeasurementAsync(measurement);
+    await _measurementClient.AddEorMeasurementAsync(
+      request.ToMeasurement(deviceId, tenant)
+    );
   }
 
   public EorPushHandler(

@@ -4,21 +4,21 @@ using OrchardCore.Environment.Shell;
 using Microsoft.Extensions.DependencyInjection;
 using Mess.EventStore.Abstractions.Client;
 using Mess.MeasurementDevice.EventStore;
-using OrchardCore.Environment.Shell.Scope;
 using YesSql;
 using Mess.MeasurementDevice.Abstractions.Indexes;
 using Mess.MeasurementDevice.Abstractions.Updating;
 using OrchardCore.ContentManagement;
-using Mess.MeasurementDevice.Abstractions.Models;
 using Microsoft.Extensions.Logging;
 using Mess.MeasurementDevice.Abstractions.Pushing;
 using Mess.MeasurementDevice.Abstractions.Polling;
 using Mess.MeasurementDevice.Filters;
+using Mess.OrchardCore.Extensions.OrchardCore;
 
 namespace Mess.MeasurementDevice.Controllers;
 
 [IgnoreAntiforgeryToken]
 [MeasurementDeviceAuthorization]
+[MeasurementDeviceAsciiResponse]
 public class DeviceController : Controller
 {
   [HttpPost]
@@ -33,7 +33,7 @@ public class DeviceController : Controller
       .FirstOrDefaultAsync();
     if (contentItem is null)
     {
-      return BadRequest($"Unknown device");
+      return NotFound($"Unknown device");
     }
 
     var handler = _services
@@ -43,9 +43,11 @@ public class DeviceController : Controller
       );
     if (handler is null)
     {
-      return BadRequest($"Unknown handler");
+      return StatusCode(500, $"Unknown handler for {contentItem.ContentType}");
     }
 
+    var tenant = _shellSettings.GetDatabaseTablePrefix();
+    var now = DateTime.UtcNow;
     var request = await Request.Body.EncodeAsync();
 
     var features = await _shellFeaturesManager.GetEnabledFeaturesAsync();
@@ -54,9 +56,8 @@ public class DeviceController : Controller
       var client = _services.GetRequiredService<IEventStoreClient>();
       await client.RecordEventsAsync<Measurements>(
         new Measured(
-          Tenant: ShellScope.Current.ShellContext.Settings.Name,
-          Timestamp: DateTime.UtcNow,
-          ContentType: contentItem.ContentType,
+          Tenant: tenant,
+          Timestamp: now,
           DeviceId: deviceId,
           Payload: request
         )
@@ -64,10 +65,17 @@ public class DeviceController : Controller
     }
     else
     {
-      var handled = handler.Handle(deviceId, contentItem, request);
+      var handled = await handler.HandleAsync(
+        deviceId,
+        tenant,
+        now,
+        contentItem,
+        request
+      );
       if (!handled)
       {
-        return BadRequest(
+        return StatusCode(
+          500,
           $"Handler for {contentItem.ContentType} returned false"
         );
       }
@@ -85,7 +93,7 @@ public class DeviceController : Controller
       .FirstOrDefaultAsync();
     if (contentItem is null)
     {
-      return BadRequest($"Unknown device");
+      return NotFound($"Unknown device");
     }
 
     var handler = _services
@@ -95,9 +103,11 @@ public class DeviceController : Controller
       );
     if (handler is null)
     {
-      return BadRequest($"Unknown handler");
+      return StatusCode(500, $"Unknown handler for {contentItem.ContentType}");
     }
 
+    var tenant = _shellSettings.GetDatabaseTablePrefix();
+    var now = DateTime.UtcNow;
     var request = await Request.Body.EncodeAsync();
 
     var features = await _shellFeaturesManager.GetEnabledFeaturesAsync();
@@ -106,9 +116,8 @@ public class DeviceController : Controller
       var client = _services.GetRequiredService<IEventStoreClient>();
       await client.RecordEventsAsync<Updates>(
         new Updated(
-          Tenant: ShellScope.Current.ShellContext.Settings.Name,
-          Timestamp: DateTime.UtcNow,
-          ContentType: contentItem.ContentType,
+          Tenant: tenant,
+          Timestamp: now,
           DeviceId: deviceId,
           Payload: request
         )
@@ -116,10 +125,17 @@ public class DeviceController : Controller
     }
     else
     {
-      var handled = handler.Handle(deviceId, contentItem, request);
+      var handled = await handler.HandleAsync(
+        deviceId,
+        tenant,
+        now,
+        contentItem,
+        request
+      );
       if (!handled)
       {
-        return BadRequest(
+        return StatusCode(
+          500,
           $"Handler for {contentItem.ContentType} returned false"
         );
       }
@@ -140,7 +156,7 @@ public class DeviceController : Controller
       .FirstOrDefaultAsync();
     if (contentItem is null)
     {
-      return BadRequest($"Unknown device");
+      return NotFound("Unknown device");
     }
 
     var handler = _services
@@ -150,14 +166,24 @@ public class DeviceController : Controller
       );
     if (handler is null)
     {
-      return BadRequest($"Unknown handler");
+      return StatusCode(500, $"Unknown handler for {contentItem.ContentType}");
     }
 
-    var response = await handler.HandleAsync(deviceId, contentItem);
+    var tenant = _shellSettings.GetDatabaseTablePrefix();
+    var now = DateTime.UtcNow;
+    var response = await handler.HandleAsync(
+      deviceId,
+      tenant,
+      now,
+      contentItem
+    );
 
     if (response is null)
     {
-      return BadRequest($"Handler for {contentItem.ContentType} returned null");
+      return StatusCode(
+        500,
+        $"Handler for {contentItem.ContentType} returned null"
+      );
     }
 
     return Ok(response);

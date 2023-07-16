@@ -53,7 +53,7 @@ public class Startup : StartupBase
     services.AddContentPart<EorMeasurementDevicePart>();
     services.AddMeasurementDevicePushHandler<EorPushHandler>();
     services.AddMeasurementDevicePollHandler<EorPollHandler>();
-    services.AddMeasurementDeviceUpdateHandler<EorStatusHandler>();
+    services.AddMeasurementDeviceUpdateHandler<EorUpdateHandler>();
     services.AddMeasurementDeviceAuthorizationHandler<EorAuthorizationHandler>();
     services.AddChartProvider<EorChartProvider>();
     services.AddIndexProvider<EorMeasurementDeviceIndexProvider>();
@@ -193,5 +193,5 @@ public class Startup : StartupBase
     _shellConfiguration = shellConfiguration;
   }
 
-  public readonly IShellConfiguration _shellConfiguration;
+  private readonly IShellConfiguration _shellConfiguration;
 }

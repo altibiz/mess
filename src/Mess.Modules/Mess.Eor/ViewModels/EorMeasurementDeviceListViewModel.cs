@@ -5,11 +5,8 @@ namespace Mess.Eor.ViewModels;
 
 public class EorMeasurementDeviceListViewModel
 {
-  public List<EorMeasurementDeviceItem> EorMeasurementDevices { get; set; } =
-    default!;
-
-  public Dictionary<
-    string,
-    EorMeasurementDeviceSummary
-  > EorMeasurementDeviceSummaries { get; set; } = default!;
+  public List<(
+    EorMeasurementDeviceItem Item,
+    EorMeasurementDeviceSummary? Summary
+  )> EorMeasurementDevices { get; set; } = default!;
 }

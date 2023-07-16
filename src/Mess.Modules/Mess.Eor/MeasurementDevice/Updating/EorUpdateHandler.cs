@@ -7,7 +7,8 @@ using OrchardCore.ContentManagement;
 
 namespace Mess.Eor.MeasurementDevice.Updating;
 
-public class EorStatusHandler : JsonMeasurementDeviceUpdateHandler<EorStatus>
+public class EorUpdateHandler
+  : JsonMeasurementDeviceUpdateHandler<EorUpdateRequest>
 {
   public const string UpdateContentType = "EorMeasurementDevice";
 
@@ -15,64 +16,75 @@ public class EorStatusHandler : JsonMeasurementDeviceUpdateHandler<EorStatus>
 
   protected override void Handle(
     string deviceId,
+    string tenant,
+    DateTime timestamp,
     ContentItem contentItem,
-    EorStatus request
+    EorUpdateRequest request
   )
   {
+    var status = request.ToStatus(tenant, deviceId);
+
     var eorMeasurementDevice =
       contentItem.AsContent<EorMeasurementDeviceItem>();
     if (
-      eorMeasurementDevice.EorMeasurementDevicePart.Value.Mode != request.Mode
+      eorMeasurementDevice.EorMeasurementDevicePart.Value.Mode != status.Mode
       || eorMeasurementDevice.EorMeasurementDevicePart.Value.ResetState
-        != request.ResetState
+        != status.ResetState
     )
     {
       eorMeasurementDevice.Alter(
         eorMeasurementDevice => eorMeasurementDevice.EorMeasurementDevicePart,
         eorMeasurementDevicePart =>
         {
-          eorMeasurementDevicePart.Mode = request.Mode;
-          eorMeasurementDevicePart.ResetState = request.ResetState;
+          eorMeasurementDevicePart.Mode = status.Mode;
+          eorMeasurementDevicePart.ResetState = status.ResetState;
         }
       );
-      _contentManager.PublishAsync(eorMeasurementDevice).RunSynchronously();
+      _contentManager.UpdateAsync(eorMeasurementDevice).RunSynchronously();
     }
 
-    _measurementClient.AddEorStatus(request);
+    _measurementClient.AddEorStatus(status);
   }
 
   protected override async Task HandleAsync(
     string deviceId,
+    string tenant,
+    DateTime timestamp,
     ContentItem contentItem,
-    EorStatus request
+    EorUpdateRequest request
   )
   {
+    var status = request.ToStatus(tenant, deviceId);
+
     var eorMeasurementDevice =
       contentItem.AsContent<EorMeasurementDeviceItem>();
     if (
-      eorMeasurementDevice.EorMeasurementDevicePart.Value.Mode != request.Mode
+      eorMeasurementDevice.EorMeasurementDevicePart.Value.Mode != status.Mode
       || eorMeasurementDevice.EorMeasurementDevicePart.Value.ResetState
-        != request.ResetState
+        != status.ResetState
+      || eorMeasurementDevice.EorMeasurementDevicePart.Value.RunState
+        != status.RunState
     )
     {
       eorMeasurementDevice.Alter(
         eorMeasurementDevice => eorMeasurementDevice.EorMeasurementDevicePart,
         eorMeasurementDevicePart =>
         {
-          eorMeasurementDevicePart.Mode = request.Mode;
-          eorMeasurementDevicePart.ResetState = request.ResetState;
+          eorMeasurementDevicePart.Mode = status.Mode;
+          eorMeasurementDevicePart.ResetState = status.ResetState;
+          eorMeasurementDevicePart.RunState = status.RunState;
         }
       );
-      await _contentManager.PublishAsync(eorMeasurementDevice);
+      await _contentManager.UpdateAsync(eorMeasurementDevice);
     }
 
-    await _measurementClient.AddEorStatusAsync(request);
+    await _measurementClient.AddEorStatusAsync(status);
   }
 
-  public EorStatusHandler(
+  public EorUpdateHandler(
     IEorTimeseriesClient measurementClient,
     IContentManager contentManager,
-    ILogger<EorStatusHandler> logger
+    ILogger<EorUpdateHandler> logger
   )
     : base(logger)
   {

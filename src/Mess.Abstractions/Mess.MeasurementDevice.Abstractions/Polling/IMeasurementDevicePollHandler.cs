@@ -6,7 +6,17 @@ public interface IMeasurementDevicePollHandler
 {
   public string ContentType { get; }
 
-  public string? Handle(string deviceId, ContentItem contentItem);
+  public string? Handle(
+    string deviceId,
+    string tenant,
+    DateTime timestamp,
+    ContentItem contentItem
+  );
 
-  public Task<string?> HandleAsync(string deviceId, ContentItem contentItem);
+  public Task<string?> HandleAsync(
+    string deviceId,
+    string tenant,
+    DateTime timestamp,
+    ContentItem contentItem
+  );
 }

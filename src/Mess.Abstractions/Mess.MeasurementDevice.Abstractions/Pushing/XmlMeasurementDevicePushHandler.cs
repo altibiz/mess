@@ -7,7 +7,13 @@ namespace Mess.MeasurementDevice.Abstractions.Pushing;
 public abstract class XmlMeasurementDevicePushHandler<TRequest>
   : IMeasurementDevicePushHandler
 {
-  public bool Handle(string deviceId, ContentItem contentItem, string request)
+  public bool Handle(
+    string deviceId,
+    string tenant,
+    DateTime timestamp,
+    ContentItem contentItem,
+    string request
+  )
   {
     var xml = request.FromXml();
     if (xml is null)
@@ -27,13 +33,15 @@ public abstract class XmlMeasurementDevicePushHandler<TRequest>
       return false;
     }
 
-    Handle(deviceId, contentItem, parsedRequest);
+    Handle(deviceId, tenant, timestamp, contentItem, parsedRequest);
 
     return true;
   }
 
   public async Task<bool> HandleAsync(
     string deviceId,
+    string tenant,
+    DateTime timestamp,
     ContentItem contentItem,
     string request
   )
@@ -56,7 +64,7 @@ public abstract class XmlMeasurementDevicePushHandler<TRequest>
       return false;
     }
 
-    await HandleAsync(deviceId, contentItem, parsedRequest);
+    await HandleAsync(deviceId, tenant, timestamp, contentItem, parsedRequest);
 
     return true;
   }
@@ -65,12 +73,16 @@ public abstract class XmlMeasurementDevicePushHandler<TRequest>
 
   protected abstract void Handle(
     string deviceId,
+    string tenant,
+    DateTime timestamp,
     ContentItem contentItem,
     TRequest request
   );
 
   protected abstract Task HandleAsync(
     string deviceId,
+    string tenant,
+    DateTime timestamp,
     ContentItem contentItem,
     TRequest request
   );

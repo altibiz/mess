@@ -219,9 +219,9 @@ public class Migrations : DataMigration
     SchemaBuilder.CreateMapIndexTable<EorMeasurementDeviceIndex>(
       table =>
         table
-          .Column<string>("ContentItemId", c => c.WithLength(30))
-          .Column<string>("DeviceId", c => c.WithLength(30))
-          .Column<string>("OwnerId", c => c.WithLength(30))
+          .Column<string>("ContentItemId", c => c.WithLength(64))
+          .Column<string>("DeviceId", c => c.WithLength(64))
+          .Column<string>("OwnerId", c => c.WithLength(64))
     );
     SchemaBuilder.AlterIndexTable<EorMeasurementDeviceIndex>(
       table =>
@@ -380,10 +380,6 @@ public class Migrations : DataMigration
         eorMeasurementDevice => eorMeasurementDevice.MeasurementDevicePart,
         measurementDevicePart =>
         {
-          measurementDevicePart.PushHandlerId = EorPushHandler.PushContentType;
-          measurementDevicePart.PollHandlerId = EorPollHandler.PollContentType;
-          measurementDevicePart.UpdateHandlerId =
-            EorStatusHandler.UpdateContentType;
           measurementDevicePart.DeviceId = new() { Text = eorDeviceId };
         }
       );

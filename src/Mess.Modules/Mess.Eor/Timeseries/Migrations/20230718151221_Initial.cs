@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -22,7 +23,7 @@ namespace Mess.Eor.Timeseries.Migrations
         )
         .Annotation(
           "Npgsql:Enum:eor_measurement_device_run_state",
-          "stopped,started"
+          "stopped,started,error"
         )
         .Annotation("Npgsql:Enum:eor_transformer_contractor_state", "on,off")
         .Annotation("Npgsql:PostgresExtension:timescaledb", ",,");
@@ -71,11 +72,15 @@ namespace Mess.Eor.Timeseries.Migrations
               nullable: false
             ),
             Mode = table.Column<int>(type: "integer", nullable: false),
-            CommunicationFaults = table.Column<int>(
+            ProcessFault = table.Column<int>(type: "integer", nullable: false),
+            ProcessFaults = table.Column<List<string>>(
+              type: "text[]",
+              nullable: false
+            ),
+            CommunicationFault = table.Column<int>(
               type: "integer",
               nullable: false
             ),
-            ProcessFaults = table.Column<int>(type: "integer", nullable: false),
             RunState = table.Column<int>(type: "integer", nullable: false),
             ResetState = table.Column<int>(type: "integer", nullable: false),
             DoorState = table.Column<int>(type: "integer", nullable: false),
@@ -94,7 +99,12 @@ namespace Mess.Eor.Timeseries.Migrations
             SecondDiodeBridgeState = table.Column<int>(
               type: "integer",
               nullable: false
-            )
+            ),
+            Current = table.Column<float>(type: "float4", nullable: false),
+            Voltage = table.Column<float>(type: "float4", nullable: false),
+            Temperature = table.Column<float>(type: "real", nullable: false),
+            HeatsinkFans = table.Column<bool>(type: "boolean", nullable: false),
+            CoolingFans = table.Column<bool>(type: "boolean", nullable: false)
           },
         constraints: table =>
         {

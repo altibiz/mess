@@ -17,15 +17,35 @@ public class EgaugePushHandler
 
   protected override void Handle(
     string deviceId,
+    string tenant,
+    DateTime timestamp,
     ContentItem contentItem,
     EgaugeMeasurement measurement
-  ) => _measurementClient.AddEgaugeMeasurement(measurement);
+  ) =>
+    _measurementClient.AddEgaugeMeasurement(
+      measurement with
+      {
+        DeviceId = measurement.DeviceId,
+        Tenant = measurement.Tenant,
+        Timestamp = measurement.Timestamp
+      }
+    );
 
   protected override async Task HandleAsync(
     string deviceId,
+    string tenant,
+    DateTime timestamp,
     ContentItem contentItem,
     EgaugeMeasurement measurement
-  ) => await _measurementClient.AddEgaugeMeasurementAsync(measurement);
+  ) =>
+    await _measurementClient.AddEgaugeMeasurementAsync(
+      measurement with
+      {
+        DeviceId = measurement.DeviceId,
+        Tenant = measurement.Tenant,
+        Timestamp = measurement.Timestamp
+      }
+    );
 
   protected override EgaugeMeasurement? Parse(XDocument xml)
   {

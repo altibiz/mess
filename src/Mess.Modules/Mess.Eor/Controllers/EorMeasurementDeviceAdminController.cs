@@ -48,12 +48,23 @@ public class EorMeasurementDeviceAdminController : Controller
     return View(
       new EorMeasurementDeviceListViewModel
       {
-        EorMeasurementDevices = eorMeasurementDevices.ToList(),
-        EorMeasurementDeviceSummaries =
-          eorMeasurementDeviceSummaries.ToDictionary(
-            summary => summary.DeviceId,
-            summary => summary
+        EorMeasurementDevices = eorMeasurementDevices
+          .Select(
+            eorMeasurementDevice =>
+              (
+                eorMeasurementDevice,
+                eorMeasurementDeviceSummaries.FirstOrDefault(
+                  summary =>
+                    summary.DeviceId
+                    == eorMeasurementDevice
+                      .MeasurementDevicePart
+                      .Value
+                      .DeviceId
+                      .Text
+                )
+              )
           )
+          .ToList(),
       }
     );
   }
