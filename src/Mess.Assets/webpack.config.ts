@@ -55,7 +55,7 @@ const configurations: Configuration[] = glob
         filename: "[name].js",
         cssFilename: "[name].css",
         path: path.resolve(workspace, "../wwwroot/assets/"),
-        publicPath: `~/${project}/assets/`,
+        publicPath: `/${project}/assets/`,
       },
       module: {
         rules: [

@@ -13,7 +13,7 @@
   }
 }
 
-@media screen and (min-width >= 480px) {
+@media screen and (width >= 480px) {
   .start-stop-reset-controls {
     flex-direction: row;
     justify-content: space-between;
@@ -41,7 +41,7 @@
   align-items: flex-end;
 }
 
-@media screen and (min-width >= 480px) {
+@media screen and (width >= 480px) {
   .input-controls {
     flex-direction: row;
     justify-content: space-between;

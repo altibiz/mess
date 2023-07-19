@@ -12,6 +12,10 @@ public class Resources : IConfigureOptions<ResourceManagementOptions>
     _manifest
       .DefineStyle("mess-forttech")
       .SetUrl("~/Mess.Forttech/assets/styles/forttech.css");
+
+    _manifest
+      .DefineScript("mess-forttech")
+      .SetUrl("~/Mess.Forttech/assets/scripts/forttech.js");
   }
 
   public void Configure(ResourceManagementOptions options)

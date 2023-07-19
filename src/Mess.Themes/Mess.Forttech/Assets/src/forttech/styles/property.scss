@@ -17,7 +17,7 @@
   margin-bottom: 0;
 }
 
-@media screen and (min-width >= 480px) {
+@media screen and (width >= 480px) {
   .property {
     flex-direction: row;
     margin-bottom: 8px;
@@ -31,7 +31,7 @@
   margin-bottom: 8px;
 }
 
-@media screen and (min-width >= 480px) {
+@media screen and (width >= 480px) {
   .property > strong {
     width: 300px;
     margin-bottom: 0;
@@ -42,7 +42,7 @@
   padding-left: 4px;
 }
 
-@media screen and (min-width >= 480px) {
+@media screen and (width >= 480px) {
   .property > span {
     padding-left: 0;
   }
@@ -75,7 +75,7 @@
   margin-bottom: 12px;
 }
 
-@media screen and (min-width >= 768px) {
+@media screen and (width >= 768px) {
   .property-metadata-list > li {
     flex-direction: row;
     justify-content: start;
@@ -95,7 +95,7 @@
   min-width: 88px;
 }
 
-@media screen and (min-width >= 480px) {
+@media screen and (width >= 480px) {
   .property-metadata-list-small > li {
     flex-direction: row;
     justify-content: start;

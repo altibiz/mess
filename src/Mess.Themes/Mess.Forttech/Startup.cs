@@ -1,7 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using OrchardCore.Modules;
-using OrchardCore.ResourceManagement;
+using Mess.OrchardCore.Extensions.Microsoft;
 
 namespace Mess.Forttech;
 
@@ -9,9 +8,6 @@ public class Startup : StartupBase
 {
   public override void ConfigureServices(IServiceCollection services)
   {
-    services.AddTransient<
-      IConfigureOptions<ResourceManagementOptions>,
-      Resources
-    >();
+    services.AddResources<Resources>();
   }
 }

@@ -12,6 +12,19 @@
   padding-inline: 22px;
 }
 
+.flex {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@media screen and (width >= 768px) {
+  .flex {
+    flex-direction: row;
+  }
+}
+
 header {
   min-height: var(--min-header-height);
   padding-top: 12px;
@@ -22,18 +35,9 @@ header {
   z-index: var(--level-header);
 }
 
-header > .container {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-}
-
 main {
   /* idk why the 14px but ok */
-  min-height: calc(
-    100vh - var(--min-header-height) - var(--min-footer-height) - 14px
-  );
+  min-height: calc(100vh - var(--min-header-height) - var(--min-footer-height));
   padding-top: 32px;
   padding-bottom: 48px;
   box-sizing: border-box;
@@ -53,10 +57,4 @@ footer {
   background-color: var(--primary);
   color: var(--inverse-foreground);
   z-index: var(--level-header);
-}
-
-footer > .container {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
 }

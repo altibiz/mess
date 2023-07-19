@@ -28,10 +28,25 @@ public class EorMeasurementDeviceController : Controller
 
     var orchardCoreUser = await this.GetAuthenticatedOrchardCoreUserAsync();
 
-    var contentItems = await _session
-      .Query<ContentItem, EorMeasurementDeviceIndex>()
-      .Where(index => index.OwnerId == orchardCoreUser.UserId)
-      .ListAsync();
+    IEnumerable<ContentItem>? contentItems = null;
+    if (
+      orchardCoreUser.RoleNames.Contains("Administrator")
+      || orchardCoreUser.RoleNames.Contains(
+        "EOR measurement device administrator"
+      )
+    )
+    {
+      contentItems = await _session
+        .Query<ContentItem, EorMeasurementDeviceIndex>()
+        .ListAsync();
+    }
+    else
+    {
+      contentItems = await _session
+        .Query<ContentItem, EorMeasurementDeviceIndex>()
+        .Where(index => index.OwnerId == orchardCoreUser.UserId)
+        .ListAsync();
+    }
 
     var eorMeasurementDevices = contentItems.Select(
       contentItem => contentItem.AsContent<EorMeasurementDeviceItem>()
