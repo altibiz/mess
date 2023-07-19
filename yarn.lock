@@ -1889,6 +1889,7 @@ __metadata:
     typescript: ^5.0.4
     webpack: ^5.83.1
     webpack-cli: ^5.1.1
+    webpack-remove-empty-scripts: ^1.0.3
   languageName: unknown
   linkType: soft
 
@@ -3065,6 +3066,13 @@ __metadata:
   version: 6.2.1
   resolution: "ansi-styles@npm:6.2.1"
   checksum: ef940f2f0ced1a6347398da88a91da7930c33ecac3c77b72c5905f8b8fe402c52e6fde304ff5347f616e27a742da3f1dc76de98f6866c69251ad0b07a66776d9
+  languageName: node
+  linkType: hard
+
+"ansis@npm:1.5.2":
+  version: 1.5.2
+  resolution: "ansis@npm:1.5.2"
+  checksum: 32761e4c412336c7a4d7529374655fca6ee38929f05719bc73fb3398b5439368f228cc675afa877653c4e6f7335c83fc057ebcc58c24044c1fdd346084864de1
   languageName: node
   linkType: hard
 
@@ -9230,6 +9238,17 @@ __metadata:
     clone-deep: ^4.0.1
     wildcard: ^2.0.0
   checksum: 88786ab91013f1bd2a683834ff381be81c245a4b0f63304a5103e90f6653f44dab496a0768287f8531761f8ad957d1f9f3ccb2cb55df0de1bd9ee343e079da26
+  languageName: node
+  linkType: hard
+
+"webpack-remove-empty-scripts@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "webpack-remove-empty-scripts@npm:1.0.3"
+  dependencies:
+    ansis: 1.5.2
+  peerDependencies:
+    webpack: ">=5.32.0"
+  checksum: af7e2626608304037b8723f05b81690f280b50766fccc28e4a0bdbe29eb58b5aa95808449f26b67a92ba26f1d707a118820f5c2571cc340f3588a33751853b54
   languageName: node
   linkType: hard
 

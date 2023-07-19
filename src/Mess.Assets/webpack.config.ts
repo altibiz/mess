@@ -8,6 +8,7 @@ import CssMinimizerPlugin from "css-minimizer-webpack-plugin";
 import ESLintPlugin from "eslint-webpack-plugin";
 import StylelintPlugin from "stylelint-webpack-plugin";
 import CopyPlugin from "copy-webpack-plugin";
+import RemoveEmptyScriptsPlugin from "webpack-remove-empty-scripts";
 
 const configurations: Configuration[] = glob
   .sync("../Mess.{Modules,Themes}/*/Assets", {
@@ -94,6 +95,7 @@ const configurations: Configuration[] = glob
         ],
       },
       plugins: [
+        new RemoveEmptyScriptsPlugin(),
         new MiniCssExtractPlugin({
           filename: "[name].css",
         }),
