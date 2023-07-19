@@ -51,7 +51,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Document", "src\Mess.M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Eor", "src\Mess.Modules\Mess.Eor\Mess.Eor.csproj", "{6924357F-5D74-465E-A4F1-0154B676FD14}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Nilavasa", "src\Mess.Themes\Mess.Nilavasa\Mess.Nilavasa.csproj", "{2A5E30F3-5700-4C56-AE3E-2136325F31CC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Forttech", "src\Mess.Themes\Mess.Forttech\Mess.Forttech.csproj", "{2A5E30F3-5700-4C56-AE3E-2136325F31CC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Management", "src\Mess.Themes\Mess.Management\Mess.Management.csproj", "{DA4ECB74-DD06-41EA-88D7-ABBC2FAD880B}"
 EndProject

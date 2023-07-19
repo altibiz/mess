@@ -24,13 +24,13 @@
         "Mess.MeasurementDevice",
         "Mess.Eor",
         "TheAdmin",
-        "Mess.Nilavasa"
+        "Mess.Forttech"
       ]
     },
     {
       "name": "themes",
       "admin": "TheAdmin",
-      "site": "Mess.Nilavasa"
+      "site": "Mess.Forttech"
     }
   ]
 }

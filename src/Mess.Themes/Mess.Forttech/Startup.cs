@@ -3,7 +3,7 @@ using Microsoft.Extensions.Options;
 using OrchardCore.Modules;
 using OrchardCore.ResourceManagement;
 
-namespace Mess.Nilavasa;
+namespace Mess.Forttech;
 
 public class Startup : StartupBase
 {

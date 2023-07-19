@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Options;
 using OrchardCore.ResourceManagement;
 
-namespace Mess.Nilavasa;
+namespace Mess.Forttech;
 
 public class Resources : IConfigureOptions<ResourceManagementOptions>
 {
@@ -10,12 +10,12 @@ public class Resources : IConfigureOptions<ResourceManagementOptions>
     _manifest = new ResourceManifest();
 
     _manifest
-      .DefineScript("mess-nilavasa")
-      .SetUrl("~/Mess.Nilavasa/assets/scripts/nilavasa.js");
+      .DefineScript("mess-forttech")
+      .SetUrl("~/Mess.Forttech/assets/scripts/forttech.js");
 
     _manifest
-      .DefineStyle("mess-nilavasa")
-      .SetUrl("~/Mess.Nilavasa/assets/styles/nilavasa.css");
+      .DefineStyle("mess-forttech")
+      .SetUrl("~/Mess.Forttech/assets/styles/forttech.css");
   }
 
   public void Configure(ResourceManagementOptions options)

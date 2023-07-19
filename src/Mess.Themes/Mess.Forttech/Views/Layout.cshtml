@@ -5,7 +5,7 @@
     <link
         type="image/x-icon"
         rel="shortcut icon"
-        href="~/Mess.Nilavasa/assets/favicon.ico">
+        href="~/Mess.Forttech/assets/images/favicon.ico">
 
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -17,22 +17,13 @@
 
     <resources type="Stylesheet" />
 
-    <style asp-name="mess-nilavasa"></style>
-    <script asp-name="mess-nilavasa"></script>
+    <style asp-name="mess-forttech"></style>
+    <script asp-name="mess-forttech"></script>
   </head>
 
   <body dir="@Orchard.CultureDir()">
     <header class="header">
-      <div class="container">
-        <nav>
-          <a
-            href="https://www.helb.hr/"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            <img src="~/Mess.Nilavasa/assets/images/logo.png" alt="HELB" />
-          </a>
-        </nav>
+      <div class="flex container">
         @await RenderSectionAsync("Header", required: false)
         @await RenderSectionAsync("Login", required: false)
       </div>
@@ -49,7 +40,7 @@
     @if (IsSectionDefined("Footer"))
     {
       <footer>
-        <div class="container">
+        <div class="flex container">
           @await RenderSectionAsync("Footer", required: false)
         </div>
       </footer>
