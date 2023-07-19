@@ -70,20 +70,17 @@ const run = async () => {
     }
 
     const execute = async () => {
-      const message = await messenger(template);
-      const messages = Array.isArray(message) ? message : [message];
-      for (const message of messages) {
-        try {
-          const response = await pusher.push(message);
-          await pusher.log(response, console.log);
-        } catch (err) {
-          console.error(
-            "Failed to push %s message via %s: %O",
-            messengerId,
-            pusherId,
-            err,
-          );
-        }
+      try {
+        const message = await messenger(template);
+        const response = await pusher.push(message);
+        await pusher.log(response, console.log);
+      } catch (err) {
+        console.error(
+          "Failed to push %s message via %s: %O",
+          messengerId,
+          pusherId,
+          err,
+        );
       }
     };
 
@@ -95,67 +92,64 @@ const run = async () => {
     return { interval: setInterval(execute, interval) };
   });
 
-  timeoutRefs = args.update.map(
-    ({ messengerId, pusherId, approximateInterval }) => {
-      const messenger = messengers[messengerId]?.update;
-      const template = templates[messengerId]?.update;
-      if (!messenger || !template) {
-        console.error("Messenger %s not found", messengerId);
-        return {};
-      }
+  timeoutRefs = args.update.map(({ messengerId, pusherId, interval }) => {
+    const messenger = messengers[messengerId]?.update;
+    const template = templates[messengerId]?.update;
+    if (!messenger || !template) {
+      console.error("Messenger %s not found", messengerId);
+      return {};
+    }
 
-      const pusher = pushers[pusherId];
-      if (!pusher) {
-        console.error("Pusher %s not found", pusherId);
-        return {};
-      }
+    const pusher = pushers[pusherId];
+    if (!pusher) {
+      console.error("Pusher %s not found", pusherId);
+      return {};
+    }
 
-      const execute = async () => {
+    const execute = async () => {
+      try {
         const message = await messenger(template);
-        const messages = Array.isArray(message) ? message : [message];
-        for (const message of messages) {
-          try {
-            const response = await pusher.update(message);
-            await pusher.log(response, console.log);
-          } catch (err) {
-            console.error(
-              "Failed to update %s update via %s: %O",
-              messengerId,
-              pusherId,
-              err,
-            );
-          }
-        }
-      };
+        const response = await pusher.update(message);
+        await pusher.log(response, console.log);
+      } catch (err) {
+        console.error(
+          "Failed to push %s message via %s: %O",
+          messengerId,
+          pusherId,
+          err,
+        );
+      }
+    };
 
-      if (!approximateInterval) {
-        execute();
-        return {};
+    if (!interval) {
+      execute();
+      return {};
+    }
+
+    const makeInterval = () => {
+      let realInterval = interval;
+
+      for (let i = 0; i < 10; i++) {
+        realInterval = (Math.random() * 0.5 + 0.75) * interval;
+        if (realInterval >= 1000) {
+          return realInterval;
+        }
       }
 
-      const makeInterval = () => {
-        for (let i = 0; i < 10; i++) {
-          const interval = (Math.random() * 0.5 + 0.75) * approximateInterval;
-          if (interval >= 1000) {
-            return interval;
-          }
-        }
+      return realInterval;
+    };
 
-        return approximateInterval;
-      };
+    const ref: TimeoutRef = {};
+    (async function executeWithRef() {
+      await execute();
+      if (ref.timeout) {
+        clearTimeout(ref.timeout);
+      }
+      ref.timeout = setTimeout(executeWithRef, makeInterval());
+    })();
 
-      const ref: TimeoutRef = {};
-      (async function executeWithRef() {
-        await execute();
-        if (ref.timeout) {
-          clearTimeout(ref.timeout);
-        }
-        ref.timeout = setTimeout(executeWithRef, makeInterval());
-      })();
-
-      return ref;
-    },
-  );
+    return ref;
+  });
 };
 
 export default run;

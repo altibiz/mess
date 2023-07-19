@@ -14,9 +14,13 @@ public class BooleanJsonConverter : JsonConverter<bool>
     if (reader.TokenType == JsonTokenType.String)
     {
       var stringValue = reader.GetString();
-      if (bool.TryParse(stringValue, out bool boolValue))
+      if (stringValue == "0" || stringValue == "false")
       {
-        return boolValue;
+        return false;
+      }
+      else if (stringValue == "1" || stringValue == "true")
+      {
+        return true;
       }
       else
       {

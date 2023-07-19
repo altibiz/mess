@@ -5,8 +5,8 @@ import args from "../args";
 export const push: Push = async ({ payload: body, metadata }: Message) => {
   const endpoint = new URL(
     typeof metadata.deviceId === "string"
-      ? `/${args.tenant}${args.updatePath}/${metadata.deviceId}`
-      : `/${args.tenant}${args.updatePath}`,
+      ? `/${args.tenant}${args.pushPath}/${metadata.deviceId}`
+      : `/${args.tenant}${args.pushPath}`,
     args.pushBase,
   );
 

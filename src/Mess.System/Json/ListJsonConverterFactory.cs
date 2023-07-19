@@ -8,8 +8,12 @@ public class ListJsonConverterFactory : JsonConverterFactory
 {
   public override bool CanConvert(Type typeToConvert) =>
     typeof(IList).IsAssignableFrom(typeToConvert)
-    && typeToConvert.IsGenericType
-    && typeToConvert.GetConstructor(Type.EmptyTypes) is not null;
+    && (
+      (
+        typeToConvert.IsGenericType
+        && typeToConvert.GetConstructor(Type.EmptyTypes) is not null
+      ) || typeToConvert.IsArray
+    );
 
   public override JsonConverter CreateConverter(
     Type typeToConvert,
@@ -54,13 +58,23 @@ public class ListJsonConverterFactory : JsonConverterFactory
       JsonSerializerOptions options
     )
     {
-      var result = (IList?)Activator.CreateInstance(type);
+      IList? result = null;
+      Type? itemType = null;
+      if (type.IsArray)
+      {
+        result = (IList?)Activator.CreateInstance(type, 0);
+        itemType = type.GetElementType();
+      }
+      else
+      {
+        result = (IList?)Activator.CreateInstance(type);
+        itemType = type.GetGenericArguments()[0];
+      }
+
       if (result is null)
       {
         throw new JsonException($"Cannot create type {type}");
       }
-
-      var itemType = type.GetGenericArguments()[0];
       if (itemType is null)
       {
         throw new JsonException($"Cannot get item type for {type}");
@@ -84,6 +98,11 @@ public class ListJsonConverterFactory : JsonConverterFactory
       {
         foreach (var item in str.Split(','))
         {
+          if (string.IsNullOrEmpty(item))
+          {
+            continue;
+          }
+
           var deserializedItem = JsonSerializer.Deserialize(
             item,
             itemType,
