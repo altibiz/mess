@@ -7,6 +7,7 @@ import TerserPlugin from "terser-webpack-plugin";
 import CssMinimizerPlugin from "css-minimizer-webpack-plugin";
 import ESLintPlugin from "eslint-webpack-plugin";
 import StylelintPlugin from "stylelint-webpack-plugin";
+import CopyPlugin from "copy-webpack-plugin";
 
 const configurations: Configuration[] = glob
   .sync("../Mess.{Modules,Themes}/*/Assets", {
@@ -16,6 +17,7 @@ const configurations: Configuration[] = glob
     const project = workspace.split("/")[2];
 
     const configuration: Configuration = {
+      name: project,
       entry: () => {
         const entries: EntryObject = {};
         const bundles = glob.sync(`${workspace}/src/*`, {
@@ -83,10 +85,10 @@ const configurations: Configuration[] = glob
             ],
           },
           {
-            test: /\.(png|jpe?g|gif|svg|woff2?|fnt|webp)$/,
+            test: /\.(png|jpe?g|gif|svg|ico|woff2?)$/,
             type: "asset/resource",
             generator: {
-              filename: "resources/[name][ext]",
+              filename: "resources/[name].[contenthash][ext]",
             },
           },
         ],
@@ -100,6 +102,15 @@ const configurations: Configuration[] = glob
         }),
         new StylelintPlugin({
           files: `${workspace}/src/**/*.{css,scss}`,
+        }),
+        new CopyPlugin({
+          patterns: [
+            {
+              from: `${workspace}/src/**/*.{png,jpg,jpeg,gif,svg,ico,woff,woff2}`,
+              to: "resources/[name][ext]",
+              noErrorOnMissing: true,
+            },
+          ],
         }),
       ],
       optimization: {
@@ -115,6 +126,7 @@ const configurations: Configuration[] = glob
         maxEntrypointSize: 512000,
         maxAssetSize: 512000,
       },
+      stats: "minimal",
     };
 
     return configuration;
