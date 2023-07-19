@@ -23,7 +23,6 @@ using Mess.Eor.Abstractions.Client;
 using Mess.Eor.MeasurementDevice.Updating;
 using OrchardCore.Environment.Shell.Configuration;
 using System.Reflection;
-using Mess.Eor.Options;
 using Mess.Eor.MeasurementDevice.Security;
 
 namespace Mess.Eor;
@@ -37,9 +36,6 @@ public class Startup : StartupBase
     {
       throw new InvalidProgramException("Could not get assembly name");
     }
-
-    var configuration = _shellConfiguration.GetSection(sectionName);
-    services.Configure<EorOptions>(configuration);
 
     services.AddDataMigration<Migrations>();
     services.AddResources<Resources>();

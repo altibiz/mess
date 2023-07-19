@@ -16,7 +16,7 @@ const run = async () => {
   const activePushers = Object.entries(pushers).filter(
     ([pusherId]) =>
       args.push.map(({ pusherId }) => pusherId).includes(pusherId) ||
-      args.status.map(({ pusherId }) => pusherId).includes(pusherId),
+      args.update.map(({ pusherId }) => pusherId).includes(pusherId),
   );
 
   let intervalRefs: IntervalRef[] = [];
@@ -74,8 +74,8 @@ const run = async () => {
       const messages = Array.isArray(message) ? message : [message];
       for (const message of messages) {
         try {
-          await pusher.push(messengerId, message);
-          console.log("Sent %s message via %s", messengerId, pusherId);
+          const response = await pusher.push(message);
+          await pusher.log(response, console.log);
         } catch (err) {
           console.error(
             "Failed to push %s message via %s: %O",
@@ -95,7 +95,7 @@ const run = async () => {
     return { interval: setInterval(execute, interval) };
   });
 
-  timeoutRefs = args.status.map(
+  timeoutRefs = args.update.map(
     ({ messengerId, pusherId, approximateInterval }) => {
       const messenger = messengers[messengerId]?.update;
       const template = templates[messengerId]?.update;
@@ -115,8 +115,8 @@ const run = async () => {
         const messages = Array.isArray(message) ? message : [message];
         for (const message of messages) {
           try {
-            await pusher.update(messengerId, message);
-            console.log("Sent %s update via %s", messengerId, pusherId);
+            const response = await pusher.update(message);
+            await pusher.log(response, console.log);
           } catch (err) {
             console.error(
               "Failed to update %s update via %s: %O",

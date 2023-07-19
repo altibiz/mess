@@ -22,7 +22,7 @@ export type Args = {
     pusherId: string;
     interval?: number;
   }[];
-  status: {
+  update: {
     messengerId: string;
     pusherId: string;
     approximateInterval?: number;
@@ -94,12 +94,12 @@ const unparsedArgs = yargs(hideBin(process.argv))
     demandOption: true,
     default: env.push,
   })
-  .option("status", {
-    describe: "The status updaters to run (only for client mode)",
+  .option("update", {
+    describe: "The updaters to run (only for client mode)",
     type: "array",
     string: true,
     demandOption: true,
-    default: env.status,
+    default: env.update,
   });
 
 const unstructuredArgs = unparsedArgs.parseSync();
@@ -125,7 +125,7 @@ const args = {
       interval: array[2] === "single" ? undefined : parseInt(array[2]),
     };
   }),
-  status: unstructuredArgs.status.map((unparsed) => {
+  update: unstructuredArgs.update.map((unparsed) => {
     const array = unparsed.split(",");
     return {
       messengerId: array[0],

@@ -1,8 +1,10 @@
-export type Serve = () => Promise<void> | void;
+import { MaybePromise } from "../types/promise";
 
-export type Setup = () => Promise<void> | void;
+export type Serve = () => MaybePromise<void>;
 
-export type Teardown = () => Promise<void> | void;
+export type Setup = () => MaybePromise<void>;
+
+export type Teardown = () => MaybePromise<void>;
 
 type Server = {
   serve: Serve;

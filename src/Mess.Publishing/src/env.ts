@@ -41,8 +41,8 @@ export const pollPath = process.env.MESS_PUBLISHING_POLL_PATH || "/poll";
 
 export const push = process.env.MESS_PUBLISHING_SIMULATE
   ? process.env.MESS_PUBLISHING_SIMULATE.split("|")
-  : [""]; // messenger,pusher,interval|...
+  : [""]; // messenger,pusher,approximateInterval|...
 
-export const status = process.env.MESS_PUBLISHING_SIMULATE
+export const update = process.env.MESS_PUBLISHING_SIMULATE
   ? process.env.MESS_PUBLISHING_SIMULATE.split("|")
   : [""]; // messenger,pusher,approximateInterval|...

@@ -22,6 +22,9 @@ public static class StreamSerializationExtensions
           {
             new TupleJsonConverterFactory(),
             new TimeSpanConverter(),
+            new EnumConverterFactory(),
+            new BooleanJsonConverter(),
+            new ListJsonConverterFactory()
           }
         }
       )
@@ -38,6 +41,9 @@ public static class StreamSerializationExtensions
         {
           new TupleJsonConverterFactory(),
           new TimeSpanConverter(),
+          new EnumConverterFactory(),
+          new BooleanJsonConverter(),
+          new ListJsonConverterFactory()
         }
       }
     );
@@ -57,6 +63,9 @@ public static class StreamSerializationExtensions
         {
           new TupleJsonConverterFactory(),
           new TimeSpanConverter(),
+          new EnumConverterFactory(),
+          new BooleanJsonConverter(),
+          new ListJsonConverterFactory()
         }
       }
     );
@@ -75,6 +84,9 @@ public static class StreamSerializationExtensions
         {
           new TupleJsonConverterFactory(),
           new TimeSpanConverter(),
+          new EnumConverterFactory(),
+          new BooleanJsonConverter(),
+          new ListJsonConverterFactory()
         }
       },
       token

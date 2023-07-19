@@ -3,14 +3,11 @@ using Mess.Eor.Abstractions.Client;
 using Mess.Eor.Abstractions.Indexes;
 using Mess.Eor.Abstractions.Models;
 using Mess.Eor.Chart.Providers;
-using Mess.Eor.MeasurementDevice.Pushing;
-using Mess.Eor.MeasurementDevice.Updating;
 using Mess.MeasurementDevice.Abstractions.Indexes;
 using Mess.ContentFields.Abstractions.Extensions;
 using Mess.OrchardCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Hosting;
-using Msss.Eor.MeasurementDevice.Polling;
 using OrchardCore.ContentFields.Settings;
 using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Metadata;
@@ -25,7 +22,6 @@ using OrchardCore.Users.Services;
 using YesSql;
 using YesSql.Sql;
 using Microsoft.Extensions.Options;
-using Mess.Eor.Options;
 using Mess.ContentFields.Abstractions.Services;
 
 namespace Mess.Eor;
@@ -359,8 +355,8 @@ public class Migrations : DataMigration
       );
       await _contentManager.CreateAsync(eorChart, VersionOptions.Latest);
 
-      var eorDeviceId = _eorOptions.Development.DeviceId;
-      var eorApiKey = _eorOptions.Development.ApiKey;
+      var eorDeviceId = "eor";
+      var eorApiKey = "eor";
       var eorMeasurementDevice =
         (
           await _session
@@ -430,8 +426,7 @@ public class Migrations : DataMigration
     IHostEnvironment hostEnvironment,
     ISession session,
     IUserService userService,
-    IApiKeyFieldService apiKeyFieldService,
-    IOptions<EorOptions> eorOptions
+    IApiKeyFieldService apiKeyFieldService
   )
   {
     _contentDefinitionManager = contentDefinitionManager;
@@ -442,7 +437,6 @@ public class Migrations : DataMigration
     _session = session;
     _userService = userService;
     _apiKeyFieldService = apiKeyFieldService;
-    _eorOptions = eorOptions.Value;
   }
 
   private readonly IContentDefinitionManager _contentDefinitionManager;
@@ -453,5 +447,4 @@ public class Migrations : DataMigration
   private readonly ISession _session;
   private readonly IUserService _userService;
   private readonly IApiKeyFieldService _apiKeyFieldService;
-  private readonly EorOptions _eorOptions;
 }
