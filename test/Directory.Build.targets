@@ -9,7 +9,6 @@
         ">true</MessTestCopyCondition>
   </PropertyGroup>
 
-  <!-- TODO: shorten -->
   <PropertyGroup>
     <MessTestProjectDir>$(SolutionDir)test/Mess.System.Test/</MessTestProjectDir>
   </PropertyGroup>

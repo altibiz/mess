@@ -21,14 +21,6 @@ public class PushProjectionApplicator : IProjectionApplicator
 
     foreach (var @event in events.OfType<Measured>())
     {
-      var handler = services
-        .GetServices<IPushHandler>()
-        .FirstOrDefault(handler => handler.Id == @event.HandlerId);
-      if (handler is null)
-      {
-        continue;
-      }
-
       var contentItem = session
         .Query<ContentItem, MeasurementDeviceIndex>()
         .Where(index => index.DeviceId == @event.DeviceId)
@@ -39,8 +31,26 @@ public class PushProjectionApplicator : IProjectionApplicator
         continue;
       }
 
-      handler.Handle(@event.DeviceId, contentItem, @event.Payload);
+      var handler = services
+        .GetServices<IMeasurementDevicePushHandler>()
+        .FirstOrDefault(
+          handler => handler.ContentType == contentItem.ContentType
+        );
+      if (handler is null)
+      {
+        continue;
+      }
+
+      handler.Handle(
+        @event.DeviceId,
+        @event.Tenant,
+        @event.Timestamp,
+        contentItem,
+        @event.Payload
+      );
     }
+
+    session.SaveChangesAsync().RunSynchronously();
   }
 
   public async Task ApplyAsync(
@@ -57,14 +67,6 @@ public class PushProjectionApplicator : IProjectionApplicator
 
     foreach (var @event in events.OfType<Measured>())
     {
-      var handler = services
-        .GetServices<IPushHandler>()
-        .FirstOrDefault(handler => handler.Id == @event.HandlerId);
-      if (handler is null)
-      {
-        continue;
-      }
-
       var contentItem = await session
         .Query<ContentItem, MeasurementDeviceIndex>()
         .Where(index => index.DeviceId == @event.DeviceId)
@@ -74,11 +76,30 @@ public class PushProjectionApplicator : IProjectionApplicator
         continue;
       }
 
-      await handler.HandleAsync(@event.DeviceId, contentItem, @event.Payload);
+      var handler = services
+        .GetServices<IMeasurementDevicePushHandler>()
+        .FirstOrDefault(
+          handler => handler.ContentType == contentItem.ContentType
+        );
+      if (handler is null)
+      {
+        continue;
+      }
+
+      await handler.HandleAsync(
+        @event.DeviceId,
+        @event.Tenant,
+        @event.Timestamp,
+        contentItem,
+        @event.Payload
+      );
       if (cancellationToken.IsCancellationRequested)
       {
+        await session.SaveChangesAsync();
         return;
       }
     }
+
+    await session.SaveChangesAsync();
   }
 }

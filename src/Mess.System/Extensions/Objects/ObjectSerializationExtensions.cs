@@ -26,6 +26,7 @@ public static class ObjectSerializationExtensions
           new TimeSpanConverter(),
           new EnumConverterFactory(),
           new BooleanJsonConverter(),
+          new ListJsonConverterFactory()
         }
       }
     );
@@ -51,6 +52,7 @@ public static class ObjectSerializationExtensions
           new TimeSpanConverter(),
           new EnumConverterFactory(),
           new BooleanJsonConverter(),
+          new ListJsonConverterFactory()
         }
       }
     );
@@ -70,6 +72,7 @@ public static class ObjectSerializationExtensions
           new TimeSpanConverter(),
           new EnumConverterFactory(),
           new BooleanJsonConverter(),
+          new ListJsonConverterFactory()
         }
       }
     );

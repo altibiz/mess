@@ -51,7 +51,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Document", "src\Mess.M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Eor", "src\Mess.Modules\Mess.Eor\Mess.Eor.csproj", "{6924357F-5D74-465E-A4F1-0154B676FD14}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Nilavasa", "src\Mess.Themes\Mess.Nilavasa\Mess.Nilavasa.csproj", "{2A5E30F3-5700-4C56-AE3E-2136325F31CC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Forttech", "src\Mess.Themes\Mess.Forttech\Mess.Forttech.csproj", "{2A5E30F3-5700-4C56-AE3E-2136325F31CC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Management", "src\Mess.Themes\Mess.Management\Mess.Management.csproj", "{DA4ECB74-DD06-41EA-88D7-ABBC2FAD880B}"
 EndProject
@@ -86,6 +86,14 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Eor.Test", "test\Mess.Modules\Mess.Eor.Test\Mess.Eor.Test.csproj", "{ED9BDC7D-9850-489F-AE4C-FB54A728635C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Relational.Test", "test\Mess.Modules\Mess.Relational.Test\Mess.Relational.Test.csproj", "{F1899FBB-6CB7-47DD-AEA3-06E4B0C32CC3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.ContentFields", "src\Mess.Modules\Mess.ContentFields\Mess.ContentFields.csproj", "{5A2C4539-933B-4D69-A9BE-E02796D6C559}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.ContentFields.Abstractions", "src\Mess.Abstractions\Mess.ContentFields.Abstractions\Mess.ContentFields.Abstractions.csproj", "{63D90BC1-C32F-4D7D-ADE8-67FCA97BA9F7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.ContentFields.Test.Abstractions", "test\Mess.Abstractions\Mess.ContentFields.Test.Abstractions\Mess.ContentFields.Test.Abstractions.csproj", "{2897AE8A-0283-4E66-ABE2-FB38214813E6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.ContentFields.Test", "test\Mess.Modules\Mess.ContentFields.Test\Mess.ContentFields.Test.csproj", "{2EE494AE-9F69-4907-8158-34A5D8723360}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -236,6 +244,22 @@ Global
 		{F1899FBB-6CB7-47DD-AEA3-06E4B0C32CC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1899FBB-6CB7-47DD-AEA3-06E4B0C32CC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F1899FBB-6CB7-47DD-AEA3-06E4B0C32CC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A2C4539-933B-4D69-A9BE-E02796D6C559}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A2C4539-933B-4D69-A9BE-E02796D6C559}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A2C4539-933B-4D69-A9BE-E02796D6C559}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A2C4539-933B-4D69-A9BE-E02796D6C559}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63D90BC1-C32F-4D7D-ADE8-67FCA97BA9F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63D90BC1-C32F-4D7D-ADE8-67FCA97BA9F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63D90BC1-C32F-4D7D-ADE8-67FCA97BA9F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63D90BC1-C32F-4D7D-ADE8-67FCA97BA9F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2897AE8A-0283-4E66-ABE2-FB38214813E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2897AE8A-0283-4E66-ABE2-FB38214813E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2897AE8A-0283-4E66-ABE2-FB38214813E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2897AE8A-0283-4E66-ABE2-FB38214813E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2EE494AE-9F69-4907-8158-34A5D8723360}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EE494AE-9F69-4907-8158-34A5D8723360}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EE494AE-9F69-4907-8158-34A5D8723360}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EE494AE-9F69-4907-8158-34A5D8723360}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{D6EC15B8-1F91-4BC6-9108-1BC74E2FF428} = {80810728-A06F-41B9-99F3-5E6CD1250127}
@@ -278,5 +302,9 @@ Global
 		{E2E43A40-D219-4AD6-A018-DF2266FACA1A} = {FF60624F-4E18-4E33-A4EF-62DFECAF3C75}
 		{ED9BDC7D-9850-489F-AE4C-FB54A728635C} = {FF60624F-4E18-4E33-A4EF-62DFECAF3C75}
 		{F1899FBB-6CB7-47DD-AEA3-06E4B0C32CC3} = {FF60624F-4E18-4E33-A4EF-62DFECAF3C75}
+		{5A2C4539-933B-4D69-A9BE-E02796D6C559} = {2B0D55BD-ADCC-4A97-B1AC-3FB928D66D40}
+		{63D90BC1-C32F-4D7D-ADE8-67FCA97BA9F7} = {32F64CF4-695D-493F-B2DC-6177ECDF0A84}
+		{2897AE8A-0283-4E66-ABE2-FB38214813E6} = {D0DF296D-9309-4659-A9C0-4833F4201BAA}
+		{2EE494AE-9F69-4907-8158-34A5D8723360} = {FF60624F-4E18-4E33-A4EF-62DFECAF3C75}
 	EndGlobalSection
 EndGlobal

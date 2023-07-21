@@ -1,35 +1,45 @@
 using Mess.MeasurementDevice.Abstractions.Pushing;
 using Mess.MeasurementDevice.Abstractions.Polling;
 using Mess.MeasurementDevice.Abstractions.Updating;
+using Mess.MeasurementDevice.Abstractions.Security;
 
 namespace Mess.MeasurementDevice.Abstractions.Extensions.Microsoft;
 
 public static class IServiceCollectionExtensions
 {
-  public static IServiceCollection AddPushHandler<T>(
+  public static IServiceCollection AddMeasurementDevicePushHandler<T>(
     this IServiceCollection services
   )
-    where T : class, IPushHandler
+    where T : class, IMeasurementDevicePushHandler
   {
-    services.AddScoped<IPushHandler, T>();
+    services.AddScoped<IMeasurementDevicePushHandler, T>();
     return services;
   }
 
-  public static IServiceCollection AddPollHandler<T>(
+  public static IServiceCollection AddMeasurementDevicePollHandler<T>(
     this IServiceCollection services
   )
-    where T : class, IPollHandler
+    where T : class, IMeasurementDevicePollHandler
   {
-    services.AddScoped<IPollHandler, T>();
+    services.AddScoped<IMeasurementDevicePollHandler, T>();
     return services;
   }
 
-  public static IServiceCollection AddUpdateHandler<T>(
+  public static IServiceCollection AddMeasurementDeviceUpdateHandler<T>(
     this IServiceCollection services
   )
-    where T : class, IUpdateHandler
+    where T : class, IMeasurementDeviceUpdateHandler
   {
-    services.AddScoped<IUpdateHandler, T>();
+    services.AddScoped<IMeasurementDeviceUpdateHandler, T>();
+    return services;
+  }
+
+  public static IServiceCollection AddMeasurementDeviceAuthorizationHandler<T>(
+    this IServiceCollection services
+  )
+    where T : class, IMeasurementDeviceAuthorizationHandler
+  {
+    services.AddScoped<IMeasurementDeviceAuthorizationHandler, T>();
     return services;
   }
 }

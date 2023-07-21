@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="@Orchard.CultureName()">
+  <head>
+    <title>@RenderTitleSegments(Site.SiteName, "before")</title>
+    <link
+        type="image/x-icon"
+        rel="shortcut icon"
+        href="~/Mess.Forttech/assets/resources/favicon.ico">
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    @await RenderSectionAsync("HeadMeta", required: false)
+    <resources type="Meta" />
+
+    <resources type="HeadLink" />
+    <resources type="HeadScript" />
+
+    <resources type="Stylesheet" />
+    
+    <style asp-name="mess-forttech" at="Inline"></style>
+    <script asp-name="mess-forttech" at="Inline"></script>
+  </head>
+
+  <body dir="@Orchard.CultureDir()">
+    <header class="header">
+      <div class="flex container">
+        <h1>Forttech phi inc. Delaware</h1>
+        <span id="clock">--</span>
+        @await RenderSectionAsync("Header", required: false)
+        @await RenderSectionAsync("Login", required: false)
+      </div>
+    </header>
+
+    <main>
+      <div class="container">
+        @await RenderSectionAsync("Messages", required: false)
+        @await RenderBodyAsync()
+      </div>
+    </main>
+
+    <footer>
+      <div class="flex container">
+        @await RenderSectionAsync("Footer", required: false)
+      </div>
+    </footer>
+
+    <resources type="FootScript" />
+  </body>
+</html>

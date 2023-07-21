@@ -14,7 +14,7 @@
     "lint:workspaces": "yarn workspaces foreach -ip --exclude @mess/assets run lint",
     "lint": "run-s lint:tsc lint:eslint lint:stylelint lint:workspaces",
     "build": "webpack --mode production",
-    "watch": "webpack --mode production --watch"
+    "watch": "webpack --mode development --watch"
   },
   "devDependencies": {
     "@babel/core": "^7.21.8",
@@ -27,6 +27,7 @@
     "@typescript-eslint/parser": "^5.59.6",
     "autoprefixer": "^10.4.14",
     "babel-loader": "^9.1.2",
+    "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.7.4",
     "css-minimizer-webpack-plugin": "^5.0.0",
     "eslint": "^8.40.0",
@@ -47,6 +48,7 @@
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4",
     "webpack": "^5.83.1",
-    "webpack-cli": "^5.1.1"
+    "webpack-cli": "^5.1.1",
+    "webpack-remove-empty-scripts": "^1.0.3"
   }
 }

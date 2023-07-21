@@ -20,7 +20,7 @@ public class Startup : Mess.OrchardCore.Test.Startup
     services.AddTestTimeseriesStore();
 
     services.AddScoped<EgaugePushHandler>();
-    services.AddScoped<IPushHandler, EgaugePushHandler>();
+    services.AddScoped<IMeasurementDevicePushHandler, EgaugePushHandler>();
 
     var measurementClient = new Mock<ITimeseriesClient>();
     services.AddSingleton(measurementClient);

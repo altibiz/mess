@@ -1,3 +1,4 @@
+using Mess.ContentFields.Abstractions.Fields;
 using Mess.Eor.Abstractions.Client;
 using OrchardCore.ContentFields.Fields;
 using OrchardCore.ContentManagement;
@@ -20,7 +21,9 @@ public class EorMeasurementDevicePart : ContentPart
 
   public NumericField Longitude { get; set; } = default!;
 
-  public int Mode { get; set; } = 0;
+  public ApiKeyField ApiKey { get; set; } = default!;
+
+  public int Mode { get; set; } = 33;
 
   public EorMeasurementDeviceRunState RunState { get; set; } =
     EorMeasurementDeviceRunState.Stopped;

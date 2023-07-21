@@ -22,10 +22,10 @@ export type Args = {
     pusherId: string;
     interval?: number;
   }[];
-  status: {
+  update: {
     messengerId: string;
     pusherId: string;
-    approximateInterval?: number;
+    interval?: number;
   }[];
 };
 
@@ -94,12 +94,12 @@ const unparsedArgs = yargs(hideBin(process.argv))
     demandOption: true,
     default: env.push,
   })
-  .option("status", {
-    describe: "The status updaters to run (only for client mode)",
+  .option("update", {
+    describe: "The updaters to run (only for client mode)",
     type: "array",
     string: true,
     demandOption: true,
-    default: env.status,
+    default: env.update,
   });
 
 const unstructuredArgs = unparsedArgs.parseSync();
@@ -119,19 +119,26 @@ const args = {
   modbusUnitId: unstructuredArgs.modbusUnitId,
   push: unstructuredArgs.push.map((unparsed) => {
     const array = unparsed.split(",");
+    const messengerId = array[0];
+    const pusherId = array[1];
+    const interval = array[2];
+
     return {
-      messengerId: array[0],
-      pusherId: array[1],
-      interval: array[2] === "single" ? undefined : parseInt(array[2]),
+      messengerId,
+      pusherId,
+      interval: interval === "single" ? undefined : parseInt(array[2]),
     };
   }),
-  status: unstructuredArgs.status.map((unparsed) => {
+  update: unstructuredArgs.update.map((unparsed) => {
     const array = unparsed.split(",");
+    const messengerId = array[0];
+    const pusherId = array[1];
+    const interval = array[2];
+
     return {
-      messengerId: array[0],
-      pusherId: array[1],
-      approximateInterval:
-        array[2] === "single" ? undefined : parseInt(array[2]),
+      messengerId,
+      pusherId,
+      interval: interval === "single" ? undefined : parseInt(array[2]),
     };
   }),
 } as Args;

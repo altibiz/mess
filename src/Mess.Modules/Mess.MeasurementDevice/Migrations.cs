@@ -98,11 +98,8 @@ public class Migrations : DataMigration
     SchemaBuilder.CreateMapIndexTable<MeasurementDeviceIndex>(
       table =>
         table
-          .Column<string>("ContentItemId", c => c.WithLength(30))
-          .Column<string>("DeviceId", c => c.WithLength(30))
-          .Column<string>("DefaultPushHandlerId", c => c.WithLength(30))
-          .Column<string>("DefaultPollHandlerId", c => c.WithLength(30))
-          .Column<string>("DefaultUpdateHandlerId", c => c.WithLength(30))
+          .Column<string>("ContentItemId", c => c.WithLength(64))
+          .Column<string>("DeviceId", c => c.WithLength(64))
     );
     SchemaBuilder.AlterIndexTable<MeasurementDeviceIndex>(
       table =>
@@ -119,8 +116,6 @@ public class Migrations : DataMigration
         measurementDevicePart =>
         {
           measurementDevicePart.DeviceId = new() { Text = "egauge" };
-          measurementDevicePart.DefaultPushHandlerId =
-            EgaugePushHandler.PushHandlerId;
         }
       );
       egaugeMeasurementDevice.Alter(
@@ -130,7 +125,10 @@ public class Migrations : DataMigration
           chartPart.ChartDataProviderId = EgaugeChartProvider.ChartProviderId;
         }
       );
-      await _contentManager.PublishAsync(egaugeMeasurementDevice);
+      await _contentManager.CreateAsync(
+        egaugeMeasurementDevice,
+        VersionOptions.Latest
+      );
     }
 
     return 1;

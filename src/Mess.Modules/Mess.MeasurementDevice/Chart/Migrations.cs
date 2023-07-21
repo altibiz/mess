@@ -96,7 +96,7 @@ public class Migrations : DataMigration
           timeseriesChartPart.Datasets = new() { eguagePowerDataset };
         }
       );
-      await _contentManager.PublishAsync(egaugeChart);
+      await _contentManager.CreateAsync(egaugeChart, VersionOptions.Latest);
 
       var egaugeMeasurementDevice =
         (
@@ -112,7 +112,6 @@ public class Migrations : DataMigration
         measurementDevicePart =>
         {
           measurementDevicePart.DeviceId = new() { Text = "egauge" };
-          measurementDevicePart.DefaultPushHandlerId = "egauge";
         }
       );
       egaugeMeasurementDevice.Alter(
@@ -123,7 +122,10 @@ public class Migrations : DataMigration
           chartPart.ChartContentItemId = egaugeChart.ContentItemId;
         }
       );
-      await _contentManager.PublishAsync(egaugeMeasurementDevice);
+      await _contentManager.CreateAsync(
+        egaugeMeasurementDevice,
+        VersionOptions.Latest
+      );
     }
 
     return 1;

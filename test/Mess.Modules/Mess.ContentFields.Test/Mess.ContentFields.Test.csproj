@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.ContentFields.Abstractions/Mess.ContentFields.Abstractions.csproj" />
+    <ProjectReference Include="../../../src/Mess.Modules/Mess.ContentFields/Mess.ContentFields.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../../test/Mess.Abstractions/Mess.ContentFields.Test.Abstractions/Mess.ContentFields.Test.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>

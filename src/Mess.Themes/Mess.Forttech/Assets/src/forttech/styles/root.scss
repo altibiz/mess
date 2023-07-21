@@ -1,0 +1,22 @@
+:root {
+  --transparent: rgba(0% 0% 0% / 0%);
+  --primary: #0072bc;
+  --secondary: #ffdf00;
+  --background: #fff;
+  --dark-background: #e3e3e3;
+  --darker-background: #4f4f4f;
+  --foreground: #000;
+  --inverse-foreground: #fff;
+  --success: #00d084;
+  --warning: #fcb900;
+  --danger: #cf2e2e;
+  --level-content: 0;
+  --level-header: 1;
+  --level-tooltip: 2;
+  --breakpoint-mobile: 480px;
+  --breakpoint-tablet: 768px;
+  --breakpoint-laptop: 1024px;
+  --breakpoint-desktop: 1440px;
+  --min-header-height: 120px;
+  --min-footer-height: 144px;
+}

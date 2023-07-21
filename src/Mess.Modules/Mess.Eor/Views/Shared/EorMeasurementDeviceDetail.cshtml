@@ -19,16 +19,16 @@
     </div>
     
     <div>
-      @if (Model.EorMeasurementDeviceSummary.Status is not null)
-      {
-        <button 
-            type="button"
-            class="btn btn-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#modeModal">
-          <span>
-            @T["Mode"]
-          </span>
+      <button 
+          type="button"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#modeModal">
+        <span>
+          @T["Mode"]
+        </span>
+        @if (Model.EorMeasurementDeviceSummary.Status is not null)
+        {
           <span>
             @Model.EorMeasurementDeviceSummary.Status.Mode
             @if (
@@ -40,76 +40,79 @@
               </span>
             }
           </span>
-        </button>
+        }
+      </button>
 
-        <div class="modal fade" id="modeModal" tabindex="-1" role="dialog">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <form 
-                  asp-route-area="Mess.Eor"
-                  asp-controller="EorMeasurementDeviceAdmin"
-                  asp-action="SetMode"
-                  asp-route-contentItemId="@Model.EorMeasurementDevice.ContentItemId">
-                <div class="modal-header">
-                  <h5 class="modal-title">@T["Mode"]</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal">
-                    <span>&times;</span>
-                  </button>
+      <div class="modal fade" id="modeModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <form 
+                asp-route-area="Mess.Eor"
+                asp-controller="EorMeasurementDeviceAdmin"
+                asp-action="SetMode"
+                asp-route-contentItemId="@Model.EorMeasurementDevice.ContentItemId">
+              <div class="modal-header">
+                <h5 class="modal-title">@T["Mode"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal">
+                  <span>&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div class="form-group">
+                  <label for="mode">@T["Mode"]</label>
+                  <input 
+                      for="mode"
+                      class="form-control"
+                      type="number"
+                      name="mode"
+                      value="@Model.EorMeasurementDevice.EorMeasurementDevicePart.Value.Mode" />
                 </div>
-                <div class="modal-body">
-                  <div class="form-group">
-                    <label for="mode">@T["Mode"]</label>
-                    <input 
-                        for="mode"
-                        class="form-control"
-                        type="number"
-                        name="mode"
-                        value="@Model.EorMeasurementDevice.EorMeasurementDevicePart.Value.Mode" />
-                  </div>
-                </div>
-                <div class="modal-footer">
-                  <button 
-                      type="button"
-                      class="btn btn-secondary"
-                      data-bs-dismiss="modal">
-                    Close
-                  </button>
-                  <button
-                      type="submit"
-                      class="btn btn-primary">
-                    Save
-                  </button>
-                </div>
-              </form>
-            </div>
+              </div>
+              <div class="modal-footer">
+                <button 
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal">
+                  Close
+                </button>
+                <button
+                    type="submit"
+                    class="btn btn-primary">
+                  Save
+                </button>
+              </div>
+            </form>
           </div>
         </div>
+      </div>
 
-        <form
-            asp-route-area="Mess.Eor"
-            asp-controller="EorMeasurementDeviceAdmin"
-            asp-action="ToggleRunState"
-            asp-route-contentItemId="@Model.EorMeasurementDevice.ContentItemId">
-          <button 
-              type="submit"
-              class='btn btn-sm @(
-                Model.EorMeasurementDevice.EorMeasurementDevicePart.Value.RunState ==
-                EorMeasurementDeviceRunState.Started
-                  ? "btn-danger"
-                  : "btn-success"
-              )'>
-            @if (
+      <form
+          asp-route-area="Mess.Eor"
+          asp-controller="EorMeasurementDeviceAdmin"
+          asp-action="ToggleRunState"
+          asp-route-contentItemId="@Model.EorMeasurementDevice.ContentItemId">
+        <button 
+            type="submit"
+            class='btn btn-sm @(
               Model.EorMeasurementDevice.EorMeasurementDevicePart.Value.RunState ==
               EorMeasurementDeviceRunState.Started
-            ) {
-              <span>
-                @T["Stop"]
-              </span>
-            } else {
-              <span>
-                @T["Start"]
-              </span>
-            }
+                ? "btn-danger"
+                : "btn-success"
+            )'>
+          @if (
+            Model.EorMeasurementDevice.EorMeasurementDevicePart.Value.RunState ==
+            EorMeasurementDeviceRunState.Started
+          ) {
+            <span>
+              @T["Stop"]
+            </span>
+          } else {
+            <span>
+              @T["Start"]
+            </span>
+          }
+          @if (Model.EorMeasurementDeviceSummary.Status is not null)
+          {
             <span>
               @T[
                 Model.EorMeasurementDeviceSummary.Status.RunState.ToString("g")
@@ -130,20 +133,23 @@
                 </span>
               }
             </span>
-          </button>
-        </form>
+          }
+        </button>
+      </form>
 
-        <form
-            asp-route-area="Mess.Eor"
-            asp-controller="EorMeasurementDeviceAdmin"
-            asp-action="Reset"
-            asp-route-contentItemId="@Model.EorMeasurementDevice.ContentItemId">
-          <button
-              type="submit"
-              class="btn btn-sm btn-danger">
-            <span>
-              @T["Reset"]
-            </span>
+      <form
+          asp-route-area="Mess.Eor"
+          asp-controller="EorMeasurementDeviceAdmin"
+          asp-action="Reset"
+          asp-route-contentItemId="@Model.EorMeasurementDevice.ContentItemId">
+        <button
+            type="submit"
+            class="btn btn-sm btn-danger">
+          <span>
+            @T["Reset"]
+          </span>
+          @if (Model.EorMeasurementDeviceSummary.Status is not null)
+          {
             <span>
               @T[
                 Model.EorMeasurementDeviceSummary.Status.ResetState.ToString("g")
@@ -164,9 +170,9 @@
                 </span>
               }
             </span>
-          </button>
-        </form>
-      }
+          }
+        </button>
+      </form>
     </div>
     
     <div>
@@ -211,18 +217,18 @@
         {
           <p>
             <span>
-              @T["Communication faults"]
+              @T["Communication fault"]
             </span>
             <span>
-              @Model.EorMeasurementDeviceSummary.Status.CommunicationFaults
+              @Model.EorMeasurementDeviceSummary.Status.CommunicationFault
             </span>
           </p>
           <p>
             <span>
-              @T["Process faults"]
+              @T["Process fault"]
             </span>
             <span>
-              @Model.EorMeasurementDeviceSummary.Status.ProcessFaults
+              @Model.EorMeasurementDeviceSummary.Status.ProcessFault
             </span>
           </p>
           <p>

@@ -8,23 +8,44 @@ using OrchardCore.ContentManagement;
 
 namespace Mess.MeasurementDevice.Pushing;
 
-public class EgaugePushHandler : XmlPushHandler<EgaugeMeasurement>
+public class EgaugePushHandler
+  : XmlMeasurementDevicePushHandler<EgaugeMeasurement>
 {
-  public const string PushHandlerId = "egauge";
+  public const string PushContentType = "EgaugeMeasurementDevice";
 
-  public override string Id => PushHandlerId;
+  public override string ContentType => PushContentType;
 
   protected override void Handle(
     string deviceId,
+    string tenant,
+    DateTime timestamp,
     ContentItem contentItem,
     EgaugeMeasurement measurement
-  ) => _measurementClient.AddEgaugeMeasurement(measurement);
+  ) =>
+    _measurementClient.AddEgaugeMeasurement(
+      measurement with
+      {
+        DeviceId = measurement.DeviceId,
+        Tenant = measurement.Tenant,
+        Timestamp = measurement.Timestamp
+      }
+    );
 
   protected override async Task HandleAsync(
     string deviceId,
+    string tenant,
+    DateTime timestamp,
     ContentItem contentItem,
     EgaugeMeasurement measurement
-  ) => await _measurementClient.AddEgaugeMeasurementAsync(measurement);
+  ) =>
+    await _measurementClient.AddEgaugeMeasurementAsync(
+      measurement with
+      {
+        DeviceId = measurement.DeviceId,
+        Tenant = measurement.Tenant,
+        Timestamp = measurement.Timestamp
+      }
+    );
 
   protected override EgaugeMeasurement? Parse(XDocument xml)
   {

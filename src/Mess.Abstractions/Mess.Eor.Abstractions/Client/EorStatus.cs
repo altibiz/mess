@@ -5,28 +5,34 @@ public record EorStatus(
   string DeviceId,
   DateTime Timestamp,
   int Mode,
-  int ProcessFaults,
-  int CommunicationFaults,
+  int ProcessFault,
+  string[] ProcessFaults,
+  int CommunicationFault,
   EorMeasurementDeviceRunState RunState,
   EorMeasurementDeviceResetState ResetState,
   EorDoorState DoorState,
   EorMainCircuitBreakerState MainCircuitBreakerState,
   EorTransformerContractorState TransformerContractorState,
   EorDiodeBridgeState FirstDiodeBridgeState,
-  EorDiodeBridgeState SecondDiodeBridgeState
+  EorDiodeBridgeState SecondDiodeBridgeState,
+  float Current,
+  float Voltage,
+  float Temperature,
+  bool HeatsinkFans,
+  bool CoolingFans
 )
 {
   public EorMeasurementDevicePowerState PowerState =>
-    ProcessFaults == ((int)EorMeasurementDevicePowerState.On)
+    ProcessFault == ((int)EorMeasurementDevicePowerState.On)
       ? EorMeasurementDevicePowerState.On
-      : ProcessFaults == ((int)EorMeasurementDevicePowerState.Off)
+      : ProcessFault == ((int)EorMeasurementDevicePowerState.Off)
         ? EorMeasurementDevicePowerState.Off
         : EorMeasurementDevicePowerState.Error;
 
   public string? Error =>
-    ProcessFaults != 0
+    ProcessFault != 0
       ? "ProcessFaults"
-      : CommunicationFaults != 0
+      : CommunicationFault != 0
         ? "CommunicationFaults"
         : null;
 }
@@ -35,6 +41,7 @@ public enum EorMeasurementDeviceRunState : int
 {
   Stopped = default,
   Started = 1,
+  Error = 2,
 };
 
 public enum EorMeasurementDeviceResetState : int

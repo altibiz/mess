@@ -42,7 +42,7 @@ public class Startup : StartupBase
     services.AddSingleton<IIndexProvider, MeasurementDeviceIndexProvider>();
 
     services.AddContentPart<EgaugeMeasurementDevicePart>();
-    services.AddPushHandler<EgaugePushHandler>();
+    services.AddMeasurementDevicePushHandler<EgaugePushHandler>();
   }
 
   public override void Configure(
@@ -54,33 +54,33 @@ public class Startup : StartupBase
     routes.MapAreaControllerRoute(
       name: "Mess.MeasurementDevice.PushController.Index",
       areaName: "Mess.MeasurementDevice",
-      pattern: "/Push",
+      pattern: "/Push/{deviceId}",
       defaults: new
       {
-        controller = typeof(PushController).ControllerName(),
-        action = nameof(PushController.Index)
+        controller = typeof(DeviceController).ControllerName(),
+        action = nameof(DeviceController.Push)
       }
     );
 
     routes.MapAreaControllerRoute(
       name: "Mess.MeasurementDevice.UpdateController.Index",
       areaName: "Mess.MeasurementDevice",
-      pattern: "/Update",
+      pattern: "/Update/{deviceId}",
       defaults: new
       {
-        controller = typeof(UpdateController).ControllerName(),
-        action = nameof(UpdateController.Index)
+        controller = typeof(DeviceController).ControllerName(),
+        action = nameof(DeviceController.Update)
       }
     );
 
     routes.MapAreaControllerRoute(
       name: "Mess.MeasurementDevice.PollController.Index",
       areaName: "Mess.MeasurementDevice",
-      pattern: "/Poll",
+      pattern: "/Poll/{deviceId}",
       defaults: new
       {
-        controller = typeof(PollController).ControllerName(),
-        action = nameof(PollController.Index)
+        controller = typeof(DeviceController).ControllerName(),
+        action = nameof(DeviceController.Poll)
       }
     );
   }

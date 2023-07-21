@@ -1867,6 +1867,7 @@ __metadata:
     "@typescript-eslint/parser": ^5.59.6
     autoprefixer: ^10.4.14
     babel-loader: ^9.1.2
+    copy-webpack-plugin: ^11.0.0
     css-loader: ^6.7.4
     css-minimizer-webpack-plugin: ^5.0.0
     eslint: ^8.40.0
@@ -1888,6 +1889,7 @@ __metadata:
     typescript: ^5.0.4
     webpack: ^5.83.1
     webpack-cli: ^5.1.1
+    webpack-remove-empty-scripts: ^1.0.3
   languageName: unknown
   linkType: soft
 
@@ -1914,6 +1916,27 @@ __metadata:
     stylelint-config-standard-scss: ^9.0.0
     typescript: ^5.0.4
     zod: ^3.21.4
+  languageName: unknown
+  linkType: soft
+
+"@mess/content-fields-module-assets@workspace:src/Mess.Modules/Mess.ContentFields/Assets":
+  version: 0.0.0-use.local
+  resolution: "@mess/content-fields-module-assets@workspace:src/Mess.Modules/Mess.ContentFields/Assets"
+  dependencies:
+    "@mess/eslint-config-assets": "workspace:*"
+    "@mess/stylelint-config-assets": "workspace:*"
+    "@mess/typescript-config-assets": "workspace:*"
+    "@shopify/prettier-plugin-liquid": ^1.0.6
+    "@typescript-eslint/eslint-plugin": ^5.59.6
+    "@typescript-eslint/parser": ^5.59.6
+    eslint: ^8.40.0
+    npm-run-all: ^4.1.5
+    postcss: ^8.4.23
+    prettier: ^2.8.8
+    sass: ^1.62.1
+    stylelint: ^15.6.2
+    stylelint-config-standard-scss: ^9.0.0
+    typescript: ^5.0.4
   languageName: unknown
   linkType: soft
 
@@ -1991,6 +2014,29 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@mess/forttech-theme-assets@workspace:src/Mess.Themes/Mess.Forttech/Assets":
+  version: 0.0.0-use.local
+  resolution: "@mess/forttech-theme-assets@workspace:src/Mess.Themes/Mess.Forttech/Assets"
+  dependencies:
+    "@mess/eslint-config-assets": "workspace:*"
+    "@mess/stylelint-config-assets": "workspace:*"
+    "@mess/typescript-config-assets": "workspace:*"
+    "@shopify/prettier-plugin-liquid": ^1.0.6
+    "@types/luxon": ^3.3.0
+    "@typescript-eslint/eslint-plugin": ^5.59.6
+    "@typescript-eslint/parser": ^5.59.6
+    eslint: ^8.40.0
+    luxon: ^3.3.0
+    npm-run-all: ^4.1.5
+    postcss: ^8.4.23
+    prettier: ^2.8.8
+    sass: ^1.62.1
+    stylelint: ^15.6.2
+    stylelint-config-standard-scss: ^9.0.0
+    typescript: ^5.0.4
+  languageName: unknown
+  linkType: soft
+
 "@mess/measurement-device-module-assets@workspace:src/Mess.Modules/Mess.MeasurementDevice/Assets":
   version: 0.0.0-use.local
   resolution: "@mess/measurement-device-module-assets@workspace:src/Mess.Modules/Mess.MeasurementDevice/Assets"
@@ -2025,27 +2071,6 @@ __metadata:
     npm-run-all: ^4.1.5
     prettier: ^2.8.8
     ts-node: ^10.9.1
-    typescript: ^5.0.4
-  languageName: unknown
-  linkType: soft
-
-"@mess/nilavasa-theme-assets@workspace:src/Mess.Themes/Mess.Nilavasa/Assets":
-  version: 0.0.0-use.local
-  resolution: "@mess/nilavasa-theme-assets@workspace:src/Mess.Themes/Mess.Nilavasa/Assets"
-  dependencies:
-    "@mess/eslint-config-assets": "workspace:*"
-    "@mess/stylelint-config-assets": "workspace:*"
-    "@mess/typescript-config-assets": "workspace:*"
-    "@shopify/prettier-plugin-liquid": ^1.0.6
-    "@typescript-eslint/eslint-plugin": ^5.59.6
-    "@typescript-eslint/parser": ^5.59.6
-    eslint: ^8.40.0
-    npm-run-all: ^4.1.5
-    postcss: ^8.4.23
-    prettier: ^2.8.8
-    sass: ^1.62.1
-    stylelint: ^15.6.2
-    stylelint-config-standard-scss: ^9.0.0
     typescript: ^5.0.4
   languageName: unknown
   linkType: soft
@@ -3046,6 +3071,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ansis@npm:1.5.2":
+  version: 1.5.2
+  resolution: "ansis@npm:1.5.2"
+  checksum: 32761e4c412336c7a4d7529374655fca6ee38929f05719bc73fb3398b5439368f228cc675afa877653c4e6f7335c83fc057ebcc58c24044c1fdd346084864de1
+  languageName: node
+  linkType: hard
+
 "anymatch@npm:~3.1.2":
   version: 3.1.3
   resolution: "anymatch@npm:3.1.3"
@@ -3381,17 +3413,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001400":
-  version: 1.0.30001439
-  resolution: "caniuse-lite@npm:1.0.30001439"
-  checksum: 3912dd536c9735713ca85e47721988bbcefb881ddb4886b0b9923fa984247fd22cba032cf268e57d158af0e8a2ae2eae042ae01942a1d6d7849fa9fa5d62fb82
-  languageName: node
-  linkType: hard
-
-"caniuse-lite@npm:^1.0.30001449, caniuse-lite@npm:^1.0.30001464":
-  version: 1.0.30001488
-  resolution: "caniuse-lite@npm:1.0.30001488"
-  checksum: ef0caf2914f9fca700b75d22921f500241f4e988ded9985e62737136031787052185d8136a65a3a6d6d12b559cf75ab99f5488931f8bd060f1b7810a2c1ee1d1
+"caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001400, caniuse-lite@npm:^1.0.30001449, caniuse-lite@npm:^1.0.30001464":
+  version: 1.0.30001515
+  resolution: "caniuse-lite@npm:1.0.30001515"
+  checksum: ec5d51785aea6af5cf62ca9d35821d36ab7fa0f85e3e7f752d532025ad59e07131fa3cb3a0a6c486b5ac8620c8c3440e761dc5b38c990d49c17655906f216123
   languageName: node
   linkType: hard
 
@@ -3699,6 +3724,22 @@ __metadata:
   version: 1.9.0
   resolution: "convert-source-map@npm:1.9.0"
   checksum: dc55a1f28ddd0e9485ef13565f8f756b342f9a46c4ae18b843fe3c30c675d058d6a4823eff86d472f187b176f0adf51ea7b69ea38be34be4a63cbbf91b0593c8
+  languageName: node
+  linkType: hard
+
+"copy-webpack-plugin@npm:^11.0.0":
+  version: 11.0.0
+  resolution: "copy-webpack-plugin@npm:11.0.0"
+  dependencies:
+    fast-glob: ^3.2.11
+    glob-parent: ^6.0.1
+    globby: ^13.1.1
+    normalize-path: ^3.0.0
+    schema-utils: ^4.0.0
+    serialize-javascript: ^6.0.0
+  peerDependencies:
+    webpack: ^5.1.0
+  checksum: df4f8743f003a29ee7dd3d9b1789998a3a99051c92afb2ba2203d3dacfa696f4e757b275560fafb8f206e520a0aa78af34b990324a0e36c2326cefdeef3ca82e
   languageName: node
   linkType: hard
 
@@ -4507,6 +4548,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fast-glob@npm:^3.2.11, fast-glob@npm:^3.3.0":
+  version: 3.3.0
+  resolution: "fast-glob@npm:3.3.0"
+  dependencies:
+    "@nodelib/fs.stat": ^2.0.2
+    "@nodelib/fs.walk": ^1.2.3
+    glob-parent: ^5.1.2
+    merge2: ^1.3.0
+    micromatch: ^4.0.4
+  checksum: 20df62be28eb5426fe8e40e0d05601a63b1daceb7c3d87534afcad91bdcf1e4b1743cf2d5247d6e225b120b46df0b9053a032b2691ba34ee121e033acd81f547
+  languageName: node
+  linkType: hard
+
 "fast-glob@npm:^3.2.12, fast-glob@npm:^3.2.9":
   version: 3.2.12
   resolution: "fast-glob@npm:3.2.12"
@@ -4823,7 +4877,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"glob-parent@npm:^6.0.2":
+"glob-parent@npm:^6.0.1, glob-parent@npm:^6.0.2":
   version: 6.0.2
   resolution: "glob-parent@npm:6.0.2"
   dependencies:
@@ -4952,6 +5006,19 @@ __metadata:
     merge2: ^1.4.1
     slash: ^3.0.0
   checksum: b4be8885e0cfa018fc783792942d53926c35c50b3aefd3fdcfb9d22c627639dc26bd2327a40a0b74b074100ce95bb7187bfeae2f236856aa3de183af7a02aea6
+  languageName: node
+  linkType: hard
+
+"globby@npm:^13.1.1":
+  version: 13.2.2
+  resolution: "globby@npm:13.2.2"
+  dependencies:
+    dir-glob: ^3.0.1
+    fast-glob: ^3.3.0
+    ignore: ^5.2.4
+    merge2: ^1.4.1
+    slash: ^4.0.0
+  checksum: f3d84ced58a901b4fcc29c846983108c426631fe47e94872868b65565495f7bee7b3defd68923bd480582771fd4bbe819217803a164a618ad76f1d22f666f41e
   languageName: node
   linkType: hard
 
@@ -8009,7 +8076,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"serialize-javascript@npm:^6.0.1":
+"serialize-javascript@npm:^6.0.0, serialize-javascript@npm:^6.0.1":
   version: 6.0.1
   resolution: "serialize-javascript@npm:6.0.1"
   dependencies:
@@ -8142,6 +8209,13 @@ __metadata:
   version: 3.0.0
   resolution: "slash@npm:3.0.0"
   checksum: 94a93fff615f25a999ad4b83c9d5e257a7280c90a32a7cb8b4a87996e4babf322e469c42b7f649fd5796edd8687652f3fb452a86dc97a816f01113183393f11c
+  languageName: node
+  linkType: hard
+
+"slash@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "slash@npm:4.0.0"
+  checksum: da8e4af73712253acd21b7853b7e0dbba776b786e82b010a5bfc8b5051a1db38ed8aba8e1e8f400dd2c9f373be91eb1c42b66e91abb407ff42b10feece5e1d2d
   languageName: node
   linkType: hard
 
@@ -9166,6 +9240,17 @@ __metadata:
     clone-deep: ^4.0.1
     wildcard: ^2.0.0
   checksum: 88786ab91013f1bd2a683834ff381be81c245a4b0f63304a5103e90f6653f44dab496a0768287f8531761f8ad957d1f9f3ccb2cb55df0de1bd9ee343e079da26
+  languageName: node
+  linkType: hard
+
+"webpack-remove-empty-scripts@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "webpack-remove-empty-scripts@npm:1.0.3"
+  dependencies:
+    ansis: 1.5.2
+  peerDependencies:
+    webpack: ">=5.32.0"
+  checksum: af7e2626608304037b8723f05b81690f280b50766fccc28e4a0bdbe29eb58b5aa95808449f26b67a92ba26f1d707a118820f5c2571cc340f3588a33751853b54
   languageName: node
   linkType: hard
 
