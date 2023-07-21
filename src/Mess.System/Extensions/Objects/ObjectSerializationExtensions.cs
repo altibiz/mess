@@ -25,8 +25,8 @@ public static class ObjectSerializationExtensions
           new TupleJsonConverterFactory(),
           new TimeSpanConverter(),
           new EnumConverterFactory(),
-          new BooleanJsonConverter(),
-          new ListJsonConverterFactory()
+          // new ListJsonConverterFactory(),
+          new BooleanJsonConverter()
         }
       }
     );
@@ -51,8 +51,8 @@ public static class ObjectSerializationExtensions
           new TupleJsonConverterFactory(),
           new TimeSpanConverter(),
           new EnumConverterFactory(),
-          new BooleanJsonConverter(),
-          new ListJsonConverterFactory()
+          // new ListJsonConverterFactory(),
+          new BooleanJsonConverter()
         }
       }
     );
@@ -71,8 +71,8 @@ public static class ObjectSerializationExtensions
           new TupleJsonConverterFactory(),
           new TimeSpanConverter(),
           new EnumConverterFactory(),
-          new BooleanJsonConverter(),
-          new ListJsonConverterFactory()
+          // new ListJsonConverterFactory(),
+          new BooleanJsonConverter()
         }
       }
     );
