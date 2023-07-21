@@ -278,142 +278,134 @@ public class Migrations : DataMigration
       }
     );
 
-    if (_hostEnvironment.IsDevelopment())
-    {
-      await _userService.CreateUserAsync(
-        new User
-        {
-          UserId = "OwnerId",
-          UserName = "Owner",
-          Email = "owner@dev.com",
-          RoleNames = new[] { "EOR measurement device owner" }
-        },
-        "Owner123!",
-        (_, _) => { }
-      );
+    await _userService.CreateUserAsync(
+      new User
+      {
+        UserId = "OwnerId",
+        UserName = "Owner",
+        Email = "owner@dev.com",
+        RoleNames = new[] { "EOR measurement device owner" }
+      },
+      "Owner123!",
+      (_, _) => { }
+    );
 
-      await _userService.CreateUserAsync(
-        new User
-        {
-          UserId = "AdminId",
-          UserName = "Admin",
-          Email = "admin@dev.com",
-          RoleNames = new[] { "EOR measurement device administrator" }
-        },
-        "Admin123!",
-        (_, _) => { }
-      );
+    await _userService.CreateUserAsync(
+      new User
+      {
+        UserId = "AdminId",
+        UserName = "Admin",
+        Email = "admin@dev.com",
+        RoleNames = new[] { "EOR measurement device administrator" }
+      },
+      "Admin123!",
+      (_, _) => { }
+    );
 
-      var eorCurrentDataset =
-        await _contentManager.NewContentAsync<TimeseriesChartDatasetItem>();
-      eorCurrentDataset.Alter(
-        eorCurrentDataset => eorCurrentDataset.TimeseriesChartDatasetPart,
-        timeseriesChartDatasetPart =>
+    var eorCurrentDataset =
+      await _contentManager.NewContentAsync<TimeseriesChartDatasetItem>();
+    eorCurrentDataset.Alter(
+      eorCurrentDataset => eorCurrentDataset.TimeseriesChartDatasetPart,
+      timeseriesChartDatasetPart =>
+      {
+        timeseriesChartDatasetPart.Color = new() { Value = "#ff0000" };
+        timeseriesChartDatasetPart.Label = new() { Text = "Current" };
+        timeseriesChartDatasetPart.Property = nameof(EorMeasurement.Current);
+      }
+    );
+    var eorVoltageDataset =
+      await _contentManager.NewContentAsync<TimeseriesChartDatasetItem>();
+    eorCurrentDataset.Alter(
+      eorVoltageDataset => eorVoltageDataset.TimeseriesChartDatasetPart,
+      timeseriesChartDatasetPart =>
+      {
+        timeseriesChartDatasetPart.Color = new() { Value = "#00ff00" };
+        timeseriesChartDatasetPart.Label = new() { Text = "Voltage" };
+        timeseriesChartDatasetPart.Property = nameof(EorMeasurement.Voltage);
+      }
+    );
+    var eorModeDataset =
+      await _contentManager.NewContentAsync<TimeseriesChartDatasetItem>();
+    eorCurrentDataset.Alter(
+      eorModeDataset => eorModeDataset.TimeseriesChartDatasetPart,
+      timeseriesChartDatasetPart =>
+      {
+        timeseriesChartDatasetPart.Color = new() { Value = "#0000ff" };
+        timeseriesChartDatasetPart.Label = new() { Text = "Mode" };
+        timeseriesChartDatasetPart.Property = nameof(EorStatus.Mode);
+      }
+    );
+    var eorChart = await _contentManager.NewContentAsync<TimeseriesChartItem>();
+    eorChart.Alter(
+      eorChart => eorChart.TimeseriesChartPart,
+      timeseriesChartPart =>
+      {
+        timeseriesChartPart.ChartProviderId = EorChartProvider.ChartProviderId;
+        timeseriesChartPart.Datasets = new()
         {
-          timeseriesChartDatasetPart.Color = new() { Value = "#ff0000" };
-          timeseriesChartDatasetPart.Label = new() { Text = "Current" };
-          timeseriesChartDatasetPart.Property = nameof(EorMeasurement.Current);
-        }
-      );
-      var eorVoltageDataset =
-        await _contentManager.NewContentAsync<TimeseriesChartDatasetItem>();
-      eorCurrentDataset.Alter(
-        eorVoltageDataset => eorVoltageDataset.TimeseriesChartDatasetPart,
-        timeseriesChartDatasetPart =>
-        {
-          timeseriesChartDatasetPart.Color = new() { Value = "#00ff00" };
-          timeseriesChartDatasetPart.Label = new() { Text = "Voltage" };
-          timeseriesChartDatasetPart.Property = nameof(EorMeasurement.Voltage);
-        }
-      );
-      var eorModeDataset =
-        await _contentManager.NewContentAsync<TimeseriesChartDatasetItem>();
-      eorCurrentDataset.Alter(
-        eorModeDataset => eorModeDataset.TimeseriesChartDatasetPart,
-        timeseriesChartDatasetPart =>
-        {
-          timeseriesChartDatasetPart.Color = new() { Value = "#0000ff" };
-          timeseriesChartDatasetPart.Label = new() { Text = "Mode" };
-          timeseriesChartDatasetPart.Property = nameof(EorStatus.Mode);
-        }
-      );
-      var eorChart =
-        await _contentManager.NewContentAsync<TimeseriesChartItem>();
-      eorChart.Alter(
-        eorChart => eorChart.TimeseriesChartPart,
-        timeseriesChartPart =>
-        {
-          timeseriesChartPart.ChartProviderId =
-            EorChartProvider.ChartProviderId;
-          timeseriesChartPart.Datasets = new()
-          {
-            eorCurrentDataset,
-            eorVoltageDataset,
-            eorModeDataset
-          };
-        }
-      );
-      await _contentManager.CreateAsync(eorChart, VersionOptions.Latest);
+          eorCurrentDataset,
+          eorVoltageDataset,
+          eorModeDataset
+        };
+      }
+    );
+    await _contentManager.CreateAsync(eorChart, VersionOptions.Latest);
 
-      var eorDeviceId = "eor";
-      var eorApiKey = "eor";
-      var eorMeasurementDevice =
-        (
-          await _session
-            .Query<ContentItem, MeasurementDeviceIndex>()
-            .Where(index => index.DeviceId == eorDeviceId)
-            .FirstOrDefaultAsync()
-        )?.AsContent<EorMeasurementDeviceItem>()
-        ?? await _contentManager.NewContentAsync<EorMeasurementDeviceItem>();
-      eorMeasurementDevice.Alter(
-        eorMeasurementDevice => eorMeasurementDevice.TitlePart,
-        titlePart =>
+    var eorDeviceId = "eor";
+    var eorApiKey = "eor";
+    var eorMeasurementDevice =
+      (
+        await _session
+          .Query<ContentItem, MeasurementDeviceIndex>()
+          .Where(index => index.DeviceId == eorDeviceId)
+          .FirstOrDefaultAsync()
+      )?.AsContent<EorMeasurementDeviceItem>()
+      ?? await _contentManager.NewContentAsync<EorMeasurementDeviceItem>();
+    eorMeasurementDevice.Alter(
+      eorMeasurementDevice => eorMeasurementDevice.TitlePart,
+      titlePart =>
+      {
+        titlePart.Title = eorDeviceId;
+      }
+    );
+    eorMeasurementDevice.Alter(
+      eorMeasurementDevice => eorMeasurementDevice.MeasurementDevicePart,
+      measurementDevicePart =>
+      {
+        measurementDevicePart.DeviceId = new() { Text = eorDeviceId };
+      }
+    );
+    eorMeasurementDevice.Alter(
+      eorMeasurementDevice => eorMeasurementDevice.ChartPart,
+      chartPart =>
+      {
+        chartPart.ChartDataProviderId = EorChartProvider.ChartProviderId;
+        chartPart.ChartContentItemId = eorChart.ContentItemId;
+      }
+    );
+    eorMeasurementDevice.Alter(
+      eorMeasurementDevice => eorMeasurementDevice.EorMeasurementDevicePart,
+      eorMeasurementDevice =>
+      {
+        eorMeasurementDevice.Owner = new() { UserIds = new[] { "OwnerId" } };
+        eorMeasurementDevice.ManufactureDate = new()
         {
-          titlePart.Title = eorDeviceId;
-        }
-      );
-      eorMeasurementDevice.Alter(
-        eorMeasurementDevice => eorMeasurementDevice.MeasurementDevicePart,
-        measurementDevicePart =>
-        {
-          measurementDevicePart.DeviceId = new() { Text = eorDeviceId };
-        }
-      );
-      eorMeasurementDevice.Alter(
-        eorMeasurementDevice => eorMeasurementDevice.ChartPart,
-        chartPart =>
-        {
-          chartPart.ChartDataProviderId = EorChartProvider.ChartProviderId;
-          chartPart.ChartContentItemId = eorChart.ContentItemId;
-        }
-      );
-      eorMeasurementDevice.Alter(
-        eorMeasurementDevice => eorMeasurementDevice.EorMeasurementDevicePart,
-        eorMeasurementDevice =>
-        {
-          eorMeasurementDevice.Owner = new() { UserIds = new[] { "OwnerId" } };
-          eorMeasurementDevice.ManufactureDate = new()
-          {
-            Value = DateTime.UtcNow
-          };
-          eorMeasurementDevice.Manufacturer = new() { Text = "Siemens" };
-          eorMeasurementDevice.CommisionDate = new()
-          {
-            Value = DateTime.UtcNow
-          };
-          eorMeasurementDevice.ProductNumber = new() { Text = "123456789" };
-          eorMeasurementDevice.Longitude = new() { Value = -100.784430m };
-          eorMeasurementDevice.Latitude = new() { Value = 31.697256m };
-          eorMeasurementDevice.ApiKey = _apiKeyFieldService.HashApiKeyField(
-            eorApiKey
-          );
-        }
-      );
-      await _contentManager.CreateAsync(
-        eorMeasurementDevice,
-        VersionOptions.Latest
-      );
-    }
+          Value = DateTime.UtcNow
+        };
+        eorMeasurementDevice.Manufacturer = new() { Text = "Siemens" };
+        eorMeasurementDevice.CommisionDate = new() { Value = DateTime.UtcNow };
+        eorMeasurementDevice.ProductNumber = new() { Text = "123456789" };
+        eorMeasurementDevice.Longitude = new() { Value = -100.784430m };
+        eorMeasurementDevice.Latitude = new() { Value = 31.697256m };
+        eorMeasurementDevice.ApiKey = _apiKeyFieldService.HashApiKeyField(
+          eorApiKey
+        );
+      }
+    );
+    await _contentManager.CreateAsync(
+      eorMeasurementDevice,
+      VersionOptions.Latest
+    );
 
     return 1;
   }
