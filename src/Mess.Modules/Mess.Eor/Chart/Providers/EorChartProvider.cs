@@ -10,9 +10,9 @@ namespace Mess.Eor.Chart.Providers;
 
 public class EorChartProvider : ChartProvider
 {
-  public const string ChartProviderId = "Eor";
+  public const string ChartContentType = "EorMeasurementDevice";
 
-  public override string Id => ChartProviderId;
+  public override string ContentType => ChartContentType;
 
   public override IEnumerable<string> TimeseriesChartDatasetProperties =>
     new[]
@@ -42,8 +42,12 @@ public class EorChartProvider : ChartProvider
     );
 
     return new TimeseriesChartDescriptor(
-      RefreshInterval: chart.TimeseriesChartPart.Value.RefreshIntervalSpan,
-      History: chart.TimeseriesChartPart.Value.HistorySpan,
+      RefreshInterval: chart
+        .TimeseriesChartPart
+        .Value
+        .RefreshIntervalSpan
+        .TotalMilliseconds,
+      History: chart.TimeseriesChartPart.Value.HistorySpan.TotalMilliseconds,
       Datasets: datasets
         .Select(
           dataset =>

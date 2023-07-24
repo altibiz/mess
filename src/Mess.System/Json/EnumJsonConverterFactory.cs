@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Mess.System.Json;
 
-public class EnumConverterFactory : JsonConverterFactory
+public class EnumJsonConverterFactory : JsonConverterFactory
 {
   public override bool CanConvert(Type typeToConvert)
   {
@@ -17,11 +17,11 @@ public class EnumConverterFactory : JsonConverterFactory
   {
     return (JsonConverter)
       Activator.CreateInstance(
-        typeof(EnumConverter<>).MakeGenericType(typeToConvert)
+        typeof(EnumJsonConverter<>).MakeGenericType(typeToConvert)
       )!;
   }
 
-  private class EnumConverter<T> : JsonConverter<T>
+  private class EnumJsonConverter<T> : JsonConverter<T>
     where T : Enum
   {
     public override T Read(

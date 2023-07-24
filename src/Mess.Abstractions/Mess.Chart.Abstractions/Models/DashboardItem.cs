@@ -7,8 +7,6 @@ namespace Mess.Chart.Abstractions.Models;
 
 public class DashboardItem : ContentItemBase
 {
-  public const string ContentType = "Dashboard";
-
   public Lazy<TitlePart> TitlePart { get; private set; } = default!;
 
   public Lazy<FlowPart> FlowPart { get; private set; } = default!;

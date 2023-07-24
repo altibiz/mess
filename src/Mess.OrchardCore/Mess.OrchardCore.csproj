@@ -10,6 +10,7 @@
     <PackageReference Include="OrchardCore.Lists" Version="$(MessOrchardVersion)" />
     <PackageReference Include="OrchardCore.Contents" Version="$(MessOrchardVersion)" />
     <PackageReference Include="OrchardCore.Users.Core" Version="$(MessOrchardVersion)" />
+    <PackageReference Include="OrchardCore.DisplayManagement" Version="$(MessOrchardVersion)" />
   </ItemGroup>
 
   <ItemGroup>

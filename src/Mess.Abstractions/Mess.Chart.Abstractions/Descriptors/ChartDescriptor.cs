@@ -1,3 +1,3 @@
 namespace Mess.Chart.Abstractions.Descriptors;
 
-public record ChartDescriptor(string Type, TimeSpan RefreshInterval);
+public record ChartDescriptor(string Type, double RefreshInterval);

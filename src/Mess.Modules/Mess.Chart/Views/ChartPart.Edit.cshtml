@@ -6,19 +6,6 @@
 
 <div class="mb-3 row">
   <div class="col-sm-6">
-    <label asp-for="ChartDataProviderId">@T["Data provider"]</label>
-    <select class="form-select" asp-for="ChartDataProviderId">
-      @foreach (var item in Model.ChartDataProviderIdOptions)
-      {
-        <option value="@item.Value">@item.Text</option>
-      }
-    </select>
-    <span class="hint">@T["How data will be fetched for the chart."]</span>
-  </div>
-</div>
-
-<div class="mb-3 row">
-  <div class="col-sm-6">
     <label asp-for="ChartContentItemId">@T["Chart"]</label>
     <select class="form-select" asp-for="ChartContentItemId">
       @foreach (var item in Model.ChartContentItemIdOptions)

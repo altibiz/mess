@@ -21,7 +21,6 @@ using OrchardCore.Users.Models;
 using OrchardCore.Users.Services;
 using YesSql;
 using YesSql.Sql;
-using Microsoft.Extensions.Options;
 using Mess.ContentFields.Abstractions.Services;
 
 namespace Mess.Eor;
@@ -255,6 +254,11 @@ public class Migrations : DataMigration
           new RoleClaim
           {
             ClaimType = Permission.ClaimType,
+            ClaimValue = "ControlEorMeasurementDevice"
+          },
+          new RoleClaim
+          {
+            ClaimType = Permission.ClaimType,
             ClaimValue = "ManageEorMeasurementDevice"
           }
         }
@@ -273,6 +277,11 @@ public class Migrations : DataMigration
           {
             ClaimType = Permission.ClaimType,
             ClaimValue = "ViewEorMeasurementDevice"
+          },
+          new RoleClaim
+          {
+            ClaimType = Permission.ClaimType,
+            ClaimValue = "ControlEorMeasurementDevice"
           }
         }
       }
@@ -315,7 +324,7 @@ public class Migrations : DataMigration
     );
     var eorVoltageDataset =
       await _contentManager.NewContentAsync<TimeseriesChartDatasetItem>();
-    eorCurrentDataset.Alter(
+    eorVoltageDataset.Alter(
       eorVoltageDataset => eorVoltageDataset.TimeseriesChartDatasetPart,
       timeseriesChartDatasetPart =>
       {
@@ -326,7 +335,7 @@ public class Migrations : DataMigration
     );
     var eorModeDataset =
       await _contentManager.NewContentAsync<TimeseriesChartDatasetItem>();
-    eorCurrentDataset.Alter(
+    eorModeDataset.Alter(
       eorModeDataset => eorModeDataset.TimeseriesChartDatasetPart,
       timeseriesChartDatasetPart =>
       {
@@ -340,7 +349,8 @@ public class Migrations : DataMigration
       eorChart => eorChart.TimeseriesChartPart,
       timeseriesChartPart =>
       {
-        timeseriesChartPart.ChartProviderId = EorChartProvider.ChartProviderId;
+        timeseriesChartPart.HistorySpan = TimeSpan.FromMinutes(5);
+        timeseriesChartPart.RefreshIntervalSpan = TimeSpan.FromSeconds(10);
         timeseriesChartPart.Datasets = new()
         {
           eorCurrentDataset,
@@ -379,7 +389,6 @@ public class Migrations : DataMigration
       eorMeasurementDevice => eorMeasurementDevice.ChartPart,
       chartPart =>
       {
-        chartPart.ChartDataProviderId = EorChartProvider.ChartProviderId;
         chartPart.ChartContentItemId = eorChart.ContentItemId;
       }
     );

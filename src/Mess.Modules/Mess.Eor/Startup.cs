@@ -121,39 +121,6 @@ public class Startup : StartupBase
     );
 
     routes.MapAreaControllerRoute(
-      name: "Mess.Eor.MeasurementDeviceAdminController.ToggleRunState",
-      areaName: "Mess.Eor",
-      pattern: adminUrlPrefix + "/Devices/{contentItemId}/ToggleRunState",
-      defaults: new
-      {
-        controller = typeof(EorMeasurementDeviceAdminController).ControllerName(),
-        action = nameof(EorMeasurementDeviceAdminController.ToggleRunState)
-      }
-    );
-
-    routes.MapAreaControllerRoute(
-      name: "Mess.Eor.MeasurementDeviceAdminController.Reset",
-      areaName: "Mess.Eor",
-      pattern: adminUrlPrefix + "/Devices/{contentItemId}/Reset",
-      defaults: new
-      {
-        controller = typeof(EorMeasurementDeviceAdminController).ControllerName(),
-        action = nameof(EorMeasurementDeviceAdminController.Reset)
-      }
-    );
-
-    routes.MapAreaControllerRoute(
-      name: "Mess.Eor.MeasurementDeviceAdminController.SetMode",
-      areaName: "Mess.Eor",
-      pattern: adminUrlPrefix + "/Devices/{contentItemId}/SetMode",
-      defaults: new
-      {
-        controller = typeof(EorMeasurementDeviceAdminController).ControllerName(),
-        action = nameof(EorMeasurementDeviceAdminController.SetMode)
-      }
-    );
-
-    routes.MapAreaControllerRoute(
       name: "Mess.Eor.MeasurementDeviceController.List",
       areaName: "Mess.Eor",
       pattern: "/Devices",
@@ -175,13 +142,76 @@ public class Startup : StartupBase
       }
     );
 
-    // TODO: dynamic rewrite rule that will detect whether user is admin or not
-    // inject an IRule implementation and add it here
-    // app.UseRewriter(
-    //   new RewriteOptions()
-    //     .AddRewrite(adminUrlPrefix, adminUrlPrefix + "/Devices", false)
-    //     .AddRewrite("/", "/Devices", false)
-    // );
+    routes.MapAreaControllerRoute(
+      name: "Mess.Eor.MeasurementDeviceDataController.Data",
+      areaName: "Mess.Eor",
+      pattern: "/Devices/{contentItemId}/Data",
+      defaults: new
+      {
+        controller = typeof(EorMeasurementDeviceDataController).ControllerName(),
+        action = nameof(EorMeasurementDeviceDataController.Index)
+      }
+    );
+
+    routes.MapAreaControllerRoute(
+      name: "Mess.Eor.MeasurementDeviceControlsController.ToggleRunState",
+      areaName: "Mess.Eor",
+      pattern: "/Devices/{contentItemId}/ToggleRunState",
+      defaults: new
+      {
+        controller = typeof(EorMeasurementDeviceControlsController).ControllerName(),
+        action = nameof(EorMeasurementDeviceControlsController.ToggleRunState)
+      }
+    );
+
+    routes.MapAreaControllerRoute(
+      name: "Mess.Eor.MeasurementDeviceControlsController.Start",
+      areaName: "Mess.Eor",
+      pattern: "/Devices/{contentItemId}/Start",
+      defaults: new
+      {
+        controller = typeof(EorMeasurementDeviceControlsController).ControllerName(),
+        action = nameof(EorMeasurementDeviceControlsController.Start)
+      }
+    );
+
+    routes.MapAreaControllerRoute(
+      name: "Mess.Eor.MeasurementDeviceControlsController.Stop",
+      areaName: "Mess.Eor",
+      pattern: "/Devices/{contentItemId}/Stop",
+      defaults: new
+      {
+        controller = typeof(EorMeasurementDeviceControlsController).ControllerName(),
+        action = nameof(EorMeasurementDeviceControlsController.Stop)
+      }
+    );
+
+    routes.MapAreaControllerRoute(
+      name: "Mess.Eor.MeasurementDeviceControlsController.Reset",
+      areaName: "Mess.Eor",
+      pattern: "/Devices/{contentItemId}/Reset",
+      defaults: new
+      {
+        controller = typeof(EorMeasurementDeviceControlsController).ControllerName(),
+        action = nameof(EorMeasurementDeviceControlsController.Reset)
+      }
+    );
+
+    routes.MapAreaControllerRoute(
+      name: "Mess.Eor.MeasurementDeviceControlsController.SetMode",
+      areaName: "Mess.Eor",
+      pattern: "/Devices/{contentItemId}/SetMode",
+      defaults: new
+      {
+        controller = typeof(EorMeasurementDeviceControlsController).ControllerName(),
+        action = nameof(EorMeasurementDeviceControlsController.SetMode)
+      }
+    );
+
+    app.UseEndpoints(endpoints =>
+    {
+      endpoints.Redirect("/", "/Devices");
+    });
   }
 
   public Startup(IShellConfiguration shellConfiguration)

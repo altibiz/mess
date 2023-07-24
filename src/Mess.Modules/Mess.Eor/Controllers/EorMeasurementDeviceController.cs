@@ -12,6 +12,7 @@ using Mess.Eor.Abstractions.Client;
 
 namespace Mess.Eor.Controllers;
 
+[Authorize]
 public class EorMeasurementDeviceController : Controller
 {
   public async Task<IActionResult> List()
@@ -23,16 +24,14 @@ public class EorMeasurementDeviceController : Controller
       )
     )
     {
-      return Forbid();
+      return Redirect("");
     }
-
-    var orchardCoreUser = await this.GetAuthenticatedOrchardCoreUserAsync();
 
     IEnumerable<ContentItem>? contentItems = null;
     if (
-      orchardCoreUser.RoleNames.Contains("Administrator")
-      || orchardCoreUser.RoleNames.Contains(
-        "EOR measurement device administrator"
+      await _authorizationService.AuthorizeAsync(
+        User,
+        EorPermissions.ManageEorMeasurementDevice
       )
     )
     {
@@ -42,6 +41,7 @@ public class EorMeasurementDeviceController : Controller
     }
     else
     {
+      var orchardCoreUser = await this.GetAuthenticatedOrchardCoreUserAsync();
       contentItems = await _session
         .Query<ContentItem, EorMeasurementDeviceIndex>()
         .Where(index => index.OwnerId == orchardCoreUser.UserId)

@@ -1,10 +1,9 @@
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 using System.Xml.Linq;
 using Mess.System.Extensions.Streams;
-using Mess.System.Json;
+using Mess.System.Extensions.Json;
 
 namespace Mess.System.Extensions.Objects;
 
@@ -13,68 +12,30 @@ public static class ObjectSerializationExtensions
   public static string ToJson<T>(this T @this, bool pretty = true) =>
     JsonSerializer.Serialize(
       @this,
-      new JsonSerializerOptions
-      {
-        AllowTrailingCommas = true,
-        WriteIndented = pretty,
-        ReferenceHandler = ReferenceHandler.IgnoreCycles,
-        PropertyNameCaseInsensitive = true,
-        NumberHandling = JsonNumberHandling.AllowReadingFromString,
-        Converters =
-        {
-          new TupleJsonConverterFactory(),
-          new TimeSpanConverter(),
-          new EnumConverterFactory(),
-          // new ListJsonConverterFactory(),
-          new BooleanJsonConverter()
-        }
-      }
+      new JsonSerializerOptions()
+        .AddMessSystemJsonOptions(pretty)
+        .AddMessSystemJsonConverters()
     );
 
   public static string ToJson(
     this object @this,
-    global::System.Type type,
+    Type type,
     bool pretty = true
   ) =>
     JsonSerializer.Serialize(
       @this,
       type,
-      new JsonSerializerOptions
-      {
-        AllowTrailingCommas = true,
-        WriteIndented = pretty,
-        ReferenceHandler = ReferenceHandler.IgnoreCycles,
-        PropertyNameCaseInsensitive = true,
-        NumberHandling = JsonNumberHandling.AllowReadingFromString,
-        Converters =
-        {
-          new TupleJsonConverterFactory(),
-          new TimeSpanConverter(),
-          new EnumConverterFactory(),
-          // new ListJsonConverterFactory(),
-          new BooleanJsonConverter()
-        }
-      }
+      new JsonSerializerOptions()
+        .AddMessSystemJsonOptions(pretty)
+        .AddMessSystemJsonConverters()
     );
 
   public static T? FromJson<T>(this string @this) =>
     JsonSerializer.Deserialize<T>(
       @this,
-      new JsonSerializerOptions
-      {
-        AllowTrailingCommas = true,
-        ReferenceHandler = ReferenceHandler.IgnoreCycles,
-        NumberHandling = JsonNumberHandling.AllowReadingFromString,
-        PropertyNameCaseInsensitive = true,
-        Converters =
-        {
-          new TupleJsonConverterFactory(),
-          new TimeSpanConverter(),
-          new EnumConverterFactory(),
-          // new ListJsonConverterFactory(),
-          new BooleanJsonConverter()
-        }
-      }
+      new JsonSerializerOptions()
+        .AddMessSystemJsonOptions()
+        .AddMessSystemJsonConverters()
     );
 
   public static string ToXml<T>(this T @this)

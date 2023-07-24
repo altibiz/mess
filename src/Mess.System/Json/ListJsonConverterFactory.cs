@@ -22,11 +22,11 @@ public class ListJsonConverterFactory : JsonConverterFactory
   {
     return (JsonConverter)
       Activator.CreateInstance(
-        typeof(JsonListConverter<>).MakeGenericType(typeToConvert)
+        typeof(ListJsonConverter<>).MakeGenericType(typeToConvert)
       )!;
   }
 
-  private class JsonListConverter<T> : JsonConverter<T>
+  private class ListJsonConverter<T> : JsonConverter<T>
     where T : IList
   {
     public override void Write(
@@ -62,8 +62,9 @@ public class ListJsonConverterFactory : JsonConverterFactory
       Type? itemType = null;
       if (type.IsArray)
       {
-        result = (IList?)Activator.CreateInstance(type, 0);
-        itemType = type.GetElementType();
+        itemType = type.GetElementType()!;
+        var listType = typeof(List<>).MakeGenericType(itemType);
+        result = (IList?)Activator.CreateInstance(listType);
       }
       else
       {
@@ -108,12 +109,22 @@ public class ListJsonConverterFactory : JsonConverterFactory
             itemType,
             options
           );
+
           result.Add(deserializedItem);
         }
       }
       else
       {
         throw new JsonException("Expected a string or start array");
+      }
+
+      if (type.IsArray)
+      {
+        return (T)
+          typeof(Enumerable)
+            .GetMethod(nameof(Enumerable.ToArray))!
+            .MakeGenericMethod(itemType)
+            .Invoke(null, new object[] { result })!;
       }
 
       return (T)result;

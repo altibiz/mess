@@ -1,7 +1,7 @@
 namespace Mess.Chart.Abstractions.Descriptors;
 
 public record TimeseriesChartDescriptor(
-  TimeSpan RefreshInterval,
-  TimeSpan History,
+  double RefreshInterval,
+  double History,
   IReadOnlyCollection<TimeseriesChartDatasetDescriptor> Datasets
 ) : ChartDescriptor("timeseries", RefreshInterval);

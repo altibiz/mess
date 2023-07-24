@@ -4,6 +4,7 @@ using Mess.Eor.Abstractions.Indexes;
 using Mess.Eor.Abstractions.Models;
 using Mess.Eor.ViewModels;
 using Mess.OrchardCore;
+using Mess.OrchardCore.Extensions.Microsoft;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OrchardCore.Admin;
@@ -13,6 +14,7 @@ using YesSql;
 namespace Mess.Eor.Controllers;
 
 [Admin]
+[Authorize]
 public class EorMeasurementDeviceAdminController : Controller
 {
   public async Task<IActionResult> List()
@@ -27,9 +29,26 @@ public class EorMeasurementDeviceAdminController : Controller
       return Forbid();
     }
 
-    var contentItems = await _session
-      .Query<ContentItem, EorMeasurementDeviceIndex>()
-      .ListAsync();
+    IEnumerable<ContentItem>? contentItems = null;
+    if (
+      await _authorizationService.AuthorizeAsync(
+        User,
+        EorPermissions.ManageEorMeasurementDevice
+      )
+    )
+    {
+      contentItems = await _session
+        .Query<ContentItem, EorMeasurementDeviceIndex>()
+        .ListAsync();
+    }
+    else
+    {
+      var orchardCoreUser = await this.GetAuthenticatedOrchardCoreUserAsync();
+      contentItems = await _session
+        .Query<ContentItem, EorMeasurementDeviceIndex>()
+        .Where(index => index.OwnerId == orchardCoreUser.UserId)
+        .ListAsync();
+    }
 
     var eorMeasurementDevices = contentItems.Select(
       contentItem => contentItem.AsContent<EorMeasurementDeviceItem>()
@@ -185,121 +204,6 @@ public class EorMeasurementDeviceAdminController : Controller
     }
 
     return View();
-  }
-
-  [HttpPost]
-  public async Task<IActionResult> ToggleRunState(string contentItemId)
-  {
-    if (
-      !await _authorizationService.AuthorizeAsync(
-        User,
-        EorPermissions.ManageEorMeasurementDevice
-      )
-    )
-    {
-      return Forbid();
-    }
-
-    var contentItem = await _contentManager.GetAsync(contentItemId);
-    if (contentItem == null)
-    {
-      return NotFound();
-    }
-    var eorMeasurementDevice =
-      contentItem.AsContent<EorMeasurementDeviceItem>();
-
-    eorMeasurementDevice.Alter(
-      eorMeasurementDevice => eorMeasurementDevice.EorMeasurementDevicePart,
-      eorMeasurementDevice =>
-      {
-        eorMeasurementDevice.RunState =
-          eorMeasurementDevice.RunState == EorMeasurementDeviceRunState.Stopped
-            ? EorMeasurementDeviceRunState.Started
-            : EorMeasurementDeviceRunState.Stopped;
-      }
-    );
-    await _contentManager.UpdateAsync(eorMeasurementDevice);
-
-    return RedirectToAction(
-      nameof(Detail),
-      new { contentItemId = contentItemId }
-    );
-  }
-
-  [HttpPost]
-  public async Task<IActionResult> Reset(string contentItemId)
-  {
-    if (
-      !await _authorizationService.AuthorizeAsync(
-        User,
-        EorPermissions.ManageEorMeasurementDevice
-      )
-    )
-    {
-      return Forbid();
-    }
-
-    var contentItem = await _contentManager.GetAsync(contentItemId);
-    if (contentItem == null)
-    {
-      return NotFound();
-    }
-    var eorMeasurementDevice =
-      contentItem.AsContent<EorMeasurementDeviceItem>();
-
-    eorMeasurementDevice.Alter(
-      eorMeasurementDevice => eorMeasurementDevice.EorMeasurementDevicePart,
-      eorMeasurementDevice =>
-      {
-        eorMeasurementDevice.ResetState =
-          EorMeasurementDeviceResetState.ShouldReset;
-      }
-    );
-    await _contentManager.UpdateAsync(eorMeasurementDevice);
-
-    return RedirectToAction(
-      nameof(Detail),
-      new { contentItemId = contentItemId }
-    );
-  }
-
-  [HttpPost]
-  public async Task<IActionResult> SetMode(
-    string contentItemId,
-    [FromForm] int mode
-  )
-  {
-    if (
-      !await _authorizationService.AuthorizeAsync(
-        User,
-        EorPermissions.ManageEorMeasurementDevice
-      )
-    )
-    {
-      return Forbid();
-    }
-
-    var contentItem = await _contentManager.GetAsync(contentItemId);
-    if (contentItem == null)
-    {
-      return NotFound();
-    }
-    var eorMeasurementDevice =
-      contentItem.AsContent<EorMeasurementDeviceItem>();
-
-    eorMeasurementDevice.Alter(
-      eorMeasurementDevice => eorMeasurementDevice.EorMeasurementDevicePart,
-      eorMeasurementDevice =>
-      {
-        eorMeasurementDevice.Mode = mode;
-      }
-    );
-    await _contentManager.UpdateAsync(eorMeasurementDevice);
-
-    return RedirectToAction(
-      nameof(Detail),
-      new { contentItemId = contentItemId }
-    );
   }
 
   public EorMeasurementDeviceAdminController(

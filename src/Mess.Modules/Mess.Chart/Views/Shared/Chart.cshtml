@@ -8,27 +8,16 @@
   var culture = Orchard.CultureName();
 }
 
-<canvas id="@canvasId" width="400" height="400"></canvas>
-<span id="@errorSpanId"></span>
+<div style="position: relative; width: 400px; height: 400px;">
+  <canvas id="@canvasId"></canvas>
+</div>
 
-<script asp-name="jQuery"></script>
 <script asp-name="mess-chart"></script>
 <script>
-  $(function () {
-    window.mess.chart.create(
-      "@contentItemId",
-      {
-        isPreview: @isPreview.ToString().ToLower()
-      })
-      .then(function (chart) {
-        if (!chart) {
-          var errorSpan = document.getElementById("@errorSpanId");
-          errorSpan.innerHtml = '@T["Error occured while creating chart"]';
-          return;
-        }
-
-        window.mess.chart.bind("@canvasId", "@culture", chart);
-      })
-      .catch(console.error);
-  })
+  window.mess.chart.useChart({
+    contentItemId: "@contentItemId",
+    isPreview: @isPreview.ToString().ToLower(),
+    canvasId: "@canvasId",
+    culture: "@culture",
+  });
 </script>

@@ -29,12 +29,15 @@ public class EorPollHandler : JsonMeasurementDevicePollHandler<EorPollResponse>
     }
 
     return new(
-      Mode: measurementDevice.EorMeasurementDevicePart.Value.Mode,
-      Reset: measurementDevice.EorMeasurementDevicePart.Value.ResetState
-        == EorMeasurementDeviceResetState.ShouldReset,
-      Start: measurementDevice.EorMeasurementDevicePart.Value.RunState
+      Mode: measurementDevice.EorMeasurementDevicePart.Value.Controls.Mode,
+      Reset: measurementDevice
+        .EorMeasurementDevicePart
+        .Value
+        .Controls
+        .ResetState == EorMeasurementDeviceResetState.ShouldReset,
+      Start: measurementDevice.EorMeasurementDevicePart.Value.Controls.RunState
         == EorMeasurementDeviceRunState.Started,
-      Stop: measurementDevice.EorMeasurementDevicePart.Value.RunState
+      Stop: measurementDevice.EorMeasurementDevicePart.Value.Controls.RunState
         == EorMeasurementDeviceRunState.Stopped
     );
   }
@@ -53,12 +56,15 @@ public class EorPollHandler : JsonMeasurementDevicePollHandler<EorPollResponse>
     }
 
     return new(
-      Mode: measurementDevice.EorMeasurementDevicePart.Value.Mode,
-      Reset: measurementDevice.EorMeasurementDevicePart.Value.ResetState
-        == EorMeasurementDeviceResetState.ShouldReset,
-      Start: measurementDevice.EorMeasurementDevicePart.Value.RunState
+      Mode: measurementDevice.EorMeasurementDevicePart.Value.Controls.Mode,
+      Reset: measurementDevice
+        .EorMeasurementDevicePart
+        .Value
+        .Controls
+        .ResetState == EorMeasurementDeviceResetState.ShouldReset,
+      Start: measurementDevice.EorMeasurementDevicePart.Value.Controls.RunState
         == EorMeasurementDeviceRunState.Started,
-      Stop: measurementDevice.EorMeasurementDevicePart.Value.RunState
+      Stop: measurementDevice.EorMeasurementDevicePart.Value.Controls.RunState
         == EorMeasurementDeviceRunState.Stopped
     );
   }

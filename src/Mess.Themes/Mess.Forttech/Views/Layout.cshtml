@@ -1,3 +1,7 @@
+@{
+  var clockId = "clock";
+}
+
 <!DOCTYPE html>
 <html lang="@Orchard.CultureName()">
   <head>
@@ -19,16 +23,63 @@
     
     <style asp-name="mess-forttech" at="Inline"></style>
     <script asp-name="mess-forttech" at="Inline"></script>
+    <script>
+      window.mess.forttech.useClock("@clockId");
+    </script>
   </head>
 
   <body dir="@Orchard.CultureDir()">
     <header class="header">
+      <nav class="closed">
+        <div class="container">
+          <ul>
+            <li>
+              <a href="~/Devices">
+                <span>Devices</span>
+              </a>
+            </li>
+          </ul>
+          <ul>
+            <li>
+              <a href="~/Login">
+                <span>Log In</span>
+              </a>
+            </li>
+            <li>
+              <form 
+                  asp-route-area="OrchardCore.Users"
+                  asp-controller="Account"
+                  asp-action="LogOff">
+                <button type="submit" class="logout-button">
+                  <span>Log Out</span>
+                </button>
+              </form>
+            </li>
+          </ul>
+        </div>
+      </nav>
       <div class="flex container">
-        <h1>Forttech phi inc. Delaware</h1>
-        <span id="clock">--</span>
+        <a href="~/Devices">
+          <h1>
+            Forttech phi inc. Delaware
+          </h1>
+        </a>
+        <span id="@clockId">--</span>
         @await RenderSectionAsync("Header", required: false)
         @await RenderSectionAsync("Login", required: false)
       </div>
+      <button id="nav-button" class="nav-button"></button>
+      <script>
+        document
+          .getElementById("nav-button")
+          .addEventListener("click",  () => {
+            document.querySelector("nav").classList.toggle("closed");
+          });
+          
+        window.addEventListener("scroll", () => {
+          document.querySelector("nav").classList.add("closed");
+        });
+      </script>
     </header>
 
     <main>

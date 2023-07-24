@@ -40,8 +40,8 @@ public class ApiKeyFieldDisplayDriver : ContentFieldDisplayDriver<ApiKeyField>
       GetEditorShapeType(context),
       model =>
       {
+        model.Value = field.Value;
         model.Field = field;
-        model.Value = "";
         model.Part = context.ContentPart;
         model.PartFieldDefinition = context.PartFieldDefinition;
       }
@@ -54,26 +54,30 @@ public class ApiKeyFieldDisplayDriver : ContentFieldDisplayDriver<ApiKeyField>
     UpdateFieldEditorContext context
   )
   {
-    if (await updater.TryUpdateModelAsync(field, Prefix, f => f.Value))
+    var model = new ApiKeyFieldEditViewModel { };
+
+    if (await updater.TryUpdateModelAsync(model, Prefix, f => f.Value))
     {
-      if (String.IsNullOrWhiteSpace(field.Value))
+      if (String.IsNullOrWhiteSpace(model.Value))
       {
         updater.ModelState.AddModelError(
           Prefix,
-          nameof(field.Value),
+          nameof(model.Value),
           S[
             "A value is required for {0}.",
             context.PartFieldDefinition.DisplayName()
           ]
         );
       }
+      else
+      {
+        var salt = await _apiKeyFieldService.GenerateApiKeySaltAsync();
+        var hash = await _apiKeyFieldService.HashApiKeyAsync(model.Value, salt);
+        field.Hash = hash;
+        field.Salt = salt;
+      }
 
-      var salt = await _apiKeyFieldService.GenerateApiKeySaltAsync();
-
-      var hash = await _apiKeyFieldService.HashApiKeyAsync(field.Value, salt);
-
-      field.Hash = hash;
-      field.Salt = salt;
+      field.Value = model.Value;
     }
 
     return Edit(field, context);

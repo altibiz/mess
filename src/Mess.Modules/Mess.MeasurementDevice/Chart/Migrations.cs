@@ -91,8 +91,6 @@ public class Migrations : DataMigration
         egaugeChart => egaugeChart.TimeseriesChartPart,
         timeseriesChartPart =>
         {
-          timeseriesChartPart.ChartProviderId =
-            EgaugeChartProvider.ChartProviderId;
           timeseriesChartPart.Datasets = new() { eguagePowerDataset };
         }
       );
@@ -118,7 +116,6 @@ public class Migrations : DataMigration
         egaugeMeasurementDevice => egaugeMeasurementDevice.ChartPart,
         chartPart =>
         {
-          chartPart.ChartDataProviderId = EgaugeChartProvider.ChartProviderId;
           chartPart.ChartContentItemId = egaugeChart.ContentItemId;
         }
       );

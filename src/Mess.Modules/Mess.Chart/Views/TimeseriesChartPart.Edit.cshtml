@@ -6,9 +6,9 @@
 
 <div class="mb-3 row">
   <div class="col-sm-6">
-    <label asp-for="ChartDataProviderId">@T["Data provider"]</label>
-    <select class="form-select" asp-for="ChartDataProviderId">
-      @foreach (var item in Model.ChartDataProviderIdOptions)
+    <label asp-for="ChartContentType">@T["Data provider"]</label>
+    <select class="form-select" asp-for="ChartContentType">
+      @foreach (var item in Model.ChartContentTypeOptions)
       {
         <option value="@item.Value">@item.Text</option>
       }
@@ -30,7 +30,7 @@
     @foreach (var contentItem in Model.Part.Datasets)
     {
       contentItem.Content.ContentItemId = Model.Part.ContentItem.ContentItemId;
-      contentItem.Content.DataProviderId = Model.Part.ChartProviderId;
+      contentItem.Content.ChartContentType = Model.Part.ChartContentType;
       dynamic dataset = await ContentItemDisplayManager.BuildDisplayAsync(
         contentItem,
         ModelUpdaterAccessor.ModelUpdater
