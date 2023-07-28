@@ -26,7 +26,6 @@ public class ChartPartDisplayDriver : ContentPartDisplayDriver<ChartPart>
         GetDisplayShapeType(context),
         model =>
         {
-          model.ChartDataProviderId = part.ChartDataProviderId;
           model.ChartContentItemId = part.ChartContentItemId;
           model.Part = part;
           model.Definition = context.TypePartDefinition;
@@ -43,24 +42,14 @@ public class ChartPartDisplayDriver : ContentPartDisplayDriver<ChartPart>
     var charts = await _session.QueryIndex<ChartIndex>().ListAsync();
     var chartDataProviders = _serviceProvider
       .GetServices<IChartProvider>()
-      .Where(provider => provider.Id != PreviewChartDataProvider.ProviderId);
+      .Where(
+        provider => provider.ContentType != PreviewChartDataProvider.ProviderId
+      );
 
     return Initialize<ChartPartEditViewModel>(
       GetEditorShapeType(context),
       model =>
       {
-        model.ChartDataProviderId =
-          part.ChartDataProviderId ?? chartDataProviders.First().Id;
-        model.ChartDataProviderIdOptions = chartDataProviders
-          .Select(
-            dataProvider =>
-              new SelectListItem
-              {
-                Text = dataProvider.Id,
-                Value = dataProvider.Id
-              }
-          )
-          .ToList();
         model.ChartContentItemId =
           part.ChartContentItemId ?? charts.First().ChartContentItemId!;
         model.ChartContentItemIdOptions = charts
@@ -91,12 +80,10 @@ public class ChartPartDisplayDriver : ContentPartDisplayDriver<ChartPart>
       await updater.TryUpdateModelAsync(
         viewModel,
         Prefix,
-        model => model.ChartDataProviderId,
         model => model.ChartContentItemId
       )
     )
     {
-      part.ChartDataProviderId = viewModel.ChartDataProviderId;
       part.ChartContentItemId = viewModel.ChartContentItemId;
     }
 

@@ -8,6 +8,10 @@ public class Resources : IConfigureOptions<ResourceManagementOptions>
   static Resources()
   {
     _manifest = new ResourceManifest();
+
+    _manifest
+      .DefineScript("mess-eor")
+      .SetUrl("~/Mess.Eor/assets/scripts/eor.js");
   }
 
   public void Configure(ResourceManagementOptions options)

@@ -30,7 +30,8 @@ public class ChartController : Controller
     var dataProvider = serviceProvider
       .GetServices<IChartProvider>()
       .FirstOrDefault(
-        dataProvider => dataProvider.Id == metadataPart.ChartDataProviderId
+        dataProvider =>
+          dataProvider.ContentType == metadataPart.ContentItem.ContentType
       );
     if (dataProvider is null)
     {
@@ -76,7 +77,8 @@ public class ChartController : Controller
     var dataProvider = serviceProvider
       .GetServices<IChartProvider>()
       .FirstOrDefault(
-        dataProvider => dataProvider.Id == PreviewChartDataProvider.ProviderId
+        dataProvider =>
+          dataProvider.ContentType == PreviewChartDataProvider.ProviderId
       );
     if (dataProvider is null)
     {

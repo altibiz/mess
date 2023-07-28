@@ -14,7 +14,6 @@
       <th scope="col">@T["Mode"]</th>
       <th scope="col">@T["Voltage"]</th>
       <th scope="col">@T["Current"]</th>
-      <th scope="col"></th>
     </thead>
     <tbody>
       @foreach (var (item, summary) in Model.EorMeasurementDevices)
@@ -45,28 +44,6 @@
             <span>
               @summary?.LastMeasurement?.Current
             </span>
-          </td>
-          <td>
-            <a
-                asp-route-area="Mess.Eor"
-                asp-controller="EorMeasurementDeviceAdmin"
-                asp-action="Edit"
-                asp-route-contentItemId="@item.ContentItemId"
-                class="btn btn-primary btn-sm">
-              <span>
-                @T["Edit"]
-              </span>
-            </a>
-            <a
-                asp-route-area="Mess.Eor"
-                asp-controller="EorMeasurementDeviceAdmin"
-                asp-action="Delete"
-                asp-route-contentItemId="@item.ContentItemId"
-                class="btn btn-danger btn-sm">
-              <span>
-                @T["Delete"]
-              </span>
-            </a>
           </td>
         </tr>
       }

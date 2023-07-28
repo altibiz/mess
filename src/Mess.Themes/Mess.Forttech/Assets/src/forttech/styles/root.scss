@@ -12,11 +12,16 @@
   --danger: #cf2e2e;
   --level-content: 0;
   --level-header: 1;
-  --level-tooltip: 2;
+  --level-nav: 2;
+  --level-tooltip: 3;
   --breakpoint-mobile: 480px;
   --breakpoint-tablet: 768px;
   --breakpoint-laptop: 1024px;
   --breakpoint-desktop: 1440px;
   --min-header-height: 120px;
   --min-footer-height: 144px;
+  --max-section-width: 768px;
+  --fast: 0.1s;
+  --normal: 0.2s;
+  --slow: 0.5s;
 }

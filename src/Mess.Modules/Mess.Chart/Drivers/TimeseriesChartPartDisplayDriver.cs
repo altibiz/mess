@@ -25,21 +25,21 @@ public class TimeseriesChartPartDisplayDriver
       .GetServices<IChartProvider>()
       .Where(
         chartDataProvider =>
-          chartDataProvider.Id != PreviewChartDataProvider.ProviderId
+          chartDataProvider.ContentType != PreviewChartDataProvider.ProviderId
       );
     return Initialize<TimeseriesChartPartEditViewModel>(
       GetEditorShapeType(context),
       model =>
       {
-        model.ChartDataProviderId =
-          part.ChartProviderId ?? chartDataProviders.First().Id;
-        model.ChartDataProviderIdOptions = chartDataProviders
+        model.ChartContentType =
+          part.ChartContentType ?? chartDataProviders.First().ContentType;
+        model.ChartContentTypeOptions = chartDataProviders
           .Select(
             chartDataProvider =>
               new SelectListItem
               {
-                Text = chartDataProvider.Id,
-                Value = chartDataProvider.Id
+                Text = chartDataProvider.ContentType,
+                Value = chartDataProvider.ContentType
               }
           )
           .ToList();
@@ -61,14 +61,14 @@ public class TimeseriesChartPartDisplayDriver
       await updater.TryUpdateModelAsync(
         viewModel,
         Prefix,
-        model => model.ChartDataProviderId
+        model => model.ChartContentType
       )
     )
     {
-      if (part.ChartProviderId != viewModel.ChartDataProviderId)
+      if (part.ChartContentType != viewModel.ChartContentType)
       {
         part.Datasets = new();
-        part.ChartProviderId = viewModel.ChartDataProviderId;
+        part.ChartContentType = viewModel.ChartContentType;
       }
     }
 

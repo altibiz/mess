@@ -5,8 +5,6 @@ namespace Mess.Chart.Abstractions.Models;
 
 public class TimeseriesChartDatasetItem : ContentItemBase
 {
-  public const string ContentType = "TimeseriesChartDataset";
-
   public Lazy<TimeseriesChartDatasetPart> TimeseriesChartDatasetPart
   {
     get;

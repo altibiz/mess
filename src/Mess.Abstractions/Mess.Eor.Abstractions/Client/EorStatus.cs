@@ -20,22 +20,7 @@ public record EorStatus(
   float Temperature,
   bool HeatsinkFans,
   bool CoolingFans
-)
-{
-  public EorMeasurementDevicePowerState PowerState =>
-    ProcessFault == ((int)EorMeasurementDevicePowerState.On)
-      ? EorMeasurementDevicePowerState.On
-      : ProcessFault == ((int)EorMeasurementDevicePowerState.Off)
-        ? EorMeasurementDevicePowerState.Off
-        : EorMeasurementDevicePowerState.Error;
-
-  public string? Error =>
-    ProcessFault != 0
-      ? "ProcessFaults"
-      : CommunicationFault != 0
-        ? "CommunicationFaults"
-        : null;
-}
+);
 
 public enum EorMeasurementDeviceRunState : int
 {
@@ -65,8 +50,8 @@ public enum EorDoorState : int
 
 public enum EorMainCircuitBreakerState : int
 {
-  On = default,
-  Off = 1,
+  Off = default,
+  On = 1,
 };
 
 public enum EorTransformerContractorState : int

@@ -1,5 +1,6 @@
 using Newtonsoft.Json;
 using Mess.OrchardCore.Json;
+using Mess.OrchardCore.Extensions.Newtonsoft;
 
 namespace Mess.OrchardCore.Extensions.Streams;
 
@@ -11,16 +12,9 @@ public static class StreamSerializationExtensions
   )
   {
     var serializer = JsonSerializer.Create(
-      new JsonSerializerSettings
-      {
-        ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-        Formatting = pretty ? Formatting.Indented : Formatting.None,
-        Converters = new JsonConverter[]
-        {
-          new TupleJsonConverter(),
-          new TimeSpanConverter()
-        }
-      }
+      new JsonSerializerSettings { }
+        .AddMessNewtonsoftJsonSettings(pretty)
+        .AddMessNewtonsoftJsonConverters()
     );
 
     var stream = new MemoryStream();
@@ -36,15 +30,9 @@ public static class StreamSerializationExtensions
   public static T? FromNewtonsoftJsonStream<T>(this Stream @this)
   {
     var serializer = JsonSerializer.Create(
-      new JsonSerializerSettings
-      {
-        ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-        Converters = new JsonConverter[]
-        {
-          new TupleJsonConverter(),
-          new TimeSpanConverter()
-        }
-      }
+      new JsonSerializerSettings { }
+        .AddMessNewtonsoftJsonSettings()
+        .AddMessNewtonsoftJsonConverters()
     );
 
     using var streamWriter = new StreamReader(@this);
@@ -57,15 +45,9 @@ public static class StreamSerializationExtensions
   public static object? FromNewtonsoftJsonStream(this Stream @this, Type type)
   {
     var serializer = JsonSerializer.Create(
-      new JsonSerializerSettings
-      {
-        ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-        Converters = new JsonConverter[]
-        {
-          new TupleJsonConverter(),
-          new TimeSpanConverter()
-        }
-      }
+      new JsonSerializerSettings { }
+        .AddMessNewtonsoftJsonSettings()
+        .AddMessNewtonsoftJsonConverters()
     );
 
     using var streamWriter = new StreamReader(@this);

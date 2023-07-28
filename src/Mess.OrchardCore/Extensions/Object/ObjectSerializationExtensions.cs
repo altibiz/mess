@@ -2,6 +2,7 @@ using Newtonsoft.Json;
 using Mess.OrchardCore.Json;
 using Mess.System.Extensions.Streams;
 using Mess.OrchardCore.Extensions.Streams;
+using Mess.OrchardCore.Extensions.Newtonsoft;
 
 namespace Mess.OrchardCore.Extensions.Objects;
 
@@ -13,45 +14,26 @@ public static class ObjectSerializationExtensions
   ) =>
     JsonConvert.SerializeObject(
       @this,
-      new JsonSerializerSettings
-      {
-        ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-        Formatting = pretty ? Formatting.Indented : Formatting.None,
-        Converters = new JsonConverter[]
-        {
-          new TupleJsonConverter(),
-          new TimeSpanConverter()
-        }
-      }
+      new JsonSerializerSettings { }
+        .AddMessNewtonsoftJsonSettings(pretty)
+        .AddMessNewtonsoftJsonConverters()
     );
 
   public static T? FromNewtonsoftJson<T>(this string @this) =>
     JsonConvert.DeserializeObject<T>(
       @this,
-      new JsonSerializerSettings
-      {
-        ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-        Converters = new JsonConverter[]
-        {
-          new TupleJsonConverter(),
-          new TimeSpanConverter()
-        }
-      }
+      new JsonSerializerSettings { }
+        .AddMessNewtonsoftJsonSettings()
+        .AddMessNewtonsoftJsonConverters()
     );
 
   public static object? FromNewtonsoftJson(this string @this, Type type) =>
     JsonConvert.DeserializeObject(
       @this,
       type,
-      new JsonSerializerSettings
-      {
-        ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-        Converters = new JsonConverter[]
-        {
-          new TupleJsonConverter(),
-          new TimeSpanConverter()
-        }
-      }
+      new JsonSerializerSettings { }
+        .AddMessNewtonsoftJsonSettings()
+        .AddMessNewtonsoftJsonConverters()
     );
 
   public static string GetNewtonsoftJsonSha256Hash(this object @this)

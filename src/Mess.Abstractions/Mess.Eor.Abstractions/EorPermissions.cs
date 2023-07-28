@@ -9,6 +9,12 @@ public class EorPermissions : IPermissionProvider
     "Manage EOR measurement devices"
   );
 
+  public static readonly Permission ControlEorMeasurementDevice =
+    new Permission(
+      "ControlEorMeasurementDevice",
+      "Control EOR measurement devices"
+    );
+
   public static readonly Permission ViewEorMeasurementDevice = new Permission(
     "ViewEorMeasurementDevice",
     "View EOR measurement devices"
@@ -20,6 +26,7 @@ public class EorPermissions : IPermissionProvider
       new[]
       {
         ManageEorMeasurementDevice,
+        ControlEorMeasurementDevice,
         ViewEorMeasurementDevice
       }.AsEnumerable()
     );
@@ -35,6 +42,7 @@ public class EorPermissions : IPermissionProvider
         Permissions = new[]
         {
           ManageEorMeasurementDevice,
+          ControlEorMeasurementDevice,
           ViewEorMeasurementDevice
         }
       }

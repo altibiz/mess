@@ -27,8 +27,9 @@ public class EorUpdateHandler
     var eorMeasurementDevice =
       contentItem.AsContent<EorMeasurementDeviceItem>();
     if (
-      eorMeasurementDevice.EorMeasurementDevicePart.Value.Mode != status.Mode
-      || eorMeasurementDevice.EorMeasurementDevicePart.Value.ResetState
+      eorMeasurementDevice.EorMeasurementDevicePart.Value.Controls.Mode
+        != status.Mode
+      || eorMeasurementDevice.EorMeasurementDevicePart.Value.Controls.ResetState
         != status.ResetState
     )
     {
@@ -36,8 +37,8 @@ public class EorUpdateHandler
         eorMeasurementDevice => eorMeasurementDevice.EorMeasurementDevicePart,
         eorMeasurementDevicePart =>
         {
-          eorMeasurementDevicePart.Mode = status.Mode;
-          eorMeasurementDevicePart.ResetState = status.ResetState;
+          eorMeasurementDevicePart.Controls.Mode = status.Mode;
+          eorMeasurementDevicePart.Controls.ResetState = status.ResetState;
         }
       );
       _contentManager.UpdateAsync(eorMeasurementDevice).RunSynchronously();
@@ -59,10 +60,11 @@ public class EorUpdateHandler
     var eorMeasurementDevice =
       contentItem.AsContent<EorMeasurementDeviceItem>();
     if (
-      eorMeasurementDevice.EorMeasurementDevicePart.Value.Mode != status.Mode
-      || eorMeasurementDevice.EorMeasurementDevicePart.Value.ResetState
+      eorMeasurementDevice.EorMeasurementDevicePart.Value.Controls.Mode
+        != status.Mode
+      || eorMeasurementDevice.EorMeasurementDevicePart.Value.Controls.ResetState
         != status.ResetState
-      || eorMeasurementDevice.EorMeasurementDevicePart.Value.RunState
+      || eorMeasurementDevice.EorMeasurementDevicePart.Value.Controls.RunState
         != status.RunState
     )
     {
@@ -70,9 +72,9 @@ public class EorUpdateHandler
         eorMeasurementDevice => eorMeasurementDevice.EorMeasurementDevicePart,
         eorMeasurementDevicePart =>
         {
-          eorMeasurementDevicePart.Mode = status.Mode;
-          eorMeasurementDevicePart.ResetState = status.ResetState;
-          eorMeasurementDevicePart.RunState = status.RunState;
+          eorMeasurementDevicePart.Controls.Mode = status.Mode;
+          eorMeasurementDevicePart.Controls.ResetState = status.ResetState;
+          eorMeasurementDevicePart.Controls.RunState = status.RunState;
         }
       );
       await _contentManager.UpdateAsync(eorMeasurementDevice);

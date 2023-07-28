@@ -9,7 +9,7 @@ public class PreviewChartDataProvider : ChartProvider
 {
   public const string ProviderId = "Preview";
 
-  public override string Id => ProviderId;
+  public override string ContentType => ProviderId;
 
   public override IEnumerable<string> TimeseriesChartDatasetProperties =>
     new string[] { };
@@ -42,8 +42,12 @@ public class PreviewChartDataProvider : ChartProvider
     );
 
     return new TimeseriesChartDescriptor(
-      RefreshInterval: chart.TimeseriesChartPart.Value.RefreshIntervalSpan,
-      History: chart.TimeseriesChartPart.Value.HistorySpan,
+      RefreshInterval: chart
+        .TimeseriesChartPart
+        .Value
+        .RefreshIntervalSpan
+        .TotalMilliseconds,
+      History: chart.TimeseriesChartPart.Value.HistorySpan.TotalMilliseconds,
       Datasets: datasetDescriptors.ToList().AsReadOnly()
     );
   }

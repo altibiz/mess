@@ -10,9 +10,9 @@ namespace Mess.MeasurementDevice.Chart.Providers;
 
 public class EgaugeChartProvider : ChartProvider
 {
-  public const string ChartProviderId = "Egauge";
+  public const string ChartContentType = "EgaugeMeasurementDevice";
 
-  public override string Id => ChartProviderId;
+  public override string ContentType => ChartContentType;
 
   public override IEnumerable<string> TimeseriesChartDatasetProperties =>
     new[]
@@ -42,8 +42,12 @@ public class EgaugeChartProvider : ChartProvider
     );
 
     return new TimeseriesChartDescriptor(
-      RefreshInterval: chart.TimeseriesChartPart.Value.RefreshIntervalSpan,
-      History: chart.TimeseriesChartPart.Value.HistorySpan,
+      RefreshInterval: chart
+        .TimeseriesChartPart
+        .Value
+        .RefreshIntervalSpan
+        .TotalMilliseconds,
+      History: chart.TimeseriesChartPart.Value.HistorySpan.TotalMilliseconds,
       Datasets: datasets
         .Select(
           dataset =>

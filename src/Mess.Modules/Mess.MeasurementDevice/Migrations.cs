@@ -118,13 +118,6 @@ public class Migrations : DataMigration
           measurementDevicePart.DeviceId = new() { Text = "egauge" };
         }
       );
-      egaugeMeasurementDevice.Alter(
-        egaugeMeasurementDevice => egaugeMeasurementDevice.ChartPart,
-        chartPart =>
-        {
-          chartPart.ChartDataProviderId = EgaugeChartProvider.ChartProviderId;
-        }
-      );
       await _contentManager.CreateAsync(
         egaugeMeasurementDevice,
         VersionOptions.Latest

@@ -4,6 +4,7 @@
   margin: 0;
   text-decoration: none;
   background: none;
+  list-style: none;
 }
 
 .container {
@@ -19,6 +20,14 @@
   align-items: center;
 }
 
+body {
+  width: 100%;
+  height: fit-content;
+  background-image: url("../images/background.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
 @media screen and (width >= 768px) {
   .flex {
     flex-direction: row;
@@ -26,6 +35,9 @@
 }
 
 header {
+  position: absolute;
+  top: 0;
+  width: 100%;
   min-height: var(--min-header-height);
   padding-top: 12px;
   padding-bottom: 22px;
@@ -35,18 +47,24 @@ header {
   z-index: var(--level-header);
 }
 
+h1 {
+  color: var(--inverse-foreground);
+}
+
 main {
-  /* idk why the 14px but ok */
+  margin-top: 188px;
   min-height: calc(100vh - var(--min-header-height) - var(--min-footer-height));
   padding-top: 32px;
   padding-bottom: 48px;
   box-sizing: border-box;
-  background-color: var(--background);
   color: var(--foreground);
   z-index: var(--level-content);
-  background-image: url("../images/background.jpg");
-  background-size: cover;
-  background-position: center;
+}
+
+@media screen and (width >= 1440px) {
+  main {
+    margin-top: 228px;
+  }
 }
 
 footer {

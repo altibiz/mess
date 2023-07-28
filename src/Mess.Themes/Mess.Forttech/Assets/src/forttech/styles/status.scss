@@ -11,12 +11,12 @@
   line-height: 0;
 }
 
-.status-on {
+.status-ok {
   background-color: var(--success);
   color: var(--background);
 }
 
-.status-on::after {
+.status-ok::after {
   content: " ✔";
 }
 

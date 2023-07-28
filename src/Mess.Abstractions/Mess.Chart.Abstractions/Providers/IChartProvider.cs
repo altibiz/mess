@@ -5,7 +5,7 @@ namespace Mess.Chart.Abstractions.Providers;
 
 public interface IChartProvider
 {
-  public string Id { get; }
+  public string ContentType { get; }
 
   public Task<ChartDescriptor?> CreateChartAsync(
     ContentItem metadata,

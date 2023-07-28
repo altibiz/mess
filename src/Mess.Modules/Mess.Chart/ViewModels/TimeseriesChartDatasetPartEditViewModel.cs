@@ -13,8 +13,8 @@ public class TimeseriesChartDatasetPartEditViewModel
   [ValidateNever]
   public ContentTypePartDefinition Definition { get; set; } = default!;
 
-  public string Property { get; set; } = default!;
-
   [ValidateNever]
   public List<SelectListItem> PropertyOptions { get; set; } = default!;
+
+  public string Property { get; set; } = default!;
 }

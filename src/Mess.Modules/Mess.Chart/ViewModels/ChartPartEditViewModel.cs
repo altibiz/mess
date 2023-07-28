@@ -2,6 +2,7 @@ using OrchardCore.ContentManagement.Metadata.Models;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Mess.Chart.Abstractions.Models;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Mess.Chart.ViewModels;
 
@@ -13,15 +14,9 @@ public class ChartPartEditViewModel
   [ValidateNever]
   public ContentTypePartDefinition Definition { get; set; } = default!;
 
-  public string ChartDataProviderId { get; set; } = default!;
-
-  public string ChartContentItemId { get; set; } = default!;
-
-  [ValidateNever]
-  public List<SelectListItem> ChartDataProviderIdOptions { get; set; } =
-    default!;
-
   [ValidateNever]
   public List<SelectListItem> ChartContentItemIdOptions { get; set; } =
     default!;
+
+  public string ChartContentItemId { get; set; } = default!;
 }

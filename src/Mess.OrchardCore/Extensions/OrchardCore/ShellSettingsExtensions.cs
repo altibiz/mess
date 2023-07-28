@@ -20,5 +20,5 @@ public static class ShellSettingsExtensions
   ) => shellSettings.ShellConfiguration["TablePrefix"] ?? "";
 
   public static string GetRequestUrlPrefix(this ShellSettings shellSettings) =>
-    shellSettings.RequestUrlPrefix ?? "";
+    (shellSettings.RequestUrlPrefix ?? "").Trim('/');
 }

@@ -17,6 +17,7 @@ printf "\n"
 
 printf "[Mess] Installing dependencies with 'yarn'...\n"
 yarn install
+yarn build
 printf "\n"
 
 printf "[Mess] Installing dependencies with 'dotnet'...\n"

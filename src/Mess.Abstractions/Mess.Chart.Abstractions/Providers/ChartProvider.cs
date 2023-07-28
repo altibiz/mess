@@ -7,7 +7,7 @@ namespace Mess.Chart.Abstractions.Providers;
 
 public abstract class ChartProvider : IChartProvider
 {
-  public abstract string Id { get; }
+  public abstract string ContentType { get; }
 
   public abstract IEnumerable<string> TimeseriesChartDatasetProperties { get; }
 
@@ -16,7 +16,7 @@ public abstract class ChartProvider : IChartProvider
     ContentItem chart
   )
   {
-    if (chart.ContentType == TimeseriesChartItem.ContentType)
+    if (chart.ContentType == "TimeseriesChart")
     {
       var timeseriesChart = chart.AsContent<TimeseriesChartItem>();
       var timeseriesChartDatasets =
@@ -77,7 +77,7 @@ public abstract class ChartProvider : IChartProvider
       throw new InvalidOperationException($"Invalid timeseries value: {value}");
     }
 
-    return (float)value;
+    return Convert.ToSingle(value);
   }
 
   public abstract Task<TimeseriesChartDescriptor?> CreateTimeseriesChartAsync(

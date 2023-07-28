@@ -2,7 +2,7 @@ import * as z from "zod";
 
 const baseChartDescriptorSchema = z.object({
   type: z.literal("timeseries"),
-  refreshInterval: z.string(),
+  refreshInterval: z.number(),
 });
 
 export type ChartDescriptor = typeof chartSescriptorSchema._type;
@@ -35,8 +35,7 @@ export const timeseriesChartDescriptorSchema = z.intersection(
   baseChartDescriptorSchema,
   z.object({
     type: z.literal("timeseries"),
-    // better types for timespans?
-    history: z.string(),
+    history: z.number(),
     datasets: z.array(timeseriesChartDatasetDescriptorSchema),
   }),
 );

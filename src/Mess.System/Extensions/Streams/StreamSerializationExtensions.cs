@@ -1,73 +1,37 @@
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Xml.Linq;
 using System.Xml.Serialization;
-using Mess.System.Json;
+using Mess.System.Extensions.Json;
 
 namespace Mess.System.Extensions.Streams;
 
-// TODO: optimize to stream conversions
 public static class StreamSerializationExtensions
 {
   public static Stream ToJsonStream<T>(this T @this, bool pretty = true) =>
     new MemoryStream(
       JsonSerializer.SerializeToUtf8Bytes(
         @this,
-        new JsonSerializerOptions
-        {
-          AllowTrailingCommas = true,
-          WriteIndented = pretty,
-          ReferenceHandler = ReferenceHandler.IgnoreCycles,
-          Converters =
-          {
-            new TupleJsonConverterFactory(),
-            new TimeSpanConverter(),
-            new EnumConverterFactory(),
-            new BooleanJsonConverter(),
-            new ListJsonConverterFactory()
-          }
-        }
+        new JsonSerializerOptions()
+          .AddMessSystemJsonOptions(pretty)
+          .AddMessSystemJsonConverters()
       )
     );
 
   public static T? FromJsonStream<T>(this Stream @this) =>
     JsonSerializer.Deserialize<T>(
       @this,
-      new JsonSerializerOptions
-      {
-        AllowTrailingCommas = true,
-        ReferenceHandler = ReferenceHandler.IgnoreCycles,
-        Converters =
-        {
-          new TupleJsonConverterFactory(),
-          new TimeSpanConverter(),
-          new EnumConverterFactory(),
-          new BooleanJsonConverter(),
-          new ListJsonConverterFactory()
-        }
-      }
+      new JsonSerializerOptions()
+        .AddMessSystemJsonOptions()
+        .AddMessSystemJsonConverters()
     );
 
-  public static object? FromJsonStream(
-    this Stream @this,
-    global::System.Type type
-  ) =>
+  public static object? FromJsonStream(this Stream @this, Type type) =>
     JsonSerializer.Deserialize(
       @this,
       type,
-      new JsonSerializerOptions
-      {
-        AllowTrailingCommas = true,
-        ReferenceHandler = ReferenceHandler.IgnoreCycles,
-        Converters =
-        {
-          new TupleJsonConverterFactory(),
-          new TimeSpanConverter(),
-          new EnumConverterFactory(),
-          new BooleanJsonConverter(),
-          new ListJsonConverterFactory()
-        }
-      }
+      new JsonSerializerOptions()
+        .AddMessSystemJsonOptions()
+        .AddMessSystemJsonConverters()
     );
 
   public static async Task<T?> FromJsonStreamAsync<T>(
@@ -76,19 +40,9 @@ public static class StreamSerializationExtensions
   ) =>
     await JsonSerializer.DeserializeAsync<T>(
       @this,
-      new JsonSerializerOptions
-      {
-        AllowTrailingCommas = true,
-        ReferenceHandler = ReferenceHandler.IgnoreCycles,
-        Converters =
-        {
-          new TupleJsonConverterFactory(),
-          new TimeSpanConverter(),
-          new EnumConverterFactory(),
-          new BooleanJsonConverter(),
-          new ListJsonConverterFactory()
-        }
-      },
+      new JsonSerializerOptions()
+        .AddMessSystemJsonOptions()
+        .AddMessSystemJsonConverters(),
       token
     );
 
@@ -100,16 +54,9 @@ public static class StreamSerializationExtensions
     await JsonSerializer.DeserializeAsync(
       @this,
       type,
-      new JsonSerializerOptions
-      {
-        AllowTrailingCommas = true,
-        ReferenceHandler = ReferenceHandler.IgnoreCycles,
-        Converters =
-        {
-          new TupleJsonConverterFactory(),
-          new TimeSpanConverter(),
-        }
-      },
+      new JsonSerializerOptions()
+        .AddMessSystemJsonOptions()
+        .AddMessSystemJsonConverters(),
       token
     );
 
