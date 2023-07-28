@@ -305,12 +305,29 @@
       </div>
       <div class="chart-container">
         <canvas id="@chartCanvasId" class="chart" />
+        <script asp-name="mess-chart"></script>
+        <script>
+          window.mess.chart.useChart({
+            requestUrlPrefix: "@this.GetRequestUrlPrefix()",
+            contentItemId: "@Model.EorMeasurementDevice.ContentItemId",
+            isPreview: false,
+            canvasId: "@chartCanvasId",
+            errorId: "@chartErrorId",
+            culture: "@Orchard.CultureName()",
+            font: {
+              family: "Roboto",
+              style: "normal",
+              weight: "300",
+              color: "#000",
+              size: 14
+            }
+          });
+        </script>
       </div>
     </div>
   </section>
 }
 
-<script asp-name="mess-chart"></script>
 <script asp-name="mess-eor"></script>
 <script>
   (() => {
@@ -334,20 +351,5 @@
       }
     });
     
-    window.mess.chart.useChart({
-      requestUrlPrefix: "@this.GetRequestUrlPrefix()",
-      contentItemId: "@Model.EorMeasurementDevice.ContentItemId",
-      isPreview: false,
-      canvasId: "@chartCanvasId",
-      errorId: "@chartErrorId",
-      culture: "@Orchard.CultureName()",
-      font: {
-        family: "Roboto",
-        style: "normal",
-        weight: "300",
-        color: "#000",
-        size: 14
-      }
-    });
   })();
 </script>
