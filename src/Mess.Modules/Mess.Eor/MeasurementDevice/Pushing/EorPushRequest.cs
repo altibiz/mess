@@ -11,7 +11,7 @@ public record EorPushRequest(
   bool CoolingFans
 )
 {
-  public EorMeasurement ToMeasurement(string tenant, string deviceId) =>
+  public EorMeasurement ToMeasurement(string deviceId, string tenant) =>
     new(
       Tenant: tenant,
       DeviceId: deviceId,

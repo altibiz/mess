@@ -59,7 +59,7 @@ export const eorMeasurementDeviceStatusSchema = zod.object({
   timestamp: zod.coerce.date(),
   mode: zod.number(),
   processFault: zod.number(),
-  processFaults: zod.array(zod.number()),
+  processFaults: zod.array(zod.string()),
   communicationFault: zod.number(),
   runState: runStateSchema,
   resetState: resetStateSchema,
