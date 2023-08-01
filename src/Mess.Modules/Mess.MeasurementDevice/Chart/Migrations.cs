@@ -91,6 +91,9 @@ public class Migrations : DataMigration
         egaugeChart => egaugeChart.TimeseriesChartPart,
         timeseriesChartPart =>
         {
+          timeseriesChartPart.ChartContentType = "EgaugeMeasurementDevice";
+          timeseriesChartPart.HistorySpan = TimeSpan.FromMinutes(15);
+          timeseriesChartPart.RefreshIntervalSpan = TimeSpan.FromSeconds(10);
           timeseriesChartPart.Datasets = new() { eguagePowerDataset };
         }
       );

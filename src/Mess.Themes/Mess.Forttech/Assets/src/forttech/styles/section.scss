@@ -33,3 +33,21 @@ section:last-child {
 .section-content {
   position: relative;
 }
+
+.section-footer {
+  position: relative;
+  margin-top: 36px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.section-footer a {
+  display: inline;
+  padding: 0;
+  color: var(--link-foreground);
+}
+
+.section-footer a:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}

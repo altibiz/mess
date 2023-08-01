@@ -7,4 +7,5 @@ public class EorMeasurementDeviceIndex : MapIndex
   public string ContentItemId { get; set; } = default!;
   public string DeviceId { get; set; } = default!;
   public string OwnerId { get; set; } = default!;
+  public string Author { get; set; } = default!;
 }

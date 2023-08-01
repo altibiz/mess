@@ -1,9 +1,9 @@
-using System.Text.Json;
 using Mess.Eor.Abstractions;
 using Mess.Eor.Abstractions.Client;
 using Mess.Eor.Abstractions.Models;
+using Mess.Eor.Extensions;
 using Mess.OrchardCore;
-using Mess.System.Extensions.Json;
+using Mess.OrchardCore.Extensions.Microsoft;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OrchardCore.ContentManagement;
@@ -17,23 +17,26 @@ public class EorMeasurementDeviceDataController : Controller
   [IgnoreAntiforgeryToken]
   public async Task<IActionResult> Index(string contentItemId)
   {
-    if (
-      !await _authorizationService.AuthorizeAsync(
-        User,
-        EorPermissions.ViewEorMeasurementDevice
-      )
-    )
-    {
-      return Forbid();
-    }
-
     var contentItem = await _contentManager.GetAsync(contentItemId);
     if (contentItem == null)
     {
       return NotFound();
     }
+
     var eorMeasurementDevice =
       contentItem.AsContent<EorMeasurementDeviceItem>();
+
+    var orchardCoreUser = await this.GetAuthenticatedOrchardCoreUserAsync();
+    if (
+      !await _authorizationService.AuthorizeViewAsync(
+        User,
+        orchardCoreUser,
+        eorMeasurementDevice
+      )
+    )
+    {
+      return Forbid();
+    }
 
     var eorMeasurementDeviceSummary =
       await _measurementClient.GetEorMeasurementDeviceSummaryAsync(

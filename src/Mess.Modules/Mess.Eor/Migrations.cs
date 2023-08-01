@@ -22,6 +22,7 @@ using OrchardCore.Users.Services;
 using YesSql;
 using YesSql.Sql;
 using Mess.ContentFields.Abstractions.Services;
+using Mess.ContentFields.Abstractions.Settings;
 
 namespace Mess.Eor;
 
@@ -48,7 +49,8 @@ public class Migrations : DataMigration
                   {
                     Multiple = false,
                     Required = true,
-                    DisplayedRoles = new[] { "MeasurementDeviceOwner" },
+                    DisplayAllUsers = false,
+                    DisplayedRoles = new[] { "EOR measurement device owner" },
                     Hint = "The owner of the measurement device."
                   }
                 )
@@ -156,6 +158,12 @@ public class Migrations : DataMigration
                 .OfType("ApiKeyField")
                 .WithDisplayName("API key")
                 .WithDescription("API key.")
+                .WithSettings<ApiKeyFieldSettings>(
+                  new()
+                  {
+                    Hint = "API key that will be used to authorize the device."
+                  }
+                )
           )
     );
 
@@ -180,7 +188,7 @@ public class Migrations : DataMigration
                   new()
                   {
                     RenderTitle = true,
-                    Options = TitlePartOptions.GeneratedDisabled,
+                    Options = TitlePartOptions.GeneratedHidden,
                     Pattern =
                       @"{{- ContentItem.Content.MeasurementDevicePart.DeviceId.Text -}}"
                   }
@@ -217,11 +225,13 @@ public class Migrations : DataMigration
           .Column<string>("ContentItemId", c => c.WithLength(64))
           .Column<string>("DeviceId", c => c.WithLength(64))
           .Column<string>("OwnerId", c => c.WithLength(64))
+          .Column<string>("Author", c => c.WithLength(256))
     );
-    SchemaBuilder.AlterIndexTable<EorMeasurementDeviceIndex>(
-      table =>
-        table.CreateIndex("IDX_EorMeasurementDeviceIndex_OwnerId", "OwnerId")
-    );
+    SchemaBuilder.AlterIndexTable<EorMeasurementDeviceIndex>(table =>
+    {
+      table.CreateIndex("IDX_EorMeasurementDeviceIndex_OwnerId", "OwnerId");
+      table.CreateIndex("IDX_EorMeasurementDeviceIndex_Author", "Author");
+    });
 
     await _roleManager.CreateAsync(
       new Role
@@ -239,28 +249,43 @@ public class Migrations : DataMigration
           new RoleClaim
           {
             ClaimType = Permission.ClaimType,
-            ClaimValue = "ManageOwnUserInformation"
+            ClaimValue = "View Users"
           },
           new RoleClaim
           {
             ClaimType = Permission.ClaimType,
-            ClaimValue = "ManageChart"
+            ClaimValue = "ManageUsersInRole_EOR measurement device owner"
           },
           new RoleClaim
           {
             ClaimType = Permission.ClaimType,
-            ClaimValue = "ViewEorMeasurementDevice"
+            ClaimValue = "AssignRole_EOR measurement device owner"
           },
           new RoleClaim
           {
             ClaimType = Permission.ClaimType,
-            ClaimValue = "ControlEorMeasurementDevice"
+            ClaimValue = "ViewOwn_EorMeasurementDevice"
           },
           new RoleClaim
           {
             ClaimType = Permission.ClaimType,
-            ClaimValue = "ManageEorMeasurementDevice"
-          }
+            ClaimValue = "ControlOwn_EorMeasurementDevice"
+          },
+          new RoleClaim
+          {
+            ClaimType = Permission.ClaimType,
+            ClaimValue = "PublishOwn_EorMeasurementDevice"
+          },
+          new RoleClaim
+          {
+            ClaimType = Permission.ClaimType,
+            ClaimValue = "EditOwn_EorMeasurementDevice"
+          },
+          new RoleClaim
+          {
+            ClaimType = Permission.ClaimType,
+            ClaimValue = "DeleteOwn_EorMeasurementDevice"
+          },
         }
       }
     );
@@ -276,21 +301,22 @@ public class Migrations : DataMigration
           new RoleClaim
           {
             ClaimType = Permission.ClaimType,
-            ClaimValue = "ViewEorMeasurementDevice"
+            ClaimValue = "ViewOwned_EorMeasurementDevice"
           },
           new RoleClaim
           {
             ClaimType = Permission.ClaimType,
-            ClaimValue = "ControlEorMeasurementDevice"
+            ClaimValue = "ControlOwned_EorMeasurementDevice"
           }
         }
       }
     );
 
+    var ownerId = "OwnerId";
     await _userService.CreateUserAsync(
       new User
       {
-        UserId = "OwnerId",
+        UserId = ownerId,
         UserName = "Owner",
         Email = "owner@dev.com",
         RoleNames = new[] { "EOR measurement device owner" }
@@ -299,10 +325,11 @@ public class Migrations : DataMigration
       (_, _) => { }
     );
 
+    var adminId = "AdminId";
     await _userService.CreateUserAsync(
       new User
       {
-        UserId = "AdminId",
+        UserId = adminId,
         UserName = "Admin",
         Email = "admin@dev.com",
         RoleNames = new[] { "EOR measurement device administrator" }
@@ -346,9 +373,17 @@ public class Migrations : DataMigration
     );
     var eorChart = await _contentManager.NewContentAsync<TimeseriesChartItem>();
     eorChart.Alter(
+      eorChart => eorChart.TitlePart,
+      titlePart =>
+      {
+        titlePart.Title = "Eor";
+      }
+    );
+    eorChart.Alter(
       eorChart => eorChart.TimeseriesChartPart,
       timeseriesChartPart =>
       {
+        timeseriesChartPart.ChartContentType = "EorMeasurementDevice";
         timeseriesChartPart.HistorySpan = TimeSpan.FromMinutes(5);
         timeseriesChartPart.RefreshIntervalSpan = TimeSpan.FromSeconds(10);
         timeseriesChartPart.Datasets = new()
@@ -371,6 +406,7 @@ public class Migrations : DataMigration
           .FirstOrDefaultAsync()
       )?.AsContent<EorMeasurementDeviceItem>()
       ?? await _contentManager.NewContentAsync<EorMeasurementDeviceItem>();
+    eorMeasurementDevice.Inner.Owner = adminId;
     eorMeasurementDevice.Alter(
       eorMeasurementDevice => eorMeasurementDevice.TitlePart,
       titlePart =>
@@ -396,7 +432,7 @@ public class Migrations : DataMigration
       eorMeasurementDevice => eorMeasurementDevice.EorMeasurementDevicePart,
       eorMeasurementDevice =>
       {
-        eorMeasurementDevice.Owner = new() { UserIds = new[] { "OwnerId" } };
+        eorMeasurementDevice.Owner = new() { UserIds = new[] { ownerId } };
         eorMeasurementDevice.ManufactureDate = new()
         {
           Value = DateTime.UtcNow

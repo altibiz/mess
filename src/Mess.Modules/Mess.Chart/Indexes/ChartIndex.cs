@@ -6,7 +6,7 @@ namespace Mess.Chart.Indexes;
 public class ChartIndex : MapIndex
 {
   public string ChartContentItemId { get; set; } = default!;
-  public string? ChartDataProviderId { get; set; } = default!;
+  public string? ContentType { get; set; } = default!;
   public string? Title { get; set; } = default!;
 }
 
@@ -22,9 +22,9 @@ public class ChartIndexProvider : IndexProvider<ContentItem>
           new ChartIndex
           {
             ChartContentItemId = contentItem.ContentItemId,
-            ChartDataProviderId = contentItem.Content[
+            ContentType = contentItem.Content[
               $"{contentItem.ContentType}Part"
-            ].ChartDataProviderId,
+            ].ChartContentType,
             Title = contentItem.Content.TitlePart.Title
           }
       );

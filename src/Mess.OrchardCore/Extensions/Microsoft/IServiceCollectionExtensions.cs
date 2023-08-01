@@ -1,6 +1,8 @@
 using Microsoft.Extensions.Options;
 using OrchardCore.BackgroundTasks;
+using OrchardCore.ContentTypes.Editors;
 using OrchardCore.Modules;
+using OrchardCore.Navigation;
 using OrchardCore.ResourceManagement;
 using OrchardCore.Security.Permissions;
 using YesSql.Indexes;
@@ -65,6 +67,41 @@ public static class IServiceCollectionExtensions
     where TBackgroundTask : class, IBackgroundTask
   {
     services.AddSingleton<IBackgroundTask, TBackgroundTask>();
+    return services;
+  }
+
+  public static IServiceCollection AddNavigationProvider<TAdminMenu>(
+    this IServiceCollection services
+  )
+    where TAdminMenu : class, INavigationProvider
+  {
+    services.AddScoped<INavigationProvider, TAdminMenu>();
+    return services;
+  }
+
+  public static IServiceCollection AddContentTypePartDefinitionDisplayDriver<TContentTypePartDefinitionDisplayDriver>(
+    this IServiceCollection services
+  )
+    where TContentTypePartDefinitionDisplayDriver : class,
+      IContentTypePartDefinitionDisplayDriver
+  {
+    services.AddScoped<
+      IContentTypePartDefinitionDisplayDriver,
+      TContentTypePartDefinitionDisplayDriver
+    >();
+    return services;
+  }
+
+  public static IServiceCollection AddContentPartFieldDefinitionDisplayDriver<TContentPartFieldDefinitionDisplayDriver>(
+    this IServiceCollection services
+  )
+    where TContentPartFieldDefinitionDisplayDriver : class,
+      IContentPartFieldDefinitionDisplayDriver
+  {
+    services.AddScoped<
+      IContentPartFieldDefinitionDisplayDriver,
+      TContentPartFieldDefinitionDisplayDriver
+    >();
     return services;
   }
 }

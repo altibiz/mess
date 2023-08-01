@@ -1,9 +1,10 @@
-@model ApiKeyFieldEditViewModel
-
+@using Mess.ContentFields.Abstractions.Settings
 @using OrchardCore.Mvc.Utilities
 
+@model ApiKeyFieldEditViewModel
+
 @{
-    var settings = Model.PartFieldDefinition.GetSettings<TextFieldSettings>();
+    var settings = Model.PartFieldDefinition.GetSettings<ApiKeyFieldSettings>();
     var culture = await Orchard.GetContentCultureAsync(Model.Field.ContentItem);
     var uniqueName = $"{Model.PartFieldDefinition.PartDefinition.Name}-{Model.PartFieldDefinition.Name}";
 }
@@ -11,4 +12,8 @@
 <div class="mb-3 field-wrapper field-wrapper-@uniqueName.HtmlClassify()" id="@Html.IdFor(x => x.Value)_FieldWrapper">
     <label asp-for="Value">@Model.PartFieldDefinition.DisplayName()</label>
     <input asp-for="Value" class="form-control content-preview-text" dir="@culture.GetLanguageDirection()" />
+    @if (!String.IsNullOrEmpty(settings.Hint))
+    {
+        <span class="hint">@settings.Hint</span>
+    }
 </div>

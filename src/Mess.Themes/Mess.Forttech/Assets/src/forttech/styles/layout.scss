@@ -53,7 +53,9 @@ h1 {
 
 main {
   margin-top: 188px;
-  min-height: calc(100vh - var(--min-header-height) - var(--min-footer-height));
+  min-height: calc(
+    100vh - var(--min-header-height) - var(--min-footer-height) - 68px
+  );
   padding-top: 32px;
   padding-bottom: 48px;
   box-sizing: border-box;
@@ -64,6 +66,9 @@ main {
 @media screen and (width >= 1440px) {
   main {
     margin-top: 228px;
+    min-height: calc(
+      100vh - var(--min-header-height) - var(--min-footer-height) - 108px
+    );
   }
 }
 

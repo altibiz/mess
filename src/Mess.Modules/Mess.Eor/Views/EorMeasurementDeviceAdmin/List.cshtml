@@ -1,10 +1,15 @@
 @using OrchardCore.ContentManagement.Display
 @using OrchardCore.DisplayManagement.ModelBinding
+@using OrchardCore.Contents
+@using Microsoft.AspNetCore.Authorization
+@using Mess.Eor.Extensions
+@using Mess.OrchardCore.Extensions.Microsoft
 
 @model EorMeasurementDeviceListViewModel
 
 @inject IContentItemDisplayManager ContentItemDisplayManager
 @inject IUpdateModelAccessor ModelUpdaterAccessor
+@inject IAuthorizationService AuthorizationService
 
 <div>
   <table class="table">
@@ -46,26 +51,66 @@
             </span>
           </td>
           <td>
-            <a
-                asp-route-area="Mess.Eor"
-                asp-controller="EorMeasurementDeviceAdmin"
-                asp-action="Edit"
-                asp-route-contentItemId="@item.ContentItemId"
-                class="btn btn-primary btn-sm">
-              <span>
-                @T["Edit"]
-              </span>
-            </a>
-            <a
-                asp-route-area="Mess.Eor"
-                asp-controller="EorMeasurementDeviceAdmin"
-                asp-action="Delete"
-                asp-route-contentItemId="@item.ContentItemId"
-                class="btn btn-danger btn-sm">
-              <span>
-                @T["Delete"]
-              </span>
-            </a>
+            @if (
+              await AuthorizationService.AuthorizeViewAsync(
+                User,
+                await this.GetAuthenticatedOrchardCoreUserAsync(),
+                item
+              )
+            )
+            {
+              <a
+                  asp-route-area="OrchardCore.Contents"
+                  asp-controller="Admin"
+                  asp-action="Display"
+                  asp-route-contentItemId="@item.ContentItemId"
+                  asp-route-returnUrl="@FullRequestPath"
+                  class="btn btn-primary btn-sm">
+                <span>
+                  @T["Display"]
+                </span>
+              </a>
+            }
+            @if (
+              await AuthorizationService.AuthorizeAsync(
+                User,
+                CommonPermissions.EditOwnContent,
+                item.Inner
+              )
+            )
+            {
+              <a
+                  asp-route-area="OrchardCore.Contents"
+                  asp-controller="Admin"
+                  asp-action="Edit"
+                  asp-route-contentItemId="@item.ContentItemId"
+                  asp-route-returnUrl="@FullRequestPath"
+                  class="btn btn-primary btn-sm">
+                <span>
+                  @T["Edit"]
+                </span>
+              </a>
+            }
+            @if (
+              await AuthorizationService.AuthorizeAsync(
+                User,
+                CommonPermissions.DeleteOwnContent,
+                item.Inner
+              )
+            )
+            {
+              <a
+                  asp-route-area="OrchardCore.Contents"
+                  asp-controller="Admin"
+                  asp-action="Remove"
+                  asp-route-contentItemId="@item.ContentItemId"
+                  asp-route-returnUrl="@FullRequestPath"
+                  class="btn btn-danger btn-sm">
+                <span>
+                  @T["Delete"]
+                </span>
+              </a>
+            }
           </td>
         </tr>
       }

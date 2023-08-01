@@ -1,4 +1,3 @@
-using Mess.Chart.Abstractions;
 using Mess.Chart.Abstractions.Models;
 using Mess.OrchardCore;
 using Microsoft.AspNetCore.Authorization;
@@ -7,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Localization;
 using OrchardCore.Admin;
 using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Display;
+using OrchardCore.Contents;
 using OrchardCore.DisplayManagement.ModelBinding;
 using OrchardCore.DisplayManagement.Notify;
 
@@ -20,16 +20,6 @@ public class TimeseriesChartDatasetAdminController : Controller
     string? chartContentItemId
   )
   {
-    if (
-      !await _authorizationService.AuthorizeAsync(
-        User,
-        ChartPermissions.ManageChart
-      )
-    )
-    {
-      return Forbid();
-    }
-
     TimeseriesChartItem? chart = null;
     DashboardItem? dashboard = null;
     if (chartContentItemId is null)
@@ -57,6 +47,17 @@ public class TimeseriesChartDatasetAdminController : Controller
       return NotFound();
     }
 
+    if (
+      !await _authorizationService.AuthorizeAsync(
+        User,
+        CommonPermissions.EditContent,
+        dashboard?.Inner ?? chart.Inner
+      )
+    )
+    {
+      return Forbid();
+    }
+
     var timeseriesChartDataset =
       await _contentManager.NewContentAsync<TimeseriesChartDatasetItem>();
     if (timeseriesChartDataset is null)
@@ -64,7 +65,7 @@ public class TimeseriesChartDatasetAdminController : Controller
       return StatusCode(500);
     }
 
-    timeseriesChartDataset.Inner.Content.ChartDataProviderId = chart
+    timeseriesChartDataset.Inner.Content.ChartContentType = chart
       .TimeseriesChartPart
       .Value
       .ChartContentType;
@@ -88,16 +89,6 @@ public class TimeseriesChartDatasetAdminController : Controller
     string? chartContentItemId
   )
   {
-    if (
-      !await _authorizationService.AuthorizeAsync(
-        User,
-        ChartPermissions.ManageChart
-      )
-    )
-    {
-      return Forbid();
-    }
-
     TimeseriesChartItem? chart = null;
     DashboardItem? dashboard = null;
     if (chartContentItemId is null)
@@ -124,6 +115,18 @@ public class TimeseriesChartDatasetAdminController : Controller
     {
       return NotFound();
     }
+
+    if (
+      !await _authorizationService.AuthorizeAsync(
+        User,
+        CommonPermissions.EditContent,
+        dashboard?.Inner ?? chart.Inner
+      )
+    )
+    {
+      return Forbid();
+    }
+
     var timeseriesChartDataset =
       await _contentManager.NewContentAsync<TimeseriesChartDatasetItem>();
     if (timeseriesChartDataset is null)
@@ -188,16 +191,6 @@ public class TimeseriesChartDatasetAdminController : Controller
     string? chartContentItemId
   )
   {
-    if (
-      !await _authorizationService.AuthorizeAsync(
-        User,
-        ChartPermissions.ManageChart
-      )
-    )
-    {
-      return Forbid();
-    }
-
     TimeseriesChartItem? chart = null;
     DashboardItem? dashboard = null;
     if (chartContentItemId is null)
@@ -224,6 +217,18 @@ public class TimeseriesChartDatasetAdminController : Controller
     {
       return NotFound();
     }
+
+    if (
+      !await _authorizationService.AuthorizeAsync(
+        User,
+        CommonPermissions.EditContent,
+        dashboard?.Inner ?? chart.Inner
+      )
+    )
+    {
+      return Forbid();
+    }
+
     var timeseriesChartDataset =
       chart.TimeseriesChartPart.Value.Datasets.FirstOrDefault(
         dataset => dataset.ContentItemId == datasetContentItemId
@@ -257,16 +262,6 @@ public class TimeseriesChartDatasetAdminController : Controller
     string? chartContentItemId
   )
   {
-    if (
-      !await _authorizationService.AuthorizeAsync(
-        User,
-        ChartPermissions.ManageChart
-      )
-    )
-    {
-      return Forbid();
-    }
-
     TimeseriesChartItem? chart = null;
     DashboardItem? dashboard = null;
     if (chartContentItemId is null)
@@ -293,6 +288,18 @@ public class TimeseriesChartDatasetAdminController : Controller
     {
       return NotFound();
     }
+
+    if (
+      !await _authorizationService.AuthorizeAsync(
+        User,
+        CommonPermissions.EditContent,
+        dashboard?.Inner ?? chart.Inner
+      )
+    )
+    {
+      return Forbid();
+    }
+
     var timeseriesChartDataset =
       await _contentManager.NewContentAsync<TimeseriesChartDatasetItem>();
     if (timeseriesChartDataset is null)
@@ -367,16 +374,6 @@ public class TimeseriesChartDatasetAdminController : Controller
     string? chartContentItemId
   )
   {
-    if (
-      !await _authorizationService.AuthorizeAsync(
-        User,
-        ChartPermissions.ManageChart
-      )
-    )
-    {
-      return Forbid();
-    }
-
     TimeseriesChartItem? chart = null;
     DashboardItem? dashboard = null;
     if (chartContentItemId is null)
@@ -403,6 +400,18 @@ public class TimeseriesChartDatasetAdminController : Controller
     {
       return NotFound();
     }
+
+    if (
+      !await _authorizationService.AuthorizeAsync(
+        User,
+        CommonPermissions.DeleteContent,
+        dashboard?.Inner ?? chart.Inner
+      )
+    )
+    {
+      return Forbid();
+    }
+
     var timeseriesChartDataset =
       chart.TimeseriesChartPart.Value.Datasets.FirstOrDefault(
         dataset => dataset.ContentItemId == datasetContentItemId

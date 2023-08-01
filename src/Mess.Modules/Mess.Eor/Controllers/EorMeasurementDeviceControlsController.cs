@@ -1,7 +1,9 @@
 using Mess.Eor.Abstractions;
 using Mess.Eor.Abstractions.Client;
 using Mess.Eor.Abstractions.Models;
+using Mess.Eor.Extensions;
 using Mess.OrchardCore;
+using Mess.OrchardCore.Extensions.Microsoft;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OrchardCore.ContentManagement;
@@ -17,23 +19,26 @@ public class EorMeasurementDeviceControlsController : Controller
     [FromQuery] string? returnUrl
   )
   {
-    if (
-      !await _authorizationService.AuthorizeAsync(
-        User,
-        EorPermissions.ControlEorMeasurementDevice
-      )
-    )
-    {
-      return Forbid();
-    }
-
     var contentItem = await _contentManager.GetAsync(contentItemId);
     if (contentItem == null)
     {
       return NotFound();
     }
+
     var eorMeasurementDevice =
       contentItem.AsContent<EorMeasurementDeviceItem>();
+
+    var orchardCoreUser = await this.GetAuthenticatedOrchardCoreUserAsync();
+    if (
+      !await _authorizationService.AuthorizeControlAsync(
+        User,
+        orchardCoreUser,
+        eorMeasurementDevice
+      )
+    )
+    {
+      return Forbid();
+    }
 
     eorMeasurementDevice.Alter(
       eorMeasurementDevice => eorMeasurementDevice.EorMeasurementDevicePart,
@@ -66,23 +71,26 @@ public class EorMeasurementDeviceControlsController : Controller
     [FromQuery] string? returnUrl
   )
   {
-    if (
-      !await _authorizationService.AuthorizeAsync(
-        User,
-        EorPermissions.ControlEorMeasurementDevice
-      )
-    )
-    {
-      return Forbid();
-    }
-
     var contentItem = await _contentManager.GetAsync(contentItemId);
     if (contentItem == null)
     {
       return NotFound();
     }
+
     var eorMeasurementDevice =
       contentItem.AsContent<EorMeasurementDeviceItem>();
+
+    var orchardCoreUser = await this.GetAuthenticatedOrchardCoreUserAsync();
+    if (
+      !await _authorizationService.AuthorizeControlAsync(
+        User,
+        orchardCoreUser,
+        eorMeasurementDevice
+      )
+    )
+    {
+      return Forbid();
+    }
 
     eorMeasurementDevice.Alter(
       eorMeasurementDevice => eorMeasurementDevice.EorMeasurementDevicePart,
@@ -112,23 +120,26 @@ public class EorMeasurementDeviceControlsController : Controller
     [FromQuery] string? returnUrl
   )
   {
-    if (
-      !await _authorizationService.AuthorizeAsync(
-        User,
-        EorPermissions.ControlEorMeasurementDevice
-      )
-    )
-    {
-      return Forbid();
-    }
-
     var contentItem = await _contentManager.GetAsync(contentItemId);
     if (contentItem == null)
     {
       return NotFound();
     }
+
     var eorMeasurementDevice =
       contentItem.AsContent<EorMeasurementDeviceItem>();
+
+    var orchardCoreUser = await this.GetAuthenticatedOrchardCoreUserAsync();
+    if (
+      !await _authorizationService.AuthorizeControlAsync(
+        User,
+        orchardCoreUser,
+        eorMeasurementDevice
+      )
+    )
+    {
+      return Forbid();
+    }
 
     eorMeasurementDevice.Alter(
       eorMeasurementDevice => eorMeasurementDevice.EorMeasurementDevicePart,
@@ -155,26 +166,29 @@ public class EorMeasurementDeviceControlsController : Controller
   [HttpPost]
   public async Task<IActionResult> Reset(
     string contentItemId,
-    string? returnUrl
+    [FromQuery] string? returnUrl
   )
   {
-    if (
-      !await _authorizationService.AuthorizeAsync(
-        User,
-        EorPermissions.ControlEorMeasurementDevice
-      )
-    )
-    {
-      return Forbid();
-    }
-
     var contentItem = await _contentManager.GetAsync(contentItemId);
     if (contentItem == null)
     {
       return NotFound();
     }
+
     var eorMeasurementDevice =
       contentItem.AsContent<EorMeasurementDeviceItem>();
+
+    var orchardCoreUser = await this.GetAuthenticatedOrchardCoreUserAsync();
+    if (
+      !await _authorizationService.AuthorizeControlAsync(
+        User,
+        orchardCoreUser,
+        eorMeasurementDevice
+      )
+    )
+    {
+      return Forbid();
+    }
 
     eorMeasurementDevice.Alter(
       eorMeasurementDevice => eorMeasurementDevice.EorMeasurementDevicePart,
@@ -207,23 +221,26 @@ public class EorMeasurementDeviceControlsController : Controller
     [FromForm] int mode
   )
   {
-    if (
-      !await _authorizationService.AuthorizeAsync(
-        User,
-        EorPermissions.ControlEorMeasurementDevice
-      )
-    )
-    {
-      return Forbid();
-    }
-
     var contentItem = await _contentManager.GetAsync(contentItemId);
     if (contentItem == null)
     {
       return NotFound();
     }
+
     var eorMeasurementDevice =
       contentItem.AsContent<EorMeasurementDeviceItem>();
+
+    var orchardCoreUser = await this.GetAuthenticatedOrchardCoreUserAsync();
+    if (
+      !await _authorizationService.AuthorizeControlAsync(
+        User,
+        orchardCoreUser,
+        eorMeasurementDevice
+      )
+    )
+    {
+      return Forbid();
+    }
 
     eorMeasurementDevice.Alter(
       eorMeasurementDevice => eorMeasurementDevice.EorMeasurementDevicePart,

@@ -1,3 +1,8 @@
+@using Microsoft.AspNetCore.Authorization
+@using OrchardCore.Security.Permissions
+
+@inject IAuthorizationService AuthorizationService
+
 @{
   var clockId = "clock";
 }
@@ -40,6 +45,18 @@
             </li>
           </ul>
           <ul>
+            @if (
+              await AuthorizationService.AuthorizeAsync(
+                User,
+                new Permission("AccessAdminPanel", "Access admin panel")
+              )
+            ) {
+              <li>
+                <a href="~/Admin" target="_blank">
+                  <span>Admin</span>
+                </a>
+              </li>
+            }
             <li>
               <a href="~/Login">
                 <span>Log In</span>
@@ -59,14 +76,12 @@
         </div>
       </nav>
       <div class="flex container">
-        <a href="~/Devices">
+        <a href="~/">
           <h1>
             Forttech phi inc. Delaware
           </h1>
         </a>
         <span id="@clockId">--</span>
-        @await RenderSectionAsync("Header", required: false)
-        @await RenderSectionAsync("Login", required: false)
       </div>
       <button id="nav-button" class="nav-button"></button>
       <script>
@@ -84,7 +99,12 @@
 
     <main>
       <div class="container">
-        @await RenderSectionAsync("Messages", required: false)
+        @if (IsSectionDefined("Messages"))
+        {
+          <section>
+            @await RenderSectionAsync("Messages", required: false)
+          </section>
+        }
         @await RenderBodyAsync()
       </div>
     </main>

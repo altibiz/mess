@@ -9,6 +9,7 @@ using OrchardCore.ContentManagement.Metadata;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.DependencyInjection;
 using Mess.Chart.Abstractions.Providers;
+using OrchardCore.Mvc.ModelBinding;
 
 namespace Mess.Chart.Drivers;
 
@@ -37,11 +38,16 @@ public class TimeseriesChartDatasetPartDisplayDriver
     BuildPartEditorContext context
   )
   {
-    var chartDataProviderId = (string)
-      part.ContentItem.Content.ChartDataProviderId;
-    var chartDataProvider = _serviceProvider
+    string contentType = part.ContentItem.Content.ChartContentType;
+    var chartProvider = _serviceProvider
       .GetServices<IChartProvider>()
-      .First(x => x.ContentType == chartDataProviderId);
+      .FirstOrDefault(provider => provider.ContentType == contentType);
+    if (chartProvider == null)
+    {
+      throw new NotImplementedException(
+        "No chart provider implemented for this content type."
+      );
+    }
 
     return Initialize<TimeseriesChartDatasetPartEditViewModel>(
       GetEditorShapeType(context),
@@ -49,14 +55,12 @@ public class TimeseriesChartDatasetPartDisplayDriver
       {
         model.Property =
           part.Property
-          ?? chartDataProvider.TimeseriesChartDatasetProperties.First();
-        model.PropertyOptions =
-          chartDataProvider.TimeseriesChartDatasetProperties
-            .Select(
-              property =>
-                new SelectListItem { Text = property, Value = property }
-            )
-            .ToList();
+          ?? chartProvider.TimeseriesChartDatasetProperties.FirstOrDefault()!;
+        model.PropertyOptions = chartProvider.TimeseriesChartDatasetProperties
+          .Select(
+            property => new SelectListItem { Text = property, Value = property }
+          )
+          .ToList();
         model.Part = part;
         model.Definition = context.TypePartDefinition;
       }
@@ -69,6 +73,17 @@ public class TimeseriesChartDatasetPartDisplayDriver
     UpdatePartEditorContext context
   )
   {
+    string contentType = part.ContentItem.Content.ChartContentType;
+    var chartProvider = _serviceProvider
+      .GetServices<IChartProvider>()
+      .FirstOrDefault(provider => provider.ContentType == contentType);
+    if (chartProvider == null)
+    {
+      throw new NotImplementedException(
+        "No chart provider implemented for this content type."
+      );
+    }
+
     var viewModel = new TimeseriesChartDatasetPartEditViewModel();
 
     if (
@@ -79,6 +94,19 @@ public class TimeseriesChartDatasetPartDisplayDriver
       )
     )
     {
+      if (
+        !chartProvider.TimeseriesChartDatasetProperties.Contains(
+          viewModel.Property
+        )
+      )
+      {
+        updater.ModelState.AddModelError(
+          Prefix,
+          nameof(viewModel.Property),
+          S["Invalid value for {0}", context.TypePartDefinition.Name]
+        );
+      }
+
       part.Property = viewModel.Property;
     }
 

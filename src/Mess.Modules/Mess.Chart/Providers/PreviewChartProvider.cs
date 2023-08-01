@@ -5,11 +5,11 @@ using OrchardCore.ContentManagement;
 
 namespace Mess.Chart.Providers;
 
-public class PreviewChartDataProvider : ChartProvider
+public class PreviewChartProvider : ChartProvider
 {
-  public const string ProviderId = "Preview";
+  public const string ChartContentType = "Preview";
 
-  public override string ContentType => ProviderId;
+  public override string ContentType => ChartContentType;
 
   public override IEnumerable<string> TimeseriesChartDatasetProperties =>
     new string[] { };

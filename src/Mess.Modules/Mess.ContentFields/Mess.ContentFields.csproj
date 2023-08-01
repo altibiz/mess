@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <PackageReference Include="OrchardCore.ContentFields" Version="$(MessOrchardVersion)" />
+    <PackageReference Include="Etch.OrchardCore.Fields" Version="$(MessEtchVersion)" />
   </ItemGroup>
 
   <ItemGroup>

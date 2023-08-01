@@ -209,15 +209,11 @@ public class Migrations : DataMigration
       table =>
         table
           .Column<string>("ChartContentItemId", c => c.WithLength(30))
-          .Column<string>("ChartDataProviderId", c => c.WithLength(30))
+          .Column<string>("ContentType", c => c.WithLength(30))
           .Column<string>("Title", c => c.WithLength(200))
     );
     SchemaBuilder.AlterIndexTable<ChartIndex>(
-      table =>
-        table.CreateIndex(
-          "IDX_ChartIndex_ChartDataProviderId",
-          "ChartDataProviderId"
-        )
+      table => table.CreateIndex("IDX_ChartIndex_ContentType", "ContentType")
     );
 
     return 1;

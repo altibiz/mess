@@ -4,21 +4,30 @@ using Microsoft.AspNetCore.Mvc;
 using OrchardCore.ContentManagement;
 using Microsoft.Extensions.DependencyInjection;
 using Mess.Chart.Providers;
+using Microsoft.AspNetCore.Authorization;
+using OrchardCore.Contents;
 
 namespace Mess.Chart.Controllers;
 
 public class ChartController : Controller
 {
-  public async Task<IActionResult> Index(
-    [FromServices] IContentManager contentManager,
-    [FromServices] IServiceProvider serviceProvider,
-    string contentItemId
-  )
+  public async Task<IActionResult> Index(string contentItemId)
   {
-    var metadataContentItem = await contentManager.GetAsync(contentItemId);
+    var metadataContentItem = await _contentManager.GetAsync(contentItemId);
     if (metadataContentItem is null)
     {
       return NotFound();
+    }
+
+    if (
+      !await _authorizationService.AuthorizeAsync(
+        User,
+        CommonPermissions.ViewContent,
+        metadataContentItem
+      )
+    )
+    {
+      return Forbid();
     }
 
     var metadataPart = metadataContentItem.As<ChartPart>();
@@ -27,7 +36,7 @@ public class ChartController : Controller
       return NotFound();
     }
 
-    var dataProvider = serviceProvider
+    var dataProvider = _serviceProvider
       .GetServices<IChartProvider>()
       .FirstOrDefault(
         dataProvider =>
@@ -38,7 +47,7 @@ public class ChartController : Controller
       return StatusCode(500, "Chart data provider not found");
     }
 
-    var chartContentItem = await contentManager.GetAsync(
+    var chartContentItem = await _contentManager.GetAsync(
       metadataPart.ChartContentItemId,
       VersionOptions.Latest
     );
@@ -59,13 +68,9 @@ public class ChartController : Controller
     return Json(chart);
   }
 
-  public async Task<IActionResult> Preview(
-    [FromServices] IContentManager contentManager,
-    [FromServices] IServiceProvider serviceProvider,
-    string contentItemId
-  )
+  public async Task<IActionResult> Preview(string contentItemId)
   {
-    var chartContentItem = await contentManager.GetAsync(
+    var chartContentItem = await _contentManager.GetAsync(
       contentItemId,
       VersionOptions.Latest
     );
@@ -74,11 +79,22 @@ public class ChartController : Controller
       return NotFound();
     }
 
-    var dataProvider = serviceProvider
+    if (
+      !await _authorizationService.AuthorizeAsync(
+        User,
+        CommonPermissions.PreviewContent,
+        chartContentItem
+      )
+    )
+    {
+      return Forbid();
+    }
+
+    var dataProvider = _serviceProvider
       .GetServices<IChartProvider>()
       .FirstOrDefault(
         dataProvider =>
-          dataProvider.ContentType == PreviewChartDataProvider.ProviderId
+          dataProvider.ContentType == PreviewChartProvider.ChartContentType
       );
     if (dataProvider is null)
     {
@@ -96,4 +112,19 @@ public class ChartController : Controller
 
     return Json(chart);
   }
+
+  public ChartController(
+    IContentManager contentManager,
+    IServiceProvider serviceProvider,
+    IAuthorizationService authorizationService
+  )
+  {
+    _contentManager = contentManager;
+    _serviceProvider = serviceProvider;
+    _authorizationService = authorizationService;
+  }
+
+  private readonly IContentManager _contentManager;
+  private readonly IServiceProvider _serviceProvider;
+  private readonly IAuthorizationService _authorizationService;
 }
