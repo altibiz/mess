@@ -6,7 +6,7 @@
     var name = (Model.PartFieldDefinition.PartDefinition.Name + "-" + Model.PartFieldDefinition.Name).HtmlClassify();
 }
 
-<div class="field field-name-@name">
+<div class="field field-type-apikeyfield field-name-@name">
   @if(
     String.IsNullOrEmpty(Model.Field.Hash) || 
     Model.Field.Salt is null

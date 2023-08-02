@@ -23,6 +23,7 @@ using YesSql;
 using YesSql.Sql;
 using Mess.ContentFields.Abstractions.Services;
 using Mess.ContentFields.Abstractions.Settings;
+using Mess.ContentFields.Abstractions;
 
 namespace Mess.Eor;
 
@@ -384,8 +385,14 @@ public class Migrations : DataMigration
       timeseriesChartPart =>
       {
         timeseriesChartPart.ChartContentType = "EorMeasurementDevice";
-        timeseriesChartPart.HistorySpan = TimeSpan.FromMinutes(5);
-        timeseriesChartPart.RefreshIntervalSpan = TimeSpan.FromSeconds(10);
+        timeseriesChartPart.History = new()
+        {
+          Value = new(Unit: IntervalUnit.Minute, Count: 10)
+        };
+        timeseriesChartPart.RefreshInterval = new()
+        {
+          Value = new(Unit: IntervalUnit.Second, Count: 10)
+        };
         timeseriesChartPart.Datasets = new()
         {
           eorCurrentDataset,

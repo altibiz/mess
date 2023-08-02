@@ -1,6 +1,7 @@
-import { Log, Push, Update } from ".";
-import { Message } from "../messengers";
+import { Log, Push, Update } from "./index";
+import { Message } from "../messengers/index";
 import args from "../args";
+import fetch, { Response } from "cross-fetch";
 
 export const push: Push = async ({ payload: body, metadata }: Message) => {
   const endpoint = new URL(

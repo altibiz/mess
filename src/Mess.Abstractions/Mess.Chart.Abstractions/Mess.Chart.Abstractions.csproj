@@ -11,5 +11,9 @@
     <PackageReference Include="OrchardCore.ContentFields" Version="$(MessOrchardVersion)" />
     <PackageReference Include="Etch.OrchardCore.Fields" Version="$(MessEtchVersion)" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.ContentFields.Abstractions/Mess.ContentFields.Abstractions.csproj" />
+  </ItemGroup>
 
 </Project>

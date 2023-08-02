@@ -29,25 +29,26 @@ public class TimeseriesChartPartDisplayDriver
           chartDataProvider.ContentType != PreviewChartProvider.ChartContentType
       );
     return Initialize<TimeseriesChartPartEditViewModel>(
-      GetEditorShapeType(context),
-      model =>
-      {
-        model.ChartContentType =
-          part.ChartContentType ?? chartProviders.First().ContentType;
-        model.ChartContentTypeOptions = chartProviders
-          .Select(
-            chartDataProvider =>
-              new SelectListItem
-              {
-                Text = chartDataProvider.ContentType,
-                Value = chartDataProvider.ContentType
-              }
-          )
-          .ToList();
-        model.Part = part;
-        model.Definition = context.TypePartDefinition;
-      }
-    );
+        GetEditorShapeType(context),
+        model =>
+        {
+          model.ChartContentType =
+            part.ChartContentType ?? chartProviders.First().ContentType;
+          model.ChartContentTypeOptions = chartProviders
+            .Select(
+              chartDataProvider =>
+                new SelectListItem
+                {
+                  Text = chartDataProvider.ContentType,
+                  Value = chartDataProvider.ContentType
+                }
+            )
+            .ToList();
+          model.Part = part;
+          model.Definition = context.TypePartDefinition;
+        }
+      )
+      .Location("Content");
   }
 
   public override async Task<IDisplayResult> UpdateAsync(

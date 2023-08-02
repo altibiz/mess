@@ -13,6 +13,10 @@
     "diffenginetray": {
       "version": "11.2.0",
       "commands": ["DiffEngineTray"]
+    },
+    "powershell": {
+      "version": "7.3.6",
+      "commands": ["pwsh"]
     }
   }
 }

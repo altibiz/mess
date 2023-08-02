@@ -8,5 +8,9 @@
   <ItemGroup>
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Chart.Abstractions/Mess.Chart.Abstractions.csproj" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.ContentFields.Abstractions/Mess.ContentFields.Abstractions.csproj" />
+  </ItemGroup>
 
 </Project>

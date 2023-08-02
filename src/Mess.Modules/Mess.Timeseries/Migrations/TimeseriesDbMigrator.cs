@@ -1,6 +1,6 @@
 using System.Reflection;
 using Mess.Relational.Abstractions.Migrations;
-using Mess.System.Extensions;
+using Mess.System.Extensions.Microsoft;
 using Mess.Timeseries.Abstractions.Context;
 using Mess.Timeseries.Abstractions.Entities;
 using Microsoft.EntityFrameworkCore;

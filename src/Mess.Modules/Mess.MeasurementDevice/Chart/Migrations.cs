@@ -7,11 +7,11 @@ using OrchardCore.Data.Migration;
 using OrchardCore.Recipes.Services;
 using OrchardCore.Title.Models;
 using Mess.OrchardCore;
-using Mess.MeasurementDevice.Chart.Providers;
 using Mess.MeasurementDevice.Abstractions.Models;
 using Mess.MeasurementDevice.Abstractions.Client;
 using YesSql;
 using Mess.MeasurementDevice.Abstractions.Indexes;
+using Mess.ContentFields.Abstractions;
 
 namespace Mess.MeasurementDevice.Chart;
 
@@ -88,12 +88,25 @@ public class Migrations : DataMigration
       var egaugeChart =
         await _contentManager.NewContentAsync<TimeseriesChartItem>();
       egaugeChart.Alter(
+        egaugeChart => egaugeChart.TitlePart,
+        titlePart =>
+        {
+          titlePart.Title = "Egauge";
+        }
+      );
+      egaugeChart.Alter(
         egaugeChart => egaugeChart.TimeseriesChartPart,
         timeseriesChartPart =>
         {
           timeseriesChartPart.ChartContentType = "EgaugeMeasurementDevice";
-          timeseriesChartPart.HistorySpan = TimeSpan.FromMinutes(15);
-          timeseriesChartPart.RefreshIntervalSpan = TimeSpan.FromSeconds(10);
+          timeseriesChartPart.History = new()
+          {
+            Value = new(Unit: IntervalUnit.Minute, Count: 10)
+          };
+          timeseriesChartPart.RefreshInterval = new()
+          {
+            Value = new(Unit: IntervalUnit.Second, Count: 10)
+          };
           timeseriesChartPart.Datasets = new() { eguagePowerDataset };
         }
       );

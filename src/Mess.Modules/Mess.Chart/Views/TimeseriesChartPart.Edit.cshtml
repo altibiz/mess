@@ -6,7 +6,7 @@
 
 <div class="mb-3 row">
   <div class="col-sm-6">
-    <label asp-for="ChartContentType">@T["Data provider"]</label>
+    <label asp-for="ChartContentType">@T["Content type"]</label>
     <select class="form-select" asp-for="ChartContentType">
       @foreach (var item in Model.ChartContentTypeOptions)
       {
@@ -27,30 +27,32 @@
   
   @if (Model.Part.Datasets is not null && Model.Part.Datasets.Count > 0)
   {
-    @foreach (var contentItem in Model.Part.Datasets)
-    {
-      contentItem.Content.ContentItemId = Model.Part.ContentItem.ContentItemId;
-      contentItem.Content.ChartContentType = Model.Part.ChartContentType;
-      dynamic dataset = await ContentItemDisplayManager.BuildDisplayAsync(
-        contentItem,
-        ModelUpdaterAccessor.ModelUpdater
-      );
-      <div class="mb-3 row">
-        <div 
-            class="
-              d-flex
-              flex-column
-              justify-content-between
-              border
-              rounded
-              p-2
-              ps-3
-              mb-1
-            ">
-          @await DisplayAsync(dataset)
+    <div class="container">
+      @foreach (var contentItem in Model.Part.Datasets)
+      {
+        contentItem.Content.ContentItemId = Model.Part.ContentItem.ContentItemId;
+        contentItem.Content.ChartContentType = Model.Part.ChartContentType;
+        dynamic dataset = await ContentItemDisplayManager.BuildDisplayAsync(
+          contentItem,
+          ModelUpdaterAccessor.ModelUpdater
+        );
+        <div class="mb-3 row">
+          <div 
+              class="
+                d-flex
+                flex-column
+                justify-content-between
+                border
+                rounded
+                p-2
+                ps-3
+                mb-1
+              ">
+            @await DisplayAsync(dataset)
+          </div>
         </div>
-      </div>
-    }
+      }
+    </div>
   }
   else {
     <span class="hint">

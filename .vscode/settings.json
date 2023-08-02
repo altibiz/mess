@@ -1,35 +1,35 @@
 {
   "search.exclude": {
-    "**/.yarn": true,
-    "**/.pnp.*": true,
+    "**/node_modules": true,
+    ".pnp.*": true,
+    ".yarn": true,
+    "yarn.lock": true,
     "**/Localization": true,
     "**/Internal/Generated": true,
     "**/bin": true,
     "**/obj": true,
-    "App_Data": true,
     "**/Snapshots": true,
     "**/wwwroot": true
   },
+  "files.exclude": {
+    "**/node_modules": true,
+    ".pnp.*": true,
+    ".yarn": true,
+    "yarn.lock": true
+  },
   "prettier.prettierPath": ".yarn/sdks/prettier/index.js",
+  "prettier.ignorePath": ".prettierignore",
   "typescript.tsdk": ".yarn/sdks/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "eslint.nodePath": ".yarn/sdks",
   "npm.packageManager": "yarn",
-  "eslint.packageManager": "yarn",
   "stylelint.packageManager": "yarn",
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "[csharp]": {
     "editor.defaultFormatter": "csharpier.csharpier-vscode"
   },
   "editor.formatOnSave": true,
-  "[dockerfile]": {
-    "editor.defaultFormatter": "ms-azuretools.vscode-docker"
-  },
-  "files.associations": {
-    "*.json.hbs": "json",
-    "*.xml.hbs": "xml"
-  },
   "yaml.schemas": {
-    "https://json.schemastore.org/github-workflow.json": "file:///c%3A/tools/src/9b3dc/repos/mess/work/mess-main/.github/workflows/deploy.yml"
+    "https://json.schemastore.org/github-workflow.json": "./.github/workflows/*.yml"
   }
 }

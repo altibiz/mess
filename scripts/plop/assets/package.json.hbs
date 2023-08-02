@@ -1,0 +1,27 @@
+{
+  "name": "@mess/{{hyphenatedName}}-assets",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint:tsc": "tsc --noEmit",
+    "lint:eslint": "eslint ./src/**/*.{js,ts}",
+    "lint:stylelint": "stylelint ./src/**/*.{sass,scss,css}",
+    "lint": "run-p lint:tsc lint:eslint lint:stylelint"
+  },
+  "devDependencies": {
+    "@mess/eslint-config-assets": "workspace:*",
+    "@mess/stylelint-config-assets": "workspace:*",
+    "@mess/typescript-config-assets": "workspace:*",
+    "@shopify/prettier-plugin-liquid": "^1.2.2",
+    "@typescript-eslint/eslint-plugin": "^6.2.1",
+    "@typescript-eslint/parser": "^6.2.1",
+    "eslint": "^8.46.0",
+    "npm-run-all": "^4.1.5",
+    "postcss": "^8.4.27",
+    "prettier": "^3.0.1",
+    "sass": "^1.64.2",
+    "stylelint": "^15.10.2",
+    "stylelint-config-standard-scss": "^10.0.0",
+    "typescript": "^5.1.6"
+  }
+}

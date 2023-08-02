@@ -23,6 +23,7 @@ public class Startup : StartupBase
     services.AddResources<Resources>();
     services.AddNavigationProvider<AdminMenu>();
 
+    // ApiKeyField
     services.Configure<TemplateOptions>(options =>
     {
       options.MemberAccessStrategy.Register<ApiKeyField>();
@@ -32,6 +33,15 @@ public class Startup : StartupBase
       .UseDisplayDriver<ApiKeyFieldDisplayDriver>();
     services.AddContentPartFieldDefinitionDisplayDriver<ApiKeyFieldSettingsDriver>();
     services.AddSingleton<IApiKeyFieldService, ApiKeyFieldService>();
+
+    // IntervalField
+    services.Configure<TemplateOptions>(options =>
+    {
+      options.MemberAccessStrategy.Register<IntervalField>();
+    });
+    services
+      .AddContentField<IntervalField>()
+      .UseDisplayDriver<IntervalFieldDisplayDriver>();
   }
 
   public override void Configure(

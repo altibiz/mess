@@ -1,0 +1,13 @@
+using OrchardCore.DisplayManagement.Manifest;
+using Mess.OrchardCore;
+
+[assembly: Theme(
+  Id = "Mess.{{name}}",
+  Name = "The {{longName}} Theme",
+  Description = "{{description}}",
+  Author = ManifestConstants.Author,
+  Website = ManifestConstants.Website,
+  Version = ManifestConstants.Version,
+  Category = ManifestConstants.Category,
+  Tags = new string[] { ManifestConstants.MessTag }
+)]

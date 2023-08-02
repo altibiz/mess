@@ -20,8 +20,11 @@ public static class IApiKeyFieldServiceExtensions
     string apiKey
   )
   {
-    var apiKeySalt = apiKeyFieldService.GenerateApiKeySalt();
-    var apiKeyHash = apiKeyFieldService.HashApiKey(apiKey, apiKeySalt);
+    var apiKeySalt = await apiKeyFieldService.GenerateApiKeySaltAsync();
+    var apiKeyHash = await apiKeyFieldService.HashApiKeyAsync(
+      apiKey,
+      apiKeySalt
+    );
     return new ApiKeyField { Salt = apiKeySalt, Hash = apiKeyHash };
   }
 }

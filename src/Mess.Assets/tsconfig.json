@@ -1,14 +1,4 @@
 {
-  "compilerOptions": {
-    "target": "ES2015",
-    "module": "CommonJS",
-    "moduleResolution": "node",
-    "downlevelIteration": true,
-    "isolatedModules": true,
-    "esModuleInterop": true,
-    "resolveJsonModule": true,
-    "lib": ["ESNext", "DOM", "DOM.Iterable"],
-    "strict": true
-  },
+  "extends": "@tsconfig/node20/tsconfig.json",
   "include": ["webpack.config.ts"]
 }

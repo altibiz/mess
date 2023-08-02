@@ -3,19 +3,5 @@
   "tabWidth": 2,
   "useTabs": false,
   "trailingComma": "all",
-  "plugins": ["@shopify/prettier-plugin-liquid"],
-  "overrides": [
-    {
-      "files": ["*.json.hbs"],
-      "options": {
-        "parser": "json"
-      }
-    },
-    {
-      "files": ["*.xml.hbs"],
-      "options": {
-        "parser": "html"
-      }
-    }
-  ]
+  "plugins": ["@shopify/prettier-plugin-liquid"]
 }

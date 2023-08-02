@@ -1,6 +1,7 @@
 using Mess.Chart.Abstractions.Descriptors;
 using Mess.Chart.Abstractions.Models;
 using Mess.Chart.Abstractions.Providers;
+using Mess.ContentFields.Abstractions;
 using OrchardCore.ContentManagement;
 
 namespace Mess.Chart.Providers;
@@ -42,12 +43,12 @@ public class PreviewChartProvider : ChartProvider
     );
 
     return new TimeseriesChartDescriptor(
-      RefreshInterval: chart
-        .TimeseriesChartPart
-        .Value
-        .RefreshIntervalSpan
+      RefreshInterval: chart.TimeseriesChartPart.Value.RefreshInterval.Value
+        .ToTimeSpan()
         .TotalMilliseconds,
-      History: chart.TimeseriesChartPart.Value.HistorySpan.TotalMilliseconds,
+      History: chart.TimeseriesChartPart.Value.History.Value
+        .ToTimeSpan()
+        .TotalMilliseconds,
       Datasets: datasetDescriptors.ToList().AsReadOnly()
     );
   }

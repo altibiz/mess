@@ -1,5 +1,5 @@
-import { Message } from "../messengers";
-import { MaybePromise } from "../types/promise";
+import { Message } from "../messengers/index";
+import type { MaybePromise } from "../types/promise";
 
 export type Push = (message: Message) => MaybePromise<unknown>;
 
@@ -23,7 +23,7 @@ type Pusher = {
 };
 
 export const importPushers = async (): Promise<Record<string, Pusher>> => ({
-  http: await import("./http"),
+  http: await import("./http.js"),
 });
 
 export default Pusher;

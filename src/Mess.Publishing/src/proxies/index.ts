@@ -11,7 +11,7 @@ type Proxy = {
 };
 
 export const importProxies = async (): Promise<Record<string, Proxy>> => ({
-  modbus: await import("./modbus"),
+  modbus: await import("./modbus.js"),
 });
 
 export default Proxy;

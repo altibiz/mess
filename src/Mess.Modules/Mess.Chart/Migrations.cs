@@ -1,5 +1,4 @@
 using Etch.OrchardCore.Fields.Colour.Settings;
-using Etch.OrchardCore.Fields.MultiSelect.Settings;
 using Mess.Chart.Indexes;
 using OrchardCore.ContentFields.Settings;
 using OrchardCore.ContentManagement.Metadata;
@@ -37,54 +36,18 @@ public class Migrations : DataMigration
             "History",
             builder =>
               builder
-                .OfType("MultiSelectField")
+                .OfType("IntervalField")
                 .WithDisplayName("History")
                 .WithDescription("The history for the chart.")
-                .WithSettings<MultiSelectFieldSettings>(
-                  new()
-                  {
-                    Hint = "The history for the chart. (default is 15 minutes)",
-                    Options = new[]
-                    {
-                      "5 minutes",
-                      "10 minutes",
-                      "15 minutes",
-                      "30 minutes",
-                      "1 hour",
-                      "1 day",
-                      "1 week",
-                      "1 month",
-                      "1 year"
-                    },
-                  }
-                )
                 .WithPosition("0")
           )
           .WithField(
             "RefreshInterval",
             builder =>
               builder
-                .OfType("MultiSelectField")
+                .OfType("IntervalField")
                 .WithDisplayName("Refresh interval")
                 .WithDescription("The refresh interval for the chart.")
-                .WithSettings<MultiSelectFieldSettings>(
-                  new()
-                  {
-                    Hint =
-                      "The refresh interval for the chart. (default is 1 minute)",
-                    Options = new[]
-                    {
-                      "10 seconds",
-                      "30 seconds",
-                      "1 minute",
-                      "5 minutes",
-                      "10 minutes",
-                      "15 minutes",
-                      "30 minutes",
-                      "1 hour"
-                    },
-                  }
-                )
                 .WithPosition("1")
           )
     );
@@ -120,7 +83,6 @@ public class Migrations : DataMigration
                   {
                     Hint = "The color for the line of the dataset.",
                     DefaultValue = "#0000FF",
-                    // TODO: configurable through theme?
                     Colours = new ColourItem[]
                     {
                       new() { Name = "Red", Value = "#FF0000" },

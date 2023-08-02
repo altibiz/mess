@@ -27,9 +27,10 @@ namespace OrchardCore.ContentFields.Settings
     {
       var model = new ApiKeyFieldSettings();
 
-      await context.Updater.TryUpdateModelAsync(model, Prefix);
-
-      context.Builder.WithSettings(model);
+      if (await context.Updater.TryUpdateModelAsync(model, Prefix))
+      {
+        context.Builder.WithSettings(model);
+      }
 
       return Edit(partFieldDefinition);
     }

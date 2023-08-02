@@ -1,4 +1,4 @@
-using Mess.System.Extensions;
+using Mess.System.Extensions.Microsoft;
 using Mess.Relational.Abstractions.Context;
 using Mess.Relational.Abstractions.Migrations;
 using Microsoft.EntityFrameworkCore;

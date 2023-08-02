@@ -36,7 +36,7 @@ public static class JsonSeriazlizerOptionsExtensions
   {
     new EnumJsonConverterFactory(),
     new BooleanJsonConverter(),
-    new TimeSpanConverter(),
+    new TimeSpanJsonConverter(),
     new ListJsonConverterFactory(),
     new TupleJsonConverterFactory(),
   };
