@@ -23,8 +23,6 @@ install them and follow the setup instructions afterwards to run Mess.
 
 Relevant files are:
 
-- `mess.bat`
-- `mess`
 - `.nvmrc`
 - `package.json`
 - `global.json`

@@ -26,23 +26,16 @@ public class EorUpdateHandler
 
     var eorMeasurementDevice =
       contentItem.AsContent<EorMeasurementDeviceItem>();
-    if (
-      eorMeasurementDevice.EorMeasurementDevicePart.Value.Controls.Mode
-        != status.Mode
-      || eorMeasurementDevice.EorMeasurementDevicePart.Value.Controls.ResetState
-        != status.ResetState
-    )
-    {
-      eorMeasurementDevice.Alter(
-        eorMeasurementDevice => eorMeasurementDevice.EorMeasurementDevicePart,
-        eorMeasurementDevicePart =>
-        {
-          eorMeasurementDevicePart.Controls.Mode = status.Mode;
-          eorMeasurementDevicePart.Controls.ResetState = status.ResetState;
-        }
-      );
-      _contentManager.UpdateAsync(eorMeasurementDevice).RunSynchronously();
-    }
+    eorMeasurementDevice.Alter(
+      eorMeasurementDevice => eorMeasurementDevice.EorMeasurementDevicePart,
+      eorMeasurementDevicePart =>
+      {
+        eorMeasurementDevicePart.Controls.Mode = status.Mode;
+        eorMeasurementDevicePart.Controls.ResetState = status.ResetState;
+        eorMeasurementDevicePart.Controls.Stamp = request.Stamp;
+      }
+    );
+    _contentManager.UpdateAsync(eorMeasurementDevice).RunSynchronously();
 
     _measurementClient.AddEorStatus(status);
   }

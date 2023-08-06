@@ -1,5 +1,6 @@
 import * as g from "glob";
-import p from "path/posix";
+import p from "path";
+import pp from "path/posix";
 import fs from "fs";
 import fsp from "fs/promises";
 import { rootDir, scriptDir } from "./dirs";
@@ -7,13 +8,13 @@ import { rootDir, scriptDir } from "./dirs";
 export const script = (path: fs.PathLike) => {
   return p.isAbsolute(path.toString())
     ? path.toString()
-    : p.join(scriptDir, path.toString());
+    : pp.join(scriptDir, path.toString());
 };
 
 export const root = (path: fs.PathLike) => {
   return p.isAbsolute(path.toString())
     ? path.toString()
-    : p.join(rootDir, path.toString());
+    : pp.join(rootDir, path.toString());
 };
 
 export const exists = async (path: fs.PathLike) => {
@@ -21,11 +22,32 @@ export const exists = async (path: fs.PathLike) => {
 };
 
 export const mkdir = async (path: fs.PathLike) => {
-  return await fsp.mkdir(root(path.toString()));
+  return await fsp.mkdir(root(path.toString()), { recursive: true });
 };
 
 export const cp = async (src: fs.PathLike, dest: fs.PathLike) => {
-  return await fsp.copyFile(root(src.toString()), root(dest.toString()));
+  return await fsp.cp(root(src.toString()), root(dest.toString()));
+};
+
+export const mv = async (src: fs.PathLike, dest: fs.PathLike) => {
+  const srcFull = root(src.toString());
+  const destFull = root(dest.toString());
+  if ((await fsp.stat(srcFull)).isDirectory()) {
+    return await fsp.rename(srcFull, destFull);
+  }
+
+  let destIsDir = false;
+  try {
+    destIsDir = (await fsp.stat(destFull)).isDirectory();
+  } catch (e) {
+    destIsDir = false;
+  }
+
+  if (destIsDir) {
+    return await fsp.rename(srcFull, pp.join(destFull, pp.basename(srcFull)));
+  }
+
+  return await fsp.rename(srcFull, destFull);
 };
 
 export const rmrf = async (path: fs.PathLike) => {
@@ -36,11 +58,11 @@ export const rmrf = async (path: fs.PathLike) => {
 };
 
 export const glob = async (pattern: string) => {
-  return await g.glob(root(pattern));
+  return (await g.glob(root(pattern))).map((path) => path.replace(/\\/g, "/"));
 };
 
 export const globf = async (pattern: string, missing: string) => {
-  const path = (await g.glob(root(pattern)))[0];
+  const path = (await glob(pattern))[0];
   if (!path) {
     throw new Error(missing);
   }
@@ -53,9 +75,9 @@ export const globi = async (pattern: string) =>
       (
         await glob(script(pattern))
       ).map(async (commandPath) => {
-        const name = p.basename(commandPath, ".ts");
-        const dir = p.dirname(commandPath);
-        return [name, await import(p.join(dir, `${name}.js`))];
+        const name = pp.basename(commandPath, ".ts");
+        const dir = pp.dirname(commandPath);
+        return [name, await import(pp.join(dir, `${name}.js`))];
       }),
     ),
   );

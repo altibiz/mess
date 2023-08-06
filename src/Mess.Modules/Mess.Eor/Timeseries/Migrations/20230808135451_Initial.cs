@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -16,7 +15,7 @@ namespace Mess.Eor.Timeseries.Migrations
         .AlterDatabase()
         .Annotation("Npgsql:Enum:eor_diode_bridge_state", "error,ok")
         .Annotation("Npgsql:Enum:eor_door_state", "closed,open")
-        .Annotation("Npgsql:Enum:eor_main_circuit_breaker_state", "on,off")
+        .Annotation("Npgsql:Enum:eor_main_circuit_breaker_state", "off,on")
         .Annotation(
           "Npgsql:Enum:eor_measurement_device_reset_state",
           "shouldnt_reset,should_reset"
@@ -71,9 +70,10 @@ namespace Mess.Eor.Timeseries.Migrations
               type: "timestamptz",
               nullable: false
             ),
+            Stamp = table.Column<int>(type: "integer", nullable: false),
             Mode = table.Column<int>(type: "integer", nullable: false),
             ProcessFault = table.Column<int>(type: "integer", nullable: false),
-            ProcessFaults = table.Column<List<string>>(
+            ProcessFaults = table.Column<string[]>(
               type: "text[]",
               nullable: false
             ),
