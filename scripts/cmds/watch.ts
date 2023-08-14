@@ -1,11 +1,14 @@
 import {
   env,
+  exists,
+  rmrf,
   ptask,
   root,
   cmd,
   dotnetFmt,
   yarnFmt,
   task,
+  log,
   Argv,
 } from "../lib/index";
 
@@ -25,6 +28,11 @@ export default cmd({
         description: "Run and pass push argument to yarn publishing",
         default: [],
       })
+      .option("clean", {
+        type: "boolean",
+        description: "Clean relevant artifacts before watch",
+        default: false,
+      })
       .option("debug", {
         type: "boolean",
         description:
@@ -34,13 +42,27 @@ export default cmd({
       update: string[];
       push: string[];
       debug: boolean;
+      clean: boolean;
     }>,
-})(async ({ push, update, debug }) => {
+})(async ({ push, update, debug, clean }) => {
   env("ASPNETCORE_ENVIRONMENT", "Development");
   env("DOTNET_ENVIRONMENT", "true");
   env("ORCHARD_APP_DATA", root("App_Data"));
   env("NODE_OPTIONS", "--no-warnings");
   env("NODE_ENV", "development");
+
+  if (clean) {
+    if (await exists("App_Data")) {
+      await rmrf("App_Data");
+      log.info("Cleaned App_Data");
+    }
+
+    await task("Cleaned docker containers and volumes", {
+      name: "docker",
+      command: "docker-compose down -v",
+      unary: true,
+    });
+  }
 
   await task(
     "Built with yarn so that dotnet watch is aware of artifacts",
