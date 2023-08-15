@@ -21,24 +21,21 @@ export default cmd({
       array: true,
       description: "Run and pass update argument to yarn publishing",
       default: [],
-    })
-      .option("push", {
-        type: "string",
-        array: true,
-        description: "Run and pass push argument to yarn publishing",
-        default: [],
-      })
-      .option("clean", {
-        type: "boolean",
-        description: "Clean relevant artifacts before watch",
-        default: false,
-      })
-      .option("debug", {
-        type: "boolean",
-        description:
-          "Don't run dotnet command because it is open with a debugger",
-        default: false,
-      }) as Argv<{
+    }).option("push", {
+      type: "string",
+      array: true,
+      description: "Run and pass push argument to yarn publishing",
+      default: [],
+    }).option("clean", {
+      type: "boolean",
+      description: "Clean relevant artifacts before watch",
+      default: false,
+    }).option("debug", {
+      type: "boolean",
+      description:
+        "Don't run dotnet command because it is open with a debugger",
+      default: false,
+    }) as Argv<{
       update: string[];
       push: string[];
       debug: boolean;
@@ -72,30 +69,30 @@ export default cmd({
   const debugCommands = debug
     ? []
     : [
-        {
-          name: "dotnet",
-          command:
-            "dotnet watch run" +
-            " --configuration Debug" +
-            " --property:consoleLoggerParameters=ErrorsOnly" +
-            ` --project ${root("src/Mess.Web/Mess.Web.csproj")}`,
+      {
+        name: "dotnet",
+        command:
+          "dotnet watch run" +
+          " --configuration Debug" +
+          " --property:consoleLoggerParameters=ErrorsOnly" +
+          ` --project ${root("src/Mess.Web/Mess.Web.csproj")}`,
 
-          fmt: dotnetFmt,
-        },
-      ];
+        fmt: dotnetFmt,
+      },
+    ];
 
   const pushArgs = push.map((push) => `--push ${push}`).join(" ");
   const updateArgs = update.map((update) => `--update ${update}`).join(" ");
   const publishCommands =
     pushArgs.length || updateArgs.length
       ? [
-          {
-            name: "publish",
-            command:
-              "yarn workspace @mess/publishing dev " +
-              `${pushArgs} ${updateArgs}`,
-          },
-        ]
+        {
+          name: "publish",
+          command:
+            "yarn workspace @mess/publishing dev " +
+            `${pushArgs} ${updateArgs}`,
+        },
+      ]
       : [];
 
   await ptask(
