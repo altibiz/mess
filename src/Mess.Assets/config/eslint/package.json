@@ -1,8 +1,8 @@
 {
   "name": "@mess/eslint-config-assets",
-  "main": "./index.js",
   "private": true,
-  "module": "commonjs",
+  "type": "commonjs",
+  "main": "./index.js",
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.2.1",
     "@typescript-eslint/parser": "^6.2.1",

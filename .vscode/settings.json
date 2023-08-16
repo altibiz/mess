@@ -1,35 +1,52 @@
 {
   "search.exclude": {
-    "**/node_modules": true,
     ".pnp.*": true,
-    ".yarn": true,
     "yarn.lock": true,
+    "**/node_modules": true,
+    "**/.yarn": true,
     "**/Localization": true,
     "**/Internal/Generated": true,
     "**/bin": true,
     "**/obj": true,
+    "**/build": true,
+    "**/dist": true,
     "**/Snapshots": true,
-    "**/wwwroot": true
+    "**/wwwroot": true,
+    "**/.docusaurus": true
   },
   "files.exclude": {
-    "**/node_modules": true,
     ".pnp.*": true,
-    ".yarn": true,
-    "yarn.lock": true
+    "yarn.lock": true,
+    "**/node_modules": true,
+    "**/.yarn": true
   },
+  "npm.packageManager": "yarn",
   "prettier.prettierPath": ".yarn/sdks/prettier/index.js",
   "prettier.ignorePath": ".prettierignore",
+  "eslint.nodePath": ".yarn/sdks",
   "typescript.tsdk": ".yarn/sdks/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
-  "eslint.nodePath": ".yarn/sdks",
-  "npm.packageManager": "yarn",
   "stylelint.packageManager": "yarn",
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "[csharp]": {
     "editor.defaultFormatter": "csharpier.csharpier-vscode"
   },
-  "editor.formatOnSave": true,
   "yaml.schemas": {
     "https://json.schemastore.org/github-workflow.json": "./.github/workflows/*.yml"
-  }
+  },
+  "files.encoding": "utf8",
+  "files.eol": "\n",
+  "editor.tabSize": 2,
+  "editor.indentSize": "tabSize",
+  "editor.insertSpaces": true,
+  "editor.rulers": [
+    {
+      "column": 80,
+      "color": "#CCCCDD"
+    }
+  ],
+  "editor.wordWrap": "off",
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "editor.formatOnSave": true
 }

@@ -1,7 +1,7 @@
 {
   "name": "@mess/chart-assets",
   "private": true,
-  "module": "commonjs",
+  "type": "commonjs",
   "scripts": {
     "lint:tsc": "tsc --noEmit",
     "lint:eslint": "eslint ./src/**/*.{js,ts}",

@@ -2,15 +2,10 @@
   "name": "@mess/assets",
   "private": true,
   "type": "commonjs",
-  "workspaces": [
-    "config/*",
-    "../Mess.{Modules,Themes}/*/Assets"
-  ],
   "scripts": {
     "lint:tsc": "tsc --noEmit",
     "lint:eslint": "eslint webpack.config.ts",
-    "lint:workspaces": "yarn workspaces foreach -ip --exclude @mess/assets run lint",
-    "lint": "run-s lint:tsc lint:eslint lint:workspaces",
+    "lint": "run-s lint:tsc lint:eslint",
     "build": "webpack --mode production",
     "watch": "webpack --mode development --watch"
   },

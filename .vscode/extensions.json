@@ -3,6 +3,8 @@
     "arcanis.vscode-zipfs",
     "esbenp.prettier-vscode",
     "dbaeumer.vscode-eslint",
+    "stylelint.vscode-stylelint",
+    "unifiedjs.vscode-mdx",
     "ms-azuretools.vscode-docker",
     "ms-dotnettools.csharp",
     "csharpier.csharpier-vscode"

@@ -1,8 +1,8 @@
 {
   "name": "@mess/publishing",
+  "private": true,
   "type": "commonjs",
   "main": "dist/index.js",
-  "private": true,
   "scripts": {
     "lint:tsc": "tsc --noEmit",
     "lint:eslint": "eslint ./src/**/*.{js,ts}",

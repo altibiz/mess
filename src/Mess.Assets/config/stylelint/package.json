@@ -1,8 +1,8 @@
 {
   "name": "@mess/stylelint-config-assets",
-  "main": "./index.js",
   "private": true,
-  "module": "commonjs",
+  "type": "commonjs",
+  "main": "./index.js",
   "devDependencies": {
     "postcss": "^8.4.27",
     "sass": "^1.64.2",
