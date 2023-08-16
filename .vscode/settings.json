@@ -4,21 +4,26 @@
     "yarn.lock": true,
     "**/node_modules": true,
     "**/.yarn": true,
-    "**/Localization": true,
-    "**/Internal/Generated": true,
     "**/bin": true,
     "**/obj": true,
     "**/build": true,
     "**/dist": true,
+    "**/.docusaurus": true,
+    "**/Localization": true,
+    "**/Internal/Generated": true,
     "**/Snapshots": true,
-    "**/wwwroot": true,
-    "**/.docusaurus": true
+    "**/wwwroot": true
   },
   "files.exclude": {
     ".pnp.*": true,
     "yarn.lock": true,
     "**/node_modules": true,
-    "**/.yarn": true
+    "**/.yarn": true,
+    "**/bin": true,
+    "**/obj": true,
+    "**/build": true,
+    "**/dist": true,
+    "**/.docusaurus": true
   },
   "npm.packageManager": "yarn",
   "prettier.prettierPath": ".yarn/sdks/prettier/index.js",

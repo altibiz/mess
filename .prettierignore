@@ -294,6 +294,7 @@ dist
 
 # Docusaurus cache and generated files
 .docusaurus
+.cache-loader
 
 # Serverless directories
 .serverless/
