@@ -12,7 +12,8 @@
     "**/Localization": true,
     "**/Internal/Generated": true,
     "**/Snapshots": true,
-    "**/wwwroot": true
+    "**/wwwroot": true,
+    "**/.pnp.*": true
   },
   "files.exclude": {
     ".pnp.*": true,
