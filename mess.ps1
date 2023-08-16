@@ -55,7 +55,7 @@ function Install-Dependency(
   Write-Host "$InstalledMessage"
   $env:Path = `
     [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + `
-    [System.Environment]::GetEnvironmentVariable("Path","User") 
+    [System.Environment]::GetEnvironmentVariable("Path","User")
 }
 
 function Test-Installed(
@@ -73,7 +73,7 @@ function Test-Installed(
       -InstallCommand "$InstallCommand" `
       -InstalledMessage "$InstalledMessage" `
       -DownloadUrl "$DownloadUrl"
-    
+
     return $true
   }
 
@@ -100,7 +100,7 @@ function Test-Version(
       -InstallCommand "$InstallCommand" `
       -InstalledMessage "$InstalledMessage" `
       -DownloadUrl "$DownloadUrl" `
-    
+
     return $true
   }
 
@@ -118,12 +118,12 @@ function Get-Node-Version {
 }
 
 function Install-Dotnet {
-  $InstallDir = if (Test-Path 'C:\Program Files\dotnet') { 
+  $InstallDir = if (Test-Path 'C:\Program Files\dotnet') {
     Write-Host "Installing .NET SDK $DOTNET_VERSION in 'C:\Program Files\dotnet'..."
-    'C:\Program Files\dotnet' 
+    'C:\Program Files\dotnet'
   } else {
     Write-Host "Installing .NET SDK $DOTNET_VERSION in default location..."
-    $null 
+    $null
   }
 
   $TempFile = [System.IO.Path]::GetTempFileName()
@@ -244,4 +244,4 @@ $YarnOutput -split "`n" | ForEach-Object {
 }
 Write-Host -NoNewline "`n`n"
 $YarnArgs = $args -join "' '"
-Invoke-Expression "yarn script '$YarnArgs'"
+Invoke-Expression "yarn scripts start '$YarnArgs'"

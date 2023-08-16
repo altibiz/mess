@@ -1,5 +1,7 @@
-import { resolve, dirname } from "path";
+import { dirname, resolve } from "path";
 
-const scriptLibDir = dirname(__filename);
+const scriptSrcLibDir = dirname(__filename);
+const scriptLibDir = resolve(scriptSrcLibDir, "..");
+
 export const scriptDir = resolve(scriptLibDir, "..").replace(/\\/g, "/");
 export const rootDir = resolve(scriptDir, "..").replace(/\\/g, "/");

@@ -21,7 +21,7 @@ export default cmd({
     await task("Linted workspaces", "yarn workspaces foreach -ip run lint");
     await task(
       "Linted projects",
-      "dotnet build" +
+      `dotnet build ${root()}` +
         ` --property "PublishDir=${root("artifacts")}"` +
         " --property:TreatWarningsAsErrors=true" +
         " --configuration Release",

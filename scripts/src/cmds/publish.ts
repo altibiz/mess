@@ -39,7 +39,7 @@ export default cmd({
 
   await task(
     "Published with dotnet",
-    "dotnet publish" +
+    `dotnet publish ${root("Mess.sln")}` +
       ` --property PublishDir=${root(publishDir)}` +
       " --property ConsoleLoggerParameters=ErrorsOnly" +
       " --property IsWebConfigTransformDisabled=true" +

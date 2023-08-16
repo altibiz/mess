@@ -1,20 +1,24 @@
+import fs from "fs";
+import fsp from "fs/promises";
 import * as g from "glob";
 import p from "path";
 import pp from "path/posix";
-import fs from "fs";
-import fsp from "fs/promises";
 import { rootDir, scriptDir } from "./dirs";
 
-export const script = (path: fs.PathLike) => {
-  return p.isAbsolute(path.toString())
-    ? path.toString()
-    : pp.join(scriptDir, path.toString());
+export const script = (path?: fs.PathLike) => {
+  return path
+    ? p.isAbsolute(path.toString())
+      ? path.toString()
+      : pp.join(scriptDir, path.toString())
+    : scriptDir;
 };
 
-export const root = (path: fs.PathLike) => {
-  return p.isAbsolute(path.toString())
-    ? path.toString()
-    : pp.join(rootDir, path.toString());
+export const root = (path?: fs.PathLike) => {
+  return path
+    ? p.isAbsolute(path.toString())
+      ? path.toString()
+      : pp.join(rootDir, path.toString())
+    : rootDir;
 };
 
 export const exists = async (path: fs.PathLike) => {

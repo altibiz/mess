@@ -142,4 +142,4 @@ echo "$yarnOutput" | while IFS= read -r line; do
   fi
 done
 printf "\n\n"
-yarn script "$@"
+yarn scripts start "$@"

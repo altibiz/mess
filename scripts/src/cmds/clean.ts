@@ -1,23 +1,25 @@
 import { cmd, exists, log, rmrf, task } from "../lib/index";
 
 const exceptions = [
-  "-e '!.husky/'",
-  "-e '!.husky/_/'",
-  "-e '!.husky/_/*'",
-  "-e '!.yarn/**'",
-  "-e '!.pnp.cjs'",
-  "-e '!.pnp.loader.mjs'",
-  "-e '!.vs/'",
-  "-e '!.vs/**'",
-  "-e '!**/*.csproj.user'",
-  "-e '!.vscode/**'",
-  "-e '!.env'",
-  "-e '!secrets.json'",
-  "-e '!secrets.sh'",
-  "-e '!secrets/'",
-  "-e '!secrets/**'",
-  "-e '!App_Data/'",
-].join(" ");
+  "!.husky/",
+  "!.husky/_/",
+  "!.husky/_/*",
+  "!.yarn/**",
+  "!.pnp.cjs",
+  "!.pnp.loader.mjs",
+  "!.vs/",
+  "!.vs/**",
+  "!**/*.csproj.user",
+  "!.vscode/**",
+  "!.env",
+  "!secrets.json",
+  "!secrets.sh",
+  "!secrets/",
+  "!secrets/**",
+  "!App_Data/",
+]
+  .map((exception) => `-e '${exception}'`)
+  .join(" ");
 
 export default cmd({
   usage: "clean",

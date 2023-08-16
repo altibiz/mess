@@ -1,6 +1,6 @@
 #!/usr/bin/env yarn dlx ts-node
 
-import commands from "../cmds/index";
+import commands from "./cmds/index";
 import { buildGlobalArgs, log, SUBCOMMANDS } from "./lib/index";
 
 const addCommand = (args, name, command) =>

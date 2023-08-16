@@ -1,4 +1,4 @@
-import { cmd, env, ptask } from "../lib/index";
+import { cmd, env, ptask, root } from "../lib/index";
 
 export default cmd({
   usage: "test",
@@ -14,7 +14,7 @@ export default cmd({
     },
     {
       name: "dotnet",
-      command: `dotnet test ${_.join(" ")}`,
+      command: `dotnet test ${root("Mess.sln")} ${_.join(" ")}`,
     },
   );
 });

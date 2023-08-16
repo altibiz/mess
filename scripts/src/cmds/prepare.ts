@@ -1,4 +1,13 @@
-import { cmd, coerceValue, env, exists, globf, log, task } from "../lib/index";
+import {
+  cmd,
+  coerceValue,
+  env,
+  exists,
+  globf,
+  log,
+  root,
+  task,
+} from "../lib/index";
 
 export default cmd({
   usage: "prepare",
@@ -21,11 +30,11 @@ export default cmd({
 
   await task("Installed tools with dotnet", "dotnet tool restore");
 
-  await task("Installed dependencies with dotnet", "dotnet restore");
+  await task("Installed dependencies with dotnet", `dotnet restore ${root()}`);
 
   if (build) {
     await task("Built with yarn", "yarn build");
-    await task("Built with dotnet", "dotnet build");
+    await task("Built with dotnet", `dotnet build ${root("Mess.sln")}`);
   }
 
   if (!skip.includes("test")) {
@@ -40,29 +49,6 @@ export default cmd({
 
   if (!env("CI")) {
     await task("Created containers", "docker compose up --no-start");
-
-    // TODO: currently we have no secrets - technically we could fetch them
-    // from cloud storage here
-
-    // if (!(await exists("secrets.json")) || !(await exists("secrets.sh"))) {
-    //   throw new Error(
-    //     "File 'secrets.json' or 'secrets.sh' not found." +
-    //       "Please copy over secrets to the worktree.",
-    //   );
-    // }
-
-    // await task(
-    //   "Set up secrets",
-    //   `dotnet user-secrets set --project ${root(
-    //     "src/Mess.Web/Mess.Web.csproj",
-    //   )} <${root("secrets.json")}`,
-    // );
-
-    // if (!(await exists("secrets"))) {
-    //   await mkdir("secrets");
-    // }
-    // await cp("secrets.json", "secrets/secrets.json");
-    // await cp("secrets.sh", "secrets/secrets.sh");
 
     if (!skip.includes("hooks")) {
       if (!(await exists(".husky/_/husky.sh"))) {

@@ -76,9 +76,9 @@ export default cmd({
           name: "dotnet",
           command:
             "dotnet watch run" +
+            ` --project ${root("src/Mess.Web/Mess.Web.csproj")}` +
             " --configuration Debug" +
-            " --property:consoleLoggerParameters=ErrorsOnly" +
-            ` --project ${root("src/Mess.Web/Mess.Web.csproj")}`,
+            " --property:consoleLoggerParameters=ErrorsOnly",
 
           fmt: dotnetFmt,
         },
