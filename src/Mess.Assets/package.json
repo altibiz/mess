@@ -5,9 +5,9 @@
   "scripts": {
     "lint:tsc": "tsc --noEmit",
     "lint:eslint": "eslint webpack.config.ts",
-    "lint": "run-s lint:tsc lint:eslint",
+    "lint": "run-s lint:*",
     "build": "webpack --mode production",
-    "watch": "webpack --mode development --watch"
+    "dev": "webpack --mode development --watch"
   },
   "devDependencies": {
     "@babel/core": "^7.22.9",

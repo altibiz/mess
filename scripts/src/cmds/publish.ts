@@ -35,7 +35,7 @@ export default cmd({
   env("NODE_ENV", "production");
   await dotenv("secrets.sh");
 
-  await task("Built with yarn", "yarn build");
+  await task("Built assets with yarn", "yarn assets build");
 
   await task(
     "Published with dotnet",

@@ -7,7 +7,6 @@ import HomepageFeatures from "../components/HomepageFeatures";
 
 import styles from "./index.module.css";
 
-
 export default function Home(): JSX.Element {
   const { siteConfig } = useDocusaurusContext();
   return (

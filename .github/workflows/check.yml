@@ -6,6 +6,7 @@ jobs:
   check:
     name: Check
     runs-on: ubuntu-latest
+
     services:
       postgres:
         image: timescale/timescaledb-ha:pg14-latest
@@ -22,6 +23,7 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
+
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -30,6 +32,7 @@ jobs:
       - uses: actions/setup-dotnet@v3
         with:
           global-json-file: global.json
+
       - name: prepare
         run: mess prepare --skip test
       - name: lint

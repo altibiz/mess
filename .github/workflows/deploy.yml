@@ -9,7 +9,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -21,7 +20,6 @@ jobs:
 
       - name: prepare
         run: mess prepare
-
       - name: publish
         run: mess publish --publish-dir ${{env.DOTNET_ROOT}}/myapp
 
@@ -37,13 +35,11 @@ jobs:
     environment:
       name: "Production"
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-
     steps:
       - name: download
         uses: actions/download-artifact@v2
         with:
           name: .net-app
-
       - name: deploy
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2

@@ -10,8 +10,9 @@
   "main": "dist/index.js",
   "scripts": {
     "scripts": "yarn workspace @mess/scripts",
+    "docs": "yarn workspace @mess/docs",
     "publishing": "yarn workspace @mess/publishing",
-    "docs": "yarn workspace @mess/docs"
+    "assets": "yarn workspace @mess/assets"
   },
   "packageManager": "yarn@3.6.1",
   "workspaces": [
@@ -26,28 +27,12 @@
     "@commitlint/cli": "^17.6.7",
     "@commitlint/config-conventional": "^17.6.7",
     "@shopify/prettier-plugin-liquid": "^1.2.2",
-    "@typescript-eslint/eslint-plugin": "^6.2.1",
-    "@typescript-eslint/parser": "^6.2.1",
     "eslint": "^8.46.0",
     "prettier": "^2.8.8",
+    "remark-cli": "^11.0.0",
     "typescript": "^5.1.6"
-  },
-  "browserslist": {
-    "production": [
-      ">0.5%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
   },
   "engines": {
     "node": "20.x"
-  },
-  "dependencies": {
-    "remark": "^14.0.3"
   }
 }
