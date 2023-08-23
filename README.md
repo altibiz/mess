@@ -36,7 +36,6 @@ Relevant files are:
 - `.gitignore`
 - `.prettierignore`
 
-
 ## TODO
 
 - [ ] docs dev experience with eslint and remark
