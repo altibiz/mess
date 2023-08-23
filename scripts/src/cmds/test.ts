@@ -7,7 +7,7 @@ export default cmd({
   env("ASPNETCORE_ENVIRONMENT", "Development");
   env("DOTNET_ENVIRONMENT", "http://localhost:5000");
 
-  ptask(
+  await ptask(
     {
       name: "docker",
       command: "docker compose up",
