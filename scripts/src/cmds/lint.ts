@@ -14,7 +14,10 @@ export default cmd({
 
   await task(
     "Linted with prettier",
-    "yarn prettier --check --ignore-path .prettierignore .",
+    "yarn prettier --check" +
+      " --ignore-path .prettierignore" +
+      " --cache --cache-strategy metadata" +
+      " .",
   );
 
   if (!formatOnly) {

@@ -10,6 +10,9 @@ export default cmd({
 
   await task(
     "Formatted with prettier",
-    "yarn prettier --write --ignore-path .prettierignore .",
+    "yarn prettier --write" +
+      " --ignore-path .prettierignore" +
+      " --cache --cache-strategy metadata" +
+      " .",
   );
 });

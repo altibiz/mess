@@ -79,17 +79,37 @@ get_node_version() {
 }
 
 install_node() {
-  nvm install $NODE_VERSION
-  nvm use $NODE_VERSION
+  nvm install "$NODE_VERSION"
+  nvm use "$NODE_VERSION"
 }
 
 install_dotnet() {
   curl -sSL $DOTNET_INSTALL_URL |
-    bash /dev/stdin --version $DOTNET_VERSION --verbose
+    bash /dev/stdin --version "$DOTNET_VERSION" --verbose
 }
 
 install_yarn() {
   npm install -g yarn
+}
+
+install_yarn_packages() {
+  yarnOutput=$(yarn install --json || {
+    echo "Failed to yarn install. Exiting..."
+    exit 1
+  })
+  echo "$yarnOutput" | while IFS= read -r line; do
+    data=$(echo "$line" | grep -oP '"data":\s*"\K[^"]*')
+    type=$(echo "$line" | grep -oP '"type":\s*"\K[^"]*')
+
+    if [[ "$data" == "Done"* ]]; then
+      printf "\nyarn installed %s" "${data:4}"
+    elif [[ "$data" == "ESM support for PnP"* ]]; then
+      :
+    elif [[ "$type" != "info" ]]; then
+      echo "$data"
+    fi
+  done
+  printf "\n\n"
 }
 
 if ! docker --version >/dev/null 2>&1; then
@@ -125,21 +145,8 @@ test_installed "yarn --version" \
   "install_yarn" \
   "$YARN_URL"
 
-yarnOutput=$(yarn install --json || {
-  echo "Failed to yarn install. Exiting..."
-  exit 1
-})
-echo "$yarnOutput" | while IFS= read -r line; do
-  data=$(echo "$line" | grep -oP '"data":\s*"\K[^"]*')
-  type=$(echo "$line" | grep -oP '"type":\s*"\K[^"]*')
+echo 'require("typescript")' |
+  yarn node >/dev/null 2>&1 ||
+  install_yarn_packages
 
-  if [[ "$data" == "Done"* ]]; then
-    printf "\nyarn installed %s" "${data:4}"
-  elif [[ "$data" == "ESM support for PnP"* ]]; then
-    :
-  elif [[ "$type" != "info" ]]; then
-    echo "$data"
-  fi
-done
-printf "\n\n"
 yarn scripts start "$@"

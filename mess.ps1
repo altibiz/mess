@@ -66,7 +66,7 @@ function Test-Installed(
   [String] $DownloadUrl
 ) {
   try {
-    Invoke-Expression "$Command" > $null 2>&1
+    Invoke-Expression "$Command" >$null 2>&1
   } catch {
     Install-Dependency `
       -InstallPrompt "$InstallPrompt" `
@@ -173,8 +173,28 @@ function Install-Yarn {
   & npm install -g yarn
 }
 
+function Install-Yarn-Packages {
+  $YarnOutput = $null
+  try {
+    $YarnOutput = Invoke-Expression "yarn install --json" 2>&1
+  } catch {
+    Write-Host "Failed to yarn install. Exiting..."
+    exit 1
+  }
+  $YarnOutput -split "`n" | ForEach-Object {
+    $Message = ConvertFrom-Json $_
+    if ($Message.data.StartsWith("Done")) {
+      Write-Host ("`nyarn installed dependencies" + $Message.data.Substring(4))
+    } elseif ($Message.data.StartsWith("ESM support for PnP")) {
+    } elseif ($Message.type -ne "info") {
+      Write-Host $Message.data
+    }
+  }
+  Write-Host -NoNewline "`n`n"
+}
+
 try {
-  Invoke-Expression "docker --version" > $null 2>&1
+  Invoke-Expression "docker --version" >$null 2>&1
 } catch {
   Write-Host "Docker is not installed. Opening the download page..."
   Start-Process $DOCKER_URL
@@ -226,22 +246,8 @@ if ($InstalledDotnet -or $InstalledNode -or $InstalledYarn) {
   Write-Host -NoNewline "`n`n"
 }
 
-$YarnOutput = $null
-try {
-  $YarnOutput = Invoke-Expression "yarn install --json" 2>&1
-} catch {
-  Write-Host "Failed to yarn install. Exiting..."
-  exit 1
-}
-$YarnOutput -split "`n" | ForEach-Object {
-  $Message = ConvertFrom-Json $_
-  if ($Message.data.StartsWith("Done")) {
-    Write-Host ("`nyarn installed dependencies" + $Message.data.Substring(4))
-  } elseif ($Message.data.StartsWith("ESM support for PnP")) {
-  } elseif ($Message.type -ne "info") {
-    Write-Host $Message.data
-  }
-}
-Write-Host -NoNewline "`n`n"
+Write-Output 'require("typescript")' | yarn node >$null 2>&1
+if (!$?) { Install-Yarn-Packages }
+
 $YarnArgs = $args -join "' '"
 Invoke-Expression "yarn scripts start '$YarnArgs'"
