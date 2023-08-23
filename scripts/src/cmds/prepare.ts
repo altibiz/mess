@@ -48,7 +48,11 @@ export default cmd({
   }
 
   if (!env("CI")) {
-    await task("Created containers", "docker compose up --no-start");
+    await task("Created containers", {
+      name: "docker",
+      command: "docker compose up --no-start",
+      unary: true,
+    });
 
     if (!skip.includes("hooks")) {
       if (!(await exists(".husky/_/husky.sh"))) {
