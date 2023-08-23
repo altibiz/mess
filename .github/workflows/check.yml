@@ -34,6 +34,6 @@ jobs:
           global-json-file: global.json
 
       - name: prepare
-        run: mess prepare --skip test
+        run: ./mess prepare --skip test
       - name: lint
-        run: mess lint
+        run: ./mess lint

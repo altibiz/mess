@@ -19,9 +19,9 @@ jobs:
           global-json-file: global.json
 
       - name: prepare
-        run: mess prepare
+        run: ./mess prepare
       - name: publish
-        run: mess publish --publish-dir ${{env.DOTNET_ROOT}}/myapp
+        run: ./mess publish --publish-dir ${{env.DOTNET_ROOT}}/myapp
 
       - name: upload
         uses: actions/upload-artifact@v2
