@@ -23,7 +23,7 @@ type Pusher = {
 };
 
 export const importPushers = async (): Promise<Record<string, Pusher>> => ({
-  http: await import("./http.js"),
+  http: await import("./http"),
 });
 
 export default Pusher;

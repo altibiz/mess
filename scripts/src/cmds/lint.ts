@@ -14,7 +14,7 @@ export default cmd({
 
   await task(
     "Linted with prettier",
-    "prettier --check --ignore-path .prettierignore .",
+    "yarn prettier --check --ignore-path .prettierignore .",
   );
 
   if (!formatOnly) {

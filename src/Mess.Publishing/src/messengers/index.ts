@@ -15,8 +15,8 @@ type Messenger = {
 export const importMessengers = async (): Promise<
   Record<string, Messenger>
 > => ({
-  egauge: await import("./egauge.js"),
-  eor: await import("./eor.js"),
+  eor: await import("./eor"),
+  egauge: await import("./egauge"),
 });
 
 export default Messenger;

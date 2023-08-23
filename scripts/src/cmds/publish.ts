@@ -38,7 +38,7 @@ export default cmd({
   await task("Built assets with yarn", "yarn assets build");
 
   await task(
-    "Published with dotnet",
+    "Published app with dotnet",
     `dotnet publish ${root("Mess.sln")}` +
       ` --property PublishDir=${root(publishDir)}` +
       " --property ConsoleLoggerParameters=ErrorsOnly" +

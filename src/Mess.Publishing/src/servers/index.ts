@@ -13,7 +13,7 @@ type Server = {
 };
 
 export const importServers = async (): Promise<Record<string, Server>> => ({
-  http: await import("./modbus.js"),
+  http: await import("./modbus"),
 });
 
 export default Server;

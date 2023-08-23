@@ -13,8 +13,8 @@ import {
 } from "../lib/index";
 
 export default cmd({
-  usage: "watch",
-  description: "Watch for changes and restart the server",
+  usage: "dev",
+  description: "Start the development environment",
   builder: (_) =>
     _.option("update", {
       type: "string",
@@ -65,8 +65,8 @@ export default cmd({
   }
 
   await task(
-    "Built with yarn so that dotnet watch is aware of artifacts",
-    "yarn build",
+    "Built assets with yarn so that dotnet watch is aware of artifacts",
+    "yarn assets build",
   );
 
   const debugCommands = debug
@@ -102,7 +102,7 @@ export default cmd({
     { name: "docker", command: "docker-compose up", silent: true },
     {
       name: "yarn",
-      command: "yarn watch",
+      command: "yarn assets watch",
       fmt: yarnFmt,
     },
     ...debugCommands,

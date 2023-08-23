@@ -3,7 +3,8 @@
   "compilerOptions": {
     "allowJs": true,
     "checkJs": false,
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "moduleResolution": "Node"
   },
   "include": ["./src/**/*"],
   "ts-node": {

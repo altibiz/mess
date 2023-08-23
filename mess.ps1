@@ -244,4 +244,4 @@ $YarnOutput -split "`n" | ForEach-Object {
 }
 Write-Host -NoNewline "`n`n"
 $YarnArgs = $args -join "' '"
-Invoke-Expression "yarn scripts dev '$YarnArgs'"
+Invoke-Expression "yarn scripts start '$YarnArgs'"

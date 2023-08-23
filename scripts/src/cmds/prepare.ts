@@ -33,8 +33,8 @@ export default cmd({
   await task("Installed dependencies with dotnet", `dotnet restore ${root()}`);
 
   if (build) {
-    await task("Built with yarn", "yarn build");
-    await task("Built with dotnet", `dotnet build ${root("Mess.sln")}`);
+    await task("Built assets with yarn", "yarn assets build");
+    await task("Built app with dotnet", `dotnet build ${root("Mess.sln")}`);
   }
 
   if (!skip.includes("test")) {
