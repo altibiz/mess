@@ -6,7 +6,7 @@
     "lint:tsc": "tsc --noEmit",
     "lint:eslint": "eslint ./src/**/*.{js,ts}",
     "lint:stylelint": "stylelint ./src/**/*.{sass,scss,css}",
-    "lint": "run-s lint:*"
+    "lint": "run-s 'lint:*'"
   },
   "devDependencies": {
     "@mess/eslint-config-assets": "workspace:*",

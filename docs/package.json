@@ -4,7 +4,7 @@
   "scripts": {
     "watch": "docusaurus start",
     "lint:tsc": "tsc --noEmit",
-    "lint": "run-s lint:*"
+    "lint": "run-s 'lint:*'"
   },
   "dependencies": {
     "@docusaurus/core": "2.4.1",

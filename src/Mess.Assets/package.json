@@ -5,7 +5,7 @@
   "scripts": {
     "lint:tsc": "tsc --noEmit",
     "lint:eslint": "eslint webpack.config.ts",
-    "lint": "run-s lint:*",
+    "lint": "run-s 'lint:*'",
     "build": "webpack --mode production",
     "watch": "webpack --mode development --watch"
   },
