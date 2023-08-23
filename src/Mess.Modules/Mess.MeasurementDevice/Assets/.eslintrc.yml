@@ -1,1 +1,1 @@
-extends: '@mess/eslint-config-assets'
+extends: "@mess/eslint-config-assets"

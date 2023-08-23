@@ -4,9 +4,11 @@
   "type": "commonjs",
   "main": "./index.js",
   "devDependencies": {
+    "@types/js-yaml": "^4.0.5",
     "@typescript-eslint/eslint-plugin": "^6.2.1",
     "@typescript-eslint/parser": "^6.2.1",
     "eslint": "^8.46.0",
+    "js-yaml": "^4.1.0",
     "typescript": "^5.1.6"
   }
 }

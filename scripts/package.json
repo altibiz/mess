@@ -6,7 +6,7 @@
   "scripts": {
     "lint:tsc": "tsc --noEmit",
     "lint:eslint": "eslint ./src/**/*.{js,ts}",
-    "lint": "run-s lint:tsc lint:eslint",
+    "lint": "run-s lint:*",
     "start": "ts-node ./src/index.js"
   },
   "dependencies": {

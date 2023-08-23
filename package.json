@@ -18,10 +18,10 @@
   "workspaces": [
     "scripts",
     "docs",
+    "src/Mess.Publishing",
     "src/Mess.Assets",
     "src/Mess.Assets/config/*",
-    "src/Mess.{Modules,Themes}/*/Assets",
-    "src/Mess.Publishing"
+    "src/Mess.{Modules,Themes}/*/Assets"
   ],
   "devDependencies": {
     "@commitlint/cli": "^17.6.7",

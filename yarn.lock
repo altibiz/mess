@@ -3383,9 +3383,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@mess/eslint-config-assets@workspace:src/Mess.Assets/config/eslint"
   dependencies:
+    "@types/js-yaml": ^4.0.5
     "@typescript-eslint/eslint-plugin": ^6.2.1
     "@typescript-eslint/parser": ^6.2.1
     eslint: ^8.46.0
+    js-yaml: ^4.1.0
     typescript: ^5.1.6
   languageName: unknown
   linkType: soft
@@ -3489,6 +3491,7 @@ __metadata:
     luxon: ^3.3.0
     modbus-serial: ^8.0.11
     mqtt: ^5.0.2
+    npm-run-all: ^4.1.5
     pako: ^2.1.0
     prettier: ^2.8.8
     ts-node: ^10.9.1
@@ -3529,6 +3532,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@mess/stylelint-config-assets@workspace:src/Mess.Assets/config/stylelint"
   dependencies:
+    "@types/js-yaml": ^4.0.5
+    js-yaml: ^4.1.0
     postcss: ^8.4.27
     sass: ^1.64.2
     stylelint: ^15.10.2
@@ -4224,6 +4229,13 @@ __metadata:
   dependencies:
     "@types/istanbul-lib-report": "*"
   checksum: f1ad54bc68f37f60b30c7915886b92f86b847033e597f9b34f2415acdbe5ed742fa559a0a40050d74cdba3b6a63c342cac1f3a64dba5b68b66a6941f4abd7903
+  languageName: node
+  linkType: hard
+
+"@types/js-yaml@npm:^4.0.5":
+  version: 4.0.5
+  resolution: "@types/js-yaml@npm:4.0.5"
+  checksum: 7dcac8c50fec31643cc9d6444b5503239a861414cdfaa7ae9a38bc22597c4d850c4b8cec3d82d73b3fbca408348ce223b0408d598b32e094470dfffc6d486b4d
   languageName: node
   linkType: hard
 
