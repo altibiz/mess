@@ -1,5 +1,15 @@
 root = true
 
+[*]
+end_of_line = lf
+charset = utf-8
+max_line_length = 80
+indent_style = space
+indent_size = 2
+tab_width = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+
 [*.{cs,vb}]
 dotnet_diagnostic.CA2255.severity = none
 dotnet_diagnostic.xUnit1013.severity = none

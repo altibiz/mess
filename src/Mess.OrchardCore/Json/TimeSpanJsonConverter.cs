@@ -4,7 +4,7 @@ namespace Mess.OrchardCore.Json;
 
 // https://stackoverflow.com/a/52504446
 
-public class TimeSpanConverter : JsonConverter<TimeSpan>
+public class TimeSpanJsonConverter : JsonConverter<TimeSpan>
 {
   // Days.Hours:Minutes:Seconds:Milliseconds
   public const string TimeSpanFormatString = @"d\.hh\:mm\:ss\:FFF";

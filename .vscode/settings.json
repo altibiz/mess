@@ -1,35 +1,61 @@
 {
   "search.exclude": {
+    ".pnp.*": true,
+    "yarn.lock": true,
+    "**/node_modules": true,
     "**/.yarn": true,
-    "**/.pnp.*": true,
-    "**/Localization": true,
-    "**/Internal/Generated": true,
     "**/bin": true,
     "**/obj": true,
-    "App_Data": true,
+    "**/build": true,
+    "**/dist": true,
+    "**/.docusaurus": true,
+    "**/Localization": true,
+    "**/Internal/Generated": true,
     "**/Snapshots": true,
-    "**/wwwroot": true
+    "**/wwwroot": true,
+    "**/.pnp.*": true
   },
+  "files.exclude": {
+    ".pnp.*": true,
+    "yarn.lock": true,
+    "**/node_modules": true,
+    "**/.yarn": true,
+    "**/bin": true,
+    "**/obj": true,
+    "**/build": true,
+    "**/dist": true,
+    "**/.docusaurus": true
+  },
+  "npm.packageManager": "yarn",
   "prettier.prettierPath": ".yarn/sdks/prettier/index.js",
+  "prettier.ignorePath": ".prettierignore",
+  "eslint.nodePath": ".yarn/sdks",
   "typescript.tsdk": ".yarn/sdks/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
-  "eslint.nodePath": ".yarn/sdks",
-  "npm.packageManager": "yarn",
-  "eslint.packageManager": "yarn",
   "stylelint.packageManager": "yarn",
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "[csharp]": {
     "editor.defaultFormatter": "csharpier.csharpier-vscode"
   },
-  "editor.formatOnSave": true,
-  "[dockerfile]": {
-    "editor.defaultFormatter": "ms-azuretools.vscode-docker"
-  },
-  "files.associations": {
-    "*.json.hbs": "json",
-    "*.xml.hbs": "xml"
+  "[markdown]": {
+    "editor.defaultFormatter": "unifiedjs.vscode-remark"
   },
   "yaml.schemas": {
-    "https://json.schemastore.org/github-workflow.json": "file:///c%3A/tools/src/9b3dc/repos/mess/work/mess-main/.github/workflows/deploy.yml"
-  }
+    "https://json.schemastore.org/github-workflow.json": "./.github/workflows/*.yml"
+  },
+  "files.encoding": "utf8",
+  "files.eol": "\n",
+  "editor.tabSize": 2,
+  "editor.indentSize": "tabSize",
+  "editor.insertSpaces": true,
+  "editor.rulers": [
+    {
+      "column": 80,
+      "color": "#CCCCDD"
+    }
+  ],
+  "editor.wordWrap": "off",
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "editor.formatOnSave": true
 }

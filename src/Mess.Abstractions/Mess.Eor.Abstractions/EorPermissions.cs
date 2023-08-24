@@ -4,30 +4,39 @@ namespace Mess.Eor.Abstractions;
 
 public class EorPermissions : IPermissionProvider
 {
-  public static readonly Permission ManageEorMeasurementDevice = new Permission(
-    "ManageEorMeasurementDevice",
-    "Manage EOR measurement devices"
-  );
-
   public static readonly Permission ControlEorMeasurementDevice =
     new Permission(
-      "ControlEorMeasurementDevice",
+      "Control_EorMeasurementDevice",
       "Control EOR measurement devices"
     );
 
-  public static readonly Permission ViewEorMeasurementDevice = new Permission(
-    "ViewEorMeasurementDevice",
-    "View EOR measurement devices"
-  );
+  public static readonly Permission ControlOwnEorMeasurementDevice =
+    new Permission(
+      "ControlOwn_EorMeasurementDevice",
+      "Control EOR measurement devices"
+    );
+
+  public static readonly Permission ControlOwnedEorMeasurementDevice =
+    new Permission(
+      "ControlOwned_EorMeasurementDevice",
+      "Control owned EOR measurement devices"
+    );
+
+  public static readonly Permission ViewOwnedEorMeasurementDevices =
+    new Permission(
+      "ViewOwned_EorMeasurementDevice",
+      "View owned EOR measurement devices"
+    );
 
   public Task<IEnumerable<Permission>> GetPermissionsAsync()
   {
     return Task.FromResult(
       new[]
       {
-        ManageEorMeasurementDevice,
         ControlEorMeasurementDevice,
-        ViewEorMeasurementDevice
+        ControlOwnEorMeasurementDevice,
+        ControlOwnedEorMeasurementDevice,
+        ViewOwnedEorMeasurementDevices,
       }.AsEnumerable()
     );
   }
@@ -41,9 +50,10 @@ public class EorPermissions : IPermissionProvider
         Name = "Administrator",
         Permissions = new[]
         {
-          ManageEorMeasurementDevice,
           ControlEorMeasurementDevice,
-          ViewEorMeasurementDevice
+          ControlOwnEorMeasurementDevice,
+          ControlOwnedEorMeasurementDevice,
+          ViewOwnedEorMeasurementDevices,
         }
       }
     };

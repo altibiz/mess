@@ -4,6 +4,7 @@ namespace Mess.Eor.MeasurementDevice.Updating;
 
 public record EorUpdateRequest(
   DateTime Timestamp,
+  int Stamp,
   int Mode,
   bool Start,
   bool Stop,
@@ -20,17 +21,51 @@ public record EorUpdateRequest(
   float Temperature,
   bool HeatsinkFans,
   bool CoolingFans,
-  string[] ProcessFaultsArray
+  string ProcessFaultsArray0,
+  string ProcessFaultsArray1,
+  string ProcessFaultsArray2,
+  string ProcessFaultsArray3,
+  string ProcessFaultsArray4,
+  string ProcessFaultsArray5,
+  string ProcessFaultsArray6,
+  string ProcessFaultsArray7,
+  string ProcessFaultsArray8,
+  string ProcessFaultsArray9,
+  string ProcessFaultsArray10,
+  string ProcessFaultsArray11,
+  string ProcessFaultsArray12,
+  string ProcessFaultsArray13,
+  string ProcessFaultsArray14,
+  string ProcessFaultsArray15
 )
 {
   public EorStatus ToStatus(string tenant, string deviceId) =>
     new(
       Tenant: tenant,
       DeviceId: deviceId,
+      Stamp: Stamp,
       Timestamp: Timestamp,
       Mode: Mode,
       ProcessFault: ProcessFaults,
-      ProcessFaults: ProcessFaultsArray,
+      ProcessFaults: new[]
+      {
+        ProcessFaultsArray0,
+        ProcessFaultsArray1,
+        ProcessFaultsArray2,
+        ProcessFaultsArray3,
+        ProcessFaultsArray4,
+        ProcessFaultsArray5,
+        ProcessFaultsArray6,
+        ProcessFaultsArray7,
+        ProcessFaultsArray8,
+        ProcessFaultsArray9,
+        ProcessFaultsArray10,
+        ProcessFaultsArray11,
+        ProcessFaultsArray12,
+        ProcessFaultsArray13,
+        ProcessFaultsArray14,
+        ProcessFaultsArray15
+      },
       CommunicationFault: CommunicationFaults,
       RunState: Start && !Stop
         ? EorMeasurementDeviceRunState.Started

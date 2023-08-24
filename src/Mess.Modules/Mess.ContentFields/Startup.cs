@@ -7,6 +7,7 @@ using Mess.OrchardCore.Extensions.Microsoft;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using OrchardCore.ContentFields.Settings;
 using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
 using OrchardCore.Data.Migration;
@@ -20,9 +21,9 @@ public class Startup : StartupBase
   {
     services.AddDataMigration<Migrations>();
     services.AddResources<Resources>();
+    services.AddNavigationProvider<AdminMenu>();
 
-    services.AddSingleton<IApiKeyFieldService, ApiKeyFieldService>();
-
+    // ApiKeyField
     services.Configure<TemplateOptions>(options =>
     {
       options.MemberAccessStrategy.Register<ApiKeyField>();
@@ -30,6 +31,17 @@ public class Startup : StartupBase
     services
       .AddContentField<ApiKeyField>()
       .UseDisplayDriver<ApiKeyFieldDisplayDriver>();
+    services.AddContentPartFieldDefinitionDisplayDriver<ApiKeyFieldSettingsDriver>();
+    services.AddSingleton<IApiKeyFieldService, ApiKeyFieldService>();
+
+    // IntervalField
+    services.Configure<TemplateOptions>(options =>
+    {
+      options.MemberAccessStrategy.Register<IntervalField>();
+    });
+    services
+      .AddContentField<IntervalField>()
+      .UseDisplayDriver<IntervalFieldDisplayDriver>();
   }
 
   public override void Configure(

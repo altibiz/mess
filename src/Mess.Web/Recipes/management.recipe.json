@@ -21,6 +21,7 @@
         "OrchardCore.Roles",
         "OrchardCore.Users",
         "OrchardCore.Tenants",
+        "OrchardCore.Diagnostics",
         "Mess.EventStore",
         "Mess.Relational",
         "Mess.Timeseries",

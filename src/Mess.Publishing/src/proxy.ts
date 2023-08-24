@@ -1,4 +1,4 @@
-import { importProxies } from "./proxies";
+import { importProxies } from "./proxies/index";
 
 const proxy = async () => {
   const proxies = await importProxies();

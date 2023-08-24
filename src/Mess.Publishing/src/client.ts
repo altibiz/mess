@@ -1,6 +1,6 @@
-import { importMessengers } from "./messengers";
-import { importPushers } from "./pushers";
-import { importTemplates } from "./templates";
+import { importMessengers } from "./messengers/index";
+import { importPushers } from "./pushers/index";
+import { importTemplates } from "./templates/index";
 import args from "./args";
 
 type Interval = NodeJS.Timer;

@@ -9,19 +9,19 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
+        with:
+          node-version-file: .nvmrc
       - uses: actions/setup-dotnet@v3
         with:
           global-json-file: global.json
 
       - name: prepare
-        run: scripts/prepare.sh
-
+        run: ./mess prepare
       - name: publish
-        run: scripts/publish.sh ${{env.DOTNET_ROOT}}/myapp
+        run: ./mess publish --publish-dir ${{env.DOTNET_ROOT}}/myapp
 
       - name: upload
         uses: actions/upload-artifact@v2
@@ -35,13 +35,11 @@ jobs:
     environment:
       name: "Production"
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-
     steps:
       - name: download
         uses: actions/download-artifact@v2
         with:
           name: .net-app
-
       - name: deploy
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2

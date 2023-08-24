@@ -1,2 +1,3 @@
-// eslint-disable-next-line no-undef
-module.exports = require("../../tsconfig.json");
+/* eslint-disable */
+
+module.exports = require("./tsconfig.json");

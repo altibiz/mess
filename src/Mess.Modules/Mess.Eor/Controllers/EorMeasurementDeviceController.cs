@@ -9,6 +9,8 @@ using Mess.OrchardCore;
 using YesSql;
 using Mess.Eor.ViewModels;
 using Mess.Eor.Abstractions.Client;
+using Mess.Eor.Extensions;
+using OrchardCore.Contents;
 
 namespace Mess.Eor.Controllers;
 
@@ -17,36 +19,30 @@ public class EorMeasurementDeviceController : Controller
 {
   public async Task<IActionResult> List()
   {
-    if (
-      !await _authorizationService.AuthorizeAsync(
-        User,
-        EorPermissions.ViewEorMeasurementDevice
-      )
-    )
+    var canViewOwned = await _authorizationService.AuthorizeAsync(
+      User,
+      EorPermissions.ViewOwnedEorMeasurementDevices
+    );
+    // TODO: fix returns true for owners??
+    var canViewOwn = await _authorizationService.AuthorizeAsync(
+      User,
+      CommonPermissions.ViewOwnContent,
+      (object)"EorMeasurementDevice"
+    );
+    if (!(canViewOwned || canViewOwn))
     {
-      return Redirect("");
+      return Forbid();
     }
 
-    IEnumerable<ContentItem>? contentItems = null;
-    if (
-      await _authorizationService.AuthorizeAsync(
-        User,
-        EorPermissions.ManageEorMeasurementDevice
+    var orchardCoreUser = await this.GetAuthenticatedOrchardCoreUserAsync();
+    var contentItems = await _session
+      .Query<ContentItem, EorMeasurementDeviceIndex>()
+      .Where(
+        canViewOwned
+          ? index => index.OwnerId == orchardCoreUser.UserId
+          : index => index.Author == orchardCoreUser.UserId
       )
-    )
-    {
-      contentItems = await _session
-        .Query<ContentItem, EorMeasurementDeviceIndex>()
-        .ListAsync();
-    }
-    else
-    {
-      var orchardCoreUser = await this.GetAuthenticatedOrchardCoreUserAsync();
-      contentItems = await _session
-        .Query<ContentItem, EorMeasurementDeviceIndex>()
-        .Where(index => index.OwnerId == orchardCoreUser.UserId)
-        .ListAsync();
-    }
+      .ListAsync();
 
     var eorMeasurementDevices = contentItems.Select(
       contentItem => contentItem.AsContent<EorMeasurementDeviceItem>()
@@ -88,23 +84,26 @@ public class EorMeasurementDeviceController : Controller
 
   public async Task<IActionResult> Detail(string contentItemId)
   {
-    if (
-      !await _authorizationService.AuthorizeAsync(
-        User,
-        EorPermissions.ViewEorMeasurementDevice
-      )
-    )
-    {
-      return Forbid();
-    }
-
     var contentItem = await _contentManager.GetAsync(contentItemId);
     if (contentItem == null)
     {
       return NotFound();
     }
+
     var eorMeasurementDevice =
       contentItem.AsContent<EorMeasurementDeviceItem>();
+
+    var orchardCoreUser = await this.GetAuthenticatedOrchardCoreUserAsync();
+    if (
+      !await _authorizationService.AuthorizeViewAsync(
+        User,
+        orchardCoreUser,
+        eorMeasurementDevice
+      )
+    )
+    {
+      return Forbid();
+    }
 
     var eorMeasurementDeviceSummary =
       await _measurementQuery.GetEorMeasurementDeviceSummaryAsync(

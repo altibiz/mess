@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { Create } from ".";
+import { Create } from "./index";
 import compile from "./compile";
 
 export const push: Create = async (template) => {

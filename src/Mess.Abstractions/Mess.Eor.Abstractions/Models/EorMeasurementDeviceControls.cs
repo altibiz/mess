@@ -9,4 +9,6 @@ public class EorMeasurementDeviceControls
 
   public EorMeasurementDeviceResetState ResetState { get; set; } =
     EorMeasurementDeviceResetState.ShouldntReset;
+
+  public int Stamp { get; set; } = 0;
 }

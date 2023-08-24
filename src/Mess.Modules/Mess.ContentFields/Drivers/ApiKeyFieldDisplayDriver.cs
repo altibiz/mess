@@ -54,15 +54,15 @@ public class ApiKeyFieldDisplayDriver : ContentFieldDisplayDriver<ApiKeyField>
     UpdateFieldEditorContext context
   )
   {
-    var model = new ApiKeyFieldEditViewModel { };
+    var viewModel = new ApiKeyFieldEditViewModel { };
 
-    if (await updater.TryUpdateModelAsync(model, Prefix, f => f.Value))
+    if (await updater.TryUpdateModelAsync(viewModel, Prefix, f => f.Value))
     {
-      if (String.IsNullOrWhiteSpace(model.Value))
+      if (String.IsNullOrWhiteSpace(viewModel.Value))
       {
         updater.ModelState.AddModelError(
           Prefix,
-          nameof(model.Value),
+          nameof(viewModel.Value),
           S[
             "A value is required for {0}.",
             context.PartFieldDefinition.DisplayName()
@@ -72,12 +72,15 @@ public class ApiKeyFieldDisplayDriver : ContentFieldDisplayDriver<ApiKeyField>
       else
       {
         var salt = await _apiKeyFieldService.GenerateApiKeySaltAsync();
-        var hash = await _apiKeyFieldService.HashApiKeyAsync(model.Value, salt);
+        var hash = await _apiKeyFieldService.HashApiKeyAsync(
+          viewModel.Value,
+          salt
+        );
         field.Hash = hash;
         field.Salt = salt;
       }
 
-      field.Value = model.Value;
+      field.Value = viewModel.Value;
     }
 
     return Edit(field, context);

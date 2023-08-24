@@ -6,6 +6,8 @@ namespace Mess.Eor.Entities;
 
 public class EorStatusEntity : HypertableEntity
 {
+  public int Stamp { get; set; } = default!;
+
   public int Mode { get; set; } = default!;
 
   public int ProcessFault { get; set; } = default!;
@@ -50,6 +52,7 @@ public static class EorStatusEntityExtensions
     {
       Tenant = model.Tenant,
       Source = model.DeviceId,
+      Stamp = model.Stamp,
       Timestamp = model.Timestamp,
       Mode = model.Mode,
       ProcessFault = model.ProcessFault,
@@ -73,6 +76,7 @@ public static class EorStatusEntityExtensions
     new EorStatus(
       Tenant: entity.Tenant,
       DeviceId: entity.Source,
+      Stamp: entity.Stamp,
       Timestamp: entity.Timestamp,
       Mode: entity.Mode,
       ProcessFault: entity.ProcessFault,

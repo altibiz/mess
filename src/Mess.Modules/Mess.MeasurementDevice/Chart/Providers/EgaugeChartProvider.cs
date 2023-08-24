@@ -4,6 +4,7 @@ using Mess.Chart.Abstractions.Descriptors;
 using OrchardCore.ContentManagement;
 using Mess.Chart.Abstractions.Models;
 using Mess.MeasurementDevice.Abstractions.Models;
+using Mess.ContentFields.Abstractions;
 using Mess.OrchardCore;
 
 namespace Mess.MeasurementDevice.Chart.Providers;
@@ -37,17 +38,17 @@ public class EgaugeChartProvider : ChartProvider
     var now = DateTime.UtcNow;
     var measurements = await _client.GetEgaugeMeasurementsAsync(
       egaugeMeasurementDevice.MeasurementDevicePart.Value.DeviceId.Text,
-      now.Subtract(chart.TimeseriesChartPart.Value.HistorySpan),
+      now.Subtract(chart.TimeseriesChartPart.Value.History.Value.ToTimeSpan()),
       now
     );
 
     return new TimeseriesChartDescriptor(
-      RefreshInterval: chart
-        .TimeseriesChartPart
-        .Value
-        .RefreshIntervalSpan
+      RefreshInterval: chart.TimeseriesChartPart.Value.RefreshInterval.Value
+        .ToTimeSpan()
         .TotalMilliseconds,
-      History: chart.TimeseriesChartPart.Value.HistorySpan.TotalMilliseconds,
+      History: chart.TimeseriesChartPart.Value.History.Value
+        .ToTimeSpan()
+        .TotalMilliseconds,
       Datasets: datasets
         .Select(
           dataset =>

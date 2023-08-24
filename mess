@@ -1,0 +1,154 @@
+#!/usr/bin/env bash
+
+abs() { echo "$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"; }
+ROOT_DIR="$(dirname "$(abs "$0")")"
+
+DOCKER_URL="https://docs.docker.com/engine/install/"
+
+DOTNET_VERSION="$(
+  grep -oE '"version": "[0-9]+' "$ROOT_DIR/global.json" |
+    cut -d '"' -f 4
+)"
+DOTNET_INSTALL_URL="https://dot.net/v1/dotnet-install.sh"
+DOTNET_DOWNLOAD_URL="https://dotnet.microsoft.com/download"
+DOTNET_INSTALL_QUESTION="Would you like to install version $DOTNET_VERSION using dotnet-install?"
+DOTNET_INSTALL_PROMPT=".NET SDK is not installed. $DOTNET_INSTALL_QUESTION"
+DOTNET_VERSION_PROMPT="Incorrect .NET SDK version. $DOTNET_INSTALL_QUESTION"
+
+NODE_VERSION=$(cat "$ROOT_DIR/.nvmrc")
+NODE_URL="https://nodejs.org/en/download"
+NODE_INSTALL_QUESTION="Would you like to install version $NODE_VERSION using NVM?"
+NODE_INSTALL_PROMPT="Node.js is not installed. $NODE_INSTALL_QUESTION"
+NODE_VERSION_PROMPT="Incorrect Node.js version. $NODE_INSTALL_QUESTION"
+
+YARN_URL="https://yarnpkg.com/getting-started/install"
+YARN_INSTALL_QUESTION="Would you like to install yarn?"
+YARN_INSTALL_PROMPT="Yarn is not installed. $YARN_INSTALL_QUESTION"
+
+install_dependency() {
+  local prompt_message="$1"
+  local install_command="$2"
+  local download_url="$3"
+
+  read -rp "$prompt_message (y/n): " choice
+  if [[ $choice == 'y' ]]; then
+    eval "$install_command" || {
+      echo "Failed to install. Exiting..."
+      exit 1
+    }
+  else
+    echo "Opening download page..."
+    xdg-open "$download_url"
+    exit 1
+  fi
+}
+
+test_installed() {
+  local command="$1"
+  local prompt_message="$3"
+  local install_command="$4"
+  local download_url="$5"
+
+  local result
+  result=$($command >/dev/null 2>&1)
+  if ! $result; then
+    install_dependency "$prompt_message" "$install_command" "$download_url"
+  fi
+}
+
+test_version() {
+  local command="$1"
+  local expected_version="$2"
+  local prompt_message="$3"
+  local install_command="$4"
+  local download_url="$5"
+
+  local installed_version
+  installed_version=$($command)
+  if [ "$installed_version" != "$expected_version" ]; then
+    install_dependency "$prompt_message" "$install_command" "$download_url"
+  fi
+}
+
+get_dotnet_version() {
+  dotnet --version | cut -d '.' -f 1
+}
+
+get_node_version() {
+  # TODO: once loaders get stabilized...
+  # node --version | cut -d '.' -f 1 | tr -d 'v'
+  node --version | tr -d 'v'
+}
+
+install_node() {
+  nvm install "$NODE_VERSION"
+  nvm use "$NODE_VERSION"
+}
+
+install_dotnet() {
+  curl -sSL $DOTNET_INSTALL_URL |
+    bash /dev/stdin --version "$DOTNET_VERSION" --verbose
+}
+
+install_yarn() {
+  npm install -g yarn
+}
+
+install_yarn_packages() {
+  yarnOutput=$(yarn install --json || {
+    echo "Failed to yarn install. Exiting..."
+    exit 1
+  })
+  echo "$yarnOutput" | while IFS= read -r line; do
+    data=$(echo "$line" | grep -oE '"data":\s*"\K[^"]*')
+    type=$(echo "$line" | grep -oE '"type":\s*"\K[^"]*')
+
+    if [[ "$data" == "Done"* ]]; then
+      printf "\nyarn installed %s" "${data:4}"
+    elif [[ "$data" == "ESM support for PnP"* ]]; then
+      :
+    elif [[ "$type" != "info" ]]; then
+      echo "$data"
+    fi
+  done
+  printf "\n\n"
+}
+
+if ! docker --version >/dev/null 2>&1; then
+  echo "Docker is not installed. Opening the download page..."
+  xdg-open "$DOCKER_URL"
+  exit 1
+fi
+
+test_installed "dotnet --version" \
+  "$DOTNET_INSTALL_PROMPT" \
+  "install_dotnet" \
+  "$DOTNET_DOWNLOAD_URL"
+
+test_version "get_dotnet_version" \
+  "$DOTNET_VERSION" \
+  "$DOTNET_VERSION_PROMPT" \
+  "install_dotnet" \
+  "$DOTNET_DOWNLOAD_URL"
+
+test_installed "node --version" \
+  "$NODE_INSTALL_PROMPT" \
+  "install_node" \
+  "$NODE_URL"
+
+test_version "get_node_version" \
+  "$NODE_VERSION" \
+  "$NODE_VERSION_PROMPT" \
+  "install_node" \
+  "$NODE_URL"
+
+test_installed "yarn --version" \
+  "$YARN_INSTALL_PROMPT" \
+  "install_yarn" \
+  "$YARN_URL"
+
+echo 'require("prettier")' |
+  yarn node >/dev/null 2>&1 ||
+  install_yarn_packages
+
+yarn scripts start "$@"

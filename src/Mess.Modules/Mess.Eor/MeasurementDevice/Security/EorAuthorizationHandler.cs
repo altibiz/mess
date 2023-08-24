@@ -31,7 +31,7 @@ public class EorAuthorizationHandler : IMeasurementDeviceAuthorizationHandler
     var eorMeasurementDevice = measurementDevice.As<EorMeasurementDevicePart>();
     if (eorMeasurementDevice is null)
     {
-      context.Result = new UnauthorizedResult();
+      context.Result = new NotFoundResult();
       return;
     }
 
@@ -65,7 +65,7 @@ public class EorAuthorizationHandler : IMeasurementDeviceAuthorizationHandler
     var eorMeasurementDevice = measurementDevice.As<EorMeasurementDevicePart>();
     if (eorMeasurementDevice is null)
     {
-      context.Result = new UnauthorizedResult();
+      context.Result = new NotFoundResult();
       return;
     }
 

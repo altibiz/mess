@@ -1,7 +1,9 @@
 {
   "name": "@mess/typescript-config-assets",
-  "main": "index.js",
+  "private": true,
+  "type": "commonjs",
+  "main": "./index.js",
   "devDependencies": {
-    "typescript": "^5.0.4"
+    "typescript": "^5.1.6"
   }
 }

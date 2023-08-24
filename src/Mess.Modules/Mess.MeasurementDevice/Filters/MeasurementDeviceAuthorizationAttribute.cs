@@ -1,5 +1,4 @@
 using Mess.MeasurementDevice.Abstractions.Indexes;
-using Mess.MeasurementDevice.Abstractions.Models;
 using Mess.MeasurementDevice.Abstractions.Security;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -19,10 +18,9 @@ public class MeasurementDeviceAuthorization
 {
   public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
   {
-    var deviceId = context.RouteData.Values["deviceId"] as string;
-    if (deviceId is null)
+    if (context.RouteData.Values["deviceId"] is not string deviceId)
     {
-      context.Result = new UnauthorizedResult();
+      context.Result = new NotFoundResult();
       return;
     }
 
@@ -34,20 +32,20 @@ public class MeasurementDeviceAuthorization
       .FirstOrDefaultAsync();
     if (contentItem is null)
     {
-      context.Result = new UnauthorizedResult();
+      context.Result = new NotFoundResult();
       return;
     }
 
-    var handler = context.HttpContext.RequestServices
-      .GetServices<IMeasurementDeviceAuthorizationHandler>()
-      .FirstOrDefault(
-        handler => handler.ContentType == contentItem.ContentType
+    var handler =
+      context.HttpContext.RequestServices
+        .GetServices<IMeasurementDeviceAuthorizationHandler>()
+        .FirstOrDefault(
+          handler => handler.ContentType == contentItem.ContentType
+        )
+      ?? throw new NotImplementedException(
+        "No measurement device authorization handler for "
+          + contentItem.ContentType
       );
-    if (handler is null)
-    {
-      context.Result = new UnauthorizedResult();
-      return;
-    }
 
     await handler.AuthorizeAsync(context, contentItem);
   }

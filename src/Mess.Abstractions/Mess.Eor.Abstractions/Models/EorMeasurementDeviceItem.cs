@@ -8,8 +8,6 @@ namespace Mess.Eor.Abstractions.Models;
 
 public class EorMeasurementDeviceItem : ContentItemBase
 {
-  public const string ContentType = "EorMeasurementDevice";
-
   public Lazy<TitlePart> TitlePart { get; private set; } = default!;
 
   public Lazy<MeasurementDevicePart> MeasurementDevicePart

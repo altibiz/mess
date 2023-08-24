@@ -28,7 +28,8 @@ public class EorMeasurementDeviceIndexProvider : IndexProvider<ContentItem>
             .DeviceId
             .Text,
           OwnerId =
-            eorMeasurementDevice.EorMeasurementDevicePart.Value.Owner.UserIds.First()
+            eorMeasurementDevice.EorMeasurementDevicePart.Value.Owner.UserIds.First(),
+          Author = eorMeasurementDevice.Inner.Owner
         };
       });
   }

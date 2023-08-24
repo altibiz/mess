@@ -31,7 +31,7 @@ public static class JsonSeriazlizerSettingsExtensions
   private static readonly JsonConverter[] Converters = new JsonConverter[]
   {
     new TupleJsonConverter(),
-    new TimeSpanConverter(),
+    new TimeSpanJsonConverter(),
     new EnumJsonConverter(),
     new BooleanJsonConverter(),
     new ListJsonConverter(),

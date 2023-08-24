@@ -19,11 +19,12 @@
         "OrchardCore.Users",
         "OrchardCore.Users.Registration",
         "OrchardCore.Users.ResetPassword",
+        "OrchardCore.Diagnostics",
+        "TheAdmin",
         "Mess.EventStore",
         "Mess.Chart",
         "Mess.MeasurementDevice",
         "Mess.Eor",
-        "TheAdmin",
         "Mess.Forttech"
       ]
     },

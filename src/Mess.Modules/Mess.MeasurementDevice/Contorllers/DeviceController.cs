@@ -193,15 +193,13 @@ public class DeviceController : Controller
     ShellSettings shellSettings,
     IServiceProvider services,
     ISession session,
-    IShellFeaturesManager shellFeaturesManager,
-    ILogger<DeviceController> logger
+    IShellFeaturesManager shellFeaturesManager
   )
   {
     _shellSettings = shellSettings;
     _services = services;
     _session = session;
     _shellFeaturesManager = shellFeaturesManager;
-    _logger = logger;
   }
 
   private readonly ShellSettings _shellSettings;
@@ -211,6 +209,4 @@ public class DeviceController : Controller
   private readonly ISession _session;
 
   private readonly IShellFeaturesManager _shellFeaturesManager;
-
-  private readonly ILogger _logger;
 }

@@ -3,6 +3,7 @@ namespace Mess.Eor.Abstractions.Client;
 public record EorStatus(
   string Tenant,
   string DeviceId,
+  int Stamp,
   DateTime Timestamp,
   int Mode,
   int ProcessFault,

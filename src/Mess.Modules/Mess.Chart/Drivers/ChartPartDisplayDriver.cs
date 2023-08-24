@@ -11,7 +11,7 @@ using Mess.Chart.Abstractions.Providers;
 using Microsoft.Extensions.DependencyInjection;
 using YesSql;
 using Mess.Chart.Indexes;
-using Mess.Chart.Providers;
+using OrchardCore.Mvc.ModelBinding;
 
 namespace Mess.Chart.Drivers;
 
@@ -39,19 +39,30 @@ public class ChartPartDisplayDriver : ContentPartDisplayDriver<ChartPart>
     BuildPartEditorContext context
   )
   {
-    var charts = await _session.QueryIndex<ChartIndex>().ListAsync();
-    var chartDataProviders = _serviceProvider
+    var chartProvider = _serviceProvider
       .GetServices<IChartProvider>()
-      .Where(
-        provider => provider.ContentType != PreviewChartDataProvider.ProviderId
+      .FirstOrDefault(
+        provider => provider.ContentType == part.ContentItem.ContentType
       );
+    if (chartProvider == null)
+    {
+      throw new NotImplementedException(
+        "No chart provider implemented for this content type."
+      );
+    }
+
+    var charts = await _session
+      .QueryIndex<ChartIndex>()
+      .Where(chartIndex => chartIndex.ContentType == chartProvider.ContentType)
+      .ListAsync();
 
     return Initialize<ChartPartEditViewModel>(
       GetEditorShapeType(context),
       model =>
       {
         model.ChartContentItemId =
-          part.ChartContentItemId ?? charts.First().ChartContentItemId!;
+          part.ChartContentItemId
+          ?? charts.FirstOrDefault()?.ChartContentItemId!;
         model.ChartContentItemIdOptions = charts
           .Select(
             chart =>
@@ -84,27 +95,33 @@ public class ChartPartDisplayDriver : ContentPartDisplayDriver<ChartPart>
       )
     )
     {
-      part.ChartContentItemId = viewModel.ChartContentItemId;
+      if (String.IsNullOrWhiteSpace(viewModel.ChartContentItemId))
+      {
+        updater.ModelState.AddModelError(
+          Prefix,
+          nameof(viewModel.ChartContentItemId),
+          S["A value is required for {0}.", context.TypePartDefinition.Name]
+        );
+      }
+
+      part.ChartContentItemId = part.ChartContentItemId;
     }
 
-    return Edit(part, context);
+    return await EditAsync(part, context);
   }
 
   public ChartPartDisplayDriver(
     IServiceProvider serviceProvider,
-    IContentDefinitionManager contentDefinitionManager,
     IStringLocalizer<ChartPartDisplayDriver> localizer,
     ISession session
   )
   {
     _serviceProvider = serviceProvider;
-    _contentDefinitionManager = contentDefinitionManager;
     _session = session;
     S = localizer;
   }
 
   private readonly IStringLocalizer S;
-  private readonly IContentDefinitionManager _contentDefinitionManager;
   private readonly IServiceProvider _serviceProvider;
   private readonly ISession _session;
 }

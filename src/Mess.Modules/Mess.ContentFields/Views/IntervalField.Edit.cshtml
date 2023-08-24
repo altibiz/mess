@@ -1,0 +1,33 @@
+@using OrchardCore.Mvc.Utilities
+
+@model IntervalFieldEditViewModel
+
+@{
+    var culture = await Orchard.GetContentCultureAsync(Model.Field.ContentItem);
+    var uniqueName = $"{Model.PartFieldDefinition.PartDefinition.Name}-{Model.PartFieldDefinition.Name}";
+}
+
+<div 
+    class="mb-3 field-wrapper field-wrapper-@uniqueName.HtmlClassify()" id="@Html.IdFor(x => x.Value.Count)_FieldWrapper">
+  <strong>@Model.PartFieldDefinition.DisplayName()</strong>
+
+  <div class="row">
+    <div class="col-md-6">
+      <label asp-for="Value.Unit">@T["Unit"]</label>
+      <select asp-for="Value.Unit" class="form-select">
+        @foreach (var item in Model.UnitOptions)
+        {
+          <option value="@item.Value">@item.Text</option>
+        }
+      </select>
+    </div>
+
+    <div class="col-md-6">
+      <label asp-for="Value.Count">@T["Count"]</label>
+      <input 
+          asp-for="Value.Count"
+          type="number"
+          class="form-control" />
+    </div>
+  </div>
+</div>

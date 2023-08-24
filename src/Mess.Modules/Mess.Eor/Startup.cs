@@ -24,6 +24,7 @@ using Mess.Eor.MeasurementDevice.Updating;
 using OrchardCore.Environment.Shell.Configuration;
 using System.Reflection;
 using Mess.Eor.MeasurementDevice.Security;
+using Mess.Eor.Abstractions;
 
 namespace Mess.Eor;
 
@@ -39,6 +40,8 @@ public class Startup : StartupBase
 
     services.AddDataMigration<Migrations>();
     services.AddResources<Resources>();
+    services.AddNavigationProvider<AdminMenu>();
+    services.AddPermissionProvider<EorPermissions>();
 
     services.AddTimeseriesDbContext<EorTimeseriesDbContext>();
     services.AddSingleton<IEorTimeseriesClient, EorTimeseriesClient>();
@@ -84,39 +87,6 @@ public class Startup : StartupBase
       {
         controller = typeof(EorMeasurementDeviceAdminController).ControllerName(),
         action = nameof(EorMeasurementDeviceAdminController.Detail)
-      }
-    );
-
-    routes.MapAreaControllerRoute(
-      name: "Mess.Eor.MeasurementDeviceAdminController.Create",
-      areaName: "Mess.Eor",
-      pattern: adminUrlPrefix + "/Devices/{contentItemId}/Create",
-      defaults: new
-      {
-        controller = typeof(EorMeasurementDeviceAdminController).ControllerName(),
-        action = nameof(EorMeasurementDeviceAdminController.Create)
-      }
-    );
-
-    routes.MapAreaControllerRoute(
-      name: "Mess.Eor.MeasurementDeviceAdminController.Edit",
-      areaName: "Mess.Eor",
-      pattern: adminUrlPrefix + "/Devices/{contentItemId}/Edit",
-      defaults: new
-      {
-        controller = typeof(EorMeasurementDeviceAdminController).ControllerName(),
-        action = nameof(EorMeasurementDeviceAdminController.Edit)
-      }
-    );
-
-    routes.MapAreaControllerRoute(
-      name: "Mess.Eor.MeasurementDeviceAdminController.Delete",
-      areaName: "Mess.Eor",
-      pattern: adminUrlPrefix + "/Devices/{contentItemId}/Delete",
-      defaults: new
-      {
-        controller = typeof(EorMeasurementDeviceAdminController).ControllerName(),
-        action = nameof(EorMeasurementDeviceAdminController.Delete)
       }
     );
 

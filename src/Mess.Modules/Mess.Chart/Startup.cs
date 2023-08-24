@@ -8,7 +8,6 @@ using OrchardCore.Modules;
 using OrchardCore.Mvc.Core.Utilities;
 using Mess.Chart.Controllers;
 using Mess.Chart.Drivers;
-using Mess.Chart.Abstractions;
 using Mess.Chart.Abstractions.Models;
 using OrchardCore.Admin;
 using Mess.Chart.Providers;
@@ -25,9 +24,8 @@ public class Startup : StartupBase
     services.AddDataMigration<Migrations>();
     services.AddResources<Resources>();
 
-    services.AddPermissionProvider<ChartPermissions>();
     services.AddIndexProvider<ChartIndexProvider>();
-    services.AddChartProvider<PreviewChartDataProvider>();
+    services.AddChartProvider<PreviewChartProvider>();
     services
       .AddContentPart<ChartPart>()
       .UseDisplayDriver<ChartPartDisplayDriver>();

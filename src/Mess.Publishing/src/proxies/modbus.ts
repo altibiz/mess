@@ -1,8 +1,8 @@
 import { IServiceVector, ServerTCP } from "modbus-serial";
-import { Run } from ".";
+import { Run } from "./index";
 import args from "../args";
 import { poll, push } from "./forward";
-import { pollResponseScheme } from "./models";
+import { pollResponseScheme } from "./models/index";
 import luxon from "luxon";
 
 export const run: Run = async () => {

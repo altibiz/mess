@@ -1,4 +1,4 @@
-import { importServers } from "./servers";
+import { importServers } from "./servers/index";
 
 const server = async () => {
   const servers = await importServers();

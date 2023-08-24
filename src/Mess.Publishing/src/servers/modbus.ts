@@ -1,5 +1,5 @@
 import { IServiceVector, ServerTCP } from "modbus-serial";
-import { Serve } from ".";
+import { Serve } from "./index";
 import args from "../args";
 
 export const serve: Serve = async () => {

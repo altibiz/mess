@@ -6,7 +6,8 @@ import {
   PushResponse,
   pollResponseScheme,
   pushResponseScheme,
-} from "./models";
+} from "./models/index";
+import fetch from "cross-fetch";
 
 const forward = async (uri: string, body: unknown): Promise<unknown> => {
   const response = await fetch(uri, {

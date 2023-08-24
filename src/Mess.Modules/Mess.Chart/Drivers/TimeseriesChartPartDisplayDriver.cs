@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.DependencyInjection;
 using Mess.Chart.Providers;
 using Mess.Chart.Abstractions.Providers;
+using OrchardCore.Mvc.ModelBinding;
 
 namespace Mess.Chart.Drivers;
 
@@ -21,32 +22,33 @@ public class TimeseriesChartPartDisplayDriver
     BuildPartEditorContext context
   )
   {
-    var chartDataProviders = _serviceProvider
+    var chartProviders = _serviceProvider
       .GetServices<IChartProvider>()
       .Where(
         chartDataProvider =>
-          chartDataProvider.ContentType != PreviewChartDataProvider.ProviderId
+          chartDataProvider.ContentType != PreviewChartProvider.ChartContentType
       );
     return Initialize<TimeseriesChartPartEditViewModel>(
-      GetEditorShapeType(context),
-      model =>
-      {
-        model.ChartContentType =
-          part.ChartContentType ?? chartDataProviders.First().ContentType;
-        model.ChartContentTypeOptions = chartDataProviders
-          .Select(
-            chartDataProvider =>
-              new SelectListItem
-              {
-                Text = chartDataProvider.ContentType,
-                Value = chartDataProvider.ContentType
-              }
-          )
-          .ToList();
-        model.Part = part;
-        model.Definition = context.TypePartDefinition;
-      }
-    );
+        GetEditorShapeType(context),
+        model =>
+        {
+          model.ChartContentType =
+            part.ChartContentType ?? chartProviders.First().ContentType;
+          model.ChartContentTypeOptions = chartProviders
+            .Select(
+              chartDataProvider =>
+                new SelectListItem
+                {
+                  Text = chartDataProvider.ContentType,
+                  Value = chartDataProvider.ContentType
+                }
+            )
+            .ToList();
+          model.Part = part;
+          model.Definition = context.TypePartDefinition;
+        }
+      )
+      .Location("Content");
   }
 
   public override async Task<IDisplayResult> UpdateAsync(
@@ -55,6 +57,12 @@ public class TimeseriesChartPartDisplayDriver
     UpdatePartEditorContext context
   )
   {
+    var chartProviders = _serviceProvider
+      .GetServices<IChartProvider>()
+      .Where(
+        chartDataProvider =>
+          chartDataProvider.ContentType != PreviewChartProvider.ChartContentType
+      );
     var viewModel = new TimeseriesChartPartEditViewModel();
 
     if (
@@ -65,11 +73,27 @@ public class TimeseriesChartPartDisplayDriver
       )
     )
     {
-      if (part.ChartContentType != viewModel.ChartContentType)
+      if (
+        !chartProviders
+          .Select(provider => provider.ContentType)
+          .Contains(viewModel.ChartContentType)
+      )
       {
-        part.Datasets = new();
-        part.ChartContentType = viewModel.ChartContentType;
+        updater.ModelState.AddModelError(
+          Prefix,
+          nameof(viewModel.ChartContentType),
+          S["Invalid value for {0}", context.TypePartDefinition.Name]
+        );
       }
+      else
+      {
+        if (part.ChartContentType != viewModel.ChartContentType)
+        {
+          part.Datasets = new();
+        }
+      }
+
+      part.ChartContentType = viewModel.ChartContentType;
     }
 
     return Edit(part, context);

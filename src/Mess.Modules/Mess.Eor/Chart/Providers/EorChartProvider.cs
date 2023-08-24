@@ -1,5 +1,6 @@
 using Mess.Chart.Abstractions.Providers;
 using Mess.Chart.Abstractions.Descriptors;
+using Mess.ContentFields.Abstractions;
 using OrchardCore.ContentManagement;
 using Mess.Chart.Abstractions.Models;
 using Mess.OrchardCore;
@@ -37,17 +38,17 @@ public class EorChartProvider : ChartProvider
     var now = DateTime.UtcNow;
     var (statuses, measurements) = await _client.GetEorDataAsync(
       eorMeasurementDevice.MeasurementDevicePart.Value.DeviceId.Text,
-      now.Subtract(chart.TimeseriesChartPart.Value.HistorySpan),
+      now.Subtract(chart.TimeseriesChartPart.Value.History.Value.ToTimeSpan()),
       now
     );
 
     return new TimeseriesChartDescriptor(
-      RefreshInterval: chart
-        .TimeseriesChartPart
-        .Value
-        .RefreshIntervalSpan
+      RefreshInterval: chart.TimeseriesChartPart.Value.RefreshInterval.Value
+        .ToTimeSpan()
         .TotalMilliseconds,
-      History: chart.TimeseriesChartPart.Value.HistorySpan.TotalMilliseconds,
+      History: chart.TimeseriesChartPart.Value.History.Value
+        .ToTimeSpan()
+        .TotalMilliseconds,
       Datasets: datasets
         .Select(
           dataset =>
