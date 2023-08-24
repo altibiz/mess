@@ -15,8 +15,8 @@ install them and follow the setup instructions afterwards to run Mess.
 
 ### Setup
 
-1. `mess prepare`
-2. `mess watch`
+1. `./mess prepare`
+2. `./mess watch`
 3. Open [Mess](https://localhost:5001)
 
 ### Dependency updates

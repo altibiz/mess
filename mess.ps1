@@ -114,7 +114,9 @@ function Get-Dotnet-Version {
 
 function Get-Node-Version {
   $version = Invoke-Expression "node --version" 2>&1
-  return ($version -replace '^v(\d+)\..*', '$1')
+  # TODO: once loaders get stabilized...
+  # return ($version -replace '^v(\d+)\..*', '$1')
+  return ($version -replace '^v', '')
 }
 
 function Install-Dotnet {
@@ -246,7 +248,7 @@ if ($InstalledDotnet -or $InstalledNode -or $InstalledYarn) {
   Write-Host -NoNewline "`n`n"
 }
 
-Write-Output 'require("typescript")' | yarn node >$null 2>&1
+Write-Output 'require("prettier")' | yarn node >$null 2>&1
 if (!$?) { Install-Yarn-Packages }
 
 $YarnArgs = $args -join "' '"
