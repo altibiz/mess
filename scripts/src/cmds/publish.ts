@@ -17,7 +17,7 @@ export default cmd({
     _.positional("publish-dir", {
       type: "string",
       description: "The directory to publish to",
-      default: "artifacts",
+      default: root("artifacts"),
     }).option("launch", {
       type: "boolean",
       description: "Launch the project after publishing",
@@ -33,7 +33,9 @@ export default cmd({
   env("ORCHARD_APP_DATA", root("App_Data"));
   env("NODE_OPTIONS", "--no-warnings");
   env("NODE_ENV", "production");
-  await dotenv("secrets.sh");
+  if (!env("CI")) {
+    await dotenv("secrets.sh");
+  }
 
   await task("Built assets with yarn", "yarn assets build");
 
