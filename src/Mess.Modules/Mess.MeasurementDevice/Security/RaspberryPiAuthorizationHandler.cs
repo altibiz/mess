@@ -1,20 +1,20 @@
 using Mess.ContentFields.Abstractions.Fields;
 using Mess.MeasurementDevice.Abstractions.Models;
-using Mess.MeasurementDevice.Security;
 using OrchardCore.ContentManagement;
 
-namespace Mess.Eor.MeasurementDevice.Security;
+namespace Mess.MeasurementDevice.Security;
 
-public class EorAuthorizationHandler
+public class RaspberryPiAuthorizationHandler
   : ApiKeyMeasurementDeviceAuthorizationHandler
 {
-  public const string AuthorizationContentType = "EorMeasurementDevice";
+  public const string AuthorizationContentType = "RaspberryPiMeasurementDevice";
 
   public override string ContentType => AuthorizationContentType;
 
   public override ApiKeyField? GetApiKey(ContentItem measurementDevice)
   {
-    var eorMeasurementDevice = measurementDevice.As<EorMeasurementDevicePart>();
-    return eorMeasurementDevice?.ApiKey;
+    var raspberryPiMeasurementDevice =
+      measurementDevice.As<RaspberryPiMeasurementDevicePart>();
+    return raspberryPiMeasurementDevice?.ApiKey;
   }
 }

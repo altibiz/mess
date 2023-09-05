@@ -1,10 +1,9 @@
 using Mess.MeasurementDevice.Abstractions.Indexes;
 using Mess.MeasurementDevice.Abstractions.Security;
+using Mess.MeasurementDevice.Abstractions.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
-using OrchardCore.ContentManagement;
-using YesSql;
 
 namespace Mess.MeasurementDevice.Filters;
 
@@ -24,12 +23,9 @@ public class MeasurementDeviceAuthorization
       return;
     }
 
-    var session =
-      context.HttpContext.RequestServices.GetRequiredService<ISession>();
-    var contentItem = await session
-      .Query<ContentItem, MeasurementDeviceIndex>()
-      .Where(index => index.DeviceId == deviceId)
-      .FirstOrDefaultAsync();
+    var cache =
+      context.HttpContext.RequestServices.GetRequiredService<IMeasurementDeviceContentItemCache>();
+    var contentItem = await cache.GetAsync(deviceId);
     if (contentItem is null)
     {
       context.Result = new NotFoundResult();

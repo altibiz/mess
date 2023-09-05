@@ -5,6 +5,6 @@ HUSKY_DIR="$(dirname "$(abs "$0")")"
 
 . "$HUSKY_DIR/_/husky.sh"
 
-printf "[Mess] Checking the commit message...\n"
+printf "[mess] Checking the commit message...\n"
 yarn workspace @mess/mess commitlint --edit "$1"
 printf "\n"

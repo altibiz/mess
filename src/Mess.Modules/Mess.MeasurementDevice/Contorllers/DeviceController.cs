@@ -4,15 +4,12 @@ using OrchardCore.Environment.Shell;
 using Microsoft.Extensions.DependencyInjection;
 using Mess.EventStore.Abstractions.Client;
 using Mess.MeasurementDevice.EventStore;
-using YesSql;
-using Mess.MeasurementDevice.Abstractions.Indexes;
 using Mess.MeasurementDevice.Abstractions.Updating;
-using OrchardCore.ContentManagement;
-using Microsoft.Extensions.Logging;
 using Mess.MeasurementDevice.Abstractions.Pushing;
 using Mess.MeasurementDevice.Abstractions.Polling;
 using Mess.MeasurementDevice.Filters;
 using Mess.OrchardCore.Extensions.OrchardCore;
+using Mess.MeasurementDevice.Abstractions.Services;
 
 namespace Mess.MeasurementDevice.Controllers;
 
@@ -27,10 +24,7 @@ public class DeviceController : Controller
     // TODO: on each push add a timer that will notify if there was no push
     // on next push just remove the timer
 
-    var contentItem = await _session
-      .Query<ContentItem, MeasurementDeviceIndex>()
-      .Where(index => index.DeviceId == deviceId)
-      .FirstOrDefaultAsync();
+    var contentItem = await _cache.GetAsync(deviceId);
     if (contentItem is null)
     {
       return NotFound($"Unknown device");
@@ -87,10 +81,7 @@ public class DeviceController : Controller
   [HttpPost]
   public async Task<IActionResult> Update(string deviceId)
   {
-    var contentItem = await _session
-      .Query<ContentItem, MeasurementDeviceIndex>()
-      .Where(index => index.DeviceId == deviceId)
-      .FirstOrDefaultAsync();
+    var contentItem = await _cache.GetAsync(deviceId);
     if (contentItem is null)
     {
       return NotFound($"Unknown device");
@@ -150,10 +141,7 @@ public class DeviceController : Controller
     // TODO: on each poll add a timer that will notify if there was no poll
     // on next poll just remove the timer
 
-    var contentItem = await _session
-      .Query<ContentItem, MeasurementDeviceIndex>()
-      .Where(index => index.DeviceId == deviceId)
-      .FirstOrDefaultAsync();
+    var contentItem = await _cache.GetAsync(deviceId);
     if (contentItem is null)
     {
       return NotFound("Unknown device");
@@ -192,13 +180,13 @@ public class DeviceController : Controller
   public DeviceController(
     ShellSettings shellSettings,
     IServiceProvider services,
-    ISession session,
+    IMeasurementDeviceContentItemCache cache,
     IShellFeaturesManager shellFeaturesManager
   )
   {
     _shellSettings = shellSettings;
     _services = services;
-    _session = session;
+    _cache = cache;
     _shellFeaturesManager = shellFeaturesManager;
   }
 
@@ -206,7 +194,7 @@ public class DeviceController : Controller
 
   private readonly IServiceProvider _services;
 
-  private readonly ISession _session;
+  private readonly IMeasurementDeviceContentItemCache _cache;
 
   private readonly IShellFeaturesManager _shellFeaturesManager;
 }

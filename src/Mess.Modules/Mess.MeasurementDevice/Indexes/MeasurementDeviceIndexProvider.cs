@@ -1,7 +1,6 @@
 using Mess.MeasurementDevice.Abstractions.Indexes;
 using Mess.MeasurementDevice.Abstractions.Models;
 using OrchardCore.ContentManagement;
-using OrchardCore.Title.Models;
 using YesSql.Indexes;
 
 namespace Mess.MeasurementDevice.Indexes;

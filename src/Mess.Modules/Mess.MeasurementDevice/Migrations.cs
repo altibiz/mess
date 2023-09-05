@@ -10,8 +10,7 @@ using OrchardCore.Title.Models;
 using Mess.OrchardCore;
 using YesSql.Sql;
 using Microsoft.Extensions.Hosting;
-using Mess.MeasurementDevice.Chart.Providers;
-using Mess.MeasurementDevice.Pushing;
+using Mess.ContentFields.Abstractions.Settings;
 
 namespace Mess.MeasurementDevice;
 
@@ -75,7 +74,7 @@ public class Migrations : DataMigration
                     RenderTitle = true,
                     Options = TitlePartOptions.GeneratedDisabled,
                     Pattern =
-                      @"{%- ContentItem.Content.EgaugeMeasurementDevicePart.DeviceId.Text -%}"
+                      @"{%- ContentItem.Content.MeasurementDevicePart.DeviceId.Text -%}"
                   }
                 )
           )
@@ -91,6 +90,73 @@ public class Migrations : DataMigration
             part =>
               part.WithDisplayName("Egauge measurement device")
                 .WithDescription("An Egauge measurement device.")
+                .WithPosition("3")
+          )
+    );
+
+    _contentDefinitionManager.AlterPartDefinition(
+      "RaspberryPiMeasurementDevicePart",
+      builder =>
+        builder
+          .Attachable()
+          .WithDescription("A Raspberry Pi measurement device.")
+          .WithDisplayName("Raspberry Pi measurement device")
+          .WithField(
+            "ApiKey",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("ApiKeyField")
+                .WithDisplayName("API key")
+                .WithDescription("API key.")
+                .WithSettings<ApiKeyFieldSettings>(
+                  new()
+                  {
+                    Hint = "API key that will be used to authorize the device."
+                  }
+                )
+          )
+    );
+
+    _contentDefinitionManager.AlterTypeDefinition(
+      "RaspberryPiMeasurementDevice",
+      builder =>
+        builder
+          .Creatable()
+          .Listable()
+          .Draftable()
+          .Securable()
+          .DisplayedAs("Raspberry Pi measurement device")
+          .WithDescription("A Raspberry Pi measurement device.")
+          .WithPart(
+            "TitlePart",
+            part =>
+              part.WithDisplayName("Title")
+                .WithDescription(
+                  "Title displaying the identifier of the Raspberry Pi measurement device."
+                )
+                .WithPosition("1")
+                .WithSettings<TitlePartSettings>(
+                  new()
+                  {
+                    RenderTitle = true,
+                    Options = TitlePartOptions.GeneratedDisabled,
+                    Pattern =
+                      @"{%- ContentItem.Content.MeasurementDevicePart.DeviceId.Text -%}"
+                  }
+                )
+          )
+          .WithPart(
+            "MeasurementDevicePart",
+            part =>
+              part.WithDisplayName("Measurement device")
+                .WithDescription("A measurement device.")
+                .WithPosition("2")
+          )
+          .WithPart(
+            "EgaugeMeasurementDevicePart",
+            part =>
+              part.WithDisplayName("Raspberry Pi measurement device")
+                .WithDescription("A Raspberry Pi measurement device.")
                 .WithPosition("3")
           )
     );
@@ -120,6 +186,21 @@ public class Migrations : DataMigration
       );
       await _contentManager.CreateAsync(
         egaugeMeasurementDevice,
+        VersionOptions.Latest
+      );
+
+      var raspberryPiMeasurementDevice =
+        await _contentManager.NewContentAsync<RaspberryPiMeasurementDeviceItem>();
+      raspberryPiMeasurementDevice.Alter(
+        raspberryPiMeasurementDevice =>
+          raspberryPiMeasurementDevice.MeasurementDevicePart,
+        measurementDevicePart =>
+        {
+          measurementDevicePart.DeviceId = new() { Text = "raspberryPi" };
+        }
+      );
+      await _contentManager.CreateAsync(
+        raspberryPiMeasurementDevice,
         VersionOptions.Latest
       );
     }

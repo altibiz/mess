@@ -1,10 +1,9 @@
 using Mess.EventStore.Abstractions.Events;
 using Mess.MeasurementDevice.Abstractions.Client;
-using Mess.MeasurementDevice.Abstractions.Indexes;
 using Mess.MeasurementDevice.Abstractions.Pushing;
+using Mess.MeasurementDevice.Abstractions.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using OrchardCore.ContentManagement;
 using YesSql;
 
 namespace Mess.MeasurementDevice.EventStore;
@@ -15,17 +14,15 @@ public class PushProjectionApplicator : IProjectionApplicator
   {
     var client = services.GetRequiredService<ITimeseriesClient>();
     var session = services.GetRequiredService<ISession>();
+    var cache =
+      services.GetRequiredService<IMeasurementDeviceContentItemCache>();
     var logger = services.GetRequiredService<
       ILogger<PushProjectionApplicator>
     >();
 
     foreach (var @event in events.OfType<Measured>())
     {
-      var contentItem = session
-        .Query<ContentItem, MeasurementDeviceIndex>()
-        .Where(index => index.DeviceId == @event.DeviceId)
-        .FirstOrDefaultAsync()
-        .Result;
+      var contentItem = cache.Get(@event.DeviceId);
       if (contentItem is null)
       {
         continue;
@@ -61,16 +58,15 @@ public class PushProjectionApplicator : IProjectionApplicator
   {
     var client = services.GetRequiredService<ITimeseriesClient>();
     var session = services.GetRequiredService<ISession>();
+    var cache =
+      services.GetRequiredService<IMeasurementDeviceContentItemCache>();
     var logger = services.GetRequiredService<
       ILogger<PushProjectionApplicator>
     >();
 
     foreach (var @event in events.OfType<Measured>())
     {
-      var contentItem = await session
-        .Query<ContentItem, MeasurementDeviceIndex>()
-        .Where(index => index.DeviceId == @event.DeviceId)
-        .FirstOrDefaultAsync();
+      var contentItem = await cache.GetAsync(@event.DeviceId);
       if (contentItem is null)
       {
         continue;

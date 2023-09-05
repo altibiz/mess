@@ -17,6 +17,9 @@ using Mess.MeasurementDevice.Abstractions.Extensions.Microsoft;
 using Mess.MeasurementDevice.Indexes;
 using YesSql.Indexes;
 using Mess.MeasurementDevice.Context;
+using Mess.MeasurementDevice.Abstractions.Services;
+using Mess.MeasurementDevice.Services;
+using Mess.MeasurementDevice.Security;
 
 namespace Mess.MeasurementDevice;
 
@@ -41,8 +44,17 @@ public class Startup : StartupBase
 
     services.AddSingleton<IIndexProvider, MeasurementDeviceIndexProvider>();
 
+    services.AddSingleton<
+      IMeasurementDeviceContentItemCache,
+      MeasurementDeviceContentItemCache
+    >();
+
     services.AddContentPart<EgaugeMeasurementDevicePart>();
     services.AddMeasurementDevicePushHandler<EgaugePushHandler>();
+
+    services.AddContentPart<RaspberryPiMeasurementDevicePart>();
+    services.AddMeasurementDevicePushHandler<RaspberryPiPushHandler>();
+    services.AddMeasurementDeviceAuthorizationHandler<RaspberryPiAuthorizationHandler>();
   }
 
   public override void Configure(
