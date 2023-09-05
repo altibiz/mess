@@ -1,5 +1,5 @@
-import path from "path";
 import fs from "fs/promises";
+import path from "path";
 
 type Template = {
   push?: string;
@@ -24,6 +24,9 @@ export const importTemplates = async (): Promise<Record<string, Template>> => ({
   eor: {
     push: await importTemplate("eor.push.json.hbs"),
     update: await importTemplate("eor.update.json.hbs"),
+  },
+  raspberryPi: {
+    push: await importTemplate("raspberryPi.push.json.hbs"),
   },
 });
 

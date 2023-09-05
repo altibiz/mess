@@ -11,6 +11,8 @@ using Mess.OrchardCore;
 using YesSql.Sql;
 using Microsoft.Extensions.Hosting;
 using Mess.ContentFields.Abstractions.Settings;
+using Mess.ContentFields.Abstractions.Services;
+using Mess.ContentFields.Abstractions.Extensions;
 
 namespace Mess.MeasurementDevice;
 
@@ -199,6 +201,15 @@ public class Migrations : DataMigration
           measurementDevicePart.DeviceId = new() { Text = "raspberryPi" };
         }
       );
+      raspberryPiMeasurementDevice.Alter(
+        raspberryPiMeasurementDevice =>
+          raspberryPiMeasurementDevice.RaspberryPiMeasurementDevicePart,
+        raspberryPiMeasurementDevicePart =>
+        {
+          raspberryPiMeasurementDevicePart.ApiKey =
+            _apiKeyFieldService.HashApiKeyField("raspberryPi");
+        }
+      );
       await _contentManager.CreateAsync(
         raspberryPiMeasurementDevice,
         VersionOptions.Latest
@@ -212,17 +223,20 @@ public class Migrations : DataMigration
     IContentDefinitionManager contentDefinitionManager,
     IContentManager contentManager,
     IHostEnvironment hostEnvironment,
-    IRecipeMigrator recipeMigrator
+    IRecipeMigrator recipeMigrator,
+    IApiKeyFieldService apiKeyFieldService
   )
   {
     _contentDefinitionManager = contentDefinitionManager;
     _contentManager = contentManager;
     _recipeMigrator = recipeMigrator;
     _hostEnvironment = hostEnvironment;
+    _apiKeyFieldService = apiKeyFieldService;
   }
 
   private readonly IContentDefinitionManager _contentDefinitionManager;
   private readonly IContentManager _contentManager;
   private readonly IRecipeMigrator _recipeMigrator;
   private readonly IHostEnvironment _hostEnvironment;
+  private readonly IApiKeyFieldService _apiKeyFieldService;
 }
