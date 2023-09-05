@@ -44,7 +44,7 @@ public class Startup : StartupBase
 
     services.AddSingleton<IIndexProvider, MeasurementDeviceIndexProvider>();
 
-    services.AddSingleton<
+    services.AddScoped<
       IMeasurementDeviceContentItemCache,
       MeasurementDeviceContentItemCache
     >();

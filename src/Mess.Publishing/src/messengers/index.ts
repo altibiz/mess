@@ -17,6 +17,7 @@ export const importMessengers = async (): Promise<
 > => ({
   eor: await import("./eor"),
   egauge: await import("./egauge"),
+  raspberryPi: await import("./raspberryPi"),
 });
 
 export default Messenger;

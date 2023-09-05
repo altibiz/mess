@@ -91,9 +91,7 @@ export default cmd({
       ? [
           {
             name: "publish",
-            command:
-              "yarn workspace @mess/publishing dev " +
-              `${pushArgs} ${updateArgs}`,
+            command: "yarn publishing dev " + `${pushArgs} ${updateArgs}`,
           },
         ]
       : [];

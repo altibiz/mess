@@ -45,7 +45,7 @@ public class RaspberryPiPushHandler
     {
       foreach (var measurement in request.measurements)
       {
-        var measurementContentItem = _cache.Get(deviceId);
+        var measurementContentItem = _cache.Get(measurement.deviceId);
         if (measurementContentItem is null)
         {
           continue;
@@ -54,7 +54,7 @@ public class RaspberryPiPushHandler
         var measurementHandler = _services
           .GetServices<IMeasurementDevicePushHandler>()
           .FirstOrDefault(
-            handler => handler.ContentType == contentItem.ContentType
+            handler => handler.ContentType == measurementContentItem.ContentType
           );
         if (measurementHandler is null)
         {
@@ -103,7 +103,9 @@ public class RaspberryPiPushHandler
     {
       foreach (var measurement in request.measurements)
       {
-        var measurementContentItem = await _cache.GetAsync(deviceId);
+        var measurementContentItem = await _cache.GetAsync(
+          measurement.deviceId
+        );
         if (measurementContentItem is null)
         {
           continue;
@@ -112,7 +114,7 @@ public class RaspberryPiPushHandler
         var measurementHandler = _services
           .GetServices<IMeasurementDevicePushHandler>()
           .FirstOrDefault(
-            handler => handler.ContentType == contentItem.ContentType
+            handler => handler.ContentType == measurementContentItem.ContentType
           );
         if (measurementHandler is null)
         {

@@ -3,7 +3,7 @@ import Handlebars from "handlebars";
 const compile = (template: string, data: Record<string, unknown>) => {
   let compiled = compilationCache.get(template);
   if (!compiled) {
-    compiled = Handlebars.compile(template);
+    compiled = Handlebars.compile(template, { noEscape: true });
     compilationCache.set(template, compiled);
   }
 
