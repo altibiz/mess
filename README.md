@@ -1,6 +1,11 @@
 # Mess
 
-Measure Event Store (Something).
+Measurement Event Store (Something).
+
+Mess is a web application designed to accumulate measurements and metric data
+from various sources and display it in an easily digestible web interface. It
+leverages the event store pattern to handle data via push and pull mechanisms,
+providing a central hub for all your metric data needs.
 
 ## Development
 
