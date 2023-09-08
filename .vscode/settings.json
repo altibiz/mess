@@ -38,11 +38,10 @@
     "editor.defaultFormatter": "csharpier.csharpier-vscode"
   },
   "[markdown]": {
-    "editor.defaultFormatter": "unifiedjs.vscode-remark"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "yaml.schemas": {
-    "https://json.schemastore.org/github-workflow.json": "./.github/workflows/*.{yml,yaml}",
-    "https://json.schemastore.org/remarkrc.json": "./**/.remarkrc.{yml,yaml}"
+    "https://json.schemastore.org/github-workflow.json": "./.github/workflows/*.{yml,yaml}"
   },
   "files.encoding": "utf8",
   "files.eol": "\n",

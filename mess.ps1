@@ -249,7 +249,14 @@ if ($InstalledDotnet -or $InstalledNode -or $InstalledYarn) {
 }
 
 Write-Output 'require("prettier")' | yarn node >$null 2>&1
-if (!$?) { Install-Yarn-Packages }
+if (!$?) {
+  Write-Warning (
+    "``prettier`` not found." +
+    " Please make sure you run ``mess prepare``" +
+    " before running any other command."
+  )
+  Install-Yarn-Packages
+}
 
 $YarnArgs = $args -join "' '"
 Invoke-Expression "yarn scripts start '$YarnArgs'"
