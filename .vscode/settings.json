@@ -41,7 +41,8 @@
     "editor.defaultFormatter": "unifiedjs.vscode-remark"
   },
   "yaml.schemas": {
-    "https://json.schemastore.org/github-workflow.json": "./.github/workflows/*.yml"
+    "https://json.schemastore.org/github-workflow.json": "./.github/workflows/*.{yml,yaml}",
+    "https://json.schemastore.org/remarkrc.json": "./**/.remarkrc.{yml,yaml}"
   },
   "files.encoding": "utf8",
   "files.eol": "\n",
