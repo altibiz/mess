@@ -40,11 +40,3 @@ Relevant files are:
 
 - `.gitignore`
 - `.prettierignore`
-
-## TODO
-
-- [ ] docs dev experience with eslint and remark
-- [ ] docs dev experience with
-      [css-in-js](https://docusaurus.io/docs/styling-layout#css-in-js)
-- [ ] CLI docs
-- [ ] list of stuff that needs to be documented

@@ -1,0 +1,8 @@
+{
+  "label": "Themes",
+  "position": 4,
+  "link": {
+    "type": "generated-index",
+    "description": "Look and feel of Mess for various tenants."
+  }
+}

@@ -34,6 +34,9 @@ export default cmd({
 
   if (build) {
     await task("Built assets with yarn", "yarn assets build");
+  }
+
+  if (build || !skip.includes("test")) {
     await task("Built app with dotnet", `dotnet build ${root("Mess.sln")}`);
   }
 
