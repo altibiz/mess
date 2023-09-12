@@ -1,4 +1,7 @@
-import { cmd, plopd } from "../../lib/index";
+import { cmd, plopd, task } from "../../lib/index";
+
+const exampleName = "Forttech";
+const exampleDescription = "The Forttech Theme";
 
 export default cmd({
   usage: "theme <name> <description>",
@@ -6,10 +9,10 @@ export default cmd({
   builder: (_) =>
     _.positional("name", {
       type: "string",
-      group: "Theme name",
+      description: `Theme name (like '${exampleName}')`,
     }).positional("description", {
       type: "string",
-      group: "Theme description",
+      description: `Theme description (like '${exampleDescription}')`,
     }),
 })(async ({ name, description }) => {
   const lowercaseName = name.toLowerCase();
@@ -25,4 +28,8 @@ export default cmd({
   };
 
   await plopd("theme", `src/Mess.Themes/Mess.${name}`, config);
+  await task(
+    `Added project Mess.${name} to solution`,
+    `dotnet sln add src/Mess.Themes/Mess.${name}/Mess.${name}.csproj`,
+  );
 });
