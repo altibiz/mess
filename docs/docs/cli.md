@@ -86,6 +86,8 @@ This command generates a new module.
 
 | Option     | Description                                            |
 | ---------- | ------------------------------------------------------ |
+| `--test`   | Plop test projects (defaults to true).                 |
+| `--assets` | Also plop an assets package (defaults to false).       |
 | `--format` | Format repository after generation (defaults to true). |
 
 ### `mess plop theme <name> <description>`
@@ -99,6 +101,7 @@ This command generates a new theme.
 
 | Option     | Description                                            |
 | ---------- | ------------------------------------------------------ |
+| `--assets` | Also plop an assets package (defaults to false).       |
 | `--format` | Format repository after generation (defaults to true). |
 
 ## `mess format`

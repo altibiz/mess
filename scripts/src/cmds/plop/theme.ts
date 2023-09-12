@@ -15,12 +15,17 @@ export default cmd({
         type: "string",
         description: `Theme description (like '${exampleDescription}')`,
       })
+      .option("assets", {
+        type: "boolean",
+        description: "Also plop an assets package",
+        default: false,
+      })
       .option("format", {
         type: "boolean",
         description: "Format the code after plop",
         default: true,
       }),
-})(async ({ name, description, format }) => {
+})(async ({ name, description, assets, format }) => {
   const lowercaseName = name.toLowerCase();
   const longName = name.replace(/(a-z)(A-Z)/g, "$1 $2");
   const hyphenatedName = name.replace(/([a-z])([A-Z])/g, "$1-$2");
@@ -38,6 +43,10 @@ export default cmd({
     `Added project Mess.${name} to solution`,
     `dotnet sln add src/Mess.Themes/Mess.${name}/Mess.${name}.csproj`,
   );
+
+  if (assets) {
+    await plopd("assets", `src/Mess.Modules/Mess.${name}/Assets`, config);
+  }
 
   if (format) {
     await task("Formatted with csharpier", "dotnet csharpier .");

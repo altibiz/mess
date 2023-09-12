@@ -21,8 +21,18 @@ export default cmd({
         type: "boolean",
         description: "Format the code after plop",
         default: true,
+      })
+      .option("test", {
+        type: "boolean",
+        description: "Plop test projects",
+        default: true,
+      })
+      .option("assets", {
+        type: "boolean",
+        description: "Also plop an assets package",
+        default: false,
       }),
-})(async ({ name, description, format }) => {
+})(async ({ name, description, test, assets, format }) => {
   const lowercaseName = name.toLowerCase();
   const longName = name.replace(/(a-z)(A-Z)/g, "$1 $2");
   const hyphenatedName = name.replace(/([a-z])([A-Z])/g, "$1-$2");
@@ -51,21 +61,27 @@ export default cmd({
     `dotnet sln add src/Mess.Abstractions/Mess.${name}.Abstractions/Mess.${name}.Abstractions.csproj`,
   );
 
-  await plopd("module-test", `test/Mess.Modules/Mess.${name}.Test`, config);
-  await task(
-    `Added project Mess.${name}.Test to solution`,
-    `dotnet sln add test/Mess.Modules/Mess.${name}.Test/Mess.${name}.Test.csproj`,
-  );
+  if (test) {
+    await plopd("module-test", `test/Mess.Modules/Mess.${name}.Test`, config);
+    await task(
+      `Added project Mess.${name}.Test to solution`,
+      `dotnet sln add test/Mess.Modules/Mess.${name}.Test/Mess.${name}.Test.csproj`,
+    );
 
-  await plopd(
-    "module-test-abstractions",
-    `test/Mess.Abstractions/Mess.${name}.Test.Abstractions`,
-    config,
-  );
-  await task(
-    `Added project Mess.${name}.Test.Abstractions to solution`,
-    `dotnet sln add test/Mess.Abstractions/Mess.${name}.Test.Abstractions/Mess.${name}.Test.Abstractions.csproj`,
-  );
+    await plopd(
+      "module-test-abstractions",
+      `test/Mess.Abstractions/Mess.${name}.Test.Abstractions`,
+      config,
+    );
+    await task(
+      `Added project Mess.${name}.Test.Abstractions to solution`,
+      `dotnet sln add test/Mess.Abstractions/Mess.${name}.Test.Abstractions/Mess.${name}.Test.Abstractions.csproj`,
+    );
+  }
+
+  if (assets) {
+    await plopd("assets", `src/Mess.Modules/Mess.${name}/Assets`, config);
+  }
 
   if (format) {
     await task("Formatted with csharpier", "dotnet csharpier .");
