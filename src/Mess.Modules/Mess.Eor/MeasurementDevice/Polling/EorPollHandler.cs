@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using Mess.Eor.MeasurementDevice.Polling;
 using Mess.Eor.Abstractions.Client;
 
-namespace Msss.Eor.MeasurementDevice.Polling;
+namespace Mess.Eor.MeasurementDevice.Polling;
 
 public class EorPollHandler : JsonMeasurementDevicePollHandler<EorPollResponse>
 {

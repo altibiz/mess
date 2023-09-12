@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Msss.Eor.MeasurementDevice.Polling;
+using Mess.Eor.MeasurementDevice.Polling;
 using OrchardCore.Admin;
 using OrchardCore.ContentManagement;
 using OrchardCore.Data.Migration;
@@ -22,7 +22,6 @@ using Mess.MeasurementDevice.Client;
 using Mess.Eor.Abstractions.Client;
 using Mess.Eor.MeasurementDevice.Updating;
 using OrchardCore.Environment.Shell.Configuration;
-using System.Reflection;
 using Mess.Eor.MeasurementDevice.Security;
 using Mess.Eor.Abstractions;
 
@@ -32,12 +31,6 @@ public class Startup : StartupBase
 {
   public override void ConfigureServices(IServiceCollection services)
   {
-    var sectionName = Assembly.GetExecutingAssembly()?.GetName().Name;
-    if (sectionName is null)
-    {
-      throw new InvalidProgramException("Could not get assembly name");
-    }
-
     services.AddDataMigration<Migrations>();
     services.AddResources<Resources>();
     services.AddNavigationProvider<AdminMenu>();

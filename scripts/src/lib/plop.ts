@@ -42,7 +42,10 @@ export const plopd = async (
       const resultPath = path.join(destinationPath, resultName);
 
       await fs.mkdir(resultPath, { recursive: true });
-      await plopd(namePath, resultPath, config);
+
+      // NOTE: a bit backwards, but we need to pass the relative path
+      const dirTemplate = path.relative(root("scripts/assets/plop"), namePath);
+      await plopd(dirTemplate, resultPath, config);
     } else {
       await plopf(namePath, destinationPath, config);
     }

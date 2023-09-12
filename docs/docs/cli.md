@@ -101,7 +101,7 @@ This command generates a new theme.
 
 | Option     | Description                                            |
 | ---------- | ------------------------------------------------------ |
-| `--assets` | Also plop an assets package (defaults to false).       |
+| `--assets` | Also plop an assets package (defaults to true).        |
 | `--format` | Format repository after generation (defaults to true). |
 
 ## `mess format`

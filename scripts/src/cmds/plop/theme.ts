@@ -18,7 +18,7 @@ export default cmd({
       .option("assets", {
         type: "boolean",
         description: "Also plop an assets package",
-        default: false,
+        default: true,
       })
       .option("format", {
         type: "boolean",
