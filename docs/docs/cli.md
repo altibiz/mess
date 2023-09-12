@@ -84,6 +84,10 @@ This command generates a new module.
 | `name`        | The name of the module.        |
 | `description` | The description of the module. |
 
+| Option     | Description                                            |
+| ---------- | ------------------------------------------------------ |
+| `--format` | Format repository after generation (defaults to true). |
+
 ### `mess plop theme <name> <description>`
 
 This command generates a new theme.
@@ -92,6 +96,10 @@ This command generates a new theme.
 | ------------- | ----------------------------- |
 | `name`        | The name of the theme.        |
 | `description` | The description of the theme. |
+
+| Option     | Description                                            |
+| ---------- | ------------------------------------------------------ |
+| `--format` | Format repository after generation (defaults to true). |
 
 ## `mess format`
 

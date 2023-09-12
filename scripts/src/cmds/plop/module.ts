@@ -12,11 +12,17 @@ export default cmd({
     _.positional("name", {
       type: "string",
       description: `Module name (like '${exampleName}')`,
-    }).positional("description", {
-      type: "string",
-      description: `Module description (like '${exampleDescription}')`,
-    }),
-})(async ({ name, description }) => {
+    })
+      .positional("description", {
+        type: "string",
+        description: `Module description (like '${exampleDescription}')`,
+      })
+      .option("format", {
+        type: "boolean",
+        description: "Format the code after plop",
+        default: true,
+      }),
+})(async ({ name, description, format }) => {
   const lowercaseName = name.toLowerCase();
   const longName = name.replace(/(a-z)(A-Z)/g, "$1 $2");
   const hyphenatedName = name.replace(/([a-z])([A-Z])/g, "$1-$2");
@@ -60,4 +66,16 @@ export default cmd({
     `Added project Mess.${name}.Test.Abstractions to solution`,
     `dotnet sln add test/Mess.Abstractions/Mess.${name}.Test.Abstractions/Mess.${name}.Test.Abstractions.csproj`,
   );
+
+  if (format) {
+    await task("Formatted with csharpier", "dotnet csharpier .");
+
+    await task(
+      "Formatted with prettier",
+      "yarn prettier --write" +
+        " --ignore-path .prettierignore" +
+        " --cache --cache-strategy metadata" +
+        " .",
+    );
+  }
 });
