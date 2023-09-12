@@ -28,7 +28,7 @@ export default cmd({
 })(async ({ name, description, assets, format }) => {
   const lowercaseName = name.toLowerCase();
   const longName = name.replace(/(a-z)(A-Z)/g, "$1 $2");
-  const hyphenatedName = name.replace(/([a-z])([A-Z])/g, "$1-$2");
+  const hyphenatedName = name.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
 
   const config = {
     name,
