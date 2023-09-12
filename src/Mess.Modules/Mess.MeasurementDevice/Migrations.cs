@@ -101,8 +101,8 @@ public class Migrations : DataMigration
       builder =>
         builder
           .Attachable()
-          .WithDescription("A Raspberry Pi measurement device.")
-          .WithDisplayName("Raspberry Pi measurement device")
+          .WithDescription("A Pidgeon measurement device.")
+          .WithDisplayName("Pidgeon measurement device")
           .WithField(
             "ApiKey",
             fieldBuilder =>
@@ -127,14 +127,14 @@ public class Migrations : DataMigration
           .Listable()
           .Draftable()
           .Securable()
-          .DisplayedAs("Raspberry Pi measurement device")
-          .WithDescription("A Raspberry Pi measurement device.")
+          .DisplayedAs("Pidgeon measurement device")
+          .WithDescription("A Pidgeon measurement device.")
           .WithPart(
             "TitlePart",
             part =>
               part.WithDisplayName("Title")
                 .WithDescription(
-                  "Title displaying the identifier of the Raspberry Pi measurement device."
+                  "Title displaying the identifier of the Pidgeon measurement device."
                 )
                 .WithPosition("1")
                 .WithSettings<TitlePartSettings>(
@@ -155,10 +155,10 @@ public class Migrations : DataMigration
                 .WithPosition("2")
           )
           .WithPart(
-            "EgaugeMeasurementDevicePart",
+            "PidgeonMeasurementDevicePart",
             part =>
-              part.WithDisplayName("Raspberry Pi measurement device")
-                .WithDescription("A Raspberry Pi measurement device.")
+              part.WithDisplayName("Pidgeon measurement device")
+                .WithDescription("A Pidgeon measurement device.")
                 .WithPosition("3")
           )
     );
