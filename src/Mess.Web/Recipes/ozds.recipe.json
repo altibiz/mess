@@ -1,0 +1,36 @@
+{
+  "name": "ozds",
+  "displayName": "OZDS",
+  "description": "OZDS project recipe",
+  "author": "Altibiz",
+  "website": "altibiz.com",
+  "version": "0.0.1",
+  "issetuprecipe": true,
+  "categories": ["Module"],
+  "tags": ["Module"],
+  "steps": [
+    {
+      "name": "feature",
+      "enable": [
+        "OrchardCore.Themes",
+        "OrchardCore.Admin",
+        "OrchardCore.Navigation",
+        "OrchardCore.Roles",
+        "OrchardCore.Users",
+        "OrchardCore.Users.Registration",
+        "OrchardCore.Users.ResetPassword",
+        "OrchardCore.Diagnostics",
+        "TheAdmin",
+        "Mess.Chart",
+        "Mess.MeasurementDevice",
+        "Mess.Ozds",
+        "Mess.Helb"
+      ]
+    },
+    {
+      "name": "themes",
+      "admin": "TheAdmin",
+      "site": "Mess.Helb"
+    }
+  ]
+}

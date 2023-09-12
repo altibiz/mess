@@ -5,6 +5,7 @@
       "name": "debug",
       "type": "coreclr",
       "request": "launch",
+      // TODO: make this not depend on the version?
       "program": "${workspaceFolder}/src/Mess.Web/bin/Debug/net7.0/Mess.Web.dll",
       "preLaunchTask": "build",
       "cwd": "${workspaceFolder}/src/Mess.Web",
