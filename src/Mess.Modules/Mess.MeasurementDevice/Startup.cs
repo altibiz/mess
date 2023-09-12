@@ -55,6 +55,9 @@ public class Startup : StartupBase
     services.AddContentPart<PidgeonMeasurementDevicePart>();
     services.AddMeasurementDevicePushHandler<PidgeonPushHandler>();
     services.AddMeasurementDeviceAuthorizationHandler<PidgeonAuthorizationHandler>();
+
+    services.AddMeasurementDevicePushHandler<AbbPushHandler>();
+    services.AddContentPart<AbbMeasurementDevicePart>();
   }
 
   public override void Configure(

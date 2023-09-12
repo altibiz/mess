@@ -163,6 +163,59 @@ public class Migrations : DataMigration
           )
     );
 
+    _contentDefinitionManager.AlterPartDefinition(
+      "AbbMeasurementDevicePart",
+      builder =>
+        builder
+          .Attachable()
+          .WithDescription("A Abb measurement device.")
+          .WithDisplayName("Abb measurement device")
+    );
+
+    _contentDefinitionManager.AlterTypeDefinition(
+      "AbbMeasurementDevice",
+      builder =>
+        builder
+          .Creatable()
+          .Listable()
+          .Draftable()
+          .Securable()
+          .DisplayedAs("Abb measurement device")
+          .WithDescription("A Abb measurement device.")
+          .WithPart(
+            "TitlePart",
+            part =>
+              part.WithDisplayName("Title")
+                .WithDescription(
+                  "Title displaying the identifier of the Abb measurement device."
+                )
+                .WithPosition("1")
+                .WithSettings<TitlePartSettings>(
+                  new()
+                  {
+                    RenderTitle = true,
+                    Options = TitlePartOptions.GeneratedDisabled,
+                    Pattern =
+                      @"{%- ContentItem.Content.MeasurementDevicePart.DeviceId.Text -%}"
+                  }
+                )
+          )
+          .WithPart(
+            "MeasurementDevicePart",
+            part =>
+              part.WithDisplayName("Measurement device")
+                .WithDescription("A measurement device.")
+                .WithPosition("2")
+          )
+          .WithPart(
+            "AbbMeasurementDevicePart",
+            part =>
+              part.WithDisplayName("Abb measurement device")
+                .WithDescription("A Abb measurement device.")
+                .WithPosition("3")
+          )
+    );
+
     SchemaBuilder.CreateMapIndexTable<MeasurementDeviceIndex>(
       table =>
         table
@@ -212,6 +265,20 @@ public class Migrations : DataMigration
       );
       await _contentManager.CreateAsync(
         pidgeonMeasurementDevice,
+        VersionOptions.Latest
+      );
+
+      var abbMeasurementDevice =
+        await _contentManager.NewContentAsync<AbbMeasurementDeviceItem>();
+      abbMeasurementDevice.Alter(
+        abbMeasurementDevice => abbMeasurementDevice.MeasurementDevicePart,
+        measurementDevicePart =>
+        {
+          measurementDevicePart.DeviceId = new() { Text = "abb" };
+        }
+      );
+      await _contentManager.CreateAsync(
+        abbMeasurementDevice,
         VersionOptions.Latest
       );
     }

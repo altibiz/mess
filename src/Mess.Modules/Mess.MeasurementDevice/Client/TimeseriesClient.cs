@@ -63,6 +63,58 @@ public class TimeseriesClient : ITimeseriesClient
         .ToListAsync();
     });
 
+  public void AddAbbMeasurement(AbbMeasurement model) =>
+    _services.WithTimeseriesDbContext<MeasurementDbContext>(context =>
+    {
+      context.AbbMeasurements.Add(model.ToEntity());
+      context.SaveChanges();
+    });
+
+  public Task AddAbbMeasurementAsync(AbbMeasurement model) =>
+    _services.WithTimeseriesDbContextAsync<MeasurementDbContext>(async context =>
+    {
+      context.AbbMeasurements.Add(model.ToEntity());
+      await context.SaveChangesAsync();
+    });
+
+  public IReadOnlyList<AbbMeasurement> GetAbbMeasurements(
+    string source,
+    DateTime beginning,
+    DateTime end
+  ) =>
+    _services.WithTimeseriesDbContext<
+      MeasurementDbContext,
+      List<AbbMeasurement>
+    >(context =>
+    {
+      return context.AbbMeasurements
+        .Where(measurement => measurement.Source == source)
+        .Where(measurement => measurement.Timestamp > beginning)
+        .Where(measurement => measurement.Timestamp < end)
+        .OrderBy(measurement => measurement.Timestamp)
+        .Select(measurement => measurement.ToModel())
+        .ToList();
+    });
+
+  public async Task<IReadOnlyList<AbbMeasurement>> GetAbbMeasurementsAsync(
+    string source,
+    DateTime beginning,
+    DateTime end
+  ) =>
+    await _services.WithTimeseriesDbContextAsync<
+      MeasurementDbContext,
+      List<AbbMeasurement>
+    >(async context =>
+    {
+      return await context.AbbMeasurements
+        .Where(measurement => measurement.Source == source)
+        .Where(measurement => measurement.Timestamp > beginning)
+        .Where(measurement => measurement.Timestamp < end)
+        .OrderBy(measurement => measurement.Timestamp)
+        .Select(measurement => measurement.ToModel())
+        .ToListAsync();
+    });
+
   public TimeseriesClient(
     IServiceProvider services,
     ILogger<TimeseriesClient> logger
