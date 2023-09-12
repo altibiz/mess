@@ -45,7 +45,12 @@ export default cmd({
   );
 
   if (assets) {
-    await plopd("assets", `src/Mess.Modules/Mess.${name}/Assets`, config);
+    await plopd("assets", `src/Mess.Themes/Mess.${name}/Assets`, config);
+
+    await task(
+      `Added package src/Mess.Themes/Mess.${name}/Assets to workspace`,
+      "yarn install",
+    );
   }
 
   if (format) {
