@@ -4,7 +4,7 @@ using OrchardCore.Title.Models;
 
 namespace Mess.MeasurementDevice.Abstractions.Models;
 
-public class RaspberryPiMeasurementDeviceItem : ContentItemBase
+public class PidgeonMeasurementDeviceItem : ContentItemBase
 {
   public Lazy<TitlePart> TitlePart { get; private set; } = default!;
 
@@ -14,12 +14,12 @@ public class RaspberryPiMeasurementDeviceItem : ContentItemBase
     private set;
   } = default!;
 
-  public Lazy<RaspberryPiMeasurementDevicePart> RaspberryPiMeasurementDevicePart
+  public Lazy<PidgeonMeasurementDevicePart> PidgeonMeasurementDevicePart
   {
     get;
     private set;
   } = default!;
 
-  private RaspberryPiMeasurementDeviceItem(ContentItem contentItem)
+  private PidgeonMeasurementDeviceItem(ContentItem contentItem)
     : base(contentItem) { }
 }

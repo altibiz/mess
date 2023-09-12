@@ -97,7 +97,7 @@ public class Migrations : DataMigration
     );
 
     _contentDefinitionManager.AlterPartDefinition(
-      "RaspberryPiMeasurementDevicePart",
+      "PidgeonMeasurementDevicePart",
       builder =>
         builder
           .Attachable()
@@ -120,7 +120,7 @@ public class Migrations : DataMigration
     );
 
     _contentDefinitionManager.AlterTypeDefinition(
-      "RaspberryPiMeasurementDevice",
+      "PidgeonMeasurementDevice",
       builder =>
         builder
           .Creatable()
@@ -191,27 +191,27 @@ public class Migrations : DataMigration
         VersionOptions.Latest
       );
 
-      var raspberryPiMeasurementDevice =
-        await _contentManager.NewContentAsync<RaspberryPiMeasurementDeviceItem>();
-      raspberryPiMeasurementDevice.Alter(
-        raspberryPiMeasurementDevice =>
-          raspberryPiMeasurementDevice.MeasurementDevicePart,
+      var pidgeonMeasurementDevice =
+        await _contentManager.NewContentAsync<PidgeonMeasurementDeviceItem>();
+      pidgeonMeasurementDevice.Alter(
+        pidgeonMeasurementDevice =>
+          pidgeonMeasurementDevice.MeasurementDevicePart,
         measurementDevicePart =>
         {
-          measurementDevicePart.DeviceId = new() { Text = "raspberryPi" };
+          measurementDevicePart.DeviceId = new() { Text = "pidgeon" };
         }
       );
-      raspberryPiMeasurementDevice.Alter(
-        raspberryPiMeasurementDevice =>
-          raspberryPiMeasurementDevice.RaspberryPiMeasurementDevicePart,
-        raspberryPiMeasurementDevicePart =>
+      pidgeonMeasurementDevice.Alter(
+        pidgeonMeasurementDevice =>
+          pidgeonMeasurementDevice.PidgeonMeasurementDevicePart,
+        pidgeonMeasurementDevicePart =>
         {
-          raspberryPiMeasurementDevicePart.ApiKey =
-            _apiKeyFieldService.HashApiKeyField("raspberryPi");
+          pidgeonMeasurementDevicePart.ApiKey =
+            _apiKeyFieldService.HashApiKeyField("pidgeon");
         }
       );
       await _contentManager.CreateAsync(
-        raspberryPiMeasurementDevice,
+        pidgeonMeasurementDevice,
         VersionOptions.Latest
       );
     }

@@ -9,20 +9,19 @@ using OrchardCore.Environment.Shell;
 
 namespace Mess.MeasurementDevice.Pushing;
 
-public class RaspberryPiPushHandler
-  : JsonMeasurementDevicePushHandler<RaspberryPiPushRequest>
+public class PidgeonPushHandler
+  : JsonMeasurementDevicePushHandler<PidgeonPushRequest>
 {
-  public override string ContentType => "RaspberryPiMeasurementDevice";
+  public override string ContentType => "PidgeonMeasurementDevice";
 
   protected override void Handle(
     string deviceId,
     string tenant,
     DateTime timestamp,
     ContentItem contentItem,
-    RaspberryPiPushRequest request
+    PidgeonPushRequest request
   )
   {
-    var now = DateTime.UtcNow;
     var features = _shellFeaturesManager.GetEnabledFeaturesAsync().Result;
     if (features.Any(feature => feature.Id == "Mess.EventStore"))
     {
@@ -33,9 +32,9 @@ public class RaspberryPiPushHandler
             measurement =>
               new Measured(
                 Tenant: tenant,
-                Timestamp: now,
+                Timestamp: measurement.timestamp,
                 DeviceId: measurement.deviceId,
-                Payload: measurement.request
+                Payload: measurement.data
               )
           )
           .ToArray()
@@ -64,9 +63,9 @@ public class RaspberryPiPushHandler
         measurementHandler.Handle(
           measurement.deviceId,
           tenant,
-          now,
+          measurement.timestamp,
           measurementContentItem,
-          measurement.request
+          measurement.data
         );
       }
     }
@@ -77,10 +76,9 @@ public class RaspberryPiPushHandler
     string tenant,
     DateTime timestamp,
     ContentItem contentItem,
-    RaspberryPiPushRequest request
+    PidgeonPushRequest request
   )
   {
-    var now = DateTime.UtcNow;
     var features = await _shellFeaturesManager.GetEnabledFeaturesAsync();
     if (features.Any(feature => feature.Id == "Mess.EventStore"))
     {
@@ -91,9 +89,9 @@ public class RaspberryPiPushHandler
             measurement =>
               new Measured(
                 Tenant: tenant,
-                Timestamp: now,
+                Timestamp: measurement.timestamp,
                 DeviceId: measurement.deviceId,
-                Payload: measurement.request
+                Payload: measurement.data
               )
           )
           .ToArray()
@@ -124,16 +122,16 @@ public class RaspberryPiPushHandler
         await measurementHandler.HandleAsync(
           measurement.deviceId,
           tenant,
-          now,
+          measurement.timestamp,
           measurementContentItem,
-          measurement.request
+          measurement.data
         );
       }
     }
   }
 
-  public RaspberryPiPushHandler(
-    ILogger<RaspberryPiPushHandler> logger,
+  public PidgeonPushHandler(
+    ILogger<PidgeonPushHandler> logger,
     IMeasurementDeviceContentItemCache cache,
     IServiceProvider services,
     IShellFeaturesManager shellFeaturesManager

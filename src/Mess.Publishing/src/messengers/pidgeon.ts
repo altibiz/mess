@@ -1,3 +1,4 @@
+import { DateTime } from "luxon";
 import { importTemplates } from "../templates";
 import compile from "./compile";
 import { push as egaugePush } from "./egauge";
@@ -12,6 +13,7 @@ export const push: Create = async (template) => {
   }
 
   const data = {
+    timestamp: DateTime.utc().toISO(),
     measurements: JSON.stringify(
       (
         await Promise.all(
@@ -25,7 +27,11 @@ export const push: Create = async (template) => {
               metadata: { deviceId },
               payload,
             } = await push(template);
-            return { deviceId, request: payload };
+            return {
+              deviceId,
+              timestamp: DateTime.utc().toISO(),
+              data: payload,
+            };
           }),
         )
       ).filter((measurement) => measurement),
@@ -37,8 +43,8 @@ export const push: Create = async (template) => {
   return {
     metadata: {
       contentType: "application/json",
-      deviceId: "raspberryPi",
-      apiKey: "raspberryPi",
+      deviceId: "pidgeon",
+      apiKey: "pidgeon",
     },
     payload: compile(template, data),
   };

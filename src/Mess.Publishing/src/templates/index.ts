@@ -25,8 +25,8 @@ export const importTemplates = async (): Promise<Record<string, Template>> => ({
     push: await importTemplate("eor.push.json.hbs"),
     update: await importTemplate("eor.update.json.hbs"),
   },
-  raspberryPi: {
-    push: await importTemplate("raspberryPi.push.json.hbs"),
+  pidgeon: {
+    push: await importTemplate("pidgeon.push.json.hbs"),
   },
 });
 

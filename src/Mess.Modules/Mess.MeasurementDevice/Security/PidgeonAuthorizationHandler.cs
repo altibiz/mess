@@ -4,17 +4,17 @@ using OrchardCore.ContentManagement;
 
 namespace Mess.MeasurementDevice.Security;
 
-public class RaspberryPiAuthorizationHandler
+public class PidgeonAuthorizationHandler
   : ApiKeyMeasurementDeviceAuthorizationHandler
 {
-  public const string AuthorizationContentType = "RaspberryPiMeasurementDevice";
+  public const string AuthorizationContentType = "PidgeonMeasurementDevice";
 
   public override string ContentType => AuthorizationContentType;
 
   public override ApiKeyField? GetApiKey(ContentItem measurementDevice)
   {
-    var raspberryPiMeasurementDevice =
-      measurementDevice.As<RaspberryPiMeasurementDevicePart>();
-    return raspberryPiMeasurementDevice?.ApiKey;
+    var pidgeonMeasurementDevice =
+      measurementDevice.As<PidgeonMeasurementDevicePart>();
+    return pidgeonMeasurementDevice?.ApiKey;
   }
 }

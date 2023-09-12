@@ -52,9 +52,9 @@ public class Startup : StartupBase
     services.AddContentPart<EgaugeMeasurementDevicePart>();
     services.AddMeasurementDevicePushHandler<EgaugePushHandler>();
 
-    services.AddContentPart<RaspberryPiMeasurementDevicePart>();
-    services.AddMeasurementDevicePushHandler<RaspberryPiPushHandler>();
-    services.AddMeasurementDeviceAuthorizationHandler<RaspberryPiAuthorizationHandler>();
+    services.AddContentPart<PidgeonMeasurementDevicePart>();
+    services.AddMeasurementDevicePushHandler<PidgeonPushHandler>();
+    services.AddMeasurementDeviceAuthorizationHandler<PidgeonAuthorizationHandler>();
   }
 
   public override void Configure(
