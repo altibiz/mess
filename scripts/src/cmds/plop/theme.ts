@@ -1,7 +1,7 @@
 import { cmd, plopd, task } from "../../lib/index";
 
 const exampleName = "Forttech";
-const exampleDescription = "The Forttech Theme";
+const exampleDescription = "The Forttech company theme.";
 
 export default cmd({
   usage: "theme <name> <description>",
