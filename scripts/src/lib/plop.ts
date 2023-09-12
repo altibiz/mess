@@ -1,5 +1,5 @@
-import handlebars from "handlebars";
 import fs from "fs/promises";
+import handlebars from "handlebars";
 import path from "path/posix";
 import { root } from "./fs";
 
@@ -30,7 +30,7 @@ export const plopd = async (
   destination: string,
   config: Record<string, unknown>,
 ) => {
-  const templatePath = root(`scripts/plop/${template}`);
+  const templatePath = root(`scripts/assets/plop/${template}`);
   const destinationPath = root(destination);
 
   const content = await fs.readdir(templatePath);
