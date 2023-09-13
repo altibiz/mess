@@ -1,0 +1,29 @@
+:root {
+  --transparent: rgba(0% 0% 0% / 0%);
+  --primary: #0072bc;
+  --secondary: #ffdf00;
+  --background: #fff;
+  --dark-background: #e3e3e3;
+  --darker-background: #4f4f4f;
+  --foreground: #000;
+  --link-foreground: #00327c;
+  --inverse-foreground: #fff;
+  --link-inverse-foreground: #fff;
+  --success: #00d084;
+  --warning: #fcb900;
+  --danger: #cf2e2e;
+  --level-content: 0;
+  --level-header: 1;
+  --level-nav: 2;
+  --level-tooltip: 3;
+  --breakpoint-mobile: 480px;
+  --breakpoint-tablet: 768px;
+  --breakpoint-laptop: 1024px;
+  --breakpoint-desktop: 1440px;
+  --min-header-height: 120px;
+  --min-footer-height: 144px;
+  --max-section-width: 768px;
+  --fast: 0.1s;
+  --normal: 0.2s;
+  --slow: 0.5s;
+}

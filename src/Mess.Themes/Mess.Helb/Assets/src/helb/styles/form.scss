@@ -1,0 +1,15 @@
+form > label {
+  width: 100px;
+}
+
+form > input {
+  padding-bottom: 2px;
+  margin-inline: 8px;
+  border-bottom: 1px solid var(--darker-background);
+  caret-color: var(--primary);
+}
+
+form > input:focus {
+  outline: none;
+  border-bottom: 1px solid var(--primary);
+}
