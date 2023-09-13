@@ -59,8 +59,7 @@ export default cmd({
 
     await task("Cleaned docker containers and volumes", {
       name: "docker",
-      command: "docker-compose down -v",
-      unary: true,
+      command: "docker compose down -v",
     });
   }
 
