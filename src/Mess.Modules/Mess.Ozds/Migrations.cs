@@ -1,10 +1,10 @@
+using Mess.OrchardCore.Extensions.OrchardCore;
 using Microsoft.AspNetCore.Identity;
 using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.Data.Migration;
 using OrchardCore.Recipes.Services;
 using OrchardCore.Security;
 using OrchardCore.Security.Permissions;
-using OrchardCore.Users.Models;
 using OrchardCore.Users.Services;
 
 namespace Mess.Ozds;
@@ -13,110 +13,87 @@ public class Migrations : DataMigration
 {
   public async Task<int> CreateAsync()
   {
-    // await _roleManager.CreateAsync(
-    //   new Role
-    //   {
-    //     NormalizedRoleName = "EorMeasurementDeviceAdmin",
-    //     RoleName = "EOR measurement device administrator",
-    //     RoleDescription = "Administrator of an EOR measurement devices.",
-    //     RoleClaims = new()
-    //     {
-    //       new RoleClaim
-    //       {
-    //         ClaimType = Permission.ClaimType,
-    //         ClaimValue = "AccessAdminPanel"
-    //       },
-    //       new RoleClaim
-    //       {
-    //         ClaimType = Permission.ClaimType,
-    //         ClaimValue = "View Users"
-    //       },
-    //       new RoleClaim
-    //       {
-    //         ClaimType = Permission.ClaimType,
-    //         ClaimValue = "ManageUsersInRole_EOR measurement device owner"
-    //       },
-    //       new RoleClaim
-    //       {
-    //         ClaimType = Permission.ClaimType,
-    //         ClaimValue = "AssignRole_EOR measurement device owner"
-    //       },
-    //       new RoleClaim
-    //       {
-    //         ClaimType = Permission.ClaimType,
-    //         ClaimValue = "ViewOwn_EorMeasurementDevice"
-    //       },
-    //       new RoleClaim
-    //       {
-    //         ClaimType = Permission.ClaimType,
-    //         ClaimValue = "ControlOwn_EorMeasurementDevice"
-    //       },
-    //       new RoleClaim
-    //       {
-    //         ClaimType = Permission.ClaimType,
-    //         ClaimValue = "PublishOwn_EorMeasurementDevice"
-    //       },
-    //       new RoleClaim
-    //       {
-    //         ClaimType = Permission.ClaimType,
-    //         ClaimValue = "EditOwn_EorMeasurementDevice"
-    //       },
-    //       new RoleClaim
-    //       {
-    //         ClaimType = Permission.ClaimType,
-    //         ClaimValue = "DeleteOwn_EorMeasurementDevice"
-    //       },
-    //     }
-    //   }
-    // );
+    await _roleManager.CreateAsync(
+      new Role
+      {
+        NormalizedRoleName = "Operator",
+        RoleName = "Operator",
+        RoleDescription = "Operator of closed distribution systems.",
+        RoleClaims = new()
+        {
+          new RoleClaim
+          {
+            ClaimType = Permission.ClaimType,
+            ClaimValue = "AccessAdminPanel"
+          },
+          new RoleClaim
+          {
+            ClaimType = Permission.ClaimType,
+            ClaimValue = "View Users"
+          },
+          new RoleClaim
+          {
+            ClaimType = Permission.ClaimType,
+            ClaimValue = "ManageUsersInRole_Owner"
+          },
+          new RoleClaim
+          {
+            ClaimType = Permission.ClaimType,
+            ClaimValue = "AssignRole_Owner"
+          },
+        }
+      }
+    );
 
-    // await _roleManager.CreateAsync(
-    //   new Role
-    //   {
-    //     NormalizedRoleName = "EorMeasurementDeviceOwner",
-    //     RoleName = "EOR measurement device owner",
-    //     RoleDescription = "Owner of an EOR measurement devices.",
-    //     RoleClaims = new()
-    //     {
-    //       new RoleClaim
-    //       {
-    //         ClaimType = Permission.ClaimType,
-    //         ClaimValue = "ViewOwned_EorMeasurementDevice"
-    //       },
-    //       new RoleClaim
-    //       {
-    //         ClaimType = Permission.ClaimType,
-    //         ClaimValue = "ControlOwned_EorMeasurementDevice"
-    //       }
-    //     }
-    //   }
-    // );
+    await _roleManager.CreateAsync(
+      new Role
+      {
+        NormalizedRoleName = "Owner",
+        RoleName = "Owner",
+        RoleDescription = "Owner of a closed distribution system.",
+        RoleClaims = new()
+        {
+          new RoleClaim
+          {
+            ClaimType = Permission.ClaimType,
+            ClaimValue = "AccessAdminPanel"
+          },
+          new RoleClaim
+          {
+            ClaimType = Permission.ClaimType,
+            ClaimValue = "View Users"
+          },
+          new RoleClaim
+          {
+            ClaimType = Permission.ClaimType,
+            ClaimValue = "ManageUsersInRole_Unit"
+          },
+          new RoleClaim
+          {
+            ClaimType = Permission.ClaimType,
+            ClaimValue = "AssignRole_Unit"
+          },
+        }
+      }
+    );
 
-    // var ownerId = "OwnerId";
-    // await _userService.CreateUserAsync(
-    //   new User
-    //   {
-    //     UserId = ownerId,
-    //     UserName = "Owner",
-    //     Email = "owner@dev.com",
-    //     RoleNames = new[] { "EOR measurement device owner" }
-    //   },
-    //   "Owner123!",
-    //   (_, _) => { }
-    // );
+    await _roleManager.CreateAsync(
+      new Role
+      {
+        NormalizedRoleName = "Unit",
+        RoleName = "Unit",
+        RoleDescription = "Unit in a closed distribution system.",
+      }
+    );
 
-    // var adminId = "AdminId";
-    // await _userService.CreateUserAsync(
-    //   new User
-    //   {
-    //     UserId = adminId,
-    //     UserName = "Admin",
-    //     Email = "admin@dev.com",
-    //     RoleNames = new[] { "EOR measurement device administrator" }
-    //   },
-    //   "Admin123!",
-    //   (_, _) => { }
-    // );
+    var operatorId = "OperatorId";
+    await _userService.CreateDevUserAsync(operatorId, "Operator", "Operator");
+
+    var ownerId = "OwnerId";
+    await _userService.CreateDevUserAsync(ownerId, "Owner", "Owner");
+
+    var unitId = "UnitId";
+    await _userService.CreateDevUserAsync(unitId, "Unit", "Unit");
 
     return 1;
   }
