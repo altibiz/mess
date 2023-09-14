@@ -1,0 +1,1 @@
+namespace Mess.LegalEntity.Test;
