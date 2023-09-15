@@ -15,9 +15,9 @@ public class Migrations : DataMigration
     await _roleManager.CreateAsync(
       new Role
       {
-        NormalizedRoleName = "LegalEntity",
-        RoleName = "Legal entity",
-        RoleDescription = "A legal entity.",
+        NormalizedRoleName = "LegalEntityRepresentative",
+        RoleName = "Legal entity representative",
+        RoleDescription = "A legal entity representative.",
       }
     );
 
@@ -31,20 +31,23 @@ public class Migrations : DataMigration
           )
           .WithDisplayName("Legal entity")
           .WithField(
-            "User",
+            "Representatives",
             fieldBuilder =>
               fieldBuilder
                 .OfType("UserPickerField")
-                .WithDisplayName("User")
-                .WithDescription("User associated with this legal entity.")
+                .WithDisplayName("Representatives")
+                .WithDescription(
+                  "Representatives acting on behalf of this legal entity."
+                )
                 .WithSettings(
                   new UserPickerFieldSettings
                   {
-                    Multiple = false,
+                    Multiple = true,
                     Required = false,
                     DisplayAllUsers = false,
-                    DisplayedRoles = new[] { "LegalEntity" },
-                    Hint = "User associated with this legal entity."
+                    DisplayedRoles = new[] { "LegalEntityRepresentative" },
+                    Hint =
+                      "Representatives acting on behalf of this legal entity."
                   }
                 )
           )
