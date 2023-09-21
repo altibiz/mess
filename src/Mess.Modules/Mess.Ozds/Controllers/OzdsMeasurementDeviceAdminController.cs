@@ -1,8 +1,8 @@
-using Mess.Eor.Abstractions.Client;
-using Mess.Eor.Abstractions.Indexes;
-using Mess.Eor.Abstractions.Models;
-using Mess.Eor.Extensions;
-using Mess.Eor.ViewModels;
+using Mess.Ozds.Abstractions.Client;
+using Mess.Ozds.Abstractions.Indexes;
+using Mess.Ozds.Abstractions.Models;
+using Mess.Ozds.Extensions;
+using Mess.Ozds.ViewModels;
 using Mess.OrchardCore;
 using Mess.OrchardCore.Extensions.Microsoft;
 using Microsoft.AspNetCore.Authorization;
@@ -12,11 +12,11 @@ using OrchardCore.ContentManagement;
 using OrchardCore.Contents;
 using YesSql;
 
-namespace Mess.Eor.Controllers;
+namespace Mess.Ozds.Controllers;
 
 [Admin]
 [Authorize]
-public class EorMeasurementDeviceAdminController : Controller
+public class OzdsMeasurementDeviceAdminController : Controller
 {
   public async Task<IActionResult> List()
   {
@@ -24,7 +24,7 @@ public class EorMeasurementDeviceAdminController : Controller
       !await _authorizationService.AuthorizeAsync(
         User,
         CommonPermissions.ViewOwnContent,
-        (object)"EorMeasurementDevice"
+        (object)"OzdsMeasurementDevice"
       )
     )
     {
@@ -33,36 +33,36 @@ public class EorMeasurementDeviceAdminController : Controller
 
     var orchardCoreUser = await this.GetAuthenticatedOrchardCoreUserAsync();
     var contentItems = await _session
-      .Query<ContentItem, EorMeasurementDeviceIndex>()
+      .Query<ContentItem, OzdsMeasurementDeviceIndex>()
       .Where(index => index.Author == orchardCoreUser.UserId)
       .ListAsync();
 
-    var eorMeasurementDevices = contentItems.Select(
-      contentItem => contentItem.AsContent<EorMeasurementDeviceItem>()
+    var ozdsMeasurementDevices = contentItems.Select(
+      contentItem => contentItem.AsContent<OzdsMeasurementDeviceItem>()
     );
 
-    var eorMeasurementDeviceSummaries =
-      await _measurementClient.GetEorMeasurementDeviceSummariesAsync(
-        eorMeasurementDevices
+    var ozdsMeasurementDeviceSummaries =
+      await _measurementClient.GetOzdsMeasurementDeviceSummariesAsync(
+        ozdsMeasurementDevices
           .Select(
-            eorMeasurementDevice =>
-              eorMeasurementDevice.MeasurementDevicePart.Value.DeviceId.Text
+            ozdsMeasurementDevice =>
+              ozdsMeasurementDevice.MeasurementDevicePart.Value.DeviceId.Text
           )
           .ToList()
       );
 
     return View(
-      new EorMeasurementDeviceListViewModel
+      new OzdsMeasurementDeviceListViewModel
       {
-        EorMeasurementDevices = eorMeasurementDevices
+        OzdsMeasurementDevices = ozdsMeasurementDevices
           .Select(
-            eorMeasurementDevice =>
+            ozdsMeasurementDevice =>
               (
-                eorMeasurementDevice,
-                eorMeasurementDeviceSummaries.FirstOrDefault(
+                ozdsMeasurementDevice,
+                ozdsMeasurementDeviceSummaries.FirstOrDefault(
                   summary =>
                     summary.DeviceId
-                    == eorMeasurementDevice
+                    == ozdsMeasurementDevice
                       .MeasurementDevicePart
                       .Value
                       .DeviceId
@@ -83,44 +83,44 @@ public class EorMeasurementDeviceAdminController : Controller
       return NotFound();
     }
 
-    var eorMeasurementDevice =
-      contentItem.AsContent<EorMeasurementDeviceItem>();
+    var ozdsMeasurementDevice =
+      contentItem.AsContent<OzdsMeasurementDeviceItem>();
 
     var orchardCoreUser = await this.GetAuthenticatedOrchardCoreUserAsync();
     if (
       !await _authorizationService.AuthorizeViewAsync(
         User,
         orchardCoreUser,
-        eorMeasurementDevice
+        ozdsMeasurementDevice
       )
     )
     {
       return Forbid();
     }
 
-    var eorMeasurementDeviceSummary =
-      await _measurementClient.GetEorMeasurementDeviceSummaryAsync(
-        eorMeasurementDevice.MeasurementDevicePart.Value.DeviceId.Text
+    var ozdsMeasurementDeviceSummary =
+      await _measurementClient.GetOzdsMeasurementDeviceSummaryAsync(
+        ozdsMeasurementDevice.MeasurementDevicePart.Value.DeviceId.Text
       );
-    if (eorMeasurementDeviceSummary == null)
+    if (ozdsMeasurementDeviceSummary == null)
     {
       return NotFound();
     }
 
     return View(
-      new EorMeasurementDeviceDetailViewModel
+      new OzdsMeasurementDeviceDetailViewModel
       {
-        EorMeasurementDevice = eorMeasurementDevice,
-        EorMeasurementDeviceSummary = eorMeasurementDeviceSummary
+        OzdsMeasurementDevice = ozdsMeasurementDevice,
+        OzdsMeasurementDeviceSummary = ozdsMeasurementDeviceSummary
       }
     );
   }
 
-  public EorMeasurementDeviceAdminController(
+  public OzdsMeasurementDeviceAdminController(
     IAuthorizationService authorizationService,
     IContentManager contentManager,
     ISession session,
-    IEorTimeseriesClient measurementClient
+    IOzdsTimeseriesClient measurementClient
   )
   {
     _contentManager = contentManager;
@@ -132,5 +132,5 @@ public class EorMeasurementDeviceAdminController : Controller
   private readonly IContentManager _contentManager;
   private readonly IAuthorizationService _authorizationService;
   private readonly ISession _session;
-  private readonly IEorTimeseriesClient _measurementClient;
+  private readonly IOzdsTimeseriesClient _measurementClient;
 }

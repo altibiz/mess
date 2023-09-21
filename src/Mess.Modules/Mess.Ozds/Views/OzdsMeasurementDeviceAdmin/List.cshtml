@@ -1,0 +1,119 @@
+@using OrchardCore.ContentManagement.Display
+@using OrchardCore.DisplayManagement.ModelBinding
+@using OrchardCore.Contents
+@using Microsoft.AspNetCore.Authorization
+@using Mess.Eor.Extensions
+@using Mess.OrchardCore.Extensions.Microsoft
+
+@model EorMeasurementDeviceListViewModel
+
+@inject IContentItemDisplayManager ContentItemDisplayManager
+@inject IUpdateModelAccessor ModelUpdaterAccessor
+@inject IAuthorizationService AuthorizationService
+
+<div>
+  <table class="table">
+    <thead>
+      <th scope="col"></th>
+      <th scope="col">@T["Sampling time"]</th>
+      <th scope="col">@T["Manufacturer date"]</th>
+      <th scope="col">@T["Manufacturer"]</th>
+      <th scope="col"></th>
+    </thead>
+    <tbody>
+      @foreach (var (item, summary) in Model.EorMeasurementDevices)
+      {
+        <tr>
+          <th scope="row">
+            <a
+                asp-route-area="Mess.Eor"
+                asp-controller="EorMeasurementDeviceAdmin"
+                asp-action="Detail"
+                asp-route-contentItemId="@item.ContentItemId">
+              <span>
+                @item.TitlePart.Value.Title
+              </span>
+            </a>
+          </th>
+          <td>
+            <span>
+              @summary?.LastMeasurement?.Timestamp
+            </span>
+          </td>
+          <td>
+            <span>
+              @item.EorMeasurementDevicePart.Value.ManufactureDate.Value
+            </span>
+          </td>
+          <td>
+            <span>
+              @item.EorMeasurementDevicePart.Value.Manufacturer.Text
+            </span>
+          </td>
+          <td>
+            @if (
+              await AuthorizationService.AuthorizeViewAsync(
+                User,
+                await this.GetAuthenticatedOrchardCoreUserAsync(),
+                item
+              )
+            )
+            {
+              <a
+                  asp-route-area="OrchardCore.Contents"
+                  asp-controller="Admin"
+                  asp-action="Display"
+                  asp-route-contentItemId="@item.ContentItemId"
+                  asp-route-returnUrl="@FullRequestPath"
+                  class="btn btn-primary btn-sm">
+                <span>
+                  @T["Display"]
+                </span>
+              </a>
+            }
+            @if (
+              await AuthorizationService.AuthorizeAsync(
+                User,
+                CommonPermissions.EditOwnContent,
+                item.Inner
+              )
+            )
+            {
+              <a
+                  asp-route-area="OrchardCore.Contents"
+                  asp-controller="Admin"
+                  asp-action="Edit"
+                  asp-route-contentItemId="@item.ContentItemId"
+                  asp-route-returnUrl="@FullRequestPath"
+                  class="btn btn-primary btn-sm">
+                <span>
+                  @T["Edit"]
+                </span>
+              </a>
+            }
+            @if (
+              await AuthorizationService.AuthorizeAsync(
+                User,
+                CommonPermissions.DeleteOwnContent,
+                item.Inner
+              )
+            )
+            {
+              <a
+                  asp-route-area="OrchardCore.Contents"
+                  asp-controller="Admin"
+                  asp-action="Remove"
+                  asp-route-contentItemId="@item.ContentItemId"
+                  asp-route-returnUrl="@FullRequestPath"
+                  class="btn btn-danger btn-sm">
+                <span>
+                  @T["Delete"]
+                </span>
+              </a>
+            }
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

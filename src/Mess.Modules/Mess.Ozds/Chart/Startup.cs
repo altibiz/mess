@@ -16,7 +16,6 @@ public class Startup : StartupBase
     services.AddDataMigration<Migrations>();
     services.AddPermissionProvider<ChartPermissions>();
 
-    services.AddChartProvider<EgaugeChartProvider>();
     services.AddChartProvider<AbbChartProvider>();
   }
 }
