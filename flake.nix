@@ -12,10 +12,12 @@
       overlay = (final: prev: {
         nodejs = prev.nodejs_20;
       });
-      shell = { pkgs }: {
-        buildInputs = with pkgs; [
-          nodejs_20
-        ];
-      };
+      shell = { pkgs }:
+        pkgs.mkShell {
+          buildInputs = with pkgs; [
+            nodejs_20
+          ];
+        }
+      ;
     };
 }
