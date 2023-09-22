@@ -6,7 +6,7 @@
   };
 
   outputs = { self, nixpkgs, utils }:
-    utils.lib.simple-flake {
+    utils.lib.simpleFlake {
       inherit self nixpkgs;
       name = "mess";
       overlay = (final: prev: {
