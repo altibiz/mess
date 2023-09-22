@@ -23,7 +23,6 @@
             dotnet-sdk_7
             omnisharp-roslyn
           ];
-        }
-      ;
+        };
     };
 }
