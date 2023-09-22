@@ -22,6 +22,8 @@
             nodePackages.yaml-language-server
             dotnet-sdk_7
             omnisharp-roslyn
+            docker-client
+            docker-compose
           ];
         };
     };
