@@ -346,3 +346,6 @@ artifacts/
 wwwroot/
 src/Mess.Web/Localization/
 src/Mess.Web/Internal/Generated/
+
+# Nix
+.direnv
