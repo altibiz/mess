@@ -16,7 +16,12 @@
         pkgs.mkShell {
           packages = with pkgs; [
             nodejs_20
+            bun
+            nodePackages.yarn
+            nodePackages.typescript-language-server
+            nodePackages.yaml-language-server
             dotnet-sdk_7
+            omnisharp-roslyn
           ];
         }
       ;
