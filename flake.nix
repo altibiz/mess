@@ -14,7 +14,7 @@
       });
       shell = { pkgs }:
         pkgs.mkShell {
-          buildInputs = with pkgs; [
+          packages = with pkgs; [
             nodejs_20
           ];
         }
