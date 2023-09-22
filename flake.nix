@@ -22,6 +22,13 @@
               name = "mess";
               runtimeInputs = [ pkgs.nodePackages.yarn ];
               text = ''
+                echo 'require("prettier")' |
+                  yarn node >/dev/null 2>&1 ||
+                  (printf "%s %s %s" \
+                    "\`prettier\` not found." \
+                    "Please make sure you run \`mess prepare\`" \
+                    "before running any other commands" && yarn)
+
                 yarn scripts start "$@"
               '';
             })
