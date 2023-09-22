@@ -18,6 +18,13 @@
       shell = { pkgs }:
         pkgs.mkShell {
           packages = with pkgs; [
+            (pkgs.writeShellApplication {
+              name = "mess";
+              runtimeInputs = [ pkgs.nodePackages.yarn ];
+              text = ''
+                yarn scripts start "$@"
+              '';
+            })
             git
             helix
             lazygit
