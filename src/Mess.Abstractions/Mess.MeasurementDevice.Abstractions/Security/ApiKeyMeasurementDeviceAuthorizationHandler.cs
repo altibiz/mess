@@ -1,11 +1,10 @@
 using Mess.ContentFields.Abstractions.Fields;
 using Mess.ContentFields.Abstractions.Services;
-using Mess.MeasurementDevice.Abstractions.Security;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using OrchardCore.ContentManagement;
 
-namespace Mess.MeasurementDevice.Security;
+namespace Mess.MeasurementDevice.Abstractions.Security;
 
 public abstract class ApiKeyMeasurementDeviceAuthorizationHandler
   : IMeasurementDeviceAuthorizationHandler

@@ -1,9 +1,9 @@
-using Mess.MeasurementDevice.Abstractions.Client;
 using Mess.MeasurementDevice.Abstractions.Pushing;
+using Mess.Ozds.Abstractions.Client;
 using Microsoft.Extensions.Logging;
 using OrchardCore.ContentManagement;
 
-namespace Mess.MeasurementDevice.Pushing;
+namespace Mess.Ozds.Pushing;
 
 public class AbbPushHandler : JsonMeasurementDevicePushHandler<AbbPushRequest>
 {
@@ -66,12 +66,12 @@ public class AbbPushHandler : JsonMeasurementDevicePushHandler<AbbPushRequest>
 
   public AbbPushHandler(
     ILogger<AbbPushHandler> logger,
-    ITimeseriesClient measurementClient
+    IOzdsClient measurementClient
   )
     : base(logger)
   {
     _measurementClient = measurementClient;
   }
 
-  private readonly ITimeseriesClient _measurementClient;
+  private readonly IOzdsClient _measurementClient;
 }

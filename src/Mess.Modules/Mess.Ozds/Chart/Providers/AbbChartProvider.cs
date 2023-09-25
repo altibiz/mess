@@ -1,11 +1,11 @@
-using Mess.MeasurementDevice.Abstractions.Client;
 using Mess.Chart.Abstractions.Providers;
 using Mess.Chart.Abstractions.Descriptors;
 using OrchardCore.ContentManagement;
 using Mess.Chart.Abstractions.Models;
-using Mess.MeasurementDevice.Abstractions.Models;
+using Mess.Ozds.Abstractions.Models;
 using Mess.ContentFields.Abstractions;
 using Mess.OrchardCore;
+using Mess.Ozds.Abstractions.Client;
 
 namespace Mess.Ozds.Chart.Providers;
 
@@ -88,10 +88,10 @@ public class AbbChartProvider : ChartProvider
     );
   }
 
-  public AbbChartProvider(ITimeseriesClient client)
+  public AbbChartProvider(IOzdsClient client)
   {
     _client = client;
   }
 
-  private readonly ITimeseriesClient _client;
+  private readonly IOzdsClient _client;
 }

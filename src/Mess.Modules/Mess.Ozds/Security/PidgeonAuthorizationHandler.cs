@@ -1,8 +1,9 @@
 using Mess.ContentFields.Abstractions.Fields;
-using Mess.MeasurementDevice.Abstractions.Models;
+using Mess.MeasurementDevice.Abstractions.Security;
+using Mess.Ozds.Abstractions.Models;
 using OrchardCore.ContentManagement;
 
-namespace Mess.MeasurementDevice.Security;
+namespace Mess.Ozds.Security;
 
 public class PidgeonAuthorizationHandler
   : ApiKeyMeasurementDeviceAuthorizationHandler

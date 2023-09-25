@@ -1,7 +1,7 @@
 using Mess.EventStore.Abstractions.Client;
 using Mess.MeasurementDevice.Abstractions.Pushing;
 using Mess.MeasurementDevice.Abstractions.Services;
-using Mess.MeasurementDevice.EventStore;
+using Mess.Ozds.EventStore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OrchardCore.ContentManagement;
@@ -26,11 +26,11 @@ public class PidgeonPushHandler
     if (features.Any(feature => feature.Id == "Mess.EventStore"))
     {
       var client = _services.GetRequiredService<IEventStoreClient>();
-      client.RecordEvents<Measurements>(
+      client.RecordEvents<PidgeonMeasurements>(
         request.measurements
           .Select(
             measurement =>
-              new Measured(
+              new PidgeonMeasured(
                 Tenant: tenant,
                 Timestamp: measurement.timestamp,
                 DeviceId: measurement.deviceId,
@@ -83,11 +83,11 @@ public class PidgeonPushHandler
     if (features.Any(feature => feature.Id == "Mess.EventStore"))
     {
       var client = _services.GetRequiredService<IEventStoreClient>();
-      await client.RecordEventsAsync<Measurements>(
+      await client.RecordEventsAsync<PidgeonMeasurements>(
         request.measurements
           .Select(
             measurement =>
-              new Measured(
+              new PidgeonMeasured(
                 Tenant: tenant,
                 Timestamp: measurement.timestamp,
                 DeviceId: measurement.deviceId,

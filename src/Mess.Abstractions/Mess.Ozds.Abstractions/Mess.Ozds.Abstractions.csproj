@@ -6,6 +6,13 @@
 
   <ItemGroup>
     <PackageReference Include="OrchardCore.ContentFields" Version="$(MessOrchardVersion)" />
+    <PackageReference Include="OrchardCore.Title" Version="$(MessOrchardVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.MeasurementDevice.Abstractions/Mess.MeasurementDevice.Abstractions.csproj" />
+    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.ContentFields.Abstractions/Mess.ContentFields.Abstractions.csproj" />
+    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Chart.Abstractions/Mess.Chart.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,8 +1,10 @@
 using Mess.OrchardCore;
 using OrchardCore.ContentManagement;
+using Mess.MeasurementDevice.Abstractions.Models;
 using OrchardCore.Title.Models;
+using Mess.Chart.Abstractions.Models;
 
-namespace Mess.MeasurementDevice.Abstractions.Models;
+namespace Mess.Ozds.Abstractions.Models;
 
 public class AbbMeasurementDeviceItem : ContentItemBase
 {
@@ -19,6 +21,8 @@ public class AbbMeasurementDeviceItem : ContentItemBase
     get;
     private set;
   } = default!;
+
+  public Lazy<ChartPart> ChartPart { get; private set; } = default!;
 
   private AbbMeasurementDeviceItem(ContentItem contentItem)
     : base(contentItem) { }

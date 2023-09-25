@@ -1,7 +1,5 @@
 using Mess.Ozds.Abstractions.Client;
 using Mess.Ozds.Abstractions.Indexes;
-using Mess.Ozds.Abstractions.Models;
-using Mess.Ozds.Extensions;
 using Mess.Ozds.ViewModels;
 using Mess.OrchardCore;
 using Mess.OrchardCore.Extensions.Microsoft;
@@ -120,7 +118,7 @@ public class OzdsMeasurementDeviceAdminController : Controller
     IAuthorizationService authorizationService,
     IContentManager contentManager,
     ISession session,
-    IOzdsTimeseriesClient measurementClient
+    IOzdsClient measurementClient
   )
   {
     _contentManager = contentManager;
@@ -132,5 +130,5 @@ public class OzdsMeasurementDeviceAdminController : Controller
   private readonly IContentManager _contentManager;
   private readonly IAuthorizationService _authorizationService;
   private readonly ISession _session;
-  private readonly IOzdsTimeseriesClient _measurementClient;
+  private readonly IOzdsClient _measurementClient;
 }

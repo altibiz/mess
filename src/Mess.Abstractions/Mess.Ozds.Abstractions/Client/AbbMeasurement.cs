@@ -1,6 +1,9 @@
-namespace Mess.MeasurementDevice.Pushing;
+namespace Mess.Ozds.Abstractions.Client;
 
-public record AbbPushRequest(
+public record AbbMeasurement(
+  string Tenant,
+  string DeviceId,
+  DateTime Timestamp,
   float? CurrentL1,
   float? CurrentL2,
   float? CurrentL3,

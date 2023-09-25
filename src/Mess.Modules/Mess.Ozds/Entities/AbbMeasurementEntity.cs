@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using Mess.MeasurementDevice.Abstractions.Client;
+using Mess.Ozds.Abstractions.Client;
 using Mess.Timeseries.Abstractions.Entities;
 
-namespace Mess.MeasurementDevice.Entities;
+namespace Mess.Ozds.Entities;
 
 public class AbbMeasurementEntity : HypertableEntity
 {

@@ -7,11 +7,11 @@ using OrchardCore.Data.Migration;
 using OrchardCore.Recipes.Services;
 using OrchardCore.Title.Models;
 using Mess.OrchardCore;
-using Mess.MeasurementDevice.Abstractions.Models;
-using Mess.MeasurementDevice.Abstractions.Client;
+using Mess.Ozds.Abstractions.Models;
 using YesSql;
 using Mess.MeasurementDevice.Abstractions.Indexes;
 using Mess.ContentFields.Abstractions;
+using Mess.Ozds.Abstractions.Client;
 
 namespace Mess.MeasurementDevice.Chart;
 
@@ -19,22 +19,31 @@ public class Migrations : DataMigration
 {
   public async Task<int> CreateAsync()
   {
+    _contentDefinitionManager.AlterPartDefinition(
+      "AbbMeasurementDevicePart",
+      builder =>
+        builder
+          .Attachable()
+          .WithDescription("A Abb measurement device.")
+          .WithDisplayName("Abb measurement device")
+    );
+
     _contentDefinitionManager.AlterTypeDefinition(
-      "EgaugeMeasurementDevice",
+      "AbbMeasurementDevice",
       builder =>
         builder
           .Creatable()
           .Listable()
           .Draftable()
           .Securable()
-          .DisplayedAs("Egauge measurement device")
-          .WithDescription("An Egauge measurement device.")
+          .DisplayedAs("Abb measurement device")
+          .WithDescription("An Abb measurement device.")
           .WithPart(
             "TitlePart",
             part =>
               part.WithDisplayName("Title")
                 .WithDescription(
-                  "Title displaying the identifier of the Egauge measurement device."
+                  "Title displaying the identifier of the Abb measurement device."
                 )
                 .WithPosition("1")
                 .WithSettings<TitlePartSettings>(
@@ -43,7 +52,7 @@ public class Migrations : DataMigration
                     RenderTitle = true,
                     Options = TitlePartOptions.GeneratedDisabled,
                     Pattern =
-                      @"{%- ContentItem.Content.EgaugeMeasurementDevicePart.DeviceId.Text -%}"
+                      @"{%- ContentItem.Content.AbbMeasurementDevicePart.DeviceId.Text -%}"
                   }
                 )
           )
@@ -55,10 +64,10 @@ public class Migrations : DataMigration
                 .WithPosition("2")
           )
           .WithPart(
-            "EgaugeMeasurementDevicePart",
+            "AbbMeasurementDevicePart",
             part =>
-              part.WithDisplayName("Egauge measurement device")
-                .WithDescription("An Egauge measurement device.")
+              part.WithDisplayName("Abb measurement device")
+                .WithDescription("An Abb measurement device.")
                 .WithPosition("3")
           )
           .WithPart(
@@ -66,7 +75,7 @@ public class Migrations : DataMigration
             part =>
               part.WithDisplayName("Chart")
                 .WithDescription(
-                  "Chart displaying the Egauge measurement device data."
+                  "Chart displaying the Abb measurement device data."
                 )
                 .WithPosition("4")
           )
@@ -74,31 +83,33 @@ public class Migrations : DataMigration
 
     if (_hostEnvironment.IsDevelopment())
     {
-      var eguagePowerDataset =
+      var abbPowerDataset =
         await _contentManager.NewContentAsync<TimeseriesChartDatasetItem>();
-      eguagePowerDataset.Alter(
+      abbPowerDataset.Alter(
         eguagePowerDataset => eguagePowerDataset.TimeseriesChartDatasetPart,
         timeseriesChartDatasetPart =>
         {
           timeseriesChartDatasetPart.Color = new() { Value = "#ff0000" };
           timeseriesChartDatasetPart.Label = new() { Text = "Power" };
-          timeseriesChartDatasetPart.Property = nameof(EgaugeMeasurement.Power);
+          timeseriesChartDatasetPart.Property = nameof(
+            AbbMeasurement.ActivePowerL1
+          );
         }
       );
-      var egaugeChart =
+      var abbChart =
         await _contentManager.NewContentAsync<TimeseriesChartItem>();
-      egaugeChart.Alter(
-        egaugeChart => egaugeChart.TitlePart,
+      abbChart.Alter(
+        abbChart => abbChart.TitlePart,
         titlePart =>
         {
-          titlePart.Title = "Egauge";
+          titlePart.Title = "Abb";
         }
       );
-      egaugeChart.Alter(
-        egaugeChart => egaugeChart.TimeseriesChartPart,
+      abbChart.Alter(
+        abbChart => abbChart.TimeseriesChartPart,
         timeseriesChartPart =>
         {
-          timeseriesChartPart.ChartContentType = "EgaugeMeasurementDevice";
+          timeseriesChartPart.ChartContentType = "AbbMeasurementDevice";
           timeseriesChartPart.History = new()
           {
             Value = new(Unit: IntervalUnit.Minute, Count: 10)
@@ -107,36 +118,35 @@ public class Migrations : DataMigration
           {
             Value = new(Unit: IntervalUnit.Second, Count: 10)
           };
-          timeseriesChartPart.Datasets = new() { eguagePowerDataset };
+          timeseriesChartPart.Datasets = new() { abbPowerDataset };
         }
       );
-      await _contentManager.CreateAsync(egaugeChart, VersionOptions.Latest);
+      await _contentManager.CreateAsync(abbChart, VersionOptions.Latest);
 
-      var egaugeMeasurementDevice =
+      var abbMeasurementDevice =
         (
           await _session
             .Query<ContentItem, MeasurementDeviceIndex>()
-            .Where(index => index.DeviceId == "egauge")
+            .Where(index => index.DeviceId == "abb")
             .FirstOrDefaultAsync()
-        )?.AsContent<EgaugeMeasurementDeviceItem>()
-        ?? await _contentManager.NewContentAsync<EgaugeMeasurementDeviceItem>();
-      egaugeMeasurementDevice.Alter(
-        egaugeMeasurementDevice =>
-          egaugeMeasurementDevice.MeasurementDevicePart,
+        )?.AsContent<AbbMeasurementDeviceItem>()
+        ?? await _contentManager.NewContentAsync<AbbMeasurementDeviceItem>();
+      abbMeasurementDevice.Alter(
+        abbMeasurementDevice => abbMeasurementDevice.MeasurementDevicePart,
         measurementDevicePart =>
         {
-          measurementDevicePart.DeviceId = new() { Text = "egauge" };
+          measurementDevicePart.DeviceId = new() { Text = "abb" };
         }
       );
-      egaugeMeasurementDevice.Alter(
-        egaugeMeasurementDevice => egaugeMeasurementDevice.ChartPart,
+      abbMeasurementDevice.Alter(
+        abbMeasurementDevice => abbMeasurementDevice.ChartPart,
         chartPart =>
         {
-          chartPart.ChartContentItemId = egaugeChart.ContentItemId;
+          chartPart.ChartContentItemId = abbChart.ContentItemId;
         }
       );
       await _contentManager.CreateAsync(
-        egaugeMeasurementDevice,
+        abbMeasurementDevice,
         VersionOptions.Latest
       );
     }

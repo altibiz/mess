@@ -8,6 +8,10 @@ using OrchardCore.Data.Migration;
 using OrchardCore.Modules;
 using Mess.Ozds.Controllers;
 using OrchardCore.Mvc.Core.Utilities;
+using Mess.Ozds.Context;
+using Mess.Timeseries.Abstractions.Extensions.Microsoft;
+using Mess.Ozds.Abstractions.Client;
+using Mess.Ozds.Client;
 
 namespace Mess.Ozds;
 
@@ -17,6 +21,13 @@ public class Startup : StartupBase
   {
     services.AddDataMigration<Migrations>();
     services.AddResources<Resources>();
+
+    services.AddTimeseriesDbContext<OzdsDbContext>();
+
+    services.AddSingleton<IOzdsClient, OzdsClient>();
+    services.AddSingleton<IOzdsQuery>(
+      services => services.GetRequiredService<IOzdsClient>()
+    );
   }
 
   public override void Configure(

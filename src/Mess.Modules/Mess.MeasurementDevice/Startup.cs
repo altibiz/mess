@@ -19,7 +19,6 @@ using YesSql.Indexes;
 using Mess.MeasurementDevice.Context;
 using Mess.MeasurementDevice.Abstractions.Services;
 using Mess.MeasurementDevice.Services;
-using Mess.MeasurementDevice.Security;
 
 namespace Mess.MeasurementDevice;
 
@@ -51,13 +50,6 @@ public class Startup : StartupBase
 
     services.AddContentPart<EgaugeMeasurementDevicePart>();
     services.AddMeasurementDevicePushHandler<EgaugePushHandler>();
-
-    services.AddContentPart<PidgeonMeasurementDevicePart>();
-    services.AddMeasurementDevicePushHandler<PidgeonPushHandler>();
-    services.AddMeasurementDeviceAuthorizationHandler<PidgeonAuthorizationHandler>();
-
-    services.AddMeasurementDevicePushHandler<AbbPushHandler>();
-    services.AddContentPart<AbbMeasurementDevicePart>();
   }
 
   public override void Configure(

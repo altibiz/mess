@@ -5,8 +5,4 @@ public interface ITimeseriesClient : ITimeseriesQuery
   public void AddEgaugeMeasurement(EgaugeMeasurement model);
 
   public Task AddEgaugeMeasurementAsync(EgaugeMeasurement model);
-
-  public void AddAbbMeasurement(AbbMeasurement model);
-
-  public Task AddAbbMeasurementAsync(AbbMeasurement model);
 }

@@ -1,39 +1,39 @@
-using Mess.MeasurementDevice.Abstractions.Client;
-using Mess.MeasurementDevice.Context;
+using Mess.Ozds.Abstractions.Client;
+using Mess.Ozds.Context;
 using Mess.Timeseries.Abstractions.Extensions.Microsoft;
-using Mess.MeasurementDevice.Entities;
+using Mess.Ozds.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace Mess.MeasurementDevice.Client;
+namespace Mess.Ozds.Client;
 
-public class TimeseriesClient : ITimeseriesClient
+public class OzdsClient : IOzdsClient
 {
-  public void AddEgaugeMeasurement(EgaugeMeasurement model) =>
-    _services.WithTimeseriesDbContext<MeasurementDbContext>(context =>
+  public void AddAbbMeasurement(AbbMeasurement model) =>
+    _services.WithTimeseriesDbContext<OzdsDbContext>(context =>
     {
-      context.EgaugeMeasurements.Add(model.ToEntity());
+      context.AbbMeasurements.Add(model.ToEntity());
       context.SaveChanges();
     });
 
-  public Task AddEgaugeMeasurementAsync(EgaugeMeasurement model) =>
-    _services.WithTimeseriesDbContextAsync<MeasurementDbContext>(async context =>
+  public Task AddAbbMeasurementAsync(AbbMeasurement model) =>
+    _services.WithTimeseriesDbContextAsync<OzdsDbContext>(async context =>
     {
-      context.EgaugeMeasurements.Add(model.ToEntity());
+      context.AbbMeasurements.Add(model.ToEntity());
       await context.SaveChangesAsync();
     });
 
-  public IReadOnlyList<EgaugeMeasurement> GetEgaugeMeasurements(
+  public IReadOnlyList<AbbMeasurement> GetAbbMeasurements(
     string source,
     DateTime beginning,
     DateTime end
   ) =>
     _services.WithTimeseriesDbContext<
-      MeasurementDbContext,
-      List<EgaugeMeasurement>
+      OzdsDbContext,
+      List<AbbMeasurement>
     >(context =>
     {
-      return context.EgaugeMeasurements
+      return context.AbbMeasurements
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp > beginning)
         .Where(measurement => measurement.Timestamp < end)
@@ -42,19 +42,17 @@ public class TimeseriesClient : ITimeseriesClient
         .ToList();
     });
 
-  public async Task<
-    IReadOnlyList<EgaugeMeasurement>
-  > GetEgaugeMeasurementsAsync(
+  public async Task<IReadOnlyList<AbbMeasurement>> GetAbbMeasurementsAsync(
     string source,
     DateTime beginning,
     DateTime end
   ) =>
     await _services.WithTimeseriesDbContextAsync<
-      MeasurementDbContext,
-      List<EgaugeMeasurement>
+      OzdsDbContext,
+      List<AbbMeasurement>
     >(async context =>
     {
-      return await context.EgaugeMeasurements
+      return await context.AbbMeasurements
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp > beginning)
         .Where(measurement => measurement.Timestamp < end)
@@ -63,10 +61,7 @@ public class TimeseriesClient : ITimeseriesClient
         .ToListAsync();
     });
 
-  public TimeseriesClient(
-    IServiceProvider services,
-    ILogger<TimeseriesClient> logger
-  )
+  public OzdsClient(IServiceProvider services, ILogger<OzdsClient> logger)
   {
     _services = services;
     _logger = logger;

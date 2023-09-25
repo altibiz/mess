@@ -1,8 +1,9 @@
 using Mess.OrchardCore;
 using OrchardCore.ContentManagement;
+using Mess.MeasurementDevice.Abstractions.Models;
 using OrchardCore.Title.Models;
 
-namespace Mess.MeasurementDevice.Abstractions.Models;
+namespace Mess.Ozds.Abstractions.Models;
 
 public class PidgeonMeasurementDeviceItem : ContentItemBase
 {

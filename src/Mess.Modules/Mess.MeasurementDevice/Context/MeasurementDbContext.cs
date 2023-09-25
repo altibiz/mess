@@ -10,8 +10,6 @@ public class MeasurementDbContext : TimeseriesDbContext
   public DbSet<EgaugeMeasurementEntity> EgaugeMeasurements { get; set; } =
     default!;
 
-  public DbSet<AbbMeasurementEntity> AbbMeasurements { get; set; } = default!;
-
   public MeasurementDbContext(
     DbContextOptions<MeasurementDbContext> options,
     ShellSettings shellSettings
