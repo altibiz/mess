@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.Modules;
-using Mess.Event.Abstractions.Extensions.Microsoft;
+using Mess.Event.Abstractions.Extensions;
 
 namespace Mess.Ozds.Event;
 

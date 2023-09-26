@@ -1,5 +1,5 @@
-using Mess.Event.Test.Abstractions;
-using Mess.Timeseries.Test.Abstractions;
+using Mess.Event.Test.Abstractions.Extensions;
+using Mess.Timeseries.Test.Abstractions.Extensions;
 
 namespace Mess.Chart.Test;
 

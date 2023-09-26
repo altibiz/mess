@@ -1,5 +1,5 @@
-using Mess.Chart.Abstractions.Extensions.Microsoft;
-using Mess.Ozds.Chart.Providers;
+using Mess.Chart.Abstractions.Extensions;
+using Mess.Ozds.Chart;
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.Data.Migration;
 using OrchardCore.Modules;

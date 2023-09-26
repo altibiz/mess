@@ -1,7 +1,7 @@
 using Mess.Eor.Abstractions.Client;
 using Mess.Eor.Context;
 using Mess.Eor.Entities;
-using Mess.Timeseries.Abstractions.Extensions.Microsoft;
+using Mess.Timeseries.Abstractions.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OrchardCore.Environment.Shell;

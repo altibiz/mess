@@ -1,6 +1,6 @@
 using Mess.Iot.Abstractions.Client;
 using Mess.Iot.Context;
-using Mess.Timeseries.Abstractions.Extensions.Microsoft;
+using Mess.Timeseries.Abstractions.Extensions;
 using Mess.Iot.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

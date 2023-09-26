@@ -2,7 +2,7 @@
 using Mess.Event.Abstractions.Session;
 using Mess.Event.Client;
 using Mess.Event.Session;
-using Mess.Event.Test.Abstractions;
+using Mess.Event.Test.Abstractions.Extensions;
 
 namespace Mess.Event.Test;
 

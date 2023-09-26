@@ -1,6 +1,8 @@
+using Mess.Relational.Test.Abstractions.Extensions;
+
 namespace Mess.Relational.Test;
 
-public class Startup : Mess.OrchardCore.Test.Startup
+public class Startup : OrchardCore.Test.Startup
 {
   public override void ConfigureServices(
     IServiceCollection services,
@@ -8,5 +10,7 @@ public class Startup : Mess.OrchardCore.Test.Startup
   )
   {
     base.ConfigureServices(services, hostBuilderContext);
+
+    services.AddTestRelationalStore();
   }
 }

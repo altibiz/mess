@@ -1,6 +1,6 @@
 using Mess.Ozds.Abstractions.Client;
 using Mess.Ozds.Context;
-using Mess.Timeseries.Abstractions.Extensions.Microsoft;
+using Mess.Timeseries.Abstractions.Extensions;
 using Mess.Ozds.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

@@ -1,8 +1,7 @@
 using Microsoft.Extensions.Logging;
-using Marten.Schema;
 using Mess.Event.Abstractions.Client;
 using Mess.Event.Abstractions.Events;
-using Mess.Event.Abstractions.Extensions.Microsoft;
+using Mess.Event.Abstractions.Extensions;
 
 namespace Mess.Event.Client;
 
