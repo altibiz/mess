@@ -7,7 +7,7 @@
   
   <ItemGroup>
     <ProjectReference Include="../../../test/Mess.Abstractions/Mess.Chart.Test.Abstractions/Mess.Chart.Test.Abstractions.csproj" />
-    <ProjectReference Include="../../../test/Mess.Abstractions/Mess.EventStore.Test.Abstractions/Mess.EventStore.Test.Abstractions.csproj" />
+    <ProjectReference Include="../../../test/Mess.Abstractions/Mess.Event.Test.Abstractions/Mess.Event.Test.Abstractions.csproj" />
     <ProjectReference Include="../../../test/Mess.Abstractions/Mess.Timeseries.Test.Abstractions/Mess.Timeseries.Test.Abstractions.csproj" />
   </ItemGroup>
 

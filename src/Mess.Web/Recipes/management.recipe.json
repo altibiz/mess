@@ -22,7 +22,7 @@
         "OrchardCore.Users",
         "OrchardCore.Tenants",
         "OrchardCore.Diagnostics",
-        "Mess.EventStore",
+        "Mess.Event",
         "Mess.Relational",
         "Mess.Timeseries",
         "TheAdmin",

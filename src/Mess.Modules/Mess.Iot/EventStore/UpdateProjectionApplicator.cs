@@ -1,4 +1,4 @@
-using Mess.EventStore.Abstractions.Events;
+using Mess.Event.Abstractions.Events;
 using Mess.Iot.Abstractions.Client;
 using Mess.Iot.Abstractions.Indexes;
 using Mess.Iot.Abstractions.Updating;

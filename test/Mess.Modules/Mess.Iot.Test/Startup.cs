@@ -1,4 +1,4 @@
-using Mess.EventStore.Test.Abstractions;
+using Mess.Event.Test.Abstractions;
 using Mess.Timeseries.Test.Abstractions;
 using Mess.Iot.Abstractions.Pushing;
 using Mess.Iot.Pushing;

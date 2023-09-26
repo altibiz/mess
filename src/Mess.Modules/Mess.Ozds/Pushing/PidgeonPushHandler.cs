@@ -1,4 +1,4 @@
-using Mess.EventStore.Abstractions.Client;
+using Mess.Event.Abstractions.Client;
 using Mess.Iot.Abstractions.Pushing;
 using Mess.Iot.Abstractions.Services;
 using Mess.Ozds.EventStore;
@@ -23,7 +23,7 @@ public class PidgeonPushHandler
   )
   {
     var features = _shellFeaturesManager.GetEnabledFeaturesAsync().Result;
-    if (features.Any(feature => feature.Id == "Mess.EventStore"))
+    if (features.Any(feature => feature.Id == "Mess.Event"))
     {
       var client = _services.GetRequiredService<IEventStoreClient>();
       client.RecordEvents<PidgeonMeasurements>(
@@ -80,7 +80,7 @@ public class PidgeonPushHandler
   )
   {
     var features = await _shellFeaturesManager.GetEnabledFeaturesAsync();
-    if (features.Any(feature => feature.Id == "Mess.EventStore"))
+    if (features.Any(feature => feature.Id == "Mess.Event"))
     {
       var client = _services.GetRequiredService<IEventStoreClient>();
       await client.RecordEventsAsync<PidgeonMeasurements>(

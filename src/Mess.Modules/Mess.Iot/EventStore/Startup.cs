@@ -1,10 +1,10 @@
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.Modules;
-using Mess.EventStore.Abstractions.Extensions.Microsoft;
+using Mess.Event.Abstractions.Extensions.Microsoft;
 
 namespace Mess.Iot.EventStore;
 
-[RequireFeatures("Mess.EventStore")]
+[RequireFeatures("Mess.Event")]
 public class Startup : StartupBase
 {
   public override void ConfigureServices(IServiceCollection services)

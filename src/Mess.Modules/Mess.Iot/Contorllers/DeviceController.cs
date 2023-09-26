@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Mess.System.Extensions.Strings;
 using OrchardCore.Environment.Shell;
 using Microsoft.Extensions.DependencyInjection;
-using Mess.EventStore.Abstractions.Client;
+using Mess.Event.Abstractions.Client;
 using Mess.Iot.EventStore;
 using Mess.Iot.Abstractions.Updating;
 using Mess.Iot.Abstractions.Pushing;
@@ -45,7 +45,7 @@ public class DeviceController : Controller
     var request = await Request.Body.EncodeAsync();
 
     var features = await _shellFeaturesManager.GetEnabledFeaturesAsync();
-    if (features.Any(feature => feature.Id == "Mess.EventStore"))
+    if (features.Any(feature => feature.Id == "Mess.Event"))
     {
       var client = _services.GetRequiredService<IEventStoreClient>();
       await client.RecordEventsAsync<Measurements>(
@@ -102,7 +102,7 @@ public class DeviceController : Controller
     var request = await Request.Body.EncodeAsync();
 
     var features = await _shellFeaturesManager.GetEnabledFeaturesAsync();
-    if (features.Any(feature => feature.Id == "Mess.EventStore"))
+    if (features.Any(feature => feature.Id == "Mess.Event"))
     {
       var client = _services.GetRequiredService<IEventStoreClient>();
       await client.RecordEventsAsync<Updates>(

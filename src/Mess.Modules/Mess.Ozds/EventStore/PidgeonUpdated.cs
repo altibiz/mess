@@ -1,4 +1,4 @@
-using Mess.EventStore.Abstractions.Events;
+using Mess.Event.Abstractions.Events;
 
 namespace Mess.Ozds.EventStore;
 
