@@ -1,7 +1,7 @@
 using Mess.Event.Abstractions.Client;
 using Mess.Iot.Abstractions.Pushing;
 using Mess.Iot.Abstractions.Services;
-using Mess.Ozds.EventStore;
+using Mess.Ozds.Event;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OrchardCore.ContentManagement;

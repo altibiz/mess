@@ -12,6 +12,8 @@ using Mess.Ozds.Context;
 using Mess.Timeseries.Abstractions.Extensions.Microsoft;
 using Mess.Ozds.Abstractions.Client;
 using Mess.Ozds.Client;
+using Mess.Ozds.Chart;
+using Mess.Chart.Abstractions.Extensions.Microsoft;
 
 namespace Mess.Ozds;
 
@@ -28,6 +30,8 @@ public class Startup : StartupBase
     services.AddSingleton<IOzdsQuery>(
       services => services.GetRequiredService<IOzdsClient>()
     );
+
+    services.AddChartProvider<AbbChartProvider>();
   }
 
   public override void Configure(

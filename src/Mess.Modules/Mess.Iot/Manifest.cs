@@ -3,8 +3,8 @@ using ManifestConstants = Mess.OrchardCore.ManifestConstants;
 
 [assembly: Module(
   Id = "Mess.Iot",
-  Name = "Measurement Device",
-  Description = "The Measurement Device module adds support for push and pull type measurement devices.",
+  Name = "IOT",
+  Description = "The IOT module adds support for communication with IOT devices.",
   Author = ManifestConstants.Author,
   Website = ManifestConstants.Website,
   Version = ManifestConstants.Version,

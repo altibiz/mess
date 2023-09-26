@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using Mess.Eor.Abstractions.Client;
 using OrchardCore.ContentManagement;
 
-namespace Mess.Eor.MeasurementDevice.Pushing;
+namespace Mess.Eor.Pushing;
 
 public class EorPushHandler : JsonMeasurementDevicePushHandler<EorPushRequest>
 {

@@ -1,6 +1,6 @@
 using Mess.Eor.Abstractions.Client;
 
-namespace Mess.Eor.MeasurementDevice.Pushing;
+namespace Mess.Eor.Pushing;
 
 public record EorPushRequest(
   DateTime Timestamp,

@@ -4,10 +4,9 @@ using OrchardCore.ContentManagement;
 using Mess.OrchardCore;
 using YesSql;
 using Microsoft.Extensions.Logging;
-using Mess.Eor.MeasurementDevice.Polling;
 using Mess.Eor.Abstractions.Client;
 
-namespace Mess.Eor.MeasurementDevice.Polling;
+namespace Mess.Eor.Polling;
 
 public class EorPollHandler : JsonMeasurementDevicePollHandler<EorPollResponse>
 {

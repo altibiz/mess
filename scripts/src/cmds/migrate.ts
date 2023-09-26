@@ -40,9 +40,9 @@ export default cmd({
       }),
 })(async ({ project, name, format }) => {
   let isInitial = false;
-  if (!(await exists(`src/Mess.Modules/${project}/Timeseries/Migrations`))) {
+  if (!(await exists(`src/Mess.Modules/${project}/Timeseries`))) {
     isInitial = true;
-    await mkdir(`src/Mess.Modules/${project}/Timeseries/Migrations`);
+    await mkdir(`src/Mess.Modules/${project}/Timeseries`);
   }
 
   await task(
@@ -51,18 +51,18 @@ export default cmd({
       ` --startup-project ${root("src/Mess.Web/Mess.Web.csproj")}` +
       ` --project ${root(`src/Mess.Modules/${project}/${project}.csproj`)}` +
       " migrations add" +
-      " --output-dir Timeseries/Migrations" +
-      ` --namespace ${project}.Timeseries.Migrations` +
+      " --output-dir Timeseries" +
+      ` --namespace ${project}.Timeseries` +
       ` ${name}`,
   );
 
   if (isInitial) {
     await mv(
       await globf(
-        `src/Mess.Modules/${project}/Mess/**/Timeseries/Migrations/*Snapshot.cs`,
+        `src/Mess.Modules/${project}/Mess/**/Timeseries/*Snapshot.cs`,
         "Initial migration snapshot not found",
       ),
-      `src/Mess.Modules/${project}/Timeseries/Migrations`,
+      `src/Mess.Modules/${project}/Timeseries`,
     );
     await rmrf(`src/Mess.Modules/${project}/Mess`);
     log.info("Moved initial migration snapshot");
@@ -71,8 +71,7 @@ export default cmd({
   if (format) {
     await task(
       "Formatted with csharpier",
-      "dotnet csharpier" +
-        ` ${root(`src/Mess.Modules/${project}/Timeseries/Migrations`)}`,
+      `dotnet csharpier ${root(`src/Mess.Modules/${project}/Timeseries`)}`,
     );
   }
 });

@@ -5,7 +5,7 @@ using Mess.OrchardCore;
 using Microsoft.Extensions.Logging;
 using OrchardCore.ContentManagement;
 
-namespace Mess.Eor.MeasurementDevice.Updating;
+namespace Mess.Eor.Updating;
 
 public class EorUpdateHandler
   : JsonMeasurementDeviceUpdateHandler<EorUpdateRequest>

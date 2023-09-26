@@ -1,6 +1,6 @@
 using Mess.Eor.Abstractions.Client;
 
-namespace Mess.Eor.MeasurementDevice.Updating;
+namespace Mess.Eor.Updating;
 
 public record EorUpdateRequest(
   DateTime Timestamp,

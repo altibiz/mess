@@ -1,4 +1,3 @@
-using Mess.Eor.Abstractions;
 using Mess.Eor.Abstractions.Client;
 using Mess.Eor.Abstractions.Models;
 using Mess.Eor.Extensions;

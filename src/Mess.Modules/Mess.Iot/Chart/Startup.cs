@@ -1,7 +1,5 @@
 using Mess.Chart.Abstractions.Extensions.Microsoft;
-using Mess.Iot.Abstractions;
-using Mess.Iot.Chart.Providers;
-using Mess.OrchardCore.Extensions.Microsoft;
+using Mess.Iot.Chart;
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.Data.Migration;
 using OrchardCore.Modules;

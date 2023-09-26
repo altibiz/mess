@@ -3,7 +3,7 @@ using Mess.System.Extensions.Strings;
 using OrchardCore.Environment.Shell;
 using Microsoft.Extensions.DependencyInjection;
 using Mess.Event.Abstractions.Client;
-using Mess.Iot.EventStore;
+using Mess.Iot.Event;
 using Mess.Iot.Abstractions.Updating;
 using Mess.Iot.Abstractions.Pushing;
 using Mess.Iot.Abstractions.Polling;

@@ -1,4 +1,3 @@
-using Mess.Iot.Abstractions.Indexes;
 using Mess.Iot.Abstractions.Security;
 using Mess.Iot.Abstractions.Services;
 using Microsoft.AspNetCore.Mvc;

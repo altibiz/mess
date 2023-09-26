@@ -18,6 +18,10 @@ using Mess.Fields.Abstractions.Extensions;
 using Mess.Fields.Abstractions.Settings;
 using Mess.Fields.Abstractions.Services;
 using YesSql.Sql;
+using Mess.Chart.Abstractions.Models;
+using Mess.Ozds.Abstractions.Client;
+using Mess.Fields.Abstractions;
+using Mess.Iot.Abstractions.Indexes;
 
 namespace Mess.Ozds;
 
@@ -313,70 +317,6 @@ public class Migrations : DataMigration
           )
     );
 
-    _contentDefinitionManager.AlterPartDefinition(
-      "AbbMeasurementDevicePart",
-      builder =>
-        builder
-          .Attachable()
-          .WithDescription("A Abb measurement device.")
-          .WithDisplayName("Abb measurement device")
-    );
-
-    _contentDefinitionManager.AlterTypeDefinition(
-      "AbbMeasurementDevice",
-      builder =>
-        builder
-          .Creatable()
-          .Listable()
-          .Draftable()
-          .Securable()
-          .DisplayedAs("Abb measurement device")
-          .WithDescription("A Abb measurement device.")
-          .WithPart(
-            "TitlePart",
-            part =>
-              part.WithDisplayName("Title")
-                .WithDescription(
-                  "Title displaying the identifier of the Abb measurement device."
-                )
-                .WithPosition("1")
-                .WithSettings<TitlePartSettings>(
-                  new()
-                  {
-                    RenderTitle = true,
-                    Options = TitlePartOptions.GeneratedDisabled,
-                    Pattern =
-                      @"{%- ContentItem.Content.MeasurementDevicePart.DeviceId.Text -%}"
-                  }
-                )
-          )
-          .WithPart(
-            "MeasurementDevicePart",
-            part =>
-              part.WithDisplayName("Measurement device")
-                .WithDescription("A measurement device.")
-                .WithPosition("2")
-          )
-          .WithPart(
-            "AbbMeasurementDevicePart",
-            part =>
-              part.WithDisplayName("Abb measurement device")
-                .WithDescription("A Abb measurement device.")
-                .WithPosition("3")
-          )
-    );
-
-    SchemaBuilder.CreateMapIndexTable<OzdsMeasurementDeviceIndex>(
-      table =>
-        table
-          .Column<string>("ContentItemId", c => c.WithLength(64))
-          .Column<string>("DeviceId", c => c.WithLength(64))
-    );
-    SchemaBuilder.AlterIndexTable<OzdsMeasurementDeviceIndex>(
-      table =>
-        table.CreateIndex("IDX_OzdsMeasurementDeviceIndex_DeviceId", "DeviceId")
-    );
-
     if (_hostEnvironment.IsDevelopment())
     {
       var pidgeonMeasurementDevice =
@@ -402,9 +342,120 @@ public class Migrations : DataMigration
         pidgeonMeasurementDevice,
         VersionOptions.Latest
       );
+    }
+
+    _contentDefinitionManager.AlterPartDefinition(
+      "AbbMeasurementDevicePart",
+      builder =>
+        builder
+          .Attachable()
+          .WithDescription("A Abb measurement device.")
+          .WithDisplayName("Abb measurement device")
+    );
+
+    _contentDefinitionManager.AlterTypeDefinition(
+      "AbbMeasurementDevice",
+      builder =>
+        builder
+          .Creatable()
+          .Listable()
+          .Draftable()
+          .Securable()
+          .DisplayedAs("Abb measurement device")
+          .WithDescription("An Abb measurement device.")
+          .WithPart(
+            "TitlePart",
+            part =>
+              part.WithDisplayName("Title")
+                .WithDescription(
+                  "Title displaying the identifier of the Abb measurement device."
+                )
+                .WithPosition("1")
+                .WithSettings<TitlePartSettings>(
+                  new()
+                  {
+                    RenderTitle = true,
+                    Options = TitlePartOptions.GeneratedDisabled,
+                    Pattern =
+                      @"{%- ContentItem.Content.AbbMeasurementDevicePart.DeviceId.Text -%}"
+                  }
+                )
+          )
+          .WithPart(
+            "MeasurementDevicePart",
+            part =>
+              part.WithDisplayName("Measurement device")
+                .WithDescription("A measurement device.")
+                .WithPosition("2")
+          )
+          .WithPart(
+            "AbbMeasurementDevicePart",
+            part =>
+              part.WithDisplayName("Abb measurement device")
+                .WithDescription("An Abb measurement device.")
+                .WithPosition("3")
+          )
+          .WithPart(
+            "ChartPart",
+            part =>
+              part.WithDisplayName("Chart")
+                .WithDescription(
+                  "Chart displaying the Abb measurement device data."
+                )
+                .WithPosition("4")
+          )
+    );
+
+    if (_hostEnvironment.IsDevelopment())
+    {
+      var abbPowerDataset =
+        await _contentManager.NewContentAsync<TimeseriesChartDatasetItem>();
+      abbPowerDataset.Alter(
+        eguagePowerDataset => eguagePowerDataset.TimeseriesChartDatasetPart,
+        timeseriesChartDatasetPart =>
+        {
+          timeseriesChartDatasetPart.Color = new() { Value = "#ff0000" };
+          timeseriesChartDatasetPart.Label = new() { Text = "Power" };
+          timeseriesChartDatasetPart.Property = nameof(
+            AbbMeasurement.ActivePowerL1
+          );
+        }
+      );
+      var abbChart =
+        await _contentManager.NewContentAsync<TimeseriesChartItem>();
+      abbChart.Alter(
+        abbChart => abbChart.TitlePart,
+        titlePart =>
+        {
+          titlePart.Title = "Abb";
+        }
+      );
+      abbChart.Alter(
+        abbChart => abbChart.TimeseriesChartPart,
+        timeseriesChartPart =>
+        {
+          timeseriesChartPart.ChartContentType = "AbbMeasurementDevice";
+          timeseriesChartPart.History = new()
+          {
+            Value = new(Unit: IntervalUnit.Minute, Count: 10)
+          };
+          timeseriesChartPart.RefreshInterval = new()
+          {
+            Value = new(Unit: IntervalUnit.Second, Count: 10)
+          };
+          timeseriesChartPart.Datasets = new() { abbPowerDataset };
+        }
+      );
+      await _contentManager.CreateAsync(abbChart, VersionOptions.Latest);
 
       var abbMeasurementDevice =
-        await _contentManager.NewContentAsync<AbbMeasurementDeviceItem>();
+        (
+          await _session
+            .Query<ContentItem, MeasurementDeviceIndex>()
+            .Where(index => index.DeviceId == "abb")
+            .FirstOrDefaultAsync()
+        )?.AsContent<AbbMeasurementDeviceItem>()
+        ?? await _contentManager.NewContentAsync<AbbMeasurementDeviceItem>();
       abbMeasurementDevice.Alter(
         abbMeasurementDevice => abbMeasurementDevice.MeasurementDevicePart,
         measurementDevicePart =>
@@ -412,11 +463,62 @@ public class Migrations : DataMigration
           measurementDevicePart.DeviceId = new() { Text = "abb" };
         }
       );
+      abbMeasurementDevice.Alter(
+        abbMeasurementDevice => abbMeasurementDevice.ChartPart,
+        chartPart =>
+        {
+          chartPart.ChartContentItemId = abbChart.ContentItemId;
+        }
+      );
       await _contentManager.CreateAsync(
         abbMeasurementDevice,
         VersionOptions.Latest
       );
     }
+
+    SchemaBuilder.CreateMapIndexTable<OzdsMeasurementDeviceIndex>(
+      table =>
+        table
+          .Column<string>("ContentItemId", c => c.WithLength(64))
+          .Column<string>("DeviceId", c => c.WithLength(64))
+          .Column<string>(
+            "ClosedDistributionSystemContentItemId",
+            c => c.WithLength(64)
+          )
+          .Column<string[]>(
+            "ClosedDistributionSystemRepresentativeUserIds",
+            c => c.WithLength(64)
+          )
+          .Column<string>(
+            "DistributionSystemOperatorContentItemId",
+            c => c.WithLength(64)
+          )
+          .Column<string[]>(
+            "DistributionSystemOperatorRepresentativeUserIds",
+            c => c.WithLength(64)
+          )
+          .Column<string>(
+            "DistributionSystemUnitContentItemId",
+            c => c.WithLength(64)
+          )
+          .Column<string[]>(
+            "DistributionSystemUnitRepresentativeUserIds",
+            c => c.WithLength(64)
+          )
+    );
+    SchemaBuilder.AlterIndexTable<OzdsMeasurementDeviceIndex>(
+      table =>
+        table.CreateIndex("IDX_OzdsMeasurementDeviceIndex_DeviceId", "DeviceId")
+    );
+    SchemaBuilder.AlterIndexTable<OzdsMeasurementDeviceIndex>(
+      table =>
+        table.CreateIndex(
+          "IDX_OzdsMeasurementDeviceIndex_RepresentativeUserIds",
+          "DistributionSystemOperatorRepresentativeUserIds",
+          "ClosedDistributionSystemRepresentativeUserIds",
+          "DistributionSystemUnitRepresentativeUserIds"
+        )
+    );
 
     return 1;
   }
