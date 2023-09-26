@@ -4,7 +4,7 @@ using Mess.ContentFields.Abstractions.Fields;
 using Mess.ContentFields.Abstractions.Services;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
-namespace Mess.MeasurementDevice.Security;
+namespace Mess.Iot.Security;
 
 // https://learn.microsoft.com/en-us/aspnet/core/security/data-protection/consumer-apis/password-hashing
 

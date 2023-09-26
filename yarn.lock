@@ -3457,9 +3457,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@mess/measurement-device-assets@workspace:src/Mess.Modules/Mess.MeasurementDevice/Assets":
+"@mess/measurement-device-assets@workspace:src/Mess.Modules/Mess.Iot/Assets":
   version: 0.0.0-use.local
-  resolution: "@mess/measurement-device-assets@workspace:src/Mess.Modules/Mess.MeasurementDevice/Assets"
+  resolution: "@mess/measurement-device-assets@workspace:src/Mess.Modules/Mess.Iot/Assets"
   dependencies:
     "@mess/eslint-config-assets": "workspace:*"
     "@mess/stylelint-config-assets": "workspace:*"

@@ -14,7 +14,7 @@ using ManifestConstants = Mess.OrchardCore.ManifestConstants;
   {
     "OrchardCore.Users",
     "OrchardCore.Roles",
-    "Mess.MeasurementDevice",
+    "Mess.Iot",
     "Mess.Chart",
     "Mess.ContentFields",
   }

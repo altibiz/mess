@@ -1,4 +1,4 @@
-using Mess.MeasurementDevice.Abstractions.Models;
+using Mess.Iot.Abstractions.Models;
 using Mess.Ozds.Abstractions.Indexes;
 using Mess.Ozds.Abstractions.Models;
 using OrchardCore.ContentManagement;

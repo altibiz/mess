@@ -22,7 +22,7 @@
         "OrchardCore.Diagnostics",
         "TheAdmin",
         "Mess.Chart",
-        "Mess.MeasurementDevice",
+        "Mess.Iot",
         "Mess.Ozds",
         "Mess.Helb"
       ]

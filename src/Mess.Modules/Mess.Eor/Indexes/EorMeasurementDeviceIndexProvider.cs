@@ -1,6 +1,6 @@
 using Mess.Eor.Abstractions.Indexes;
 using Mess.Eor.Abstractions.Models;
-using Mess.MeasurementDevice.Abstractions.Models;
+using Mess.Iot.Abstractions.Models;
 using Mess.OrchardCore;
 using OrchardCore.ContentManagement;
 using YesSql.Indexes;

@@ -2,7 +2,7 @@ using Mess.Chart.Abstractions.Models;
 using Mess.Eor.Abstractions.Client;
 using Mess.Eor.Abstractions.Indexes;
 using Mess.Eor.Abstractions.Models;
-using Mess.MeasurementDevice.Abstractions.Indexes;
+using Mess.Iot.Abstractions.Indexes;
 using Mess.ContentFields.Abstractions.Extensions;
 using Mess.OrchardCore;
 using Microsoft.AspNetCore.Identity;

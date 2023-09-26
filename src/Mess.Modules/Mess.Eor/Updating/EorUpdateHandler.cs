@@ -1,6 +1,6 @@
 using Mess.Eor.Abstractions.Client;
 using Mess.Eor.Abstractions.Models;
-using Mess.MeasurementDevice.Abstractions.Updating;
+using Mess.Iot.Abstractions.Updating;
 using Mess.OrchardCore;
 using Microsoft.Extensions.Logging;
 using OrchardCore.ContentManagement;

@@ -1,5 +1,5 @@
 using Mess.Eor.Abstractions.Models;
-using Mess.MeasurementDevice.Abstractions.Polling;
+using Mess.Iot.Abstractions.Polling;
 using OrchardCore.ContentManagement;
 using Mess.OrchardCore;
 using YesSql;

@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.Data.Migration;
 using OrchardCore.Modules;
 
-namespace Mess.MeasurementDevice.Chart;
+namespace Mess.Iot.Chart;
 
 [RequireFeatures("Mess.Chart")]
 public class Startup : StartupBase

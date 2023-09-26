@@ -2,7 +2,7 @@ using Mess.ContentFields.Abstractions.Fields;
 using OrchardCore.ContentFields.Fields;
 using OrchardCore.ContentManagement;
 
-namespace Mess.MeasurementDevice.Abstractions.Models;
+namespace Mess.Iot.Abstractions.Models;
 
 public class EorMeasurementDevicePart : ContentPart
 {

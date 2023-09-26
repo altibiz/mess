@@ -35,15 +35,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Chart", "src\Mess.Modu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Chart.Abstractions", "src\Mess.Abstractions\Mess.Chart.Abstractions\Mess.Chart.Abstractions.csproj", "{EA07C61F-86D4-44E0-BE7A-845026645942}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.MeasurementDevice", "src\Mess.Modules\Mess.MeasurementDevice\Mess.MeasurementDevice.csproj", "{AF5327A0-19BC-4511-84D5-8898BCD5BBD6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Iot", "src\Mess.Modules\Mess.Iot\Mess.Iot.csproj", "{AF5327A0-19BC-4511-84D5-8898BCD5BBD6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.MeasurementDevice.Abstractions", "src\Mess.Abstractions\Mess.MeasurementDevice.Abstractions\Mess.MeasurementDevice.Abstractions.csproj", "{580A285B-D623-432D-92AC-84DB2DC1DE91}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Iot.Abstractions", "src\Mess.Abstractions\Mess.Iot.Abstractions\Mess.Iot.Abstractions.csproj", "{580A285B-D623-432D-92AC-84DB2DC1DE91}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.EventStore.Test.Abstractions", "test\Mess.Abstractions\Mess.EventStore.Test.Abstractions\Mess.EventStore.Test.Abstractions.csproj", "{51EE78ED-A3BD-4289-8204-D6F5485EDD6A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Timeseries.Test.Abstractions", "test\Mess.Abstractions\Mess.Timeseries.Test.Abstractions\Mess.Timeseries.Test.Abstractions.csproj", "{842AD850-E112-482E-AD5D-9701A3BEAE63}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.MeasurementDevice.Test", "test\Mess.Modules\Mess.MeasurementDevice.Test\Mess.MeasurementDevice.Test.csproj", "{A0B4BA4D-14DF-465F-B489-E9D1771BC20F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Iot.Test", "test\Mess.Modules\Mess.Iot.Test\Mess.Iot.Test.csproj", "{A0B4BA4D-14DF-465F-B489-E9D1771BC20F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Chart.Test", "test\Mess.Modules\Mess.Chart.Test\Mess.Chart.Test.csproj", "{16EF6E41-1FD8-4CA0-9FC7-6AF9DDAA9335}"
 EndProject
@@ -65,7 +65,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.OrchardCore", "src\Mes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.System.Test", "test\Mess.System.Test\Mess.System.Test.csproj", "{C4A02241-BC11-43E8-AD40-16D900FEEBCD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.MeasurementDevice.Test.Abstractions", "test\Mess.Abstractions\Mess.MeasurementDevice.Test.Abstractions\Mess.MeasurementDevice.Test.Abstractions.csproj", "{118F82D9-1939-4081-836B-A2630D7165F1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Iot.Test.Abstractions", "test\Mess.Abstractions\Mess.Iot.Test.Abstractions\Mess.Iot.Test.Abstractions.csproj", "{118F82D9-1939-4081-836B-A2630D7165F1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Document.Abstractions", "src\Mess.Abstractions\Mess.Document.Abstractions\Mess.Document.Abstractions.csproj", "{47EC70F2-6ECD-468B-83D5-6314EF404806}"
 EndProject

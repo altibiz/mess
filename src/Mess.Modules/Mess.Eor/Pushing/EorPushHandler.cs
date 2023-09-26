@@ -1,4 +1,4 @@
-using Mess.MeasurementDevice.Abstractions.Pushing;
+using Mess.Iot.Abstractions.Pushing;
 using Microsoft.Extensions.Logging;
 using Mess.Eor.Abstractions.Client;
 using OrchardCore.ContentManagement;

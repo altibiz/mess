@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using OrchardCore.Environment.Shell;
 using Z.EntityFramework.Plus;
 
-namespace Mess.MeasurementDevice.Client;
+namespace Mess.Iot.Client;
 
 // https://www.nuget.org/packages/Z.EntityFramework.Plus.EFCore/
 // were gonna need to pack multiple queries into one request

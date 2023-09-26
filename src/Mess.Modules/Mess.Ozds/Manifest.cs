@@ -13,7 +13,7 @@ using ManifestConstants = Mess.OrchardCore.ManifestConstants;
   Dependencies = new string[]
   {
     "Mess.Timeseries",
-    "Mess.MeasurementDevice",
+    "Mess.Iot",
     "Mess.Billing"
   }
 )]

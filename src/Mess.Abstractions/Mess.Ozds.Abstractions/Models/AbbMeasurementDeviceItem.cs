@@ -1,6 +1,6 @@
 using Mess.OrchardCore;
 using OrchardCore.ContentManagement;
-using Mess.MeasurementDevice.Abstractions.Models;
+using Mess.Iot.Abstractions.Models;
 using OrchardCore.Title.Models;
 using Mess.Chart.Abstractions.Models;
 

@@ -1,7 +1,7 @@
 using Mess.EventStore.Abstractions.Events;
-using Mess.MeasurementDevice.Abstractions.Client;
-using Mess.MeasurementDevice.Abstractions.Pushing;
-using Mess.MeasurementDevice.Abstractions.Services;
+using Mess.Iot.Abstractions.Client;
+using Mess.Iot.Abstractions.Pushing;
+using Mess.Iot.Abstractions.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using YesSql;

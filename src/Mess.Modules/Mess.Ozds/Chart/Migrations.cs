@@ -9,11 +9,11 @@ using OrchardCore.Title.Models;
 using Mess.OrchardCore;
 using Mess.Ozds.Abstractions.Models;
 using YesSql;
-using Mess.MeasurementDevice.Abstractions.Indexes;
+using Mess.Iot.Abstractions.Indexes;
 using Mess.ContentFields.Abstractions;
 using Mess.Ozds.Abstractions.Client;
 
-namespace Mess.MeasurementDevice.Chart;
+namespace Mess.Iot.Chart;
 
 public class Migrations : DataMigration
 {

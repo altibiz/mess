@@ -1,7 +1,7 @@
 using Mess.EventStore.Abstractions.Events;
-using Mess.MeasurementDevice.Abstractions.Client;
-using Mess.MeasurementDevice.Abstractions.Indexes;
-using Mess.MeasurementDevice.Abstractions.Updating;
+using Mess.Iot.Abstractions.Client;
+using Mess.Iot.Abstractions.Indexes;
+using Mess.Iot.Abstractions.Updating;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OrchardCore.ContentManagement;

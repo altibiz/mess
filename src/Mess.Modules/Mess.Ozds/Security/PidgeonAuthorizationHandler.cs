@@ -1,5 +1,5 @@
 using Mess.ContentFields.Abstractions.Fields;
-using Mess.MeasurementDevice.Abstractions.Security;
+using Mess.Iot.Abstractions.Security;
 using Mess.Ozds.Abstractions.Models;
 using OrchardCore.ContentManagement;
 
