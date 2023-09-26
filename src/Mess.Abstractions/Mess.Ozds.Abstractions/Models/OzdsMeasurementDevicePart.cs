@@ -1,13 +1,9 @@
-using YesSql.Indexes;
+using OrchardCore.ContentManagement;
 
-namespace Mess.Ozds.Abstractions.Indexes;
+namespace Mess.Ozds.Abstractions.Models;
 
-public class OzdsMeasurementDeviceIndex : MapIndex
+public class OzdsMeasurementDevicePart : ContentPart
 {
-  public string ContentItemId { get; set; } = default!;
-
-  public string DeviceId { get; set; } = default!;
-
   public string ClosedDistributionSystemContentItemId { get; set; } = default!;
 
   public string[] ClosedDistributionSystemRepresentativeUserIds { get; set; } =

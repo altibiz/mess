@@ -28,9 +28,10 @@ public class Migrations : DataMigration
     await _roleManager.CreateAsync(
       new Role
       {
-        NormalizedRoleName = "Operator",
-        RoleName = "Operator",
-        RoleDescription = "Operator of closed distribution systems.",
+        NormalizedRoleName = "DistributionSystemOperatorRepresentative",
+        RoleName = "Distribution System Operator Representative",
+        RoleDescription =
+          "Representative of closed distribution systems operator.",
         RoleClaims = new()
         {
           new RoleClaim
@@ -46,12 +47,13 @@ public class Migrations : DataMigration
           new RoleClaim
           {
             ClaimType = Permission.ClaimType,
-            ClaimValue = "ManageUsersInRole_Owner"
+            ClaimValue =
+              "ManageUsersInRole_Closed distribution system representative"
           },
           new RoleClaim
           {
             ClaimType = Permission.ClaimType,
-            ClaimValue = "AssignRole_Owner"
+            ClaimValue = "AssignRole_Closed distribution system representative"
           },
         }
       }
@@ -60,9 +62,9 @@ public class Migrations : DataMigration
     await _roleManager.CreateAsync(
       new Role
       {
-        NormalizedRoleName = "Owner",
-        RoleName = "Owner",
-        RoleDescription = "Owner of a closed distribution system.",
+        NormalizedRoleName = "ClosedDistributionSystemRepresentative",
+        RoleName = "Closed Distribution System Representative",
+        RoleDescription = "Representative of a closed distribution system.",
         RoleClaims = new()
         {
           new RoleClaim
@@ -78,12 +80,13 @@ public class Migrations : DataMigration
           new RoleClaim
           {
             ClaimType = Permission.ClaimType,
-            ClaimValue = "ManageUsersInRole_Unit"
+            ClaimValue =
+              "ManageUsersInRole_Distribution system unit representative"
           },
           new RoleClaim
           {
             ClaimType = Permission.ClaimType,
-            ClaimValue = "AssignRole_Unit"
+            ClaimValue = "AssignRole_Distribution system unit representative"
           },
         }
       }
@@ -92,22 +95,156 @@ public class Migrations : DataMigration
     await _roleManager.CreateAsync(
       new Role
       {
-        NormalizedRoleName = "Unit",
-        RoleName = "Unit",
-        RoleDescription = "Unit in a closed distribution system.",
+        NormalizedRoleName = "DistributionSystemUnitRepresentative",
+        RoleName = "Distribution System Unit Representative",
+        RoleDescription = "Representative of a distribution system unit.",
       }
     );
 
     if (_hostEnvironment.IsDevelopment())
     {
       await _userService.CreateDevUserAsync(
-        "OperatorId",
-        "Operator",
-        "Operator"
+        id: "DistributionSystemOperatorId",
+        userName: "Operator",
+        roleNames: "DistributionSystemOperatorRepresentative"
       );
-      await _userService.CreateDevUserAsync("OwnerId", "Owner", "Owner");
-      await _userService.CreateDevUserAsync("UnitId", "Unit", "Unit");
+      await _userService.CreateDevUserAsync(
+        id: "ClosedDistributionSystemId",
+        userName: "System",
+        roleNames: "ClosedDistributionSystemRepresentative"
+      );
+      await _userService.CreateDevUserAsync(
+        id: "DistributionSystemUnitId",
+        userName: "Unit",
+        roleNames: "DistributionSystemUnitRepresentative"
+      );
     }
+
+    _contentDefinitionManager.AlterPartDefinition(
+      "DistributionSystemOperatorPart",
+      builder =>
+        builder
+          .Attachable()
+          .WithDescription("A distribution system operator.")
+          .WithDisplayName("Distribution system operator")
+    );
+
+    _contentDefinitionManager.AlterTypeDefinition(
+      "DistributionSystemOperator",
+      builder =>
+        builder
+          .Creatable()
+          .Listable()
+          .Draftable()
+          .Securable()
+          .DisplayedAs("Distribution system operator")
+          .WithDescription("A distribution system operator.")
+          .WithPart(
+            "TitlePart",
+            part =>
+              part.WithDisplayName("Title")
+                .WithDescription("Title of the distribution system operator.")
+                .WithPosition("1")
+                .WithSettings<TitlePartSettings>(
+                  new()
+                  {
+                    RenderTitle = true,
+                    Options = TitlePartOptions.EditableRequired,
+                  }
+                )
+          )
+          .WithPart(
+            "DistributionSystemOperatorPart",
+            part =>
+              part.WithDisplayName("Distribution system operator")
+                .WithDescription("A distribution system operator.")
+                .WithPosition("2")
+          )
+    );
+
+    _contentDefinitionManager.AlterPartDefinition(
+      "ClosedDistributionSystemPart",
+      builder =>
+        builder
+          .Attachable()
+          .WithDescription("A closed distribution system.")
+          .WithDisplayName("Closed distribution system")
+    );
+
+    _contentDefinitionManager.AlterTypeDefinition(
+      "ClosedDistributionSystem",
+      builder =>
+        builder
+          .Creatable()
+          .Listable()
+          .Draftable()
+          .Securable()
+          .DisplayedAs("Closed distribution system")
+          .WithDescription("A closed distribution system.")
+          .WithPart(
+            "TitlePart",
+            part =>
+              part.WithDisplayName("Title")
+                .WithDescription("Title of the closed distribution system.")
+                .WithPosition("1")
+                .WithSettings<TitlePartSettings>(
+                  new()
+                  {
+                    RenderTitle = true,
+                    Options = TitlePartOptions.EditableRequired,
+                  }
+                )
+          )
+          .WithPart(
+            "ClosedDistributionSystemPart",
+            part =>
+              part.WithDisplayName("Closed distribution system")
+                .WithDescription("A closed distribution system.")
+                .WithPosition("2")
+          )
+    );
+
+    _contentDefinitionManager.AlterPartDefinition(
+      "DistributionSystemOperatorPart",
+      builder =>
+        builder
+          .Attachable()
+          .WithDescription("A distribution system operator.")
+          .WithDisplayName("Distribution system operator")
+    );
+
+    _contentDefinitionManager.AlterTypeDefinition(
+      "DistributionSystemOperator",
+      builder =>
+        builder
+          .Creatable()
+          .Listable()
+          .Draftable()
+          .Securable()
+          .DisplayedAs("Distribution system operator")
+          .WithDescription("A distribution system operator.")
+          .WithPart(
+            "TitlePart",
+            part =>
+              part.WithDisplayName("Title")
+                .WithDescription("Title of the distribution system operator.")
+                .WithPosition("1")
+                .WithSettings<TitlePartSettings>(
+                  new()
+                  {
+                    RenderTitle = true,
+                    Options = TitlePartOptions.EditableRequired,
+                  }
+                )
+          )
+          .WithPart(
+            "DistributionSystemOperatorPart",
+            part =>
+              part.WithDisplayName("Distribution system operator")
+                .WithDescription("A distribution system operator.")
+                .WithPosition("2")
+          )
+    );
 
     _contentDefinitionManager.AlterPartDefinition(
       "PidgeonMeasurementDevicePart",

@@ -24,7 +24,7 @@ public static class IUserServiceExtensions
     this IUserService userService,
     string id,
     string userName,
-    string? roleName = null
+    params string[]? roleNames
   )
   {
     await userService.CreateUserAsync(
@@ -33,7 +33,9 @@ public static class IUserServiceExtensions
         UserId = id,
         UserName = userName,
         Email = $"{userName.ToLower()}@dev.com",
-        RoleNames = new[] { roleName ?? userName }
+        RoleNames = roleNames is null or { Length: 0 }
+          ? new[] { userName }
+          : roleNames
       },
       $"{userName}123!",
       (_, _) => { }

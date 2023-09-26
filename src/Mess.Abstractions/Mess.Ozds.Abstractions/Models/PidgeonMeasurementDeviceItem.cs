@@ -15,6 +15,12 @@ public class PidgeonMeasurementDeviceItem : ContentItemBase
     private set;
   } = default!;
 
+  public Lazy<OzdsMeasurementDevicePart> OzdsMeasurementDevicePart
+  {
+    get;
+    private set;
+  } = default!;
+
   public Lazy<PidgeonMeasurementDevicePart> PidgeonMeasurementDevicePart
   {
     get;
