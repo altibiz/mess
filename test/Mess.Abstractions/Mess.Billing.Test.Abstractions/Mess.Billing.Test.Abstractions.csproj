@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.LegalEntity.Abstractions/Mess.LegalEntity.Abstractions.csproj" />
+    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Billing.Abstractions/Mess.Billing.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

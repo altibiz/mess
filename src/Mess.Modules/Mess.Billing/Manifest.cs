@@ -2,7 +2,7 @@ using OrchardCore.Modules.Manifest;
 using ManifestConstants = Mess.OrchardCore.ManifestConstants;
 
 [assembly: Module(
-  Id = "Mess.LegalEntity",
+  Id = "Mess.Billing",
   Name = "LegalEntity",
   Description = "The Legal Entity module adds content definitions describing legal entities and services that manage them.",
   Author = ManifestConstants.Author,

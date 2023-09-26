@@ -1,7 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk.Razor">
-
-  <ItemGroup>
-    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.LegalEntity.Abstractions/Mess.LegalEntity.Abstractions.csproj" />
-  </ItemGroup>
-
-</Project>

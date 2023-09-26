@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Options;
 using OrchardCore.ResourceManagement;
 
-namespace Mess.LegalEntity;
+namespace Mess.Billing;
 
 public class Resources : IConfigureOptions<ResourceManagementOptions>
 {

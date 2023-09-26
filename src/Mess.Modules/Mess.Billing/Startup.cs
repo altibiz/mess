@@ -7,7 +7,7 @@ using OrchardCore.Data.Migration;
 using OrchardCore.Modules;
 using OrchardCore.ResourceManagement;
 
-namespace Mess.LegalEntity;
+namespace Mess.Billing;
 
 public class Startup : StartupBase
 {

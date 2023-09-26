@@ -14,6 +14,6 @@ using ManifestConstants = Mess.OrchardCore.ManifestConstants;
   {
     "Mess.Timeseries",
     "Mess.MeasurementDevice",
-    "Mess.LegalEntity"
+    "Mess.Billing"
   }
 )]

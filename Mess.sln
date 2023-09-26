@@ -105,13 +105,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Ozds.Test.Abstractions
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Helb", "src\Mess.Themes\Mess.Helb\Mess.Helb.csproj", "{F6D2ABE6-F5BD-41B8-8C61-5B0E8B2995D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.LegalEntity", "src\Mess.Modules\Mess.LegalEntity\Mess.LegalEntity.csproj", "{D5781826-02CF-4FFB-99CE-1C4AFBCA39E3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Billing", "src\Mess.Modules\Mess.Billing\Mess.Billing.csproj", "{D5781826-02CF-4FFB-99CE-1C4AFBCA39E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.LegalEntity.Abstractions", "src\Mess.Abstractions\Mess.LegalEntity.Abstractions\Mess.LegalEntity.Abstractions.csproj", "{50DBF146-6DDA-4363-BDA4-E2C39670C033}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Billing.Abstractions", "src\Mess.Abstractions\Mess.Billing.Abstractions\Mess.Billing.Abstractions.csproj", "{50DBF146-6DDA-4363-BDA4-E2C39670C033}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.LegalEntity.Test", "test\Mess.Modules\Mess.LegalEntity.Test\Mess.LegalEntity.Test.csproj", "{9DA939E0-9496-4FF7-91C4-885C8505340E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Billing.Test", "test\Mess.Modules\Mess.Billing.Test\Mess.Billing.Test.csproj", "{9DA939E0-9496-4FF7-91C4-885C8505340E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.LegalEntity.Test.Abstractions", "test\Mess.Abstractions\Mess.LegalEntity.Test.Abstractions\Mess.LegalEntity.Test.Abstractions.csproj", "{F2FCEEBF-F969-4DA4-A683-944006C7B12A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Billing.Test.Abstractions", "test\Mess.Abstractions\Mess.Billing.Test.Abstractions\Mess.Billing.Test.Abstractions.csproj", "{F2FCEEBF-F969-4DA4-A683-944006C7B12A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

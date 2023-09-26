@@ -6,7 +6,7 @@ using OrchardCore.Data.Migration;
 using OrchardCore.Recipes.Services;
 using OrchardCore.Security;
 
-namespace Mess.LegalEntity;
+namespace Mess.Billing;
 
 public class Migrations : DataMigration
 {

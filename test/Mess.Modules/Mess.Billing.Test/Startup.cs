@@ -1,4 +1,4 @@
-namespace Mess.LegalEntity.Test;
+namespace Mess.Billing.Test;
 
 public class Startup : Mess.OrchardCore.Test.Startup
 {
