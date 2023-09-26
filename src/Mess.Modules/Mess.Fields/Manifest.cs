@@ -3,8 +3,8 @@ using ManifestConstants = Mess.OrchardCore.ManifestConstants;
 
 [assembly: Module(
   Id = "Mess.Fields",
-  Name = "ContentFields",
-  Description = "The ContentFields module adds support for essential content fields for Mess projects.",
+  Name = "Fields",
+  Description = "The Fields module adds support for essential content fields for Mess projects.",
   Author = ManifestConstants.Author,
   Website = ManifestConstants.Website,
   Version = ManifestConstants.Version,

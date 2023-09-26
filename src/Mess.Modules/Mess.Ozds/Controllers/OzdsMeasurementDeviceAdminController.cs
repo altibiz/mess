@@ -9,6 +9,8 @@ using OrchardCore.Admin;
 using OrchardCore.ContentManagement;
 using YesSql;
 using Mess.Ozds.Abstractions.Models;
+using OrchardCore.Title.Models;
+using Mess.Iot.Abstractions.Models;
 
 namespace Mess.Ozds.Controllers;
 
@@ -46,7 +48,17 @@ public class OzdsMeasurementDeviceAdminController : Controller
     return View(
       new OzdsMeasurementDeviceListViewModel
       {
-        ContentItems = contentItems.ToList(),
+        ContentItems = contentItems
+          .Select(
+            contentItem =>
+              (
+                ContentItem: contentItem,
+                TitlePart: contentItem.As<TitlePart>(),
+                OzdsMeasurementDevicePart: contentItem.As<OzdsMeasurementDevicePart>(),
+                MeasurementDevicePart: contentItem.As<MeasurementDevicePart>()
+              )
+          )
+          .ToList()
       }
     );
   }
@@ -79,7 +91,13 @@ public class OzdsMeasurementDeviceAdminController : Controller
     }
 
     return View(
-      new OzdsMeasurementDeviceDetailViewModel { ContentItem = contentItem, }
+      new OzdsMeasurementDeviceDetailViewModel
+      {
+        ContentItem = contentItem,
+        TitlePart = contentItem.As<TitlePart>(),
+        OzdsMeasurementDevicePart = contentItem.As<OzdsMeasurementDevicePart>(),
+        MeasurementDevicePart = contentItem.As<MeasurementDevicePart>()
+      }
     );
   }
 

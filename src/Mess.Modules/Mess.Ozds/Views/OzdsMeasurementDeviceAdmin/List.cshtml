@@ -2,10 +2,9 @@
 @using OrchardCore.DisplayManagement.ModelBinding
 @using OrchardCore.Contents
 @using Microsoft.AspNetCore.Authorization
-@using Mess.Eor.Extensions
 @using Mess.OrchardCore.Extensions.Microsoft
 
-@model EorMeasurementDeviceListViewModel
+@model OzdsMeasurementDeviceListViewModel
 
 @inject IContentItemDisplayManager ContentItemDisplayManager
 @inject IUpdateModelAccessor ModelUpdaterAccessor
@@ -21,41 +20,26 @@
       <th scope="col"></th>
     </thead>
     <tbody>
-      @foreach (var (item, summary) in Model.EorMeasurementDevices)
+      @foreach (var (ContentItem, TitlePart, OzdsMeasurementDevicePart, MeasurementDevicePart) in Model.ContentItems)
       {
         <tr>
           <th scope="row">
             <a
-                asp-route-area="Mess.Eor"
-                asp-controller="EorMeasurementDeviceAdmin"
+                asp-route-area="Mess.Ozds"
+                asp-controller="OzdsMeasurementDeviceAdmin"
                 asp-action="Detail"
-                asp-route-contentItemId="@item.ContentItemId">
+                asp-route-contentItemId="@ContentItem.ContentItemId">
               <span>
-                @item.TitlePart.Value.Title
+                @TitlePart.Title
               </span>
             </a>
           </th>
-          <td>
-            <span>
-              @summary?.LastMeasurement?.Timestamp
-            </span>
-          </td>
-          <td>
-            <span>
-              @item.EorMeasurementDevicePart.Value.ManufactureDate.Value
-            </span>
-          </td>
-          <td>
-            <span>
-              @item.EorMeasurementDevicePart.Value.Manufacturer.Text
-            </span>
-          </td>
           <td>
             @if (
               await AuthorizationService.AuthorizeViewAsync(
                 User,
                 await this.GetAuthenticatedOrchardCoreUserAsync(),
-                item
+                ContentItem
               )
             )
             {
@@ -63,7 +47,7 @@
                   asp-route-area="OrchardCore.Contents"
                   asp-controller="Admin"
                   asp-action="Display"
-                  asp-route-contentItemId="@item.ContentItemId"
+                  asp-route-contentItemId="@ContentItem.ContentItemId"
                   asp-route-returnUrl="@FullRequestPath"
                   class="btn btn-primary btn-sm">
                 <span>
@@ -75,7 +59,7 @@
               await AuthorizationService.AuthorizeAsync(
                 User,
                 CommonPermissions.EditOwnContent,
-                item.Inner
+                ContentItem
               )
             )
             {
@@ -83,7 +67,7 @@
                   asp-route-area="OrchardCore.Contents"
                   asp-controller="Admin"
                   asp-action="Edit"
-                  asp-route-contentItemId="@item.ContentItemId"
+                  asp-route-contentItemId="@ContentItem.ContentItemId"
                   asp-route-returnUrl="@FullRequestPath"
                   class="btn btn-primary btn-sm">
                 <span>
@@ -95,7 +79,7 @@
               await AuthorizationService.AuthorizeAsync(
                 User,
                 CommonPermissions.DeleteOwnContent,
-                item.Inner
+                ContentItem
               )
             )
             {
@@ -103,7 +87,7 @@
                   asp-route-area="OrchardCore.Contents"
                   asp-controller="Admin"
                   asp-action="Remove"
-                  asp-route-contentItemId="@item.ContentItemId"
+                  asp-route-contentItemId="@ContentItem.ContentItemId"
                   asp-route-returnUrl="@FullRequestPath"
                   class="btn btn-danger btn-sm">
                 <span>

@@ -1,7 +1,7 @@
 @using OrchardCore.ContentManagement.Display
 @using OrchardCore.DisplayManagement.ModelBinding
 
-@model EorMeasurementDeviceListViewModel
+@model OzdsMeasurementDeviceListViewModel
 
 @inject IContentItemDisplayManager ContentItemDisplayManager
 @inject IUpdateModelAccessor ModelUpdaterAccessor
@@ -16,35 +16,20 @@
       <th scope="col">@T["Current"]</th>
     </thead>
     <tbody>
-      @foreach (var (item, summary) in Model.EorMeasurementDevices)
+      @foreach (var (ContentItem, TitlePart, OzdsMeasurementDevicePart, MeasurementDevicePart) in Model.ContentItems)
       {
         <tr>
           <th scope="row">
             <a
-                asp-route-area="Mess.Eor"
-                asp-controller="EorMeasurementDevice"
+                asp-route-area="Mess.Ozds"
+                asp-controller="OzdsMeasurementDevice"
                 asp-action="Detail"
-                asp-route-contentItemId="@item.ContentItemId">
+                asp-route-contentItemId="@ContentItem.ContentItemId">
               <span>
-                @item.TitlePart.Value.Title
+                @TitlePart.Title
               </span>
             </a>
           </th>
-          <td>
-            <span>
-              @summary?.Status?.Mode
-            </span>
-          </td>
-          <td>
-            <span>
-              @summary?.LastMeasurement?.Voltage
-            </span>
-          </td>
-          <td>
-            <span>
-              @summary?.LastMeasurement?.Current
-            </span>
-          </td>
         </tr>
       }
     </tbody>

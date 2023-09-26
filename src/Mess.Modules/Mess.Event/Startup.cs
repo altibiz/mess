@@ -34,12 +34,13 @@ public class Startup : StartupBase
         var databaseConnectionString =
           shellSettings.GetDatabaseConnectionString();
 
-        var options = new StoreOptions();
-
-        options.AutoCreateSchemaObjects = hostEnvironment.IsDevelopment()
-          ? AutoCreate.All
-          : AutoCreate.CreateOrUpdate;
-        options.GeneratedCodeMode = TypeLoadMode.Auto;
+        var options = new StoreOptions
+        {
+          AutoCreateSchemaObjects = hostEnvironment.IsDevelopment()
+            ? AutoCreate.All
+            : AutoCreate.CreateOrUpdate,
+          GeneratedCodeMode = TypeLoadMode.Auto
+        };
 
         options.MultiTenantedDatabases(databases =>
         {
@@ -94,11 +95,4 @@ public class Startup : StartupBase
     services.AddScoped<IEventStoreQuery, EventStoreQuery>();
     services.AddSingleton<IEventStoreClient, EventStoreClient>();
   }
-
-  public Startup(IHostEnvironment hostEnvironment)
-  {
-    _hostEnvironment = hostEnvironment;
-  }
-
-  private readonly IHostEnvironment _hostEnvironment;
 }

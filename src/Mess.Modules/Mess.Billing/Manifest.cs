@@ -3,8 +3,8 @@ using ManifestConstants = Mess.OrchardCore.ManifestConstants;
 
 [assembly: Module(
   Id = "Mess.Billing",
-  Name = "LegalEntity",
-  Description = "The Legal Entity module adds content definitions describing legal entities and services that manage them.",
+  Name = "Billing",
+  Description = "The Billing module adds content definitions and a background job to create bills every month.",
   Author = ManifestConstants.Author,
   Website = ManifestConstants.Website,
   Version = ManifestConstants.Version,

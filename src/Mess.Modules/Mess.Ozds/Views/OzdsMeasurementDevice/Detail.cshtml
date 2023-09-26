@@ -1,359 +1,38 @@
 @using Microsoft.AspNetCore.Authorization
-@using Mess.Eor.Abstractions.Client
 @using Mess.OrchardCore.Extensions.Microsoft
-@using Mess.Eor.Extensions
 
 @inject IAuthorizationService _authorizationService
 
-@model EorMeasurementDeviceDetailViewModel
+@model OzdsMeasurementDeviceDetailViewModel
 
 @{
-  var statusId = "status";
-  var communicationFaultId = "communication-fault";
-  var processFaultId = "process-fault";
-  var processFaultsId = "process-faults";
-  var controlStatusId = "control-status";
-  var modeLabelId = "mode-label";
-  var modeInputId = "mode-input";
-  var doorStateId = "door-state";
-  var mainCircuitBreakerStateId = "main-circuit-breaker-state";
-  var powerRelayId = "power-relay";
-  var voltageId = "voltage";
-  var currentId = "current";
-  var temperatureId = "temperature";
   var chartCanvasId = "chart";
   var chartErrorId = "chart-error";
 }
 
-@if (Model.EorMeasurementDeviceSummary.Status is not null)
-{
-  var status = 
-    Model.EorMeasurementDeviceSummary.Status.ProcessFault == 0
-      ? (Class: "status-ok", Text: "OK")
-      : Model.EorMeasurementDeviceSummary.Status.ProcessFault == 999
-      ? (Class: "status-warning", Text: "OFF")
-      : (Class: "status-error", Text: "ERROR");
-  <section>
-    <h3 class="section-header">
-      Status
-      <span id="@statusId" class="status @status.Class">@T[status.Text]</span>  
-    </h3>
-    <div class="section-content">
-      <div class="property-table">
-        <div class="property">
-          <strong>Communication fault</strong>
-          <span id="@communicationFaultId">
-            @Model.EorMeasurementDeviceSummary.Status.CommunicationFault
-          </span>
-          <div class="property-metadata">
-            <ul class="property-metadata-list">
-              <li>
-                <strong>0(0)</strong>
-                <span>No error occurred</span>
-              </li>
-              <li>
-                <strong>803A(32826)</strong>
-                <span>Web Control DB does not exist on the CPU</span>
-              </li>
-              <li>
-                <strong>8081(32897)</strong>
-                <span
-                  >Incorrect version or incorrect format of the Web
-                  Control DB</span
-                >
-              </li>
-              <li>
-                <strong>8082(32898)</strong>
-                <span
-                  >Incorrect version or incorrect format of the Web
-                  Control DB Web server is not enabled</span
-                >
-              </li>
-              <li>
-                <strong>80C1(32898)</strong>
-                <span
-                  >There are no resources to initialize the web
-                  application (two or four web applications may be
-                  running)</span
-                >
-              </li>
-              <li>
-                <strong>00XY</strong>
-                <span>
-                  <p>
-                    X- error during initialization of the Web Control DB
-                  </p>
-                  <p>Y- Number of the pending request</p>
-                </span>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div class="property">
-          <strong>Process fault</strong>
-          <span id="@processFaultId">
-            @Model.EorMeasurementDeviceSummary.Status.ProcessFault
-          </span>
-          <div class="property-metadata">
-            <ul
-              class="property-metadata-list property-metadata-list-small"
-            >
-              <li><strong>0</strong><span>No error occurred</span></li>
-              <li>
-                <strong>1</strong><span>p. reley d.n. turn on</span>
-              </li>
-              <li>
-                <strong>2</strong><span>p. reley d.n. turn off</span>
-              </li>
-              <li>
-                <strong>3</strong>
-                <span>output voltage out of range</span>
-              </li>
-              <li><strong>4</strong><span>output current fault</span></li>
-              <li><strong>5</strong><span>communication fault</span></li>
-              <li><strong>6</strong><span>reset needed</span></li>
-              <li><strong>7</strong><span>door was open</span></li>
-              <li><strong>8</strong><span>current too high</span></li>
-              <li><strong>91</strong><span>partial power loss</span></li>
-              <li><strong>92</strong><span>complete power loss</span></li>
-              <li><strong>10</strong><span>heatsink 1 failure</span></li>
-              <li><strong>11</strong><span>heatsink 2 failure</span></li>
-              <li>
-                <strong>12</strong><span>temperature out of range</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div class="message">
-          <strong>Process fault messages</strong>
-          <div id="@processFaultsId" class="message-list">
-            @foreach (var processFault in @Model.EorMeasurementDeviceSummary.Status.ProcessFaults)
-            {
-              <p>
-                @processFault
-              </p> 
-            }
-          </div>
-        </div>
-      </div>
+<section>
+  <h3 class="section-header">State</h3>
+  <div class="section-content">
+    <div class="chart-container">
+      <canvas id="@chartCanvasId" class="chart" />
+      <script asp-name="mess-chart"></script>
+      <script>
+        window.mess.chart.useChart({
+          requestUrlPrefix: "@this.GetRequestUrlPrefix()",
+          contentItemId: "@Model.ContentItem.ContentItemId",
+          isPreview: false,
+          canvasId: "@chartCanvasId",
+          errorId: "@chartErrorId",
+          culture: "@Orchard.CultureName()",
+          font: {
+            family: "Roboto",
+            style: "normal",
+            weight: "300",
+            color: "#000",
+            size: 14
+          }
+        });
+      </script>
     </div>
-  </section>
-}
-
-@if (Model.EorMeasurementDeviceSummary.Status is not null &&
-     await _authorizationService.AuthorizeControlAsync(
-       User,
-       await this.GetAuthenticatedOrchardCoreUserAsync(),
-       Model.EorMeasurementDevice
-     )
-)
-{
-  var deviceStatus =
-    Model.EorMeasurementDeviceSummary.Status.ResetState == 
-      EorMeasurementDeviceResetState.ShouldReset
-    ? (Class: "status-warning", Text: "Reset")
-    : Model.EorMeasurementDeviceSummary.Status.RunState ==
-        EorMeasurementDeviceRunState.Started
-    ? (Class: "status-ok", Text: "Started")
-    : Model.EorMeasurementDeviceSummary.Status.RunState ==
-        EorMeasurementDeviceRunState.Stopped
-    ? (Class: "status-error", Text: "Stopped")
-    : (Class: "status-warning", Text: "Unknown");
-  var serverStatus =
-    Model.EorMeasurementDevice.EorMeasurementDevicePart.Value.Controls.ResetState == 
-      EorMeasurementDeviceResetState.ShouldReset
-    ? (Class: "status-warning", Text: "Reset")
-    : Model.EorMeasurementDevice.EorMeasurementDevicePart.Value.Controls.RunState == 
-        EorMeasurementDeviceRunState.Started
-    ? (Class: "status-ok", Text: "Started")
-    : Model.EorMeasurementDevice.EorMeasurementDevicePart.Value.Controls.RunState == 
-        EorMeasurementDeviceRunState.Stopped
-    ? (Class: "status-error", Text: "Stopped")
-    : (Class: "status-warning", Text: "Unknown");
-  <section>
-    <h3 class="section-header">
-      Controls
-      <span id="@controlStatusId" class="status @serverStatus.Class">
-        @T[serverStatus.Text]
-        @if (@deviceStatus.Text != @serverStatus.Text)
-        {
-          <span>(@T[deviceStatus.Text])</span>
-        }
-      </span>
-    </h3>
-    <div class="section-content">
-      <div class="property-table">
-        <div class="message">
-          <strong>@T["Synchronization"]</strong>
-          <div
-            class="message-list"
-            style="min-height: 10rem"
-          >
-            <p>@T["All values except those in parentheses are saved on the server."]</p>
-            <p>@T["The values in parentheses are saved on the device."]</p>
-            <p>@T["The values saved on the device will be the same as the ones on the server when the device polls the server."]</p>
-          </div>
-        </div>
-      <div class="control-table">
-        <div class="start-stop-reset-controls">
-          <form 
-              asp-route-area="Mess.Eor"
-              asp-controller="EorMeasurementDeviceControls"
-              asp-action="Start"
-              asp-route-contentItemId="@Model.EorMeasurementDevice.ContentItemId"
-              asp-route-returnUrl="@FullRequestPath">
-            <button class="button-success" type="submit">
-              @T["START"]
-            </button>
-          </form>
-          <form 
-              asp-route-area="Mess.Eor"
-              asp-controller="EorMeasurementDeviceControls"
-              asp-action="Stop"
-              asp-route-contentItemId="@Model.EorMeasurementDevice.ContentItemId"
-              asp-route-returnUrl="@FullRequestPath">
-            <button class="button-danger" type="submit">
-              @T["STOP"]
-            </button>
-          </form>
-          <form 
-              asp-route-area="Mess.Eor"
-              asp-controller="EorMeasurementDeviceControls"
-              asp-action="Reset"
-              asp-route-contentItemId="@Model.EorMeasurementDevice.ContentItemId"
-              asp-route-returnUrl="@FullRequestPath">
-            <button class="button-warning" type="submit">
-              @T["RESET"]
-            </button>
-          </form>
-        </div>
-        <div class="input-controls">
-          <form 
-              asp-route-area="Mess.Eor"
-              asp-controller="EorMeasurementDeviceControls"
-              asp-action="SetMode"
-              asp-route-contentItemId="@Model.EorMeasurementDevice.ContentItemId"
-              asp-route-returnUrl="@FullRequestPath">
-            <label id="@modeLabelId" for="Mode">
-              @T["Position"]
-              @if (Model.EorMeasurementDevice.EorMeasurementDevicePart.Value.Controls.Mode !=
-                    Model.EorMeasurementDeviceSummary.Status.Mode)
-              {
-                <span>(@Model.EorMeasurementDeviceSummary.Status.Mode)</span>
-              }
-            </label>
-            <input
-              id="@modeInputId"
-              type="number"
-              min="0"
-              max="63"
-              name="Mode"
-              value="@Model.EorMeasurementDevice.EorMeasurementDevicePart.Value.Controls.Mode"
-            />
-            <button class="button-primary" type="submit">
-              @T["SET"]
-            </button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </section>
-}
-
-@if (Model.EorMeasurementDeviceSummary.Status is not null &&
-     Model.EorMeasurementDeviceSummary.LastMeasurement is not null)
-{
-  var powerRelayText =
-     Model.EorMeasurementDeviceSummary.Status.ProcessFault == 0
-      ? "On"
-      : Model.EorMeasurementDeviceSummary.Status.ProcessFault == 999
-        ? "Off"
-        : "Error";
-  <section>
-    <h3 class="section-header">State</h3>
-    <div class="section-content">
-      <div class="property-table">
-        <div class="property">
-          <strong>Door state</strong>
-          <span id="@doorStateId">
-            @Model.EorMeasurementDeviceSummary.Status.DoorState
-          </span>
-        </div>
-        <div class="property">
-          <strong>Main circuit braker</strong>
-          <span id="@mainCircuitBreakerStateId">
-            @Model.EorMeasurementDeviceSummary.Status.MainCircuitBreakerState
-          </span>
-        </div>
-        <div class="property">
-          <strong>Power relay</strong>
-          <span id="@powerRelayId">
-            @powerRelayText
-          </span>
-        </div>
-        <div class="property">
-          <strong>Voltage [V<sub>DC</sub>]</strong>
-          <span id="@voltageId">
-            @Model.EorMeasurementDeviceSummary.LastMeasurement.Voltage
-          </span>
-        </div>
-        <div class="property">
-          <strong>Current [A<sub>DC</sub>]</strong>
-          <span id="@currentId">
-            @Model.EorMeasurementDeviceSummary.LastMeasurement.Current
-          </span>
-        </div>
-        <div class="property">
-          <strong>Temperature [<sup>o</sup>C]</strong>
-          <span id="@temperatureId">
-            @Model.EorMeasurementDeviceSummary.LastMeasurement.Temperature
-          </span>
-        </div>
-      </div>
-      <div class="chart-container">
-        <canvas id="@chartCanvasId" class="chart" />
-        <script asp-name="mess-chart"></script>
-        <script>
-          window.mess.chart.useChart({
-            requestUrlPrefix: "@this.GetRequestUrlPrefix()",
-            contentItemId: "@Model.EorMeasurementDevice.ContentItemId",
-            isPreview: false,
-            canvasId: "@chartCanvasId",
-            errorId: "@chartErrorId",
-            culture: "@Orchard.CultureName()",
-            font: {
-              family: "Roboto",
-              style: "normal",
-              weight: "300",
-              color: "#000",
-              size: 14
-            }
-          });
-        </script>
-      </div>
-    </div>
-  </section>
-}
-
-<script asp-name="mess-eor"></script>
-<script>
-  window.mess.eor.useRefresh({
-    requestUrlPrefix: "@this.GetRequestUrlPrefix()",
-    contentItemId: "@Model.EorMeasurementDevice.ContentItemId",
-    id: {
-      status: "@statusId",
-      communicationFault: "@communicationFaultId",
-      processFault: "@processFaultId",
-      processFaults: "@processFaultsId",
-      controlStatus: "@controlStatusId",
-      modeLabel: "@modeLabelId",
-      modeInput: "@modeInputId",
-      doorState: "@doorStateId",
-      mainCircuitBreakerState: "@mainCircuitBreakerStateId",
-      powerRelay: "@powerRelayId",
-      voltage: "@voltageId",
-      current: "@currentId",
-      temperature: "@temperatureId"
-    }
-  });
-</script>
+  </div>
+</section>

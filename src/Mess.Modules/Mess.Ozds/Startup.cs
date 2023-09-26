@@ -9,11 +9,11 @@ using OrchardCore.Modules;
 using Mess.Ozds.Controllers;
 using OrchardCore.Mvc.Core.Utilities;
 using Mess.Ozds.Context;
-using Mess.Timeseries.Abstractions.Extensions.Microsoft;
+using Mess.Timeseries.Abstractions.Extensions;
 using Mess.Ozds.Abstractions.Client;
 using Mess.Ozds.Client;
 using Mess.Ozds.Chart;
-using Mess.Chart.Abstractions.Extensions.Microsoft;
+using Mess.Chart.Abstractions.Extensions;
 
 namespace Mess.Ozds;
 
