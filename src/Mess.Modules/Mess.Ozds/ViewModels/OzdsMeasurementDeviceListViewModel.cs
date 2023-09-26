@@ -1,12 +1,8 @@
-using Mess.Ozds.Abstractions.Client;
-using Mess.Ozds.Abstractions.Models;
+using OrchardCore.ContentManagement;
 
 namespace Mess.Ozds.ViewModels;
 
 public class OzdsMeasurementDeviceListViewModel
 {
-  public List<(
-    OzdsMeasurementDeviceItem Item,
-    OzdsMeasurementDeviceSummary? Summary
-  )> OzdsMeasurementDevices { get; set; } = default!;
+  public List<ContentItem> ContentItems { get; set; } = default!;
 }

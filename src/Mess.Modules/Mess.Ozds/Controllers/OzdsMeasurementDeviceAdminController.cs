@@ -7,10 +7,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OrchardCore.Admin;
 using OrchardCore.ContentManagement;
-using OrchardCore.Contents;
 using YesSql;
+using Mess.Ozds.Abstractions.Models;
 
 namespace Mess.Ozds.Controllers;
+
+// TODO: display type/mode for these things
 
 [Admin]
 [Authorize]
@@ -18,57 +20,33 @@ public class OzdsMeasurementDeviceAdminController : Controller
 {
   public async Task<IActionResult> List()
   {
+    var orchardCoreUser = await this.GetAuthenticatedOrchardCoreUserAsync();
+    IEnumerable<ContentItem>? contentItems = null;
     if (
-      !await _authorizationService.AuthorizeAsync(
-        User,
-        CommonPermissions.ViewOwnContent,
-        (object)"OzdsMeasurementDevice"
+      orchardCoreUser.RoleNames.Contains(
+        "DistributionSystemOperatorRepresentative"
       )
     )
+    {
+      contentItems = await _session
+        .Query<ContentItem, OzdsMeasurementDeviceIndex>()
+        .Where(
+          index =>
+            index.DistributionSystemOperatorRepresentativeUserIds.Contains(
+              orchardCoreUser.UserId
+            )
+        )
+        .ListAsync();
+    }
+    else
     {
       return Forbid();
     }
 
-    var orchardCoreUser = await this.GetAuthenticatedOrchardCoreUserAsync();
-    var contentItems = await _session
-      .Query<ContentItem, OzdsMeasurementDeviceIndex>()
-      .Where(index => index.Author == orchardCoreUser.UserId)
-      .ListAsync();
-
-    var ozdsMeasurementDevices = contentItems.Select(
-      contentItem => contentItem.AsContent<OzdsMeasurementDeviceItem>()
-    );
-
-    var ozdsMeasurementDeviceSummaries =
-      await _measurementClient.GetOzdsMeasurementDeviceSummariesAsync(
-        ozdsMeasurementDevices
-          .Select(
-            ozdsMeasurementDevice =>
-              ozdsMeasurementDevice.MeasurementDevicePart.Value.DeviceId.Text
-          )
-          .ToList()
-      );
-
     return View(
       new OzdsMeasurementDeviceListViewModel
       {
-        OzdsMeasurementDevices = ozdsMeasurementDevices
-          .Select(
-            ozdsMeasurementDevice =>
-              (
-                ozdsMeasurementDevice,
-                ozdsMeasurementDeviceSummaries.FirstOrDefault(
-                  summary =>
-                    summary.DeviceId
-                    == ozdsMeasurementDevice
-                      .MeasurementDevicePart
-                      .Value
-                      .DeviceId
-                      .Text
-                )
-              )
-          )
-          .ToList(),
+        ContentItems = contentItems.ToList(),
       }
     );
   }
@@ -81,36 +59,27 @@ public class OzdsMeasurementDeviceAdminController : Controller
       return NotFound();
     }
 
-    var ozdsMeasurementDevice =
-      contentItem.AsContent<OzdsMeasurementDeviceItem>();
+    var ozdsMeasurementDevicePart = contentItem.As<OzdsMeasurementDevicePart>();
+    if (ozdsMeasurementDevicePart == null)
+    {
+      return NotFound();
+    }
 
     var orchardCoreUser = await this.GetAuthenticatedOrchardCoreUserAsync();
     if (
-      !await _authorizationService.AuthorizeViewAsync(
-        User,
-        orchardCoreUser,
-        ozdsMeasurementDevice
+      !orchardCoreUser.RoleNames.Contains(
+        "DistributionSystemOperatorRepresentative"
+      )
+      || !ozdsMeasurementDevicePart.DistributionSystemOperatorRepresentativeUserIds.Contains(
+        orchardCoreUser.UserId
       )
     )
     {
       return Forbid();
     }
 
-    var ozdsMeasurementDeviceSummary =
-      await _measurementClient.GetOzdsMeasurementDeviceSummaryAsync(
-        ozdsMeasurementDevice.MeasurementDevicePart.Value.DeviceId.Text
-      );
-    if (ozdsMeasurementDeviceSummary == null)
-    {
-      return NotFound();
-    }
-
     return View(
-      new OzdsMeasurementDeviceDetailViewModel
-      {
-        OzdsMeasurementDevice = ozdsMeasurementDevice,
-        OzdsMeasurementDeviceSummary = ozdsMeasurementDeviceSummary
-      }
+      new OzdsMeasurementDeviceDetailViewModel { ContentItem = contentItem, }
     );
   }
 

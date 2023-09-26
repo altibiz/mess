@@ -1,16 +1,11 @@
-using Mess.Ozds.Abstractions;
 using Mess.Ozds.Abstractions.Indexes;
-using Mess.Ozds.Abstractions.Models;
 using Mess.OrchardCore.Extensions.Microsoft;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OrchardCore.ContentManagement;
-using Mess.OrchardCore;
 using YesSql;
 using Mess.Ozds.ViewModels;
-using Mess.Ozds.Abstractions.Client;
-using Mess.Ozds.Extensions;
-using OrchardCore.Contents;
+using Mess.Ozds.Abstractions.Models;
 
 namespace Mess.Ozds.Controllers;
 
@@ -19,65 +14,63 @@ public class OzdsMeasurementDeviceController : Controller
 {
   public async Task<IActionResult> List()
   {
-    var canViewOwned = await _authorizationService.AuthorizeAsync(
-      User,
-      OzdsPermissions.ViewOwnedozdsMeasurementDevices
-    );
-    // TODO: fix returns true for owners??
-    var canViewOwn = await _authorizationService.AuthorizeAsync(
-      User,
-      CommonPermissions.ViewOwnContent,
-      (object)"OzdsMeasurementDevice"
-    );
-    if (!(canViewOwned || canViewOwn))
+    var orchardCoreUser = await this.GetAuthenticatedOrchardCoreUserAsync();
+    IEnumerable<ContentItem>? contentItems = null;
+    if (
+      orchardCoreUser.RoleNames.Contains(
+        "DistributionSystemOperatorRepresentative"
+      )
+    )
+    {
+      contentItems = await _session
+        .Query<ContentItem, OzdsMeasurementDeviceIndex>()
+        .Where(
+          index =>
+            index.DistributionSystemOperatorRepresentativeUserIds.Contains(
+              orchardCoreUser.UserId
+            )
+        )
+        .ListAsync();
+    }
+    else if (
+      orchardCoreUser.RoleNames.Contains(
+        "ClosedDistributionSystemRepresentative"
+      )
+    )
+    {
+      contentItems = await _session
+        .Query<ContentItem, OzdsMeasurementDeviceIndex>()
+        .Where(
+          index =>
+            index.ClosedDistributionSystemRepresentativeUserIds.Contains(
+              orchardCoreUser.UserId
+            )
+        )
+        .ListAsync();
+    }
+    else if (
+      orchardCoreUser.RoleNames.Contains("DistributionSystemUnitRepresentative")
+    )
+    {
+      contentItems = await _session
+        .Query<ContentItem, OzdsMeasurementDeviceIndex>()
+        .Where(
+          index =>
+            index.DistributionSystemUnitRepresentativeUserIds.Contains(
+              orchardCoreUser.UserId
+            )
+        )
+        .ListAsync();
+    }
+    else
     {
       return Forbid();
     }
 
-    var orchardCoreUser = await this.GetAuthenticatedOrchardCoreUserAsync();
-    var contentItems = await _session
-      .Query<ContentItem, OzdsMeasurementDeviceIndex>()
-      .Where(
-        canViewOwned
-          ? index => index.OwnerId == orchardCoreUser.UserId
-          : index => index.Author == orchardCoreUser.UserId
-      )
-      .ListAsync();
-
-    var ozdsMeasurementDevices = contentItems.Select(
-      contentItem => contentItem.AsContent<OzdsMeasurementDeviceItem>()
-    );
-
-    var ozdsMeasurementDeviceSummaries =
-      await _measurementQuery.GetOzdsMeasurementDeviceSummariesAsync(
-        ozdsMeasurementDevices
-          .Select(
-            ozdsMeasurementDevice =>
-              ozdsMeasurementDevice.MeasurementDevicePart.Value.DeviceId.Text
-          )
-          .ToList()
-      );
-
     return View(
       new OzdsMeasurementDeviceListViewModel
       {
-        OzdsMeasurementDevices = ozdsMeasurementDevices
-          .Select(
-            ozdsMeasurementDevice =>
-              (
-                ozdsMeasurementDevice,
-                ozdsMeasurementDeviceSummaries.FirstOrDefault(
-                  summary =>
-                    summary.DeviceId
-                    == ozdsMeasurementDevice
-                      .MeasurementDevicePart
-                      .Value
-                      .DeviceId
-                      .Text
-                )
-              )
-          )
-          .ToList(),
+        ContentItems = contentItems.ToList(),
       }
     );
   }
@@ -90,54 +83,42 @@ public class OzdsMeasurementDeviceController : Controller
       return NotFound();
     }
 
-    var ozdsMeasurementDevice =
-      contentItem.AsContent<OzdsMeasurementDeviceItem>();
+    var ozdsMeasurementDevicePart = contentItem.As<OzdsMeasurementDevicePart>();
+    if (ozdsMeasurementDevicePart == null)
+    {
+      return NotFound();
+    }
 
     var orchardCoreUser = await this.GetAuthenticatedOrchardCoreUserAsync();
     if (
-      !await _authorizationService.AuthorizeViewAsync(
-        User,
-        orchardCoreUser,
-        ozdsMeasurementDevice
+      !orchardCoreUser.RoleNames.Contains(
+        "DistributionSystemOperatorRepresentative"
+      )
+      || !ozdsMeasurementDevicePart.DistributionSystemOperatorRepresentativeUserIds.Contains(
+        orchardCoreUser.UserId
       )
     )
     {
       return Forbid();
     }
 
-    var ozdsMeasurementDeviceSummary =
-      await _measurementQuery.GetOzdsMeasurementDeviceSummaryAsync(
-        ozdsMeasurementDevice.MeasurementDevicePart.Value.DeviceId.Text
-      );
-    if (ozdsMeasurementDeviceSummary == null)
-    {
-      return NotFound();
-    }
-
     return View(
-      new OzdsMeasurementDeviceDetailViewModel
-      {
-        OzdsMeasurementDevice = ozdsMeasurementDevice,
-        OzdsMeasurementDeviceSummary = ozdsMeasurementDeviceSummary
-      }
+      new OzdsMeasurementDeviceDetailViewModel { ContentItem = contentItem, }
     );
   }
 
   public OzdsMeasurementDeviceController(
     IAuthorizationService authorizationService,
     IContentManager contentManager,
-    ISession session,
-    IOzdsTimeseriesQuery measurementQuery
+    ISession session
   )
   {
     _contentManager = contentManager;
     _authorizationService = authorizationService;
     _session = session;
-    _measurementQuery = measurementQuery;
   }
 
   private readonly IContentManager _contentManager;
   private readonly IAuthorizationService _authorizationService;
   private readonly ISession _session;
-  private readonly IOzdsTimeseriesQuery _measurementQuery;
 }
