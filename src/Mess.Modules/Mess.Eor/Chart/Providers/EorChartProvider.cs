@@ -1,6 +1,6 @@
 using Mess.Chart.Abstractions.Providers;
 using Mess.Chart.Abstractions.Descriptors;
-using Mess.ContentFields.Abstractions;
+using Mess.Fields.Abstractions;
 using OrchardCore.ContentManagement;
 using Mess.Chart.Abstractions.Models;
 using Mess.OrchardCore;

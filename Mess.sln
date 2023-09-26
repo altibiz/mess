@@ -87,13 +87,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Eor.Test", "test\Mess.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Relational.Test", "test\Mess.Modules\Mess.Relational.Test\Mess.Relational.Test.csproj", "{F1899FBB-6CB7-47DD-AEA3-06E4B0C32CC3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.ContentFields", "src\Mess.Modules\Mess.ContentFields\Mess.ContentFields.csproj", "{5A2C4539-933B-4D69-A9BE-E02796D6C559}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Fields", "src\Mess.Modules\Mess.Fields\Mess.Fields.csproj", "{5A2C4539-933B-4D69-A9BE-E02796D6C559}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.ContentFields.Abstractions", "src\Mess.Abstractions\Mess.ContentFields.Abstractions\Mess.ContentFields.Abstractions.csproj", "{63D90BC1-C32F-4D7D-ADE8-67FCA97BA9F7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Fields.Abstractions", "src\Mess.Abstractions\Mess.Fields.Abstractions\Mess.Fields.Abstractions.csproj", "{63D90BC1-C32F-4D7D-ADE8-67FCA97BA9F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.ContentFields.Test.Abstractions", "test\Mess.Abstractions\Mess.ContentFields.Test.Abstractions\Mess.ContentFields.Test.Abstractions.csproj", "{2897AE8A-0283-4E66-ABE2-FB38214813E6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Fields.Test.Abstractions", "test\Mess.Abstractions\Mess.Fields.Test.Abstractions\Mess.Fields.Test.Abstractions.csproj", "{2897AE8A-0283-4E66-ABE2-FB38214813E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.ContentFields.Test", "test\Mess.Modules\Mess.ContentFields.Test\Mess.ContentFields.Test.csproj", "{2EE494AE-9F69-4907-8158-34A5D8723360}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Fields.Test", "test\Mess.Modules\Mess.Fields.Test\Mess.Fields.Test.csproj", "{2EE494AE-9F69-4907-8158-34A5D8723360}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Ozds", "src\Mess.Modules\Mess.Ozds\Mess.Ozds.csproj", "{369B2DC1-E68E-4BC5-9C44-AF17ED9F975D}"
 EndProject

@@ -3,7 +3,7 @@ using Mess.Eor.Abstractions.Client;
 using Mess.Eor.Abstractions.Indexes;
 using Mess.Eor.Abstractions.Models;
 using Mess.Iot.Abstractions.Indexes;
-using Mess.ContentFields.Abstractions.Extensions;
+using Mess.Fields.Abstractions.Extensions;
 using Mess.OrchardCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Hosting;
@@ -20,9 +20,9 @@ using OrchardCore.Users.Models;
 using OrchardCore.Users.Services;
 using YesSql;
 using YesSql.Sql;
-using Mess.ContentFields.Abstractions.Services;
-using Mess.ContentFields.Abstractions.Settings;
-using Mess.ContentFields.Abstractions;
+using Mess.Fields.Abstractions.Services;
+using Mess.Fields.Abstractions.Settings;
+using Mess.Fields.Abstractions;
 
 namespace Mess.Eor;
 

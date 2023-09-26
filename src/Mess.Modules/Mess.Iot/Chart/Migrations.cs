@@ -11,7 +11,7 @@ using Mess.Iot.Abstractions.Models;
 using Mess.Iot.Abstractions.Client;
 using YesSql;
 using Mess.Iot.Abstractions.Indexes;
-using Mess.ContentFields.Abstractions;
+using Mess.Fields.Abstractions;
 
 namespace Mess.Iot.Chart;
 

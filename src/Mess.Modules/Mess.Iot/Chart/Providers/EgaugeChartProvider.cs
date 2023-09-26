@@ -4,7 +4,7 @@ using Mess.Chart.Abstractions.Descriptors;
 using OrchardCore.ContentManagement;
 using Mess.Chart.Abstractions.Models;
 using Mess.Iot.Abstractions.Models;
-using Mess.ContentFields.Abstractions;
+using Mess.Fields.Abstractions;
 using Mess.OrchardCore;
 
 namespace Mess.Iot.Chart.Providers;
