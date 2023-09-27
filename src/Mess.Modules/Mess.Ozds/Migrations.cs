@@ -556,6 +556,12 @@ public class Migrations : DataMigration
       var pidgeonMeasurementDevice =
         await _contentManager.NewContentAsync<PidgeonMeasurementDeviceItem>();
       pidgeonMeasurementDevice.Alter(
+        pidgeonMeasurementDevice => pidgeonMeasurementDevice.TitlePart,
+        titlePart => {
+          titlePart.Title = "Pidgeon";
+        }
+      );
+      pidgeonMeasurementDevice.Alter(
         pidgeonMeasurementDevice =>
           pidgeonMeasurementDevice.MeasurementDevicePart,
         measurementDevicePart =>
@@ -701,14 +707,14 @@ public class Migrations : DataMigration
       );
       await _contentManager.CreateAsync(abbChart, VersionOptions.Latest);
 
-      var abbMeasurementDevice =
-        (
-          await _session
-            .Query<ContentItem, MeasurementDeviceIndex>()
-            .Where(index => index.DeviceId == "abb")
-            .FirstOrDefaultAsync()
-        )?.AsContent<AbbMeasurementDeviceItem>()
-        ?? await _contentManager.NewContentAsync<AbbMeasurementDeviceItem>();
+      var abbMeasurementDevice = await _contentManager
+        .NewContentAsync<AbbMeasurementDeviceItem>();
+      abbMeasurementDevice.Alter(
+        abbMeasurementDevice => abbMeasurementDevice.TitlePart,
+        titlePart => {
+          titlePart.Title = "Abb";
+        }
+      );
       abbMeasurementDevice.Alter(
         abbMeasurementDevice => abbMeasurementDevice.MeasurementDevicePart,
         measurementDevicePart =>
@@ -758,7 +764,6 @@ public class Migrations : DataMigration
     IUserService userService,
     IHostEnvironment hostEnvironment,
     IContentManager contentManager,
-    ISession session,
     IApiKeyFieldService apiKeyFieldService
   )
   {
@@ -768,7 +773,6 @@ public class Migrations : DataMigration
     _userService = userService;
     _hostEnvironment = hostEnvironment;
     _contentManager = contentManager;
-    _session = session;
     _apiKeyFieldService = apiKeyFieldService;
   }
 
@@ -778,6 +782,5 @@ public class Migrations : DataMigration
   private readonly IUserService _userService;
   private readonly IHostEnvironment _hostEnvironment;
   private readonly IContentManager _contentManager;
-  private readonly ISession _session;
   private readonly IApiKeyFieldService _apiKeyFieldService;
 }
