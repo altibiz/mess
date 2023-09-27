@@ -558,7 +558,7 @@ public class Migrations : DataMigration
       pidgeonMeasurementDevice.Alter(
         pidgeonMeasurementDevice => pidgeonMeasurementDevice.TitlePart,
         titlePart => {
-          titlePart.Title = "Pidgeon";
+          titlePart.Title = "pidgeon";
         }
       );
       pidgeonMeasurementDevice.Alter(
@@ -636,7 +636,7 @@ public class Migrations : DataMigration
                     RenderTitle = true,
                     Options = TitlePartOptions.GeneratedDisabled,
                     Pattern =
-                      @"{%- ContentItem.Content.AbbMeasurementDevicePart.DeviceId.Text -%}"
+                      @"{%- ContentItem.Content.MeasurementDevicePart.DeviceId.Text -%}"
                   }
                 )
           )
@@ -686,7 +686,7 @@ public class Migrations : DataMigration
         abbChart => abbChart.TitlePart,
         titlePart =>
         {
-          titlePart.Title = "Abb";
+          titlePart.Title = "abb";
         }
       );
       abbChart.Alter(
