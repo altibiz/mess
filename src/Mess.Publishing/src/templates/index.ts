@@ -28,6 +28,9 @@ export const importTemplates = async (): Promise<Record<string, Template>> => ({
   pidgeon: {
     push: await importTemplate("pidgeon.push.json.hbs"),
   },
+  abb: {
+    push: await importTemplate("abb.push.json.hbs"),
+  },
 });
 
 export default Template;
