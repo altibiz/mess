@@ -14,6 +14,8 @@ public class ClosedDistributionSystemItem : ContentItemBase
     private set;
   } = default!;
 
+  public Lazy<LegalEntityPart> LegalEntityPart { get; private set; } = default!;
+
   private ClosedDistributionSystemItem(ContentItem contentItem)
     : base(contentItem) { }
 }

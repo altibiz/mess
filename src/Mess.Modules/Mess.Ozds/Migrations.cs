@@ -186,22 +186,40 @@ public class Migrations : DataMigration
       }
     );
 
+    string distributionSystemOperatorRepresentativeId =
+      "DistributionSystemOperatorRepresentativeId";
+    string closedDistributionSystemRepresentativeId =
+      "ClosedDistributionSystemRepresentativeId";
+    string distributionSystemUnitRepresentativeId =
+      "DistributionSystemUnitRepresentativeId";
     if (_hostEnvironment.IsDevelopment())
     {
       await _userService.CreateDevUserAsync(
-        id: "DistributionSystemOperatorId",
+        id: distributionSystemOperatorRepresentativeId,
         userName: "Operator",
-        roleNames: "DistributionSystemOperatorRepresentative"
+        roleNames: new []
+        {
+          "DistributionSystemOperatorRepresentative",
+          "LegalEntityRepresentative",
+        }
       );
       await _userService.CreateDevUserAsync(
-        id: "ClosedDistributionSystemId",
+        id: closedDistributionSystemRepresentativeId,
         userName: "System",
-        roleNames: "ClosedDistributionSystemRepresentative"
+        roleNames: new []
+        {
+          "ClosedDistributionSystemRepresentative",
+          "LegalEntityRepresentative",
+        }
       );
       await _userService.CreateDevUserAsync(
-        id: "DistributionSystemUnitId",
+        id: distributionSystemUnitRepresentativeId,
         userName: "Unit",
-        roleNames: "DistributionSystemUnitRepresentative"
+        roleNames: new []
+        {
+          "DistributionSystemUnitRepresentative",
+          "LegalEntityRepresentative",
+        }
       );
     }
 
@@ -245,7 +263,52 @@ public class Migrations : DataMigration
                 .WithDescription("A distribution system operator.")
                 .WithPosition("2")
           )
+          .WithPart("LegalEntityPart",
+            part =>
+              part.WithDisplayName("Legal entity")
+                .WithDescription("Identification, contact and address information the distributed system operator.")
+                .WithPosition("3")
+          )
     );
+
+    string? distributionSystemOperatorContentItemId = null;
+    if (_hostEnvironment.IsDevelopment()) {
+      var distributionSystemOperator =
+        await _contentManager.NewContentAsync<DistributionSystemOperatorItem>();
+      distributionSystemOperatorContentItemId =
+        distributionSystemOperator.ContentItemId;
+      distributionSystemOperator.Alter(
+        distributionSystemOperator => distributionSystemOperator.TitlePart,
+        titlePart => {
+          titlePart.Title = "Operator";
+        }
+      );
+      distributionSystemOperator.Alter(
+        distributionSystemOperator =>
+          distributionSystemOperator.LegalEntityPart,
+        legalEntityPart =>
+        {
+          legalEntityPart.Name = new() { Text = "Operator" };
+          legalEntityPart.City = new() { Text = "City" };
+          legalEntityPart.Address = new() { Text = "Address" };
+          legalEntityPart.PostalCode = new() { Text = "Postal code" };
+          legalEntityPart.Email = new() { Text = "Email" };
+          legalEntityPart.SocialSecurityNumber = new()
+          {
+            Text = "Social security number"
+          };
+          legalEntityPart.Representatives = new()
+          {
+            UserIds = new[] { distributionSystemOperatorRepresentativeId }
+          };
+        }
+      );
+
+      await _contentManager.CreateAsync(
+        distributionSystemOperator,
+        VersionOptions.Latest
+      );
+    }
 
     _contentDefinitionManager.AlterPartDefinition(
       "ClosedDistributionSystemPart",
@@ -287,32 +350,77 @@ public class Migrations : DataMigration
                 .WithDescription("A closed distribution system.")
                 .WithPosition("2")
           )
+          .WithPart("LegalEntityPart",
+            part =>
+              part.WithDisplayName("Legal entity")
+                .WithDescription("Identification, contact and address information the closed distributed system.")
+                .WithPosition("3")
+          )
     );
 
+    string? closedDistributionSystemContentItemId = null;
+    if (_hostEnvironment.IsDevelopment()) {
+      var closedDistributionSystem =
+        await _contentManager.NewContentAsync<ClosedDistributionSystemItem>();
+      closedDistributionSystemContentItemId =
+        closedDistributionSystem.ContentItemId;
+      closedDistributionSystem.Alter(
+        closedDistributionSystem => closedDistributionSystem.TitlePart,
+        titlePart => {
+          titlePart.Title = "System";
+        }
+      );
+      closedDistributionSystem.Alter(
+        closedDistributionSystem =>
+          closedDistributionSystem.LegalEntityPart,
+        legalEntityPart =>
+        {
+          legalEntityPart.Name = new() { Text = "System" };
+          legalEntityPart.City = new() { Text = "City" };
+          legalEntityPart.Address = new() { Text = "Address" };
+          legalEntityPart.PostalCode = new() { Text = "Postal code" };
+          legalEntityPart.Email = new() { Text = "Email" };
+          legalEntityPart.SocialSecurityNumber = new()
+          {
+            Text = "Social security number"
+          };
+          legalEntityPart.Representatives = new()
+          {
+            UserIds = new[] { closedDistributionSystemRepresentativeId }
+          };
+        }
+      );
+
+      await _contentManager.CreateAsync(
+        closedDistributionSystem,
+        VersionOptions.Latest
+      );
+    }
+
     _contentDefinitionManager.AlterPartDefinition(
-      "DistributionSystemOperatorPart",
+      "DistributionSystemUnitPart",
       builder =>
         builder
           .Attachable()
-          .WithDescription("A distribution system operator.")
-          .WithDisplayName("Distribution system operator")
+          .WithDescription("A distribution system unit.")
+          .WithDisplayName("Distribution system unit")
     );
 
     _contentDefinitionManager.AlterTypeDefinition(
-      "DistributionSystemOperator",
+      "DistributionSystemUnit",
       builder =>
         builder
           .Creatable()
           .Listable()
           .Draftable()
           .Securable()
-          .DisplayedAs("Distribution system operator")
-          .WithDescription("A distribution system operator.")
+          .DisplayedAs("Distribution system unit")
+          .WithDescription("A distribution system unit.")
           .WithPart(
             "TitlePart",
             part =>
               part.WithDisplayName("Title")
-                .WithDescription("Title of the distribution system operator.")
+                .WithDescription("Title of the distribution system unit.")
                 .WithPosition("1")
                 .WithSettings<TitlePartSettings>(
                   new()
@@ -323,13 +431,58 @@ public class Migrations : DataMigration
                 )
           )
           .WithPart(
-            "DistributionSystemOperatorPart",
+            "DistributionSystemUnitPart",
             part =>
-              part.WithDisplayName("Distribution system operator")
-                .WithDescription("A distribution system operator.")
+              part.WithDisplayName("Distribution system unit")
+                .WithDescription("A distribution system unit.")
                 .WithPosition("2")
           )
+          .WithPart("LegalEntityPart",
+            part =>
+              part.WithDisplayName("Legal entity")
+                .WithDescription("Identification, contact and address information the distributed system unit.")
+                .WithPosition("3")
+          )
     );
+
+    string? distributionSystemUnitContentItemId = null;
+    if (_hostEnvironment.IsDevelopment()) {
+      var distributionSystemUnit =
+        await _contentManager.NewContentAsync<ClosedDistributionSystemItem>();
+      distributionSystemUnitContentItemId =
+        distributionSystemUnit.ContentItemId;
+      distributionSystemUnit.Alter(
+        distributionSystemUnit => distributionSystemUnit.TitlePart,
+        titlePart => {
+          titlePart.Title = "Unit";
+        }
+      );
+      distributionSystemUnit.Alter(
+        distributionSystemUnit =>
+          distributionSystemUnit.LegalEntityPart,
+        legalEntityPart =>
+        {
+          legalEntityPart.Name = new() { Text = "Unit" };
+          legalEntityPart.City = new() { Text = "City" };
+          legalEntityPart.Address = new() { Text = "Address" };
+          legalEntityPart.PostalCode = new() { Text = "Postal code" };
+          legalEntityPart.Email = new() { Text = "Email" };
+          legalEntityPart.SocialSecurityNumber = new()
+          {
+            Text = "Social security number"
+          };
+          legalEntityPart.Representatives = new()
+          {
+            UserIds = new[] { distributionSystemUnitRepresentativeId }
+          };
+        }
+      );
+
+      await _contentManager.CreateAsync(
+        distributionSystemUnit,
+        VersionOptions.Latest
+      );
+    }
 
     _contentDefinitionManager.AlterPartDefinition(
       "PidgeonMeasurementDevicePart",
@@ -417,6 +570,25 @@ public class Migrations : DataMigration
         {
           pidgeonMeasurementDevicePart.ApiKey =
             _apiKeyFieldService.HashApiKeyField("pidgeon");
+        }
+      );
+      pidgeonMeasurementDevice.Alter(
+        pidgeonMeasurementDevice =>
+          pidgeonMeasurementDevice.OzdsMeasurementDevicePart,
+        ozdsMeasurementDevicePart =>
+        {
+          ozdsMeasurementDevicePart.ClosedDistributionSystemContentItemId =
+            closedDistributionSystemContentItemId!;
+          ozdsMeasurementDevicePart.ClosedDistributionSystemRepresentativeUserIds =
+            new [] { closedDistributionSystemRepresentativeId };
+          ozdsMeasurementDevicePart.DistributionSystemOperatorContentItemId =
+            distributionSystemOperatorContentItemId!;
+          ozdsMeasurementDevicePart.DistributionSystemOperatorRepresentativeUserIds =
+            new [] { distributionSystemOperatorRepresentativeId };
+          ozdsMeasurementDevicePart.DistributionSystemUnitContentItemId =
+            distributionSystemUnitContentItemId!;
+          ozdsMeasurementDevicePart.DistributionSystemUnitRepresentativeUserIds =
+            new [] { distributionSystemUnitRepresentativeId };
         }
       );
       await _contentManager.CreateAsync(
@@ -542,6 +714,25 @@ public class Migrations : DataMigration
         measurementDevicePart =>
         {
           measurementDevicePart.DeviceId = new() { Text = "abb" };
+        }
+      );
+      abbMeasurementDevice.Alter(
+        abbMeasurementDevice =>
+          abbMeasurementDevice.OzdsMeasurementDevicePart,
+        ozdsMeasurementDevicePart =>
+        {
+          ozdsMeasurementDevicePart.ClosedDistributionSystemContentItemId =
+            closedDistributionSystemContentItemId!;
+          ozdsMeasurementDevicePart.ClosedDistributionSystemRepresentativeUserIds =
+            new [] { closedDistributionSystemRepresentativeId };
+          ozdsMeasurementDevicePart.DistributionSystemOperatorContentItemId =
+            distributionSystemOperatorContentItemId!;
+          ozdsMeasurementDevicePart.DistributionSystemOperatorRepresentativeUserIds =
+            new [] { distributionSystemOperatorRepresentativeId };
+          ozdsMeasurementDevicePart.DistributionSystemUnitContentItemId =
+            distributionSystemUnitContentItemId!;
+          ozdsMeasurementDevicePart.DistributionSystemUnitRepresentativeUserIds =
+            new [] { distributionSystemUnitRepresentativeId };
         }
       );
       abbMeasurementDevice.Alter(

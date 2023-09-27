@@ -14,6 +14,8 @@ public class DistributionSystemOperatorItem : ContentItemBase
     private set;
   } = default!;
 
+  public Lazy<LegalEntityPart> LegalEntityPart { get; private set; } = default!;
+
   private DistributionSystemOperatorItem(ContentItem contentItem)
     : base(contentItem) { }
 }
