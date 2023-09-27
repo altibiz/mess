@@ -8,7 +8,7 @@ using Mess.Ozds.ViewModels;
 using Mess.Ozds.Abstractions.Models;
 using OrchardCore.Title.Models;
 using Mess.Iot.Abstractions.Models;
-using YesSql.Services;
+using Mess.Iot.Abstractions.Indexes;
 
 namespace Mess.Ozds.Controllers;
 
@@ -19,7 +19,13 @@ public class OzdsMeasurementDeviceController : Controller
   {
     var orchardCoreUser = await this.GetAuthenticatedOrchardCoreUserAsync();
     IEnumerable<ContentItem>? contentItems = null;
-    if (
+    if (orchardCoreUser.RoleNames.Contains("Administrator"))
+    {
+      contentItems = await _session
+        .Query<ContentItem, MeasurementDeviceIndex>()
+        .ListAsync();
+    }
+    else if (
       orchardCoreUser.RoleNames.Contains(
         "DistributionSystemOperatorRepresentative"
       )
@@ -107,11 +113,13 @@ public class OzdsMeasurementDeviceController : Controller
 
     var orchardCoreUser = await this.GetAuthenticatedOrchardCoreUserAsync();
     if (
-      !orchardCoreUser.RoleNames.Contains(
+      !orchardCoreUser.RoleNames.Contains("Administrator")
+      &&
+       !(orchardCoreUser.RoleNames.Contains(
         "DistributionSystemOperatorRepresentative"
       )
-      || !ozdsMeasurementDevicePart.DistributionSystemOperatorRepresentativeUserIds.Contains(
-        orchardCoreUser.UserId
+      && ozdsMeasurementDevicePart.DistributionSystemOperatorRepresentativeUserIds.Contains(
+        orchardCoreUser.UserId)
       )
     )
     {

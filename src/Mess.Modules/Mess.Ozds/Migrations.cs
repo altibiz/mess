@@ -12,7 +12,6 @@ using OrchardCore.Security;
 using OrchardCore.Security.Permissions;
 using OrchardCore.Users.Services;
 using Mess.OrchardCore;
-using YesSql;
 using OrchardCore.Title.Models;
 using Mess.Fields.Abstractions.Extensions;
 using Mess.Fields.Abstractions.Settings;
@@ -21,7 +20,6 @@ using YesSql.Sql;
 using Mess.Chart.Abstractions.Models;
 using Mess.Ozds.Abstractions.Client;
 using Mess.Fields.Abstractions;
-using Mess.Iot.Abstractions.Indexes;
 
 namespace Mess.Ozds;
 
@@ -448,7 +446,7 @@ public class Migrations : DataMigration
     string? distributionSystemUnitContentItemId = null;
     if (_hostEnvironment.IsDevelopment()) {
       var distributionSystemUnit =
-        await _contentManager.NewContentAsync<ClosedDistributionSystemItem>();
+        await _contentManager.NewContentAsync<DistributionSystemUnitItem>();
       distributionSystemUnitContentItemId =
         distributionSystemUnit.ContentItemId;
       distributionSystemUnit.Alter(
