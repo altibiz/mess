@@ -19,6 +19,7 @@ using Mess.Ozds.Abstractions.Models;
 using Mess.Iot.Abstractions.Extensions;
 using Mess.Ozds.Pushing;
 using Mess.Ozds.Indexes;
+using Mess.Ozds.Security;
 
 namespace Mess.Ozds;
 
@@ -47,6 +48,7 @@ public class Startup : StartupBase
 
     services.AddContentPart<PidgeonMeasurementDevicePart>();
     services.AddMeasurementDevicePushHandler<PidgeonPushHandler>();
+    services.AddMeasurementDeviceAuthorizationHandler<PidgeonAuthorizationHandler>();
   }
 
   public override void Configure(
