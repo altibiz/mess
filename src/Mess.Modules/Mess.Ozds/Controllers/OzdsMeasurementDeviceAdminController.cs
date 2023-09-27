@@ -89,12 +89,13 @@ public class OzdsMeasurementDeviceAdminController : Controller
     var orchardCoreUser = await this.GetAuthenticatedOrchardCoreUserAsync();
     if (
       !orchardCoreUser.RoleNames.Contains("Administrator")
-      &&
-       !(orchardCoreUser.RoleNames.Contains(
-        "DistributionSystemOperatorRepresentative"
-      )
-      && ozdsMeasurementDevicePart.DistributionSystemOperatorRepresentativeUserIds.Contains(
-        orchardCoreUser.UserId)
+      && !(
+        orchardCoreUser.RoleNames.Contains(
+          "DistributionSystemOperatorRepresentative"
+        )
+        && ozdsMeasurementDevicePart.DistributionSystemOperatorRepresentativeUserIds.Contains(
+          orchardCoreUser.UserId
+        )
       )
     )
     {
