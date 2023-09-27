@@ -2,9 +2,10 @@ import { DateTime } from "luxon";
 import { importTemplates } from "../templates";
 import compile from "./compile";
 import { push as egaugePush } from "./egauge";
+import { push as abbPush } from "./abb";
 import { Create } from "./index";
 
-const allowedTemplates = { egauge: egaugePush };
+const allowedTemplates = { egauge: egaugePush, abb: abbPush };
 let templates: Awaited<ReturnType<typeof importTemplates>> | null = null;
 
 export const push: Create = async (template) => {
