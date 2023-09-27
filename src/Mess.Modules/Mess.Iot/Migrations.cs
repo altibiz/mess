@@ -99,6 +99,7 @@ public class Migrations : DataMigration
         table
           .Column<string>("ContentItemId", c => c.WithLength(64))
           .Column<string>("DeviceId", c => c.WithLength(64))
+          .Column<bool>("IsMessenger")
     );
     SchemaBuilder.AlterIndexTable<MeasurementDeviceIndex>(
       table =>
