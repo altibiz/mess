@@ -28,6 +28,12 @@ export default cmd({
         description: "Run and pass push argument to yarn publishing",
         default: [],
       })
+      .option("tenant", {
+        type: "string",
+        description: "Pass tenant argument to yarn publishing",
+        choices: ["eor", "ozds"],
+        default: "eor",
+      })
       .option("clean", {
         type: "boolean",
         description: "Clean relevant artifacts before watch",
@@ -44,7 +50,7 @@ export default cmd({
       debug: boolean;
       clean: boolean;
     }>,
-})(async ({ push, update, debug, clean }) => {
+})(async ({ push, update, tenant, debug, clean }) => {
   env("ASPNETCORE_ENVIRONMENT", "Development");
   env("DOTNET_ENVIRONMENT", "true");
   env("ORCHARD_APP_DATA", root("App_Data"));
@@ -85,12 +91,15 @@ export default cmd({
 
   const pushArgs = push.map((push) => `--push ${push}`).join(" ");
   const updateArgs = update.map((update) => `--update ${update}`).join(" ");
+  const tenantArgs = `--tenant ${tenant}`;
   const publishCommands =
     pushArgs.length || updateArgs.length
       ? [
           {
             name: "publish",
-            command: "yarn publishing dev " + `${pushArgs} ${updateArgs}`,
+            command:
+              "yarn publishing dev " +
+              `${pushArgs} ${updateArgs} ${tenantArgs}`,
           },
         ]
       : [];
