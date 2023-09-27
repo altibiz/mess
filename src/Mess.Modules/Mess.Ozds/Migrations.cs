@@ -29,6 +29,87 @@ public class Migrations : DataMigration
 {
   public async Task<int> CreateAsync()
   {
+    SchemaBuilder.CreateMapIndexTable<OzdsMeasurementDeviceClosedDistributionSystemIndex>(
+      table =>
+        table
+          .Column<string>("ContentItemId", c => c.WithLength(64))
+          .Column<string>("DeviceId", c => c.WithLength(64))
+          .Column<bool>("IsMessenger", c => c.WithDefault(false))
+          .Column<string>(
+            "ClosedDistributionSystemContentItemId",
+            c => c.WithLength(64)
+          )
+          .Column<string>(
+            "ClosedDistributionSystemRepresentativeUserId",
+            c => c.WithLength(64)
+          )
+    );
+    SchemaBuilder.AlterIndexTable<OzdsMeasurementDeviceClosedDistributionSystemIndex>(table =>
+    {
+      table.CreateIndex(
+        "IDX_OzdsMeasurementDeviceClosedDistributionSystemIndex_DeviceId",
+        "DeviceId"
+      );
+      table.CreateIndex(
+        "IDX_OzdsMeasurementDeviceClosedDistributionSystemIndex_RepresentativeUserId",
+        "ClosedDistributionSystemRepresentativeUserId"
+      );
+    });
+
+    SchemaBuilder.CreateMapIndexTable<OzdsMeasurementDeviceDistributionSystemOperatorIndex>(
+      table =>
+        table
+          .Column<string>("ContentItemId", c => c.WithLength(64))
+          .Column<string>("DeviceId", c => c.WithLength(64))
+          .Column<bool>("IsMessenger")
+          .Column<string>(
+            "DistributionSystemOperatorContentItemId",
+            c => c.WithLength(64)
+          )
+          .Column<string>(
+            "DistributionSystemOperatorRepresentativeUserId",
+            c => c.WithLength(64)
+          )
+    );
+    SchemaBuilder.AlterIndexTable<OzdsMeasurementDeviceDistributionSystemOperatorIndex>(table =>
+    {
+      table.CreateIndex(
+        "IDX_OzdsMeasurementDeviceDistributionSystemOperatorIndex_DeviceId",
+        "DeviceId"
+      );
+      table.CreateIndex(
+        "IDX_OzdsMeasurementDeviceDistributionSystemOperatorIndex_RepresentativeUserId",
+        "DistributionSystemOperatorRepresentativeUserId"
+      );
+    });
+
+    SchemaBuilder.CreateMapIndexTable<OzdsMeasurementDeviceDistributionSystemUnitIndex>(
+      table =>
+        table
+          .Column<string>("ContentItemId", c => c.WithLength(64))
+          .Column<string>("DeviceId", c => c.WithLength(64))
+          .Column<bool>("IsMessenger")
+          .Column<string>(
+            "DistributionSystemUnitContentItemId",
+            c => c.WithLength(64)
+          )
+          .Column<string>(
+            "DistributionSystemUnitRepresentativeUserId",
+            c => c.WithLength(64)
+          )
+    );
+    SchemaBuilder.AlterIndexTable<OzdsMeasurementDeviceDistributionSystemUnitIndex>(table =>
+    {
+      table.CreateIndex(
+        "IDX_OzdsMeasurementDeviceDistributionSystemUnitIndex_DeviceId",
+        "DeviceId"
+      );
+      table.CreateIndex(
+        "IDX_OzdsMeasurementDeviceDistributionSystemUnitIndex_RepresentativeUserId",
+        "DistributionSystemUnitRepresentativeUserId"
+      );
+    });
+
     await _roleManager.CreateAsync(
       new Role
       {
@@ -475,96 +556,6 @@ public class Migrations : DataMigration
         VersionOptions.Latest
       );
     }
-
-    SchemaBuilder.CreateMapIndexTable<OzdsMeasurementDeviceClosedDistributionSystemIndex>(
-      table =>
-        table
-          .Column<string>("ContentItemId", c => c.WithLength(64))
-          .Column<string>("DeviceId", c => c.WithLength(64))
-          .Column<bool>("IsMessenger")
-          .Column<string>(
-            "ClosedDistributionSystemContentItemId",
-            c => c.WithLength(64)
-          )
-          .Column<string[]>(
-            "ClosedDistributionSystemRepresentativeUserId",
-            c => c.WithLength(64)
-          )
-    );
-    SchemaBuilder.AlterIndexTable<OzdsMeasurementDeviceClosedDistributionSystemIndex>(
-      table =>
-        table.CreateIndex(
-          "IDX_OzdsMeasurementDeviceClosedDistributionSystemIndex_DeviceId",
-          "DeviceId"
-        )
-    );
-    SchemaBuilder.AlterIndexTable<OzdsMeasurementDeviceClosedDistributionSystemIndex>(
-      table =>
-        table.CreateIndex(
-          "IDX_OzdsMeasurementDeviceClosedDistributionSystemIndex_RepresentativeUserId",
-          "ClosedDistributionSystemRepresentativeUserId"
-        )
-    );
-
-    SchemaBuilder.CreateMapIndexTable<OzdsMeasurementDeviceDistributionSystemOperatorIndex>(
-      table =>
-        table
-          .Column<string>("ContentItemId", c => c.WithLength(64))
-          .Column<string>("DeviceId", c => c.WithLength(64))
-          .Column<bool>("IsMessenger")
-          .Column<string>(
-            "DistributionSystemOperatorContentItemId",
-            c => c.WithLength(64)
-          )
-          .Column<string[]>(
-            "DistributionSystemOperatorRepresentativeUserId",
-            c => c.WithLength(64)
-          )
-    );
-    SchemaBuilder.AlterIndexTable<OzdsMeasurementDeviceDistributionSystemOperatorIndex>(
-      table =>
-        table.CreateIndex(
-          "IDX_OzdsMeasurementDeviceDistributionSystemOperatorIndex_DeviceId",
-          "DeviceId"
-        )
-    );
-    SchemaBuilder.AlterIndexTable<OzdsMeasurementDeviceDistributionSystemOperatorIndex>(
-      table =>
-        table.CreateIndex(
-          "IDX_OzdsMeasurementDeviceDistributionSystemOperatorIndex_RepresentativeUserId",
-          "DistributionSystemOperatorRepresentativeUserId"
-        )
-    );
-
-    SchemaBuilder.CreateMapIndexTable<OzdsMeasurementDeviceDistributionSystemUnitIndex>(
-      table =>
-        table
-          .Column<string>("ContentItemId", c => c.WithLength(64))
-          .Column<string>("DeviceId", c => c.WithLength(64))
-          .Column<bool>("IsMessenger")
-          .Column<string>(
-            "DistributionSystemUnitContentItemId",
-            c => c.WithLength(64)
-          )
-          .Column<string[]>(
-            "DistributionSystemUnitRepresentativeUserId",
-            c => c.WithLength(64)
-          )
-    );
-    SchemaBuilder.AlterIndexTable<OzdsMeasurementDeviceDistributionSystemUnitIndex>(
-      table =>
-        table.CreateIndex(
-          "IDX_OzdsMeasurementDeviceDistributionSystemUnitIndex_DeviceId",
-          "DeviceId"
-        )
-    );
-    SchemaBuilder.AlterIndexTable<OzdsMeasurementDeviceDistributionSystemUnitIndex>(
-      table =>
-        table.CreateIndex(
-          "IDX_OzdsMeasurementDeviceDistributionSystemUnitIndex_RepresentativeUserId",
-          "DistributionSystemUnitRepresentativeUserId"
-        )
-    );
 
     return 1;
   }
