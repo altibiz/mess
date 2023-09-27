@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using OrchardCore.ContentManagement;
 using OrchardCore.Environment.Shell;
 
-namespace Mess.Iot.Pushing;
+namespace Mess.Ozds.Pushing;
 
 public class PidgeonPushHandler
   : JsonMeasurementDevicePushHandler<PidgeonPushRequest>

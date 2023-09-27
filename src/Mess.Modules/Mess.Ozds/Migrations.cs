@@ -476,47 +476,93 @@ public class Migrations : DataMigration
       );
     }
 
-    SchemaBuilder.CreateMapIndexTable<OzdsMeasurementDeviceIndex>(
+    SchemaBuilder.CreateMapIndexTable<OzdsMeasurementDeviceClosedDistributionSystemIndex>(
       table =>
         table
           .Column<string>("ContentItemId", c => c.WithLength(64))
           .Column<string>("DeviceId", c => c.WithLength(64))
+          .Column<bool>("IsMessenger")
           .Column<string>(
             "ClosedDistributionSystemContentItemId",
             c => c.WithLength(64)
           )
           .Column<string[]>(
-            "ClosedDistributionSystemRepresentativeUserIds",
+            "ClosedDistributionSystemRepresentativeUserId",
             c => c.WithLength(64)
           )
+    );
+    SchemaBuilder.AlterIndexTable<OzdsMeasurementDeviceClosedDistributionSystemIndex>(
+      table =>
+        table.CreateIndex(
+          "IDX_OzdsMeasurementDeviceClosedDistributionSystemIndex_DeviceId",
+          "DeviceId"
+        )
+    );
+    SchemaBuilder.AlterIndexTable<OzdsMeasurementDeviceClosedDistributionSystemIndex>(
+      table =>
+        table.CreateIndex(
+          "IDX_OzdsMeasurementDeviceClosedDistributionSystemIndex_RepresentativeUserId",
+          "ClosedDistributionSystemRepresentativeUserId"
+        )
+    );
+
+    SchemaBuilder.CreateMapIndexTable<OzdsMeasurementDeviceDistributionSystemOperatorIndex>(
+      table =>
+        table
+          .Column<string>("ContentItemId", c => c.WithLength(64))
+          .Column<string>("DeviceId", c => c.WithLength(64))
+          .Column<bool>("IsMessenger")
           .Column<string>(
             "DistributionSystemOperatorContentItemId",
             c => c.WithLength(64)
           )
           .Column<string[]>(
-            "DistributionSystemOperatorRepresentativeUserIds",
+            "DistributionSystemOperatorRepresentativeUserId",
             c => c.WithLength(64)
           )
+    );
+    SchemaBuilder.AlterIndexTable<OzdsMeasurementDeviceDistributionSystemOperatorIndex>(
+      table =>
+        table.CreateIndex(
+          "IDX_OzdsMeasurementDeviceDistributionSystemOperatorIndex_DeviceId",
+          "DeviceId"
+        )
+    );
+    SchemaBuilder.AlterIndexTable<OzdsMeasurementDeviceDistributionSystemOperatorIndex>(
+      table =>
+        table.CreateIndex(
+          "IDX_OzdsMeasurementDeviceDistributionSystemOperatorIndex_RepresentativeUserId",
+          "DistributionSystemOperatorRepresentativeUserId"
+        )
+    );
+
+    SchemaBuilder.CreateMapIndexTable<OzdsMeasurementDeviceDistributionSystemUnitIndex>(
+      table =>
+        table
+          .Column<string>("ContentItemId", c => c.WithLength(64))
+          .Column<string>("DeviceId", c => c.WithLength(64))
+          .Column<bool>("IsMessenger")
           .Column<string>(
             "DistributionSystemUnitContentItemId",
             c => c.WithLength(64)
           )
           .Column<string[]>(
-            "DistributionSystemUnitRepresentativeUserIds",
+            "DistributionSystemUnitRepresentativeUserId",
             c => c.WithLength(64)
           )
     );
-    SchemaBuilder.AlterIndexTable<OzdsMeasurementDeviceIndex>(
-      table =>
-        table.CreateIndex("IDX_OzdsMeasurementDeviceIndex_DeviceId", "DeviceId")
-    );
-    SchemaBuilder.AlterIndexTable<OzdsMeasurementDeviceIndex>(
+    SchemaBuilder.AlterIndexTable<OzdsMeasurementDeviceDistributionSystemUnitIndex>(
       table =>
         table.CreateIndex(
-          "IDX_OzdsMeasurementDeviceIndex_RepresentativeUserIds",
-          "DistributionSystemOperatorRepresentativeUserIds",
-          "ClosedDistributionSystemRepresentativeUserIds",
-          "DistributionSystemUnitRepresentativeUserIds"
+          "IDX_OzdsMeasurementDeviceDistributionSystemUnitIndex_DeviceId",
+          "DeviceId"
+        )
+    );
+    SchemaBuilder.AlterIndexTable<OzdsMeasurementDeviceDistributionSystemUnitIndex>(
+      table =>
+        table.CreateIndex(
+          "IDX_OzdsMeasurementDeviceDistributionSystemUnitIndex_RepresentativeUserId",
+          "DistributionSystemUnitRepresentativeUserId"
         )
     );
 

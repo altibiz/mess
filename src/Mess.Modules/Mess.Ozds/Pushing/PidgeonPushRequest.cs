@@ -1,4 +1,4 @@
-namespace Mess.Iot.Pushing;
+namespace Mess.Ozds.Pushing;
 
 public record PidgeonPushRequest(
   DateTime timestamp,

@@ -1,7 +1,6 @@
 using Mess.Ozds.Abstractions.Client;
 using Mess.Ozds.Abstractions.Indexes;
 using Mess.Ozds.ViewModels;
-using Mess.OrchardCore;
 using Mess.OrchardCore.Extensions.Microsoft;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +10,7 @@ using YesSql;
 using Mess.Ozds.Abstractions.Models;
 using OrchardCore.Title.Models;
 using Mess.Iot.Abstractions.Models;
+using YesSql.Services;
 
 namespace Mess.Ozds.Controllers;
 
@@ -31,12 +31,14 @@ public class OzdsMeasurementDeviceAdminController : Controller
     )
     {
       contentItems = await _session
-        .Query<ContentItem, OzdsMeasurementDeviceIndex>()
+        .Query<
+          ContentItem,
+          OzdsMeasurementDeviceDistributionSystemOperatorIndex
+        >()
         .Where(
           index =>
-            index.DistributionSystemOperatorRepresentativeUserIds.Contains(
-              orchardCoreUser.UserId
-            )
+            index.DistributionSystemOperatorRepresentativeUserId
+            == orchardCoreUser.UserId
         )
         .ListAsync();
     }

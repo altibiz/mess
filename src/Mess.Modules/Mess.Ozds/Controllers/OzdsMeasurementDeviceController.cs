@@ -8,6 +8,7 @@ using Mess.Ozds.ViewModels;
 using Mess.Ozds.Abstractions.Models;
 using OrchardCore.Title.Models;
 using Mess.Iot.Abstractions.Models;
+using YesSql.Services;
 
 namespace Mess.Ozds.Controllers;
 
@@ -25,12 +26,14 @@ public class OzdsMeasurementDeviceController : Controller
     )
     {
       contentItems = await _session
-        .Query<ContentItem, OzdsMeasurementDeviceIndex>()
+        .Query<
+          ContentItem,
+          OzdsMeasurementDeviceDistributionSystemOperatorIndex
+        >()
         .Where(
           index =>
-            index.DistributionSystemOperatorRepresentativeUserIds.Contains(
-              orchardCoreUser.UserId
-            )
+            index.DistributionSystemOperatorRepresentativeUserId
+            == orchardCoreUser.UserId
         )
         .ListAsync();
     }
@@ -41,12 +44,14 @@ public class OzdsMeasurementDeviceController : Controller
     )
     {
       contentItems = await _session
-        .Query<ContentItem, OzdsMeasurementDeviceIndex>()
+        .Query<
+          ContentItem,
+          OzdsMeasurementDeviceClosedDistributionSystemIndex
+        >()
         .Where(
           index =>
-            index.ClosedDistributionSystemRepresentativeUserIds.Contains(
-              orchardCoreUser.UserId
-            )
+            index.ClosedDistributionSystemRepresentativeUserId
+            == orchardCoreUser.UserId
         )
         .ListAsync();
     }
@@ -55,12 +60,11 @@ public class OzdsMeasurementDeviceController : Controller
     )
     {
       contentItems = await _session
-        .Query<ContentItem, OzdsMeasurementDeviceIndex>()
+        .Query<ContentItem, OzdsMeasurementDeviceDistributionSystemUnitIndex>()
         .Where(
           index =>
-            index.DistributionSystemUnitRepresentativeUserIds.Contains(
-              orchardCoreUser.UserId
-            )
+            index.DistributionSystemUnitRepresentativeUserId
+            == orchardCoreUser.UserId
         )
         .ListAsync();
     }

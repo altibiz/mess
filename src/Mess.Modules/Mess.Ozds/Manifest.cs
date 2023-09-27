@@ -10,10 +10,5 @@ using ManifestConstants = Mess.OrchardCore.ManifestConstants;
   Version = ManifestConstants.Version,
   Category = ManifestConstants.Category,
   Tags = new string[] { ManifestConstants.MessTag },
-  Dependencies = new string[]
-  {
-    "Mess.Timeseries",
-    "Mess.Iot",
-    "Mess.Billing"
-  }
+  Dependencies = new string[] { "Mess.Timeseries", "Mess.Iot", "Mess.Billing" }
 )]

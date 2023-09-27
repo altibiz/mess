@@ -14,6 +14,11 @@ using Mess.Ozds.Abstractions.Client;
 using Mess.Ozds.Client;
 using Mess.Ozds.Chart;
 using Mess.Chart.Abstractions.Extensions;
+using OrchardCore.ContentManagement;
+using Mess.Ozds.Abstractions.Models;
+using Mess.Iot.Abstractions.Extensions;
+using Mess.Ozds.Pushing;
+using Mess.Ozds.Indexes;
 
 namespace Mess.Ozds;
 
@@ -31,7 +36,17 @@ public class Startup : StartupBase
       services => services.GetRequiredService<IOzdsClient>()
     );
 
+    services.AddContentPart<OzdsMeasurementDevicePart>();
+    services.AddIndexProvider<OzdsMeasurementDeviceClosedDistributionSystemIndexProvider>();
+    services.AddIndexProvider<OzdsMeasurementDeviceDistributionSystemOperatorIndexProvider>();
+    services.AddIndexProvider<OzdsMeasurementDeviceDistributionSystemUnitIndexProvider>();
+
+    services.AddContentPart<AbbMeasurementDevicePart>();
+    services.AddMeasurementDevicePushHandler<AbbPushHandler>();
     services.AddChartProvider<AbbChartProvider>();
+
+    services.AddContentPart<PidgeonMeasurementDevicePart>();
+    services.AddMeasurementDevicePushHandler<PidgeonPushHandler>();
   }
 
   public override void Configure(
@@ -45,8 +60,8 @@ public class Startup : StartupBase
       .Value.AdminUrlPrefix;
 
     routes.MapAreaControllerRoute(
-      name: "Mess.Eor.MeasurementDeviceAdminController.List",
-      areaName: "Mess.Eor",
+      name: "Mess.Ozds.MeasurementDeviceAdminController.List",
+      areaName: "Mess.Ozds",
       pattern: adminUrlPrefix + "/Devices",
       defaults: new
       {
@@ -56,8 +71,8 @@ public class Startup : StartupBase
     );
 
     routes.MapAreaControllerRoute(
-      name: "Mess.Eor.MeasurementDeviceAdminController.Detail",
-      areaName: "Mess.Eor",
+      name: "Mess.Ozds.MeasurementDeviceAdminController.Detail",
+      areaName: "Mess.Ozds",
       pattern: adminUrlPrefix + "/Devices/{contentItemId}",
       defaults: new
       {
@@ -67,8 +82,8 @@ public class Startup : StartupBase
     );
 
     routes.MapAreaControllerRoute(
-      name: "Mess.Eor.MeasurementDeviceController.List",
-      areaName: "Mess.Eor",
+      name: "Mess.Ozds.MeasurementDeviceController.List",
+      areaName: "Mess.Ozds",
       pattern: "/Devices",
       defaults: new
       {
@@ -78,8 +93,8 @@ public class Startup : StartupBase
     );
 
     routes.MapAreaControllerRoute(
-      name: "Mess.Eor.MeasurementDeviceController.Detail",
-      areaName: "Mess.Eor",
+      name: "Mess.Ozds.MeasurementDeviceController.Detail",
+      areaName: "Mess.Ozds",
       pattern: "/Devices/{contentItemId}",
       defaults: new
       {

@@ -19,6 +19,7 @@ using YesSql.Indexes;
 using Mess.Iot.Context;
 using Mess.Iot.Abstractions.Services;
 using Mess.Iot.Services;
+using Mess.OrchardCore.Extensions.Microsoft;
 
 namespace Mess.Iot;
 
@@ -41,7 +42,7 @@ public class Startup : StartupBase
       services => services.GetRequiredService<ITimeseriesClient>()
     );
 
-    services.AddSingleton<IIndexProvider, MeasurementDeviceIndexProvider>();
+    services.AddIndexProvider<MeasurementDeviceIndexProvider>();
 
     services.AddScoped<
       IMeasurementDeviceContentItemCache,

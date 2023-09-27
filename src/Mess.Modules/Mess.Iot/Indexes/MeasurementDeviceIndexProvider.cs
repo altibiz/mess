@@ -20,6 +20,7 @@ public class MeasurementDeviceIndexProvider : IndexProvider<ContentItem>
         {
           ContentItemId = contentItem.ContentItemId,
           DeviceId = measurementDevicePart.DeviceId.Text,
+          IsMessenger = measurementDevicePart.IsMessenger,
         };
       });
   }
