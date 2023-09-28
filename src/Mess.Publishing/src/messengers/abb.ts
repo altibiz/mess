@@ -3,8 +3,7 @@ import { Create } from "./index";
 
 export const push: Create = async (template) => {
   const data = {
-    voltage: (Math.random() * 1000).toFixed(0),
-    currentL1: (Math.random() * 1000).toFixed(0),
+    currentL1: "null",
     currentL2: (Math.random() * 1000).toFixed(0),
     currentL3: (Math.random() * 1000).toFixed(0),
     voltageL1: (Math.random() * 1000).toFixed(0),

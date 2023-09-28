@@ -1,11 +1,10 @@
 import { DateTime } from "luxon";
 import { importTemplates } from "../templates";
-import compile from "./compile";
-import { push as egaugePush } from "./egauge";
 import { push as abbPush } from "./abb";
+import compile from "./compile";
 import { Create } from "./index";
 
-const allowedTemplates = { egauge: egaugePush, abb: abbPush };
+const allowedTemplates = { abb: abbPush };
 let templates: Awaited<ReturnType<typeof importTemplates>> | null = null;
 
 export const push: Create = async (template) => {
@@ -14,7 +13,7 @@ export const push: Create = async (template) => {
   }
 
   const data = {
-    timestamp: DateTime.utc().toISO(),
+    timestamp: `"${DateTime.utc().toISO()}"`,
     measurements: JSON.stringify(
       (
         await Promise.all(

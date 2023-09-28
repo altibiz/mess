@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
-import { Create } from "./index";
 import compile from "./compile";
+import { Create } from "./index";
 
 export const push: Create = async (template) => {
   const now = DateTime.now().toUTC();
@@ -35,7 +35,7 @@ export const update: Create = async (template) => {
   const secondDiodeBridgeOk = Math.random() > 0.9;
 
   const data = {
-    timestamp: now.toISO(),
+    timestamp: `"${now.toISO()}"`,
     mode: (Math.random() * 63).toFixed(0),
     start: isRunning,
     stop: !isRunning,
