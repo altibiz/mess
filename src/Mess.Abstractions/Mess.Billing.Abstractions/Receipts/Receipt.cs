@@ -1,16 +1,17 @@
-using OrchardCore.ContentManagement;
-
 namespace Mess.Billing.Abstractions.Receipts;
 
 public record Receipt(
-  ContentItem[] Parties,
-  ContentItem Issuer,
-  ContentItem Invoice,
+  string BillableContnetItemId,
+  string IssuerContentItemId,
+  string RecipientContentItemId,
+  string[] PartyContentItemIds,
+  string? InvoiceContentItemId,
   Guid Id,
-  DateTime Issued,
-  ReceiptSection[] Sections
+  DateTime IssuedTimestamp,
+  ReceiptSection[] Sections,
+  decimal Total
 );
 
-public record ReceiptSection(string Title, ReceiptItem[] Items, decimal Total);
+public record ReceiptSection(string Title, ReceiptElement[] Items, decimal Total);
 
-public record ReceiptItem(string Title, decimal Amount);
+public record ReceiptElement(string Title, decimal Amount);

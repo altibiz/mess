@@ -6,7 +6,7 @@ public interface IReceiptFactory
 {
   string ContentType { get; }
 
-  Task<Receipt> Create(ContentItem contentItem);
+  Task<Receipt> Create(ContentItem contentItem, ContentItem invoice);
 
-  Task<Receipt> CreateAsync(ContentItem contentItem);
+  Task<Receipt> CreateAsync(ContentItem contentItem, ContentItem invoice);
 }
