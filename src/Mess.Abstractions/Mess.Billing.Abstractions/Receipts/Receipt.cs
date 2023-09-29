@@ -5,6 +5,7 @@ namespace Mess.Billing.Abstractions.Receipts;
 public record Receipt(
   ContentItem[] Parties,
   ContentItem Issuer,
+  ContentItem Invoice,
   Guid Id,
   DateTime Issued,
   ReceiptSection[] Sections
