@@ -679,7 +679,7 @@ public class Migrations : DataMigration
                 .WithPosition("4")
           )
           .WithPart(
-            "BillablePart",
+            "BillingPart",
             part =>
               part.WithDisplayName("Billing")
                 .WithDescription("Billing information.")

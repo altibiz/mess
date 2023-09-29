@@ -226,11 +226,11 @@ public class Migrations : DataMigration
     );
 
     _contentDefinitionManager.AlterPartDefinition(
-      "BillablePart",
+      "BillingPart",
       builder =>
         builder
           .Attachable()
-          .WithDisplayName("Billable")
+          .WithDisplayName("Billing")
           .WithDescription("Make a content item billable.")
           .WithField(
             "LegalEntity",
