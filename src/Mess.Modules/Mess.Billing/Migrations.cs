@@ -143,6 +143,48 @@ public class Migrations : DataMigration
           )
     );
 
+    _contentDefinitionManager.AlterPartDefinition(
+      "ReceiptPart",
+      builder =>
+        builder
+          .Attachable()
+          .WithDisplayName("Receipt")
+          .WithDescription("A receipt.")
+    );
+    _contentDefinitionManager.AlterTypeDefinition(
+      "Receipt",
+      builder =>
+        builder
+          .Creatable()
+          .Listable()
+          .Securable()
+          .DisplayedAs("Receipt")
+          .WithDescription("A receipt.")
+          .WithPart("TitlePart", part => part.WithPosition("1"))
+          .WithPart("ReceiptPart", part => part.WithPosition("2"))
+    );
+
+    _contentDefinitionManager.AlterPartDefinition(
+      "InvoicePart",
+      builder =>
+        builder
+          .Attachable()
+          .WithDisplayName("Invoice")
+          .WithDescription("An invoice.")
+    );
+    _contentDefinitionManager.AlterTypeDefinition(
+      "Invoice",
+      builder =>
+        builder
+          .Creatable()
+          .Listable()
+          .Securable()
+          .DisplayedAs("Invoice")
+          .WithDescription("An invoice.")
+          .WithPart("TitlePart", part => part.WithPosition("1"))
+          .WithPart("InvoicePart", part => part.WithPosition("2"))
+    );
+
     return 1;
   }
 

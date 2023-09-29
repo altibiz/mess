@@ -29,12 +29,5 @@
   },
   "msbuild": {
     "EnablePackageAutoRestore": true
-  },
-  "fileOptions": {
-    "excludeSearchPatterns": [
-      "**/node_modules/**/*",
-      "**/bin/**/*",
-      "**/obj/**/*"
-    ]
   }
 }

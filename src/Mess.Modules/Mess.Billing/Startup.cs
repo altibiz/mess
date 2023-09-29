@@ -1,5 +1,5 @@
+using Mess.Billing.Abstractions.Models;
 using Mess.OrchardCore.Extensions.Microsoft;
-using Mess.Ozds.Abstractions.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +17,10 @@ public class Startup : StartupBase
     services.AddResources<Resources>();
 
     services.AddContentPart<LegalEntityPart>();
+
+    services.AddContentPart<ReceiptPart>();
+
+    services.AddContentPart<InvoicePart>();
   }
 
   public override void Configure(

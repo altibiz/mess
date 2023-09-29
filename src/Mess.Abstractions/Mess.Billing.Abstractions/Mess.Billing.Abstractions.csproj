@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="OrchardCore.ContentFields" Version="$(MessOrchardVersion)" />
+    <PackageReference Include="OrchardCore.Title" Version="$(MessOrchardVersion)" />
   </ItemGroup>
 
 </Project>

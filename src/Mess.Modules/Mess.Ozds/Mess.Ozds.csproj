@@ -10,6 +10,7 @@
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Timeseries.Abstractions/Mess.Timeseries.Abstractions.csproj" />
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Chart.Abstractions/Mess.Chart.Abstractions.csproj" />
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Fields.Abstractions/Mess.Fields.Abstractions.csproj" />
+    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Billing.Abstractions/Mess.Billing.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>
