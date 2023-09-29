@@ -225,6 +225,31 @@ public class Migrations : DataMigration
           )
     );
 
+    _contentDefinitionManager.AlterPartDefinition(
+      "BillablePart",
+      builder =>
+        builder
+          .Attachable()
+          .WithDisplayName("Billable")
+          .WithDescription("Make a content item billable.")
+          .WithField(
+            "LegalEntity",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("ContentPickerField")
+                .WithDisplayName("Legal entity")
+                .WithDescription("Legal entity to bill.")
+                .WithSettings(
+                  new ContentPickerFieldSettings
+                  {
+                    Required = true,
+                    Hint = "Legal entity to bill.",
+                    DisplayedStereotypes = new[] { "Legal entity" }
+                  }
+                )
+          )
+    );
+
     return 1;
   }
 
