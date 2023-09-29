@@ -8,7 +8,7 @@ public class ReceiptItem : ContentItemBase
 {
   public Lazy<TitlePart> TitlePart { get; private set; } = default!;
 
-  public Lazy<ReceiptPart> InvoicePart { get; private set; } = default!;
+  public Lazy<ReceiptPart> ReceiptPart { get; private set; } = default!;
 
   private ReceiptItem(ContentItem contentItem)
     : base(contentItem) { }
