@@ -2,7 +2,7 @@ using YesSql.Indexes;
 
 namespace Mess.Billing.Abstractions.Indexes;
 
-public class BillableIndex : MapIndex
+public class BillingIndex : MapIndex
 {
   public string ContentItemId { get; set; } = default!;
 }

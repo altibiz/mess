@@ -5,18 +5,18 @@ using YesSql.Indexes;
 
 namespace Mess.Billing.Indexes;
 
-public class BillableIndexProvider : IndexProvider<ContentItem>
+public class BillingIndexProvider : IndexProvider<ContentItem>
 {
   public override void Describe(DescribeContext<ContentItem> context)
   {
     context
-      .For<BillableIndex>()
-      .When(contentItem => contentItem.Has<BillablePart>())
+      .For<BillingIndex>()
+      .When(contentItem => contentItem.Has<BillingPart>())
       .Map(contentItem =>
       {
-        var billablePart = contentItem.As<BillablePart>();
+        var billablePart = contentItem.As<BillingPart>();
 
-        return new BillableIndex { ContentItemId = contentItem.ContentItemId, };
+        return new BillingIndex { ContentItemId = contentItem.ContentItemId, };
       });
   }
 }

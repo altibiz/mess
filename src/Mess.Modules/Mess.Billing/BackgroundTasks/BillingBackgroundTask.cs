@@ -25,7 +25,7 @@ public class BillingBackgroundTask : IBackgroundTask
     var contentManager = serviceProvider.GetRequiredService<IContentManager>();
 
     var billables = await session
-      .Query<ContentItem, BillableIndex>()
+      .Query<ContentItem, BillingIndex>()
       .ListAsync();
     foreach (var billable in billables)
     {

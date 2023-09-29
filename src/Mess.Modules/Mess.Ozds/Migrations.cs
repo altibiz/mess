@@ -678,6 +678,13 @@ public class Migrations : DataMigration
                 )
                 .WithPosition("4")
           )
+          .WithPart(
+            "BillablePart",
+            part =>
+              part.WithDisplayName("Billing")
+                .WithDescription("Billing information.")
+                .WithPosition("5")
+          )
     );
 
     if (_hostEnvironment.IsDevelopment())

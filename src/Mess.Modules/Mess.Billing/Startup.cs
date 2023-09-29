@@ -29,7 +29,7 @@ public class Startup : StartupBase
 
     services.AddContentPart<InvoicePart>();
 
-    services.AddIndexProvider<BillableIndexProvider>();
+    services.AddIndexProvider<BillingIndexProvider>();
     services.AddIndexProvider<PaymentIndexProvider>();
     services.AddBackgroundTask<BillingBackgroundTask>();
     services.AddContentHandler<BillingSendHandler>();
