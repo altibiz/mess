@@ -12,6 +12,10 @@ public record Invoice(
   decimal Total
 );
 
-public record InvoiceSection(string Title, InvoiceElement[] Items, decimal Total);
+public record InvoiceSection(
+  string Title,
+  InvoiceElement[] Items,
+  decimal Total
+);
 
 public record InvoiceElement(string Title, decimal Amount);

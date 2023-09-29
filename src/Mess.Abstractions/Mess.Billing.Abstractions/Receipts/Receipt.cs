@@ -12,6 +12,10 @@ public record Receipt(
   decimal Total
 );
 
-public record ReceiptSection(string Title, ReceiptElement[] Items, decimal Total);
+public record ReceiptSection(
+  string Title,
+  ReceiptElement[] Items,
+  decimal Total
+);
 
 public record ReceiptElement(string Title, decimal Amount);

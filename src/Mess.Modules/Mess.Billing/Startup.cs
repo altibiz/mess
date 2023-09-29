@@ -31,7 +31,8 @@ public class Startup : StartupBase
     IApplicationBuilder app,
     IEndpointRouteBuilder routes,
     IServiceProvider serviceProvider
-  ) {
+  )
+  {
     var adminUrlPrefix = app.ApplicationServices
       .GetRequiredService<IOptions<AdminOptions>>()
       .Value.AdminUrlPrefix;
@@ -46,5 +47,5 @@ public class Startup : StartupBase
         action = nameof(AdminController.ConfirmPayment)
       }
     );
-   }
+  }
 }
