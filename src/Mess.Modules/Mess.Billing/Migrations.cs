@@ -5,6 +5,7 @@ using OrchardCore.ContentManagement.Metadata.Settings;
 using OrchardCore.Data.Migration;
 using OrchardCore.Recipes.Services;
 using OrchardCore.Security;
+using OrchardCore.Title.Models;
 
 namespace Mess.Billing;
 
@@ -160,8 +161,28 @@ public class Migrations : DataMigration
           .Securable()
           .DisplayedAs("Receipt")
           .WithDescription("A receipt.")
-          .WithPart("TitlePart", part => part.WithPosition("1"))
-          .WithPart("ReceiptPart", part => part.WithPosition("2"))
+          .WithPart(
+            "TitlePart",
+            part =>
+              part.WithDisplayName("Title")
+                .WithDescription("Title of the receipt.")
+                .WithSettings<TitlePartSettings>(
+                  new()
+                  {
+                    RenderTitle = true,
+                    Options = TitlePartOptions.GeneratedHidden,
+                    Pattern = @"{{- ContentItem.Content.ReceiptPart.Id -}}"
+                  }
+                )
+                .WithPosition("1")
+          )
+          .WithPart(
+            "ReceiptPart",
+            part =>
+              part.WithDisplayName("Receipt")
+                .WithDescription("A receipt.")
+                .WithPosition("2")
+          )
     );
 
     _contentDefinitionManager.AlterPartDefinition(
@@ -181,8 +202,27 @@ public class Migrations : DataMigration
           .Securable()
           .DisplayedAs("Invoice")
           .WithDescription("An invoice.")
-          .WithPart("TitlePart", part => part.WithPosition("1"))
-          .WithPart("InvoicePart", part => part.WithPosition("2"))
+          .WithPart(
+            "TitlePart",
+            part =>
+              part.WithDisplayName("Title")
+                .WithDescription("Title of the invoice.")
+                .WithSettings<TitlePartSettings>(
+                  new()
+                  {
+                    RenderTitle = true,
+                    Options = TitlePartOptions.GeneratedHidden,
+                    Pattern = @"{{- ContentItem.Content.ReceiptPart.Id -}}"
+                  }
+                )
+          )
+          .WithPart(
+            "InvoicePart",
+            part =>
+              part.WithDisplayName("Receipt")
+                .WithDescription("A receipt.")
+                .WithPosition("2")
+          )
     );
 
     return 1;
