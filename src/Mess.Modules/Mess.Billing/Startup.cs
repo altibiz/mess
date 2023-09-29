@@ -1,5 +1,8 @@
 using Mess.Billing.Abstractions.Models;
+using Mess.Billing.BackgroundTasks;
 using Mess.Billing.Controllers;
+using Mess.Billing.Handler;
+using Mess.Billing.Indexes;
 using Mess.OrchardCore.Extensions.Microsoft;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
@@ -25,6 +28,11 @@ public class Startup : StartupBase
     services.AddContentPart<ReceiptPart>();
 
     services.AddContentPart<InvoicePart>();
+
+    services.AddIndexProvider<BillableIndexProvider>();
+    services.AddIndexProvider<PaymentIndexProvider>();
+    services.AddBackgroundTask<BillingBackgroundTask>();
+    services.AddContentHandler<BillingSendHandler>();
   }
 
   public override void Configure(

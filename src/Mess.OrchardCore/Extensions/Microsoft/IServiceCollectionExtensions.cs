@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Options;
 using OrchardCore.BackgroundTasks;
+using OrchardCore.ContentManagement.Handlers;
 using OrchardCore.ContentTypes.Editors;
 using OrchardCore.Modules;
 using OrchardCore.Navigation;
@@ -102,6 +103,13 @@ public static class IServiceCollectionExtensions
       IContentPartFieldDefinitionDisplayDriver,
       TContentPartFieldDefinitionDisplayDriver
     >();
+    return services;
+  }
+
+  public static IServiceCollection AddContentHandler<TContentHandler>(this IServiceCollection services)
+  where TContentHandler : class, IContentHandler
+  {
+    services.AddScoped<IContentHandler, TContentHandler>();
     return services;
   }
 }
