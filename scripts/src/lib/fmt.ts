@@ -1,5 +1,5 @@
-export const yarnFmt = (output: string) =>
-  output
+export const yarnFmt = (output?: string | null) =>
+  (output || "")
     .split("\n")
     .filter((line) => line)
     .map(
@@ -8,8 +8,8 @@ export const yarnFmt = (output: string) =>
     )
     .join("\n");
 
-export const dotnetFmt = (output: string) =>
-  `${"dotnet".padEnd(10)}: ${output
+export const dotnetFmt = (output?: string | null) =>
+  `${"dotnet".padEnd(10)}: ${(output || "")
     .split("\n")
     .map((line) => line.substring(line.indexOf(":") + 1).trim())
     .join(" ")}`;
