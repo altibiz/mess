@@ -5,6 +5,7 @@ export const createChart = async (
   contentItemId: string,
   isPreview = false,
 ): Promise<ChartDescriptor> => {
+  requestUrlPrefix = requestUrlPrefix ?? "";
   const response = await fetch(
     isPreview
       ? `${requestUrlPrefix}/Chart/Preview/${contentItemId}`
