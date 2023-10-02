@@ -770,6 +770,16 @@ public class Migrations : DataMigration
           chartPart.ChartContentItemId = abbChart.ContentItemId;
         }
       );
+      abbMeasurementDevice.Alter(
+        abbMeasurementDevice => abbMeasurementDevice.BillingPart,
+        billingPart =>
+        {
+          billingPart.LegalEntity = new()
+          {
+            ContentItemIds = new[] { distributionSystemUnitContentItemId }
+          };
+        }
+      );
       await _contentManager.CreateAsync(
         abbMeasurementDevice,
         VersionOptions.Latest

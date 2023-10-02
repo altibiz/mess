@@ -46,6 +46,17 @@ public class Startup : StartupBase
       .Value.AdminUrlPrefix;
 
     routes.MapAreaControllerRoute(
+      name: "Mess.Billing.AdminController.CreateInvoice",
+      areaName: "Mess.Billing",
+      pattern: adminUrlPrefix + "/CreateInvoice/{contentItemId}",
+      defaults: new
+      {
+        controller = typeof(AdminController).ControllerName(),
+        action = nameof(AdminController.CreateInvoice)
+      }
+    );
+
+    routes.MapAreaControllerRoute(
       name: "Mess.Billing.AdminController.ConfirmPayment",
       areaName: "Mess.Billing",
       pattern: adminUrlPrefix + "/ConfirmPayment/{contentItemId}",

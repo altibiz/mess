@@ -5,11 +5,11 @@ namespace Mess.Billing.Abstractions.Extensions;
 
 public static class IServiceCollectionExtensions
 {
-  public static void AddBillingFactories<TReceiptFactory, TInvoiceFactory>(
+  public static void AddBillingFactories<TInvoiceFactory, TReceiptFactory>(
     this IServiceCollection services
   )
-    where TReceiptFactory : class, IReceiptFactory
     where TInvoiceFactory : class, IInvoiceFactory
+    where TReceiptFactory : class, IReceiptFactory
   {
     services.AddScoped<IInvoiceFactory, TInvoiceFactory>();
     services.AddScoped<IReceiptFactory, TReceiptFactory>();

@@ -31,7 +31,7 @@ public class AbbMeasurementDeviceItem : ContentItemBase
 
   public Lazy<ChartPart> ChartPart { get; private set; } = default!;
 
-  public Lazy<BillingPart> BillablePart { get; private set; } = default!;
+  public Lazy<BillingPart> BillingPart { get; private set; } = default!;
 
   private AbbMeasurementDeviceItem(ContentItem contentItem)
     : base(contentItem) { }

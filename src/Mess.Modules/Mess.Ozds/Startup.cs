@@ -20,6 +20,8 @@ using Mess.Iot.Abstractions.Extensions;
 using Mess.Ozds.Pushing;
 using Mess.Ozds.Indexes;
 using Mess.Ozds.Security;
+using Mess.Billing.Abstractions.Extensions;
+using Mess.Ozds.Billing;
 
 namespace Mess.Ozds;
 
@@ -45,6 +47,7 @@ public class Startup : StartupBase
     services.AddContentPart<AbbMeasurementDevicePart>();
     services.AddMeasurementDevicePushHandler<AbbPushHandler>();
     services.AddChartProvider<AbbChartProvider>();
+    services.AddBillingFactories<AbbInvoiceFactory, AbbReceiptFactory>();
 
     services.AddContentPart<PidgeonMeasurementDevicePart>();
     services.AddMeasurementDevicePushHandler<PidgeonPushHandler>();

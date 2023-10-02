@@ -1,3 +1,4 @@
+using Mess.Billing.Abstractions.Indexes;
 using Microsoft.AspNetCore.Identity;
 using OrchardCore.ContentFields.Settings;
 using OrchardCore.ContentManagement.Metadata;
@@ -6,6 +7,7 @@ using OrchardCore.Data.Migration;
 using OrchardCore.Recipes.Services;
 using OrchardCore.Security;
 using OrchardCore.Title.Models;
+using YesSql.Sql;
 
 namespace Mess.Billing;
 
@@ -249,6 +251,33 @@ public class Migrations : DataMigration
                 )
           )
     );
+
+    SchemaBuilder.CreateMapIndexTable<BillingIndex>(
+      table => table.Column<string>("ContentItemId", c => c.WithLength(64))
+    );
+
+    SchemaBuilder.CreateMapIndexTable<PaymentIndex>(
+      table =>
+        table
+          .Column<string>("BillingContentItemId", c => c.WithLength(64))
+          .Column<string>("InvoiceContentItemId", c => c.WithLength(64))
+          .Column<string>("ReceiptContentItemId", c => c.WithLength(64))
+    );
+    SchemaBuilder.AlterIndexTable<PaymentIndex>(table =>
+    {
+      table.CreateIndex(
+        "IDX_PaymentIndex_BillingContentItemId",
+        "BillingContentItemId"
+      );
+      table.CreateIndex(
+        "IDX_PaymentIndex_InvoiceContentItemId",
+        "InvoiceContentItemId"
+      );
+      table.CreateIndex(
+        "IDX_PaymentIndex_ReceiptContentItemId",
+        "ReceiptContentItemId"
+      );
+    });
 
     return 1;
   }
