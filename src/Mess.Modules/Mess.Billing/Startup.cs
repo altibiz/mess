@@ -24,10 +24,9 @@ public class Startup : StartupBase
     services.AddResources<Resources>();
 
     services.AddContentPart<LegalEntityPart>();
-
     services.AddContentPart<ReceiptPart>();
-
     services.AddContentPart<InvoicePart>();
+    services.AddContentPart<BillingPart>();
 
     services.AddIndexProvider<BillingIndexProvider>();
     services.AddIndexProvider<PaymentIndexProvider>();
