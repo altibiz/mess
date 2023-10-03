@@ -11,7 +11,10 @@ public class AbbInvoiceFactory : IInvoiceFactory
 
   public string ContentType => InvoiceFactoryContentType;
 
-  public Invoice Create(ContentItem contentItem)
+  public Invoice Create(
+    ContentItem contentItem,
+    ContentItem[] catalogueContentItems
+  )
   {
     var abbMeasurementDevice =
       contentItem.AsContent<AbbMeasurementDeviceItem>();
@@ -26,6 +29,10 @@ public class AbbInvoiceFactory : IInvoiceFactory
         .OzdsMeasurementDevicePart
         .Value
         .DistributionSystemUnitContentItemId,
+      CatalogueContentItemIds: abbMeasurementDevice
+        .BillingPart
+        .Value
+        .CatalogueContentItemIds,
       PartyContentItemIds: new[]
       {
         abbMeasurementDevice
@@ -49,7 +56,10 @@ public class AbbInvoiceFactory : IInvoiceFactory
     );
   }
 
-  public async Task<Invoice> CreateAsync(ContentItem contentItem)
+  public async Task<Invoice> CreateAsync(
+    ContentItem contentItem,
+    ContentItem[] catalogueContentItems
+  )
   {
     var abbMeasurementDevice =
       contentItem.AsContent<AbbMeasurementDeviceItem>();
@@ -64,6 +74,10 @@ public class AbbInvoiceFactory : IInvoiceFactory
         .OzdsMeasurementDevicePart
         .Value
         .DistributionSystemUnitContentItemId,
+      CatalogueContentItemIds: abbMeasurementDevice
+        .BillingPart
+        .Value
+        .CatalogueContentItemIds,
       PartyContentItemIds: new[]
       {
         abbMeasurementDevice

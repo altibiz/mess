@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.Admin;
 using OrchardCore.ContentManagement;
 using OrchardCore.Mvc.Core.Utilities;
+using YesSql;
 using ContentAdminController = global::OrchardCore.Contents.Controllers.AdminController;
 
 namespace Mess.Billing.Controllers;
@@ -17,13 +18,13 @@ public class AdminController : Controller
   [HttpPost]
   public async Task<IActionResult> CreateInvoice(string contentItemId)
   {
-    var billingItem = await _contentManager.GetAsync(contentItemId);
-    if (billingItem == null)
+    var billingContentItem = await _contentManager.GetAsync(contentItemId);
+    if (billingContentItem == null)
     {
       return NotFound();
     }
 
-    var billingPart = billingItem.As<BillingPart>();
+    var billingPart = billingContentItem.As<BillingPart>();
     if (billingPart == null)
     {
       return BadRequest();
@@ -31,16 +32,23 @@ public class AdminController : Controller
 
     var invoiceFactory = _serviceProvider
       .GetServices<IInvoiceFactory>()
-      .Where(factory => factory.ContentType == billingItem.ContentType)
+      .Where(factory => factory.ContentType == billingContentItem.ContentType)
       .FirstOrDefault();
     if (invoiceFactory == null)
     {
       throw new NotImplementedException(
-        $"No receipt factory for {billingItem.ContentType}"
+        $"No receipt factory for {billingContentItem.ContentType}"
       );
     }
 
-    var invoice = await invoiceFactory.CreateAsync(billingItem);
+    var catalogueContentItems = (
+      await _contentManager.GetAsync(billingPart.CatalogueContentItemIds)
+    ).ToArray();
+
+    var invoice = await invoiceFactory.CreateAsync(
+      contentItem: billingContentItem,
+      catalogueContentItems: catalogueContentItems
+    );
     var invoiceItem = await _contentManager.NewContentAsync<InvoiceItem>();
     invoiceItem.Alter(
       invoiceItem => invoiceItem.InvoicePart,
@@ -100,6 +108,7 @@ public class AdminController : Controller
       contentItem: billingItem,
       invoiceContentItem: invoiceItem
     );
+    _session.Save(receipt);
 
     var receiptItem = await _contentManager.NewContentAsync<ReceiptItem>();
     receiptItem.Alter(
@@ -136,13 +145,16 @@ public class AdminController : Controller
 
   public AdminController(
     IContentManager contentManager,
-    IServiceProvider serviceProvider
+    IServiceProvider serviceProvider,
+    ISession session
   )
   {
     _contentManager = contentManager;
     _serviceProvider = serviceProvider;
+    _session = session;
   }
 
   private readonly IContentManager _contentManager;
   private readonly IServiceProvider _serviceProvider;
+  private readonly ISession _session;
 }

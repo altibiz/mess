@@ -4,7 +4,7 @@ using OrchardCore.ContentManagement.Handlers;
 
 namespace Mess.Billing.Handler;
 
-public class BillingSendHandler : ContentHandlerBase
+public class PaymentHandler : ContentHandlerBase
 {
   public override async Task CreatedAsync(CreateContentContext context)
   {
@@ -21,5 +21,4 @@ public class BillingSendHandler : ContentHandlerBase
       // TODO: Send email
     }
   }
-
 }

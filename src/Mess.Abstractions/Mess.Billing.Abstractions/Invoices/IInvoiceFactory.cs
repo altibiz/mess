@@ -6,7 +6,10 @@ public interface IInvoiceFactory
 {
   string ContentType { get; }
 
-  Invoice Create(ContentItem contentItem);
+  Invoice Create(ContentItem contentItem, ContentItem[] catalogueContentItems);
 
-  Task<Invoice> CreateAsync(ContentItem contentItem);
+  Task<Invoice> CreateAsync(
+    ContentItem contentItem,
+    ContentItem[] catalogueContentItems
+  );
 }

@@ -28,6 +28,10 @@ public class AbbReceiptFactory : IReceiptFactory
         .OzdsMeasurementDevicePart
         .Value
         .DistributionSystemUnitContentItemId,
+      CatalogueContentItemIds: abbMeasurementDevice
+        .BillingPart
+        .Value
+        .CatalogueContentItemIds,
       PartyContentItemIds: new[]
       {
         abbMeasurementDevice
@@ -70,6 +74,10 @@ public class AbbReceiptFactory : IReceiptFactory
         .OzdsMeasurementDevicePart
         .Value
         .DistributionSystemUnitContentItemId,
+      CatalogueContentItemIds: abbMeasurementDevice
+        .BillingPart
+        .Value
+        .CatalogueContentItemIds,
       PartyContentItemIds: new[]
       {
         abbMeasurementDevice

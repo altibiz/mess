@@ -21,9 +21,9 @@ public class BillingPartDisplayDriver : ContentPartDisplayDriver<BillingPart>
         {
           model.Part = part;
           model.Definition = context.TypePartDefinition;
-          model.LegalEntityContentItemId =
-            part.LegalEntity.ContentItemIds.First();
           model.ContentItemId = part.ContentItem.ContentItemId;
+          model.LegalEntityContentItemId = part.LegalEntityContentItemId;
+          model.CatalogueContentItemIds = part.CatalogueContentItemIds;
         }
       )
       .Location("Detail", "Content");

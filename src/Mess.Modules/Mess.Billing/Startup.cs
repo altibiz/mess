@@ -25,17 +25,22 @@ public class Startup : StartupBase
     services.AddDataMigration<Migrations>();
     services.AddResources<Resources>();
 
-    services.AddContentPart<LegalEntityPart>();
-    services.AddContentPart<ReceiptPart>();
-    services.AddContentPart<InvoicePart>();
     services
       .AddContentPart<BillingPart>()
       .UseDisplayDriver<BillingPartDisplayDriver>();
-
     services.AddIndexProvider<BillingIndexProvider>();
-    services.AddIndexProvider<PaymentIndexProvider>();
     services.AddBackgroundTask<BillingBackgroundTask>();
-    services.AddContentHandler<BillingSendHandler>();
+
+    services.AddContentPart<ReceiptPart>();
+    services.AddContentPart<InvoicePart>();
+    services.AddIndexProvider<PaymentIndexProvider>();
+    services.AddContentHandler<PaymentHandler>();
+
+    services.AddContentPart<LegalEntityPart>();
+    services.AddIndexProvider<LegalEntityIndexProvider>();
+
+    services.AddContentPart<CataloguePart>();
+    services.AddIndexProvider<CatalogueIndexProvider>();
   }
 
   public override void Configure(

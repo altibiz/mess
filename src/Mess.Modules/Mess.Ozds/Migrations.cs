@@ -20,6 +20,8 @@ using YesSql.Sql;
 using Mess.Chart.Abstractions.Models;
 using Mess.Ozds.Abstractions.Client;
 using Mess.Fields.Abstractions;
+using OrchardCore.ContentFields.Settings;
+using GraphQL.Types;
 
 namespace Mess.Ozds;
 
@@ -105,6 +107,38 @@ public class Migrations : DataMigration
       table.CreateIndex(
         "IDX_OzdsMeasurementDeviceDistributionSystemUnitIndex_RepresentativeUserId",
         "DistributionSystemUnitRepresentativeUserId"
+      );
+    });
+
+    SchemaBuilder.CreateMapIndexTable<DistributionSystemUnitIndex>(
+      table =>
+        table
+          .Column<string>(
+            "DistributionSystemUnitContentItemId",
+            c => c.WithLength(64)
+          )
+          .Column<string>(
+            "ClosedDistributionSystemContentItemId",
+            c => c.WithLength(64)
+          )
+          .Column<string>(
+            "DistributionSystemOperatorContentItemId",
+            c => c.WithLength(64)
+          )
+    );
+    SchemaBuilder.AlterIndexTable<DistributionSystemUnitIndex>(table =>
+    {
+      table.CreateIndex(
+        "IDX_DistributionSystemUnitIndex_DistributionSystemUnitContentItemId",
+        "DistributionSystemUnitContentItemId"
+      );
+      table.CreateIndex(
+        "IDX_DistributionSystemUnitIndex_ClosedDistributionSystemContentItemId",
+        "ClosedDistributionSystemContentItemId"
+      );
+      table.CreateIndex(
+        "IDX_DistributionSystemUnitIndex_DistributionSystemOperatorContentItemId",
+        "DistributionSystemOperatorContentItemId"
       );
     });
 
@@ -321,6 +355,27 @@ public class Migrations : DataMigration
           .Attachable()
           .WithDescription("A closed distribution system.")
           .WithDisplayName("Closed distribution system")
+          .WithField(
+            "DistributionSystemOperator",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("ContentPickerField")
+                .WithDisplayName("Distribution system operator")
+                .WithDescription("Distribution system operator.")
+                .WithSettings<ContentPickerFieldSettings>(
+                  new()
+                  {
+                    Hint = "Distribution system operator.",
+                    Multiple = false,
+                    Required = true,
+                    DisplayedContentTypes = new[]
+                    {
+                      "DistributionSystemOperator"
+                    },
+                    DisplayAllContentTypes = false
+                  }
+                )
+          )
     );
 
     _contentDefinitionManager.AlterTypeDefinition(
@@ -399,6 +454,17 @@ public class Migrations : DataMigration
           };
         }
       );
+      closedDistributionSystem.Alter(
+        closedDistributionSystem =>
+          closedDistributionSystem.ClosedDistributionSystemPart,
+        closedDistributionSystemPart =>
+        {
+          closedDistributionSystemPart.DistributionSystemOperator = new()
+          {
+            ContentItemIds = new[] { distributionSystemOperatorContentItemId! }
+          };
+        }
+      );
 
       await _contentManager.CreateAsync(
         closedDistributionSystem,
@@ -413,6 +479,27 @@ public class Migrations : DataMigration
           .Attachable()
           .WithDescription("A distribution system unit.")
           .WithDisplayName("Distribution system unit")
+          .WithField(
+            "ClosedDistributionSystem",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("ContentPickerField")
+                .WithDisplayName("Closed distribution system")
+                .WithDescription("Closed distribution system.")
+                .WithSettings<ContentPickerFieldSettings>(
+                  new()
+                  {
+                    Hint = "Closed distribution system.",
+                    Multiple = false,
+                    Required = true,
+                    DisplayedContentTypes = new[]
+                    {
+                      "ClosedDistributionSystem"
+                    },
+                    DisplayAllContentTypes = false
+                  }
+                )
+          )
     );
 
     _contentDefinitionManager.AlterTypeDefinition(
@@ -491,12 +578,50 @@ public class Migrations : DataMigration
           };
         }
       );
+      distributionSystemUnit.Alter(
+        distributionSystemUnit =>
+          distributionSystemUnit.DistributionSystemUnitPart,
+        distributionSystemUnitPart =>
+        {
+          distributionSystemUnitPart.ClosedDistributionSystem = new()
+          {
+            ContentItemIds = new[] { closedDistributionSystemContentItemId! }
+          };
+        }
+      );
 
       await _contentManager.CreateAsync(
         distributionSystemUnit,
         VersionOptions.Latest
       );
     }
+
+    _contentDefinitionManager.AlterPartDefinition(
+      "OzdsMeasurementDevicePart",
+      builder =>
+        builder
+          .Attachable()
+          .WithDescription("An OZDS measurement device.")
+          .WithDisplayName("OZDS measurement device")
+          .WithField(
+            "DistributionSystemUnit",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("ContentPickerField")
+                .WithDisplayName("Distribution system unit")
+                .WithDescription("Distribution system unit.")
+                .WithSettings<ContentPickerFieldSettings>(
+                  new()
+                  {
+                    Hint = "Distribution system unit.",
+                    Multiple = false,
+                    Required = true,
+                    DisplayedContentTypes = new[] { "DistributionSystemUnit" },
+                    DisplayAllContentTypes = false
+                  }
+                )
+          )
+    );
 
     _contentDefinitionManager.AlterPartDefinition(
       "PidgeonMeasurementDevicePart",
@@ -520,7 +645,6 @@ public class Migrations : DataMigration
                 )
           )
     );
-
     _contentDefinitionManager.AlterTypeDefinition(
       "PidgeonMeasurementDevice",
       builder =>
@@ -598,18 +722,10 @@ public class Migrations : DataMigration
           pidgeonMeasurementDevice.OzdsMeasurementDevicePart,
         ozdsMeasurementDevicePart =>
         {
-          ozdsMeasurementDevicePart.ClosedDistributionSystemContentItemId =
-            closedDistributionSystemContentItemId!;
-          ozdsMeasurementDevicePart.ClosedDistributionSystemRepresentativeUserIds =
-            new[] { closedDistributionSystemRepresentativeId };
-          ozdsMeasurementDevicePart.DistributionSystemOperatorContentItemId =
-            distributionSystemOperatorContentItemId!;
-          ozdsMeasurementDevicePart.DistributionSystemOperatorRepresentativeUserIds =
-            new[] { distributionSystemOperatorRepresentativeId };
-          ozdsMeasurementDevicePart.DistributionSystemUnitContentItemId =
-            distributionSystemUnitContentItemId!;
-          ozdsMeasurementDevicePart.DistributionSystemUnitRepresentativeUserIds =
-            new[] { distributionSystemUnitRepresentativeId };
+          ozdsMeasurementDevicePart.DistributionSystemUnit = new()
+          {
+            ContentItemIds = new[] { distributionSystemUnitContentItemId! }
+          };
         }
       );
       await _contentManager.CreateAsync(
@@ -626,7 +742,6 @@ public class Migrations : DataMigration
           .WithDescription("A Abb measurement device.")
           .WithDisplayName("Abb measurement device")
     );
-
     _contentDefinitionManager.AlterTypeDefinition(
       "AbbMeasurementDevice",
       builder =>
@@ -663,11 +778,18 @@ public class Migrations : DataMigration
                 .WithPosition("2")
           )
           .WithPart(
+            "OzdsMeasurementDevicePart",
+            part =>
+              part.WithDisplayName("OZDS Measurement device")
+                .WithDescription("An OZDS measurement device.")
+                .WithPosition("3")
+          )
+          .WithPart(
             "AbbMeasurementDevicePart",
             part =>
               part.WithDisplayName("Abb measurement device")
                 .WithDescription("An Abb measurement device.")
-                .WithPosition("3")
+                .WithPosition("4")
           )
           .WithPart(
             "ChartPart",
@@ -676,14 +798,14 @@ public class Migrations : DataMigration
                 .WithDescription(
                   "Chart displaying the Abb measurement device data."
                 )
-                .WithPosition("4")
+                .WithPosition("5")
           )
           .WithPart(
             "BillingPart",
             part =>
               part.WithDisplayName("Billing")
                 .WithDescription("Billing information.")
-                .WithPosition("5")
+                .WithPosition("6")
           )
     );
 
@@ -749,18 +871,10 @@ public class Migrations : DataMigration
         abbMeasurementDevice => abbMeasurementDevice.OzdsMeasurementDevicePart,
         ozdsMeasurementDevicePart =>
         {
-          ozdsMeasurementDevicePart.ClosedDistributionSystemContentItemId =
-            closedDistributionSystemContentItemId!;
-          ozdsMeasurementDevicePart.ClosedDistributionSystemRepresentativeUserIds =
-            new[] { closedDistributionSystemRepresentativeId };
-          ozdsMeasurementDevicePart.DistributionSystemOperatorContentItemId =
-            distributionSystemOperatorContentItemId!;
-          ozdsMeasurementDevicePart.DistributionSystemOperatorRepresentativeUserIds =
-            new[] { distributionSystemOperatorRepresentativeId };
-          ozdsMeasurementDevicePart.DistributionSystemUnitContentItemId =
-            distributionSystemUnitContentItemId!;
-          ozdsMeasurementDevicePart.DistributionSystemUnitRepresentativeUserIds =
-            new[] { distributionSystemUnitRepresentativeId };
+          ozdsMeasurementDevicePart.DistributionSystemUnit = new()
+          {
+            ContentItemIds = new[] { distributionSystemUnitContentItemId! }
+          };
         }
       );
       abbMeasurementDevice.Alter(
@@ -768,16 +882,6 @@ public class Migrations : DataMigration
         chartPart =>
         {
           chartPart.ChartContentItemId = abbChart.ContentItemId;
-        }
-      );
-      abbMeasurementDevice.Alter(
-        abbMeasurementDevice => abbMeasurementDevice.BillingPart,
-        billingPart =>
-        {
-          billingPart.LegalEntity = new()
-          {
-            ContentItemIds = new[] { distributionSystemUnitContentItemId }
-          };
         }
       );
       await _contentManager.CreateAsync(

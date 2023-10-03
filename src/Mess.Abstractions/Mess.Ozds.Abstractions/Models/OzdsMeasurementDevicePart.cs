@@ -1,9 +1,12 @@
+using OrchardCore.ContentFields.Fields;
 using OrchardCore.ContentManagement;
 
 namespace Mess.Ozds.Abstractions.Models;
 
 public class OzdsMeasurementDevicePart : ContentPart
 {
+  public ContentPickerField DistributionSystemUnit { get; set; } = default!;
+
   public string ClosedDistributionSystemContentItemId { get; set; } = default!;
 
   public string[] ClosedDistributionSystemRepresentativeUserIds { get; set; } =

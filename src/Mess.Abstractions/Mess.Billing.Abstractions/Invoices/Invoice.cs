@@ -5,6 +5,7 @@ public record Invoice(
   string IssuerContentItemId,
   string RecipientContentItemId,
   string[] PartyContentItemIds,
+  string[] CatalogueContentItemIds,
   string? ReceiptContentItemId,
   Guid Id,
   DateTime IssuedTimestamp,

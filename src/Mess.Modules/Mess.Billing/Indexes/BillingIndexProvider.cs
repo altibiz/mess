@@ -14,9 +14,18 @@ public class BillingIndexProvider : IndexProvider<ContentItem>
       .When(contentItem => contentItem.Has<BillingPart>())
       .Map(contentItem =>
       {
-        var billablePart = contentItem.As<BillingPart>();
+        var billingPart = contentItem.As<BillingPart>();
 
-        return new BillingIndex { ContentItemId = contentItem.ContentItemId, };
+        return billingPart.CatalogueContentItemIds.Select(
+          catalogueContentItemId =>
+            new BillingIndex
+            {
+              ContentItemId = contentItem.ContentItemId,
+              ContentType = contentItem.ContentType,
+              LegalEntityContentItemId = billingPart.LegalEntityContentItemId,
+              CatalogueContentItemId = catalogueContentItemId,
+            }
+        );
       });
   }
 }

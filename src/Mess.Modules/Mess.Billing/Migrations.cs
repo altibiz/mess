@@ -221,8 +221,8 @@ public class Migrations : DataMigration
           .WithPart(
             "InvoicePart",
             part =>
-              part.WithDisplayName("Receipt")
-                .WithDescription("A receipt.")
+              part.WithDisplayName("Invoice")
+                .WithDescription("An invoice.")
                 .WithPosition("2")
           )
     );
@@ -234,41 +234,50 @@ public class Migrations : DataMigration
           .Attachable()
           .WithDisplayName("Billing")
           .WithDescription("Make a content item billable.")
-          .WithField(
-            "LegalEntity",
-            fieldBuilder =>
-              fieldBuilder
-                .OfType("ContentPickerField")
-                .WithDisplayName("Legal entity")
-                .WithDescription("Legal entity to bill.")
-                .WithSettings(
-                  new ContentPickerFieldSettings
-                  {
-                    Required = true,
-                    Hint = "Legal entity to bill.",
-                    DisplayedStereotypes = new[] { "Legal entity" }
-                  }
-                )
-          )
+    );
+
+    _contentDefinitionManager.AlterPartDefinition(
+      "CataloguePart",
+      builder =>
+        builder
+          .Attachable()
+          .WithDisplayName("Catalogue")
+          .WithDescription("A catalogue.")
     );
 
     SchemaBuilder.CreateMapIndexTable<BillingIndex>(
-      table => table.Column<string>("ContentItemId", c => c.WithLength(64))
+      table =>
+        table
+          .Column<string>("ContentItemId", c => c.WithLength(64))
+          .Column<string>("ContentType", c => c.WithLength(64))
+          .Column<string>("LegalEntityContentItemId", c => c.WithLength(64))
+          .Column<string>("CatalogueContentItemId", c => c.WithLength(64))
     );
+    SchemaBuilder.AlterIndexTable<BillingIndex>(table =>
+    {
+      table.CreateIndex("IDX_BillingIndex_ContentType", "ContentType");
+      table.CreateIndex(
+        "IDX_BillingIndex_LegalEntityContentItemId",
+        "LegalEntityContentItemId"
+      );
+      table.CreateIndex(
+        "IDX_BillingIndex_CatalogueContentItemId",
+        "CatalogueContentItemId"
+      );
+    });
 
     SchemaBuilder.CreateMapIndexTable<PaymentIndex>(
       table =>
         table
-          .Column<string>("BillingContentItemId", c => c.WithLength(64))
           .Column<string>("InvoiceContentItemId", c => c.WithLength(64))
           .Column<string>("ReceiptContentItemId", c => c.WithLength(64))
+          .Column<string>("BillingContentItemId", c => c.WithLength(64))
+          .Column<string>("IssuerContentItemId", c => c.WithLength(64))
+          .Column<string>("RecipientContentItemId", c => c.WithLength(64))
+          .Column<string>("CatalogueContentItemId", c => c.WithLength(64))
     );
     SchemaBuilder.AlterIndexTable<PaymentIndex>(table =>
     {
-      table.CreateIndex(
-        "IDX_PaymentIndex_BillingContentItemId",
-        "BillingContentItemId"
-      );
       table.CreateIndex(
         "IDX_PaymentIndex_InvoiceContentItemId",
         "InvoiceContentItemId"
@@ -277,6 +286,44 @@ public class Migrations : DataMigration
         "IDX_PaymentIndex_ReceiptContentItemId",
         "ReceiptContentItemId"
       );
+      table.CreateIndex(
+        "IDX_PaymentIndex_BillingContentItemId",
+        "BillingContentItemId"
+      );
+      table.CreateIndex(
+        "IDX_PaymentIndex_IssuerContentItemId",
+        "IssuerContentItemId"
+      );
+      table.CreateIndex(
+        "IDX_PaymentIndex_RecipientContentItemId",
+        "RecipientContentItemId"
+      );
+      table.CreateIndex(
+        "IDX_PaymentIndex_CatalogueContentItemId",
+        "CatalogueContentItemId"
+      );
+    });
+
+    SchemaBuilder.CreateMapIndexTable<LegalEntityIndex>(
+      table =>
+        table
+          .Column<string>("ContentItemId", c => c.WithLength(64))
+          .Column<string>("ContentType", c => c.WithLength(64))
+    );
+    SchemaBuilder.AlterIndexTable<LegalEntityIndex>(table =>
+    {
+      table.CreateIndex("IDX_LegalEntityIndex_ContentType", "ContentType");
+    });
+
+    SchemaBuilder.CreateMapIndexTable<CatalogueIndex>(
+      table =>
+        table
+          .Column<string>("ContentItemId", c => c.WithLength(64))
+          .Column<string>("ContentType", c => c.WithLength(64))
+    );
+    SchemaBuilder.AlterIndexTable<CatalogueIndex>(table =>
+    {
+      table.CreateIndex("IDX_CatalogueIndex_ContentType", "ContentType");
     });
 
     return 1;

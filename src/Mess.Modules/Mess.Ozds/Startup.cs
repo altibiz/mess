@@ -40,18 +40,19 @@ public class Startup : StartupBase
     );
 
     services.AddContentPart<OzdsMeasurementDevicePart>();
+    services.AddIndexProvider<DistributionSystemUnitIndexProvider>();
     services.AddIndexProvider<OzdsMeasurementDeviceClosedDistributionSystemIndexProvider>();
     services.AddIndexProvider<OzdsMeasurementDeviceDistributionSystemOperatorIndexProvider>();
     services.AddIndexProvider<OzdsMeasurementDeviceDistributionSystemUnitIndexProvider>();
+
+    services.AddContentPart<PidgeonMeasurementDevicePart>();
+    services.AddMeasurementDevicePushHandler<PidgeonPushHandler>();
+    services.AddMeasurementDeviceAuthorizationHandler<PidgeonAuthorizationHandler>();
 
     services.AddContentPart<AbbMeasurementDevicePart>();
     services.AddMeasurementDevicePushHandler<AbbPushHandler>();
     services.AddChartProvider<AbbChartProvider>();
     services.AddBillingFactories<AbbInvoiceFactory, AbbReceiptFactory>();
-
-    services.AddContentPart<PidgeonMeasurementDevicePart>();
-    services.AddMeasurementDevicePushHandler<PidgeonPushHandler>();
-    services.AddMeasurementDeviceAuthorizationHandler<PidgeonAuthorizationHandler>();
   }
 
   public override void Configure(
