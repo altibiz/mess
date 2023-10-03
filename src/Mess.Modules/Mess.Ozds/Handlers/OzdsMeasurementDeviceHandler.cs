@@ -96,7 +96,6 @@ public class OzdsMeasurementDeviceHandler : ContentHandlerBase
 
     if (context.ContentItem.Has<BillingPart>())
     {
-      // TODO: catalogues here automatically
       context.ContentItem.Alter<BillingPart>(billingPart =>
       {
         billingPart.LegalEntityContentItemId =

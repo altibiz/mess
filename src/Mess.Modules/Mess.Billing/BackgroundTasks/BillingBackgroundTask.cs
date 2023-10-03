@@ -39,7 +39,17 @@ public class BillingBackgroundTask : IBackgroundTask
         continue;
       }
 
-      var invoice = await invoiceFactory.CreateAsync(billable);
+      // TODO: optimize via index
+      var catalogueContentItems = (
+        await contentManager.GetAsync(
+          billable.As<BillingPart>().CatalogueContentItemIds
+        )
+      ).ToArray();
+
+      var invoice = await invoiceFactory.CreateAsync(
+        billable,
+        catalogueContentItems
+      );
       var invoiceItem = await contentManager.NewContentAsync<InvoiceItem>();
       invoiceItem.Alter(
         invoiceItem => invoiceItem.InvoicePart,
