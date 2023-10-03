@@ -1,19 +1,95 @@
+using Mess.Billing.Abstractions.Models;
 using Mess.Billing.Abstractions.Receipts;
+using Mess.OrchardCore;
+using Mess.Ozds.Abstractions.Models;
 using OrchardCore.ContentManagement;
 
 namespace Mess.Ozds.Billing;
 
 public class AbbReceiptFactory : IReceiptFactory
 {
-  public string ContentType => throw new NotImplementedException();
+  public const string ReceiptFactoryContentType = "AbbMeasurementDevice";
 
-  public Task<Receipt> Create(ContentItem contentItem, ContentItem invoice)
+  public string ContentType => ReceiptFactoryContentType;
+
+  public Receipt Create(ContentItem contentItem, ContentItem invoiceContentItem)
   {
-    throw new NotImplementedException();
+    var abbMeasurementDevice =
+      contentItem.AsContent<AbbMeasurementDeviceItem>();
+    var invoice = invoiceContentItem.AsContent<InvoiceItem>();
+
+    return new Receipt(
+      BillableContnetItemId: abbMeasurementDevice.ContentItemId,
+      IssuerContentItemId: abbMeasurementDevice
+        .OzdsMeasurementDevicePart
+        .Value
+        .DistributionSystemOperatorContentItemId,
+      RecipientContentItemId: abbMeasurementDevice
+        .OzdsMeasurementDevicePart
+        .Value
+        .DistributionSystemUnitContentItemId,
+      PartyContentItemIds: new[]
+      {
+        abbMeasurementDevice
+          .OzdsMeasurementDevicePart
+          .Value
+          .DistributionSystemOperatorContentItemId,
+        abbMeasurementDevice
+          .OzdsMeasurementDevicePart
+          .Value
+          .DistributionSystemUnitContentItemId,
+        abbMeasurementDevice
+          .OzdsMeasurementDevicePart
+          .Value
+          .ClosedDistributionSystemContentItemId,
+      },
+      InvoiceContentItemId: invoice.ContentItemId,
+      Id: Guid.NewGuid(),
+      IssuedTimestamp: DateTime.UtcNow,
+      Sections: new ReceiptSection[] { },
+      Total: default
+    );
   }
 
-  public Task<Receipt> CreateAsync(ContentItem contentItem, ContentItem invoice)
+  public async Task<Receipt> CreateAsync(
+    ContentItem contentItem,
+    ContentItem invoiceContentItem
+  )
   {
-    throw new NotImplementedException();
+    var abbMeasurementDevice =
+      contentItem.AsContent<AbbMeasurementDeviceItem>();
+    var invoice = invoiceContentItem.AsContent<InvoiceItem>();
+
+    return new Receipt(
+      BillableContnetItemId: abbMeasurementDevice.ContentItemId,
+      IssuerContentItemId: abbMeasurementDevice
+        .OzdsMeasurementDevicePart
+        .Value
+        .DistributionSystemOperatorContentItemId,
+      RecipientContentItemId: abbMeasurementDevice
+        .OzdsMeasurementDevicePart
+        .Value
+        .DistributionSystemUnitContentItemId,
+      PartyContentItemIds: new[]
+      {
+        abbMeasurementDevice
+          .OzdsMeasurementDevicePart
+          .Value
+          .DistributionSystemOperatorContentItemId,
+        abbMeasurementDevice
+          .OzdsMeasurementDevicePart
+          .Value
+          .DistributionSystemUnitContentItemId,
+        abbMeasurementDevice
+          .OzdsMeasurementDevicePart
+          .Value
+          .ClosedDistributionSystemContentItemId,
+      },
+      InvoiceContentItemId: invoice.ContentItemId,
+      Id: Guid.NewGuid(),
+      IssuedTimestamp: DateTime.UtcNow,
+      Sections: new ReceiptSection[] { },
+      Total: default
+    );
   }
 }

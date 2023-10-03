@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.Admin;
 using OrchardCore.ContentManagement;
 using OrchardCore.Mvc.Core.Utilities;
+using ContentAdminController = global::OrchardCore.Contents.Controllers.AdminController;
 
 namespace Mess.Billing.Controllers;
 
@@ -51,10 +52,8 @@ public class AdminController : Controller
     await _contentManager.CreateAsync(invoiceItem);
 
     return RedirectToAction(
-      actionName: nameof(
-        global::OrchardCore.Contents.Controllers.AdminController.Display
-      ),
-      controllerName: typeof(global::OrchardCore.Contents.Controllers.AdminController).ControllerName(),
+      actionName: nameof(ContentAdminController.Display),
+      controllerName: typeof(ContentAdminController).ControllerName(),
       routeValues: new
       {
         area = "OrchardCore.Contents",
@@ -99,7 +98,7 @@ public class AdminController : Controller
 
     var receipt = await receiptFactory.CreateAsync(
       contentItem: billingItem,
-      invoice: invoiceItem
+      invoiceContentItem: invoiceItem
     );
 
     var receiptItem = await _contentManager.NewContentAsync<ReceiptItem>();
@@ -125,10 +124,8 @@ public class AdminController : Controller
     await _contentManager.UpdateAsync(invoiceItem);
 
     return RedirectToAction(
-      actionName: nameof(
-        global::OrchardCore.Contents.Controllers.AdminController.Display
-      ),
-      controllerName: typeof(global::OrchardCore.Contents.Controllers.AdminController).ControllerName(),
+      actionName: nameof(ContentAdminController.Display),
+      controllerName: typeof(ContentAdminController).ControllerName(),
       routeValues: new
       {
         area = "OrchardCore.Contents",

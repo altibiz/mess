@@ -13,4 +13,6 @@ public class BillingPartViewModel
   public ContentTypePartDefinition Definition { get; set; } = default!;
 
   public string LegalEntityContentItemId { get; set; } = default!;
+
+  public string ContentItemId { get; set; } = default!;
 }

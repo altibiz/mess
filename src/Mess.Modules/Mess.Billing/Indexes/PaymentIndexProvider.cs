@@ -18,7 +18,7 @@ public class PaymentIndexProvider : IndexProvider<ContentItem>
 
         return new PaymentIndex
         {
-          BillingContnetItemId = invoicePart.Invoice.BillableContnetItemId,
+          BillingContentItemId = invoicePart.Invoice.BillableContnetItemId,
           InvoiceContentItemId = contentItem.ContentItemId,
           ReceiptContentItemId = invoicePart.Invoice.ReceiptContentItemId,
         };

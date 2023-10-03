@@ -6,7 +6,10 @@ public interface IReceiptFactory
 {
   string ContentType { get; }
 
-  Task<Receipt> Create(ContentItem contentItem, ContentItem invoice);
+  Receipt Create(ContentItem contentItem, ContentItem invoiceContentItem);
 
-  Task<Receipt> CreateAsync(ContentItem contentItem, ContentItem invoice);
+  Task<Receipt> CreateAsync(
+    ContentItem contentItem,
+    ContentItem invoiceContentItem
+  );
 }

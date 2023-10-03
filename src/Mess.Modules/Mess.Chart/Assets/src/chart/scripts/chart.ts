@@ -174,10 +174,12 @@ const mergeTimeseriesChartDatasets = (
   history: number,
 ) => {
   datasets.forEach((newDataset, i) => {
-    if (chart.data.datasets[i] && chart.data.datasets[i].data.length) {
+    if (chart.data.datasets[i]) {
       const oldDataset = chart.data.datasets[i];
 
-      const lastTimestamp = oldDataset.data[oldDataset.data.length - 1].x;
+      const lastTimestamp = oldDataset.data.length
+        ? oldDataset.data[oldDataset.data.length - 1].x
+        : DateTime.utc();
 
       oldDataset.data = oldDataset.data.filter(
         (datapoint) =>

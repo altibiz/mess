@@ -1,17 +1,11 @@
 @model BillingPartViewModel
 
-<a
+<form
     asp-route-area="Mess.Billing"
-    asp-controller="AdminController"
+    asp-controller="Admin"
     asp-action="CreateInvoice"
-    asp-route-contentItemId="@Model.LegalEntityContentItemId">
-  @T["Dew it 🧛"]
-</a>
-
-<a
-    asp-route-area="Mess.Billing"
-    asp-controller="AdminController"
-    asp-action="ConfirmPayment"
-    asp-route-contentItemId="@Model.LegalEntityContentItemId">
-  @T["Dew itttt 🧛"]
-</a>
+    asp-route-contentItemId="@Model.ContentItemId">
+  <button type="submit">
+    <span>@T["Create invoice"]</span>
+  </button>
+</form>
