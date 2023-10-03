@@ -1,30 +1,30 @@
 import {
-  Chart,
-  ScaleOptionsByType,
   CartesianScaleTypeRegistry,
   CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  TimeScale,
-  TimeSeriesScale,
-  LineController,
+  Chart,
   ChartConfiguration,
   ChartType,
   DefaultDataPoint,
+  Legend,
+  LineController,
+  LineElement,
+  LinearScale,
+  PointElement,
+  ScaleOptionsByType,
+  TimeScale,
+  TimeSeriesScale,
+  Title,
+  Tooltip,
 } from "chart.js";
+import { DeepPartial } from "chart.js/dist/types/utils";
 import "chartjs-adapter-luxon";
 import { DateTime } from "luxon";
+import { Font } from "./font";
 import {
   ChartDescriptor,
   TimeseriesChartDescriptor,
   isTimeseriesChartDescriptor,
 } from "./schema";
-import { DeepPartial } from "chart.js/dist/types/utils";
-import { Font } from "./font";
 
 Chart.register(
   CategoryScale,
@@ -174,7 +174,7 @@ const mergeTimeseriesChartDatasets = (
   history: number,
 ) => {
   datasets.forEach((newDataset, i) => {
-    if (chart.data.datasets[i]) {
+    if (chart.data.datasets[i] && chart.data.datasets[i].data.length) {
       const oldDataset = chart.data.datasets[i];
 
       const lastTimestamp = oldDataset.data[oldDataset.data.length - 1].x;

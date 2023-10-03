@@ -3,6 +3,7 @@ using Mess.Billing.BackgroundTasks;
 using Mess.Billing.Controllers;
 using Mess.Billing.Handler;
 using Mess.Billing.Indexes;
+using Mess.Billing.Drivers;
 using Mess.OrchardCore.Extensions.Microsoft;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using OrchardCore.Admin;
 using OrchardCore.ContentManagement;
+using OrchardCore.ContentManagement.Display.ContentDisplay;
 using OrchardCore.Data.Migration;
 using OrchardCore.Modules;
 using OrchardCore.Mvc.Core.Utilities;
@@ -26,7 +28,9 @@ public class Startup : StartupBase
     services.AddContentPart<LegalEntityPart>();
     services.AddContentPart<ReceiptPart>();
     services.AddContentPart<InvoicePart>();
-    services.AddContentPart<BillingPart>();
+    services
+      .AddContentPart<BillingPart>()
+      .UseDisplayDriver<BillingPartDisplayDriver>();
 
     services.AddIndexProvider<BillingIndexProvider>();
     services.AddIndexProvider<PaymentIndexProvider>();
