@@ -169,14 +169,6 @@ public class Migrations : DataMigration
           .WithDisplayName("Billing")
           .WithDescription("Make a content item billable.")
     );
-    _contentDefinitionManager.AlterPartDefinition(
-      "CataloguePart",
-      builder =>
-        builder
-          .Attachable()
-          .WithDisplayName("Catalogue")
-          .WithDescription("A catalogue.")
-    );
 
     SchemaBuilder.CreateMapIndexTable<BillingIndex>(
       table =>
@@ -235,28 +227,6 @@ public class Migrations : DataMigration
         "IDX_PaymentIndex_CatalogueContentItemId",
         "CatalogueContentItemId"
       );
-    });
-
-    SchemaBuilder.CreateMapIndexTable<LegalEntityIndex>(
-      table =>
-        table
-          .Column<string>("ContentItemId", c => c.WithLength(64))
-          .Column<string>("ContentType", c => c.WithLength(64))
-    );
-    SchemaBuilder.AlterIndexTable<LegalEntityIndex>(table =>
-    {
-      table.CreateIndex("IDX_LegalEntityIndex_ContentType", "ContentType");
-    });
-
-    SchemaBuilder.CreateMapIndexTable<CatalogueIndex>(
-      table =>
-        table
-          .Column<string>("ContentItemId", c => c.WithLength(64))
-          .Column<string>("ContentType", c => c.WithLength(64))
-    );
-    SchemaBuilder.AlterIndexTable<CatalogueIndex>(table =>
-    {
-      table.CreateIndex("IDX_CatalogueIndex_ContentType", "ContentType");
     });
 
     return 1;
