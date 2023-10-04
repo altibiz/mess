@@ -7,5 +7,17 @@ public class DistributionSystemOperatorPart : ContentPart
 {
   public ContentPickerField RegulatoryCatalogue { get; set; } = default!;
 
-  public ContentPickerField OperatorCatalogue { get; set; } = default!;
+  // TODO: UI
+
+  public ContentPickerField WhiteHighVoltageOperatorCatalogueContentItemId { get; set; } = default!;
+
+  public ContentPickerField WhiteMediumVoltageOperatorCatalogueContentItemId { get; set; } = default!;
+
+  public ContentPickerField BlueOperatorCatalogueContentItemId { get; set; } = default!;
+
+  public ContentPickerField WhiteLowVoltageOperatorCatalogueContentItemId { get; set; } = default!;
+
+  public ContentPickerField RedOperatorCatalogueContentItemId { get; set; } = default!;
+
+  public ContentPickerField YellowOperatorCatalogueContentItemId { get; set; } = default!;
 }

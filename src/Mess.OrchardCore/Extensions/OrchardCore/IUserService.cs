@@ -20,25 +20,29 @@ public static class IUserServiceExtensions
     return orchardUser;
   }
 
-  public static async Task CreateDevUserAsync(
+  public static async Task<User> CreateDevUserAsync(
     this IUserService userService,
     string id,
     string userName,
     params string[]? roleNames
   )
   {
+    var user = new User
+    {
+      UserId = id,
+      UserName = userName,
+      Email = $"{userName.ToLower()}@dev.com",
+      RoleNames = roleNames is null or { Length: 0 }
+        ? new[] { userName }
+        : roleNames
+    };
+
     await userService.CreateUserAsync(
-      new User
-      {
-        UserId = id,
-        UserName = userName,
-        Email = $"{userName.ToLower()}@dev.com",
-        RoleNames = roleNames is null or { Length: 0 }
-          ? new[] { userName }
-          : roleNames
-      },
+      user,
       $"{userName}123!",
       (_, _) => { }
     );
+
+    return user;
   }
 }

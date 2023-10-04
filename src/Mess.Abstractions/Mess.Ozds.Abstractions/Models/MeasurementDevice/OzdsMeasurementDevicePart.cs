@@ -27,5 +27,6 @@ public class OzdsMeasurementDevicePart : ContentPart
 
   public string RegulatoryAgencyCatalogueContentItemId { get; set; } = default!;
 
+  // TODO: validation
   public string OperatorCatalogueContentItemId { get; set; } = default!;
 }

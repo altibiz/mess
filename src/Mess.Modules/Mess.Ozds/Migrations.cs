@@ -21,7 +21,6 @@ using Mess.Chart.Abstractions.Models;
 using Mess.Ozds.Abstractions.Client;
 using Mess.Fields.Abstractions;
 using OrchardCore.ContentFields.Settings;
-using GraphQL.Types;
 
 namespace Mess.Ozds;
 
@@ -29,34 +28,169 @@ public class Migrations : DataMigration
 {
   public async Task<int> CreateAsync()
   {
-    SchemaBuilder.CreateMapIndexTable<OzdsMeasurementDeviceClosedDistributionSystemIndex>(
-      table =>
-        table
-          .Column<string>("ContentItemId", c => c.WithLength(64))
-          .Column<string>("DeviceId", c => c.WithLength(64))
-          .Column<bool>("IsMessenger", c => c.WithDefault(false))
-          .Column<string>(
-            "ClosedDistributionSystemContentItemId",
-            c => c.WithLength(64)
-          )
-          .Column<string>(
-            "ClosedDistributionSystemRepresentativeUserId",
-            c => c.WithLength(64)
+    var regulatoryAgencyCatalogueContentItemId = await CreateAsyncMigrations.MigrateRegulatoryAgencyCatalogue(
+      _contentDefinitionManager,
+      _contentManager
+    );
+
+    await CreateAsyncMigrations.MigrateOperatorCatalogue(
+      _contentDefinitionManager
+    );
+
+   (
+    string whiteHighVoltageOperatorCatalogueContentItemId,
+    string whiteMediumVoltageOperatorCatalogueContentItemId,
+    string blueOperatorCatalogueContentItemId,
+    string whiteLowVoltageOperatorCatalogueContentItemId,
+    string redOperatorCatalogueContentItemId,
+    string yellowOperatorCatalogueContentItemId
+   ) =  await CreateAsyncMigrations.PopulateOperatorCatalogues(
+      _contentManager
+    );
+
+   (
+    string whiteHighVoltageMeasurementDeviceCatalogueContentItemId,
+    string whiteMediumVoltageMeasurementDeviceCatalogueContentItemId,
+    string blueMeasurementDeviceCatalogueContentItemId,
+    string whiteLowVoltageMeasurementDeviceCatalogueContentItemId,
+    string redMeasurementDeviceCatalogueContentItemId,
+    string yellowMeasurementDeviceCatalogueContentItemId
+   ) =  await CreateAsyncMigrations.PopulateOperatorCatalogues(
+      _contentManager
+    );
+
+    (string? operatorUserId, string? operatorContentItemId) = await CreateAsyncMigrations.MigrateOperator(
+      SchemaBuilder,
+      _roleManager,
+      _hostEnvironment,
+      _userService,
+      _contentDefinitionManager,
+      _contentManager,
+      regulatoryAgencyCatalogueContentItemId,
+      whiteHighVoltageOperatorCatalogueContentItemId!,
+      whiteMediumVoltageOperatorCatalogueContentItemId!,
+      blueOperatorCatalogueContentItemId!,
+      whiteLowVoltageOperatorCatalogueContentItemId!,
+      redOperatorCatalogueContentItemId!,
+      yellowOperatorCatalogueContentItemId!
+    );
+
+    (string? systemUserId, string? systemContentItemId) = await CreateAsyncMigrations.MigrateSystem(
+      SchemaBuilder,
+      _roleManager,
+      _hostEnvironment,
+      _userService,
+      _contentDefinitionManager,
+      _contentManager,
+      operatorUserId!,
+      operatorContentItemId!
+    );
+
+    (string? unitUserId, string? unitContentItemId) = await CreateAsyncMigrations.MigrateUnit(
+      SchemaBuilder,
+      _roleManager,
+      _hostEnvironment,
+      _userService,
+      _contentDefinitionManager,
+      _contentManager,
+      operatorUserId!,
+      operatorContentItemId!,
+      systemUserId!,
+      systemContentItemId!
+    );
+
+    _contentDefinitionManager.AlterPartDefinition(
+      "OzdsMeasurementDevicePart",
+      builder =>
+        builder
+          .Attachable()
+          .WithDescription("An OZDS measurement device.")
+          .WithDisplayName("OZDS measurement device")
+          .WithField(
+            "DistributionSystemUnit",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("ContentPickerField")
+                .WithDisplayName("Distribution system unit")
+                .WithDescription("Distribution system unit.")
+                .WithSettings<ContentPickerFieldSettings>(
+                  new()
+                  {
+                    Hint = "Distribution system unit.",
+                    Multiple = false,
+                    Required = true,
+                    DisplayedContentTypes = new[] { "DistributionSystemUnit" },
+                    DisplayAllContentTypes = false
+                  }
+                )
           )
     );
-    SchemaBuilder.AlterIndexTable<OzdsMeasurementDeviceClosedDistributionSystemIndex>(table =>
-    {
-      table.CreateIndex(
-        "IDX_OzdsMeasurementDeviceClosedDistributionSystemIndex_DeviceId",
-        "DeviceId"
-      );
-      table.CreateIndex(
-        "IDX_OzdsMeasurementDeviceClosedDistributionSystemIndex_RepresentativeUserId",
-        "ClosedDistributionSystemRepresentativeUserId"
-      );
-    });
 
-    SchemaBuilder.CreateMapIndexTable<OzdsMeasurementDeviceDistributionSystemOperatorIndex>(
+    await CreateAsyncMigrations.MigratePidgeon(
+      _hostEnvironment,
+      _contentDefinitionManager,
+      _contentManager,
+      _apiKeyFieldService,
+      unitContentItemId!
+    );
+
+    await CreateAsyncMigrations.MigrateAbb(
+      _hostEnvironment,
+      _contentDefinitionManager,
+      _contentManager,
+      unitContentItemId!
+    );
+
+    return 1;
+  }
+
+  public Migrations(
+    IContentDefinitionManager contentDefinitionManager,
+    IRecipeMigrator recipeMigrator,
+    RoleManager<IRole> roleManager,
+    IUserService userService,
+    IHostEnvironment hostEnvironment,
+    IContentManager contentManager,
+    IApiKeyFieldService apiKeyFieldService
+  )
+  {
+    _contentDefinitionManager = contentDefinitionManager;
+    _recipeMigrator = recipeMigrator;
+    _roleManager = roleManager;
+    _userService = userService;
+    _hostEnvironment = hostEnvironment;
+    _contentManager = contentManager;
+    _apiKeyFieldService = apiKeyFieldService;
+  }
+
+  private readonly IContentDefinitionManager _contentDefinitionManager;
+  private readonly IRecipeMigrator _recipeMigrator;
+  private readonly RoleManager<IRole> _roleManager;
+  private readonly IUserService _userService;
+  private readonly IHostEnvironment _hostEnvironment;
+  private readonly IContentManager _contentManager;
+  private readonly IApiKeyFieldService _apiKeyFieldService;
+}
+
+internal static class CreateAsyncMigrations
+{
+  internal static async Task<(string? UserId, string? ContentItemId)> MigrateOperator(
+    ISchemaBuilder schemaBuilder,
+    RoleManager<IRole> roleManager,
+    IHostEnvironment hostEnvironment,
+    IUserService userService,
+    IContentDefinitionManager contentDefinitionManager,
+    IContentManager contentManager,
+    string regulatoryAgencyCatalogueContentItemId,
+    string whiteHighVoltageOperatorCatalogueContentItemId,
+    string whiteMediumVoltageOperatorCatalogueContentItemId,
+    string blueOperatorCatalogueContentItemId,
+    string whiteLowVoltageOperatorCatalogueContentItemId,
+    string redOperatorCatalogueContentItemId,
+    string yellowOperatorCatalogueContentItemId
+  )
+  {
+    schemaBuilder.CreateMapIndexTable<OzdsMeasurementDeviceDistributionSystemOperatorIndex>(
       table =>
         table
           .Column<string>("ContentItemId", c => c.WithLength(64))
@@ -71,7 +205,7 @@ public class Migrations : DataMigration
             c => c.WithLength(64)
           )
     );
-    SchemaBuilder.AlterIndexTable<OzdsMeasurementDeviceDistributionSystemOperatorIndex>(table =>
+    schemaBuilder.AlterIndexTable<OzdsMeasurementDeviceDistributionSystemOperatorIndex>(table =>
     {
       table.CreateIndex(
         "IDX_OzdsMeasurementDeviceDistributionSystemOperatorIndex_DeviceId",
@@ -83,66 +217,7 @@ public class Migrations : DataMigration
       );
     });
 
-    SchemaBuilder.CreateMapIndexTable<OzdsMeasurementDeviceDistributionSystemUnitIndex>(
-      table =>
-        table
-          .Column<string>("ContentItemId", c => c.WithLength(64))
-          .Column<string>("DeviceId", c => c.WithLength(64))
-          .Column<bool>("IsMessenger")
-          .Column<string>(
-            "DistributionSystemUnitContentItemId",
-            c => c.WithLength(64)
-          )
-          .Column<string>(
-            "DistributionSystemUnitRepresentativeUserId",
-            c => c.WithLength(64)
-          )
-    );
-    SchemaBuilder.AlterIndexTable<OzdsMeasurementDeviceDistributionSystemUnitIndex>(table =>
-    {
-      table.CreateIndex(
-        "IDX_OzdsMeasurementDeviceDistributionSystemUnitIndex_DeviceId",
-        "DeviceId"
-      );
-      table.CreateIndex(
-        "IDX_OzdsMeasurementDeviceDistributionSystemUnitIndex_RepresentativeUserId",
-        "DistributionSystemUnitRepresentativeUserId"
-      );
-    });
-
-    SchemaBuilder.CreateMapIndexTable<DistributionSystemUnitIndex>(
-      table =>
-        table
-          .Column<string>(
-            "DistributionSystemUnitContentItemId",
-            c => c.WithLength(64)
-          )
-          .Column<string>(
-            "ClosedDistributionSystemContentItemId",
-            c => c.WithLength(64)
-          )
-          .Column<string>(
-            "DistributionSystemOperatorContentItemId",
-            c => c.WithLength(64)
-          )
-    );
-    SchemaBuilder.AlterIndexTable<DistributionSystemUnitIndex>(table =>
-    {
-      table.CreateIndex(
-        "IDX_DistributionSystemUnitIndex_DistributionSystemUnitContentItemId",
-        "DistributionSystemUnitContentItemId"
-      );
-      table.CreateIndex(
-        "IDX_DistributionSystemUnitIndex_ClosedDistributionSystemContentItemId",
-        "ClosedDistributionSystemContentItemId"
-      );
-      table.CreateIndex(
-        "IDX_DistributionSystemUnitIndex_DistributionSystemOperatorContentItemId",
-        "DistributionSystemOperatorContentItemId"
-      );
-    });
-
-    await _roleManager.CreateAsync(
+    await roleManager.CreateAsync(
       new Role
       {
         NormalizedRoleName = "DistributionSystemOperatorRepresentative",
@@ -176,86 +251,7 @@ public class Migrations : DataMigration
       }
     );
 
-    await _roleManager.CreateAsync(
-      new Role
-      {
-        NormalizedRoleName = "ClosedDistributionSystemRepresentative",
-        RoleName = "Closed Distribution System Representative",
-        RoleDescription = "Representative of a closed distribution system.",
-        RoleClaims = new()
-        {
-          new RoleClaim
-          {
-            ClaimType = Permission.ClaimType,
-            ClaimValue = "AccessAdminPanel"
-          },
-          new RoleClaim
-          {
-            ClaimType = Permission.ClaimType,
-            ClaimValue = "View Users"
-          },
-          new RoleClaim
-          {
-            ClaimType = Permission.ClaimType,
-            ClaimValue =
-              "ManageUsersInRole_Distribution system unit representative"
-          },
-          new RoleClaim
-          {
-            ClaimType = Permission.ClaimType,
-            ClaimValue = "AssignRole_Distribution system unit representative"
-          },
-        }
-      }
-    );
-
-    await _roleManager.CreateAsync(
-      new Role
-      {
-        NormalizedRoleName = "DistributionSystemUnitRepresentative",
-        RoleName = "Distribution System Unit Representative",
-        RoleDescription = "Representative of a distribution system unit.",
-      }
-    );
-
-    string distributionSystemOperatorRepresentativeId =
-      "DistributionSystemOperatorRepresentativeId";
-    string closedDistributionSystemRepresentativeId =
-      "ClosedDistributionSystemRepresentativeId";
-    string distributionSystemUnitRepresentativeId =
-      "DistributionSystemUnitRepresentativeId";
-    if (_hostEnvironment.IsDevelopment())
-    {
-      await _userService.CreateDevUserAsync(
-        id: distributionSystemOperatorRepresentativeId,
-        userName: "Operator",
-        roleNames: new[]
-        {
-          "DistributionSystemOperatorRepresentative",
-          "LegalEntityRepresentative",
-        }
-      );
-      await _userService.CreateDevUserAsync(
-        id: closedDistributionSystemRepresentativeId,
-        userName: "System",
-        roleNames: new[]
-        {
-          "ClosedDistributionSystemRepresentative",
-          "LegalEntityRepresentative",
-        }
-      );
-      await _userService.CreateDevUserAsync(
-        id: distributionSystemUnitRepresentativeId,
-        userName: "Unit",
-        roleNames: new[]
-        {
-          "DistributionSystemUnitRepresentative",
-          "LegalEntityRepresentative",
-        }
-      );
-    }
-
-    _contentDefinitionManager.AlterPartDefinition(
+    contentDefinitionManager.AlterPartDefinition(
       "DistributionSystemOperatorPart",
       builder =>
         builder
@@ -264,7 +260,7 @@ public class Migrations : DataMigration
           .WithDisplayName("Distribution system operator")
     );
 
-    _contentDefinitionManager.AlterTypeDefinition(
+    contentDefinitionManager.AlterTypeDefinition(
       "DistributionSystemOperator",
       builder =>
         builder
@@ -306,13 +302,20 @@ public class Migrations : DataMigration
           )
     );
 
-    string? distributionSystemOperatorContentItemId = null;
-    if (_hostEnvironment.IsDevelopment())
+    if (hostEnvironment.IsDevelopment())
     {
+      var operatorUser = await userService.CreateDevUserAsync(
+        id: "OperatorId",
+        userName: "Operator",
+        roleNames: new[]
+        {
+          "DistributionSystemOperatorRepresentative",
+          "LegalEntityRepresentative",
+        }
+      );
+
       var distributionSystemOperator =
-        await _contentManager.NewContentAsync<DistributionSystemOperatorItem>();
-      distributionSystemOperatorContentItemId =
-        distributionSystemOperator.ContentItemId;
+        await contentManager.NewContentAsync<DistributionSystemOperatorItem>();
       distributionSystemOperator.Alter(
         distributionSystemOperator => distributionSystemOperator.TitlePart,
         titlePart =>
@@ -336,18 +339,142 @@ public class Migrations : DataMigration
           };
           legalEntityPart.Representatives = new()
           {
-            UserIds = new[] { distributionSystemOperatorRepresentativeId }
+            UserIds = new[] { operatorUser.UserId }
+          };
+        }
+      );
+      distributionSystemOperator.Alter(
+        distributionSystemOperator =>
+          distributionSystemOperator.DistributionSystemOperatorPart,
+        distributionSystemOperatorPart =>
+        {
+          distributionSystemOperatorPart.RegulatoryCatalogue = new()
+          {
+            ContentItemIds = new[] { regulatoryAgencyCatalogueContentItemId }
+          };
+
+          distributionSystemOperatorPart.WhiteHighVoltageOperatorCatalogueContentItemId =
+          new()
+          {
+            ContentItemIds = new[] { whiteHighVoltageOperatorCatalogueContentItemId }
+          };
+
+          distributionSystemOperatorPart.WhiteMediumVoltageOperatorCatalogueContentItemId =
+          new()
+          {
+            ContentItemIds = new[] { whiteMediumVoltageOperatorCatalogueContentItemId }
+          };
+
+
+          distributionSystemOperatorPart.BlueOperatorCatalogueContentItemId =
+          new()
+          {
+            ContentItemIds = new[] { blueOperatorCatalogueContentItemId }
+          };
+
+          distributionSystemOperatorPart.WhiteLowVoltageOperatorCatalogueContentItemId =
+          new()
+          {
+            ContentItemIds = new[] { whiteLowVoltageOperatorCatalogueContentItemId }
+          };
+
+          distributionSystemOperatorPart.RedOperatorCatalogueContentItemId =
+          new()
+          {
+            ContentItemIds = new[] { redOperatorCatalogueContentItemId }
+          };
+
+          distributionSystemOperatorPart.YellowOperatorCatalogueContentItemId =
+          new()
+          {
+            ContentItemIds = new[] { yellowOperatorCatalogueContentItemId }
           };
         }
       );
 
-      await _contentManager.CreateAsync(
+      await contentManager.CreateAsync(
         distributionSystemOperator,
         VersionOptions.Latest
       );
+
+      return (operatorUser.UserId, distributionSystemOperator.ContentItemId);
     }
 
-    _contentDefinitionManager.AlterPartDefinition(
+    return (null, null);
+  }
+
+  internal static async Task<(string? UserId, string? ContentItemId)> MigrateSystem(
+    ISchemaBuilder schemaBuilder,
+    RoleManager<IRole> roleManager,
+    IHostEnvironment hostEnvironment,
+    IUserService userService,
+    IContentDefinitionManager contentDefinitionManager,
+    IContentManager contentManager,
+    string operatorUserId,
+    string operatorContentItemId
+  )
+  {
+    schemaBuilder.CreateMapIndexTable<OzdsMeasurementDeviceClosedDistributionSystemIndex>(
+      table =>
+        table
+          .Column<string>("ContentItemId", c => c.WithLength(64))
+          .Column<string>("DeviceId", c => c.WithLength(64))
+          .Column<bool>("IsMessenger", c => c.WithDefault(false))
+          .Column<string>(
+            "ClosedDistributionSystemContentItemId",
+            c => c.WithLength(64)
+          )
+          .Column<string>(
+            "ClosedDistributionSystemRepresentativeUserId",
+            c => c.WithLength(64)
+          )
+    );
+    schemaBuilder.AlterIndexTable<OzdsMeasurementDeviceClosedDistributionSystemIndex>(table =>
+    {
+      table.CreateIndex(
+        "IDX_OzdsMeasurementDeviceClosedDistributionSystemIndex_DeviceId",
+        "DeviceId"
+      );
+      table.CreateIndex(
+        "IDX_OzdsMeasurementDeviceClosedDistributionSystemIndex_RepresentativeUserId",
+        "ClosedDistributionSystemRepresentativeUserId"
+      );
+    });
+
+    await roleManager.CreateAsync(
+      new Role
+      {
+        NormalizedRoleName = "ClosedDistributionSystemRepresentative",
+        RoleName = "Closed Distribution System Representative",
+        RoleDescription = "Representative of a closed distribution system.",
+        RoleClaims = new()
+        {
+          new RoleClaim
+          {
+            ClaimType = Permission.ClaimType,
+            ClaimValue = "AccessAdminPanel"
+          },
+          new RoleClaim
+          {
+            ClaimType = Permission.ClaimType,
+            ClaimValue = "View Users"
+          },
+          new RoleClaim
+          {
+            ClaimType = Permission.ClaimType,
+            ClaimValue =
+              "ManageUsersInRole_Distribution system unit representative"
+          },
+          new RoleClaim
+          {
+            ClaimType = Permission.ClaimType,
+            ClaimValue = "AssignRole_Distribution system unit representative"
+          },
+        }
+      }
+    );
+
+    contentDefinitionManager.AlterPartDefinition(
       "ClosedDistributionSystemPart",
       builder =>
         builder
@@ -377,7 +504,7 @@ public class Migrations : DataMigration
           )
     );
 
-    _contentDefinitionManager.AlterTypeDefinition(
+    contentDefinitionManager.AlterTypeDefinition(
       "ClosedDistributionSystem",
       builder =>
         builder
@@ -419,13 +546,20 @@ public class Migrations : DataMigration
           )
     );
 
-    string? closedDistributionSystemContentItemId = null;
-    if (_hostEnvironment.IsDevelopment())
+    if (hostEnvironment.IsDevelopment())
     {
+      var systemUser =  await userService.CreateDevUserAsync(
+        id: "SystemId",
+        userName: "System",
+        roleNames: new[]
+        {
+          "ClosedDistributionSystemRepresentative",
+          "LegalEntityRepresentative",
+        }
+      );
+
       var closedDistributionSystem =
-        await _contentManager.NewContentAsync<ClosedDistributionSystemItem>();
-      closedDistributionSystemContentItemId =
-        closedDistributionSystem.ContentItemId;
+        await contentManager.NewContentAsync<ClosedDistributionSystemItem>();
       closedDistributionSystem.Alter(
         closedDistributionSystem => closedDistributionSystem.TitlePart,
         titlePart =>
@@ -448,7 +582,7 @@ public class Migrations : DataMigration
           };
           legalEntityPart.Representatives = new()
           {
-            UserIds = new[] { closedDistributionSystemRepresentativeId }
+            UserIds = new[] { systemUser.UserId }
           };
         }
       );
@@ -459,18 +593,103 @@ public class Migrations : DataMigration
         {
           closedDistributionSystemPart.DistributionSystemOperator = new()
           {
-            ContentItemIds = new[] { distributionSystemOperatorContentItemId! }
+            ContentItemIds = new[] { operatorContentItemId }
           };
         }
       );
 
-      await _contentManager.CreateAsync(
+      await contentManager.CreateAsync(
         closedDistributionSystem,
         VersionOptions.Latest
       );
+
+      return (systemUser.UserId, closedDistributionSystem.ContentItemId);
     }
 
-    _contentDefinitionManager.AlterPartDefinition(
+    return (null, null);
+  }
+  internal static async Task<(string? UserId, string? ContentItemId)> MigrateUnit(
+    ISchemaBuilder schemaBuilder,
+    RoleManager<IRole> roleManager,
+    IHostEnvironment hostEnvironment,
+    IUserService userService,
+    IContentDefinitionManager contentDefinitionManager,
+    IContentManager contentManager,
+    string operatorUserId,
+    string operatorContentItemId,
+    string systemUserId,
+    string systemContentItemId
+  )
+  {
+    schemaBuilder.CreateMapIndexTable<OzdsMeasurementDeviceDistributionSystemUnitIndex>(
+      table =>
+        table
+          .Column<string>("ContentItemId", c => c.WithLength(64))
+          .Column<string>("DeviceId", c => c.WithLength(64))
+          .Column<bool>("IsMessenger")
+          .Column<string>(
+            "DistributionSystemUnitContentItemId",
+            c => c.WithLength(64)
+          )
+          .Column<string>(
+            "DistributionSystemUnitRepresentativeUserId",
+            c => c.WithLength(64)
+          )
+    );
+    schemaBuilder.AlterIndexTable<OzdsMeasurementDeviceDistributionSystemUnitIndex>(table =>
+    {
+      table.CreateIndex(
+        "IDX_OzdsMeasurementDeviceDistributionSystemUnitIndex_DeviceId",
+        "DeviceId"
+      );
+      table.CreateIndex(
+        "IDX_OzdsMeasurementDeviceDistributionSystemUnitIndex_RepresentativeUserId",
+        "DistributionSystemUnitRepresentativeUserId"
+      );
+    });
+
+    schemaBuilder.CreateMapIndexTable<DistributionSystemUnitIndex>(
+      table =>
+        table
+          .Column<string>(
+            "DistributionSystemUnitContentItemId",
+            c => c.WithLength(64)
+          )
+          .Column<string>(
+            "ClosedDistributionSystemContentItemId",
+            c => c.WithLength(64)
+          )
+          .Column<string>(
+            "DistributionSystemOperatorContentItemId",
+            c => c.WithLength(64)
+          )
+    );
+    schemaBuilder.AlterIndexTable<DistributionSystemUnitIndex>(table =>
+    {
+      table.CreateIndex(
+        "IDX_DistributionSystemUnitIndex_DistributionSystemUnitContentItemId",
+        "DistributionSystemUnitContentItemId"
+      );
+      table.CreateIndex(
+        "IDX_DistributionSystemUnitIndex_ClosedDistributionSystemContentItemId",
+        "ClosedDistributionSystemContentItemId"
+      );
+      table.CreateIndex(
+        "IDX_DistributionSystemUnitIndex_DistributionSystemOperatorContentItemId",
+        "DistributionSystemOperatorContentItemId"
+      );
+    });
+
+    await roleManager.CreateAsync(
+      new Role
+      {
+        NormalizedRoleName = "DistributionSystemUnitRepresentative",
+        RoleName = "Distribution System Unit Representative",
+        RoleDescription = "Representative of a distribution system unit.",
+      }
+    );
+
+    contentDefinitionManager.AlterPartDefinition(
       "DistributionSystemUnitPart",
       builder =>
         builder
@@ -500,7 +719,7 @@ public class Migrations : DataMigration
           )
     );
 
-    _contentDefinitionManager.AlterTypeDefinition(
+    contentDefinitionManager.AlterTypeDefinition(
       "DistributionSystemUnit",
       builder =>
         builder
@@ -542,13 +761,20 @@ public class Migrations : DataMigration
           )
     );
 
-    string? distributionSystemUnitContentItemId = null;
-    if (_hostEnvironment.IsDevelopment())
+    if (hostEnvironment.IsDevelopment())
     {
+      var unitUser = await userService.CreateDevUserAsync(
+        id: "UnitId",
+        userName: "Unit",
+        roleNames: new[]
+        {
+          "DistributionSystemUnitRepresentative",
+          "LegalEntityRepresentative",
+        }
+      );
+
       var distributionSystemUnit =
-        await _contentManager.NewContentAsync<DistributionSystemUnitItem>();
-      distributionSystemUnitContentItemId =
-        distributionSystemUnit.ContentItemId;
+        await contentManager.NewContentAsync<DistributionSystemUnitItem>();
       distributionSystemUnit.Alter(
         distributionSystemUnit => distributionSystemUnit.TitlePart,
         titlePart =>
@@ -571,7 +797,7 @@ public class Migrations : DataMigration
           };
           legalEntityPart.Representatives = new()
           {
-            UserIds = new[] { distributionSystemUnitRepresentativeId }
+            UserIds = new[] { unitUser.UserId }
           };
         }
       );
@@ -582,45 +808,31 @@ public class Migrations : DataMigration
         {
           distributionSystemUnitPart.ClosedDistributionSystem = new()
           {
-            ContentItemIds = new[] { closedDistributionSystemContentItemId! }
+            ContentItemIds = new[] { systemContentItemId }
           };
         }
       );
 
-      await _contentManager.CreateAsync(
+      await contentManager.CreateAsync(
         distributionSystemUnit,
         VersionOptions.Latest
       );
+
+      return (unitUser.UserId, distributionSystemUnit.ContentItemId);
     }
 
-    _contentDefinitionManager.AlterPartDefinition(
-      "OzdsMeasurementDevicePart",
-      builder =>
-        builder
-          .Attachable()
-          .WithDescription("An OZDS measurement device.")
-          .WithDisplayName("OZDS measurement device")
-          .WithField(
-            "DistributionSystemUnit",
-            fieldBuilder =>
-              fieldBuilder
-                .OfType("ContentPickerField")
-                .WithDisplayName("Distribution system unit")
-                .WithDescription("Distribution system unit.")
-                .WithSettings<ContentPickerFieldSettings>(
-                  new()
-                  {
-                    Hint = "Distribution system unit.",
-                    Multiple = false,
-                    Required = true,
-                    DisplayedContentTypes = new[] { "DistributionSystemUnit" },
-                    DisplayAllContentTypes = false
-                  }
-                )
-          )
-    );
+    return (null, null);
+  }
 
-    _contentDefinitionManager.AlterPartDefinition(
+  internal static async Task MigratePidgeon(
+    IHostEnvironment hostEnvironment,
+    IContentDefinitionManager contentDefinitionManager,
+    IContentManager contentManager,
+    IApiKeyFieldService apiKeyFieldService,
+    string unitContentItemId
+  ) {
+
+    contentDefinitionManager.AlterPartDefinition(
       "PidgeonMeasurementDevicePart",
       builder =>
         builder
@@ -642,7 +854,8 @@ public class Migrations : DataMigration
                 )
           )
     );
-    _contentDefinitionManager.AlterTypeDefinition(
+
+    contentDefinitionManager.AlterTypeDefinition(
       "PidgeonMeasurementDevice",
       builder =>
         builder
@@ -686,10 +899,10 @@ public class Migrations : DataMigration
           )
     );
 
-    if (_hostEnvironment.IsDevelopment())
+    if (hostEnvironment.IsDevelopment())
     {
       var pidgeonMeasurementDevice =
-        await _contentManager.NewContentAsync<PidgeonMeasurementDeviceItem>();
+       await contentManager.NewContentAsync<PidgeonMeasurementDeviceItem>();
       pidgeonMeasurementDevice.Alter(
         pidgeonMeasurementDevice => pidgeonMeasurementDevice.TitlePart,
         titlePart =>
@@ -711,7 +924,7 @@ public class Migrations : DataMigration
         pidgeonMeasurementDevicePart =>
         {
           pidgeonMeasurementDevicePart.ApiKey =
-            _apiKeyFieldService.HashApiKeyField("pidgeon");
+            apiKeyFieldService.HashApiKeyField("pidgeon");
         }
       );
       pidgeonMeasurementDevice.Alter(
@@ -721,17 +934,25 @@ public class Migrations : DataMigration
         {
           ozdsMeasurementDevicePart.DistributionSystemUnit = new()
           {
-            ContentItemIds = new[] { distributionSystemUnitContentItemId! }
+            ContentItemIds = new[] { unitContentItemId }
           };
         }
       );
-      await _contentManager.CreateAsync(
+      await contentManager.CreateAsync(
         pidgeonMeasurementDevice,
         VersionOptions.Latest
       );
     }
+  }
 
-    _contentDefinitionManager.AlterPartDefinition(
+  internal static async Task MigrateAbb(
+    IHostEnvironment hostEnvironment,
+    IContentDefinitionManager contentDefinitionManager,
+    IContentManager contentManager,
+    string unitContentItemId
+  )
+  {
+    contentDefinitionManager.AlterPartDefinition(
       "AbbMeasurementDevicePart",
       builder =>
         builder
@@ -739,7 +960,8 @@ public class Migrations : DataMigration
           .WithDescription("A Abb measurement device.")
           .WithDisplayName("Abb measurement device")
     );
-    _contentDefinitionManager.AlterTypeDefinition(
+
+    contentDefinitionManager.AlterTypeDefinition(
       "AbbMeasurementDevice",
       builder =>
         builder
@@ -806,10 +1028,10 @@ public class Migrations : DataMigration
           )
     );
 
-    if (_hostEnvironment.IsDevelopment())
+    if (hostEnvironment.IsDevelopment())
     {
       var abbPowerDataset =
-        await _contentManager.NewContentAsync<TimeseriesChartDatasetItem>();
+        await contentManager.NewContentAsync<TimeseriesChartDatasetItem>();
       abbPowerDataset.Alter(
         eguagePowerDataset => eguagePowerDataset.TimeseriesChartDatasetPart,
         timeseriesChartDatasetPart =>
@@ -822,7 +1044,7 @@ public class Migrations : DataMigration
         }
       );
       var abbChart =
-        await _contentManager.NewContentAsync<TimeseriesChartItem>();
+        await contentManager.NewContentAsync<TimeseriesChartItem>();
       abbChart.Alter(
         abbChart => abbChart.TitlePart,
         titlePart =>
@@ -846,10 +1068,10 @@ public class Migrations : DataMigration
           timeseriesChartPart.Datasets = new() { abbPowerDataset };
         }
       );
-      await _contentManager.CreateAsync(abbChart, VersionOptions.Latest);
+      await contentManager.CreateAsync(abbChart, VersionOptions.Latest);
 
       var abbMeasurementDevice =
-        await _contentManager.NewContentAsync<AbbMeasurementDeviceItem>();
+        await contentManager.NewContentAsync<AbbMeasurementDeviceItem>();
       abbMeasurementDevice.Alter(
         abbMeasurementDevice => abbMeasurementDevice.TitlePart,
         titlePart =>
@@ -870,7 +1092,7 @@ public class Migrations : DataMigration
         {
           ozdsMeasurementDevicePart.DistributionSystemUnit = new()
           {
-            ContentItemIds = new[] { distributionSystemUnitContentItemId! }
+            ContentItemIds = new[] { unitContentItemId }
           };
         }
       );
@@ -881,39 +1103,376 @@ public class Migrations : DataMigration
           chartPart.ChartContentItemId = abbChart.ContentItemId;
         }
       );
-      await _contentManager.CreateAsync(
+      await contentManager.CreateAsync(
         abbMeasurementDevice,
         VersionOptions.Latest
       );
     }
-
-    return 1;
   }
 
-  public Migrations(
+  internal static async Task<string> MigrateRegulatoryAgencyCatalogue(
     IContentDefinitionManager contentDefinitionManager,
-    IRecipeMigrator recipeMigrator,
-    RoleManager<IRole> roleManager,
-    IUserService userService,
-    IHostEnvironment hostEnvironment,
-    IContentManager contentManager,
-    IApiKeyFieldService apiKeyFieldService
+    IContentManager contentManager
   )
   {
-    _contentDefinitionManager = contentDefinitionManager;
-    _recipeMigrator = recipeMigrator;
-    _roleManager = roleManager;
-    _userService = userService;
-    _hostEnvironment = hostEnvironment;
-    _contentManager = contentManager;
-    _apiKeyFieldService = apiKeyFieldService;
+    contentDefinitionManager.AlterPartDefinition(
+      "RegulatoryAgencyCataloguePart",
+      builder =>
+        builder
+          .Attachable()
+          .WithDescription("A regulatory agency catalogue.")
+          .WithDisplayName("Regulatory agency catalogue")
+    );
+
+    contentDefinitionManager.AlterTypeDefinition(
+      "RegulatoryAgencyCatalogue",
+      builder =>
+        builder
+          .Creatable()
+          .Listable()
+          .Draftable()
+          .Securable()
+          .DisplayedAs("Regulatory agency catalogue")
+          .WithDescription("A regulatory agency catalogue.")
+          .WithPart(
+            "TitlePart",
+            part =>
+              part.WithDisplayName("Title")
+                .WithDescription(
+                  "Title displaying the identifier of the regulatory agency catalogue."
+                )
+                .WithPosition("1")
+                .WithSettings<TitlePartSettings>(
+                  new()
+                  {
+                    RenderTitle = true,
+                    Options = TitlePartOptions.GeneratedDisabled,
+                    Pattern =
+                      @"{%- ContentItem.Content.RegulatoryAgencyCataloguePart.RegulatoryAgencyCatalogueId.Text -%}"
+                  }
+                )
+          )
+          .WithPart(
+            "RegulatoryAgencyCataloguePart",
+            part =>
+              part.WithDisplayName("Regulatory agency catalogue")
+                .WithDescription("A regulatory agency catalogue.")
+                .WithPosition("2")
+          )
+    );
+
+    var regulatoryAgencyCatalogue =
+      await contentManager.NewContentAsync<RegulatoryAgencyCatalogueItem>();
+    regulatoryAgencyCatalogue.Alter(
+      regulatoryAgencyCatalogue => regulatoryAgencyCatalogue.TitlePart,
+      titlePart =>
+      {
+        titlePart.Title = "Regulatory agency catalogue";
+      }
+    );
+    regulatoryAgencyCatalogue.Alter(
+      regulatoryAgencyCatalogue =>
+        regulatoryAgencyCatalogue.RegulatoryAgencyCataloguePart,
+      regulatoryAgencyCataloguePart =>
+      {
+        regulatoryAgencyCataloguePart.BusinessUsageFee = new() { Value = 0.00375M };
+        regulatoryAgencyCataloguePart.RenewableEnergyFee = new() { Value = 0.1050M };
+        regulatoryAgencyCataloguePart.TaxRate = new() { Value = 0.13M };
+      }
+    );
+
+    await contentManager.CreateAsync(
+      regulatoryAgencyCatalogue,
+      VersionOptions.Latest
+    );
+
+    return regulatoryAgencyCatalogue.ContentItemId;
   }
 
-  private readonly IContentDefinitionManager _contentDefinitionManager;
-  private readonly IRecipeMigrator _recipeMigrator;
-  private readonly RoleManager<IRole> _roleManager;
-  private readonly IUserService _userService;
-  private readonly IHostEnvironment _hostEnvironment;
-  private readonly IContentManager _contentManager;
-  private readonly IApiKeyFieldService _apiKeyFieldService;
+  internal static async Task MigrateOperatorCatalogue(
+    IContentDefinitionManager contentDefinitionManager
+  ){
+    contentDefinitionManager.AlterPartDefinition(
+      "OperatorCataloguePart",
+      builder =>
+        builder
+          .Attachable()
+          .WithDescription("A operator catalogue.")
+          .WithDisplayName("Operator catalogue")
+          .WithField(
+            "Voltage",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("TextField")
+                .WithDisplayName("Voltage")
+                .WithDescription("Voltage.")
+                .WithSettings<TextFieldSettings>(
+                  new()
+                  {
+                    Hint = "Voltage.",
+                    Required = true,
+                  }
+                )
+          )
+          .WithField(
+            "Model",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("TextField")
+                .WithDisplayName("Model")
+                .WithDescription("Model.")
+                .WithSettings<TextFieldSettings>(
+                  new()
+                  {
+                    Hint = "Model.",
+                    Required = true,
+                  }
+                )
+          )
+          .WithField(
+            "EnergyPrice",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("Energy price")
+                .WithDescription("Energy price.")
+                .WithSettings<NumericFieldSettings>(
+                  new()
+                  {
+                    Hint = "Energy price.",
+                  }
+                )
+          )
+          .WithField(
+            "HighEnergyPrice",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("High energy price")
+                .WithDescription("High energy price.")
+                .WithSettings<NumericFieldSettings>(
+                  new()
+                  {
+                    Hint = "High energy price.",
+                  }
+                )
+          )
+          .WithField(
+            "LowEnergyPrice",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("Low energy price")
+                .WithDescription("Low energy price.")
+                .WithSettings<NumericFieldSettings>(
+                  new()
+                  {
+                    Hint = "Low energy price.",
+                  }
+                )
+          )
+          .WithField(
+            "MaxPowerPrice",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("Max power price")
+                .WithDescription("Max power price.")
+                .WithSettings<NumericFieldSettings>(
+                  new()
+                  {
+                    Hint = "Max power price.",
+                  }
+                )
+          )
+          .WithField(
+            "MeasurementDeviceFee",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("Measurement device fee")
+                .WithDescription("Measurement device fee.")
+                .WithSettings<NumericFieldSettings>(
+                  new()
+                  {
+                    Hint = "Measurement device fee.",
+                  }
+                )
+          )
+    );
+  }
+
+  internal static async Task<(
+    string WhiteHighVoltageOperatorCatalogueContentItemId,
+    string WhiteMediumVoltageOperatorCatalogueContentItemId,
+    string BlueOperatorCatalogueContentItemId,
+    string WhiteLowVoltageOperatorCatalogueContentItemId,
+    string RedOperatorCatalogueContentItemId,
+    string YellowOperatorCatalogueContentItemId
+  )> PopulateOperatorCatalogues(
+    IContentManager contentManager
+  )
+  {
+    var whiteHighVoltageOperatorCatalogue =
+      await contentManager.NewContentAsync<OperatorCatalogueItem>();
+    whiteHighVoltageOperatorCatalogue.Alter(
+      operatorCatalogue => operatorCatalogue.TitlePart,
+      titlePart =>
+      {
+        titlePart.Title = "White high voltage operator catalogue";
+      }
+    );
+    whiteHighVoltageOperatorCatalogue.Alter(
+      operatorCatalogue => operatorCatalogue.OperatorCataloguePart,
+      operatorCataloguePart =>
+      {
+        operatorCataloguePart.Voltage = new() { Text = "High" };
+        operatorCataloguePart.Model = new() { Text = "White" };
+        operatorCataloguePart.HighEnergyPrice = new() { Value = 0.04M };
+        operatorCataloguePart.LowEnergyPrice = new() { Value = 0.02M };
+        operatorCataloguePart.MaxPowerPrice = new() { Value = 14.00M };
+        operatorCataloguePart.MeasurementDeviceFee = new() { Value = 68.00M };
+      }
+    );
+    await contentManager.CreateAsync(
+      whiteHighVoltageOperatorCatalogue,
+      VersionOptions.Latest
+    );
+
+
+    var whiteMediumVoltageOperatorCatalogue =
+      await contentManager.NewContentAsync<OperatorCatalogueItem>();
+    whiteMediumVoltageOperatorCatalogue.Alter(
+      operatorCatalogue => operatorCatalogue.TitlePart,
+      titlePart =>
+      {
+        titlePart.Title = "White medium voltage operator catalogue";
+      }
+    );
+    whiteMediumVoltageOperatorCatalogue.Alter(
+      operatorCatalogue => operatorCatalogue.OperatorCataloguePart,
+      operatorCataloguePart =>
+      {
+        operatorCataloguePart.Voltage = new() { Text = "Medium" };
+        operatorCataloguePart.Model = new() { Text = "White" };
+        operatorCataloguePart.HighEnergyPrice = new() { Value = 0.14M };
+        operatorCataloguePart.LowEnergyPrice = new() { Value = 0.07M };
+        operatorCataloguePart.MaxPowerPrice = new() { Value = 26.00M };
+        operatorCataloguePart.MeasurementDeviceFee = new() { Value = 66.00M };
+      }
+    );
+    await contentManager.CreateAsync(
+      whiteMediumVoltageOperatorCatalogue,
+      VersionOptions.Latest
+    );
+
+    var blueOperatorCatalogue =
+      await contentManager.NewContentAsync<OperatorCatalogueItem>();
+    blueOperatorCatalogue.Alter(
+      operatorCatalogue => operatorCatalogue.TitlePart,
+      titlePart =>
+      {
+        titlePart.Title = "Blue operator catalogue";
+      }
+    );
+    blueOperatorCatalogue.Alter(
+      operatorCatalogue => operatorCatalogue.OperatorCataloguePart,
+      operatorCataloguePart =>
+      {
+        operatorCataloguePart.Voltage = new() { Text = "Low" };
+        operatorCataloguePart.Model = new() { Text = "Blue" };
+        operatorCataloguePart.EnergyPrice = new() { Value = 0.31M };
+        operatorCataloguePart.MeasurementDeviceFee = new() { Value = 41.30M };
+      }
+    );
+    await contentManager.CreateAsync(
+      blueOperatorCatalogue,
+      VersionOptions.Latest
+    );
+
+
+    var whiteLowVoltageOperatorCatalogue =
+      await contentManager.NewContentAsync<OperatorCatalogueItem>();
+    whiteLowVoltageOperatorCatalogue.Alter(
+      operatorCatalogue => operatorCatalogue.TitlePart,
+      titlePart =>
+      {
+        titlePart.Title = "White low voltage operator catalogue";
+      }
+    );
+    whiteLowVoltageOperatorCatalogue.Alter(
+      operatorCatalogue => operatorCatalogue.OperatorCataloguePart,
+      operatorCataloguePart =>
+      {
+        operatorCataloguePart.Voltage = new() { Text = "Low" };
+        operatorCataloguePart.Model = new() { Text = "White" };
+        operatorCataloguePart.HighEnergyPrice = new() { Value = 0.39M };
+        operatorCataloguePart.LowEnergyPrice = new() { Value = 0.17M };
+        operatorCataloguePart.MeasurementDeviceFee = new() { Value = 41.30M };
+      }
+    );
+    await contentManager.CreateAsync(
+      whiteLowVoltageOperatorCatalogue,
+      VersionOptions.Latest
+    );
+
+    var redOperatorCatalogue =
+      await contentManager.NewContentAsync<OperatorCatalogueItem>();
+    redOperatorCatalogue.Alter(
+      operatorCatalogue => operatorCatalogue.TitlePart,
+      titlePart =>
+      {
+        titlePart.Title = "Red operator catalogue";
+      }
+    );
+    redOperatorCatalogue.Alter(
+      operatorCatalogue => operatorCatalogue.OperatorCataloguePart,
+      operatorCataloguePart =>
+      {
+        operatorCataloguePart.Voltage = new() { Text = "Low" };
+        operatorCataloguePart.Model = new() { Text = "Red" };
+        operatorCataloguePart.HighEnergyPrice = new() { Value = 0.22M };
+        operatorCataloguePart.LowEnergyPrice = new() { Value = 0.1M };
+        operatorCataloguePart.MaxPowerPrice = new() { Value = 39.00M };
+        operatorCataloguePart.MeasurementDeviceFee = new() { Value = 41.30M };
+      }
+    );
+    await contentManager.CreateAsync(
+      redOperatorCatalogue,
+      VersionOptions.Latest
+    );
+
+    var yellowOperatorCatalogue =
+      await contentManager.NewContentAsync<OperatorCatalogueItem>();
+    yellowOperatorCatalogue.Alter(
+      operatorCatalogue => operatorCatalogue.TitlePart,
+      titlePart =>
+      {
+        titlePart.Title = "Yellow operator catalogue";
+      }
+    );
+    yellowOperatorCatalogue.Alter(
+      operatorCatalogue => operatorCatalogue.OperatorCataloguePart,
+      operatorCataloguePart =>
+      {
+        operatorCataloguePart.Voltage = new() { Text = "Low" };
+        operatorCataloguePart.Model = new() { Text = "Yellow" };
+        operatorCataloguePart.EnergyPrice = new() { Value = 0.24M };
+        operatorCataloguePart.MeasurementDeviceFee = new() { Value = 15.45M };
+      }
+    );
+    await contentManager.CreateAsync(
+      yellowOperatorCatalogue,
+      VersionOptions.Latest
+    );
+
+    return (
+      whiteHighVoltageOperatorCatalogue.ContentItemId,
+      whiteMediumVoltageOperatorCatalogue.ContentItemId,
+      blueOperatorCatalogue.ContentItemId,
+      whiteLowVoltageOperatorCatalogue.ContentItemId,
+      redOperatorCatalogue.ContentItemId,
+      yellowOperatorCatalogue.ContentItemId
+    );
+  }
 }
