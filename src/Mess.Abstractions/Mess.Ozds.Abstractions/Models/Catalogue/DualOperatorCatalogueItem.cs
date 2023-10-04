@@ -4,12 +4,12 @@ using OrchardCore.Title.Models;
 
 namespace Mess.Ozds.Abstractions.Models;
 
-public class MeasurementDeviceCatalogueItem : ContentItemBase
+public class DualOperatorCatalogueItem : ContentItemBase
 {
   public Lazy<TitlePart> TitlePart { get; private set; } = null!;
 
-  public Lazy<MeasurementDeviceCataloguePart> MeasurementDeviceCataloguePart { get; private set; } = null!;
+  public Lazy<DualOperatorCataloguePart> DualOperatorCataloguePart { get; private set; } = null!;
 
-  private MeasurementDeviceCatalogueItem(ContentItem contentItem)
+  private DualOperatorCatalogueItem(ContentItem contentItem)
     : base(contentItem) { }
 }
