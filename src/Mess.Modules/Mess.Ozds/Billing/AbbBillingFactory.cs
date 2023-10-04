@@ -19,12 +19,18 @@ public class AbbBillingFactory : IBillingFactory
     throw new NotImplementedException();
   }
 
-  public ContentItem CreateReceipt(ContentItem contentItem, ContentItem invoiceContentItem)
+  public ContentItem CreateReceipt(
+    ContentItem contentItem,
+    ContentItem invoiceContentItem
+  )
   {
     throw new NotImplementedException();
   }
 
-  public Task<ContentItem> CreateReceiptAsync(ContentItem contentItem, ContentItem invoiceContentItem)
+  public Task<ContentItem> CreateReceiptAsync(
+    ContentItem contentItem,
+    ContentItem invoiceContentItem
+  )
   {
     throw new NotImplementedException();
   }

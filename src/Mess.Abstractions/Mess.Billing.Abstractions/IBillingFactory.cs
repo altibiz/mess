@@ -10,7 +10,10 @@ public interface IBillingFactory
 
   Task<ContentItem> CreateInvoiceAsync(ContentItem contentItem);
 
-  ContentItem CreateReceipt(ContentItem contentItem, ContentItem invoiceContentItem);
+  ContentItem CreateReceipt(
+    ContentItem contentItem,
+    ContentItem invoiceContentItem
+  );
 
   Task<ContentItem> CreateReceiptAsync(
     ContentItem contentItem,

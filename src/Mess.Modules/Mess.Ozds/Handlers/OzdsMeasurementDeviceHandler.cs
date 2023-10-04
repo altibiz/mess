@@ -102,14 +102,16 @@ public class OzdsMeasurementDeviceHandler : ContentHandlerBase
           .Value
           .Representatives
           .UserIds;
-      ozdsMeasurementDevicePart.OperatorCatalogueContentItemId =    distributionSystemOperatorContentItem.DistributionSystemOperatorPart.Value.OperatorCatalogue.ContentItemIds.First();
+      ozdsMeasurementDevicePart.OperatorCatalogueContentItemId =
+        distributionSystemOperatorContentItem.DistributionSystemOperatorPart.Value.OperatorCatalogue.ContentItemIds.First();
       ozdsMeasurementDevicePart.RegulatoryAgencyCatalogueContentItemId =
-          distributionSystemOperatorContentItem.DistributionSystemOperatorPart.Value.RegulatoryCatalogue.ContentItemIds.First();
+        distributionSystemOperatorContentItem.DistributionSystemOperatorPart.Value.RegulatoryCatalogue.ContentItemIds.First();
     });
 
     if (contentItem.Has<BillingPart>())
     {
-      var ozdsMeasurementDevicePart = contentItem.As<OzdsMeasurementDevicePart>();
+      var ozdsMeasurementDevicePart =
+        contentItem.As<OzdsMeasurementDevicePart>();
       contentItem.Alter<BillingPart>(billingPart =>
       {
         billingPart.LegalEntityContentItemId =

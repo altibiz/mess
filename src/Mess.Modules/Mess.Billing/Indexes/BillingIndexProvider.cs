@@ -16,13 +16,12 @@ public class BillingIndexProvider : IndexProvider<ContentItem>
       {
         var billingPart = contentItem.As<BillingPart>();
 
-        return
-            new BillingIndex
-            {
-              ContentItemId = contentItem.ContentItemId,
-              ContentType = contentItem.ContentType,
-              LegalEntityContentItemId = billingPart.LegalEntityContentItemId,
-            };
+        return new BillingIndex
+        {
+          ContentItemId = contentItem.ContentItemId,
+          ContentType = contentItem.ContentType,
+          LegalEntityContentItemId = billingPart.LegalEntityContentItemId,
+        };
       });
   }
 }

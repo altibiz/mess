@@ -8,7 +8,11 @@ public class RegulatoryAgencyCatalogueItem : ContentItemBase
 {
   public Lazy<TitlePart> TitlePart { get; private set; } = null!;
 
-  public Lazy<RegulatoryAgencyCataloguePart> RegulatoryAgencyCataloguePart { get; private set; } = null!;
+  public Lazy<RegulatoryAgencyCataloguePart> RegulatoryAgencyCataloguePart
+  {
+    get;
+    private set;
+  } = null!;
 
   private RegulatoryAgencyCatalogueItem(ContentItem contentItem)
     : base(contentItem) { }

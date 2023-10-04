@@ -8,7 +8,11 @@ public class OperatorCatalogueItem : ContentItemBase
 {
   public Lazy<TitlePart> TitlePart { get; private set; } = null!;
 
-  public Lazy<OperatorCataloguePart> OperatorCataloguePart { get; private set; } = null!;
+  public Lazy<OperatorCataloguePart> OperatorCataloguePart
+  {
+    get;
+    private set;
+  } = null!;
 
   private OperatorCatalogueItem(ContentItem contentItem)
     : base(contentItem) { }

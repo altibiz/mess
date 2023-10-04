@@ -15,4 +15,3 @@ public class DualOperatorCataloguePart : ContentPart
 
   public NumericField MeasurementDeviceFee { get; set; } = default!;
 }
-

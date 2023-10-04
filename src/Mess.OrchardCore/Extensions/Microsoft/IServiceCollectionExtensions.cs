@@ -106,8 +106,10 @@ public static class IServiceCollectionExtensions
     return services;
   }
 
-  public static IServiceCollection AddContentHandler<TContentHandler>(this IServiceCollection services)
-  where TContentHandler : class, IContentHandler
+  public static IServiceCollection AddContentHandler<TContentHandler>(
+    this IServiceCollection services
+  )
+    where TContentHandler : class, IContentHandler
   {
     services.AddScoped<IContentHandler, TContentHandler>();
     return services;

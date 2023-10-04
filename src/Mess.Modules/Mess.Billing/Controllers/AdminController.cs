@@ -42,9 +42,11 @@ public class AdminController : Controller
     var invoiceItem = await billingFactory.CreateInvoiceAsync(
       contentItem: billingItem
     );
-    invoiceItem.Alter<InvoicePart>(invoicePart => {
+    invoiceItem.Alter<InvoicePart>(invoicePart =>
+    {
       invoicePart.BillingContentItemId = billingItem.ContentItemId;
-      invoicePart.LegalEntityContentItemId = billingPart.LegalEntityContentItemId;
+      invoicePart.LegalEntityContentItemId =
+        billingPart.LegalEntityContentItemId;
     });
     await _contentManager.CreateAsync(invoiceItem);
 
@@ -62,9 +64,7 @@ public class AdminController : Controller
   [HttpPost]
   public async Task<IActionResult> ConfirmPayment(string contentItemId)
   {
-    var invoiceItem = await _contentManager.GetAsync(
-      contentItemId
-    );
+    var invoiceItem = await _contentManager.GetAsync(contentItemId);
     if (invoiceItem == null)
     {
       return NotFound();
@@ -104,19 +104,19 @@ public class AdminController : Controller
       contentItem: billingItem,
       invoiceContentItem: invoiceItem
     );
-    receiptItem.Alter<ReceiptPart>(receiptPart => {
+    receiptItem.Alter<ReceiptPart>(receiptPart =>
+    {
       receiptPart.BillingContentItemId = billingItem.ContentItemId;
-      receiptPart.LegalEntityContentItemId = billingPart.LegalEntityContentItemId;
+      receiptPart.LegalEntityContentItemId =
+        billingPart.LegalEntityContentItemId;
       receiptPart.InvoiceContentItemId = invoiceItem.ContentItemId;
     });
     await _contentManager.CreateAsync(receiptItem);
 
-    invoiceItem.Alter<InvoicePart>(
-      invoicePart =>
-      {
-        invoicePart.ReceiptContentItemId = receiptItem.ContentItemId;
-      }
-    );
+    invoiceItem.Alter<InvoicePart>(invoicePart =>
+    {
+      invoicePart.ReceiptContentItemId = receiptItem.ContentItemId;
+    });
     await _contentManager.UpdateAsync(invoiceItem);
 
     return RedirectToAction(

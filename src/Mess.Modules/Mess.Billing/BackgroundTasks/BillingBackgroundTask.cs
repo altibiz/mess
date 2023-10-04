@@ -40,12 +40,12 @@ public class BillingBackgroundTask : IBackgroundTask
         continue;
       }
 
-      var invoiceItem = await billingFactory.CreateInvoiceAsync(
-        billingItem
-      );
-      invoiceItem.Alter<InvoicePart>(invoicePart => {
+      var invoiceItem = await billingFactory.CreateInvoiceAsync(billingItem);
+      invoiceItem.Alter<InvoicePart>(invoicePart =>
+      {
         invoicePart.BillingContentItemId = billingItem.ContentItemId;
-        invoicePart.LegalEntityContentItemId = billingPart.LegalEntityContentItemId;
+        invoicePart.LegalEntityContentItemId =
+          billingPart.LegalEntityContentItemId;
       });
       await contentManager.CreateAsync(invoiceItem);
     }
