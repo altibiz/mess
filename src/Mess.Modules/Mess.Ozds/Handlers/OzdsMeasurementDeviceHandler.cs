@@ -13,10 +13,20 @@ public class OzdsMeasurementDeviceHandler : ContentHandlerBase
 {
   public override async Task CreatingAsync(CreateContentContext context)
   {
+    await Update(context.ContentItem);
+  }
+
+  public override async Task UpdatingAsync(UpdateContentContext context)
+  {
+    await Update(context.ContentItem);
+  }
+
+  private async Task Update(ContentItem contentItem)
+  {
     var contentManager = _serviceProvider.GetRequiredService<IContentManager>();
     var session = _serviceProvider.GetRequiredService<ISession>();
 
-    var distributionSystemUnitContentItemId = context.ContentItem
+    var distributionSystemUnitContentItemId = contentItem
       .As<OzdsMeasurementDevicePart>()
       ?.DistributionSystemUnit.ContentItemIds.FirstOrDefault();
     if (distributionSystemUnitContentItemId == null)
@@ -64,7 +74,7 @@ public class OzdsMeasurementDeviceHandler : ContentHandlerBase
       return;
     }
 
-    context.ContentItem.Alter<OzdsMeasurementDevicePart>(ozdsMeasurementDevicePart =>
+    contentItem.Alter<OzdsMeasurementDevicePart>(ozdsMeasurementDevicePart =>
     {
       ozdsMeasurementDevicePart.ClosedDistributionSystemContentItemId =
         closedDistributionSystemContentItem.ContentItemId;
@@ -94,12 +104,19 @@ public class OzdsMeasurementDeviceHandler : ContentHandlerBase
           .UserIds;
     });
 
-    if (context.ContentItem.Has<BillingPart>())
+    if (contentItem.Has<BillingPart>())
     {
-      context.ContentItem.Alter<BillingPart>(billingPart =>
+      var ozdsMeasurementDevicePart = contentItem.As<OzdsMeasurementDevicePart>();
+      contentItem.Alter<BillingPart>(billingPart =>
       {
         billingPart.LegalEntityContentItemId =
           distributionSystemUnitContentItemId;
+        billingPart.CatalogueContentItemIds = new[]
+        {
+          distributionSystemOperatorContentItem.DistributionSystemOperatorPart.Value.RegulatoryCatalogue.ContentItemIds.First(),
+          distributionSystemOperatorContentItem.DistributionSystemOperatorPart.Value.OperatorCatalogue.ContentItemIds.First(),
+          ozdsMeasurementDevicePart.Catalogue.ContentItemIds.First()
+        };
       });
     }
   }

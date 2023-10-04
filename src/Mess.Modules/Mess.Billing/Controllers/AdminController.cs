@@ -1,6 +1,5 @@
-using Mess.Billing.Abstractions.Invoices;
+using Mess.Billing.Abstractions;
 using Mess.Billing.Abstractions.Models;
-using Mess.Billing.Abstractions.Receipts;
 using Mess.OrchardCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,7 +7,7 @@ using OrchardCore.Admin;
 using OrchardCore.ContentManagement;
 using OrchardCore.Mvc.Core.Utilities;
 using YesSql;
-using ContentAdminController = global::OrchardCore.Contents.Controllers.AdminController;
+using ContentAdminController = OrchardCore.Contents.Controllers.AdminController;
 
 namespace Mess.Billing.Controllers;
 
@@ -18,26 +17,25 @@ public class AdminController : Controller
   [HttpPost]
   public async Task<IActionResult> CreateInvoice(string contentItemId)
   {
-    var billingContentItem = await _contentManager.GetAsync(contentItemId);
-    if (billingContentItem == null)
+    var billingItem = await _contentManager.GetAsync(contentItemId);
+    if (billingItem == null)
     {
       return NotFound();
     }
-
-    var billingPart = billingContentItem.As<BillingPart>();
+    var billingPart = billingItem.As<BillingPart>();
     if (billingPart == null)
     {
       return BadRequest();
     }
 
-    var invoiceFactory = _serviceProvider
-      .GetServices<IInvoiceFactory>()
-      .Where(factory => factory.ContentType == billingContentItem.ContentType)
+    var billingFactory = _serviceProvider
+      .GetServices<IBillingFactory>()
+      .Where(factory => factory.ContentType == billingItem.ContentType)
       .FirstOrDefault();
-    if (invoiceFactory == null)
+    if (billingFactory == null)
     {
       throw new NotImplementedException(
-        $"No receipt factory for {billingContentItem.ContentType}"
+        $"No receipt factory for {billingItem.ContentType}"
       );
     }
 
@@ -45,18 +43,15 @@ public class AdminController : Controller
       await _contentManager.GetAsync(billingPart.CatalogueContentItemIds)
     ).ToArray();
 
-    var invoice = await invoiceFactory.CreateAsync(
-      contentItem: billingContentItem,
+    var invoiceItem = await billingFactory.CreateInvoiceAsync(
+      contentItem: billingItem,
       catalogueContentItems: catalogueContentItems
     );
-    var invoiceItem = await _contentManager.NewContentAsync<InvoiceItem>();
-    invoiceItem.Alter(
-      invoiceItem => invoiceItem.InvoicePart,
-      invoicePart =>
-      {
-        invoicePart.Invoice = invoice;
-      }
-    );
+    invoiceItem.Alter<InvoicePart>(invoicePart => {
+      invoicePart.BillingContentItemId = billingItem.ContentItemId;
+      invoicePart.CatalogueContentItemIds = billingPart.CatalogueContentItemIds;
+      invoicePart.LegalEntityContentItemId = billingPart.LegalEntityContentItemId;
+    });
     await _contentManager.CreateAsync(invoiceItem);
 
     return RedirectToAction(
@@ -73,28 +68,35 @@ public class AdminController : Controller
   [HttpPost]
   public async Task<IActionResult> ConfirmPayment(string contentItemId)
   {
-    var invoiceItem = await _contentManager.GetContentAsync<InvoiceItem>(
+    var invoiceItem = await _contentManager.GetAsync(
       contentItemId
     );
     if (invoiceItem == null)
     {
       return NotFound();
     }
-    if (invoiceItem.InvoicePart.Value.Invoice.ReceiptContentItemId is not null)
+
+    var invoicePart = invoiceItem.As<InvoicePart>();
+    if (invoicePart == null)
     {
       return BadRequest();
     }
 
     var billingItem = await _contentManager.GetAsync(
-      invoiceItem.InvoicePart.Value.Invoice.BillableContnetItemId
+      invoicePart.BillingContentItemId
     );
     if (billingItem == null)
     {
       return NotFound();
     }
+    var billingPart = billingItem.As<BillingPart>();
+    if (billingPart == null)
+    {
+      return BadRequest();
+    }
 
     var receiptFactory = _serviceProvider
-      .GetServices<IReceiptFactory>()
+      .GetServices<IBillingFactory>()
       .Where(factory => factory.ContentType == billingItem.ContentType)
       .FirstOrDefault();
     if (receiptFactory == null)
@@ -104,30 +106,22 @@ public class AdminController : Controller
       );
     }
 
-    var receipt = await receiptFactory.CreateAsync(
+    var receiptItem = await receiptFactory.CreateReceiptAsync(
       contentItem: billingItem,
       invoiceContentItem: invoiceItem
     );
-    _session.Save(receipt);
-
-    var receiptItem = await _contentManager.NewContentAsync<ReceiptItem>();
-    receiptItem.Alter(
-      receiptItem => receiptItem.ReceiptPart,
-      receiptPart =>
-      {
-        receiptPart.Receipt = receipt;
-      }
-    );
+    receiptItem.Alter<ReceiptPart>(receiptPart => {
+      receiptPart.BillingContentItemId = billingItem.ContentItemId;
+      receiptPart.CatalogueContentItemIds = billingPart.CatalogueContentItemIds;
+      receiptPart.LegalEntityContentItemId = billingPart.LegalEntityContentItemId;
+      receiptPart.InvoiceContentItemId = invoiceItem.ContentItemId;
+    });
     await _contentManager.CreateAsync(receiptItem);
 
-    invoiceItem.Alter(
-      invoiceItem => invoiceItem.InvoicePart,
+    invoiceItem.Alter<InvoicePart>(
       invoicePart =>
       {
-        invoicePart.Invoice = invoicePart.Invoice with
-        {
-          ReceiptContentItemId = receiptItem.ContentItemId
-        };
+        invoicePart.ReceiptContentItemId = receiptItem.ContentItemId;
       }
     );
     await _contentManager.UpdateAsync(invoiceItem);

@@ -1,9 +1,14 @@
-using Mess.Billing.Abstractions.Invoices;
 using OrchardCore.ContentManagement;
 
 namespace Mess.Billing.Abstractions.Models;
 
 public class InvoicePart : ContentPart
 {
-  public Invoice Invoice { get; set; } = default!;
+  public string BillingContentItemId { get; set; } = default!;
+
+  public string LegalEntityContentItemId { get; set; } = default!;
+
+  public string[] CatalogueContentItemIds { get; set; } = default!;
+
+  public string? ReceiptContentItemId { get; set; } = default!;
 }

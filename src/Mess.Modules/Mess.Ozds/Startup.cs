@@ -52,7 +52,7 @@ public class Startup : StartupBase
     services.AddContentPart<AbbMeasurementDevicePart>();
     services.AddMeasurementDevicePushHandler<AbbPushHandler>();
     services.AddChartProvider<AbbChartProvider>();
-    services.AddBillingFactories<AbbInvoiceFactory, AbbReceiptFactory>();
+    services.AddBillingFactory<AbbBillingFactory>();
   }
 
   public override void Configure(

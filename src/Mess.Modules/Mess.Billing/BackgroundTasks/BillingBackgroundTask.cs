@@ -1,7 +1,6 @@
+using Mess.Billing.Abstractions;
 using Mess.Billing.Abstractions.Indexes;
-using Mess.Billing.Abstractions.Invoices;
 using Mess.Billing.Abstractions.Models;
-using Mess.OrchardCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OrchardCore.BackgroundTasks;
@@ -24,40 +23,39 @@ public class BillingBackgroundTask : IBackgroundTask
     >();
     var contentManager = serviceProvider.GetRequiredService<IContentManager>();
 
-    var billables = await session
+    var billingItems = await session
       .Query<ContentItem, BillingIndex>()
       .ListAsync();
-    foreach (var billable in billables)
+    foreach (var billingItem in billingItems)
     {
-      var invoiceFactory = serviceProvider
-        .GetServices<IInvoiceFactory>()
-        .Where(factory => factory.ContentType == billable.ContentType)
+      var billingPart = billingItem.As<BillingPart>()!;
+
+      var billingFactory = serviceProvider
+        .GetServices<IBillingFactory>()
+        .Where(factory => factory.ContentType == billingItem.ContentType)
         .FirstOrDefault();
-      if (invoiceFactory == null)
+      if (billingFactory == null)
       {
-        logger.LogError($"No receipt factory for {billable.ContentType}");
+        logger.LogError($"No receipt factory for {billingItem.ContentType}");
         continue;
       }
 
-      // TODO: optimize via index
+      // TODO: optimize via index (get first then find by id in memory)
       var catalogueContentItems = (
         await contentManager.GetAsync(
-          billable.As<BillingPart>().CatalogueContentItemIds
+          billingItem.As<BillingPart>().CatalogueContentItemIds
         )
       ).ToArray();
 
-      var invoice = await invoiceFactory.CreateAsync(
-        billable,
+      var invoiceItem = await billingFactory.CreateInvoiceAsync(
+        billingItem,
         catalogueContentItems
       );
-      var invoiceItem = await contentManager.NewContentAsync<InvoiceItem>();
-      invoiceItem.Alter(
-        invoiceItem => invoiceItem.InvoicePart,
-        invoicePart =>
-        {
-          invoicePart.Invoice = invoice;
-        }
-      );
+      invoiceItem.Alter<InvoicePart>(invoicePart => {
+        invoicePart.BillingContentItemId = billingItem.ContentItemId;
+        invoicePart.CatalogueContentItemIds = billingPart.CatalogueContentItemIds;
+        invoicePart.LegalEntityContentItemId = billingPart.LegalEntityContentItemId;
+      });
       await contentManager.CreateAsync(invoiceItem);
     }
   }

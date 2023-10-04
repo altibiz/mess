@@ -272,7 +272,6 @@ public class Migrations : DataMigration
           .Listable()
           .Draftable()
           .Securable()
-          .Stereotype("Legal entity")
           .DisplayedAs("Distribution system operator")
           .WithDescription("A distribution system operator.")
           .WithPart(
@@ -386,7 +385,6 @@ public class Migrations : DataMigration
           .Listable()
           .Draftable()
           .Securable()
-          .Stereotype("Legal entity")
           .DisplayedAs("Closed distribution system")
           .WithDescription("A closed distribution system.")
           .WithPart(
@@ -510,7 +508,6 @@ public class Migrations : DataMigration
           .Listable()
           .Draftable()
           .Securable()
-          .Stereotype("Legal entity")
           .DisplayedAs("Distribution system unit")
           .WithDescription("A distribution system unit.")
           .WithPart(
