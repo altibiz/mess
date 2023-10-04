@@ -102,6 +102,9 @@ public class OzdsMeasurementDeviceHandler : ContentHandlerBase
           .Value
           .Representatives
           .UserIds;
+      ozdsMeasurementDevicePart.OperatorCatalogueContentItemId =    distributionSystemOperatorContentItem.DistributionSystemOperatorPart.Value.OperatorCatalogue.ContentItemIds.First();
+      ozdsMeasurementDevicePart.RegulatoryAgencyCatalogueContentItemId =
+          distributionSystemOperatorContentItem.DistributionSystemOperatorPart.Value.RegulatoryCatalogue.ContentItemIds.First();
     });
 
     if (contentItem.Has<BillingPart>())
@@ -111,12 +114,6 @@ public class OzdsMeasurementDeviceHandler : ContentHandlerBase
       {
         billingPart.LegalEntityContentItemId =
           distributionSystemUnitContentItemId;
-        billingPart.CatalogueContentItemIds = new[]
-        {
-          distributionSystemOperatorContentItem.DistributionSystemOperatorPart.Value.RegulatoryCatalogue.ContentItemIds.First(),
-          distributionSystemOperatorContentItem.DistributionSystemOperatorPart.Value.OperatorCatalogue.ContentItemIds.First(),
-          ozdsMeasurementDevicePart.Catalogue.ContentItemIds.First()
-        };
       });
     }
   }

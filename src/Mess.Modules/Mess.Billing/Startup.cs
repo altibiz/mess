@@ -25,6 +25,8 @@ public class Startup : StartupBase
     services.AddDataMigration<Migrations>();
     services.AddResources<Resources>();
 
+    services.AddContentPart<LegalEntityPart>();
+
     services
       .AddContentPart<BillingPart>()
       .UseDisplayDriver<BillingPartDisplayDriver>();
@@ -32,15 +34,11 @@ public class Startup : StartupBase
     services.AddBackgroundTask<BillingBackgroundTask>();
 
     services.AddContentPart<ReceiptPart>();
-    services.AddContentPart<InvoicePart>();
+    services
+      .AddContentPart<InvoicePart>()
+      .UseDisplayDriver<InvoicePartDisplayDriver>();
     services.AddIndexProvider<PaymentIndexProvider>();
     services.AddContentHandler<PaymentHandler>();
-
-    services.AddContentPart<LegalEntityPart>();
-    services.AddIndexProvider<LegalEntityIndexProvider>();
-
-    services.AddContentPart<CataloguePart>();
-    services.AddIndexProvider<CatalogueIndexProvider>();
   }
 
   public override void Configure(

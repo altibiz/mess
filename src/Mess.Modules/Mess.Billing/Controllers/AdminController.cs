@@ -39,17 +39,11 @@ public class AdminController : Controller
       );
     }
 
-    var catalogueContentItems = (
-      await _contentManager.GetAsync(billingPart.CatalogueContentItemIds)
-    ).ToArray();
-
     var invoiceItem = await billingFactory.CreateInvoiceAsync(
-      contentItem: billingItem,
-      catalogueContentItems: catalogueContentItems
+      contentItem: billingItem
     );
     invoiceItem.Alter<InvoicePart>(invoicePart => {
       invoicePart.BillingContentItemId = billingItem.ContentItemId;
-      invoicePart.CatalogueContentItemIds = billingPart.CatalogueContentItemIds;
       invoicePart.LegalEntityContentItemId = billingPart.LegalEntityContentItemId;
     });
     await _contentManager.CreateAsync(invoiceItem);
@@ -112,7 +106,6 @@ public class AdminController : Controller
     );
     receiptItem.Alter<ReceiptPart>(receiptPart => {
       receiptPart.BillingContentItemId = billingItem.ContentItemId;
-      receiptPart.CatalogueContentItemIds = billingPart.CatalogueContentItemIds;
       receiptPart.LegalEntityContentItemId = billingPart.LegalEntityContentItemId;
       receiptPart.InvoiceContentItemId = invoiceItem.ContentItemId;
     });

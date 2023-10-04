@@ -6,12 +6,9 @@ public interface IBillingFactory
 {
   string ContentType { get; }
 
-  ContentItem CreateInvoice(ContentItem contentItem, ContentItem[] catalogueContentItems);
+  ContentItem CreateInvoice(ContentItem contentItem);
 
-  Task<ContentItem> CreateInvoiceAsync(
-    ContentItem contentItem,
-    ContentItem[] catalogueContentItems
-  );
+  Task<ContentItem> CreateInvoiceAsync(ContentItem contentItem);
 
   ContentItem CreateReceipt(ContentItem contentItem, ContentItem invoiceContentItem);
 

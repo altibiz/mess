@@ -4,10 +4,10 @@ using Mess.Billing.Abstractions.Models;
 
 namespace Mess.Billing.ViewModels;
 
-public class BillingPartViewModel
+public class InvoicePartViewModel
 {
   [ValidateNever]
-  public BillingPart Part { get; set; } = default!;
+  public InvoicePart Part { get; set; } = default!;
 
   [ValidateNever]
   public ContentTypePartDefinition Definition { get; set; } = default!;

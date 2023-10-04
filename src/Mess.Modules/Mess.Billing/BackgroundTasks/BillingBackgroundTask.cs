@@ -40,20 +40,11 @@ public class BillingBackgroundTask : IBackgroundTask
         continue;
       }
 
-      // TODO: optimize via index (get first then find by id in memory)
-      var catalogueContentItems = (
-        await contentManager.GetAsync(
-          billingItem.As<BillingPart>().CatalogueContentItemIds
-        )
-      ).ToArray();
-
       var invoiceItem = await billingFactory.CreateInvoiceAsync(
-        billingItem,
-        catalogueContentItems
+        billingItem
       );
       invoiceItem.Alter<InvoicePart>(invoicePart => {
         invoicePart.BillingContentItemId = billingItem.ContentItemId;
-        invoicePart.CatalogueContentItemIds = billingPart.CatalogueContentItemIds;
         invoicePart.LegalEntityContentItemId = billingPart.LegalEntityContentItemId;
       });
       await contentManager.CreateAsync(invoiceItem);

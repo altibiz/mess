@@ -9,6 +9,4 @@ public class BillingIndex : MapIndex
   public string ContentType { get; set; } = default!;
 
   public string LegalEntityContentItemId { get; set; } = default!;
-
-  public string CatalogueContentItemId { get; set; } = default!;
 }

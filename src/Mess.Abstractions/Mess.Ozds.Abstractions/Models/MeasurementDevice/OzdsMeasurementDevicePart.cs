@@ -24,4 +24,8 @@ public class OzdsMeasurementDevicePart : ContentPart
 
   public string[] DistributionSystemUnitRepresentativeUserIds { get; set; } =
     default!;
+
+  public string RegulatoryAgencyCatalogueContentItemId { get; set; } = default!;
+
+  public string OperatorCatalogueContentItemId { get; set; } = default!;
 }

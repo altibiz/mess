@@ -8,14 +8,14 @@ using Mess.Billing.ViewModels;
 
 namespace Mess.Billing.Drivers;
 
-public class BillingPartDisplayDriver : ContentPartDisplayDriver<BillingPart>
+public class InvoicePartDisplayDriver : ContentPartDisplayDriver<InvoicePart>
 {
   public override IDisplayResult Display(
-    BillingPart part,
+    InvoicePart part,
     BuildPartDisplayContext context
   )
   {
-    return Initialize<BillingPartViewModel>(
+    return Initialize<InvoicePartViewModel>(
         GetDisplayShapeType(context),
         model =>
         {
@@ -27,9 +27,9 @@ public class BillingPartDisplayDriver : ContentPartDisplayDriver<BillingPart>
       .Location("Detail", "Content");
   }
 
-  public BillingPartDisplayDriver(
+  public InvoicePartDisplayDriver(
     IServiceProvider serviceProvider,
-    IStringLocalizer<BillingPartDisplayDriver> localizer,
+    IStringLocalizer<InvoicePartDisplayDriver> localizer,
     ISession session
   )
   {

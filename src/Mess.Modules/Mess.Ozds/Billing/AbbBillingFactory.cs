@@ -9,12 +9,12 @@ public class AbbBillingFactory : IBillingFactory
 
   public string ContentType => BillingContentType;
 
-  public ContentItem CreateInvoice(ContentItem contentItem, ContentItem[] catalogueContentItems)
+  public ContentItem CreateInvoice(ContentItem contentItem)
   {
     throw new NotImplementedException();
   }
 
-  public Task<ContentItem> CreateInvoiceAsync(ContentItem contentItem, ContentItem[] catalogueContentItems)
+  public Task<ContentItem> CreateInvoiceAsync(ContentItem contentItem)
   {
     throw new NotImplementedException();
   }
