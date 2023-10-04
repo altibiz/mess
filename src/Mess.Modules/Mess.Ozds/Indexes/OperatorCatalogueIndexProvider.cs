@@ -15,7 +15,8 @@ public class OperatorCatalogueIndexProvider : IndexProvider<ContentItem>
       .Map(contentItem =>
       {
         var operatorCataloguePart = contentItem.As<OperatorCataloguePart>();
-        return new OperatorCatalogueIndex {
+        return new OperatorCatalogueIndex
+        {
           Model = operatorCataloguePart.Model.Text,
           Voltage = operatorCataloguePart.Voltage.Text
         };

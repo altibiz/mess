@@ -28,76 +28,76 @@ public class Migrations : DataMigration
 {
   public async Task<int> CreateAsync()
   {
-    var regulatoryAgencyCatalogueContentItemId = await CreateAsyncMigrations.MigrateRegulatoryAgencyCatalogue(
-      _contentDefinitionManager,
-      _contentManager
-    );
+    var regulatoryAgencyCatalogueContentItemId =
+      await CreateAsyncMigrations.MigrateRegulatoryAgencyCatalogue(
+        _contentDefinitionManager,
+        _contentManager
+      );
 
     await CreateAsyncMigrations.MigrateOperatorCatalogue(
       _contentDefinitionManager
     );
 
-   (
-    string whiteHighVoltageOperatorCatalogueContentItemId,
-    string whiteMediumVoltageOperatorCatalogueContentItemId,
-    string blueOperatorCatalogueContentItemId,
-    string whiteLowVoltageOperatorCatalogueContentItemId,
-    string redOperatorCatalogueContentItemId,
-    string yellowOperatorCatalogueContentItemId
-   ) =  await CreateAsyncMigrations.PopulateOperatorCatalogues(
-      _contentManager
-    );
+    (
+      string whiteHighVoltageOperatorCatalogueContentItemId,
+      string whiteMediumVoltageOperatorCatalogueContentItemId,
+      string blueOperatorCatalogueContentItemId,
+      string whiteLowVoltageOperatorCatalogueContentItemId,
+      string redOperatorCatalogueContentItemId,
+      string yellowOperatorCatalogueContentItemId
+    ) = await CreateAsyncMigrations.PopulateOperatorCatalogues(_contentManager);
 
-   (
-    string whiteHighVoltageMeasurementDeviceCatalogueContentItemId,
-    string whiteMediumVoltageMeasurementDeviceCatalogueContentItemId,
-    string blueMeasurementDeviceCatalogueContentItemId,
-    string whiteLowVoltageMeasurementDeviceCatalogueContentItemId,
-    string redMeasurementDeviceCatalogueContentItemId,
-    string yellowMeasurementDeviceCatalogueContentItemId
-   ) =  await CreateAsyncMigrations.PopulateOperatorCatalogues(
-      _contentManager
-    );
+    (
+      string whiteHighVoltageMeasurementDeviceCatalogueContentItemId,
+      string whiteMediumVoltageMeasurementDeviceCatalogueContentItemId,
+      string blueMeasurementDeviceCatalogueContentItemId,
+      string whiteLowVoltageMeasurementDeviceCatalogueContentItemId,
+      string redMeasurementDeviceCatalogueContentItemId,
+      string yellowMeasurementDeviceCatalogueContentItemId
+    ) = await CreateAsyncMigrations.PopulateOperatorCatalogues(_contentManager);
 
-    (string? operatorUserId, string? operatorContentItemId) = await CreateAsyncMigrations.MigrateOperator(
-      SchemaBuilder,
-      _roleManager,
-      _hostEnvironment,
-      _userService,
-      _contentDefinitionManager,
-      _contentManager,
-      regulatoryAgencyCatalogueContentItemId,
-      whiteHighVoltageOperatorCatalogueContentItemId!,
-      whiteMediumVoltageOperatorCatalogueContentItemId!,
-      blueOperatorCatalogueContentItemId!,
-      whiteLowVoltageOperatorCatalogueContentItemId!,
-      redOperatorCatalogueContentItemId!,
-      yellowOperatorCatalogueContentItemId!
-    );
+    (string? operatorUserId, string? operatorContentItemId) =
+      await CreateAsyncMigrations.MigrateOperator(
+        SchemaBuilder,
+        _roleManager,
+        _hostEnvironment,
+        _userService,
+        _contentDefinitionManager,
+        _contentManager,
+        regulatoryAgencyCatalogueContentItemId,
+        whiteHighVoltageOperatorCatalogueContentItemId!,
+        whiteMediumVoltageOperatorCatalogueContentItemId!,
+        blueOperatorCatalogueContentItemId!,
+        whiteLowVoltageOperatorCatalogueContentItemId!,
+        redOperatorCatalogueContentItemId!,
+        yellowOperatorCatalogueContentItemId!
+      );
 
-    (string? systemUserId, string? systemContentItemId) = await CreateAsyncMigrations.MigrateSystem(
-      SchemaBuilder,
-      _roleManager,
-      _hostEnvironment,
-      _userService,
-      _contentDefinitionManager,
-      _contentManager,
-      operatorUserId!,
-      operatorContentItemId!
-    );
+    (string? systemUserId, string? systemContentItemId) =
+      await CreateAsyncMigrations.MigrateSystem(
+        SchemaBuilder,
+        _roleManager,
+        _hostEnvironment,
+        _userService,
+        _contentDefinitionManager,
+        _contentManager,
+        operatorUserId!,
+        operatorContentItemId!
+      );
 
-    (string? unitUserId, string? unitContentItemId) = await CreateAsyncMigrations.MigrateUnit(
-      SchemaBuilder,
-      _roleManager,
-      _hostEnvironment,
-      _userService,
-      _contentDefinitionManager,
-      _contentManager,
-      operatorUserId!,
-      operatorContentItemId!,
-      systemUserId!,
-      systemContentItemId!
-    );
+    (string? unitUserId, string? unitContentItemId) =
+      await CreateAsyncMigrations.MigrateUnit(
+        SchemaBuilder,
+        _roleManager,
+        _hostEnvironment,
+        _userService,
+        _contentDefinitionManager,
+        _contentManager,
+        operatorUserId!,
+        operatorContentItemId!,
+        systemUserId!,
+        systemContentItemId!
+      );
 
     _contentDefinitionManager.AlterPartDefinition(
       "OzdsMeasurementDevicePart",
@@ -135,13 +135,9 @@ public class Migrations : DataMigration
           .WithDisplayName("OZDS billing calculation")
     );
 
-    await CreateAsyncMigrations.MigrateInvoice(
-      _contentDefinitionManager
-    );
+    await CreateAsyncMigrations.MigrateInvoice(_contentDefinitionManager);
 
-    await CreateAsyncMigrations.MigrateReceipt(
-      _contentDefinitionManager
-    );
+    await CreateAsyncMigrations.MigrateReceipt(_contentDefinitionManager);
 
     await CreateAsyncMigrations.MigratePidgeon(
       _hostEnvironment,
@@ -191,7 +187,10 @@ public class Migrations : DataMigration
 
 internal static class CreateAsyncMigrations
 {
-  internal static async Task<(string? UserId, string? ContentItemId)> MigrateOperator(
+  internal static async Task<(
+    string? UserId,
+    string? ContentItemId
+  )> MigrateOperator(
     ISchemaBuilder schemaBuilder,
     RoleManager<IRole> roleManager,
     IHostEnvironment hostEnvironment,
@@ -371,41 +370,49 @@ internal static class CreateAsyncMigrations
           };
 
           distributionSystemOperatorPart.WhiteHighVoltageOperatorCatalogueContentItemId =
-          new()
-          {
-            ContentItemIds = new[] { whiteHighVoltageOperatorCatalogueContentItemId }
-          };
+            new()
+            {
+              ContentItemIds = new[]
+              {
+                whiteHighVoltageOperatorCatalogueContentItemId
+              }
+            };
 
           distributionSystemOperatorPart.WhiteMediumVoltageOperatorCatalogueContentItemId =
-          new()
-          {
-            ContentItemIds = new[] { whiteMediumVoltageOperatorCatalogueContentItemId }
-          };
-
+            new()
+            {
+              ContentItemIds = new[]
+              {
+                whiteMediumVoltageOperatorCatalogueContentItemId
+              }
+            };
 
           distributionSystemOperatorPart.BlueOperatorCatalogueContentItemId =
-          new()
-          {
-            ContentItemIds = new[] { blueOperatorCatalogueContentItemId }
-          };
+            new()
+            {
+              ContentItemIds = new[] { blueOperatorCatalogueContentItemId }
+            };
 
           distributionSystemOperatorPart.WhiteLowVoltageOperatorCatalogueContentItemId =
-          new()
-          {
-            ContentItemIds = new[] { whiteLowVoltageOperatorCatalogueContentItemId }
-          };
+            new()
+            {
+              ContentItemIds = new[]
+              {
+                whiteLowVoltageOperatorCatalogueContentItemId
+              }
+            };
 
           distributionSystemOperatorPart.RedOperatorCatalogueContentItemId =
-          new()
-          {
-            ContentItemIds = new[] { redOperatorCatalogueContentItemId }
-          };
+            new()
+            {
+              ContentItemIds = new[] { redOperatorCatalogueContentItemId }
+            };
 
           distributionSystemOperatorPart.YellowOperatorCatalogueContentItemId =
-          new()
-          {
-            ContentItemIds = new[] { yellowOperatorCatalogueContentItemId }
-          };
+            new()
+            {
+              ContentItemIds = new[] { yellowOperatorCatalogueContentItemId }
+            };
         }
       );
 
@@ -420,7 +427,10 @@ internal static class CreateAsyncMigrations
     return (null, null);
   }
 
-  internal static async Task<(string? UserId, string? ContentItemId)> MigrateSystem(
+  internal static async Task<(
+    string? UserId,
+    string? ContentItemId
+  )> MigrateSystem(
     ISchemaBuilder schemaBuilder,
     RoleManager<IRole> roleManager,
     IHostEnvironment hostEnvironment,
@@ -565,7 +575,7 @@ internal static class CreateAsyncMigrations
 
     if (hostEnvironment.IsDevelopment())
     {
-      var systemUser =  await userService.CreateDevUserAsync(
+      var systemUser = await userService.CreateDevUserAsync(
         id: "SystemId",
         userName: "System",
         roleNames: new[]
@@ -625,7 +635,11 @@ internal static class CreateAsyncMigrations
 
     return (null, null);
   }
-  internal static async Task<(string? UserId, string? ContentItemId)> MigrateUnit(
+
+  internal static async Task<(
+    string? UserId,
+    string? ContentItemId
+  )> MigrateUnit(
     ISchemaBuilder schemaBuilder,
     RoleManager<IRole> roleManager,
     IHostEnvironment hostEnvironment,
@@ -847,8 +861,8 @@ internal static class CreateAsyncMigrations
     IContentManager contentManager,
     IApiKeyFieldService apiKeyFieldService,
     string unitContentItemId
-  ) {
-
+  )
+  {
     contentDefinitionManager.AlterPartDefinition(
       "PidgeonMeasurementDevicePart",
       builder =>
@@ -919,7 +933,7 @@ internal static class CreateAsyncMigrations
     if (hostEnvironment.IsDevelopment())
     {
       var pidgeonMeasurementDevice =
-       await contentManager.NewContentAsync<PidgeonMeasurementDeviceItem>();
+        await contentManager.NewContentAsync<PidgeonMeasurementDeviceItem>();
       pidgeonMeasurementDevice.Alter(
         pidgeonMeasurementDevice => pidgeonMeasurementDevice.TitlePart,
         titlePart =>
@@ -1192,8 +1206,14 @@ internal static class CreateAsyncMigrations
         regulatoryAgencyCatalogue.RegulatoryAgencyCataloguePart,
       regulatoryAgencyCataloguePart =>
       {
-        regulatoryAgencyCataloguePart.BusinessUsageFee = new() { Value = 0.00375M };
-        regulatoryAgencyCataloguePart.RenewableEnergyFee = new() { Value = 0.1050M };
+        regulatoryAgencyCataloguePart.BusinessUsageFee = new()
+        {
+          Value = 0.00375M
+        };
+        regulatoryAgencyCataloguePart.RenewableEnergyFee = new()
+        {
+          Value = 0.1050M
+        };
         regulatoryAgencyCataloguePart.TaxRate = new() { Value = 0.13M };
       }
     );
@@ -1208,7 +1228,8 @@ internal static class CreateAsyncMigrations
 
   internal static async Task MigrateOperatorCatalogue(
     IContentDefinitionManager contentDefinitionManager
-  ){
+  )
+  {
     contentDefinitionManager.AlterPartDefinition(
       "OperatorCataloguePart",
       builder =>
@@ -1224,11 +1245,7 @@ internal static class CreateAsyncMigrations
                 .WithDisplayName("Voltage")
                 .WithDescription("Voltage.")
                 .WithSettings<TextFieldSettings>(
-                  new()
-                  {
-                    Hint = "Voltage.",
-                    Required = true,
-                  }
+                  new() { Hint = "Voltage.", Required = true, }
                 )
           )
           .WithField(
@@ -1239,11 +1256,7 @@ internal static class CreateAsyncMigrations
                 .WithDisplayName("Model")
                 .WithDescription("Model.")
                 .WithSettings<TextFieldSettings>(
-                  new()
-                  {
-                    Hint = "Model.",
-                    Required = true,
-                  }
+                  new() { Hint = "Model.", Required = true, }
                 )
           )
           .WithField(
@@ -1254,10 +1267,7 @@ internal static class CreateAsyncMigrations
                 .WithDisplayName("Energy price")
                 .WithDescription("Energy price.")
                 .WithSettings<NumericFieldSettings>(
-                  new()
-                  {
-                    Hint = "Energy price.",
-                  }
+                  new() { Hint = "Energy price.", }
                 )
           )
           .WithField(
@@ -1268,10 +1278,7 @@ internal static class CreateAsyncMigrations
                 .WithDisplayName("High energy price")
                 .WithDescription("High energy price.")
                 .WithSettings<NumericFieldSettings>(
-                  new()
-                  {
-                    Hint = "High energy price.",
-                  }
+                  new() { Hint = "High energy price.", }
                 )
           )
           .WithField(
@@ -1282,10 +1289,7 @@ internal static class CreateAsyncMigrations
                 .WithDisplayName("Low energy price")
                 .WithDescription("Low energy price.")
                 .WithSettings<NumericFieldSettings>(
-                  new()
-                  {
-                    Hint = "Low energy price.",
-                  }
+                  new() { Hint = "Low energy price.", }
                 )
           )
           .WithField(
@@ -1296,10 +1300,7 @@ internal static class CreateAsyncMigrations
                 .WithDisplayName("Max power price")
                 .WithDescription("Max power price.")
                 .WithSettings<NumericFieldSettings>(
-                  new()
-                  {
-                    Hint = "Max power price.",
-                  }
+                  new() { Hint = "Max power price.", }
                 )
           )
           .WithField(
@@ -1310,10 +1311,7 @@ internal static class CreateAsyncMigrations
                 .WithDisplayName("Measurement device fee")
                 .WithDescription("Measurement device fee.")
                 .WithSettings<NumericFieldSettings>(
-                  new()
-                  {
-                    Hint = "Measurement device fee.",
-                  }
+                  new() { Hint = "Measurement device fee.", }
                 )
           )
     );
@@ -1326,9 +1324,7 @@ internal static class CreateAsyncMigrations
     string WhiteLowVoltageOperatorCatalogueContentItemId,
     string RedOperatorCatalogueContentItemId,
     string YellowOperatorCatalogueContentItemId
-  )> PopulateOperatorCatalogues(
-    IContentManager contentManager
-  )
+  )> PopulateOperatorCatalogues(IContentManager contentManager)
   {
     var whiteHighVoltageOperatorCatalogue =
       await contentManager.NewContentAsync<OperatorCatalogueItem>();
@@ -1355,7 +1351,6 @@ internal static class CreateAsyncMigrations
       whiteHighVoltageOperatorCatalogue,
       VersionOptions.Latest
     );
-
 
     var whiteMediumVoltageOperatorCatalogue =
       await contentManager.NewContentAsync<OperatorCatalogueItem>();
@@ -1406,7 +1401,6 @@ internal static class CreateAsyncMigrations
       blueOperatorCatalogue,
       VersionOptions.Latest
     );
-
 
     var whiteLowVoltageOperatorCatalogue =
       await contentManager.NewContentAsync<OperatorCatalogueItem>();
@@ -1519,9 +1513,7 @@ internal static class CreateAsyncMigrations
             "TitlePart",
             part =>
               part.WithDisplayName("Title")
-                .WithDescription(
-                  "Title."
-                )
+                .WithDescription("Title.")
                 .WithPosition("1")
                 .WithSettings<TitlePartSettings>(
                   new()
@@ -1553,7 +1545,6 @@ internal static class CreateAsyncMigrations
                 .WithPosition("4")
           )
     );
-
   }
 
   internal static async Task MigrateReceipt(
@@ -1582,9 +1573,7 @@ internal static class CreateAsyncMigrations
             "TitlePart",
             part =>
               part.WithDisplayName("Title")
-                .WithDescription(
-                  "Title."
-                )
+                .WithDescription("Title.")
                 .WithPosition("1")
                 .WithSettings<TitlePartSettings>(
                   new()

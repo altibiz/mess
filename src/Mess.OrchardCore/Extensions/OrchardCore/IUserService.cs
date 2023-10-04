@@ -37,11 +37,7 @@ public static class IUserServiceExtensions
         : roleNames
     };
 
-    await userService.CreateUserAsync(
-      user,
-      $"{userName}123!",
-      (_, _) => { }
-    );
+    await userService.CreateUserAsync(user, $"{userName}123!", (_, _) => { });
 
     return user;
   }

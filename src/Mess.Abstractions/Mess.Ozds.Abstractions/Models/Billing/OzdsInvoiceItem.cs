@@ -11,11 +11,11 @@ public class OzdsInvoiceItem : ContentItemBase
 
   public Lazy<InvoicePart> InvoicePart { get; private set; } = default!;
 
-  public Lazy<OzdsCalculationPart> OzdsCalculationPart { get; private set; } = default!;
+  public Lazy<OzdsCalculationPart> OzdsCalculationPart { get; private set; } =
+    default!;
 
   public Lazy<OzdsInvoicePart> OzdsInvoicePart { get; private set; } = default!;
 
-  private OzdsInvoiceItem(ContentItem contentItem) : base(contentItem)
-  {
-  }
+  private OzdsInvoiceItem(ContentItem contentItem)
+    : base(contentItem) { }
 }

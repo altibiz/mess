@@ -11,11 +11,11 @@ public class OzdsReceiptItem : ContentItemBase
 
   public Lazy<ReceiptPart> ReceiptPart { get; private set; } = default!;
 
-  public Lazy<OzdsCalculationPart> OzdsCalculationPart { get; private set; } = default!;
+  public Lazy<OzdsCalculationPart> OzdsCalculationPart { get; private set; } =
+    default!;
 
   public Lazy<OzdsReceiptPart> OzdsReceiptPart { get; private set; } = default!;
 
-  private OzdsReceiptItem(ContentItem contentItem) : base(contentItem)
-  {
-  }
+  private OzdsReceiptItem(ContentItem contentItem)
+    : base(contentItem) { }
 }
