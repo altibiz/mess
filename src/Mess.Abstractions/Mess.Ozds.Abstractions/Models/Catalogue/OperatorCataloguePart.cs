@@ -3,12 +3,11 @@ using OrchardCore.ContentManagement;
 
 namespace Mess.Ozds.Abstractions.Models;
 
+// TODO: validation
 public class OperatorCataloguePart : ContentPart
 {
-  // TODO: validation
   public TextField Voltage { get; set; } = default!;
 
-  // TODO: validation
   public TextField Model { get; set; } = default!;
 
   public NumericField HighEnergyPrice { get; set; } = new() { Value = 0.00M };

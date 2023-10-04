@@ -126,6 +126,23 @@ public class Migrations : DataMigration
           )
     );
 
+    _contentDefinitionManager.AlterPartDefinition(
+      "OzdsCalculationPart",
+      builder =>
+        builder
+          .Attachable()
+          .WithDescription("An OZDS billing calculation.")
+          .WithDisplayName("OZDS billing calculation")
+    );
+
+    await CreateAsyncMigrations.MigrateInvoice(
+      _contentDefinitionManager
+    );
+
+    await CreateAsyncMigrations.MigrateReceipt(
+      _contentDefinitionManager
+    );
+
     await CreateAsyncMigrations.MigratePidgeon(
       _hostEnvironment,
       _contentDefinitionManager,
@@ -1473,6 +1490,131 @@ internal static class CreateAsyncMigrations
       whiteLowVoltageOperatorCatalogue.ContentItemId,
       redOperatorCatalogue.ContentItemId,
       yellowOperatorCatalogue.ContentItemId
+    );
+  }
+
+  internal static async Task MigrateInvoice(
+    IContentDefinitionManager contentDefinitionManager
+  )
+  {
+    contentDefinitionManager.AlterPartDefinition(
+      "OzdsInvoicePart",
+      builder =>
+        builder
+          .Attachable()
+          .WithDescription("An OZDS invoice.")
+          .WithDisplayName("OZDS invoice")
+    );
+    contentDefinitionManager.AlterTypeDefinition(
+      "OzdsInvoice",
+      builder =>
+        builder
+          .Creatable()
+          .Listable()
+          .Draftable()
+          .Securable()
+          .DisplayedAs("OZDS invoice")
+          .WithDescription("An OZDS invoice.")
+          .WithPart(
+            "TitlePart",
+            part =>
+              part.WithDisplayName("Title")
+                .WithDescription(
+                  "Title."
+                )
+                .WithPosition("1")
+                .WithSettings<TitlePartSettings>(
+                  new()
+                  {
+                    RenderTitle = true,
+                    Options = TitlePartOptions.GeneratedDisabled,
+                  }
+                )
+          )
+          .WithPart(
+            "InvoicePart",
+            part =>
+              part.WithDisplayName("Invoice")
+                .WithDescription("An invoice")
+                .WithPosition("2")
+          )
+          .WithPart(
+            "OzdsCalculationPart",
+            part =>
+              part.WithDisplayName("OZDS calculation")
+                .WithDescription("An OZDS calculation.")
+                .WithPosition("3")
+          )
+          .WithPart(
+            "OzdsInvoicePart",
+            part =>
+              part.WithDisplayName("OZDS Invoice")
+                .WithDescription("An OZDS invoice.")
+                .WithPosition("4")
+          )
+    );
+
+  }
+
+  internal static async Task MigrateReceipt(
+    IContentDefinitionManager contentDefinitionManager
+  )
+  {
+    contentDefinitionManager.AlterPartDefinition(
+      "OzdsReceiptPart",
+      builder =>
+        builder
+          .Attachable()
+          .WithDescription("An OZDS receipt.")
+          .WithDisplayName("OZDS receipt")
+    );
+    contentDefinitionManager.AlterTypeDefinition(
+      "OzdsReceipt",
+      builder =>
+        builder
+          .Creatable()
+          .Listable()
+          .Draftable()
+          .Securable()
+          .DisplayedAs("OZDS receipt")
+          .WithDescription("An OZDS receipt.")
+          .WithPart(
+            "TitlePart",
+            part =>
+              part.WithDisplayName("Title")
+                .WithDescription(
+                  "Title."
+                )
+                .WithPosition("1")
+                .WithSettings<TitlePartSettings>(
+                  new()
+                  {
+                    RenderTitle = true,
+                    Options = TitlePartOptions.GeneratedDisabled,
+                  }
+                )
+          )
+          .WithPart(
+            "ReceiptPart",
+            part =>
+              part.WithDisplayName("Receipt")
+                .WithDescription("An receipt")
+                .WithPosition("2")
+          )
+          .WithPart(
+            "OzdsCalculationPart",
+            part =>
+              part.WithDisplayName("OZDS calculation")
+                .WithDescription("An OZDS calculation.")
+                .WithPosition("3")
+          )
+          .WithPart(
+            "OzdsReceiptPart",
+            part =>
+              part.WithDisplayName("OZDS Receipt")
+                .WithDescription("An OZDS receipt.")
+                .WithPosition("4")
+          )
     );
   }
 }
