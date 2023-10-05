@@ -9,10 +9,10 @@
   "type": "commonjs",
   "main": "dist/index.js",
   "scripts": {
-    "scripts": "bun --cwd scripts",
-    "docs": "bun --cwd docs",
-    "publishing": "bun --cwd src/Mess.Publishing",
-    "pack": "bun --cwd src/Mess.Pack"
+    "scripts": "bun --cwd scripts --silent",
+    "docs": "bun --cwd docs --silent",
+    "publishing": "bun --cwd src/Mess.Publishing --silent",
+    "pack": "bun --cwd src/Mess.Pack --silent"
   },
   "workspaces": [
     "scripts",
