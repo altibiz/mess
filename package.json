@@ -30,7 +30,9 @@
     "eslint": "^8.46.0",
     "husky": "^8.0.3",
     "prettier": "^2.8.8",
-    "typescript": "^5.1.6"
+    "typescript": "^5.1.6",
+    "vscode-langservers-extracted": "^4.7.0",
+    "yaml-language-server": "^1.14.0"
   },
   "engines": {
     "node": "20.x"
