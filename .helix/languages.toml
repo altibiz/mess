@@ -38,3 +38,9 @@ name = "yaml"
 language-server = { command = "bunx yaml-language-server", args = ["--stdio"] }
 formatter = { command = "bunx prettier" }
 auto-format = true
+
+[[language]]
+name = "json"
+language-server = { command = "bunx vscode-json-language-server", args = ["--stdio"], config = { provideFormatter = true, json = { validate = { enable = true } } } }
+formatter = { command = "bunx prettier" }
+auto-format = true
