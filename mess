@@ -75,9 +75,7 @@ get_dotnet_version() {
 }
 
 get_node_version() {
-  # TODO: once loaders get stabilized...
-  # node --version | cut -d '.' -f 1 | tr -d 'v'
-  node --version | tr -d 'v'
+  node --version | cut -d '.' -f 1 | tr -d 'v'
 }
 
 install_node() {

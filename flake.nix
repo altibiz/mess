@@ -1,7 +1,6 @@
 {
   inputs = {
-    # NOTE: Node 20.4.0
-    nixpkgs.url = "github:nixos/nixpkgs?rev=fc4810bfca66fc4f3a8f5d4cceb1621e79bc91bb";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     utils.url = "github:numtide/flake-utils";
   };
 
@@ -21,51 +20,32 @@
           packages = with pkgs; [
             (pkgs.writeShellApplication {
               name = "mess";
-              runtimeInputs = [ pkgs.nodePackages.yarn ];
+              runtimeInputs = [ pkgs.nodejs pkgs.bun ];
               text = ''
                 echo 'require("prettier")' |
-                  yarn node >/dev/null 2>&1 ||
+                  node >/dev/null 2>&1 ||
                   (printf "%s %s %s" \
                     "\`prettier\` not found." \
                     "Please make sure you run \`mess prepare\`" \
-                    "before running any other commands" && yarn)
+                    "before running any other commands" && bun install)
 
-                yarn scripts start "$@"
+                bun run --bun scripts start "$@"
               '';
             })
-            # TODO: https://github.com/dotnet/sdk/issues/30546
-            (pkgs.buildDotnetGlobalTool {
-              pname = "dotnet-csharpier";
-              nugetName = "CSharpier";
-              version = "0.25.0";
-              nugetSha256 = "sha256-7yRDI7vdLTXv0XuUHKUdsIJsqzmw3cidWjmbZ5g5Vvg=";
-              dotnet-sdk = pkgs.dotnetCorePackages.sdk_6_0;
-              dotnet-runtime = pkgs.dotnetCorePackages.sdk_6_0;
-              meta = with pkgs.lib; {
-                homepage = "https://github.com/belav/csharpier";
-                changelog = "https://github.com/belav/csharpier/blob/main/CHANGELOG.md";
-                license = licenses.mit;
-                platforms = platforms.linux;
-              };
-            })
+            git
+            lazygit
+            helix
             nil
             nixpkgs-fmt
-            direnv
-            nix-direnv
-            git
-            helix
-            lazygit
             nodejs
             bun
-            nodePackages.yarn
-            nodePackages.typescript-language-server
-            nodePackages.vscode-langservers-extracted
-            nodePackages.yaml-language-server
             dotnet-sdk
             omnisharp-roslyn
             netcoredbg
+            powershell
             docker-client
             docker-compose
+            lazydocker
           ];
         };
     };

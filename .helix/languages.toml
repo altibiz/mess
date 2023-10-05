@@ -11,20 +11,30 @@ auto-format = true
 
 [[language]]
 name = "typescript"
-formatter = { command = "yarn prettier" }
+language-server = { command = "bunx --bun typescript-language-server", args = [ "--stdio" ], config.hostInfo = "helix" }
+formatter = { command = "bunx --bun prettier" }
 auto-format = true
 
 [[language]]
 name = "javascript"
-formatter = { command = "yarn prettier" }
+language-server = { command = "bunx --bun typescript-language-server", args = [ "--stdio" ], config.hostInfo = "helix" }
+formatter = { command = "bunx --bun prettier" }
 auto-format = true
 
 [[language]]
 name = "css"
-formatter = { command = "yarn prettier" }
+language-server = { command = "bunx --bun vscode-css-language-server", args = ["--stdio"], config = { provideFormatter = true, css = { validate = { enable = true } } } }
+formatter = { command = "bunx --bun prettier" }
 auto-format = true
 
 [[language]]
 name = "scss"
-formatter = { command = "yarn prettier" }
+language-server = { command = "bunx --bun vscode-css-language-server", args = ["--stdio"], config = { provideFormatter = true, css = { validate = { enable = true } } } }
+formatter = { command = "bunx --bun prettier" }
+auto-format = true
+
+[[language]]
+name = "yaml"
+language-server = { command = "bunx --bun yaml-language-server", args = ["--stdio"] }
+formatter = { command = "bunx --bun prettier" }
 auto-format = true
