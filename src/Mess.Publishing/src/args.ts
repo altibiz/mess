@@ -30,7 +30,7 @@ export type Args = {
 };
 
 const unparsedArgs = yargs(hideBin(process.argv))
-  .usage("Usage: bun run publishing start [options]")
+  .usage("Usage: bun publishing start [options]")
   .option("mode", {
     describe: "The mode in which to run",
     choices: ["client", "server", "proxy"],

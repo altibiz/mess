@@ -33,7 +33,7 @@ export default cmd({
   await task("Installed dependencies with dotnet", `dotnet restore ${root()}`);
 
   if (build) {
-    await task("Built assets with bun", "bun run assets build");
+    await task("Built assets with bun", "bun assets build");
   }
 
   if (build || !skip.includes("test")) {

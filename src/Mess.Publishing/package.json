@@ -7,7 +7,7 @@
     "lint:tsc": "tsc --noEmit",
     "lint:eslint": "eslint ./src/**/*.{js,ts}",
     "lint": "run-s 'lint:*'",
-    "dev": "bun run --silent ./src/index.ts"
+    "dev": "bun --silent ./src/index.ts"
   },
   "dependencies": {
     "cross-fetch": "^4.0.0",

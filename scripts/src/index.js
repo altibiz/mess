@@ -1,4 +1,4 @@
-#!/usr/bin/env bun run
+#!/usr/bin/env bun
 
 import commands from "./cmds/index";
 import { buildGlobalArgs, log, SUBCOMMANDS } from "./lib/index";

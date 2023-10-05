@@ -37,7 +37,7 @@ export default cmd({
     await dotenv("secrets.sh");
   }
 
-  await task("Built assets with bun", "bun run assets build");
+  await task("Built assets with bun", "bun assets build");
 
   await task(
     "Published app with dotnet",

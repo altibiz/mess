@@ -19,18 +19,18 @@ export default cmd({
     _.option("update", {
       type: "string",
       array: true,
-      description: "Run and pass update argument to bun run publishing",
+      description: "Run and pass update argument to bun publishing",
       default: [],
     })
       .option("push", {
         type: "string",
         array: true,
-        description: "Run and pass push argument to bun run publishing",
+        description: "Run and pass push argument to bun publishing",
         default: [],
       })
       .option("tenant", {
         type: "string",
-        description: "Pass tenant argument to bun run publishing",
+        description: "Pass tenant argument to bun publishing",
         choices: ["eor", "ozds"],
         default: "eor",
       })
@@ -71,7 +71,7 @@ export default cmd({
 
   await task(
     "Built assets with bun so that dotnet watch is aware of artifacts",
-    "bun run pack build",
+    "bun pack build",
   );
 
   const debugCommands = debug
@@ -98,7 +98,7 @@ export default cmd({
           {
             name: "publish",
             command:
-              "bun run publishing dev " +
+              "bun publishing dev " +
               `${pushArgs} ${updateArgs} ${tenantArgs}`,
           },
         ]
@@ -108,7 +108,7 @@ export default cmd({
     { name: "docker", command: "docker-compose up", silent: true },
     {
       name: "bun",
-      command: "bun run pack watch",
+      command: "bun pack watch",
       fmt: bunFmt,
     },
     ...debugCommands,

@@ -278,4 +278,4 @@ if (!$?) {
 }
 
 $YarnArgs = $args -join "' '"
-Invoke-Expression "bun run --silent scripts start '$YarnArgs'"
+Invoke-Expression "bun --silent scripts start '$YarnArgs'"
