@@ -9,7 +9,7 @@ import {
   rmrf,
   root,
   task,
-  bunFmt
+  bunFmt,
 } from "../lib/index";
 
 export default cmd({
