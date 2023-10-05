@@ -1,13 +1,14 @@
 {
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     utils.url = "github:numtide/flake-utils";
   };
 
   outputs = { self, nixpkgs, utils }:
     utils.lib.simpleFlake {
       inherit self nixpkgs;
-      name = "mess";
+      # FIX: error: 'mess' has been renamed to/replaced by 'mame'
+      name = "mess-flake";
       config = {
         allowUnfree = true;
       };
@@ -28,7 +29,6 @@
                     "\`prettier\` not found." \
                     "Please make sure you run \`mess prepare\`" \
                     "before running any other commands" && bun install)
-
                 bun run --bun scripts start "$@"
               '';
             })
