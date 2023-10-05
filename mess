@@ -152,4 +152,4 @@ echo 'require("prettier")' |
     "Please make sure you run \`mess prepare\`" \
     "before running any other commands" && install_yarn_packages)
 
-bun run scripts start "$@"
+bun run --silent scripts start "$@"

@@ -30,7 +30,7 @@
                     "Please make sure you run \`mess prepare\`" \
                     "before running any other commands" && bun install)
 
-                bun run scripts start "$@"
+                bun run --silent scripts start "$@"
               '';
             })
             git
