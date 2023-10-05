@@ -7,7 +7,7 @@
     "lint:tsc": "tsc --noEmit",
     "lint:eslint": "eslint ./src/**/*.{js,ts}",
     "lint": "run-s 'lint:*'",
-    "start": "bun run ./src/index.js"
+    "start": "bun run --silent ./src/index.js"
   },
   "dependencies": {
     "@shopify/prettier-plugin-liquid": "^1.2.2",
