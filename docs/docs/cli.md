@@ -115,7 +115,7 @@ Lint the Mess repository. This will run on each commit via a git hook if you
 installed husky hooks.
 
 It will first run `prettier` and `csharpier` to check if all files are formatted
-properly and then `yarn workspaces foreach` to lint all Yarn workspaces and
+properly and then `npm run lint --workspaces` to lint all JS workspaces and
 `dotnet build` to lint C# projects. Yarn workspaces usually use `eslint` to lint
 JS and TS and `stylelint` to lint CSS and SCSS.
 

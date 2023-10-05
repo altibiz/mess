@@ -1,4 +1,4 @@
-#!/usr/bin/env yarn dlx ts-node
+#!/usr/bin/env bun run
 
 import commands from "./cmds/index";
 import { buildGlobalArgs, log, SUBCOMMANDS } from "./lib/index";

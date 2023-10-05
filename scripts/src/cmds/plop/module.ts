@@ -80,11 +80,11 @@ export default cmd({
   }
 
   if (assets) {
-    await plopd("assets", `src/Mess.Modules/Mess.${name}/Assets`, config);
+    await plopd("assets", `src/Mess.Assets/Mess.${name}`, config);
 
     await task(
-      `Added package src/Mess.Modules/Mess.${name}/Assets to workspace`,
-      "yarn install",
+      `Added package src/Mess.Assets/Mess.${name} to workspace`,
+      "bun install",
     );
   }
 
@@ -93,7 +93,7 @@ export default cmd({
 
     await task(
       "Formatted with prettier",
-      "yarn prettier --write" +
+      "bunx prettier --write" +
         " --ignore-path .prettierignore" +
         " --cache --cache-strategy metadata" +
         " .",

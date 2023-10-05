@@ -9,7 +9,7 @@ import {
   rmrf,
   root,
   task,
-  yarnFmt,
+  bunFmt
 } from "../lib/index";
 
 export default cmd({
@@ -19,18 +19,18 @@ export default cmd({
     _.option("update", {
       type: "string",
       array: true,
-      description: "Run and pass update argument to yarn publishing",
+      description: "Run and pass update argument to bun run publishing",
       default: [],
     })
       .option("push", {
         type: "string",
         array: true,
-        description: "Run and pass push argument to yarn publishing",
+        description: "Run and pass push argument to bun run publishing",
         default: [],
       })
       .option("tenant", {
         type: "string",
-        description: "Pass tenant argument to yarn publishing",
+        description: "Pass tenant argument to bun run publishing",
         choices: ["eor", "ozds"],
         default: "eor",
       })
@@ -70,8 +70,8 @@ export default cmd({
   }
 
   await task(
-    "Built assets with yarn so that dotnet watch is aware of artifacts",
-    "yarn assets build",
+    "Built assets with bun so that dotnet watch is aware of artifacts",
+    "bun run pack build",
   );
 
   const debugCommands = debug
@@ -98,7 +98,7 @@ export default cmd({
           {
             name: "publish",
             command:
-              "yarn publishing dev " +
+              "bun run publishing dev " +
               `${pushArgs} ${updateArgs} ${tenantArgs}`,
           },
         ]
@@ -107,9 +107,9 @@ export default cmd({
   await ptask(
     { name: "docker", command: "docker-compose up", silent: true },
     {
-      name: "yarn",
-      command: "yarn assets watch",
-      fmt: yarnFmt,
+      name: "bun",
+      command: "bun run pack watch",
+      fmt: bunFmt,
     },
     ...debugCommands,
     ...publishCommands,

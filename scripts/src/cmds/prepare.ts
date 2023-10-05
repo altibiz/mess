@@ -33,7 +33,7 @@ export default cmd({
   await task("Installed dependencies with dotnet", `dotnet restore ${root()}`);
 
   if (build) {
-    await task("Built assets with yarn", "yarn assets build");
+    await task("Built assets with bun", "bun run assets build");
   }
 
   if (build || !skip.includes("test")) {
@@ -59,7 +59,7 @@ export default cmd({
 
     if (!skip.includes("hooks")) {
       if (!(await exists(".husky/_/husky.sh"))) {
-        await task("Set up git hooks", "yarn husky install");
+        await task("Set up git hooks", "bunx husky install");
       } else {
         log.info("Git hooks already set up");
       }

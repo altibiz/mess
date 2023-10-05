@@ -1,4 +1,4 @@
-export const yarnFmt = (output?: string | null) =>
+export const bunFmt = (output?: string | null) =>
   (output || "")
     .split("\n")
     .filter((line) => line)

@@ -14,14 +14,15 @@ export default cmd({
 
   await task(
     "Linted with prettier",
-    "yarn prettier --check" +
+    "bunx prettier --check" +
       " --ignore-path .prettierignore" +
       " --cache --cache-strategy metadata" +
       " .",
   );
 
   if (!formatOnly) {
-    await task("Linted workspaces", "yarn workspaces foreach -ip run lint");
+    // TODO: with bun
+    await task("Linted workspaces", "npm run lint --workspaces");
     await task(
       "Linted projects",
       `dotnet build ${root()}` +

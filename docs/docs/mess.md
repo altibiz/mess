@@ -46,12 +46,12 @@ Learn more about each theme in the [Themes](/mess/docs/themes) chapter.
 
 ### Assets
 
-Some modules and themes also contain an `Assets` folder which contains static
-assets such as images, fonts, scripts and styles. These assets are managed by
-the `src/Mess.Assets` project that builds webpack configurations for each module
-and theme.
+Some modules and themes also contain assets in the `src/Mess.Assets` folder 
+which contains static assets such as images, fonts, scripts and styles. These
+assets are managed by the `src/Mess.Pack` project that builds webpack
+configurations for each module and theme.
 
-`src/Mess.Assets` also contains a couple of other packages that are used to
+`src/Mess.Pack` also contains a couple of other packages that are used to
 configure the developer experience of asset packages across all modules and
 themes.
 

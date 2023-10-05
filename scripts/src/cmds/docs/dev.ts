@@ -6,6 +6,6 @@ export default cmd({
 })(async () => {
   await ptask({
     name: "docs",
-    command: "yarn docs watch",
+    command: "bun run docs watch",
   });
 });
