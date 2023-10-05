@@ -5,9 +5,7 @@
     "checkJs": false,
     "outDir": "./dist"
   },
-  "include": ["./src/**/*"],
-  "ts-node": {
-    "files": true,
-    "esm": true
-  }
+  "include": [
+    "./src/**/*"
+  ]
 }

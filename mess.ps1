@@ -278,4 +278,4 @@ if (!$?) {
 }
 
 $YarnArgs = $args -join "' '"
-Invoke-Expression "yarn scripts start '$YarnArgs'"
+Invoke-Expression "bun run --bun scripts start '$YarnArgs'"
