@@ -1,18 +1,14 @@
+import { Configuration } from "@rspack/cli";
 import autoprefixer from "autoprefixer";
-import CopyPlugin from "copy-webpack-plugin";
-import CssMinimizerPlugin from "css-minimizer-webpack-plugin";
-import ESLintPlugin from "eslint-webpack-plugin";
 import * as fs from "fs";
 import * as glob from "glob";
-import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import * as path from "path";
-import StylelintPlugin from "stylelint-webpack-plugin";
-import TerserPlugin from "terser-webpack-plugin";
-import { Configuration } from "webpack";
-import RemoveEmptyScriptsPlugin from "webpack-remove-empty-scripts";
+// import ESLintPlugin from "eslint-webpack-plugin";
+// import StylelintPlugin from "stylelint-webpack-plugin";
+// import RemoveEmptyScriptsPlugin from "webpack-remove-empty-scripts";
 
 const configurations: Configuration[] = glob
-  .sync("../Mess.{Modules,Themes}/*/Assets", {
+  .sync("../Mess.Assets/*", {
     posix: true,
   })
   .map((workspace) => {
@@ -64,26 +60,32 @@ const configurations: Configuration[] = glob
       output: {
         filename: "[name].js",
         cssFilename: "[name].css",
-        path: path.resolve(projectPath, "wwwroot/assets/"),
+        path: path.resolve(projectPath, "wwwroot/assets"),
         publicPath: `/${project}/assets/`,
+      },
+      builtins: {
+        presetEnv: {
+          targets: ["Chrome >= 48"],
+        },
+        copy: {
+          patterns: [
+            {
+              from: `${workspace}/src/**/*.{png,jpg,jpeg,gif,svg,ico,woff,woff2}`,
+              to: "resources/[name][ext]",
+              noErrorOnMissing: true,
+            },
+          ],
+        },
+      },
+      target: ["web", "es5"],
+      experiments: {
+        css: true,
       },
       module: {
         rules: [
           {
-            test: /\.(js|ts)$/,
-            exclude: /node_modules/,
-            use: {
-              loader: "babel-loader",
-              options: {
-                presets: ["@babel/preset-env", "@babel/preset-typescript"],
-              },
-            },
-          },
-          {
             test: /\.(sa|sc|c)ss$/,
             use: [
-              MiniCssExtractPlugin.loader,
-              "css-loader",
               {
                 loader: "postcss-loader",
                 options: {
@@ -104,41 +106,26 @@ const configurations: Configuration[] = glob
           },
         ],
       },
-      plugins: [
-        new RemoveEmptyScriptsPlugin(),
-        new MiniCssExtractPlugin({
-          filename: "[name].css",
-        }),
-        new ESLintPlugin({
-          extensions: ["js", "ts"],
-        }),
-        new StylelintPlugin({
-          files: `${workspace}/src/**/*.{css,scss}`,
-        }),
-        new CopyPlugin({
-          patterns: [
-            {
-              from: `${workspace}/src/**/*.{png,jpg,jpeg,gif,svg,ico,woff,woff2}`,
-              to: "resources/[name][ext]",
-              noErrorOnMissing: true,
-            },
-          ],
-        }),
-      ],
-      optimization: {
-        minimizer: [new TerserPlugin(), new CssMinimizerPlugin()],
-      },
+      // plugins: [
+      //   new RemoveEmptyScriptsPlugin(),
+      //   new ESLintPlugin({
+      //     extensions: ["js", "ts"],
+      //   }),
+      //   new StylelintPlugin({
+      //     files: `${workspace}/src/**/*.{css,scss}`,
+      //   }),
+      // ],
       devtool: process.env.NODE_ENV === "production" ? false : "source-map",
       resolve: {
         extensions: [".ts", ".js"],
       },
       context: path.resolve(__dirname),
-      performance: {
-        hints: false,
-        maxEntrypointSize: 512000,
-        maxAssetSize: 512000,
-      },
-      stats: "minimal",
+      // performance: {
+      //   hints: false,
+      //   maxEntrypointSize: 512000,
+      //   maxAssetSize: 512000,
+      // },
+      stats: "normal",
     };
 
     return configuration;
