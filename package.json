@@ -19,9 +19,9 @@
     "scripts",
     "docs",
     "src/Mess.Publishing",
-    "src/Mess.Assets",
-    "src/Mess.Assets/config/*",
-    "src/Mess.{Modules,Themes}/*/Assets"
+    "src/Mess.Pack",
+    "src/Mess.Pack/config/*",
+    "src/Mess.Assets/*"
   ],
   "devDependencies": {
     "@commitlint/cli": "^17.6.7",
