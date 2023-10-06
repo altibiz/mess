@@ -85,6 +85,7 @@ const configurations: Configuration[] = glob
         rules: [
           {
             test: /\.(sa|sc|c)ss$/,
+            type: "css",
             use: [
               {
                 loader: "postcss-loader",
