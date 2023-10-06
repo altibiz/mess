@@ -12,7 +12,7 @@
     "scripts": "yarn workspace @mess/scripts",
     "docs": "yarn workspace @mess/docs",
     "publishing": "yarn workspace @mess/publishing",
-    "assets": "yarn workspace @mess/assets"
+    "assets": "yarn workspace @mess/pack"
   },
   "packageManager": "yarn@3.6.1",
   "workspaces": [

@@ -1,5 +1,5 @@
 {
-  "name": "@mess/assets",
+  "name": "@mess/pack",
   "private": true,
   "type": "commonjs",
   "scripts": {
@@ -13,6 +13,7 @@
     "@babel/core": "^7.22.9",
     "@babel/preset-env": "^7.22.9",
     "@babel/preset-typescript": "^7.22.5",
+    "@rspack/cli": "^0.3.6",
     "@shopify/prettier-plugin-liquid": "^1.2.2",
     "@tsconfig/node20": "^20.1.0",
     "@types/node": "~20.4.8",
