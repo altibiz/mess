@@ -6,10 +6,10 @@
     "lint:tsc": "tsc --noEmit",
     "lint:eslint": "eslint webpack.config.ts",
     "lint": "run-s 'lint:*'",
-    "build": "webpack --mode production",
-    "watch": "webpack --mode development --watch",
-    "build-rspack": "rspack --mode production build",
-    "watch-rspack": "rspack --mode development serve"
+    "build-webpack": "webpack --mode production",
+    "watch-webpack": "webpack --mode development --watch",
+    "build": "rspack --mode production build",
+    "watch": "rspack --mode development serve"
   },
   "devDependencies": {
     "@babel/core": "^7.22.9",
