@@ -53,6 +53,17 @@ public class Startup : StartupBase
     services.AddMeasurementDevicePushHandler<AbbPushHandler>();
     services.AddChartProvider<AbbChartProvider>();
     services.AddBillingFactory<AbbBillingFactory>();
+
+    services.AddContentPart<DistributionSystemOperatorPart>();
+    services.AddContentPart<ClosedDistributionSystemPart>();
+    services.AddContentPart<DistributionSystemUnitPart>();
+
+    services.AddContentPart<OperatorCataloguePart>();
+    services.AddContentPart<RegulatoryAgencyCataloguePart>();
+
+    services.AddContentPart<OzdsCalculationPart>();
+    services.AddContentPart<OzdsReceiptPart>();
+    services.AddContentPart<OzdsInvoicePart>();
   }
 
   public override void Configure(
