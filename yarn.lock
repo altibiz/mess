@@ -3222,9 +3222,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mess/assets@workspace:src/Mess.Assets":
+"@mess/assets@workspace:src/Mess.Pack":
   version: 0.0.0-use.local
-  resolution: "@mess/assets@workspace:src/Mess.Assets"
+  resolution: "@mess/assets@workspace:src/Mess.Pack"
   dependencies:
     "@babel/core": ^7.22.9
     "@babel/preset-env": ^7.22.9
@@ -3263,9 +3263,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@mess/chart-assets@workspace:src/Mess.Modules/Mess.Chart/Assets":
+"@mess/chart-assets@workspace:src/Mess.Assets/Mess.Chart":
   version: 0.0.0-use.local
-  resolution: "@mess/chart-assets@workspace:src/Mess.Modules/Mess.Chart/Assets"
+  resolution: "@mess/chart-assets@workspace:src/Mess.Assets/Mess.Chart"
   dependencies:
     "@mess/eslint-config-assets": "workspace:*"
     "@mess/stylelint-config-assets": "workspace:*"
@@ -3291,9 +3291,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@mess/content-fields-assets@workspace:src/Mess.Modules/Mess.Fields/Assets":
+"@mess/content-fields-assets@workspace:src/Mess.Assets/Mess.Fields":
   version: 0.0.0-use.local
-  resolution: "@mess/content-fields-assets@workspace:src/Mess.Modules/Mess.Fields/Assets"
+  resolution: "@mess/content-fields-assets@workspace:src/Mess.Assets/Mess.Fields"
   dependencies:
     "@mess/eslint-config-assets": "workspace:*"
     "@mess/stylelint-config-assets": "workspace:*"
@@ -3336,9 +3336,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@mess/document-assets@workspace:src/Mess.Modules/Mess.Document/Assets":
+"@mess/document-assets@workspace:src/Mess.Assets/Mess.Document":
   version: 0.0.0-use.local
-  resolution: "@mess/document-assets@workspace:src/Mess.Modules/Mess.Document/Assets"
+  resolution: "@mess/document-assets@workspace:src/Mess.Assets/Mess.Document"
   dependencies:
     "@mess/eslint-config-assets": "workspace:*"
     "@mess/stylelint-config-assets": "workspace:*"
@@ -3357,9 +3357,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@mess/eor-assets@workspace:src/Mess.Modules/Mess.Eor/Assets":
+"@mess/eor-assets@workspace:src/Mess.Assets/Mess.Eor":
   version: 0.0.0-use.local
-  resolution: "@mess/eor-assets@workspace:src/Mess.Modules/Mess.Eor/Assets"
+  resolution: "@mess/eor-assets@workspace:src/Mess.Assets/Mess.Eor"
   dependencies:
     "@mess/eslint-config-assets": "workspace:*"
     "@mess/stylelint-config-assets": "workspace:*"
@@ -3379,9 +3379,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@mess/eslint-config-assets@workspace:*, @mess/eslint-config-assets@workspace:src/Mess.Assets/config/eslint":
+"@mess/eslint-config-assets@workspace:*, @mess/eslint-config-assets@workspace:src/Mess.Pack/config/eslint":
   version: 0.0.0-use.local
-  resolution: "@mess/eslint-config-assets@workspace:src/Mess.Assets/config/eslint"
+  resolution: "@mess/eslint-config-assets@workspace:src/Mess.Pack/config/eslint"
   dependencies:
     "@types/js-yaml": ^4.0.5
     "@typescript-eslint/eslint-plugin": ^6.2.1
@@ -3392,9 +3392,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@mess/forttech-assets@workspace:src/Mess.Themes/Mess.Forttech/Assets":
+"@mess/forttech-assets@workspace:src/Mess.Assets/Mess.Forttech":
   version: 0.0.0-use.local
-  resolution: "@mess/forttech-assets@workspace:src/Mess.Themes/Mess.Forttech/Assets"
+  resolution: "@mess/forttech-assets@workspace:src/Mess.Assets/Mess.Forttech"
   dependencies:
     "@mess/eslint-config-assets": "workspace:*"
     "@mess/stylelint-config-assets": "workspace:*"
@@ -3415,9 +3415,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@mess/helb-assets@workspace:src/Mess.Themes/Mess.Helb/Assets":
+"@mess/helb-assets@workspace:src/Mess.Assets/Mess.Helb":
   version: 0.0.0-use.local
-  resolution: "@mess/helb-assets@workspace:src/Mess.Themes/Mess.Helb/Assets"
+  resolution: "@mess/helb-assets@workspace:src/Mess.Assets/Mess.Helb"
   dependencies:
     "@mess/eslint-config-assets": "workspace:*"
     "@mess/stylelint-config-assets": "workspace:*"
@@ -3436,30 +3436,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@mess/management-assets@workspace:src/Mess.Themes/Mess.Management/Assets":
+"@mess/management-assets@workspace:src/Mess.Assets/Mess.Management":
   version: 0.0.0-use.local
-  resolution: "@mess/management-assets@workspace:src/Mess.Themes/Mess.Management/Assets"
-  dependencies:
-    "@mess/eslint-config-assets": "workspace:*"
-    "@mess/stylelint-config-assets": "workspace:*"
-    "@mess/typescript-config-assets": "workspace:*"
-    "@shopify/prettier-plugin-liquid": ^1.2.2
-    "@typescript-eslint/eslint-plugin": ^6.2.1
-    "@typescript-eslint/parser": ^6.2.1
-    eslint: ^8.46.0
-    npm-run-all: ^4.1.5
-    postcss: ^8.4.27
-    prettier: ^2.8.8
-    sass: ^1.64.2
-    stylelint: ^15.10.2
-    stylelint-config-standard-scss: ^10.0.0
-    typescript: ^5.1.6
-  languageName: unknown
-  linkType: soft
-
-"@mess/measurement-device-assets@workspace:src/Mess.Modules/Mess.Iot/Assets":
-  version: 0.0.0-use.local
-  resolution: "@mess/measurement-device-assets@workspace:src/Mess.Modules/Mess.Iot/Assets"
+  resolution: "@mess/management-assets@workspace:src/Mess.Assets/Mess.Management"
   dependencies:
     "@mess/eslint-config-assets": "workspace:*"
     "@mess/stylelint-config-assets": "workspace:*"
@@ -3492,9 +3471,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@mess/ozds-assets@workspace:src/Mess.Modules/Mess.Ozds/Assets":
+"@mess/ozds-assets@workspace:src/Mess.Assets/Mess.Ozds":
   version: 0.0.0-use.local
-  resolution: "@mess/ozds-assets@workspace:src/Mess.Modules/Mess.Ozds/Assets"
+  resolution: "@mess/ozds-assets@workspace:src/Mess.Assets/Mess.Ozds"
   dependencies:
     "@mess/eslint-config-assets": "workspace:*"
     "@mess/stylelint-config-assets": "workspace:*"
@@ -3569,9 +3548,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@mess/stylelint-config-assets@workspace:*, @mess/stylelint-config-assets@workspace:src/Mess.Assets/config/stylelint":
+"@mess/stylelint-config-assets@workspace:*, @mess/stylelint-config-assets@workspace:src/Mess.Pack/config/stylelint":
   version: 0.0.0-use.local
-  resolution: "@mess/stylelint-config-assets@workspace:src/Mess.Assets/config/stylelint"
+  resolution: "@mess/stylelint-config-assets@workspace:src/Mess.Pack/config/stylelint"
   dependencies:
     "@types/js-yaml": ^4.0.5
     js-yaml: ^4.1.0
@@ -3582,9 +3561,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@mess/typescript-config-assets@workspace:*, @mess/typescript-config-assets@workspace:src/Mess.Assets/config/typescript":
+"@mess/typescript-config-assets@workspace:*, @mess/typescript-config-assets@workspace:src/Mess.Pack/config/typescript":
   version: 0.0.0-use.local
-  resolution: "@mess/typescript-config-assets@workspace:src/Mess.Assets/config/typescript"
+  resolution: "@mess/typescript-config-assets@workspace:src/Mess.Pack/config/typescript"
   dependencies:
     typescript: ^5.1.6
   languageName: unknown
