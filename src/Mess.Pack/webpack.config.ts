@@ -12,7 +12,7 @@ import { Configuration } from "webpack";
 import RemoveEmptyScriptsPlugin from "webpack-remove-empty-scripts";
 
 const configurations: Configuration[] = glob
-  .sync("../Mess.{Modules,Themes}/*/Assets", {
+  .sync("../Mess.Assets/*", {
     posix: true,
   })
   .map((workspace) => {
@@ -25,42 +25,40 @@ const configurations: Configuration[] = glob
           throw new Error(`Project with name ${project} does not exist`);
         })();
 
-    const entries = (() => {
-      const entries: Configuration["entry"] = {};
-      const bundles = glob.sync(`${workspace}/src/*`, {
-        posix: true,
-      });
-
-      bundles.forEach((bundle) => {
-        const bundleName = path.parse(bundle).name;
-        const scriptFiles = glob
-          .sync(`${bundle}/**/*.{js,ts}`)
-          .map((file) => path.resolve(file));
-        const styleFiles = glob
-          .sync(`${bundle}/**/*.{css,scss}`)
-          .map((file) => path.resolve(file));
-
-        if (scriptFiles.length > 0) {
-          entries[`scripts/${bundleName}`] = {
-            import: scriptFiles,
-            publicPath: `~/${project}/assets/scripts/${bundleName}.js`,
-          };
-        }
-
-        if (styleFiles.length > 0) {
-          entries[`styles/${bundleName}`] = {
-            import: styleFiles,
-            publicPath: `~/${project}/assets/styles/${bundleName}.css`,
-          };
-        }
-      });
-
-      return entries;
-    })();
-
     const configuration: Configuration = {
       name: project,
-      entry: entries,
+      entry: () => {
+        const entries: Configuration["entry"] = {};
+        const bundles = glob.sync(`${workspace}/src/*`, {
+          posix: true,
+        });
+
+        bundles.forEach((bundle) => {
+          const bundleName = path.parse(bundle).name;
+          const scriptFiles = glob
+            .sync(`${bundle}/**/*.{js,ts}`)
+            .map((file) => path.resolve(file));
+          const styleFiles = glob
+            .sync(`${bundle}/**/*.{css,scss}`)
+            .map((file) => path.resolve(file));
+
+          if (scriptFiles.length > 0) {
+            entries[`scripts/${bundleName}`] = {
+              import: scriptFiles,
+              publicPath: `~/${project}/assets/scripts/${bundleName}.js`,
+            };
+          }
+
+          if (styleFiles.length > 0) {
+            entries[`styles/${bundleName}`] = {
+              import: styleFiles,
+              publicPath: `~/${project}/assets/styles/${bundleName}.css`,
+            };
+          }
+        });
+
+        return entries;
+      },
       output: {
         filename: "[name].js",
         cssFilename: "[name].css",
