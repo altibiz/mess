@@ -38,6 +38,7 @@
             helix
             nil
             nixpkgs-fmt
+            taplo
             nodejs
             bun
             dotnet-sdk

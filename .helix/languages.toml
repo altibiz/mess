@@ -5,42 +5,64 @@ formatter = { command = "nixpkgs-fmt" }
 
 [[language]]
 name = "c-sharp"
-formatter = { command = "dotnet", args = [ "csharpier" ] }
-language-server = { command = "OmniSharp", args = [ "-lsp" ], timeout = 10000 }
+formatter = { command = "dotnet", args = ["csharpier"] }
+language-server = { command = "OmniSharp", args = ["-lsp"], timeout = 10000 }
 auto-format = true
 
 [[language]]
 name = "typescript"
-language-server = { command = "bunx typescript-language-server", args = [ "--stdio" ], config.hostInfo = "helix" }
-formatter = { command = "bunx prettier" }
+language-server = { command = "bunx", args = [
+  "typescript-language-server",
+  "--stdio",
+], config.hostInfo = "helix" }
+formatter = { command = "bunx", args = ["prettier", "--parser", "typescript"] }
 auto-format = true
 
 [[language]]
 name = "javascript"
-language-server = { command = "bunx typescript-language-server", args = [ "--stdio" ], config.hostInfo = "helix" }
-formatter = { command = "bunx prettier" }
+language-server = { command = "bunx", args = [
+  "typescript-language-serve",
+  "--stdio",
+], config.hostInfo = "helix" }
+formatter = { command = "bunx", args = ["prettier", "--parser", "typescript"] }
 auto-format = true
 
 [[language]]
 name = "css"
-language-server = { command = "bunx vscode-css-language-server", args = ["--stdio"], config = { provideFormatter = true, css = { validate = { enable = true } } } }
-formatter = { command = "bunx prettier" }
+language-server = { command = "bunx", args = [
+  "vscode-css-language-server",
+  "--stdio",
+], config = { provideFormatter = true, css = { validate = { enable = true } } } }
+formatter = { command = "bunx", args = ["prettier", "--parser", "css"] }
 auto-format = true
 
 [[language]]
 name = "scss"
-language-server = { command = "bunx vscode-css-language-server", args = ["--stdio"], config = { provideFormatter = true, css = { validate = { enable = true } } } }
-formatter = { command = "bunx prettier" }
+language-server = { command = "bunx", args = [
+  "vscode-css-language-server",
+  "--stdio",
+], config = { provideFormatter = true, css = { validate = { enable = true } } } }
+formatter = { command = "bunx", args = ["prettier", "--parser", "scss"] }
 auto-format = true
 
 [[language]]
 name = "yaml"
-language-server = { command = "bunx yaml-language-server", args = ["--stdio"] }
-formatter = { command = "bunx prettier" }
+language-server = { command = "bunx", args = [
+  "yaml-language-server",
+  "--stdio",
+] }
+formatter = { command = "bunx", args = ["prettier", "--parser", "yaml"] }
 auto-format = true
 
 [[language]]
 name = "json"
-language-server = { command = "bunx vscode-json-language-server", args = ["--stdio"], config = { provideFormatter = true, json = { validate = { enable = true } } } }
-formatter = { command = "bunx prettier" }
+language-server = { command = "bunx", args = [
+  "vscode-json-language-server",
+  "--stdio",
+], config = { provideFormatter = true, json = { validate = { enable = true } } } }
+formatter = { command = "bunx", args = ["prettier", "--parser", "json"] }
+auto-format = true
+
+[[language]]
+name = "toml"
 auto-format = true

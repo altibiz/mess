@@ -98,8 +98,7 @@ export default cmd({
           {
             name: "publish",
             command:
-              "bun publishing dev " +
-              `${pushArgs} ${updateArgs} ${tenantArgs}`,
+              "bun publishing dev " + `${pushArgs} ${updateArgs} ${tenantArgs}`,
           },
         ]
       : [];
