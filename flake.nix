@@ -48,6 +48,7 @@
             docker-client
             docker-compose
             lazydocker
+            playwright-driver
           ];
         };
     };

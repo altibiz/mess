@@ -8,3 +8,4 @@ export * from "./fmt";
 export * from "./plop";
 export * from "./args";
 export * from "./cmd";
+export * from "./distro";

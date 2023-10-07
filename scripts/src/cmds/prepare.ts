@@ -1,6 +1,7 @@
 import {
   cmd,
   coerceValue,
+  distro,
   env,
   exists,
   globf,
@@ -40,9 +41,9 @@ export default cmd({
     await task("Built app with dotnet", `dotnet build ${root("Mess.sln")}`);
   }
 
-  if (!skip.includes("test")) {
+  if (!skip.includes("test") && (await distro()) !== "NixOS") {
     await task(
-      "Installed playwright",
+      "Installed playwright driver",
       `dotnet pwsh ${await globf(
         "test/Mess.System.Test/bin/Debug/**/playwright.ps1",
         "Playwright install script not found",
