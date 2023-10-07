@@ -29,6 +29,8 @@ export default cmd({
 })(async ({ skip, build }) => {
   env("NODE_OPTIONS", "--no-warnings");
 
+  await task("Installed dependencies with bun", "bun install");
+
   await task("Installed tools with dotnet", "dotnet tool restore");
 
   await task("Installed dependencies with dotnet", `dotnet restore ${root()}`);
