@@ -277,7 +277,7 @@ internal static class CreateAsyncMigrations
             ContentItemIds = new[] { regulatoryAgencyCatalogueContentItemId }
           };
 
-          distributionSystemOperatorPart.WhiteHighVoltageOperatorCatalogueContentItemId =
+          distributionSystemOperatorPart.WhiteHighVoltageOperatorCatalogue =
             new()
             {
               ContentItemIds = new[]
@@ -286,7 +286,7 @@ internal static class CreateAsyncMigrations
               }
             };
 
-          distributionSystemOperatorPart.WhiteMediumVoltageOperatorCatalogueContentItemId =
+          distributionSystemOperatorPart.WhiteMediumVoltageOperatorCatalogue =
             new()
             {
               ContentItemIds = new[]
@@ -295,13 +295,12 @@ internal static class CreateAsyncMigrations
               }
             };
 
-          distributionSystemOperatorPart.BlueOperatorCatalogueContentItemId =
-            new()
-            {
-              ContentItemIds = new[] { blueOperatorCatalogueContentItemId }
-            };
+          distributionSystemOperatorPart.BlueOperatorCatalogue = new()
+          {
+            ContentItemIds = new[] { blueOperatorCatalogueContentItemId }
+          };
 
-          distributionSystemOperatorPart.WhiteLowVoltageOperatorCatalogueContentItemId =
+          distributionSystemOperatorPart.WhiteLowVoltageOperatorCatalogue =
             new()
             {
               ContentItemIds = new[]
@@ -310,17 +309,15 @@ internal static class CreateAsyncMigrations
               }
             };
 
-          distributionSystemOperatorPart.RedOperatorCatalogueContentItemId =
-            new()
-            {
-              ContentItemIds = new[] { redOperatorCatalogueContentItemId }
-            };
+          distributionSystemOperatorPart.RedOperatorCatalogue = new()
+          {
+            ContentItemIds = new[] { redOperatorCatalogueContentItemId }
+          };
 
-          distributionSystemOperatorPart.YellowOperatorCatalogueContentItemId =
-            new()
-            {
-              ContentItemIds = new[] { yellowOperatorCatalogueContentItemId }
-            };
+          distributionSystemOperatorPart.YellowOperatorCatalogue = new()
+          {
+            ContentItemIds = new[] { yellowOperatorCatalogueContentItemId }
+          };
         }
       );
 

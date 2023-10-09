@@ -6,8 +6,6 @@ public class PaymentIndex : MapIndex
 {
   public string BillingContentItemId { get; set; } = default!;
 
-  public string CatalogueContentItemId { get; set; } = default!;
-
   public string InvoiceContentItemId { get; set; } = default!;
 
   public string? ReceiptContentItemId { get; set; } = default!;

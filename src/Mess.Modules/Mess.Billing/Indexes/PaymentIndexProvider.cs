@@ -16,17 +16,13 @@ public class PaymentIndexProvider : IndexProvider<ContentItem>
       {
         var invoicePart = contentItem.As<InvoicePart>();
 
-        return invoicePart.CatalogueContentItemIds.Select(
-          catalogueContentItemId =>
-            new PaymentIndex
-            {
-              BillingContentItemId = invoicePart.BillingContentItemId,
-              CatalogueContentItemId = catalogueContentItemId,
-              InvoiceContentItemId = contentItem.ContentItemId,
-              ReceiptContentItemId = invoicePart.ReceiptContentItemId,
-              LegalEntityContentItemId = invoicePart.LegalEntityContentItemId,
-            }
-        );
+        return new PaymentIndex
+        {
+          BillingContentItemId = invoicePart.BillingContentItemId,
+          InvoiceContentItemId = contentItem.ContentItemId,
+          ReceiptContentItemId = invoicePart.ReceiptContentItemId,
+          LegalEntityContentItemId = invoicePart.LegalEntityContentItemId,
+        };
       });
   }
 }

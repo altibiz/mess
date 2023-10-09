@@ -8,7 +8,5 @@ public class InvoicePart : ContentPart
 
   public string LegalEntityContentItemId { get; set; } = default!;
 
-  public string[] CatalogueContentItemIds { get; set; } = default!;
-
   public string? ReceiptContentItemId { get; set; } = default!;
 }
