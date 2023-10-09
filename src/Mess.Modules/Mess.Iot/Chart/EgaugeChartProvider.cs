@@ -9,12 +9,8 @@ using Mess.OrchardCore;
 
 namespace Mess.Iot.Chart;
 
-public class EgaugeChartProvider : ChartProvider
+public class EgaugeChartProvider : ChartProvider<EgaugeMeasurementDeviceItem>
 {
-  public const string ChartContentType = "EgaugeMeasurementDevice";
-
-  public override string ContentType => ChartContentType;
-
   public override IEnumerable<string> TimeseriesChartDatasetProperties =>
     new[]
     {
@@ -22,19 +18,12 @@ public class EgaugeChartProvider : ChartProvider
       nameof(EgaugeMeasurement.Voltage)
     };
 
-  public override async Task<TimeseriesChartDescriptor?> CreateTimeseriesChartAsync(
-    ContentItem metadata,
+  protected override async Task<TimeseriesChartDescriptor?> CreateTimeseriesChartAsync(
+    EgaugeMeasurementDeviceItem egaugeMeasurementDevice,
     TimeseriesChartItem chart,
     IEnumerable<TimeseriesChartDatasetItem> datasets
   )
   {
-    var egaugeMeasurementDevice =
-      metadata.AsContent<EgaugeMeasurementDeviceItem>();
-    if (egaugeMeasurementDevice == null)
-    {
-      return default;
-    }
-
     var now = DateTime.UtcNow;
     var measurements = await _client.GetEgaugeMeasurementsAsync(
       egaugeMeasurementDevice.MeasurementDevicePart.Value.DeviceId.Text,

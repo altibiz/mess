@@ -17,6 +17,15 @@ public class BillingBackgroundTask : IBackgroundTask
     CancellationToken cancellationToken
   )
   {
+    var now = DateTime.UtcNow;
+    var nowLastMonth = now.AddMonths(-1);
+    var nowLastMonthStart = new DateTime(
+      nowLastMonth.Year,
+      nowLastMonth.Month,
+      1
+    );
+    var nowLastMonthEnd = nowLastMonthStart.AddMonths(1);
+
     var session = serviceProvider.GetRequiredService<ISession>();
     var logger = serviceProvider.GetRequiredService<
       ILogger<BillingBackgroundTask>
@@ -40,7 +49,11 @@ public class BillingBackgroundTask : IBackgroundTask
         continue;
       }
 
-      var invoiceItem = await billingFactory.CreateInvoiceAsync(billingItem);
+      var invoiceItem = await billingFactory.CreateInvoiceAsync(
+        billingItem,
+        nowLastMonthStart,
+        nowLastMonthEnd
+      );
       invoiceItem.Alter<InvoicePart>(invoicePart =>
       {
         invoicePart.BillingContentItemId = billingItem.ContentItemId;

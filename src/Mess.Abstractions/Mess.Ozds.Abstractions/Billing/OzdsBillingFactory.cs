@@ -1,4 +1,4 @@
-using Mess.Billing.Abstractions;
+using Mess.Billing.Abstractions.Factory;
 using Mess.Iot.Abstractions.Models;
 using Mess.OrchardCore;
 using Mess.Ozds.Abstractions.Models;
@@ -6,41 +6,28 @@ using OrchardCore.ContentManagement;
 
 namespace Mess.Ozds.Abstractions.Billing;
 
-public abstract class OzdsBillingFactory : IBillingFactory
+public abstract class OzdsBillingFactory<T> : IBillingFactory
+  where T : ContentItemBase
 {
-  public abstract string ContentType { get; }
-
-  protected abstract OzdsCalculationData CreateCalculationData(
-    ContentItem measurementDeviceItem,
-    RegulatoryAgencyCatalogueItem regulatoryAgencyCatalogueItem,
-    OperatorCatalogueItem usageCatalogueItem,
-    OperatorCatalogueItem supplyCatalogueItem
+  protected abstract OzdsBillingData? FetchBillingData(
+    T measurementDeviceItem,
+    DateTime from,
+    DateTime to
   );
 
-  protected abstract Task<OzdsCalculationData> CreateCalculationDataAsync(
-    ContentItem measurementDeviceItem,
-    RegulatoryAgencyCatalogueItem regulatoryAgencyCatalogueItem,
-    OperatorCatalogueItem usageCatalogueItem,
-    OperatorCatalogueItem supplyCatalogueItem
+  protected abstract Task<OzdsBillingData?> FetchBillingDataAsync(
+    T measurementDeviceItem,
+    DateTime from,
+    DateTime to
   );
 
-  protected abstract OzdsInvoiceData CreateInvoiceData(
-    OzdsCalculationData calculationData
-  );
+  public string ContentType => typeof(T).ContentTypeName();
 
-  protected abstract Task<OzdsInvoiceData> CreateInvoiceDataAsync(
-    OzdsCalculationData calculationData
-  );
-
-  protected abstract OzdsReceiptData CreateReceiptData(
-    OzdsCalculationData calculationData
-  );
-
-  protected abstract Task<OzdsReceiptData> CreateReceiptDataAsync(
-    OzdsCalculationData calculationData
-  );
-
-  public ContentItem CreateInvoice(ContentItem contentItem)
+  public ContentItem CreateInvoice(
+    ContentItem contentItem,
+    DateTime from,
+    DateTime to
+  )
   {
     var measurementDevicePart =
       contentItem.As<MeasurementDevicePart>()
@@ -99,14 +86,22 @@ public abstract class OzdsBillingFactory : IBillingFactory
         .Result
       ?? throw new NullReferenceException("Supply catalogue not found");
 
+    var billingData =
+      FetchBillingData(contentItem.AsContent<T>(), from, to)
+      ?? throw new NullReferenceException("Billing data is null");
+
     var calculationData = CreateCalculationData(
-      contentItem,
-      regulatoryAgencyCatalogueItem,
+      from,
+      to,
+      billingData,
       usageCatalogueItem,
       supplyCatalogueItem
     );
 
-    var invoiceData = CreateInvoiceDataAsync(calculationData).Result;
+    var invoiceData = CreateInvoiceData(
+      calculationData,
+      regulatoryAgencyCatalogueItem
+    );
 
     var invoiceItem = _contnetManager.NewContentAsync<OzdsInvoiceItem>().Result;
     invoiceItem.Alter(
@@ -135,7 +130,11 @@ public abstract class OzdsBillingFactory : IBillingFactory
     return invoiceItem;
   }
 
-  public async Task<ContentItem> CreateInvoiceAsync(ContentItem contentItem)
+  public async Task<ContentItem> CreateInvoiceAsync(
+    ContentItem contentItem,
+    DateTime from,
+    DateTime to
+  )
   {
     var measurementDevicePart =
       contentItem.As<MeasurementDevicePart>()
@@ -180,14 +179,22 @@ public abstract class OzdsBillingFactory : IBillingFactory
         ozdsMeasurementDevicePart.SupplyCatalogue.ContentItemIds.First()
       ) ?? throw new NullReferenceException("Supply catalogue not found");
 
+    var billingData =
+      await FetchBillingDataAsync(contentItem.AsContent<T>(), from, to)
+      ?? throw new NullReferenceException("Billing data is null");
+
     var calculationData = await CreateCalculationDataAsync(
-      contentItem,
-      regulatoryAgencyCatalogueItem,
+      from,
+      to,
+      billingData,
       usageCatalogueItem,
       supplyCatalogueItem
     );
 
-    var invoiceData = await CreateInvoiceDataAsync(calculationData);
+    var invoiceData = await CreateInvoiceDataAsync(
+      calculationData,
+      regulatoryAgencyCatalogueItem
+    );
 
     var invoiceItem = await _contnetManager.NewContentAsync<OzdsInvoiceItem>();
     invoiceItem.Alter(
@@ -228,6 +235,10 @@ public abstract class OzdsBillingFactory : IBillingFactory
       contentItem.As<OzdsMeasurementDevicePart>()
       ?? throw new NullReferenceException("OzdsMeasurementDevicePart is null");
 
+    var invoiceItem =
+      invoiceContentItem.AsContent<OzdsInvoiceItem>()
+      ?? throw new NullReferenceException("InvoiceItem is null");
+
     var unitItem =
       _contnetManager
         .GetContentAsync<DistributionSystemUnitItem>(
@@ -278,14 +289,7 @@ public abstract class OzdsBillingFactory : IBillingFactory
         .Result
       ?? throw new NullReferenceException("Supply catalogue not found");
 
-    var calculationData = CreateCalculationData(
-      contentItem,
-      regulatoryAgencyCatalogueItem,
-      usageCatalogueItem,
-      supplyCatalogueItem
-    );
-
-    var receiptData = CreateReceiptData(calculationData);
+    var receiptData = CreateReceiptData(invoiceItem.OzdsInvoicePart.Value.Data);
 
     var receiptItem = _contnetManager.NewContentAsync<OzdsReceiptItem>().Result;
     receiptItem.Alter(
@@ -297,7 +301,7 @@ public abstract class OzdsBillingFactory : IBillingFactory
           regulatoryAgencyCatalogueItem;
         ozdsCalculationPart.UsageCatalogue = usageCatalogueItem;
         ozdsCalculationPart.SupplyCatalogue = supplyCatalogueItem;
-        ozdsCalculationPart.Data = calculationData;
+        ozdsCalculationPart.Data = invoiceItem.OzdsCalculationPart.Value.Data;
       }
     );
     receiptItem.Alter(
@@ -325,6 +329,10 @@ public abstract class OzdsBillingFactory : IBillingFactory
     var ozdsMeasurementDevicePart =
       contentItem.As<OzdsMeasurementDevicePart>()
       ?? throw new NullReferenceException("OzdsMeasurementDevicePart is null");
+
+    var invoiceItem =
+      invoiceContentItem.AsContent<OzdsInvoiceItem>()
+      ?? throw new NullReferenceException("InvoiceItem is null");
 
     var unitItem =
       await _contnetManager.GetContentAsync<DistributionSystemUnitItem>(
@@ -362,14 +370,9 @@ public abstract class OzdsBillingFactory : IBillingFactory
         ozdsMeasurementDevicePart.SupplyCatalogue.ContentItemIds.First()
       ) ?? throw new NullReferenceException("Supply catalogue not found");
 
-    var calculationData = await CreateCalculationDataAsync(
-      contentItem,
-      regulatoryAgencyCatalogueItem,
-      usageCatalogueItem,
-      supplyCatalogueItem
+    var receiptData = await CreateReceiptDataAsync(
+      invoiceItem.OzdsInvoicePart.Value.Data
     );
-
-    var receiptData = await CreateReceiptDataAsync(calculationData);
 
     var receiptItem = await _contnetManager.NewContentAsync<OzdsReceiptItem>();
     receiptItem.Alter(
@@ -381,7 +384,7 @@ public abstract class OzdsBillingFactory : IBillingFactory
           regulatoryAgencyCatalogueItem;
         ozdsCalculationPart.UsageCatalogue = usageCatalogueItem;
         ozdsCalculationPart.SupplyCatalogue = supplyCatalogueItem;
-        ozdsCalculationPart.Data = calculationData;
+        ozdsCalculationPart.Data = invoiceItem.OzdsCalculationPart.Value.Data;
       }
     );
     receiptItem.Alter(
@@ -396,6 +399,271 @@ public abstract class OzdsBillingFactory : IBillingFactory
     );
 
     return receiptItem;
+  }
+
+  private OzdsCalculationData CreateCalculationData(
+    DateTime from,
+    DateTime to,
+    OzdsBillingData billingData,
+    OperatorCatalogueItem usageCatalogueItem,
+    OperatorCatalogueItem supplyCatalogueItem
+  )
+  {
+    var usageExpenditure = CreateExpenditureData(
+      billingData,
+      usageCatalogueItem
+    );
+    var supplyExpenditure = CreateExpenditureData(
+      billingData,
+      supplyCatalogueItem
+    );
+
+    return new OzdsCalculationData(
+      From: from,
+      To: to,
+      UsageExpenditure: usageExpenditure,
+      SupplyExpenditure: supplyExpenditure
+    );
+  }
+
+  private OzdsExpenditureData CreateExpenditureData(
+    OzdsBillingData billingData,
+    OperatorCatalogueItem catalogueItem
+  )
+  {
+    var highEnergyPrice =
+      catalogueItem.OperatorCataloguePart.Value.HighEnergyPrice.Value ?? 0.0M;
+    var highEnergyAmount = billingData.EndEnergy - billingData.StartEnergy;
+    var highEnergyTotal = highEnergyAmount * highEnergyPrice;
+    var highEnergyItem =
+      highEnergyPrice == 0.0M
+        ? null
+        : new OzdsExpenditureItemData(
+          ValueFrom: billingData.StartEnergy,
+          ValueTo: billingData.EndEnergy,
+          Amount: highEnergyAmount,
+          UnitPrice: highEnergyPrice,
+          Total: highEnergyTotal
+        );
+
+    var lowEnergyPrice =
+      catalogueItem.OperatorCataloguePart.Value.LowEnergyPrice.Value ?? 0.0M;
+    var lowEnergyAmount = billingData.EndLowEnergy - billingData.StartLowEnergy;
+    var lowEnergyTotal = lowEnergyAmount * lowEnergyPrice;
+    var lowEnergyItem =
+      lowEnergyPrice == 0.0M
+        ? null
+        : new OzdsExpenditureItemData(
+          ValueFrom: billingData.StartLowEnergy,
+          ValueTo: billingData.EndLowEnergy,
+          Amount: lowEnergyAmount,
+          UnitPrice: lowEnergyPrice,
+          Total: lowEnergyTotal
+        );
+
+    var energyPrice =
+      catalogueItem.OperatorCataloguePart.Value.EnergyPrice.Value ?? 0.0M;
+    var energyAmount = billingData.EndEnergy - billingData.StartEnergy;
+    var energyTotal = energyAmount * energyPrice;
+    var energyItem =
+      energyPrice == 0.0M
+        ? null
+        : new OzdsExpenditureItemData(
+          ValueFrom: billingData.StartEnergy,
+          ValueTo: billingData.EndEnergy,
+          Amount: energyAmount,
+          UnitPrice: energyPrice,
+          Total: energyTotal
+        );
+
+    var maxPowerPrice =
+      catalogueItem.OperatorCataloguePart.Value.MaxPowerPrice.Value ?? 0.0M;
+    var maxPowerAmount = billingData.MaxPower;
+    var maxPowerTotal = maxPowerAmount * maxPowerPrice;
+    var maxPowerItem =
+      energyPrice == 0.0M
+        ? null
+        : new OzdsExpenditureItemData(
+          ValueFrom: 0.0M,
+          ValueTo: 0.0M,
+          Amount: maxPowerAmount,
+          UnitPrice: maxPowerPrice,
+          Total: maxPowerTotal
+        );
+
+    var measurementDeviceFeePrice =
+      catalogueItem.OperatorCataloguePart.Value.MeasurementDeviceFee.Value
+      ?? 0.0M;
+    var measurementDeviceFeeAmount = 1.0M;
+    var measurementDeviceFeeTotal =
+      measurementDeviceFeeAmount * measurementDeviceFeePrice;
+    var measurementDeviceFeeItem =
+      energyPrice == 0.0M
+        ? null
+        : new OzdsExpenditureItemData(
+          ValueFrom: 0.0M,
+          ValueTo: 0.0M,
+          Amount: measurementDeviceFeeAmount,
+          UnitPrice: measurementDeviceFeePrice,
+          Total: measurementDeviceFeeTotal
+        );
+
+    return new OzdsExpenditureData(
+      HighEnergyItem: highEnergyItem,
+      LowEnergyItem: lowEnergyItem,
+      EnergyItem: energyItem,
+      MaxPowerItem: maxPowerItem,
+      MeasurementDeviceFee: measurementDeviceFeeItem,
+      Total: (highEnergyItem?.Total ?? 0.0M)
+        + (lowEnergyItem?.Total ?? 0.0M)
+        + (energyItem?.Total ?? 0.0M)
+        + (maxPowerItem?.Total ?? 0.0M)
+        + (measurementDeviceFeeItem?.Total ?? 0.0M)
+    );
+  }
+
+  private async Task<OzdsCalculationData> CreateCalculationDataAsync(
+    DateTime from,
+    DateTime to,
+    OzdsBillingData billingData,
+    OperatorCatalogueItem usageCatalogueItem,
+    OperatorCatalogueItem supplyCatalogueItem
+  )
+  {
+    return CreateCalculationData(
+      from,
+      to,
+      billingData,
+      usageCatalogueItem,
+      supplyCatalogueItem
+    );
+  }
+
+  private OzdsInvoiceData CreateInvoiceData(
+    OzdsCalculationData calculationData,
+    RegulatoryAgencyCatalogueItem regulatoryAgencyCatalogueItem
+  )
+  {
+    var usageFee = calculationData.UsageExpenditure.Total;
+
+    var supplyFee = calculationData.SupplyExpenditure.Total;
+
+    var renewableEnergyFeePrice =
+      regulatoryAgencyCatalogueItem
+        .RegulatoryAgencyCataloguePart
+        .Value
+        .RenewableEnergyFee
+        .Value ?? 0.0M;
+    var renewableEnergyFeeAmount = (
+      calculationData.SupplyExpenditure.EnergyItem?.Amount
+      ?? 0.0M + calculationData.SupplyExpenditure.LowEnergyItem?.Amount
+      ?? 0.0M + calculationData.SupplyExpenditure.HighEnergyItem?.Amount
+      ?? 0.0M
+    );
+    var renewableEnergyFeeItem =
+      renewableEnergyFeePrice == 0.0M
+        ? null
+        : new OzdsInvoiceFeeData(
+          Amount: renewableEnergyFeeAmount,
+          UnitPrice: renewableEnergyFeePrice,
+          Total: renewableEnergyFeeAmount * renewableEnergyFeePrice
+        );
+
+    var businessUsageFeePrice =
+      regulatoryAgencyCatalogueItem
+        .RegulatoryAgencyCataloguePart
+        .Value
+        .BusinessUsageFee
+        .Value ?? 0.0M;
+    var businessUsageFeeAmount = (
+      calculationData.SupplyExpenditure.EnergyItem?.Amount
+      ?? 0.0M + calculationData.SupplyExpenditure.LowEnergyItem?.Amount
+      ?? 0.0M + calculationData.SupplyExpenditure.HighEnergyItem?.Amount
+      ?? 0.0M
+    );
+    var businessUsageFeeItem =
+      businessUsageFeePrice == 0.0M
+        ? null
+        : new OzdsInvoiceFeeData(
+          Amount: businessUsageFeeAmount,
+          UnitPrice: businessUsageFeePrice,
+          Total: businessUsageFeeAmount * businessUsageFeePrice
+        );
+
+    var total =
+      usageFee + supplyFee + renewableEnergyFeeItem?.Total
+      ?? 0.0M + businessUsageFeeItem?.Total
+      ?? 0.0M;
+    var taxRate =
+      regulatoryAgencyCatalogueItem
+        .RegulatoryAgencyCataloguePart
+        .Value
+        ?.TaxRate
+        .Value ?? 0.0M;
+    var tax = total * taxRate;
+    var totalWithTax = total + tax;
+
+    return new OzdsInvoiceData(
+      From: calculationData.From,
+      To: calculationData.To,
+      UsageFee: usageFee,
+      SupplyFee: supplyFee,
+      RenewableEnergyFee: renewableEnergyFeeItem,
+      BusinessUsageFee: businessUsageFeeItem,
+      Total: total,
+      TaxRate: taxRate,
+      Tax: tax,
+      TotalWithTax: totalWithTax
+    );
+  }
+
+  private async Task<OzdsInvoiceData> CreateInvoiceDataAsync(
+    OzdsCalculationData calculationData,
+    RegulatoryAgencyCatalogueItem regulatoryAgencyCatalogueItem
+  )
+  {
+    return CreateInvoiceData(calculationData, regulatoryAgencyCatalogueItem);
+  }
+
+  private OzdsReceiptData CreateReceiptData(OzdsInvoiceData invoiceData)
+  {
+    var renewableEnergyFee =
+      invoiceData.RenewableEnergyFee == null
+        ? null
+        : new OzdsReceiptFeeData(
+          Amount: invoiceData.RenewableEnergyFee.Amount,
+          UnitPrice: invoiceData.RenewableEnergyFee.UnitPrice,
+          Total: invoiceData.RenewableEnergyFee.Total
+        );
+
+    var businessUsageFee =
+      invoiceData.BusinessUsageFee == null
+        ? null
+        : new OzdsReceiptFeeData(
+          Amount: invoiceData.BusinessUsageFee.Amount,
+          UnitPrice: invoiceData.BusinessUsageFee.UnitPrice,
+          Total: invoiceData.BusinessUsageFee.Total
+        );
+
+    return new OzdsReceiptData(
+      From: invoiceData.From,
+      To: invoiceData.To,
+      UsageFee: invoiceData.UsageFee,
+      SupplyFee: invoiceData.SupplyFee,
+      RenewableEnergyFee: renewableEnergyFee,
+      BusinessUsageFee: businessUsageFee,
+      Total: invoiceData.Total,
+      TaxRate: invoiceData.TaxRate,
+      Tax: invoiceData.Tax,
+      TotalWithTax: invoiceData.TotalWithTax
+    );
+  }
+
+  private async Task<OzdsReceiptData> CreateReceiptDataAsync(
+    OzdsInvoiceData invoiceData
+  )
+  {
+    return CreateReceiptData(invoiceData);
   }
 
   protected OzdsBillingFactory(IContentManager contentManager)

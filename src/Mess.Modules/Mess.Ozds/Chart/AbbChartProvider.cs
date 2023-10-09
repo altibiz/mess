@@ -9,12 +9,8 @@ using Mess.Ozds.Abstractions.Client;
 
 namespace Mess.Ozds.Chart;
 
-public class AbbChartProvider : ChartProvider
+public class AbbChartProvider : ChartProvider<AbbMeasurementDeviceItem>
 {
-  public const string ChartContentType = "AbbMeasurementDevice";
-
-  public override string ContentType => ChartContentType;
-
   public override IEnumerable<string> TimeseriesChartDatasetProperties =>
     new[]
     {
@@ -38,18 +34,12 @@ public class AbbChartProvider : ChartProvider
       nameof(AbbMeasurement.PowerFactorL3),
     };
 
-  public override async Task<TimeseriesChartDescriptor?> CreateTimeseriesChartAsync(
-    ContentItem metadata,
+  protected override async Task<TimeseriesChartDescriptor?> CreateTimeseriesChartAsync(
+    AbbMeasurementDeviceItem abbMeasurementDevice,
     TimeseriesChartItem chart,
     IEnumerable<TimeseriesChartDatasetItem> datasets
   )
   {
-    var abbMeasurementDevice = metadata.AsContent<AbbMeasurementDeviceItem>();
-    if (abbMeasurementDevice == null)
-    {
-      return default;
-    }
-
     var now = DateTime.UtcNow;
     var measurements = await _client.GetAbbMeasurementsAsync(
       abbMeasurementDevice.MeasurementDevicePart.Value.DeviceId.Text,

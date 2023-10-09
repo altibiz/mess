@@ -5,13 +5,18 @@ using OrchardCore.ContentManagement;
 
 namespace Mess.Chart.Abstractions.Providers;
 
-public abstract class ChartProvider : IChartProvider
+public abstract class ChartProvider<T> : IChartProvider
+  where T : ContentItemBase
 {
-  public abstract string ContentType { get; }
+  protected abstract Task<TimeseriesChartDescriptor?> CreateTimeseriesChartAsync(
+    T metadata,
+    TimeseriesChartItem chart,
+    IEnumerable<TimeseriesChartDatasetItem> datasets
+  );
 
   public abstract IEnumerable<string> TimeseriesChartDatasetProperties { get; }
 
-  public virtual async Task<ChartDescriptor?> CreateChartAsync(
+  public async Task<ChartDescriptor?> CreateChartAsync(
     ContentItem metadata,
     ContentItem chart
   )
@@ -25,7 +30,7 @@ public abstract class ChartProvider : IChartProvider
         );
 
       return await CreateTimeseriesChartAsync(
-        metadata,
+        metadata.AsContent<T>(),
         timeseriesChart,
         timeseriesChartDatasets
       );
@@ -36,13 +41,13 @@ public abstract class ChartProvider : IChartProvider
     );
   }
 
-  public virtual bool ContainsTimeseriesProperty<T>(string property) =>
-    typeof(T)
+  protected bool ContainsTimeseriesProperty<P>(string property) =>
+    typeof(P)
       .GetProperties()
       .Select(property => property.Name)
       .Contains(property);
 
-  public virtual DateTime GetTimeseriesTimestamp(object data)
+  protected DateTime GetTimeseriesTimestamp(object data)
   {
     var propertyInfo = data.GetType().GetProperty("Timestamp");
     if (propertyInfo == null)
@@ -61,7 +66,7 @@ public abstract class ChartProvider : IChartProvider
     return (DateTime)value;
   }
 
-  public virtual float GetTimeseriesValue(object data, string property)
+  protected float GetTimeseriesValue(object data, string property)
   {
     var propertyInfo = data.GetType().GetProperty(property);
     if (propertyInfo == null)
@@ -80,9 +85,5 @@ public abstract class ChartProvider : IChartProvider
     return Convert.ToSingle(value);
   }
 
-  public abstract Task<TimeseriesChartDescriptor?> CreateTimeseriesChartAsync(
-    ContentItem metadata,
-    TimeseriesChartItem chart,
-    IEnumerable<TimeseriesChartDatasetItem> datasets
-  );
+  public string ContentType => typeof(T).ContentTypeName();
 }

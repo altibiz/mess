@@ -1,37 +1,43 @@
-using Mess.Billing.Abstractions;
+using Mess.Ozds.Abstractions.Billing;
+using Mess.Ozds.Abstractions.Client;
+using Mess.Ozds.Abstractions.Models;
 using OrchardCore.ContentManagement;
 
 namespace Mess.Ozds.Billing;
 
-public class AbbBillingFactory : IBillingFactory
+public class AbbBillingFactory : OzdsBillingFactory<AbbMeasurementDeviceItem>
 {
-  public const string BillingContentType = "AbbMeasurementDevice";
-
-  public string ContentType => BillingContentType;
-
-  public ContentItem CreateInvoice(ContentItem contentItem)
-  {
-    throw new NotImplementedException();
-  }
-
-  public Task<ContentItem> CreateInvoiceAsync(ContentItem contentItem)
-  {
-    throw new NotImplementedException();
-  }
-
-  public ContentItem CreateReceipt(
-    ContentItem contentItem,
-    ContentItem invoiceContentItem
+  protected override OzdsBillingData? FetchBillingData(
+    AbbMeasurementDeviceItem measurementDeviceItem,
+    DateTime from,
+    DateTime to
   )
   {
-    throw new NotImplementedException();
+    return _query.GetAbbBillingData(
+      measurementDeviceItem.MeasurementDevicePart.Value.DeviceId.Text,
+      from,
+      to
+    );
   }
 
-  public Task<ContentItem> CreateReceiptAsync(
-    ContentItem contentItem,
-    ContentItem invoiceContentItem
+  protected override async Task<OzdsBillingData?> FetchBillingDataAsync(
+    AbbMeasurementDeviceItem measurementDeviceItem,
+    DateTime from,
+    DateTime to
   )
   {
-    throw new NotImplementedException();
+    return await _query.GetAbbBillingDataAsync(
+      measurementDeviceItem.MeasurementDevicePart.Value.DeviceId.Text,
+      from,
+      to
+    );
   }
+
+  public AbbBillingFactory(IContentManager contentManager, IOzdsQuery query)
+    : base(contentManager)
+  {
+    _query = query;
+  }
+
+  private readonly IOzdsQuery _query;
 }

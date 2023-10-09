@@ -1,10 +1,10 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Mess.Ozds.Abstractions.Client;
-using Mess.Timeseries.Abstractions.Entities;
+using Mess.Ozds.Abstractions.Entities;
 
 namespace Mess.Ozds.Entities;
 
-public class AbbMeasurementEntity : HypertableEntity
+public class AbbMeasurementEntity : BillingEntity
 {
   [Column(TypeName = "float4")]
   public float? CurrentL1 { get; set; } = default!;

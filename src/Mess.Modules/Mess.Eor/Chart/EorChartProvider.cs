@@ -1,20 +1,14 @@
 using Mess.Chart.Abstractions.Providers;
 using Mess.Chart.Abstractions.Descriptors;
 using Mess.Fields.Abstractions;
-using OrchardCore.ContentManagement;
 using Mess.Chart.Abstractions.Models;
-using Mess.OrchardCore;
 using Mess.Eor.Abstractions.Client;
 using Mess.Eor.Abstractions.Models;
 
 namespace Mess.Eor.Chart;
 
-public class EorChartProvider : ChartProvider
+public class EorChartProvider : ChartProvider<EorMeasurementDeviceItem>
 {
-  public const string ChartContentType = "EorMeasurementDevice";
-
-  public override string ContentType => ChartContentType;
-
   public override IEnumerable<string> TimeseriesChartDatasetProperties =>
     new[]
     {
@@ -23,18 +17,12 @@ public class EorChartProvider : ChartProvider
       nameof(EorStatus.Mode)
     };
 
-  public override async Task<TimeseriesChartDescriptor?> CreateTimeseriesChartAsync(
-    ContentItem metadata,
+  protected override async Task<TimeseriesChartDescriptor?> CreateTimeseriesChartAsync(
+    EorMeasurementDeviceItem eorMeasurementDevice,
     TimeseriesChartItem chart,
     IEnumerable<TimeseriesChartDatasetItem> datasets
   )
   {
-    var eorMeasurementDevice = metadata.AsContent<EorMeasurementDeviceItem>();
-    if (eorMeasurementDevice == null)
-    {
-      return default;
-    }
-
     var now = DateTime.UtcNow;
     var (statuses, measurements) = await _client.GetEorDataAsync(
       eorMeasurementDevice.MeasurementDevicePart.Value.DeviceId.Text,
