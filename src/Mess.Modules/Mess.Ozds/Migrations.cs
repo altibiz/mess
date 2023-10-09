@@ -28,71 +28,24 @@ public class Migrations : DataMigration
 {
   public async Task<int> CreateAsync()
   {
-    var regulatoryAgencyCatalogueContentItemId =
-      await CreateAsyncMigrations.MigrateRegulatoryAgencyCatalogue(
-        _serviceProvider,
-        SchemaBuilder
-      );
+    await CreateAsyncMigrations.MigrateRegulatoryAgencyCatalogue(
+      _serviceProvider,
+      SchemaBuilder
+    );
 
     await CreateAsyncMigrations.MigrateOperatorCatalogue(
       _serviceProvider,
       SchemaBuilder
     );
 
-    (
-      string whiteHighVoltageOperatorCatalogueContentItemId,
-      string whiteMediumVoltageOperatorCatalogueContentItemId,
-      string blueOperatorCatalogueContentItemId,
-      string whiteLowVoltageOperatorCatalogueContentItemId,
-      string redOperatorCatalogueContentItemId,
-      string yellowOperatorCatalogueContentItemId
-    ) = await CreateAsyncMigrations.PopulateOperatorCatalogues(
+    await CreateAsyncMigrations.MigrateOperator(
       _serviceProvider,
       SchemaBuilder
     );
 
-    (
-      string whiteHighVoltageMeasurementDeviceCatalogueContentItemId,
-      string whiteMediumVoltageMeasurementDeviceCatalogueContentItemId,
-      string blueMeasurementDeviceCatalogueContentItemId,
-      string whiteLowVoltageMeasurementDeviceCatalogueContentItemId,
-      string redMeasurementDeviceCatalogueContentItemId,
-      string yellowMeasurementDeviceCatalogueContentItemId
-    ) = await CreateAsyncMigrations.PopulateOperatorCatalogues(
-      _serviceProvider,
-      SchemaBuilder
-    );
+    await CreateAsyncMigrations.MigrateSystem(_serviceProvider, SchemaBuilder);
 
-    (string? operatorUserId, string? operatorContentItemId) =
-      await CreateAsyncMigrations.MigrateOperator(
-        _serviceProvider,
-        SchemaBuilder,
-        regulatoryAgencyCatalogueContentItemId,
-        whiteHighVoltageOperatorCatalogueContentItemId!,
-        whiteMediumVoltageOperatorCatalogueContentItemId!,
-        blueOperatorCatalogueContentItemId!,
-        whiteLowVoltageOperatorCatalogueContentItemId!,
-        redOperatorCatalogueContentItemId!,
-        yellowOperatorCatalogueContentItemId!
-      );
-
-    (string? systemUserId, string? systemContentItemId) =
-      await CreateAsyncMigrations.MigrateSystem(
-        _serviceProvider,
-        SchemaBuilder,
-        operatorUserId!,
-        operatorContentItemId!
-      );
-
-    (string? unitUserId, string? unitContentItemId) =
-      await CreateAsyncMigrations.MigrateUnit(
-        _serviceProvider,
-        SchemaBuilder,
-        operatorUserId!,
-        operatorContentItemId!,
-        systemUserId!,
-        systemContentItemId!
-      );
+    await CreateAsyncMigrations.MigrateUnit(_serviceProvider, SchemaBuilder);
 
     var contentDefinitionManager =
       _serviceProvider.GetRequiredService<IContentDefinitionManager>();
@@ -137,15 +90,72 @@ public class Migrations : DataMigration
 
     await CreateAsyncMigrations.MigrateReceipt(_serviceProvider, SchemaBuilder);
 
-    await CreateAsyncMigrations.MigratePidgeon(
+    await CreateAsyncMigrations.MigratePidgeon(_serviceProvider, SchemaBuilder);
+
+    await CreateAsyncMigrations.MigrateAbb(_serviceProvider, SchemaBuilder);
+
+    var regulatoryAgencyCatalogueContentItemId =
+      await CreateAsyncMigrations.PopulateRegulatoryAgencyCatalogue(
+        _serviceProvider
+      );
+
+    (
+      string whiteHighVoltageOperatorCatalogueContentItemId,
+      string whiteMediumVoltageOperatorCatalogueContentItemId,
+      string blueOperatorCatalogueContentItemId,
+      string whiteLowVoltageOperatorCatalogueContentItemId,
+      string redOperatorCatalogueContentItemId,
+      string yellowOperatorCatalogueContentItemId
+    ) = await CreateAsyncMigrations.PopulateOperatorCatalogues(
+      _serviceProvider
+    );
+
+    (
+      string whiteHighVoltageMeasurementDeviceCatalogueContentItemId,
+      string whiteMediumVoltageMeasurementDeviceCatalogueContentItemId,
+      string blueMeasurementDeviceCatalogueContentItemId,
+      string whiteLowVoltageMeasurementDeviceCatalogueContentItemId,
+      string redMeasurementDeviceCatalogueContentItemId,
+      string yellowMeasurementDeviceCatalogueContentItemId
+    ) = await CreateAsyncMigrations.PopulateOperatorCatalogues(
+      _serviceProvider
+    );
+
+    (string? operatorUserId, string? operatorContentItemId) =
+      await CreateAsyncMigrations.PopulateOperator(
+        _serviceProvider,
+        regulatoryAgencyCatalogueContentItemId,
+        whiteHighVoltageOperatorCatalogueContentItemId!,
+        whiteMediumVoltageOperatorCatalogueContentItemId!,
+        blueOperatorCatalogueContentItemId!,
+        whiteLowVoltageOperatorCatalogueContentItemId!,
+        redOperatorCatalogueContentItemId!,
+        yellowOperatorCatalogueContentItemId!
+      );
+
+    (string? systemUserId, string? systemContentItemId) =
+      await CreateAsyncMigrations.PopulateSystem(
+        _serviceProvider,
+        operatorUserId!,
+        operatorContentItemId!
+      );
+
+    (string? unitUserId, string? unitContentItemId) =
+      await CreateAsyncMigrations.PopulateUnit(
+        _serviceProvider,
+        operatorUserId!,
+        operatorContentItemId!,
+        systemUserId!,
+        systemContentItemId!
+      );
+
+    await CreateAsyncMigrations.PopulatePidgeon(
       _serviceProvider,
-      SchemaBuilder,
       unitContentItemId!
     );
 
-    await CreateAsyncMigrations.MigrateAbb(
+    await CreateAsyncMigrations.PopulateAbb(
       _serviceProvider,
-      SchemaBuilder,
       unitContentItemId!
     );
 
@@ -165,9 +175,8 @@ internal static class CreateAsyncMigrations
   internal static async Task<(
     string? UserId,
     string? ContentItemId
-  )> MigrateOperator(
+  )> PopulateOperator(
     IServiceProvider serviceProvider,
-    ISchemaBuilder schemaBuilder,
     string regulatoryAgencyCatalogueContentItemId,
     string whiteHighVoltageOperatorCatalogueContentItemId,
     string whiteMediumVoltageOperatorCatalogueContentItemId,
@@ -178,39 +187,10 @@ internal static class CreateAsyncMigrations
   )
   {
     var roleManager = serviceProvider.GetRequiredService<RoleManager<IRole>>();
-    var contentDefinitionManager =
-      serviceProvider.GetRequiredService<IContentDefinitionManager>();
+    var contentManager = serviceProvider.GetRequiredService<IContentManager>();
     var hostEnvironment =
       serviceProvider.GetRequiredService<IHostEnvironment>();
     var userService = serviceProvider.GetRequiredService<IUserService>();
-    var contentManager = serviceProvider.GetRequiredService<IContentManager>();
-
-    schemaBuilder.CreateMapIndexTable<OzdsMeasurementDeviceDistributionSystemOperatorIndex>(
-      table =>
-        table
-          .Column<string>("ContentItemId", c => c.WithLength(64))
-          .Column<string>("DeviceId", c => c.WithLength(64))
-          .Column<bool>("IsMessenger")
-          .Column<string>(
-            "DistributionSystemOperatorContentItemId",
-            c => c.WithLength(64)
-          )
-          .Column<string>(
-            "DistributionSystemOperatorRepresentativeUserId",
-            c => c.WithLength(64)
-          )
-    );
-    schemaBuilder.AlterIndexTable<OzdsMeasurementDeviceDistributionSystemOperatorIndex>(table =>
-    {
-      table.CreateIndex(
-        "IDX_OzdsMeasurementDeviceDistributionSystemOperatorIndex_DeviceId",
-        "DeviceId"
-      );
-      table.CreateIndex(
-        "IDX_OzdsMeasurementDeviceDistributionSystemOperatorIndex_RepresentativeUserId",
-        "DistributionSystemOperatorRepresentativeUserId"
-      );
-    });
 
     await roleManager.CreateAsync(
       new Role
@@ -244,57 +224,6 @@ internal static class CreateAsyncMigrations
           },
         }
       }
-    );
-
-    contentDefinitionManager.AlterPartDefinition(
-      "DistributionSystemOperatorPart",
-      builder =>
-        builder
-          .Attachable()
-          .WithDescription("A distribution system operator.")
-          .WithDisplayName("Distribution system operator")
-    );
-
-    contentDefinitionManager.AlterTypeDefinition(
-      "DistributionSystemOperator",
-      builder =>
-        builder
-          .Creatable()
-          .Listable()
-          .Draftable()
-          .Securable()
-          .DisplayedAs("Distribution system operator")
-          .WithDescription("A distribution system operator.")
-          .WithPart(
-            "TitlePart",
-            part =>
-              part.WithDisplayName("Title")
-                .WithDescription("Title of the distribution system operator.")
-                .WithPosition("1")
-                .WithSettings<TitlePartSettings>(
-                  new()
-                  {
-                    RenderTitle = true,
-                    Options = TitlePartOptions.EditableRequired,
-                  }
-                )
-          )
-          .WithPart(
-            "DistributionSystemOperatorPart",
-            part =>
-              part.WithDisplayName("Distribution system operator")
-                .WithDescription("A distribution system operator.")
-                .WithPosition("2")
-          )
-          .WithPart(
-            "LegalEntityPart",
-            part =>
-              part.WithDisplayName("Legal entity")
-                .WithDescription(
-                  "Identification, contact and address information the distributed system operator."
-                )
-                .WithPosition("3")
-          )
     );
 
     if (hostEnvironment.IsDevelopment())
@@ -406,50 +335,107 @@ internal static class CreateAsyncMigrations
     return (null, null);
   }
 
+  internal static async Task MigrateOperator(
+    IServiceProvider serviceProvider,
+    ISchemaBuilder schemaBuilder
+  )
+  {
+    var contentDefinitionManager =
+      serviceProvider.GetRequiredService<IContentDefinitionManager>();
+
+    schemaBuilder.CreateMapIndexTable<OzdsMeasurementDeviceDistributionSystemOperatorIndex>(
+      table =>
+        table
+          .Column<string>("ContentItemId", c => c.WithLength(64))
+          .Column<string>("DeviceId", c => c.WithLength(64))
+          .Column<bool>("IsMessenger")
+          .Column<string>(
+            "DistributionSystemOperatorContentItemId",
+            c => c.WithLength(64)
+          )
+          .Column<string>(
+            "DistributionSystemOperatorRepresentativeUserId",
+            c => c.WithLength(64)
+          )
+    );
+    schemaBuilder.AlterIndexTable<OzdsMeasurementDeviceDistributionSystemOperatorIndex>(table =>
+    {
+      table.CreateIndex(
+        "IDX_OzdsMeasurementDeviceDistributionSystemOperatorIndex_DeviceId",
+        "DeviceId"
+      );
+      table.CreateIndex(
+        "IDX_OzdsMeasurementDeviceDistributionSystemOperatorIndex_RepresentativeUserId",
+        "DistributionSystemOperatorRepresentativeUserId"
+      );
+    });
+
+    contentDefinitionManager.AlterPartDefinition(
+      "DistributionSystemOperatorPart",
+      builder =>
+        builder
+          .Attachable()
+          .WithDescription("A distribution system operator.")
+          .WithDisplayName("Distribution system operator")
+    );
+
+    contentDefinitionManager.AlterTypeDefinition(
+      "DistributionSystemOperator",
+      builder =>
+        builder
+          .Creatable()
+          .Listable()
+          .Draftable()
+          .Securable()
+          .DisplayedAs("Distribution system operator")
+          .WithDescription("A distribution system operator.")
+          .WithPart(
+            "TitlePart",
+            part =>
+              part.WithDisplayName("Title")
+                .WithDescription("Title of the distribution system operator.")
+                .WithPosition("1")
+                .WithSettings<TitlePartSettings>(
+                  new()
+                  {
+                    RenderTitle = true,
+                    Options = TitlePartOptions.EditableRequired,
+                  }
+                )
+          )
+          .WithPart(
+            "DistributionSystemOperatorPart",
+            part =>
+              part.WithDisplayName("Distribution system operator")
+                .WithDescription("A distribution system operator.")
+                .WithPosition("2")
+          )
+          .WithPart(
+            "LegalEntityPart",
+            part =>
+              part.WithDisplayName("Legal entity")
+                .WithDescription(
+                  "Identification, contact and address information the distributed system operator."
+                )
+                .WithPosition("3")
+          )
+    );
+  }
+
   internal static async Task<(
     string? UserId,
     string? ContentItemId
-  )> MigrateSystem(
+  )> PopulateSystem(
     IServiceProvider serviceProvider,
-    ISchemaBuilder schemaBuilder,
     string operatorUserId,
     string operatorContentItemId
   )
   {
     var roleManager = serviceProvider.GetRequiredService<RoleManager<IRole>>();
-    var contentDefinitionManager =
-      serviceProvider.GetRequiredService<IContentDefinitionManager>();
     var hostEnvironment =
       serviceProvider.GetRequiredService<IHostEnvironment>();
     var userService = serviceProvider.GetRequiredService<IUserService>();
     var contentManager = serviceProvider.GetRequiredService<IContentManager>();
-
-    schemaBuilder.CreateMapIndexTable<OzdsMeasurementDeviceClosedDistributionSystemIndex>(
-      table =>
-        table
-          .Column<string>("ContentItemId", c => c.WithLength(64))
-          .Column<string>("DeviceId", c => c.WithLength(64))
-          .Column<bool>("IsMessenger", c => c.WithDefault(false))
-          .Column<string>(
-            "ClosedDistributionSystemContentItemId",
-            c => c.WithLength(64)
-          )
-          .Column<string>(
-            "ClosedDistributionSystemRepresentativeUserId",
-            c => c.WithLength(64)
-          )
-    );
-    schemaBuilder.AlterIndexTable<OzdsMeasurementDeviceClosedDistributionSystemIndex>(table =>
-    {
-      table.CreateIndex(
-        "IDX_OzdsMeasurementDeviceClosedDistributionSystemIndex_DeviceId",
-        "DeviceId"
-      );
-      table.CreateIndex(
-        "IDX_OzdsMeasurementDeviceClosedDistributionSystemIndex_RepresentativeUserId",
-        "ClosedDistributionSystemRepresentativeUserId"
-      );
-    });
 
     await roleManager.CreateAsync(
       new Role
@@ -483,6 +469,104 @@ internal static class CreateAsyncMigrations
         }
       }
     );
+
+    if (hostEnvironment.IsDevelopment())
+    {
+      var systemUser = await userService.CreateDevUserAsync(
+        id: "SystemId",
+        userName: "System",
+        roleNames: new[]
+        {
+          "ClosedDistributionSystemRepresentative",
+          "LegalEntityRepresentative",
+        }
+      );
+
+      var closedDistributionSystem =
+        await contentManager.NewContentAsync<ClosedDistributionSystemItem>();
+      closedDistributionSystem.Alter(
+        closedDistributionSystem => closedDistributionSystem.TitlePart,
+        titlePart =>
+        {
+          titlePart.Title = "System";
+        }
+      );
+      closedDistributionSystem.Alter(
+        closedDistributionSystem => closedDistributionSystem.LegalEntityPart,
+        legalEntityPart =>
+        {
+          legalEntityPart.Name = new() { Text = "System" };
+          legalEntityPart.City = new() { Text = "City" };
+          legalEntityPart.Address = new() { Text = "Address" };
+          legalEntityPart.PostalCode = new() { Text = "Postal code" };
+          legalEntityPart.Email = new() { Text = "Email" };
+          legalEntityPart.SocialSecurityNumber = new()
+          {
+            Text = "Social security number"
+          };
+          legalEntityPart.Representatives = new()
+          {
+            UserIds = new[] { systemUser.UserId }
+          };
+        }
+      );
+      closedDistributionSystem.Alter(
+        closedDistributionSystem =>
+          closedDistributionSystem.ClosedDistributionSystemPart,
+        closedDistributionSystemPart =>
+        {
+          closedDistributionSystemPart.DistributionSystemOperator = new()
+          {
+            ContentItemIds = new[] { operatorContentItemId }
+          };
+        }
+      );
+
+      await contentManager.CreateAsync(
+        closedDistributionSystem,
+        VersionOptions.Latest
+      );
+
+      return (systemUser.UserId, closedDistributionSystem.ContentItemId);
+    }
+
+    return (null, null);
+  }
+
+  internal static async Task MigrateSystem(
+    IServiceProvider serviceProvider,
+    ISchemaBuilder schemaBuilder
+  )
+  {
+    var contentDefinitionManager =
+      serviceProvider.GetRequiredService<IContentDefinitionManager>();
+
+    schemaBuilder.CreateMapIndexTable<OzdsMeasurementDeviceClosedDistributionSystemIndex>(
+      table =>
+        table
+          .Column<string>("ContentItemId", c => c.WithLength(64))
+          .Column<string>("DeviceId", c => c.WithLength(64))
+          .Column<bool>("IsMessenger", c => c.WithDefault(false))
+          .Column<string>(
+            "ClosedDistributionSystemContentItemId",
+            c => c.WithLength(64)
+          )
+          .Column<string>(
+            "ClosedDistributionSystemRepresentativeUserId",
+            c => c.WithLength(64)
+          )
+    );
+    schemaBuilder.AlterIndexTable<OzdsMeasurementDeviceClosedDistributionSystemIndex>(table =>
+    {
+      table.CreateIndex(
+        "IDX_OzdsMeasurementDeviceClosedDistributionSystemIndex_DeviceId",
+        "DeviceId"
+      );
+      table.CreateIndex(
+        "IDX_OzdsMeasurementDeviceClosedDistributionSystemIndex_RepresentativeUserId",
+        "ClosedDistributionSystemRepresentativeUserId"
+      );
+    });
 
     contentDefinitionManager.AlterPartDefinition(
       "ClosedDistributionSystemPart",
@@ -555,33 +639,60 @@ internal static class CreateAsyncMigrations
                 .WithPosition("3")
           )
     );
+  }
+
+  internal static async Task<(
+    string? UserId,
+    string? ContentItemId
+  )> PopulateUnit(
+    IServiceProvider serviceProvider,
+    string operatorUserId,
+    string operatorContentItemId,
+    string systemUserId,
+    string systemContentItemId
+  )
+  {
+    var roleManager = serviceProvider.GetRequiredService<RoleManager<IRole>>();
+    var hostEnvironment =
+      serviceProvider.GetRequiredService<IHostEnvironment>();
+    var userService = serviceProvider.GetRequiredService<IUserService>();
+    var contentManager = serviceProvider.GetRequiredService<IContentManager>();
+
+    await roleManager.CreateAsync(
+      new Role
+      {
+        NormalizedRoleName = "DistributionSystemUnitRepresentative",
+        RoleName = "Distribution System Unit Representative",
+        RoleDescription = "Representative of a distribution system unit.",
+      }
+    );
 
     if (hostEnvironment.IsDevelopment())
     {
-      var systemUser = await userService.CreateDevUserAsync(
-        id: "SystemId",
-        userName: "System",
+      var unitUser = await userService.CreateDevUserAsync(
+        id: "UnitId",
+        userName: "Unit",
         roleNames: new[]
         {
-          "ClosedDistributionSystemRepresentative",
+          "DistributionSystemUnitRepresentative",
           "LegalEntityRepresentative",
         }
       );
 
-      var closedDistributionSystem =
-        await contentManager.NewContentAsync<ClosedDistributionSystemItem>();
-      closedDistributionSystem.Alter(
-        closedDistributionSystem => closedDistributionSystem.TitlePart,
+      var distributionSystemUnit =
+        await contentManager.NewContentAsync<DistributionSystemUnitItem>();
+      distributionSystemUnit.Alter(
+        distributionSystemUnit => distributionSystemUnit.TitlePart,
         titlePart =>
         {
-          titlePart.Title = "System";
+          titlePart.Title = "Unit";
         }
       );
-      closedDistributionSystem.Alter(
-        closedDistributionSystem => closedDistributionSystem.LegalEntityPart,
+      distributionSystemUnit.Alter(
+        distributionSystemUnit => distributionSystemUnit.LegalEntityPart,
         legalEntityPart =>
         {
-          legalEntityPart.Name = new() { Text = "System" };
+          legalEntityPart.Name = new() { Text = "Unit" };
           legalEntityPart.City = new() { Text = "City" };
           legalEntityPart.Address = new() { Text = "Address" };
           legalEntityPart.PostalCode = new() { Text = "Postal code" };
@@ -592,52 +703,40 @@ internal static class CreateAsyncMigrations
           };
           legalEntityPart.Representatives = new()
           {
-            UserIds = new[] { systemUser.UserId }
+            UserIds = new[] { unitUser.UserId }
           };
         }
       );
-      closedDistributionSystem.Alter(
-        closedDistributionSystem =>
-          closedDistributionSystem.ClosedDistributionSystemPart,
-        closedDistributionSystemPart =>
+      distributionSystemUnit.Alter(
+        distributionSystemUnit =>
+          distributionSystemUnit.DistributionSystemUnitPart,
+        distributionSystemUnitPart =>
         {
-          closedDistributionSystemPart.DistributionSystemOperator = new()
+          distributionSystemUnitPart.ClosedDistributionSystem = new()
           {
-            ContentItemIds = new[] { operatorContentItemId }
+            ContentItemIds = new[] { systemContentItemId }
           };
         }
       );
 
       await contentManager.CreateAsync(
-        closedDistributionSystem,
+        distributionSystemUnit,
         VersionOptions.Latest
       );
 
-      return (systemUser.UserId, closedDistributionSystem.ContentItemId);
+      return (unitUser.UserId, distributionSystemUnit.ContentItemId);
     }
 
     return (null, null);
   }
 
-  internal static async Task<(
-    string? UserId,
-    string? ContentItemId
-  )> MigrateUnit(
+  internal static async Task MigrateUnit(
     IServiceProvider serviceProvider,
-    ISchemaBuilder schemaBuilder,
-    string operatorUserId,
-    string operatorContentItemId,
-    string systemUserId,
-    string systemContentItemId
+    ISchemaBuilder schemaBuilder
   )
   {
-    var roleManager = serviceProvider.GetRequiredService<RoleManager<IRole>>();
     var contentDefinitionManager =
       serviceProvider.GetRequiredService<IContentDefinitionManager>();
-    var hostEnvironment =
-      serviceProvider.GetRequiredService<IHostEnvironment>();
-    var userService = serviceProvider.GetRequiredService<IUserService>();
-    var contentManager = serviceProvider.GetRequiredService<IContentManager>();
 
     schemaBuilder.CreateMapIndexTable<OzdsMeasurementDeviceDistributionSystemUnitIndex>(
       table =>
@@ -697,15 +796,6 @@ internal static class CreateAsyncMigrations
         "DistributionSystemOperatorContentItemId"
       );
     });
-
-    await roleManager.CreateAsync(
-      new Role
-      {
-        NormalizedRoleName = "DistributionSystemUnitRepresentative",
-        RoleName = "Distribution System Unit Representative",
-        RoleDescription = "Representative of a distribution system unit.",
-      }
-    );
 
     contentDefinitionManager.AlterPartDefinition(
       "DistributionSystemUnitPart",
@@ -778,85 +868,74 @@ internal static class CreateAsyncMigrations
                 .WithPosition("3")
           )
     );
-
-    if (hostEnvironment.IsDevelopment())
-    {
-      var unitUser = await userService.CreateDevUserAsync(
-        id: "UnitId",
-        userName: "Unit",
-        roleNames: new[]
-        {
-          "DistributionSystemUnitRepresentative",
-          "LegalEntityRepresentative",
-        }
-      );
-
-      var distributionSystemUnit =
-        await contentManager.NewContentAsync<DistributionSystemUnitItem>();
-      distributionSystemUnit.Alter(
-        distributionSystemUnit => distributionSystemUnit.TitlePart,
-        titlePart =>
-        {
-          titlePart.Title = "Unit";
-        }
-      );
-      distributionSystemUnit.Alter(
-        distributionSystemUnit => distributionSystemUnit.LegalEntityPart,
-        legalEntityPart =>
-        {
-          legalEntityPart.Name = new() { Text = "Unit" };
-          legalEntityPart.City = new() { Text = "City" };
-          legalEntityPart.Address = new() { Text = "Address" };
-          legalEntityPart.PostalCode = new() { Text = "Postal code" };
-          legalEntityPart.Email = new() { Text = "Email" };
-          legalEntityPart.SocialSecurityNumber = new()
-          {
-            Text = "Social security number"
-          };
-          legalEntityPart.Representatives = new()
-          {
-            UserIds = new[] { unitUser.UserId }
-          };
-        }
-      );
-      distributionSystemUnit.Alter(
-        distributionSystemUnit =>
-          distributionSystemUnit.DistributionSystemUnitPart,
-        distributionSystemUnitPart =>
-        {
-          distributionSystemUnitPart.ClosedDistributionSystem = new()
-          {
-            ContentItemIds = new[] { systemContentItemId }
-          };
-        }
-      );
-
-      await contentManager.CreateAsync(
-        distributionSystemUnit,
-        VersionOptions.Latest
-      );
-
-      return (unitUser.UserId, distributionSystemUnit.ContentItemId);
-    }
-
-    return (null, null);
   }
 
-  internal static async Task MigratePidgeon(
+  internal static async Task PopulatePidgeon(
     IServiceProvider serviceProvider,
-    ISchemaBuilder schemaBuilder,
     string unitContentItemId
   )
   {
     var roleManager = serviceProvider.GetRequiredService<RoleManager<IRole>>();
-    var contentDefinitionManager =
-      serviceProvider.GetRequiredService<IContentDefinitionManager>();
     var hostEnvironment =
       serviceProvider.GetRequiredService<IHostEnvironment>();
     var userService = serviceProvider.GetRequiredService<IUserService>();
     var contentManager = serviceProvider.GetRequiredService<IContentManager>();
     var apiKeyFieldService =
       serviceProvider.GetRequiredService<IApiKeyFieldService>();
+
+    if (hostEnvironment.IsDevelopment())
+    {
+      var pidgeonMeasurementDevice =
+        await contentManager.NewContentAsync<PidgeonMeasurementDeviceItem>();
+      pidgeonMeasurementDevice.Alter(
+        pidgeonMeasurementDevice => pidgeonMeasurementDevice.TitlePart,
+        titlePart =>
+        {
+          titlePart.Title = "pidgeon";
+        }
+      );
+      pidgeonMeasurementDevice.Alter(
+        pidgeonMeasurementDevice =>
+          pidgeonMeasurementDevice.MeasurementDevicePart,
+        measurementDevicePart =>
+        {
+          measurementDevicePart.DeviceId = new() { Text = "pidgeon" };
+        }
+      );
+      pidgeonMeasurementDevice.Alter(
+        pidgeonMeasurementDevice =>
+          pidgeonMeasurementDevice.PidgeonMeasurementDevicePart,
+        pidgeonMeasurementDevicePart =>
+        {
+          pidgeonMeasurementDevicePart.ApiKey =
+            apiKeyFieldService.HashApiKeyField("pidgeon");
+        }
+      );
+      pidgeonMeasurementDevice.Alter(
+        pidgeonMeasurementDevice =>
+          pidgeonMeasurementDevice.OzdsMeasurementDevicePart,
+        ozdsMeasurementDevicePart =>
+        {
+          ozdsMeasurementDevicePart.DistributionSystemUnit = new()
+          {
+            ContentItemIds = new[] { unitContentItemId }
+          };
+        }
+      );
+      await contentManager.CreateAsync(
+        pidgeonMeasurementDevice,
+        VersionOptions.Latest
+      );
+    }
+  }
+
+  internal static async Task MigratePidgeon(
+    IServiceProvider serviceProvider,
+    ISchemaBuilder schemaBuilder
+  )
+  {
+    var contentDefinitionManager =
+      serviceProvider.GetRequiredService<IContentDefinitionManager>();
 
     contentDefinitionManager.AlterPartDefinition(
       "PidgeonMeasurementDevicePart",
@@ -924,144 +1003,20 @@ internal static class CreateAsyncMigrations
                 .WithPosition("3")
           )
     );
-
-    if (hostEnvironment.IsDevelopment())
-    {
-      var pidgeonMeasurementDevice =
-        await contentManager.NewContentAsync<PidgeonMeasurementDeviceItem>();
-      pidgeonMeasurementDevice.Alter(
-        pidgeonMeasurementDevice => pidgeonMeasurementDevice.TitlePart,
-        titlePart =>
-        {
-          titlePart.Title = "pidgeon";
-        }
-      );
-      pidgeonMeasurementDevice.Alter(
-        pidgeonMeasurementDevice =>
-          pidgeonMeasurementDevice.MeasurementDevicePart,
-        measurementDevicePart =>
-        {
-          measurementDevicePart.DeviceId = new() { Text = "pidgeon" };
-        }
-      );
-      pidgeonMeasurementDevice.Alter(
-        pidgeonMeasurementDevice =>
-          pidgeonMeasurementDevice.PidgeonMeasurementDevicePart,
-        pidgeonMeasurementDevicePart =>
-        {
-          pidgeonMeasurementDevicePart.ApiKey =
-            apiKeyFieldService.HashApiKeyField("pidgeon");
-        }
-      );
-      pidgeonMeasurementDevice.Alter(
-        pidgeonMeasurementDevice =>
-          pidgeonMeasurementDevice.OzdsMeasurementDevicePart,
-        ozdsMeasurementDevicePart =>
-        {
-          ozdsMeasurementDevicePart.DistributionSystemUnit = new()
-          {
-            ContentItemIds = new[] { unitContentItemId }
-          };
-        }
-      );
-      await contentManager.CreateAsync(
-        pidgeonMeasurementDevice,
-        VersionOptions.Latest
-      );
-    }
   }
 
-  internal static async Task MigrateAbb(
+  internal static async Task PopulateAbb(
     IServiceProvider serviceProvider,
-    ISchemaBuilder schemaBuilder,
     string unitContentItemId
   )
   {
     var roleManager = serviceProvider.GetRequiredService<RoleManager<IRole>>();
-    var contentDefinitionManager =
-      serviceProvider.GetRequiredService<IContentDefinitionManager>();
     var hostEnvironment =
       serviceProvider.GetRequiredService<IHostEnvironment>();
     var userService = serviceProvider.GetRequiredService<IUserService>();
     var contentManager = serviceProvider.GetRequiredService<IContentManager>();
     var apiKeyFieldService =
       serviceProvider.GetRequiredService<IApiKeyFieldService>();
-
-    contentDefinitionManager.AlterPartDefinition(
-      "AbbMeasurementDevicePart",
-      builder =>
-        builder
-          .Attachable()
-          .WithDescription("A Abb measurement device.")
-          .WithDisplayName("Abb measurement device")
-    );
-
-    contentDefinitionManager.AlterTypeDefinition(
-      "AbbMeasurementDevice",
-      builder =>
-        builder
-          .Creatable()
-          .Listable()
-          .Draftable()
-          .Securable()
-          .DisplayedAs("Abb measurement device")
-          .WithDescription("An Abb measurement device.")
-          .WithPart(
-            "TitlePart",
-            part =>
-              part.WithDisplayName("Title")
-                .WithDescription(
-                  "Title displaying the identifier of the Abb measurement device."
-                )
-                .WithPosition("1")
-                .WithSettings<TitlePartSettings>(
-                  new()
-                  {
-                    RenderTitle = true,
-                    Options = TitlePartOptions.GeneratedDisabled,
-                    Pattern =
-                      @"{%- ContentItem.Content.MeasurementDevicePart.DeviceId.Text -%}"
-                  }
-                )
-          )
-          .WithPart(
-            "MeasurementDevicePart",
-            part =>
-              part.WithDisplayName("Measurement device")
-                .WithDescription("A measurement device.")
-                .WithPosition("2")
-          )
-          .WithPart(
-            "OzdsMeasurementDevicePart",
-            part =>
-              part.WithDisplayName("OZDS Measurement device")
-                .WithDescription("An OZDS measurement device.")
-                .WithPosition("3")
-          )
-          .WithPart(
-            "AbbMeasurementDevicePart",
-            part =>
-              part.WithDisplayName("Abb measurement device")
-                .WithDescription("An Abb measurement device.")
-                .WithPosition("4")
-          )
-          .WithPart(
-            "ChartPart",
-            part =>
-              part.WithDisplayName("Chart")
-                .WithDescription(
-                  "Chart displaying the Abb measurement device data."
-                )
-                .WithPosition("5")
-          )
-          .WithPart(
-            "BillingPart",
-            part =>
-              part.WithDisplayName("Billing")
-                .WithDescription("Billing information.")
-                .WithPosition("6")
-          )
-    );
 
     if (hostEnvironment.IsDevelopment())
     {
@@ -1145,14 +1100,98 @@ internal static class CreateAsyncMigrations
     }
   }
 
-  internal static async Task<string> MigrateRegulatoryAgencyCatalogue(
+  internal static async Task MigrateAbb(
     IServiceProvider serviceProvider,
     ISchemaBuilder schemaBuilder
   )
   {
     var contentDefinitionManager =
       serviceProvider.GetRequiredService<IContentDefinitionManager>();
-    var contentManager = serviceProvider.GetRequiredService<IContentManager>();
+
+    contentDefinitionManager.AlterPartDefinition(
+      "AbbMeasurementDevicePart",
+      builder =>
+        builder
+          .Attachable()
+          .WithDescription("A Abb measurement device.")
+          .WithDisplayName("Abb measurement device")
+    );
+
+    contentDefinitionManager.AlterTypeDefinition(
+      "AbbMeasurementDevice",
+      builder =>
+        builder
+          .Creatable()
+          .Listable()
+          .Draftable()
+          .Securable()
+          .DisplayedAs("Abb measurement device")
+          .WithDescription("An Abb measurement device.")
+          .WithPart(
+            "TitlePart",
+            part =>
+              part.WithDisplayName("Title")
+                .WithDescription(
+                  "Title displaying the identifier of the Abb measurement device."
+                )
+                .WithPosition("1")
+                .WithSettings<TitlePartSettings>(
+                  new()
+                  {
+                    RenderTitle = true,
+                    Options = TitlePartOptions.GeneratedDisabled,
+                    Pattern =
+                      @"{%- ContentItem.Content.MeasurementDevicePart.DeviceId.Text -%}"
+                  }
+                )
+          )
+          .WithPart(
+            "MeasurementDevicePart",
+            part =>
+              part.WithDisplayName("Measurement device")
+                .WithDescription("A measurement device.")
+                .WithPosition("2")
+          )
+          .WithPart(
+            "OzdsMeasurementDevicePart",
+            part =>
+              part.WithDisplayName("OZDS Measurement device")
+                .WithDescription("An OZDS measurement device.")
+                .WithPosition("3")
+          )
+          .WithPart(
+            "AbbMeasurementDevicePart",
+            part =>
+              part.WithDisplayName("Abb measurement device")
+                .WithDescription("An Abb measurement device.")
+                .WithPosition("4")
+          )
+          .WithPart(
+            "ChartPart",
+            part =>
+              part.WithDisplayName("Chart")
+                .WithDescription(
+                  "Chart displaying the Abb measurement device data."
+                )
+                .WithPosition("5")
+          )
+          .WithPart(
+            "BillingPart",
+            part =>
+              part.WithDisplayName("Billing")
+                .WithDescription("Billing information.")
+                .WithPosition("6")
+          )
+    );
+  }
+
+  internal static async Task MigrateRegulatoryAgencyCatalogue(
+    IServiceProvider serviceProvider,
+    ISchemaBuilder schemaBuilder
+  )
+  {
+    var contentDefinitionManager =
+      serviceProvider.GetRequiredService<IContentDefinitionManager>();
 
     contentDefinitionManager.AlterPartDefinition(
       "RegulatoryAgencyCataloguePart",
@@ -1199,6 +1238,13 @@ internal static class CreateAsyncMigrations
                 .WithPosition("2")
           )
     );
+  }
+
+  internal static async Task<string> PopulateRegulatoryAgencyCatalogue(
+    IServiceProvider serviceProvider
+  )
+  {
+    var contentManager = serviceProvider.GetRequiredService<IContentManager>();
 
     var regulatoryAgencyCatalogue =
       await contentManager.NewContentAsync<RegulatoryAgencyCatalogueItem>();
@@ -1336,10 +1382,7 @@ internal static class CreateAsyncMigrations
     string WhiteLowVoltageOperatorCatalogueContentItemId,
     string RedOperatorCatalogueContentItemId,
     string YellowOperatorCatalogueContentItemId
-  )> PopulateOperatorCatalogues(
-    IServiceProvider serviceProvider,
-    ISchemaBuilder schemaBuilder
-  )
+  )> PopulateOperatorCatalogues(IServiceProvider serviceProvider)
   {
     var contentManager = serviceProvider.GetRequiredService<IContentManager>();
 

@@ -1,6 +1,7 @@
 using Mess.OrchardCore;
 using Mess.Ozds.Abstractions.Indexes;
 using Mess.Ozds.Abstractions.Models;
+using Mess.System.Extensions.Microsoft;
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.ContentManagement;
 using YesSql.Indexes;
@@ -19,13 +20,18 @@ public class DistributionSystemUnitIndexProvider : IndexProvider<ContentItem>
         var distributionSystemUnitPart =
           contentItem.As<DistributionSystemUnitPart>();
 
-        var contentManager =
-          _serviceProvider.GetRequiredService<IContentManager>();
-        var closedDistributionSystemContentItem = contentManager
-          .GetContentAsync<ClosedDistributionSystemItem>(
-            distributionSystemUnitPart.ClosedDistributionSystem.ContentItemIds.First()
-          )
-          .Result;
+        var closedDistributionSystemContentItem =
+          _serviceProvider.Scope(serviceProvider =>
+          {
+            var contentManager =
+              serviceProvider.GetRequiredService<IContentManager>();
+            return contentManager
+              .GetContentAsync<ClosedDistributionSystemItem>(
+                distributionSystemUnitPart.ClosedDistributionSystem.ContentItemIds.First()
+              )
+              .Result;
+          });
+
         if (closedDistributionSystemContentItem == null)
         {
           return Array.Empty<DistributionSystemUnitIndex>();
