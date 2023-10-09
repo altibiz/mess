@@ -21,7 +21,6 @@ using Mess.Ozds.Abstractions.Client;
 using Mess.Fields.Abstractions;
 using OrchardCore.ContentFields.Settings;
 using Microsoft.Extensions.DependencyInjection;
-using Mess.System.Extensions.Microsoft;
 
 namespace Mess.Ozds;
 
@@ -30,17 +29,11 @@ public class Migrations : DataMigration
   public async Task<int> CreateAsync()
   {
     var regulatoryAgencyCatalogueContentItemId =
-      await _serviceProvider.AwaitScopeAsync(async (serviceProvider) => {
-        return await CreateAsyncMigrations.MigrateRegulatoryAgencyCatalogue(
-          serviceProvider
-        );
-      });
+      await CreateAsyncMigrations.MigrateRegulatoryAgencyCatalogue(
+        _serviceProvider
+      );
 
-      await _serviceProvider.AwaitScopeAsync(async (serviceProvider) => {
-    await CreateAsyncMigrations.MigrateOperatorCatalogue(
-      _serviceProvider
-    );
-      });
+    await CreateAsyncMigrations.MigrateOperatorCatalogue(_serviceProvider);
 
     (
       string whiteHighVoltageOperatorCatalogueContentItemId,
@@ -49,9 +42,9 @@ public class Migrations : DataMigration
       string whiteLowVoltageOperatorCatalogueContentItemId,
       string redOperatorCatalogueContentItemId,
       string yellowOperatorCatalogueContentItemId
-    ) = await _serviceProvider.AwaitScopeAsync(async (serviceProvider) => {
-      return await CreateAsyncMigrations.PopulateOperatorCatalogues(_serviceProvider);
-    });
+    ) = await CreateAsyncMigrations.PopulateOperatorCatalogues(
+      _serviceProvider
+    );
 
     (
       string whiteHighVoltageMeasurementDeviceCatalogueContentItemId,
@@ -60,112 +53,95 @@ public class Migrations : DataMigration
       string whiteLowVoltageMeasurementDeviceCatalogueContentItemId,
       string redMeasurementDeviceCatalogueContentItemId,
       string yellowMeasurementDeviceCatalogueContentItemId
-    ) = await _serviceProvider.AwaitScopeAsync(async (serviceProvider) => {
-      return await CreateAsyncMigrations.PopulateOperatorCatalogues(_serviceProvider);
-    });
+    ) = await CreateAsyncMigrations.PopulateOperatorCatalogues(
+      _serviceProvider
+    );
 
     (string? operatorUserId, string? operatorContentItemId) =
-      await _serviceProvider.AwaitScopeAsync(async (serviceProvider) => {
-        return await CreateAsyncMigrations.MigrateOperator(
-          _serviceProvider,
-          regulatoryAgencyCatalogueContentItemId,
-          whiteHighVoltageOperatorCatalogueContentItemId!,
-          whiteMediumVoltageOperatorCatalogueContentItemId!,
-          blueOperatorCatalogueContentItemId!,
-          whiteLowVoltageOperatorCatalogueContentItemId!,
-          redOperatorCatalogueContentItemId!,
-          yellowOperatorCatalogueContentItemId!
-        );
-      });
+      await CreateAsyncMigrations.MigrateOperator(
+        _serviceProvider,
+        regulatoryAgencyCatalogueContentItemId,
+        whiteHighVoltageOperatorCatalogueContentItemId!,
+        whiteMediumVoltageOperatorCatalogueContentItemId!,
+        blueOperatorCatalogueContentItemId!,
+        whiteLowVoltageOperatorCatalogueContentItemId!,
+        redOperatorCatalogueContentItemId!,
+        yellowOperatorCatalogueContentItemId!
+      );
 
     (string? systemUserId, string? systemContentItemId) =
-      await _serviceProvider.AwaitScopeAsync(async (serviceProvider) => {
-        return await CreateAsyncMigrations.MigrateSystem(
-          _serviceProvider,
-          operatorUserId!,
-          operatorContentItemId!
-        );
-      });
+      await CreateAsyncMigrations.MigrateSystem(
+        _serviceProvider,
+        operatorUserId!,
+        operatorContentItemId!
+      );
 
     (string? unitUserId, string? unitContentItemId) =
-      await _serviceProvider.AwaitScopeAsync(async (serviceProvider) => {
-        return await CreateAsyncMigrations.MigrateUnit(
-          _serviceProvider,
-          operatorUserId!,
-          operatorContentItemId!,
-          systemUserId!,
-          systemContentItemId!
-        );
-      });
-
-    await _serviceProvider.AwaitScope((serviceProvider) => {
-      var contentDefinitionManager = serviceProvider.GetRequiredService<IContentDefinitionManager>();
-
-      contentDefinitionManager.AlterPartDefinition(
-        "OzdsMeasurementDevicePart",
-        builder =>
-          builder
-            .Attachable()
-            .WithDescription("An OZDS measurement device.")
-            .WithDisplayName("OZDS measurement device")
-            .WithField(
-              "DistributionSystemUnit",
-              fieldBuilder =>
-                fieldBuilder
-                  .OfType("ContentPickerField")
-                  .WithDisplayName("Distribution system unit")
-                  .WithDescription("Distribution system unit.")
-                  .WithSettings<ContentPickerFieldSettings>(
-                    new()
-                    {
-                      Hint = "Distribution system unit.",
-                      Multiple = false,
-                      Required = true,
-                      DisplayedContentTypes = new[] { "DistributionSystemUnit" },
-                      DisplayAllContentTypes = false
-                    }
-                  )
-            )
-      );
-
-      contentDefinitionManager.AlterPartDefinition(
-        "OzdsCalculationPart",
-        builder =>
-          builder
-            .Attachable()
-            .WithDescription("An OZDS billing calculation.")
-            .WithDisplayName("OZDS billing calculation")
-      );
-    });
-
-    await _serviceProvider.AwaitScopeAsync(async (serviceProvider) => {
-      await CreateAsyncMigrations.MigrateInvoice(_serviceProvider);
-    });
-
-    await _serviceProvider.AwaitScopeAsync(async (serviceProvider) => {
-      await CreateAsyncMigrations.MigrateReceipt(_serviceProvider);
-    });
-
-    await _serviceProvider.AwaitScopeAsync(async (serviceProvider) => {
-      await CreateAsyncMigrations.MigratePidgeon(
+      await CreateAsyncMigrations.MigrateUnit(
         _serviceProvider,
-        unitContentItemId!
+        operatorUserId!,
+        operatorContentItemId!,
+        systemUserId!,
+        systemContentItemId!
       );
-    });
 
-    await _serviceProvider.AwaitScopeAsync(async (serviceProvider) => {
-      await CreateAsyncMigrations.MigrateAbb(
-        _serviceProvider,
-        unitContentItemId!
-      );
-    });
+    var contentDefinitionManager =
+      _serviceProvider.GetRequiredService<IContentDefinitionManager>();
+
+    contentDefinitionManager.AlterPartDefinition(
+      "OzdsMeasurementDevicePart",
+      builder =>
+        builder
+          .Attachable()
+          .WithDescription("An OZDS measurement device.")
+          .WithDisplayName("OZDS measurement device")
+          .WithField(
+            "DistributionSystemUnit",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("ContentPickerField")
+                .WithDisplayName("Distribution system unit")
+                .WithDescription("Distribution system unit.")
+                .WithSettings<ContentPickerFieldSettings>(
+                  new()
+                  {
+                    Hint = "Distribution system unit.",
+                    Multiple = false,
+                    Required = true,
+                    DisplayedContentTypes = new[] { "DistributionSystemUnit" },
+                    DisplayAllContentTypes = false
+                  }
+                )
+          )
+    );
+
+    contentDefinitionManager.AlterPartDefinition(
+      "OzdsCalculationPart",
+      builder =>
+        builder
+          .Attachable()
+          .WithDescription("An OZDS billing calculation.")
+          .WithDisplayName("OZDS billing calculation")
+    );
+
+    await CreateAsyncMigrations.MigrateInvoice(_serviceProvider);
+
+    await CreateAsyncMigrations.MigrateReceipt(_serviceProvider);
+
+    await CreateAsyncMigrations.MigratePidgeon(
+      _serviceProvider,
+      unitContentItemId!
+    );
+
+    await CreateAsyncMigrations.MigrateAbb(
+      _serviceProvider,
+      unitContentItemId!
+    );
 
     return 1;
   }
 
-  public Migrations(
-    IServiceProvider serviceProvider
-  )
+  public Migrations(IServiceProvider serviceProvider)
   {
     _serviceProvider = serviceProvider;
   }
@@ -193,10 +169,10 @@ internal static class CreateAsyncMigrations
     var roleManager = serviceProvider.GetRequiredService<RoleManager<IRole>>();
     var contentDefinitionManager =
       serviceProvider.GetRequiredService<IContentDefinitionManager>();
-    var hostEnvironment = serviceProvider.GetRequiredService<IHostEnvironment>();
+    var hostEnvironment =
+      serviceProvider.GetRequiredService<IHostEnvironment>();
     var userService = serviceProvider.GetRequiredService<IUserService>();
-    var contentManager  = serviceProvider.GetRequiredService<IContentManager>();
-
+    var contentManager = serviceProvider.GetRequiredService<IContentManager>();
 
     schemaBuilder.CreateMapIndexTable<OzdsMeasurementDeviceDistributionSystemOperatorIndex>(
       table =>
@@ -432,9 +408,10 @@ internal static class CreateAsyncMigrations
     var roleManager = serviceProvider.GetRequiredService<RoleManager<IRole>>();
     var contentDefinitionManager =
       serviceProvider.GetRequiredService<IContentDefinitionManager>();
-    var hostEnvironment = serviceProvider.GetRequiredService<IHostEnvironment>();
+    var hostEnvironment =
+      serviceProvider.GetRequiredService<IHostEnvironment>();
     var userService = serviceProvider.GetRequiredService<IUserService>();
-    var contentManager  = serviceProvider.GetRequiredService<IContentManager>();
+    var contentManager = serviceProvider.GetRequiredService<IContentManager>();
 
     schemaBuilder.CreateMapIndexTable<OzdsMeasurementDeviceClosedDistributionSystemIndex>(
       table =>
@@ -646,9 +623,10 @@ internal static class CreateAsyncMigrations
     var roleManager = serviceProvider.GetRequiredService<RoleManager<IRole>>();
     var contentDefinitionManager =
       serviceProvider.GetRequiredService<IContentDefinitionManager>();
-    var hostEnvironment = serviceProvider.GetRequiredService<IHostEnvironment>();
+    var hostEnvironment =
+      serviceProvider.GetRequiredService<IHostEnvironment>();
     var userService = serviceProvider.GetRequiredService<IUserService>();
-    var contentManager  = serviceProvider.GetRequiredService<IContentManager>();
+    var contentManager = serviceProvider.GetRequiredService<IContentManager>();
 
     schemaBuilder.CreateMapIndexTable<OzdsMeasurementDeviceDistributionSystemUnitIndex>(
       table =>
@@ -862,9 +840,10 @@ internal static class CreateAsyncMigrations
     var roleManager = serviceProvider.GetRequiredService<RoleManager<IRole>>();
     var contentDefinitionManager =
       serviceProvider.GetRequiredService<IContentDefinitionManager>();
-    var hostEnvironment = serviceProvider.GetRequiredService<IHostEnvironment>();
+    var hostEnvironment =
+      serviceProvider.GetRequiredService<IHostEnvironment>();
     var userService = serviceProvider.GetRequiredService<IUserService>();
-    var contentManager  = serviceProvider.GetRequiredService<IContentManager>();
+    var contentManager = serviceProvider.GetRequiredService<IContentManager>();
     var apiKeyFieldService =
       serviceProvider.GetRequiredService<IApiKeyFieldService>();
 
@@ -990,9 +969,10 @@ internal static class CreateAsyncMigrations
     var roleManager = serviceProvider.GetRequiredService<RoleManager<IRole>>();
     var contentDefinitionManager =
       serviceProvider.GetRequiredService<IContentDefinitionManager>();
-    var hostEnvironment = serviceProvider.GetRequiredService<IHostEnvironment>();
+    var hostEnvironment =
+      serviceProvider.GetRequiredService<IHostEnvironment>();
     var userService = serviceProvider.GetRequiredService<IUserService>();
-    var contentManager  = serviceProvider.GetRequiredService<IContentManager>();
+    var contentManager = serviceProvider.GetRequiredService<IContentManager>();
     var apiKeyFieldService =
       serviceProvider.GetRequiredService<IApiKeyFieldService>();
 
@@ -1345,8 +1325,7 @@ internal static class CreateAsyncMigrations
     string YellowOperatorCatalogueContentItemId
   )> PopulateOperatorCatalogues(IServiceProvider serviceProvider)
   {
-    var contentManager =
-      serviceProvider.GetRequiredService<IContentManager>();
+    var contentManager = serviceProvider.GetRequiredService<IContentManager>();
 
     var whiteHighVoltageOperatorCatalogue =
       await contentManager.NewContentAsync<OperatorCatalogueItem>();
@@ -1509,9 +1488,7 @@ internal static class CreateAsyncMigrations
     );
   }
 
-  internal static async Task MigrateInvoice(
-    IServiceProvider serviceProvider
-  )
+  internal static async Task MigrateInvoice(IServiceProvider serviceProvider)
   {
     var contentDefinitionManager =
       serviceProvider.GetRequiredService<IContentDefinitionManager>();
@@ -1572,9 +1549,7 @@ internal static class CreateAsyncMigrations
     );
   }
 
-  internal static async Task MigrateReceipt(
-    IServiceProvider serviceProvider
-  )
+  internal static async Task MigrateReceipt(IServiceProvider serviceProvider)
   {
     var contentDefinitionManager =
       serviceProvider.GetRequiredService<IContentDefinitionManager>();
