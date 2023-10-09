@@ -30,10 +30,14 @@ public class Migrations : DataMigration
   {
     var regulatoryAgencyCatalogueContentItemId =
       await CreateAsyncMigrations.MigrateRegulatoryAgencyCatalogue(
-        _serviceProvider
+        _serviceProvider,
+        SchemaBuilder
       );
 
-    await CreateAsyncMigrations.MigrateOperatorCatalogue(_serviceProvider);
+    await CreateAsyncMigrations.MigrateOperatorCatalogue(
+      _serviceProvider,
+      SchemaBuilder
+    );
 
     (
       string whiteHighVoltageOperatorCatalogueContentItemId,
@@ -43,7 +47,8 @@ public class Migrations : DataMigration
       string redOperatorCatalogueContentItemId,
       string yellowOperatorCatalogueContentItemId
     ) = await CreateAsyncMigrations.PopulateOperatorCatalogues(
-      _serviceProvider
+      _serviceProvider,
+      SchemaBuilder
     );
 
     (
@@ -54,12 +59,14 @@ public class Migrations : DataMigration
       string redMeasurementDeviceCatalogueContentItemId,
       string yellowMeasurementDeviceCatalogueContentItemId
     ) = await CreateAsyncMigrations.PopulateOperatorCatalogues(
-      _serviceProvider
+      _serviceProvider,
+      SchemaBuilder
     );
 
     (string? operatorUserId, string? operatorContentItemId) =
       await CreateAsyncMigrations.MigrateOperator(
         _serviceProvider,
+        SchemaBuilder,
         regulatoryAgencyCatalogueContentItemId,
         whiteHighVoltageOperatorCatalogueContentItemId!,
         whiteMediumVoltageOperatorCatalogueContentItemId!,
@@ -72,6 +79,7 @@ public class Migrations : DataMigration
     (string? systemUserId, string? systemContentItemId) =
       await CreateAsyncMigrations.MigrateSystem(
         _serviceProvider,
+        SchemaBuilder,
         operatorUserId!,
         operatorContentItemId!
       );
@@ -79,6 +87,7 @@ public class Migrations : DataMigration
     (string? unitUserId, string? unitContentItemId) =
       await CreateAsyncMigrations.MigrateUnit(
         _serviceProvider,
+        SchemaBuilder,
         operatorUserId!,
         operatorContentItemId!,
         systemUserId!,
@@ -124,17 +133,19 @@ public class Migrations : DataMigration
           .WithDisplayName("OZDS billing calculation")
     );
 
-    await CreateAsyncMigrations.MigrateInvoice(_serviceProvider);
+    await CreateAsyncMigrations.MigrateInvoice(_serviceProvider, SchemaBuilder);
 
-    await CreateAsyncMigrations.MigrateReceipt(_serviceProvider);
+    await CreateAsyncMigrations.MigrateReceipt(_serviceProvider, SchemaBuilder);
 
     await CreateAsyncMigrations.MigratePidgeon(
       _serviceProvider,
+      SchemaBuilder,
       unitContentItemId!
     );
 
     await CreateAsyncMigrations.MigrateAbb(
       _serviceProvider,
+      SchemaBuilder,
       unitContentItemId!
     );
 
@@ -156,6 +167,7 @@ internal static class CreateAsyncMigrations
     string? ContentItemId
   )> MigrateOperator(
     IServiceProvider serviceProvider,
+    ISchemaBuilder schemaBuilder,
     string regulatoryAgencyCatalogueContentItemId,
     string whiteHighVoltageOperatorCatalogueContentItemId,
     string whiteMediumVoltageOperatorCatalogueContentItemId,
@@ -165,7 +177,6 @@ internal static class CreateAsyncMigrations
     string yellowOperatorCatalogueContentItemId
   )
   {
-    var schemaBuilder = serviceProvider.GetRequiredService<ISchemaBuilder>();
     var roleManager = serviceProvider.GetRequiredService<RoleManager<IRole>>();
     var contentDefinitionManager =
       serviceProvider.GetRequiredService<IContentDefinitionManager>();
@@ -400,11 +411,11 @@ internal static class CreateAsyncMigrations
     string? ContentItemId
   )> MigrateSystem(
     IServiceProvider serviceProvider,
+    ISchemaBuilder schemaBuilder,
     string operatorUserId,
     string operatorContentItemId
   )
   {
-    var schemaBuilder = serviceProvider.GetRequiredService<ISchemaBuilder>();
     var roleManager = serviceProvider.GetRequiredService<RoleManager<IRole>>();
     var contentDefinitionManager =
       serviceProvider.GetRequiredService<IContentDefinitionManager>();
@@ -613,13 +624,13 @@ internal static class CreateAsyncMigrations
     string? ContentItemId
   )> MigrateUnit(
     IServiceProvider serviceProvider,
+    ISchemaBuilder schemaBuilder,
     string operatorUserId,
     string operatorContentItemId,
     string systemUserId,
     string systemContentItemId
   )
   {
-    var schemaBuilder = serviceProvider.GetRequiredService<ISchemaBuilder>();
     var roleManager = serviceProvider.GetRequiredService<RoleManager<IRole>>();
     var contentDefinitionManager =
       serviceProvider.GetRequiredService<IContentDefinitionManager>();
@@ -833,10 +844,10 @@ internal static class CreateAsyncMigrations
 
   internal static async Task MigratePidgeon(
     IServiceProvider serviceProvider,
+    ISchemaBuilder schemaBuilder,
     string unitContentItemId
   )
   {
-    var schemaBuilder = serviceProvider.GetRequiredService<ISchemaBuilder>();
     var roleManager = serviceProvider.GetRequiredService<RoleManager<IRole>>();
     var contentDefinitionManager =
       serviceProvider.GetRequiredService<IContentDefinitionManager>();
@@ -962,10 +973,10 @@ internal static class CreateAsyncMigrations
 
   internal static async Task MigrateAbb(
     IServiceProvider serviceProvider,
+    ISchemaBuilder schemaBuilder,
     string unitContentItemId
   )
   {
-    var schemaBuilder = serviceProvider.GetRequiredService<ISchemaBuilder>();
     var roleManager = serviceProvider.GetRequiredService<RoleManager<IRole>>();
     var contentDefinitionManager =
       serviceProvider.GetRequiredService<IContentDefinitionManager>();
@@ -1135,7 +1146,8 @@ internal static class CreateAsyncMigrations
   }
 
   internal static async Task<string> MigrateRegulatoryAgencyCatalogue(
-    IServiceProvider serviceProvider
+    IServiceProvider serviceProvider,
+    ISchemaBuilder schemaBuilder
   )
   {
     var contentDefinitionManager =
@@ -1223,7 +1235,8 @@ internal static class CreateAsyncMigrations
   }
 
   internal static async Task MigrateOperatorCatalogue(
-    IServiceProvider serviceProvider
+    IServiceProvider serviceProvider,
+    ISchemaBuilder schemaBuilder
   )
   {
     var contentDefinitionManager =
@@ -1323,7 +1336,10 @@ internal static class CreateAsyncMigrations
     string WhiteLowVoltageOperatorCatalogueContentItemId,
     string RedOperatorCatalogueContentItemId,
     string YellowOperatorCatalogueContentItemId
-  )> PopulateOperatorCatalogues(IServiceProvider serviceProvider)
+  )> PopulateOperatorCatalogues(
+    IServiceProvider serviceProvider,
+    ISchemaBuilder schemaBuilder
+  )
   {
     var contentManager = serviceProvider.GetRequiredService<IContentManager>();
 
@@ -1488,7 +1504,10 @@ internal static class CreateAsyncMigrations
     );
   }
 
-  internal static async Task MigrateInvoice(IServiceProvider serviceProvider)
+  internal static async Task MigrateInvoice(
+    IServiceProvider serviceProvider,
+    ISchemaBuilder schemaBuilder
+  )
   {
     var contentDefinitionManager =
       serviceProvider.GetRequiredService<IContentDefinitionManager>();
@@ -1549,7 +1568,10 @@ internal static class CreateAsyncMigrations
     );
   }
 
-  internal static async Task MigrateReceipt(IServiceProvider serviceProvider)
+  internal static async Task MigrateReceipt(
+    IServiceProvider serviceProvider,
+    ISchemaBuilder schemaBuilder
+  )
   {
     var contentDefinitionManager =
       serviceProvider.GetRequiredService<IContentDefinitionManager>();
