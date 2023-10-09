@@ -1,8 +1,8 @@
 namespace Mess.Ozds.Abstractions.Models;
 
 public record OzdsCalculationData(
-  DateTime From,
-  DateTime To,
+  DateTimeOffset From,
+  DateTimeOffset To,
   OzdsExpenditureData UsageExpenditure,
   OzdsExpenditureData SupplyExpenditure
 );

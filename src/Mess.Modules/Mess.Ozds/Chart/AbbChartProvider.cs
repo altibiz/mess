@@ -40,7 +40,7 @@ public class AbbChartProvider : ChartProvider<AbbMeasurementDeviceItem>
     IEnumerable<TimeseriesChartDatasetItem> datasets
   )
   {
-    var now = DateTime.UtcNow;
+    var now = DateTimeOffset.UtcNow;
     var measurements = await _client.GetAbbMeasurementsAsync(
       abbMeasurementDevice.MeasurementDevicePart.Value.DeviceId.Text,
       now.Subtract(chart.TimeseriesChartPart.Value.History.Value.ToTimeSpan()),

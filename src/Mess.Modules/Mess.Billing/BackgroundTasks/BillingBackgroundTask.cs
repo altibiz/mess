@@ -17,9 +17,9 @@ public class BillingBackgroundTask : IBackgroundTask
     CancellationToken cancellationToken
   )
   {
-    var now = DateTime.UtcNow;
+    var now = DateTimeOffset.UtcNow;
     var nowLastMonth = now.AddMonths(-1);
-    var nowLastMonthStart = new DateTime(
+    var nowLastMonthStart = new DateTimeOffset(
       nowLastMonth.Year,
       nowLastMonth.Month,
       1

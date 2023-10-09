@@ -14,7 +14,7 @@ public class EorPushHandler : JsonMeasurementDevicePushHandler<EorPushRequest>
   protected override void Handle(
     string deviceId,
     string tenant,
-    DateTime timestamp,
+    DateTimeOffset timestamp,
     ContentItem contentItem,
     EorPushRequest request
   )
@@ -27,7 +27,7 @@ public class EorPushHandler : JsonMeasurementDevicePushHandler<EorPushRequest>
   protected override async Task HandleAsync(
     string deviceId,
     string tenant,
-    DateTime timestamp,
+    DateTimeOffset timestamp,
     ContentItem contentItem,
     EorPushRequest request
   )

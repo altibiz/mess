@@ -22,7 +22,7 @@ namespace Mess.Iot.Timeseries
           {
             Tenant = table.Column<string>(type: "text", nullable: false),
             Source = table.Column<string>(type: "text", nullable: false),
-            Timestamp = table.Column<DateTime>(
+            Timestamp = table.Column<DateTimeOffset>(
               type: "timestamptz",
               nullable: false
             ),
@@ -85,7 +85,7 @@ namespace Mess.Iot.Timeseries
           {
             Tenant = table.Column<string>(type: "text", nullable: false),
             Source = table.Column<string>(type: "text", nullable: false),
-            Timestamp = table.Column<DateTime>(
+            Timestamp = table.Column<DateTimeOffset>(
               type: "timestamptz",
               nullable: false
             ),

@@ -24,7 +24,7 @@ public class EgaugeChartProvider : ChartProvider<EgaugeMeasurementDeviceItem>
     IEnumerable<TimeseriesChartDatasetItem> datasets
   )
   {
-    var now = DateTime.UtcNow;
+    var now = DateTimeOffset.UtcNow;
     var measurements = await _client.GetEgaugeMeasurementsAsync(
       egaugeMeasurementDevice.MeasurementDevicePart.Value.DeviceId.Text,
       now.Subtract(chart.TimeseriesChartPart.Value.History.Value.ToTimeSpan()),

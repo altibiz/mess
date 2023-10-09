@@ -4,7 +4,7 @@ namespace Mess.Ozds.Event;
 
 public record PidgeonUpdated(
   string Tenant,
-  DateTime Timestamp,
+  DateTimeOffset Timestamp,
   string DeviceId,
   string Payload
 ) : IEvent;

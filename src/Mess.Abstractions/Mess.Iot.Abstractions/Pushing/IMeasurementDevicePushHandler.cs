@@ -9,7 +9,7 @@ public interface IMeasurementDevicePushHandler
   public bool Handle(
     string deviceId,
     string tenant,
-    DateTime timestamp,
+    DateTimeOffset timestamp,
     ContentItem contentItem,
     string request
   );
@@ -17,7 +17,7 @@ public interface IMeasurementDevicePushHandler
   public Task<bool> HandleAsync(
     string deviceId,
     string tenant,
-    DateTime timestamp,
+    DateTimeOffset timestamp,
     ContentItem contentItem,
     string request
   );

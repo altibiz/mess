@@ -115,8 +115,8 @@ internal class E2eTestServer : IAsyncDisposable, IDisposable
 
     using var client = new HttpClient();
 
-    var startTime = DateTime.Now;
-    while (DateTime.Now.Subtract(startTime).TotalSeconds < 30)
+    var startTime = DateTimeOffset.UtcNow;
+    while (DateTimeOffset.UtcNow.Subtract(startTime).TotalSeconds < 30)
     {
       if (token.Value.IsCancellationRequested)
       {

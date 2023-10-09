@@ -4,37 +4,41 @@ public interface IEorTimeseriesQuery
 {
   public Task<IReadOnlyList<EorMeasurement>> GetEorMeasurementsAsync(
     string source,
-    DateTime beginning,
-    DateTime end
+    DateTimeOffset beginning,
+    DateTimeOffset end
   );
 
   public IReadOnlyList<EorMeasurement> GetEorMeasurements(
     string source,
-    DateTime beginning,
-    DateTime end
+    DateTimeOffset beginning,
+    DateTimeOffset end
   );
 
   public Task<IReadOnlyList<EorStatus>> GetEorStatusesAsync(
     string source,
-    DateTime beginning,
-    DateTime end
+    DateTimeOffset beginning,
+    DateTimeOffset end
   );
 
   public IReadOnlyList<EorStatus> GetEorStatuses(
     string source,
-    DateTime beginning,
-    DateTime end
+    DateTimeOffset beginning,
+    DateTimeOffset end
   );
 
   public Task<(
     IReadOnlyList<EorStatus> Statuses,
     IReadOnlyList<EorMeasurement> Measurements
-  )> GetEorDataAsync(string source, DateTime beginning, DateTime end);
+  )> GetEorDataAsync(
+    string source,
+    DateTimeOffset beginning,
+    DateTimeOffset end
+  );
 
   public (
     IReadOnlyList<EorStatus> Statuses,
     IReadOnlyList<EorMeasurement> Measurements
-  ) GetEorData(string source, DateTime beginning, DateTime end);
+  ) GetEorData(string source, DateTimeOffset beginning, DateTimeOffset end);
 
   public Task<
     IReadOnlyList<EorMeasurementDeviceSummary>

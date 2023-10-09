@@ -11,22 +11,22 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
 {
   protected abstract OzdsBillingData? FetchBillingData(
     T measurementDeviceItem,
-    DateTime from,
-    DateTime to
+    DateTimeOffset from,
+    DateTimeOffset to
   );
 
   protected abstract Task<OzdsBillingData?> FetchBillingDataAsync(
     T measurementDeviceItem,
-    DateTime from,
-    DateTime to
+    DateTimeOffset from,
+    DateTimeOffset to
   );
 
   public string ContentType => typeof(T).ContentTypeName();
 
   public ContentItem CreateInvoice(
     ContentItem contentItem,
-    DateTime from,
-    DateTime to
+    DateTimeOffset from,
+    DateTimeOffset to
   )
   {
     var measurementDevicePart =
@@ -132,8 +132,8 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
 
   public async Task<ContentItem> CreateInvoiceAsync(
     ContentItem contentItem,
-    DateTime from,
-    DateTime to
+    DateTimeOffset from,
+    DateTimeOffset to
   )
   {
     var measurementDevicePart =
@@ -402,8 +402,8 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
   }
 
   private OzdsCalculationData CreateCalculationData(
-    DateTime from,
-    DateTime to,
+    DateTimeOffset from,
+    DateTimeOffset to,
     OzdsBillingData billingData,
     OperatorCatalogueItem usageCatalogueItem,
     OperatorCatalogueItem supplyCatalogueItem
@@ -523,8 +523,8 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
   }
 
   private async Task<OzdsCalculationData> CreateCalculationDataAsync(
-    DateTime from,
-    DateTime to,
+    DateTimeOffset from,
+    DateTimeOffset to,
     OzdsBillingData billingData,
     OperatorCatalogueItem usageCatalogueItem,
     OperatorCatalogueItem supplyCatalogueItem

@@ -17,7 +17,7 @@ public class PidgeonPushHandler
   protected override void Handle(
     string deviceId,
     string tenant,
-    DateTime timestamp,
+    DateTimeOffset timestamp,
     ContentItem contentItem,
     PidgeonPushRequest request
   )
@@ -74,7 +74,7 @@ public class PidgeonPushHandler
   protected override async Task HandleAsync(
     string deviceId,
     string tenant,
-    DateTime timestamp,
+    DateTimeOffset timestamp,
     ContentItem contentItem,
     PidgeonPushRequest request
   )

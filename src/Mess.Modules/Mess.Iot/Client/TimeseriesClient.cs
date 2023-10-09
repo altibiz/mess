@@ -25,8 +25,8 @@ public class TimeseriesClient : ITimeseriesClient
 
   public IReadOnlyList<EgaugeMeasurement> GetEgaugeMeasurements(
     string source,
-    DateTime beginning,
-    DateTime end
+    DateTimeOffset beginning,
+    DateTimeOffset end
   ) =>
     _services.WithTimeseriesDbContext<
       MeasurementDbContext,
@@ -46,8 +46,8 @@ public class TimeseriesClient : ITimeseriesClient
     IReadOnlyList<EgaugeMeasurement>
   > GetEgaugeMeasurementsAsync(
     string source,
-    DateTime beginning,
-    DateTime end
+    DateTimeOffset beginning,
+    DateTimeOffset end
   ) =>
     await _services.WithTimeseriesDbContextAsync<
       MeasurementDbContext,

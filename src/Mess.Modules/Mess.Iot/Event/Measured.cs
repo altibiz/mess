@@ -4,7 +4,7 @@ namespace Mess.Iot.Event;
 
 public record Measured(
   string Tenant,
-  DateTime Timestamp,
+  DateTimeOffset Timestamp,
   string DeviceId,
   string Payload
 ) : IEvent;

@@ -41,7 +41,7 @@ public class DeviceController : Controller
     }
 
     var tenant = _shellSettings.GetDatabaseTablePrefix();
-    var now = DateTime.UtcNow;
+    var now = DateTimeOffset.UtcNow;
     var request = await Request.Body.EncodeAsync();
 
     var features = await _shellFeaturesManager.GetEnabledFeaturesAsync();
@@ -98,7 +98,7 @@ public class DeviceController : Controller
     }
 
     var tenant = _shellSettings.GetDatabaseTablePrefix();
-    var now = DateTime.UtcNow;
+    var now = DateTimeOffset.UtcNow;
     var request = await Request.Body.EncodeAsync();
 
     var features = await _shellFeaturesManager.GetEnabledFeaturesAsync();
@@ -158,7 +158,7 @@ public class DeviceController : Controller
     }
 
     var tenant = _shellSettings.GetDatabaseTablePrefix();
-    var now = DateTime.UtcNow;
+    var now = DateTimeOffset.UtcNow;
     var response = await handler.HandleAsync(
       deviceId,
       tenant,

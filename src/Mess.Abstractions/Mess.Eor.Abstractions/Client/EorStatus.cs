@@ -4,7 +4,7 @@ public record EorStatus(
   string Tenant,
   string DeviceId,
   int Stamp,
-  DateTime Timestamp,
+  DateTimeOffset Timestamp,
   int Mode,
   int ProcessFault,
   string[] ProcessFaults,

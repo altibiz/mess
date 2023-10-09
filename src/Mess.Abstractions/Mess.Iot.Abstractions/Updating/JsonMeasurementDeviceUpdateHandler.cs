@@ -9,7 +9,7 @@ public abstract class JsonMeasurementDeviceUpdateHandler<TStatus>
   public bool Handle(
     string deviceId,
     string tenant,
-    DateTime timestamp,
+    DateTimeOffset timestamp,
     ContentItem contentItem,
     string request
   )
@@ -31,7 +31,7 @@ public abstract class JsonMeasurementDeviceUpdateHandler<TStatus>
   public async Task<bool> HandleAsync(
     string deviceId,
     string tenant,
-    DateTime timestamp,
+    DateTimeOffset timestamp,
     ContentItem contentItem,
     string request
   )
@@ -61,7 +61,7 @@ public abstract class JsonMeasurementDeviceUpdateHandler<TStatus>
   protected abstract void Handle(
     string deviceId,
     string tenant,
-    DateTime timestamp,
+    DateTimeOffset timestamp,
     ContentItem contentItem,
     TStatus request
   );
@@ -69,7 +69,7 @@ public abstract class JsonMeasurementDeviceUpdateHandler<TStatus>
   protected abstract Task HandleAsync(
     string deviceId,
     string tenant,
-    DateTime timestamp,
+    DateTimeOffset timestamp,
     ContentItem contentItem,
     TStatus request
   );

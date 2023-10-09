@@ -3,7 +3,7 @@ namespace Mess.Ozds.Abstractions.Client;
 public record AbbMeasurement(
   string Tenant,
   string DeviceId,
-  DateTime Timestamp,
+  DateTimeOffset Timestamp,
   float? CurrentL1,
   float? CurrentL2,
   float? CurrentL3,

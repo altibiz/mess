@@ -34,7 +34,7 @@ namespace Mess.Iot.Timeseries
                     b.Property<string>("Source")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("Timestamp")
+                    b.Property<DateTimeOffset>("Timestamp")
                         .HasColumnType("timestamptz");
 
                     b.Property<float?>("ActivePowerL1")
@@ -106,7 +106,7 @@ namespace Mess.Iot.Timeseries
                     b.Property<string>("Source")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("Timestamp")
+                    b.Property<DateTimeOffset>("Timestamp")
                         .HasColumnType("timestamptz");
 
                     b.Property<float>("Power")

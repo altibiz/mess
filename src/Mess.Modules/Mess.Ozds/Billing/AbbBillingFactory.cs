@@ -9,8 +9,8 @@ public class AbbBillingFactory : OzdsBillingFactory<AbbMeasurementDeviceItem>
 {
   protected override OzdsBillingData? FetchBillingData(
     AbbMeasurementDeviceItem measurementDeviceItem,
-    DateTime from,
-    DateTime to
+    DateTimeOffset from,
+    DateTimeOffset to
   )
   {
     return _query.GetAbbBillingData(
@@ -22,8 +22,8 @@ public class AbbBillingFactory : OzdsBillingFactory<AbbMeasurementDeviceItem>
 
   protected override async Task<OzdsBillingData?> FetchBillingDataAsync(
     AbbMeasurementDeviceItem measurementDeviceItem,
-    DateTime from,
-    DateTime to
+    DateTimeOffset from,
+    DateTimeOffset to
   )
   {
     return await _query.GetAbbBillingDataAsync(

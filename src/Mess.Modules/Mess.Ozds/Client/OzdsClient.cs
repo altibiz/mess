@@ -27,8 +27,8 @@ public class OzdsClient : IOzdsClient
 
   public IReadOnlyList<AbbMeasurement> GetAbbMeasurements(
     string source,
-    DateTime beginning,
-    DateTime end
+    DateTimeOffset beginning,
+    DateTimeOffset end
   ) =>
     _services.WithTimeseriesDbContext<
       OzdsDbContext,
@@ -46,8 +46,8 @@ public class OzdsClient : IOzdsClient
 
   public async Task<IReadOnlyList<AbbMeasurement>> GetAbbMeasurementsAsync(
     string source,
-    DateTime beginning,
-    DateTime end
+    DateTimeOffset beginning,
+    DateTimeOffset end
   ) =>
     await _services.WithTimeseriesDbContextAsync<
       OzdsDbContext,
@@ -65,8 +65,8 @@ public class OzdsClient : IOzdsClient
 
   public OzdsBillingData? GetAbbBillingData(
     string source,
-    DateTime beginning,
-    DateTime end
+    DateTimeOffset beginning,
+    DateTimeOffset end
   )
   {
     return _services.WithTimeseriesDbContext<
@@ -125,8 +125,8 @@ public class OzdsClient : IOzdsClient
 
   public async Task<OzdsBillingData?> GetAbbBillingDataAsync(
     string source,
-    DateTime beginning,
-    DateTime end
+    DateTimeOffset beginning,
+    DateTimeOffset end
   )
   {
     return await _services.WithTimeseriesDbContextAsync<

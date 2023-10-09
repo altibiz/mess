@@ -1,12 +1,12 @@
 namespace Mess.Ozds.Pushing;
 
 public record PidgeonPushRequest(
-  DateTime timestamp,
+  DateTimeOffset timestamp,
   PidgeonPushRequestMeasurement[] measurements
 );
 
 public record PidgeonPushRequestMeasurement(
   string deviceId,
-  DateTime timestamp,
+  DateTimeOffset timestamp,
   string data
 );

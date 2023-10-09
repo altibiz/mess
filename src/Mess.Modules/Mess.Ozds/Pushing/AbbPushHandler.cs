@@ -14,7 +14,7 @@ public class AbbPushHandler : JsonMeasurementDevicePushHandler<AbbPushRequest>
   protected override void Handle(
     string deviceId,
     string tenant,
-    DateTime timestamp,
+    DateTimeOffset timestamp,
     ContentItem contentItem,
     AbbPushRequest request
   ) =>
@@ -25,7 +25,7 @@ public class AbbPushHandler : JsonMeasurementDevicePushHandler<AbbPushRequest>
   protected override async Task HandleAsync(
     string deviceId,
     string tenant,
-    DateTime timestamp,
+    DateTimeOffset timestamp,
     ContentItem contentItem,
     AbbPushRequest request
   ) =>
@@ -36,7 +36,7 @@ public class AbbPushHandler : JsonMeasurementDevicePushHandler<AbbPushRequest>
   private AbbMeasurement MakeMeasurement(
     string deviceId,
     string tenant,
-    DateTime timestamp,
+    DateTimeOffset timestamp,
     ContentItem _,
     AbbPushRequest request
   ) =>

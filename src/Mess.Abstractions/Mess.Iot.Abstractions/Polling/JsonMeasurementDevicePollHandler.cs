@@ -9,7 +9,7 @@ public abstract class JsonMeasurementDevicePollHandler<TResponse>
   public string? Handle(
     string deviceId,
     string tenant,
-    DateTime timestamp,
+    DateTimeOffset timestamp,
     ContentItem contentItem
   )
   {
@@ -21,7 +21,7 @@ public abstract class JsonMeasurementDevicePollHandler<TResponse>
   public async Task<string?> HandleAsync(
     string deviceId,
     string tenant,
-    DateTime timestamp,
+    DateTimeOffset timestamp,
     ContentItem contentItem
   )
   {
@@ -40,14 +40,14 @@ public abstract class JsonMeasurementDevicePollHandler<TResponse>
   protected abstract TResponse MakeResponse(
     string deviceId,
     string tenant,
-    DateTime timestamp,
+    DateTimeOffset timestamp,
     ContentItem contentItem
   );
 
   protected abstract Task<TResponse> MakeResponseAsync(
     string deviceId,
     string tenant,
-    DateTime timestamp,
+    DateTimeOffset timestamp,
     ContentItem contentItem
   );
 

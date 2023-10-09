@@ -3,7 +3,7 @@ using Mess.Eor.Abstractions.Client;
 namespace Mess.Eor.Updating;
 
 public record EorUpdateRequest(
-  DateTime Timestamp,
+  DateTimeOffset Timestamp,
   int Stamp,
   int Mode,
   bool Start,

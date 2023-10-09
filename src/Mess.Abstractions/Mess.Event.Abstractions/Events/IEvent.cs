@@ -8,7 +8,7 @@ public interface IEvent
   public string Tenant { get; }
 
   [JsonIgnore]
-  public DateTime Timestamp { get; }
+  public DateTimeOffset Timestamp { get; }
 
   [JsonIgnore]
   public string Payload { get; }

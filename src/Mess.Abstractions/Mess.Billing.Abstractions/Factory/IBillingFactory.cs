@@ -8,14 +8,14 @@ public interface IBillingFactory
 
   ContentItem CreateInvoice(
     ContentItem contentItem,
-    DateTime from,
-    DateTime to
+    DateTimeOffset from,
+    DateTimeOffset to
   );
 
   Task<ContentItem> CreateInvoiceAsync(
     ContentItem contentItem,
-    DateTime from,
-    DateTime to
+    DateTimeOffset from,
+    DateTimeOffset to
   );
 
   ContentItem CreateReceipt(

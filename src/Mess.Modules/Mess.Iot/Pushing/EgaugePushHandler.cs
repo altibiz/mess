@@ -18,7 +18,7 @@ public class EgaugePushHandler
   protected override void Handle(
     string deviceId,
     string tenant,
-    DateTime timestamp,
+    DateTimeOffset timestamp,
     ContentItem contentItem,
     EgaugeMeasurement measurement
   ) =>
@@ -34,7 +34,7 @@ public class EgaugePushHandler
   protected override async Task HandleAsync(
     string deviceId,
     string tenant,
-    DateTime timestamp,
+    DateTimeOffset timestamp,
     ContentItem contentItem,
     EgaugeMeasurement measurement
   ) =>
@@ -50,15 +50,15 @@ public class EgaugePushHandler
   protected override EgaugeMeasurement? Parse(XDocument xml)
   {
     var result = new Dictionary<string, EgaugeRegister>();
-    DateTime? timestamp = null;
+    DateTimeOffset? timestamp = null;
 
     var group = xml.Descendants().First();
     var data = group.Descendants().First();
-    timestamp = DateTimeOffset
+    timestamp = DateTimeOffsetOffset
       .FromUnixTimeSeconds(
         Convert.ToInt64(((string?)data.Attribute(XName.Get("time_stamp"))), 16)
       )
-      .UtcDateTime;
+      .UtcDateTimeOffset;
     var registers = data.Descendants(XName.Get("cname"));
     var columns = data.Descendants(XName.Get("r")).First().Descendants();
 
@@ -238,7 +238,7 @@ public readonly record struct EgaugeMeasurementRegisters(
   IDictionary<string, EgaugeRegister> Registers,
   string Tenant,
   string Source,
-  DateTime Timestamp
+  DateTimeOffset Timestamp
 )
 {
   public float Power => (float)Registers.GetOrDefault("P").Value;

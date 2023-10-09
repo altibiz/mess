@@ -23,7 +23,7 @@ public class EorChartProvider : ChartProvider<EorMeasurementDeviceItem>
     IEnumerable<TimeseriesChartDatasetItem> datasets
   )
   {
-    var now = DateTime.UtcNow;
+    var now = DateTimeOffset.UtcNow;
     var (statuses, measurements) = await _client.GetEorDataAsync(
       eorMeasurementDevice.MeasurementDevicePart.Value.DeviceId.Text,
       now.Subtract(chart.TimeseriesChartPart.Value.History.Value.ToTimeSpan()),

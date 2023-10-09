@@ -17,7 +17,7 @@ public class EorUpdateHandler
   protected override void Handle(
     string deviceId,
     string tenant,
-    DateTime timestamp,
+    DateTimeOffset timestamp,
     ContentItem contentItem,
     EorUpdateRequest request
   )
@@ -43,7 +43,7 @@ public class EorUpdateHandler
   protected override async Task HandleAsync(
     string deviceId,
     string tenant,
-    DateTime timestamp,
+    DateTimeOffset timestamp,
     ContentItem contentItem,
     EorUpdateRequest request
   )

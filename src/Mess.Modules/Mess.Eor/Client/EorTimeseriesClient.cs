@@ -44,8 +44,8 @@ public class EorTimeseriesClient : IEorTimeseriesClient
 
   public IReadOnlyList<EorMeasurement> GetEorMeasurements(
     string source,
-    DateTime beginning,
-    DateTime end
+    DateTimeOffset beginning,
+    DateTimeOffset end
   ) =>
     _services.WithTimeseriesDbContext<
       EorTimeseriesDbContext,
@@ -63,8 +63,8 @@ public class EorTimeseriesClient : IEorTimeseriesClient
 
   public async Task<IReadOnlyList<EorMeasurement>> GetEorMeasurementsAsync(
     string source,
-    DateTime beginning,
-    DateTime end
+    DateTimeOffset beginning,
+    DateTimeOffset end
   ) =>
     await _services.WithTimeseriesDbContextAsync<
       EorTimeseriesDbContext,
@@ -82,8 +82,8 @@ public class EorTimeseriesClient : IEorTimeseriesClient
 
   public IReadOnlyList<EorStatus> GetEorStatuses(
     string source,
-    DateTime beginning,
-    DateTime end
+    DateTimeOffset beginning,
+    DateTimeOffset end
   ) =>
     _services.WithTimeseriesDbContext<
       EorTimeseriesDbContext,
@@ -101,8 +101,8 @@ public class EorTimeseriesClient : IEorTimeseriesClient
 
   public async Task<IReadOnlyList<EorStatus>> GetEorStatusesAsync(
     string source,
-    DateTime beginning,
-    DateTime end
+    DateTimeOffset beginning,
+    DateTimeOffset end
   ) =>
     await _services.WithTimeseriesDbContextAsync<
       EorTimeseriesDbContext,
@@ -121,7 +121,7 @@ public class EorTimeseriesClient : IEorTimeseriesClient
   public (
     IReadOnlyList<EorStatus> Statuses,
     IReadOnlyList<EorMeasurement> Measurements
-  ) GetEorData(string source, DateTime beginning, DateTime end) =>
+  ) GetEorData(string source, DateTimeOffset beginning, DateTimeOffset end) =>
     _services.WithTimeseriesDbContext<
       EorTimeseriesDbContext,
       (List<EorStatus> Statuses, List<EorMeasurement> Measurements)
@@ -149,7 +149,11 @@ public class EorTimeseriesClient : IEorTimeseriesClient
   public async Task<(
     IReadOnlyList<EorStatus> Statuses,
     IReadOnlyList<EorMeasurement> Measurements
-  )> GetEorDataAsync(string source, DateTime beginning, DateTime end) =>
+  )> GetEorDataAsync(
+    string source,
+    DateTimeOffset beginning,
+    DateTimeOffset end
+  ) =>
     await _services.WithTimeseriesDbContextAsync<
       EorTimeseriesDbContext,
       (List<EorStatus> Statuses, List<EorMeasurement> Measurements)

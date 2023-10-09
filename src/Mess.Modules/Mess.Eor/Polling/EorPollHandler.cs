@@ -17,7 +17,7 @@ public class EorPollHandler : JsonMeasurementDevicePollHandler<EorPollResponse>
   protected override EorPollResponse MakeResponse(
     string deviceId,
     string tenant,
-    DateTime timestamp,
+    DateTimeOffset timestamp,
     ContentItem contentItem
   )
   {
@@ -44,7 +44,7 @@ public class EorPollHandler : JsonMeasurementDevicePollHandler<EorPollResponse>
   protected override async Task<EorPollResponse> MakeResponseAsync(
     string deviceId,
     string tenant,
-    DateTime timestamp,
+    DateTimeOffset timestamp,
     ContentItem contentItem
   )
   {

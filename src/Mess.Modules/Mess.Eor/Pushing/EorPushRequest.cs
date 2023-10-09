@@ -3,7 +3,7 @@ using Mess.Eor.Abstractions.Client;
 namespace Mess.Eor.Pushing;
 
 public record EorPushRequest(
-  DateTime Timestamp,
+  DateTimeOffset Timestamp,
   float Current,
   float Voltage,
   float Temperature,

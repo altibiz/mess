@@ -1,8 +1,8 @@
 namespace Mess.Ozds.Abstractions.Models;
 
 public record OzdsReceiptData(
-  DateTime From,
-  DateTime To,
+  DateTimeOffset From,
+  DateTimeOffset To,
   decimal UsageFee,
   decimal SupplyFee,
   OzdsReceiptFeeData? RenewableEnergyFee,

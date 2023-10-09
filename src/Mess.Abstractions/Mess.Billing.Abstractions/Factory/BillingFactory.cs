@@ -10,14 +10,14 @@ public abstract class BillingFactory<T> : IBillingFactory
 
   public abstract ContentItem CreateInvoice(
     T contentItem,
-    DateTime from,
-    DateTime to
+    DateTimeOffset from,
+    DateTimeOffset to
   );
 
   public abstract Task<ContentItem> CreateInvoiceAsync(
     T contentItem,
-    DateTime from,
-    DateTime to
+    DateTimeOffset from,
+    DateTimeOffset to
   );
 
   public abstract ContentItem CreateReceipt(
@@ -32,8 +32,8 @@ public abstract class BillingFactory<T> : IBillingFactory
 
   public ContentItem CreateInvoice(
     ContentItem contentItem,
-    DateTime from,
-    DateTime to
+    DateTimeOffset from,
+    DateTimeOffset to
   )
   {
     return CreateInvoice(contentItem.AsContent<T>(), from, to);
@@ -41,8 +41,8 @@ public abstract class BillingFactory<T> : IBillingFactory
 
   public async Task<ContentItem> CreateInvoiceAsync(
     ContentItem contentItem,
-    DateTime from,
-    DateTime to
+    DateTimeOffset from,
+    DateTimeOffset to
   )
   {
     return await CreateInvoiceAsync(contentItem.AsContent<T>(), from, to);

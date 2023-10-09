@@ -47,7 +47,7 @@ public abstract class ChartProvider<T> : IChartProvider
       .Select(property => property.Name)
       .Contains(property);
 
-  protected DateTime GetTimeseriesTimestamp(object data)
+  protected DateTimeOffset GetTimeseriesTimestamp(object data)
   {
     var propertyInfo = data.GetType().GetProperty("Timestamp");
     if (propertyInfo == null)
@@ -63,7 +63,7 @@ public abstract class ChartProvider<T> : IChartProvider
       throw new InvalidOperationException($"Invalid timeseries value: {value}");
     }
 
-    return (DateTime)value;
+    return (DateTimeOffset)value;
   }
 
   protected float GetTimeseriesValue(object data, string property)

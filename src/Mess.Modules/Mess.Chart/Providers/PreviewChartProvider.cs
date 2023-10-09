@@ -21,7 +21,7 @@ public class PreviewChartProvider : IChartProvider
     ContentItem chart
   )
   {
-    var now = DateTime.UtcNow;
+    var now = DateTimeOffset.UtcNow;
     if (chart.ContentType == "TimeseriesChart")
     {
       var timeseriesChart = chart.AsContent<TimeseriesChartItem>();

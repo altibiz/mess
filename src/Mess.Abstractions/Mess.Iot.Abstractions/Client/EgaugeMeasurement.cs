@@ -3,7 +3,7 @@ namespace Mess.Iot.Abstractions.Client;
 public record EgaugeMeasurement(
   string Tenant,
   string DeviceId,
-  DateTime Timestamp,
+  DateTimeOffset Timestamp,
   float Voltage,
   float Power
 );
