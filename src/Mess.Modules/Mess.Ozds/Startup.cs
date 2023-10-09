@@ -22,6 +22,7 @@ using Mess.Ozds.Indexes;
 using Mess.Ozds.Security;
 using Mess.Billing.Abstractions.Extensions;
 using Mess.Ozds.Billing;
+using Mess.Ozds.Handlers;
 
 namespace Mess.Ozds;
 
@@ -44,6 +45,7 @@ public class Startup : StartupBase
     services.AddIndexProvider<OzdsMeasurementDeviceClosedDistributionSystemIndexProvider>();
     services.AddIndexProvider<OzdsMeasurementDeviceDistributionSystemOperatorIndexProvider>();
     services.AddIndexProvider<OzdsMeasurementDeviceDistributionSystemUnitIndexProvider>();
+    services.AddContentHandler<OzdsMeasurementDeviceHandler>();
 
     services.AddContentPart<PidgeonMeasurementDevicePart>();
     services.AddMeasurementDevicePushHandler<PidgeonPushHandler>();
