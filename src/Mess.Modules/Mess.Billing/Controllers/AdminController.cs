@@ -1,6 +1,6 @@
-using Mess.Billing.Abstractions;
+using Mess.Billing.Abstractions.Factory;
 using Mess.Billing.Abstractions.Models;
-using Mess.OrchardCore;
+using Mess.System.Extensions.Timestamps;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.Admin;
@@ -39,7 +39,11 @@ public class AdminController : Controller
       );
     }
 
+    (DateTimeOffset nowLastMonthStart, DateTimeOffset nowLastMonthEnd) =
+      DateTimeOffset.UtcNow.AddMonths(-1).GetMonthRange();
     var invoiceItem = await billingFactory.CreateInvoiceAsync(
+      from: nowLastMonthStart,
+      to: nowLastMonthEnd,
       contentItem: billingItem
     );
     invoiceItem.Alter<InvoicePart>(invoicePart =>

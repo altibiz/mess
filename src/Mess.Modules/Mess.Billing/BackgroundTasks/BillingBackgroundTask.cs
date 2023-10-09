@@ -1,6 +1,7 @@
-using Mess.Billing.Abstractions;
+using Mess.Billing.Abstractions.Factory;
 using Mess.Billing.Abstractions.Indexes;
 using Mess.Billing.Abstractions.Models;
+using Mess.System.Extensions.Timestamps;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OrchardCore.BackgroundTasks;
@@ -17,14 +18,8 @@ public class BillingBackgroundTask : IBackgroundTask
     CancellationToken cancellationToken
   )
   {
-    var now = DateTimeOffset.UtcNow;
-    var nowLastMonth = now.AddMonths(-1);
-    var nowLastMonthStart = new DateTimeOffset(
-      nowLastMonth.Year,
-      nowLastMonth.Month,
-      1
-    );
-    var nowLastMonthEnd = nowLastMonthStart.AddMonths(1);
+    (DateTimeOffset nowLastMonthStart, DateTimeOffset nowLastMonthEnd) =
+      DateTimeOffset.UtcNow.AddMonths(-1).GetMonthRange();
 
     var session = serviceProvider.GetRequiredService<ISession>();
     var logger = serviceProvider.GetRequiredService<

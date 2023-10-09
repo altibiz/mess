@@ -1,3 +1,5 @@
+using Mess.Billing.Abstractions.Factory;
+
 namespace Mess.Billing.Abstractions.Extensions;
 
 public static class IServiceCollectionExtensions

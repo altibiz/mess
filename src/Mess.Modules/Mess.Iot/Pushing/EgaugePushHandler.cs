@@ -50,15 +50,12 @@ public class EgaugePushHandler
   protected override EgaugeMeasurement? Parse(XDocument xml)
   {
     var result = new Dictionary<string, EgaugeRegister>();
-    DateTimeOffset? timestamp = null;
 
     var group = xml.Descendants().First();
     var data = group.Descendants().First();
-    timestamp = DateTimeOffsetOffset
-      .FromUnixTimeSeconds(
-        Convert.ToInt64(((string?)data.Attribute(XName.Get("time_stamp"))), 16)
-      )
-      .UtcDateTimeOffset;
+    var timestamp = DateTimeOffset.FromUnixTimeSeconds(
+      Convert.ToInt64((string?)data.Attribute(XName.Get("time_stamp")), 16)
+    );
     var registers = data.Descendants(XName.Get("cname"));
     var columns = data.Descendants(XName.Get("r")).First().Descendants();
 
@@ -79,7 +76,7 @@ public class EgaugePushHandler
       Registers: result,
       Tenant: ShellScope.Current.ShellContext.Settings.Name,
       Source: "egauge",
-      Timestamp: timestamp.Value
+      Timestamp: timestamp
     );
 
     var measurement = new EgaugeMeasurement(

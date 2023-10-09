@@ -102,8 +102,6 @@ public class OzdsMeasurementDeviceHandler : ContentHandlerBase
           .Value
           .Representatives
           .UserIds;
-      ozdsMeasurementDevicePart.RegulatoryAgencyCatalogueContentItemId =
-        distributionSystemOperatorContentItem.DistributionSystemOperatorPart.Value.RegulatoryCatalogue.ContentItemIds.First();
     });
 
     if (contentItem.Has<BillingPart>())

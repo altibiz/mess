@@ -444,12 +444,12 @@ public class Migrations : DataMigration
           eorMeasurementDevice.Owner = new() { UserIds = new[] { ownerId } };
           eorMeasurementDevice.ManufactureDate = new()
           {
-            Value = DateTimeOffset.UtcNow
+            Value = DateTime.UtcNow
           };
           eorMeasurementDevice.Manufacturer = new() { Text = "Siemens" };
           eorMeasurementDevice.CommisionDate = new()
           {
-            Value = DateTimeOffset.UtcNow
+            Value = DateTime.UtcNow
           };
           eorMeasurementDevice.ProductNumber = new() { Text = "123456789" };
           eorMeasurementDevice.Longitude = new() { Value = -100.784430m };
