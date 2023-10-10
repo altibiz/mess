@@ -69,11 +69,6 @@ export default cmd({
     });
   }
 
-  await task(
-    "Built assets with yarn so that dotnet watch is aware of artifacts",
-    "yarn assets build",
-  );
-
   const debugCommands = debug
     ? []
     : [
