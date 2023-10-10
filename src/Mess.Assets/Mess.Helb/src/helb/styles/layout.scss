@@ -23,6 +23,9 @@
 body {
   width: 100%;
   height: fit-content;
+  background-image: url("../images/background.png");
+  background-size: cover;
+  background-position: center;
 }
 
 @media screen and (width >= 768px) {

@@ -9,7 +9,7 @@
     "build-webpack": "webpack --mode production",
     "watch-webpack": "webpack --mode development --watch",
     "build": "rspack --mode production build",
-    "watch": "rspack --mode development serve"
+    "watch": "rspack --mode development --watch"
   },
   "devDependencies": {
     "@babel/core": "^7.22.9",
