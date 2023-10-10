@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <!-- NOTE: these are connected -->
     <MessOrchardVersion>1.5</MessOrchardVersion>
     <MessEtchVersion>1.4.3</MessEtchVersion>
     <MessNewtonsoftJsonVersion>13.0.1</MessNewtonsoftJsonVersion>
