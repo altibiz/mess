@@ -32,6 +32,10 @@ public class AbbChartProvider : ChartProvider<AbbMeasurementDeviceItem>
       nameof(AbbMeasurement.PowerFactorL1),
       nameof(AbbMeasurement.PowerFactorL2),
       nameof(AbbMeasurement.PowerFactorL3),
+      nameof(AbbMeasurement.Energy),
+      nameof(AbbMeasurement.LowEnergy),
+      nameof(AbbMeasurement.HighEnergy),
+      nameof(AbbMeasurement.Power),
     };
 
   protected override async Task<TimeseriesChartDescriptor?> CreateTimeseriesChartAsync(

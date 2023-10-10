@@ -1025,9 +1025,7 @@ internal static class CreateAsyncMigrations
         {
           timeseriesChartDatasetPart.Color = new() { Value = "#ff0000" };
           timeseriesChartDatasetPart.Label = new() { Text = "Power" };
-          timeseriesChartDatasetPart.Property = nameof(
-            AbbMeasurement.ActivePowerL1
-          );
+          timeseriesChartDatasetPart.Property = nameof(AbbMeasurement.Power);
         }
       );
       var abbChart =
