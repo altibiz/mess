@@ -21,5 +21,9 @@ public record AbbMeasurement(
   float? ApparentPowerL3,
   float? PowerFactorL1,
   float? PowerFactorL2,
-  float? PowerFactorL3
+  float? PowerFactorL3,
+  float? Energy,
+  float? LowEnergy,
+  float? HighEnergy,
+  float? Power
 );

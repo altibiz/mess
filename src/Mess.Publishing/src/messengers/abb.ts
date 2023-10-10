@@ -21,6 +21,10 @@ export const push: Create = async (template) => {
     powerFactorL1: (Math.random() * 1000).toFixed(0),
     powerFactorL2: (Math.random() * 1000).toFixed(0),
     powerFactorL3: (Math.random() * 1000).toFixed(0),
+    energy: (Math.random() * 1000).toFixed(0),
+    lowEnergy: (Math.random() * 1000).toFixed(0),
+    highEnergy: (Math.random() * 1000).toFixed(0),
+    power: (Math.random() * 1000).toFixed(0),
   };
 
   return {

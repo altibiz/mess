@@ -40,7 +40,7 @@ public class AbbPushHandler : JsonMeasurementDevicePushHandler<AbbPushRequest>
     ContentItem _,
     AbbPushRequest request
   ) =>
-    new AbbMeasurement(
+    new(
       Tenant: tenant,
       DeviceId: deviceId,
       Timestamp: timestamp,
@@ -61,7 +61,11 @@ public class AbbPushHandler : JsonMeasurementDevicePushHandler<AbbPushRequest>
       ApparentPowerL3: request.ApparentPowerL3,
       PowerFactorL1: request.PowerFactorL1,
       PowerFactorL2: request.PowerFactorL2,
-      PowerFactorL3: request.PowerFactorL3
+      PowerFactorL3: request.PowerFactorL3,
+      Energy: request.Energy,
+      LowEnergy: request.LowEnergy,
+      HighEnergy: request.HighEnergy,
+      Power: request.Power
     );
 
   public AbbPushHandler(

@@ -86,7 +86,11 @@ public static class AbbMeasurementEntityExtensions
       ApparentPowerL3 = model.ApparentPowerL3,
       PowerFactorL1 = model.PowerFactorL1,
       PowerFactorL2 = model.PowerFactorL2,
-      PowerFactorL3 = model.PowerFactorL3
+      PowerFactorL3 = model.PowerFactorL3,
+      Energy = model.Energy,
+      LowEnergy = model.LowEnergy,
+      HighEnergy = model.HighEnergy,
+      Power = model.Power
     };
 
   public static AbbMeasurement ToModel(this AbbMeasurementEntity entity) =>
@@ -111,6 +115,10 @@ public static class AbbMeasurementEntityExtensions
       ApparentPowerL3: entity.ApparentPowerL3,
       PowerFactorL1: entity.PowerFactorL1,
       PowerFactorL2: entity.PowerFactorL2,
-      PowerFactorL3: entity.PowerFactorL3
+      PowerFactorL3: entity.PowerFactorL3,
+      Energy: entity.Energy,
+      LowEnergy: entity.LowEnergy,
+      HighEnergy: entity.HighEnergy,
+      Power: entity.Power
     );
 }
