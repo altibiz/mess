@@ -6,7 +6,6 @@
     "**/.yarn": true,
     "**/bin": true,
     "**/obj": true,
-    "**/build": true,
     "**/dist": true,
     "**/.docusaurus": true,
     "**/Localization": true,
@@ -22,7 +21,6 @@
     "**/.yarn": true,
     "**/bin": true,
     "**/obj": true,
-    "**/build": true,
     "**/dist": true,
     "**/.docusaurus": true
   },
