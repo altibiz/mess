@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Mess.Eor.Timeseries
 {
     [DbContext(typeof(EorTimeseriesDbContext))]
-    [Migration("20230808135451_Initial")]
+    [Migration("20231010121411_Initial")]
     partial class Initial
     {
         /// <inheritdoc />

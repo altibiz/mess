@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Mess.Iot.Timeseries
+namespace Mess.Ozds.Timeseries
 {
   /// <inheritdoc />
   public partial class Initial : Migration
@@ -61,7 +61,11 @@ namespace Mess.Iot.Timeseries
             ),
             PowerFactorL1 = table.Column<float>(type: "float4", nullable: true),
             PowerFactorL2 = table.Column<float>(type: "float4", nullable: true),
-            PowerFactorL3 = table.Column<float>(type: "float4", nullable: true)
+            PowerFactorL3 = table.Column<float>(type: "float4", nullable: true),
+            Energy = table.Column<float>(type: "float4", nullable: true),
+            LowEnergy = table.Column<float>(type: "float4", nullable: true),
+            HighEnergy = table.Column<float>(type: "float4", nullable: true),
+            Power = table.Column<float>(type: "float4", nullable: true)
           },
         constraints: table =>
         {
@@ -78,44 +82,9 @@ namespace Mess.Iot.Timeseries
         }
       );
 
-      migrationBuilder.CreateTable(
-        name: "EgaugeMeasurements",
-        columns: table =>
-          new
-          {
-            Tenant = table.Column<string>(type: "text", nullable: false),
-            Source = table.Column<string>(type: "text", nullable: false),
-            Timestamp = table.Column<DateTimeOffset>(
-              type: "timestamptz",
-              nullable: false
-            ),
-            Power = table.Column<float>(type: "float4", nullable: false),
-            Voltage = table.Column<float>(type: "float4", nullable: false)
-          },
-        constraints: table =>
-        {
-          table.PrimaryKey(
-            "PK_EgaugeMeasurements",
-            x =>
-              new
-              {
-                x.Tenant,
-                x.Source,
-                x.Timestamp
-              }
-          );
-        }
-      );
-
       migrationBuilder.CreateIndex(
         name: "IX_AbbMeasurements_Tenant_Source_Timestamp",
         table: "AbbMeasurements",
-        columns: new[] { "Tenant", "Source", "Timestamp" }
-      );
-
-      migrationBuilder.CreateIndex(
-        name: "IX_EgaugeMeasurements_Tenant_Source_Timestamp",
-        table: "EgaugeMeasurements",
         columns: new[] { "Tenant", "Source", "Timestamp" }
       );
     }
@@ -124,8 +93,6 @@ namespace Mess.Iot.Timeseries
     protected override void Down(MigrationBuilder migrationBuilder)
     {
       migrationBuilder.DropTable(name: "AbbMeasurements");
-
-      migrationBuilder.DropTable(name: "EgaugeMeasurements");
     }
   }
 }
