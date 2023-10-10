@@ -16,7 +16,6 @@
 [Dd]ebug/
 [Rr]elease/
 x64/
-build/
 app.publish/
 [Bb]in/
 [Oo]bj/
@@ -163,7 +162,6 @@ App_Data/
 glob:*.user
 *.patch
 *.hg
-build/
 /buildazure
 /buildtasks
 /artifacts
