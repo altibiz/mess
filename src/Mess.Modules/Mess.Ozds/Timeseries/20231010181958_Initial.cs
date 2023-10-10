@@ -62,6 +62,7 @@ namespace Mess.Ozds.Timeseries
             PowerFactorL1 = table.Column<float>(type: "float4", nullable: true),
             PowerFactorL2 = table.Column<float>(type: "float4", nullable: true),
             PowerFactorL3 = table.Column<float>(type: "float4", nullable: true),
+            Milliseconds = table.Column<long>(type: "bigint", nullable: false),
             Energy = table.Column<float>(type: "float4", nullable: true),
             LowEnergy = table.Column<float>(type: "float4", nullable: true),
             HighEnergy = table.Column<float>(type: "float4", nullable: true),

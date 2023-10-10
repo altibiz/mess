@@ -111,12 +111,12 @@ public class Migrations : DataMigration
     );
 
     (
-      string whiteHighVoltageMeasurementDeviceCatalogueContentItemId,
-      string whiteMediumVoltageMeasurementDeviceCatalogueContentItemId,
-      string blueMeasurementDeviceCatalogueContentItemId,
-      string whiteLowVoltageMeasurementDeviceCatalogueContentItemId,
-      string redMeasurementDeviceCatalogueContentItemId,
-      string yellowMeasurementDeviceCatalogueContentItemId
+      string whiteHighVoltageSystemCatalogueContentItemId,
+      string whiteMediumVoltageSystemCatalogueContentItemId,
+      string blueSystemCatalogueContentItemId,
+      string whiteLowVoltageSystemCatalogueContentItemId,
+      string redSystemCatalogueContentItemId,
+      string yellowSystemCatalogueContentItemId
     ) = await CreateAsyncMigrations.PopulateOperatorCatalogues(
       _serviceProvider
     );
@@ -137,7 +137,13 @@ public class Migrations : DataMigration
       await CreateAsyncMigrations.PopulateSystem(
         _serviceProvider,
         operatorUserId!,
-        operatorContentItemId!
+        operatorContentItemId!,
+        whiteHighVoltageSystemCatalogueContentItemId!,
+        whiteMediumVoltageSystemCatalogueContentItemId!,
+        blueSystemCatalogueContentItemId!,
+        whiteLowVoltageSystemCatalogueContentItemId!,
+        redSystemCatalogueContentItemId!,
+        yellowSystemCatalogueContentItemId!
       );
 
     (string? unitUserId, string? unitContentItemId) =
@@ -156,7 +162,9 @@ public class Migrations : DataMigration
 
     await CreateAsyncMigrations.PopulateAbb(
       _serviceProvider,
-      unitContentItemId!
+      unitContentItemId!,
+      whiteLowVoltageOperatorCatalogueContentItemId!,
+      whiteLowVoltageSystemCatalogueContentItemId!
     );
 
     return 1;
@@ -425,7 +433,13 @@ internal static class CreateAsyncMigrations
   )> PopulateSystem(
     IServiceProvider serviceProvider,
     string operatorUserId,
-    string operatorContentItemId
+    string operatorContentItemId,
+    string whiteHighVoltageOperatorCatalogueContentItemId,
+    string whiteMediumVoltageOperatorCatalogueContentItemId,
+    string blueOperatorCatalogueContentItemId,
+    string whiteLowVoltageOperatorCatalogueContentItemId,
+    string redOperatorCatalogueContentItemId,
+    string yellowOperatorCatalogueContentItemId
   )
   {
     var roleManager = serviceProvider.GetRequiredService<RoleManager<IRole>>();
@@ -515,6 +529,46 @@ internal static class CreateAsyncMigrations
           closedDistributionSystemPart.DistributionSystemOperator = new()
           {
             ContentItemIds = new[] { operatorContentItemId }
+          };
+
+          closedDistributionSystemPart.WhiteHighVoltageOperatorCatalogue = new()
+          {
+            ContentItemIds = new[]
+            {
+              whiteHighVoltageOperatorCatalogueContentItemId
+            }
+          };
+
+          closedDistributionSystemPart.WhiteMediumVoltageOperatorCatalogue =
+            new()
+            {
+              ContentItemIds = new[]
+              {
+                whiteMediumVoltageOperatorCatalogueContentItemId
+              }
+            };
+
+          closedDistributionSystemPart.BlueOperatorCatalogue = new()
+          {
+            ContentItemIds = new[] { blueOperatorCatalogueContentItemId }
+          };
+
+          closedDistributionSystemPart.WhiteLowVoltageOperatorCatalogue = new()
+          {
+            ContentItemIds = new[]
+            {
+              whiteLowVoltageOperatorCatalogueContentItemId
+            }
+          };
+
+          closedDistributionSystemPart.RedOperatorCatalogue = new()
+          {
+            ContentItemIds = new[] { redOperatorCatalogueContentItemId }
+          };
+
+          closedDistributionSystemPart.YellowOperatorCatalogue = new()
+          {
+            ContentItemIds = new[] { yellowOperatorCatalogueContentItemId }
           };
         }
       );
@@ -1004,7 +1058,9 @@ internal static class CreateAsyncMigrations
 
   internal static async Task PopulateAbb(
     IServiceProvider serviceProvider,
-    string unitContentItemId
+    string unitContentItemId,
+    string usageCatalogueContentItemId,
+    string supplyCatalogueContentItemId
   )
   {
     var roleManager = serviceProvider.GetRequiredService<RoleManager<IRole>>();
@@ -1078,6 +1134,14 @@ internal static class CreateAsyncMigrations
           ozdsMeasurementDevicePart.DistributionSystemUnit = new()
           {
             ContentItemIds = new[] { unitContentItemId }
+          };
+          ozdsMeasurementDevicePart.UsageCatalogue = new()
+          {
+            ContentItemIds = new[] { usageCatalogueContentItemId }
+          };
+          ozdsMeasurementDevicePart.SupplyCatalogue = new()
+          {
+            ContentItemIds = new[] { supplyCatalogueContentItemId }
           };
         }
       );

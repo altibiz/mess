@@ -74,7 +74,7 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
     var usageCatalogueItem =
       _contnetManager
         .GetContentAsync<OperatorCatalogueItem>(
-          systemItem.ClosedDistributionSystemPart.Value.UsageCatalogue.ContentItemIds.First()
+          ozdsMeasurementDevicePart.UsageCatalogue.ContentItemIds.First()
         )
         .Result
       ?? throw new NullReferenceException("Usage catalogue not found");
@@ -172,7 +172,7 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
       );
     var usageCatalogueItem =
       await _contnetManager.GetContentAsync<OperatorCatalogueItem>(
-        systemItem.ClosedDistributionSystemPart.Value.UsageCatalogue.ContentItemIds.First()
+        ozdsMeasurementDevicePart.UsageCatalogue.ContentItemIds.First()
       ) ?? throw new NullReferenceException("Usage catalogue not found");
     var supplyCatalogueItem =
       await _contnetManager.GetContentAsync<OperatorCatalogueItem>(
@@ -277,7 +277,7 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
     var usageCatalogueItem =
       _contnetManager
         .GetContentAsync<OperatorCatalogueItem>(
-          systemItem.ClosedDistributionSystemPart.Value.UsageCatalogue.ContentItemIds.First()
+          ozdsMeasurementDevicePart.UsageCatalogue.ContentItemIds.First()
         )
         .Result
       ?? throw new NullReferenceException("Usage catalogue not found");
@@ -363,7 +363,7 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
       );
     var usageCatalogueItem =
       await _contnetManager.GetContentAsync<OperatorCatalogueItem>(
-        systemItem.ClosedDistributionSystemPart.Value.UsageCatalogue.ContentItemIds.First()
+        ozdsMeasurementDevicePart.UsageCatalogue.ContentItemIds.First()
       ) ?? throw new NullReferenceException("Usage catalogue not found");
     var supplyCatalogueItem =
       await _contnetManager.GetContentAsync<OperatorCatalogueItem>(

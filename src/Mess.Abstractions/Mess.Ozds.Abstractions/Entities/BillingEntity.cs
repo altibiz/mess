@@ -6,7 +6,12 @@ namespace Mess.Ozds.Abstractions.Entities;
 public class BillingEntity : HypertableEntity
 {
   [Column(TypeName = "bigint")]
-  public long Milliseconds => Timestamp.Ticks / TimeSpan.TicksPerMillisecond;
+  public long Milliseconds
+  {
+    get => Timestamp.Ticks / TimeSpan.TicksPerMillisecond;
+    // NOTE: https://stackoverflow.com/a/52367289
+    private set { }
+  }
 
   [Column(TypeName = "float4")]
   public float? Energy { get; set; } = default!;

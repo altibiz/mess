@@ -70,6 +70,9 @@ namespace Mess.Ozds.Timeseries
                     b.Property<float?>("LowEnergy")
                         .HasColumnType("float4");
 
+                    b.Property<long>("Milliseconds")
+                        .HasColumnType("bigint");
+
                     b.Property<float?>("Power")
                         .HasColumnType("float4");
 

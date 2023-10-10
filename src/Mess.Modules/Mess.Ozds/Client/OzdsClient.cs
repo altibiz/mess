@@ -134,38 +134,41 @@ public class OzdsClient : IOzdsClient
       OzdsBillingData?
     >(async context =>
     {
-      var extremeQuery = context.AbbMeasurements
-        .Where(measurement => measurement.Source == source)
-        .Where(measurement => measurement.Timestamp > beginning)
-        .Where(measurement => measurement.Timestamp < end)
-        .Select(
-          measurement =>
-            new
-            {
-              Energy = measurement.Energy!.Value,
-              LowEnergy = measurement.LowEnergy!.Value,
-              HighEnergy = measurement.HighEnergy!.Value
-            }
-        );
+      var makeExtremeQuery = () =>
+        context.AbbMeasurements
+          .Where(measurement => measurement.Source == source)
+          .Where(measurement => measurement.Timestamp > beginning)
+          .Where(measurement => measurement.Timestamp < end)
+          .OrderBy(measurement => measurement.Timestamp)
+          .Select(
+            measurement =>
+              new
+              {
+                Energy = measurement.Energy!.Value,
+                LowEnergy = measurement.LowEnergy!.Value,
+                HighEnergy = measurement.HighEnergy!.Value
+              }
+          );
 
-      var peakQuery = context.AbbMeasurements
-        .Where(measurement => measurement.Source == source)
-        .Where(measurement => measurement.Timestamp > beginning)
-        .Where(measurement => measurement.Timestamp < end)
-        .Where(measurement => measurement.Power != null)
-        .GroupBy(measurement => measurement.Milliseconds / (1000 * 60 * 15))
-        .Select(
-          group =>
-            new
-            {
-              Power = group.Average(measurement => measurement.Power!.Value)
-            }
-        )
-        .OrderByDescending(measurement => measurement.Power);
+      var makePeakQuery = () =>
+        context.AbbMeasurements
+          .Where(measurement => measurement.Source == source)
+          .Where(measurement => measurement.Timestamp > beginning)
+          .Where(measurement => measurement.Timestamp < end)
+          .Where(measurement => measurement.Power != null)
+          .GroupBy(measurement => measurement.Milliseconds / (1000 * 60 * 15))
+          .Select(
+            group =>
+              new
+              {
+                Power = group.Average(measurement => measurement.Power!.Value)
+              }
+          )
+          .OrderByDescending(measurement => measurement.Power);
 
-      var first = await extremeQuery.FirstOrDefaultAsync();
-      var last = await extremeQuery.LastOrDefaultAsync();
-      var peak = await peakQuery.FirstOrDefaultAsync();
+      var first = await makeExtremeQuery().FirstOrDefaultAsync();
+      var last = await makeExtremeQuery().LastOrDefaultAsync();
+      var peak = await makePeakQuery().FirstOrDefaultAsync();
 
       if (first is null || last is null || peak is null)
       {

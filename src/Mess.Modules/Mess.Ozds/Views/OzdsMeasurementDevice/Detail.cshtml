@@ -1,38 +1,3 @@
-@using Microsoft.AspNetCore.Authorization
-@using Mess.OrchardCore.Extensions.Microsoft
-
-@inject IAuthorizationService _authorizationService
-
 @model OzdsMeasurementDeviceDetailViewModel
 
-@{
-  var chartCanvasId = "chart";
-  var chartErrorId = "chart-error";
-}
-
-<section>
-  <h3 class="section-header">State</h3>
-  <div class="section-content">
-    <div class="chart-container">
-      <canvas id="@chartCanvasId" class="chart" />
-      <script asp-name="mess-chart"></script>
-      <script>
-        window.mess.chart.useChart({
-          requestUrlPrefix: "@this.GetRequestUrlPrefix()",
-          contentItemId: "@Model.ContentItem.ContentItemId",
-          isPreview: false,
-          canvasId: "@chartCanvasId",
-          errorId: "@chartErrorId",
-          culture: "@Orchard.CultureName()",
-          font: {
-            family: "Roboto",
-            style: "normal",
-            weight: "300",
-            color: "#000",
-            size: 14
-          }
-        });
-      </script>
-    </div>
-  </div>
-</section>
+@await Orchard.DisplayAsync(Model.ContentItem, "Detail")

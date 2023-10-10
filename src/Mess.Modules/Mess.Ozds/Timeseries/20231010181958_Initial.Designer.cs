@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Mess.Ozds.Timeseries
 {
     [DbContext(typeof(OzdsDbContext))]
-    [Migration("20231010121621_Initial")]
+    [Migration("20231010181958_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -72,6 +72,9 @@ namespace Mess.Ozds.Timeseries
 
                     b.Property<float?>("LowEnergy")
                         .HasColumnType("float4");
+
+                    b.Property<long>("Milliseconds")
+                        .HasColumnType("bigint");
 
                     b.Property<float?>("Power")
                         .HasColumnType("float4");

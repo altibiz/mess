@@ -7,6 +7,8 @@ public class OzdsMeasurementDevicePart : ContentPart
 {
   public ContentPickerField DistributionSystemUnit { get; set; } = default!;
 
+  public ContentPickerField UsageCatalogue { get; set; } = default!;
+
   public ContentPickerField SupplyCatalogue { get; set; } = default!;
 
   public string ClosedDistributionSystemContentItemId { get; set; } = default!;
