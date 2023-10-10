@@ -40,7 +40,7 @@ public class AdminController : Controller
     }
 
     (DateTimeOffset nowLastMonthStart, DateTimeOffset nowLastMonthEnd) =
-      DateTimeOffset.UtcNow.AddMonths(-1).GetMonthRange();
+      DateTimeOffset.UtcNow.GetMonthRange();
     var invoiceItem = await billingFactory.CreateInvoiceAsync(
       from: nowLastMonthStart,
       to: nowLastMonthEnd,

@@ -197,9 +197,7 @@ public class Migrations : DataMigration
           .Column<string>("InvoiceContentItemId", c => c.WithLength(64))
           .Column<string>("ReceiptContentItemId", c => c.WithLength(64))
           .Column<string>("BillingContentItemId", c => c.WithLength(64))
-          .Column<string>("IssuerContentItemId", c => c.WithLength(64))
-          .Column<string>("RecipientContentItemId", c => c.WithLength(64))
-          .Column<string>("CatalogueContentItemId", c => c.WithLength(64))
+          .Column<string>("LegalEntityContentItemId", c => c.WithLength(64))
     );
     SchemaBuilder.AlterIndexTable<PaymentIndex>(table =>
     {
@@ -216,16 +214,8 @@ public class Migrations : DataMigration
         "BillingContentItemId"
       );
       table.CreateIndex(
-        "IDX_PaymentIndex_IssuerContentItemId",
-        "IssuerContentItemId"
-      );
-      table.CreateIndex(
-        "IDX_PaymentIndex_RecipientContentItemId",
-        "RecipientContentItemId"
-      );
-      table.CreateIndex(
         "IDX_PaymentIndex_CatalogueContentItemId",
-        "CatalogueContentItemId"
+        "LegalEntityContentItemId"
       );
     });
 

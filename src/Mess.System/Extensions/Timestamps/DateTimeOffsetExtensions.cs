@@ -7,8 +7,8 @@ public static class DateTimeOffsetExtensions
   )
   {
     var monthStart = new DateTimeOffset(
-      dateTimeOffset.Month == 1 ? dateTimeOffset.Year - 1 : dateTimeOffset.Year,
-      dateTimeOffset.Month == 1 ? 12 : dateTimeOffset.Month - 1,
+      dateTimeOffset.Year,
+      dateTimeOffset.Month,
       1,
       0,
       0,
