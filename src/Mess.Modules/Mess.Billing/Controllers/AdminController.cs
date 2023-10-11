@@ -14,6 +14,18 @@ namespace Mess.Billing.Controllers;
 [Admin]
 public class AdminController : Controller
 {
+  [HttpGet]
+  public async Task<IActionResult> ListPayments()
+  {
+    return Ok();
+  }
+
+  [HttpGet]
+  public async Task<IActionResult> ListOwnPayments()
+  {
+    return Ok();
+  }
+
   [HttpPost]
   public async Task<IActionResult> CreateInvoice(string contentItemId)
   {

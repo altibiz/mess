@@ -72,5 +72,27 @@ public class Startup : StartupBase
         action = nameof(AdminController.ConfirmPayment)
       }
     );
+
+    routes.MapAreaControllerRoute(
+      name: "Mess.Billing.AdminController.ListPayments",
+      areaName: "Mess.Billing",
+      pattern: adminUrlPrefix + "/ListPayments",
+      defaults: new
+      {
+        controller = typeof(AdminController).ControllerName(),
+        action = nameof(AdminController.ListPayments)
+      }
+    );
+
+    routes.MapAreaControllerRoute(
+      name: "Mess.Billing.AdminController.ListOwnPayments",
+      areaName: "Mess.Billing",
+      pattern: adminUrlPrefix + "/ListOwnPayments",
+      defaults: new
+      {
+        controller = typeof(AdminController).ControllerName(),
+        action = nameof(AdminController.ListOwnPayments)
+      }
+    );
   }
 }
