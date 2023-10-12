@@ -52,8 +52,12 @@ public class BillingBackgroundTask : IBackgroundTask
       invoiceItem.Alter<InvoicePart>(invoicePart =>
       {
         invoicePart.BillingContentItemId = billingItem.ContentItemId;
-        invoicePart.LegalEntityContentItemId =
-          billingPart.LegalEntityContentItemId;
+        invoicePart.RecipientContentItemId = billingPart.RecipientContentItemId;
+        invoicePart.RecipientRepresentativeUserIds =
+          billingPart.RecipientRepresentativeUserIds;
+        invoicePart.IssuerContentItemId = billingPart.IssuerContentItemId;
+        invoicePart.IssuerRepresentativeUserIds =
+          billingPart.IssuerRepresentativeUserIds;
       });
       await contentManager.CreateAsync(invoiceItem);
     }

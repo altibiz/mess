@@ -10,16 +10,12 @@ using YesSql;
 using Mess.Ozds.Abstractions.Models;
 using OrchardCore.Title.Models;
 using Mess.Iot.Abstractions.Models;
-using YesSql.Services;
 using Mess.Iot.Abstractions.Indexes;
 
 namespace Mess.Ozds.Controllers;
 
-// TODO: display type/mode for these things
-
 [Admin]
-[Authorize]
-public class OzdsMeasurementDeviceAdminController : Controller
+public class AdminController : Controller
 {
   public async Task<IActionResult> List()
   {
@@ -113,7 +109,7 @@ public class OzdsMeasurementDeviceAdminController : Controller
     );
   }
 
-  public OzdsMeasurementDeviceAdminController(
+  public AdminController(
     IAuthorizationService authorizationService,
     IContentManager contentManager,
     ISession session,

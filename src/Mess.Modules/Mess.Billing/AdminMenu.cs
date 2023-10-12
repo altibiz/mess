@@ -25,7 +25,7 @@ public class AdminMenu : INavigationProvider
                 .AddClass("payments")
                 .Id("payments")
                 .Action("Payments", "Admin", new { area = "Mess.Billing" })
-                .Permission(Permissions.ListPayments)
+                .Permission(Permissions.ListIssuedBills)
                 .LocalNav()
           )
           .Add(
@@ -35,8 +35,8 @@ public class AdminMenu : INavigationProvider
               entry
                 .AddClass("payments")
                 .Id("payments")
-                .Action("OwnPayments", "Admin", new { area = "Mess.Billing" })
-                .Permission(Permissions.ListOwnPayments)
+                .Action("Payments", "Admin", new { area = "Mess.Billing" })
+                .Permission(Permissions.ListReceivedBills)
                 .LocalNav()
           )
     );

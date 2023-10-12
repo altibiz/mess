@@ -175,47 +175,74 @@ public class Migrations : DataMigration
         table
           .Column<string>("ContentItemId", c => c.WithLength(64))
           .Column<string>("ContentType", c => c.WithLength(64))
-          .Column<string>("LegalEntityContentItemId", c => c.WithLength(64))
-          .Column<string>("CatalogueContentItemId", c => c.WithLength(64))
+          .Column<string>("RecipientContentItemId", c => c.WithLength(64))
+          .Column<string>("IssuerContentItemId", c => c.WithLength(64))
     );
     SchemaBuilder.AlterIndexTable<BillingIndex>(table =>
     {
       table.CreateIndex("IDX_BillingIndex_ContentType", "ContentType");
       table.CreateIndex(
-        "IDX_BillingIndex_LegalEntityContentItemId",
-        "LegalEntityContentItemId"
+        "IDX_BillingIndex_RecipientContentItemId",
+        "RecipientContentItemId"
       );
       table.CreateIndex(
-        "IDX_BillingIndex_CatalogueContentItemId",
-        "CatalogueContentItemId"
+        "IDX_BillingIndex_IssuerContentItemId",
+        "IssuerContentItemId"
       );
     });
 
-    SchemaBuilder.CreateMapIndexTable<PaymentIndex>(
+    SchemaBuilder.CreateMapIndexTable<RecipientBillIndex>(
       table =>
         table
+          .Column<string>("ContentItemId", c => c.WithLength(64))
           .Column<string>("InvoiceContentItemId", c => c.WithLength(64))
           .Column<string>("ReceiptContentItemId", c => c.WithLength(64))
           .Column<string>("BillingContentItemId", c => c.WithLength(64))
-          .Column<string>("LegalEntityContentItemId", c => c.WithLength(64))
+          .Column<string>("RecipientContentItemId", c => c.WithLength(64))
+          .Column<string>(
+            "RecipientRepresentativeUserId",
+            c => c.WithLength(64)
+          )
     );
-    SchemaBuilder.AlterIndexTable<PaymentIndex>(table =>
+    SchemaBuilder.AlterIndexTable<RecipientBillIndex>(table =>
     {
-      table.CreateIndex(
-        "IDX_PaymentIndex_InvoiceContentItemId",
-        "InvoiceContentItemId"
-      );
-      table.CreateIndex(
-        "IDX_PaymentIndex_ReceiptContentItemId",
-        "ReceiptContentItemId"
-      );
       table.CreateIndex(
         "IDX_PaymentIndex_BillingContentItemId",
         "BillingContentItemId"
       );
       table.CreateIndex(
-        "IDX_PaymentIndex_CatalogueContentItemId",
+        "IDX_PaymentIndex_RecipientContentItemId",
         "LegalEntityContentItemId"
+      );
+      table.CreateIndex(
+        "IDX_PaymentIndex_RecipientRepresentativeUserId",
+        "LegalEntityRepresentativeUserId"
+      );
+    });
+
+    SchemaBuilder.CreateMapIndexTable<IssuerBillIndex>(
+      table =>
+        table
+          .Column<string>("ContentItemId", c => c.WithLength(64))
+          .Column<string>("InvoiceContentItemId", c => c.WithLength(64))
+          .Column<string>("ReceiptContentItemId", c => c.WithLength(64))
+          .Column<string>("BillingContentItemId", c => c.WithLength(64))
+          .Column<string>("IssuerContentItemId", c => c.WithLength(64))
+          .Column<string>("IssuerRepresentativeUserId", c => c.WithLength(64))
+    );
+    SchemaBuilder.AlterIndexTable<IssuerBillIndex>(table =>
+    {
+      table.CreateIndex(
+        "IDX_PaymentIndex_BillingContentItemId",
+        "BillingContentItemId"
+      );
+      table.CreateIndex(
+        "IDX_PaymentIndex_IssuerContentItemId",
+        "LegalEntityContentItemId"
+      );
+      table.CreateIndex(
+        "IDX_PaymentIndex_IssuerRepresentativeUserId",
+        "LegalEntityRepresentativeUserId"
       );
     });
 

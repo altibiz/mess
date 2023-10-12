@@ -4,30 +4,36 @@ namespace Mess.Billing.Abstractions;
 
 public class Permissions : IPermissionProvider
 {
-  public static readonly Permission IssueInvoices = new Permission(
-    "IssueInvoices",
-    "Issuing invoices"
+  public static readonly Permission IssueInvoice = new Permission(
+    "IssueInvoice",
+    "Issuing invoice"
   );
 
-  public static readonly Permission ConfirmPayments = new Permission(
-    "ConfirmPayments",
-    "Confirming payments"
+  public static readonly Permission ConfirmPayment = new Permission(
+    "ConfirmPayment",
+    "Confirming payment"
   );
 
-  public static readonly Permission ListPayments = new Permission(
-    "ListPayments",
-    "Listing payments"
+  public static readonly Permission ListIssuedBills = new Permission(
+    "ListIssuedBills",
+    "Listing issued bills"
   );
 
-  public static readonly Permission ListOwnPayments = new Permission(
-    "ListOwnPayments",
-    "Listing own payments"
+  public static readonly Permission ListReceivedBills = new Permission(
+    "ListReceivedBills",
+    "Listing received bills"
   );
 
   public Task<IEnumerable<Permission>> GetPermissionsAsync()
   {
     return Task.FromResult(
-      new[] { IssueInvoices, ConfirmPayments, ListPayments }.AsEnumerable()
+      new[]
+      {
+        IssueInvoice,
+        ConfirmPayment,
+        ListIssuedBills,
+        ListReceivedBills
+      }.AsEnumerable()
     );
   }
 
@@ -40,10 +46,10 @@ public class Permissions : IPermissionProvider
         Name = "Administrator",
         Permissions = new[]
         {
-          IssueInvoices,
-          ConfirmPayments,
-          ListPayments,
-          ListOwnPayments
+          IssueInvoice,
+          ConfirmPayment,
+          ListIssuedBills,
+          ListReceivedBills
         }
       },
     };

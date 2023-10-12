@@ -110,8 +110,22 @@ public class OzdsMeasurementDeviceHandler : ContentHandlerBase
         contentItem.As<OzdsMeasurementDevicePart>();
       contentItem.Alter<BillingPart>(billingPart =>
       {
-        billingPart.LegalEntityContentItemId =
-          distributionSystemUnitContentItemId;
+        billingPart.IssuerContentItemId =
+          distributionSystemOperatorContentItem.ContentItemId;
+        billingPart.IssuerRepresentativeUserIds =
+          distributionSystemOperatorContentItem
+            .LegalEntityPart
+            .Value
+            .Representatives
+            .UserIds;
+        billingPart.RecipientContentItemId =
+          distributionSystemUnitContentItem.ContentItemId;
+        billingPart.RecipientRepresentativeUserIds =
+          distributionSystemUnitContentItem
+            .LegalEntityPart
+            .Value
+            .Representatives
+            .UserIds;
       });
     }
   }

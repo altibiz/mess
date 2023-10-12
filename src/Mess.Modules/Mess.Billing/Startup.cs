@@ -15,6 +15,7 @@ using OrchardCore.ContentManagement.Display.ContentDisplay;
 using OrchardCore.Data.Migration;
 using OrchardCore.Modules;
 using OrchardCore.Mvc.Core.Utilities;
+using Mess.Billing.Abstractions;
 
 namespace Mess.Billing;
 
@@ -27,6 +28,9 @@ public class Startup : StartupBase
 
     services.AddContentPart<LegalEntityPart>();
 
+    services.AddNavigationProvider<AdminMenu>();
+    services.AddPermissionProvider<Permissions>();
+
     services
       .AddContentPart<BillingPart>()
       .UseDisplayDriver<BillingPartDisplayDriver>();
@@ -37,7 +41,8 @@ public class Startup : StartupBase
     services
       .AddContentPart<InvoicePart>()
       .UseDisplayDriver<InvoicePartDisplayDriver>();
-    services.AddIndexProvider<PaymentIndexProvider>();
+    services.AddIndexProvider<RecipientBillIndexProvider>();
+    services.AddIndexProvider<IssuerBillIndexProvider>();
     services.AddContentHandler<PaymentHandler>();
   }
 
@@ -52,13 +57,13 @@ public class Startup : StartupBase
       .Value.AdminUrlPrefix;
 
     routes.MapAreaControllerRoute(
-      name: "Mess.Billing.AdminController.CreateInvoice",
+      name: "Mess.Billing.AdminController.IssueInvoice",
       areaName: "Mess.Billing",
-      pattern: adminUrlPrefix + "/CreateInvoice/{contentItemId}",
+      pattern: adminUrlPrefix + "/IssueInvoice/{contentItemId}",
       defaults: new
       {
         controller = typeof(AdminController).ControllerName(),
-        action = nameof(AdminController.CreateInvoice)
+        action = nameof(AdminController.IssueInvoice)
       }
     );
 
@@ -74,24 +79,13 @@ public class Startup : StartupBase
     );
 
     routes.MapAreaControllerRoute(
-      name: "Mess.Billing.AdminController.ListPayments",
+      name: "Mess.Billing.AdminController.Bills",
       areaName: "Mess.Billing",
-      pattern: adminUrlPrefix + "/ListPayments",
+      pattern: adminUrlPrefix + "/Bills",
       defaults: new
       {
         controller = typeof(AdminController).ControllerName(),
-        action = nameof(AdminController.ListPayments)
-      }
-    );
-
-    routes.MapAreaControllerRoute(
-      name: "Mess.Billing.AdminController.ListOwnPayments",
-      areaName: "Mess.Billing",
-      pattern: adminUrlPrefix + "/ListOwnPayments",
-      defaults: new
-      {
-        controller = typeof(AdminController).ControllerName(),
-        action = nameof(AdminController.ListOwnPayments)
+        action = nameof(AdminController.Bills)
       }
     );
   }

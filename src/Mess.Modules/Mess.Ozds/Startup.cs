@@ -84,8 +84,8 @@ public class Startup : StartupBase
       pattern: adminUrlPrefix + "/Devices",
       defaults: new
       {
-        controller = typeof(OzdsMeasurementDeviceAdminController).ControllerName(),
-        action = nameof(OzdsMeasurementDeviceAdminController.List)
+        controller = typeof(AdminController).ControllerName(),
+        action = nameof(AdminController.List)
       }
     );
 
@@ -95,8 +95,8 @@ public class Startup : StartupBase
       pattern: adminUrlPrefix + "/Devices/{contentItemId}",
       defaults: new
       {
-        controller = typeof(OzdsMeasurementDeviceAdminController).ControllerName(),
-        action = nameof(OzdsMeasurementDeviceAdminController.Detail)
+        controller = typeof(AdminController).ControllerName(),
+        action = nameof(AdminController.Detail)
       }
     );
 
@@ -106,8 +106,8 @@ public class Startup : StartupBase
       pattern: "/Devices",
       defaults: new
       {
-        controller = typeof(OzdsMeasurementDeviceController).ControllerName(),
-        action = nameof(OzdsMeasurementDeviceController.List)
+        controller = typeof(OzdsController).ControllerName(),
+        action = nameof(OzdsController.List)
       }
     );
 
@@ -117,8 +117,8 @@ public class Startup : StartupBase
       pattern: "/Devices/{contentItemId}",
       defaults: new
       {
-        controller = typeof(OzdsMeasurementDeviceController).ControllerName(),
-        action = nameof(OzdsMeasurementDeviceController.Detail)
+        controller = typeof(OzdsController).ControllerName(),
+        action = nameof(OzdsController.Detail)
       }
     );
 

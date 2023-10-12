@@ -20,7 +20,7 @@ public class BillingIndexProvider : IndexProvider<ContentItem>
         {
           ContentItemId = contentItem.ContentItemId,
           ContentType = contentItem.ContentType,
-          LegalEntityContentItemId = billingPart.LegalEntityContentItemId,
+          IssuerContentItemId = billingPart.RecipientContentItemId,
         };
       });
   }

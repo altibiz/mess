@@ -13,7 +13,7 @@ using Mess.Iot.Abstractions.Indexes;
 namespace Mess.Ozds.Controllers;
 
 [Authorize]
-public class OzdsMeasurementDeviceController : Controller
+public class OzdsController : Controller
 {
   public async Task<IActionResult> List()
   {
@@ -138,7 +138,7 @@ public class OzdsMeasurementDeviceController : Controller
     );
   }
 
-  public OzdsMeasurementDeviceController(
+  public OzdsController(
     IAuthorizationService authorizationService,
     IContentManager contentManager,
     ISession session

@@ -230,6 +230,11 @@ internal static class CreateAsyncMigrations
             ClaimType = Permission.ClaimType,
             ClaimValue = "AssignRole_Closed distribution system representative"
           },
+          new RoleClaim
+          {
+            ClaimType = Permission.ClaimType,
+            ClaimValue = "Listing payments"
+          },
         }
       }
     );
@@ -477,6 +482,11 @@ internal static class CreateAsyncMigrations
             ClaimType = Permission.ClaimType,
             ClaimValue = "AssignRole_Distribution system unit representative"
           },
+          new RoleClaim
+          {
+            ClaimType = Permission.ClaimType,
+            ClaimValue = "Listing own payments"
+          },
         }
       }
     );
@@ -715,6 +725,14 @@ internal static class CreateAsyncMigrations
         NormalizedRoleName = "DistributionSystemUnitRepresentative",
         RoleName = "Distribution System Unit Representative",
         RoleDescription = "Representative of a distribution system unit.",
+        RoleClaims = new()
+        {
+          new RoleClaim
+          {
+            ClaimType = Permission.ClaimType,
+            ClaimValue = "Listing own payments"
+          },
+        }
       }
     );
 
