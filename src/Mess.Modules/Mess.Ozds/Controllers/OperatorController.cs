@@ -1,10 +1,12 @@
+using Mess.Ozds.Abstractions.Client;
 using Mess.Ozds.Abstractions.Indexes;
+using Mess.Ozds.ViewModels;
 using Mess.OrchardCore.Extensions.Microsoft;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OrchardCore.Admin;
 using OrchardCore.ContentManagement;
 using YesSql;
-using Mess.Ozds.ViewModels;
 using Mess.Ozds.Abstractions.Models;
 using OrchardCore.Title.Models;
 using Mess.Iot.Abstractions.Models;
@@ -12,8 +14,8 @@ using Mess.Iot.Abstractions.Indexes;
 
 namespace Mess.Ozds.Controllers;
 
-[Authorize]
-public class OzdsController : Controller
+[Admin]
+public class OperatorController : Controller
 {
   public async Task<IActionResult> List()
   {
@@ -39,37 +41,6 @@ public class OzdsController : Controller
         .Where(
           index =>
             index.DistributionSystemOperatorRepresentativeUserId
-            == orchardCoreUser.UserId
-        )
-        .ListAsync();
-    }
-    else if (
-      orchardCoreUser.RoleNames.Contains(
-        "ClosedDistributionSystemRepresentative"
-      )
-    )
-    {
-      contentItems = await _session
-        .Query<
-          ContentItem,
-          OzdsMeasurementDeviceClosedDistributionSystemIndex
-        >()
-        .Where(
-          index =>
-            index.ClosedDistributionSystemRepresentativeUserId
-            == orchardCoreUser.UserId
-        )
-        .ListAsync();
-    }
-    else if (
-      orchardCoreUser.RoleNames.Contains("DistributionSystemUnitRepresentative")
-    )
-    {
-      contentItems = await _session
-        .Query<ContentItem, OzdsMeasurementDeviceDistributionSystemUnitIndex>()
-        .Where(
-          index =>
-            index.DistributionSystemUnitRepresentativeUserId
             == orchardCoreUser.UserId
         )
         .ListAsync();
@@ -138,18 +109,21 @@ public class OzdsController : Controller
     );
   }
 
-  public OzdsController(
+  public OperatorController(
     IAuthorizationService authorizationService,
     IContentManager contentManager,
-    ISession session
+    ISession session,
+    IOzdsClient measurementClient
   )
   {
     _contentManager = contentManager;
     _authorizationService = authorizationService;
     _session = session;
+    _measurementClient = measurementClient;
   }
 
   private readonly IContentManager _contentManager;
   private readonly IAuthorizationService _authorizationService;
   private readonly ISession _session;
+  private readonly IOzdsClient _measurementClient;
 }

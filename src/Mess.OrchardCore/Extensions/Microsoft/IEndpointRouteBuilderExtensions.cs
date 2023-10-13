@@ -2,6 +2,7 @@ using Mess.OrchardCore.Extensions.OrchardCore;
 using Microsoft.Extensions.Options;
 using OrchardCore.Admin;
 using OrchardCore.Environment.Shell;
+using OrchardCore.Mvc.Core.Utilities;
 
 namespace Mess.OrchardCore.Extensions.Microsoft;
 
@@ -83,6 +84,32 @@ public static class IEndpointRouteBuilderExtensions
 
     return endpoints;
   }
+
+  public static void MapMessControllerRoute<T>(
+    this IEndpointRouteBuilder endpoints,
+    string action,
+    string pattern
+  )
+  {
+    var type = typeof(T);
+    var @namespace =
+      type.Namespace
+      ?? throw new NullReferenceException(
+        $"{typeof(T).Name} is not in a namespace is null"
+      );
+    var controller = type.ControllerName();
+
+    endpoints.MapAreaControllerRoute(
+      name: $"{@namespace}.{controller}.{action}",
+      pattern: pattern,
+      areaName: @namespace,
+      defaults: new { controller, action }
+    );
+  }
+
+  public static void MapControllerNamespaceRoutes(
+    this IEndpointRouteBuilder endpoints
+  ) { }
 }
 
 public record Redirective(

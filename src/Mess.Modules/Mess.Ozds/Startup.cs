@@ -78,53 +78,58 @@ public class Startup : StartupBase
       .GetRequiredService<IOptions<AdminOptions>>()
       .Value.AdminUrlPrefix;
 
+    routes.MapMessControllerRoute<UnitController>(
+      nameof(UnitController.List),
+      adminUrlPrefix + "/List/{contentType}"
+    );
+
     routes.MapAreaControllerRoute(
-      name: "Mess.Ozds.MeasurementDeviceAdminController.List",
+      name: "Mess.Ozds.AdminController.List",
       areaName: "Mess.Ozds",
-      pattern: adminUrlPrefix + "/Devices",
+      pattern: adminUrlPrefix + "/List/{contentType}",
       defaults: new
       {
-        controller = typeof(AdminController).ControllerName(),
-        action = nameof(AdminController.List)
+        controller = typeof(UnitController).ControllerName(),
+        action = nameof(UnitController.List)
       }
     );
 
     routes.MapAreaControllerRoute(
-      name: "Mess.Ozds.MeasurementDeviceAdminController.Detail",
+      name: "Mess.Ozds.AdminController.Detail",
       areaName: "Mess.Ozds",
-      pattern: adminUrlPrefix + "/Devices/{contentItemId}",
+      pattern: adminUrlPrefix + "/Device/{contentItemId}",
       defaults: new
       {
-        controller = typeof(AdminController).ControllerName(),
-        action = nameof(AdminController.Detail)
+        controller = typeof(UnitController).ControllerName(),
+        action = nameof(UnitController.Detail)
       }
     );
 
     routes.MapAreaControllerRoute(
-      name: "Mess.Ozds.MeasurementDeviceController.List",
+      name: "Mess.Ozds.OzdsController.List",
       areaName: "Mess.Ozds",
       pattern: "/Devices",
       defaults: new
       {
-        controller = typeof(OzdsController).ControllerName(),
-        action = nameof(OzdsController.List)
+        controller = typeof(DeviceController).ControllerName(),
+        action = nameof(DeviceController.List)
       }
     );
 
     routes.MapAreaControllerRoute(
       name: "Mess.Ozds.MeasurementDeviceController.Detail",
       areaName: "Mess.Ozds",
-      pattern: "/Devices/{contentItemId}",
+      pattern: "/Detail/{contentItemId}",
       defaults: new
       {
-        controller = typeof(OzdsController).ControllerName(),
-        action = nameof(OzdsController.Detail)
+        controller = typeof(DeviceController).ControllerName(),
+        action = nameof(DeviceController.Detail)
       }
     );
 
     app.UseEndpoints(endpoints =>
     {
-      endpoints.Redirect("/", "/Devices");
+      endpoints.Redirect("/", "/List/");
     });
   }
 }

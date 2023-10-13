@@ -1,12 +1,10 @@
-using Mess.Ozds.Abstractions.Client;
 using Mess.Ozds.Abstractions.Indexes;
-using Mess.Ozds.ViewModels;
 using Mess.OrchardCore.Extensions.Microsoft;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using OrchardCore.Admin;
 using OrchardCore.ContentManagement;
 using YesSql;
+using Mess.Ozds.ViewModels;
 using Mess.Ozds.Abstractions.Models;
 using OrchardCore.Title.Models;
 using Mess.Iot.Abstractions.Models;
@@ -14,9 +12,9 @@ using Mess.Iot.Abstractions.Indexes;
 
 namespace Mess.Ozds.Controllers;
 
-[Admin]
-public class AdminController : Controller
+public class DeviceController : Controller
 {
+  [Authorize]
   public async Task<IActionResult> List()
   {
     var orchardCoreUser = await this.GetAuthenticatedOrchardCoreUserAsync();
@@ -45,6 +43,37 @@ public class AdminController : Controller
         )
         .ListAsync();
     }
+    else if (
+      orchardCoreUser.RoleNames.Contains(
+        "ClosedDistributionSystemRepresentative"
+      )
+    )
+    {
+      contentItems = await _session
+        .Query<
+          ContentItem,
+          OzdsMeasurementDeviceClosedDistributionSystemIndex
+        >()
+        .Where(
+          index =>
+            index.ClosedDistributionSystemRepresentativeUserId
+            == orchardCoreUser.UserId
+        )
+        .ListAsync();
+    }
+    else if (
+      orchardCoreUser.RoleNames.Contains("DistributionSystemUnitRepresentative")
+    )
+    {
+      contentItems = await _session
+        .Query<ContentItem, OzdsMeasurementDeviceDistributionSystemUnitIndex>()
+        .Where(
+          index =>
+            index.DistributionSystemUnitRepresentativeUserId
+            == orchardCoreUser.UserId
+        )
+        .ListAsync();
+    }
     else
     {
       return Forbid();
@@ -68,6 +97,7 @@ public class AdminController : Controller
     );
   }
 
+  [Authorize]
   public async Task<IActionResult> Detail(string contentItemId)
   {
     var contentItem = await _contentManager.GetAsync(contentItemId);
@@ -109,21 +139,18 @@ public class AdminController : Controller
     );
   }
 
-  public AdminController(
+  public DeviceController(
     IAuthorizationService authorizationService,
     IContentManager contentManager,
-    ISession session,
-    IOzdsClient measurementClient
+    ISession session
   )
   {
     _contentManager = contentManager;
     _authorizationService = authorizationService;
     _session = session;
-    _measurementClient = measurementClient;
   }
 
   private readonly IContentManager _contentManager;
   private readonly IAuthorizationService _authorizationService;
   private readonly ISession _session;
-  private readonly IOzdsClient _measurementClient;
 }
