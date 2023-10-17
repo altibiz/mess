@@ -2,9 +2,9 @@ using Mess.Fields.Abstractions.Fields;
 using OrchardCore.ContentFields.Fields;
 using OrchardCore.ContentManagement;
 
-namespace Mess.Iot.Abstractions.Models;
+namespace Mess.Eor.Abstractions.Models;
 
-public class EorMeasurementDevicePart : ContentPart
+public class EorIotDevicePart : ContentPart
 {
   public UserPickerField Owner { get; set; } = default!;
 

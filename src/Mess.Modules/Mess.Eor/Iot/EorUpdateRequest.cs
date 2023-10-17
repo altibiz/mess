@@ -68,13 +68,13 @@ public record EorUpdateRequest(
       },
       CommunicationFault: CommunicationFaults,
       RunState: Start && !Stop
-        ? EorMeasurementDeviceRunState.Started
+        ? EorRunState.Started
         : Stop && !Start
-          ? EorMeasurementDeviceRunState.Stopped
-          : EorMeasurementDeviceRunState.Error,
+          ? EorRunState.Stopped
+          : EorRunState.Error,
       ResetState: Reset
-        ? EorMeasurementDeviceResetState.ShouldReset
-        : EorMeasurementDeviceResetState.ShouldntReset,
+        ? EorResetState.ShouldReset
+        : EorResetState.ShouldntReset,
       DoorState: DoorState ? EorDoorState.Open : EorDoorState.Closed,
       MainCircuitBreakerState: MainCircuitBreakerState
         ? EorMainCircuitBreakerState.On

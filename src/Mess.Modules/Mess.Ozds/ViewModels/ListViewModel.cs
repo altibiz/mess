@@ -5,12 +5,12 @@ using OrchardCore.Title.Models;
 
 namespace Mess.Ozds.ViewModels;
 
-public class OzdsMeasurementDeviceListViewModel
+public class OzdsIotDeviceListViewModel
 {
   public List<(
     ContentItem ContentItem,
     TitlePart TitlePart,
-    OzdsMeasurementDevicePart OzdsMeasurementDevicePart,
-    IotDevicePart MeasurementDevicePart
+    OzdsIotDevicePart OzdsIotDevicePart,
+    IotDevicePart IotDevicePart
   )> ContentItems { get; set; } = default!;
 }

@@ -17,14 +17,14 @@ public class EgaugeChartFactory : ChartFactory<EgaugeIotDeviceItem>
     };
 
   protected override async Task<TimeseriesChartDescriptor?> CreateTimeseriesChartAsync(
-    EgaugeIotDeviceItem egaugeMeasurementDevice,
+    EgaugeIotDeviceItem egaugeIotDevice,
     TimeseriesChartItem chart,
     IEnumerable<TimeseriesChartDatasetItem> datasets
   )
   {
     var now = DateTimeOffset.UtcNow;
     var measurements = await _client.GetEgaugeMeasurementsAsync(
-      egaugeMeasurementDevice.MeasurementDevicePart.Value.DeviceId.Text,
+      egaugeIotDevice.IotDevicePart.Value.DeviceId.Text,
       now.Subtract(chart.TimeseriesChartPart.Value.History.Value.ToTimeSpan()),
       now
     );

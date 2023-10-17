@@ -9,8 +9,8 @@ public record EorStatus(
   int ProcessFault,
   string[] ProcessFaults,
   int CommunicationFault,
-  EorMeasurementDeviceRunState RunState,
-  EorMeasurementDeviceResetState ResetState,
+  EorRunState RunState,
+  EorResetState ResetState,
   EorDoorState DoorState,
   EorMainCircuitBreakerState MainCircuitBreakerState,
   EorTransformerContractorState TransformerContractorState,
@@ -23,20 +23,20 @@ public record EorStatus(
   bool CoolingFans
 );
 
-public enum EorMeasurementDeviceRunState : int
+public enum EorRunState : int
 {
   Stopped = default,
   Started = 1,
   Error = 2,
 };
 
-public enum EorMeasurementDeviceResetState : int
+public enum EorResetState : int
 {
   ShouldntReset = default,
   ShouldReset = 1,
 };
 
-public enum EorMeasurementDevicePowerState : int
+public enum EorPowerState : int
 {
   On = default,
   Off = 999,

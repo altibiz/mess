@@ -5,13 +5,13 @@ using Mess.Eor.Abstractions.Models;
 namespace Mess.Eor.Iot;
 
 public class EorPushHandler
-  : JsonIotPushHandler<EorMeasurementDeviceItem, EorPushRequest>
+  : JsonIotPushHandler<EorIotDeviceItem, EorPushRequest>
 {
   protected override void Handle(
     string deviceId,
     string tenant,
     DateTimeOffset timestamp,
-    EorMeasurementDeviceItem contentItem,
+    EorIotDeviceItem contentItem,
     EorPushRequest request
   )
   {
@@ -24,7 +24,7 @@ public class EorPushHandler
     string deviceId,
     string tenant,
     DateTimeOffset timestamp,
-    EorMeasurementDeviceItem contentItem,
+    EorIotDeviceItem contentItem,
     EorPushRequest request
   )
   {

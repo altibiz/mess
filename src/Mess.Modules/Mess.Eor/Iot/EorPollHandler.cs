@@ -5,23 +5,23 @@ using Mess.Eor.Abstractions.Timeseries;
 namespace Mess.Eor.Iot;
 
 public class EorPollHandler
-  : JsonIotPollHandler<EorMeasurementDeviceItem, EorPollResponse>
+  : JsonIotPollHandler<EorIotDeviceItem, EorPollResponse>
 {
   protected override EorPollResponse MakeResponse(
     string deviceId,
     string tenant,
     DateTimeOffset timestamp,
-    EorMeasurementDeviceItem contentItem
+    EorIotDeviceItem contentItem
   )
   {
     return new(
-      Mode: contentItem.EorMeasurementDevicePart.Value.Controls.Mode,
-      Reset: contentItem.EorMeasurementDevicePart.Value.Controls.ResetState
-        == EorMeasurementDeviceResetState.ShouldReset,
-      Start: contentItem.EorMeasurementDevicePart.Value.Controls.RunState
-        == EorMeasurementDeviceRunState.Started,
-      Stop: contentItem.EorMeasurementDevicePart.Value.Controls.RunState
-        == EorMeasurementDeviceRunState.Stopped
+      Mode: contentItem.EorIotDevicePart.Value.Controls.Mode,
+      Reset: contentItem.EorIotDevicePart.Value.Controls.ResetState
+        == EorResetState.ShouldReset,
+      Start: contentItem.EorIotDevicePart.Value.Controls.RunState
+        == EorRunState.Started,
+      Stop: contentItem.EorIotDevicePart.Value.Controls.RunState
+        == EorRunState.Stopped
     );
   }
 
@@ -29,20 +29,17 @@ public class EorPollHandler
     string deviceId,
     string tenant,
     DateTimeOffset timestamp,
-    EorMeasurementDeviceItem contentItem
+    EorIotDeviceItem contentItem
   )
   {
     return new(
-      Mode: contentItem.EorMeasurementDevicePart.Value.Controls.Mode,
-      Reset: contentItem
-        .EorMeasurementDevicePart
-        .Value
-        .Controls
-        .ResetState == EorMeasurementDeviceResetState.ShouldReset,
-      Start: contentItem.EorMeasurementDevicePart.Value.Controls.RunState
-        == EorMeasurementDeviceRunState.Started,
-      Stop: contentItem.EorMeasurementDevicePart.Value.Controls.RunState
-        == EorMeasurementDeviceRunState.Stopped
+      Mode: contentItem.EorIotDevicePart.Value.Controls.Mode,
+      Reset: contentItem.EorIotDevicePart.Value.Controls.ResetState
+        == EorResetState.ShouldReset,
+      Start: contentItem.EorIotDevicePart.Value.Controls.RunState
+        == EorRunState.Started,
+      Stop: contentItem.EorIotDevicePart.Value.Controls.RunState
+        == EorRunState.Stopped
     );
   }
 }

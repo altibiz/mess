@@ -19,7 +19,7 @@ public class Migrations : DataMigration
   public async Task<int> CreateAsync()
   {
     _contentDefinitionManager.AlterPartDefinition(
-      "MeasurementDevicePart",
+      "IotDevicePart",
       builder =>
         builder
           .Attachable()
@@ -42,7 +42,7 @@ public class Migrations : DataMigration
     );
 
     _contentDefinitionManager.AlterPartDefinition(
-      "EgaugeMeasurementDevicePart",
+      "EgaugeIotDevicePart",
       builder =>
         builder
           .Attachable()
@@ -51,7 +51,7 @@ public class Migrations : DataMigration
     );
 
     _contentDefinitionManager.AlterTypeDefinition(
-      "EgaugeMeasurementDevice",
+      "EgaugeIotDevice",
       builder =>
         builder
           .Creatable()
@@ -74,19 +74,19 @@ public class Migrations : DataMigration
                     RenderTitle = true,
                     Options = TitlePartOptions.GeneratedDisabled,
                     Pattern =
-                      @"{%- ContentItem.Content.MeasurementDevicePart.DeviceId.Text -%}"
+                      @"{%- ContentItem.Content.IotDevicePart.DeviceId.Text -%}"
                   }
                 )
           )
           .WithPart(
-            "MeasurementDevicePart",
+            "IotDevicePart",
             part =>
               part.WithDisplayName("Measurement device")
                 .WithDescription("A measurement device.")
                 .WithPosition("2")
           )
           .WithPart(
-            "EgaugeMeasurementDevicePart",
+            "EgaugeIotDevicePart",
             part =>
               part.WithDisplayName("Egauge measurement device")
                 .WithDescription("An Egauge measurement device.")
@@ -103,23 +103,23 @@ public class Migrations : DataMigration
     );
     SchemaBuilder.AlterIndexTable<IotDeviceIndex>(
       table =>
-        table.CreateIndex("IDX_MeasurementDeviceIndex_DeviceId", "DeviceId")
+        table.CreateIndex("IDX_IotDeviceIndex_DeviceId", "DeviceId")
     );
 
     if (_hostEnvironment.IsDevelopment())
     {
-      var egaugeMeasurementDevice =
+      var egaugeIotDevice =
         await _contentManager.NewContentAsync<EgaugeIotDeviceItem>();
-      egaugeMeasurementDevice.Alter(
-        egaugeMeasurementDevice =>
-          egaugeMeasurementDevice.MeasurementDevicePart,
+      egaugeIotDevice.Alter(
+        egaugeIotDevice =>
+          egaugeIotDevice.IotDevicePart,
         measurementDevicePart =>
         {
           measurementDevicePart.DeviceId = new() { Text = "egauge" };
         }
       );
       await _contentManager.CreateAsync(
-        egaugeMeasurementDevice,
+        egaugeIotDevice,
         VersionOptions.Latest
       );
     }

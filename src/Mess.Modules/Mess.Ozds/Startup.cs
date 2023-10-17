@@ -39,18 +39,18 @@ public class Startup : StartupBase
       IOzdsTimeseriesQuery
     >();
 
-    services.AddContentPart<OzdsMeasurementDevicePart>();
+    services.AddContentPart<OzdsIotDevicePart>();
     services.AddIndexProvider<DistributionSystemUnitIndexProvider>();
-    services.AddIndexProvider<OzdsMeasurementDeviceClosedDistributionSystemIndexProvider>();
-    services.AddIndexProvider<OzdsMeasurementDeviceDistributionSystemOperatorIndexProvider>();
-    services.AddIndexProvider<OzdsMeasurementDeviceDistributionSystemUnitIndexProvider>();
-    services.AddContentHandler<OzdsMeasurementDeviceHandler>();
+    services.AddIndexProvider<OzdsIotDeviceClosedDistributionSystemIndexProvider>();
+    services.AddIndexProvider<OzdsIotDeviceDistributionSystemOperatorIndexProvider>();
+    services.AddIndexProvider<OzdsIotDeviceDistributionSystemUnitIndexProvider>();
+    services.AddContentHandler<OzdsIotDeviceHandler>();
 
-    services.AddContentPart<PidgeonMeasurementDevicePart>();
+    services.AddContentPart<PidgeonIotDevicePart>();
     services.AddIotPushHandler<PidgeonPushHandler>();
     services.AddIotAuthorizationHandler<PidgeonAuthorizationHandler>();
 
-    services.AddContentPart<AbbMeasurementDevicePart>();
+    services.AddContentPart<AbbIotDevicePart>();
     services.AddIotPushHandler<AbbPushHandler>();
     services.AddChartFactory<AbbChartProvider>();
     services.AddBillingFactory<AbbBillingFactory>();
@@ -110,19 +110,19 @@ public class Startup : StartupBase
       pattern: "/Devices",
       defaults: new
       {
-        controller = typeof(MeasurementDeviceController).ControllerName(),
-        action = nameof(MeasurementDeviceController.List)
+        controller = typeof(IotDeviceController).ControllerName(),
+        action = nameof(IotDeviceController.List)
       }
     );
 
     routes.MapAreaControllerRoute(
-      name: "Mess.Ozds.MeasurementDeviceController.Detail",
+      name: "Mess.Ozds.IotDeviceController.Detail",
       areaName: "Mess.Ozds",
       pattern: "/Detail/{contentItemId}",
       defaults: new
       {
-        controller = typeof(MeasurementDeviceController).ControllerName(),
-        action = nameof(MeasurementDeviceController.Detail)
+        controller = typeof(IotDeviceController).ControllerName(),
+        action = nameof(IotDeviceController.Detail)
       }
     );
 

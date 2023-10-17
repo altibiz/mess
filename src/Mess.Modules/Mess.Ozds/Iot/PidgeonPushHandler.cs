@@ -11,13 +11,13 @@ using Mess.Ozds.Abstractions.Models;
 namespace Mess.Ozds.Pushing;
 
 public class PidgeonPushHandler
-  : JsonIotPushHandler<PidgeonMeasurementDeviceItem, PidgeonPushRequest>
+  : JsonIotPushHandler<PidgeonIotDeviceItem, PidgeonPushRequest>
 {
   protected override void Handle(
     string deviceId,
     string tenant,
     DateTimeOffset timestamp,
-    PidgeonMeasurementDeviceItem contentItem,
+    PidgeonIotDeviceItem contentItem,
     PidgeonPushRequest request
   )
   {
@@ -74,7 +74,7 @@ public class PidgeonPushHandler
     string deviceId,
     string tenant,
     DateTimeOffset timestamp,
-    PidgeonMeasurementDeviceItem contentItem,
+    PidgeonIotDeviceItem contentItem,
     PidgeonPushRequest request
   )
   {

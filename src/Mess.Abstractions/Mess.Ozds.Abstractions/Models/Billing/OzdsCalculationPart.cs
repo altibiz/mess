@@ -4,7 +4,7 @@ namespace Mess.Ozds.Abstractions.Models;
 
 public class OzdsCalculationPart : ContentPart
 {
-  public ContentItem MeasurementDevice { get; set; } = default!;
+  public ContentItem IotDevice { get; set; } = default!;
 
   public ContentItem RegulatoryAgencyCatalogue { get; set; } = default!;
 

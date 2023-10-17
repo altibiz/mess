@@ -32,7 +32,7 @@ namespace OrchardCore.Cors
                   .Id("measurement-devices")
                   .Action(
                     "List",
-                    "MeasurementDeviceAdmin",
+                    "IotDeviceAdmin",
                     new { area = "Mess.Ozds" }
                   )
                   .LocalNav()

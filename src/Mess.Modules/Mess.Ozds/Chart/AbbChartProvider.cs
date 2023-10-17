@@ -9,7 +9,7 @@ using Mess.Ozds.Abstractions.Timeseries;
 
 namespace Mess.Ozds.Chart;
 
-public class AbbChartProvider : ChartFactory<AbbMeasurementDeviceItem>
+public class AbbChartProvider : ChartFactory<AbbIotDeviceItem>
 {
   public override IEnumerable<string> TimeseriesChartDatasetProperties =>
     new[]
@@ -39,14 +39,14 @@ public class AbbChartProvider : ChartFactory<AbbMeasurementDeviceItem>
     };
 
   protected override async Task<TimeseriesChartDescriptor?> CreateTimeseriesChartAsync(
-    AbbMeasurementDeviceItem abbMeasurementDevice,
+    AbbIotDeviceItem abbIotDevice,
     TimeseriesChartItem chart,
     IEnumerable<TimeseriesChartDatasetItem> datasets
   )
   {
     var now = DateTimeOffset.UtcNow;
     var measurements = await _client.GetAbbMeasurementsAsync(
-      abbMeasurementDevice.MeasurementDevicePart.Value.DeviceId.Text,
+      abbIotDevice.IotDevicePart.Value.DeviceId.Text,
       now.Subtract(chart.TimeseriesChartPart.Value.History.Value.ToTimeSpan()),
       now
     );

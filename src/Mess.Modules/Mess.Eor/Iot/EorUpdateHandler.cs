@@ -2,31 +2,30 @@ using Mess.Eor.Abstractions.Timeseries;
 using Mess.Eor.Abstractions.Models;
 using Mess.Iot.Abstractions.Services;
 using Mess.OrchardCore;
-using Microsoft.Extensions.Logging;
 using OrchardCore.ContentManagement;
 
 namespace Mess.Eor.Iot;
 
 public class EorUpdateHandler
-  : JsonIotUpdateHandler<EorMeasurementDeviceItem, EorUpdateRequest>
+  : JsonIotUpdateHandler<EorIotDeviceItem, EorUpdateRequest>
 {
   protected override void Handle(
     string deviceId,
     string tenant,
     DateTimeOffset timestamp,
-    EorMeasurementDeviceItem contentItem,
+    EorIotDeviceItem contentItem,
     EorUpdateRequest request
   )
   {
     var status = request.ToStatus(tenant, deviceId);
 
     contentItem.Alter(
-      eorMeasurementDevice => eorMeasurementDevice.EorMeasurementDevicePart,
-      eorMeasurementDevicePart =>
+      eorIotDevice => eorIotDevice.EorIotDevicePart,
+      eorIotDevicePart =>
       {
-        eorMeasurementDevicePart.Controls.Mode = status.Mode;
-        eorMeasurementDevicePart.Controls.ResetState = status.ResetState;
-        eorMeasurementDevicePart.Controls.Stamp = request.Stamp;
+        eorIotDevicePart.Controls.Mode = status.Mode;
+        eorIotDevicePart.Controls.ResetState = status.ResetState;
+        eorIotDevicePart.Controls.Stamp = request.Stamp;
       }
     );
     _contentManager.UpdateAsync(contentItem).RunSynchronously();
@@ -38,27 +37,27 @@ public class EorUpdateHandler
     string deviceId,
     string tenant,
     DateTimeOffset timestamp,
-    EorMeasurementDeviceItem contentItem,
+    EorIotDeviceItem contentItem,
     EorUpdateRequest request
   )
   {
     var status = request.ToStatus(tenant, deviceId);
 
     if (
-      contentItem.EorMeasurementDevicePart.Value.Controls.Mode != status.Mode
-      || contentItem.EorMeasurementDevicePart.Value.Controls.ResetState
+      contentItem.EorIotDevicePart.Value.Controls.Mode != status.Mode
+      || contentItem.EorIotDevicePart.Value.Controls.ResetState
         != status.ResetState
-      || contentItem.EorMeasurementDevicePart.Value.Controls.RunState
+      || contentItem.EorIotDevicePart.Value.Controls.RunState
         != status.RunState
     )
     {
       contentItem.Alter(
-        eorMeasurementDevice => eorMeasurementDevice.EorMeasurementDevicePart,
-        eorMeasurementDevicePart =>
+        eorIotDevice => eorIotDevice.EorIotDevicePart,
+        eorIotDevicePart =>
         {
-          eorMeasurementDevicePart.Controls.Mode = status.Mode;
-          eorMeasurementDevicePart.Controls.ResetState = status.ResetState;
-          eorMeasurementDevicePart.Controls.RunState = status.RunState;
+          eorIotDevicePart.Controls.Mode = status.Mode;
+          eorIotDevicePart.Controls.ResetState = status.ResetState;
+          eorIotDevicePart.Controls.RunState = status.RunState;
         }
       );
       await _contentManager.UpdateAsync(contentItem);

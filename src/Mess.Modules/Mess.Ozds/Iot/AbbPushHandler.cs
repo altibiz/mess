@@ -6,13 +6,13 @@ using OrchardCore.ContentManagement;
 namespace Mess.Ozds.Pushing;
 
 public class AbbPushHandler
-  : JsonIotPushHandler<AbbMeasurementDeviceItem, AbbPushRequest>
+  : JsonIotPushHandler<AbbIotDeviceItem, AbbPushRequest>
 {
   protected override void Handle(
     string deviceId,
     string tenant,
     DateTimeOffset timestamp,
-    AbbMeasurementDeviceItem contentItem,
+    AbbIotDeviceItem contentItem,
     AbbPushRequest request
   ) =>
     _measurementClient.AddAbbMeasurement(
@@ -23,7 +23,7 @@ public class AbbPushHandler
     string deviceId,
     string tenant,
     DateTimeOffset timestamp,
-    AbbMeasurementDeviceItem contentItem,
+    AbbIotDeviceItem contentItem,
     AbbPushRequest request
   ) =>
     await _measurementClient.AddAbbMeasurementAsync(

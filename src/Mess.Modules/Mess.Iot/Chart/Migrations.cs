@@ -20,7 +20,7 @@ public class Migrations : DataMigration
   public async Task<int> CreateAsync()
   {
     _contentDefinitionManager.AlterTypeDefinition(
-      "EgaugeMeasurementDevice",
+      "EgaugeIotDevice",
       builder =>
         builder
           .Creatable()
@@ -43,19 +43,19 @@ public class Migrations : DataMigration
                     RenderTitle = true,
                     Options = TitlePartOptions.GeneratedDisabled,
                     Pattern =
-                      @"{%- ContentItem.Content.EgaugeMeasurementDevicePart.DeviceId.Text -%}"
+                      @"{%- ContentItem.Content.EgaugeIotDevicePart.DeviceId.Text -%}"
                   }
                 )
           )
           .WithPart(
-            "MeasurementDevicePart",
+            "IotDevicePart",
             part =>
               part.WithDisplayName("Measurement device")
                 .WithDescription("A measurement device.")
                 .WithPosition("2")
           )
           .WithPart(
-            "EgaugeMeasurementDevicePart",
+            "EgaugeIotDevicePart",
             part =>
               part.WithDisplayName("Egauge measurement device")
                 .WithDescription("An Egauge measurement device.")
@@ -98,7 +98,7 @@ public class Migrations : DataMigration
         egaugeChart => egaugeChart.TimeseriesChartPart,
         timeseriesChartPart =>
         {
-          timeseriesChartPart.ChartContentType = "EgaugeMeasurementDevice";
+          timeseriesChartPart.ChartContentType = "EgaugeIotDevice";
           timeseriesChartPart.History = new()
           {
             Value = new(Unit: IntervalUnit.Minute, Count: 10)
@@ -112,7 +112,7 @@ public class Migrations : DataMigration
       );
       await _contentManager.CreateAsync(egaugeChart, VersionOptions.Latest);
 
-      var egaugeMeasurementDevice =
+      var egaugeIotDevice =
         (
           await _session
             .Query<ContentItem, IotDeviceIndex>()
@@ -120,23 +120,23 @@ public class Migrations : DataMigration
             .FirstOrDefaultAsync()
         )?.AsContent<EgaugeIotDeviceItem>()
         ?? await _contentManager.NewContentAsync<EgaugeIotDeviceItem>();
-      egaugeMeasurementDevice.Alter(
-        egaugeMeasurementDevice =>
-          egaugeMeasurementDevice.MeasurementDevicePart,
+      egaugeIotDevice.Alter(
+        egaugeIotDevice =>
+          egaugeIotDevice.IotDevicePart,
         measurementDevicePart =>
         {
           measurementDevicePart.DeviceId = new() { Text = "egauge" };
         }
       );
-      egaugeMeasurementDevice.Alter(
-        egaugeMeasurementDevice => egaugeMeasurementDevice.ChartPart,
+      egaugeIotDevice.Alter(
+        egaugeIotDevice => egaugeIotDevice.ChartPart,
         chartPart =>
         {
           chartPart.ChartContentItemId = egaugeChart.ContentItemId;
         }
       );
       await _contentManager.CreateAsync(
-        egaugeMeasurementDevice,
+        egaugeIotDevice,
         VersionOptions.Latest
       );
     }

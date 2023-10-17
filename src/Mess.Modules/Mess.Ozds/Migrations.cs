@@ -51,7 +51,7 @@ public class Migrations : DataMigration
       _serviceProvider.GetRequiredService<IContentDefinitionManager>();
 
     contentDefinitionManager.AlterPartDefinition(
-      "OzdsMeasurementDevicePart",
+      "OzdsIotDevicePart",
       builder =>
         builder
           .Attachable()
@@ -353,7 +353,7 @@ internal static class CreateAsyncMigrations
     var contentDefinitionManager =
       serviceProvider.GetRequiredService<IContentDefinitionManager>();
 
-    schemaBuilder.CreateMapIndexTable<OzdsMeasurementDeviceDistributionSystemOperatorIndex>(
+    schemaBuilder.CreateMapIndexTable<OzdsIotDeviceDistributionSystemOperatorIndex>(
       table =>
         table
           .Column<string>("ContentItemId", c => c.WithLength(64))
@@ -368,14 +368,14 @@ internal static class CreateAsyncMigrations
             c => c.WithLength(64)
           )
     );
-    schemaBuilder.AlterIndexTable<OzdsMeasurementDeviceDistributionSystemOperatorIndex>(table =>
+    schemaBuilder.AlterIndexTable<OzdsIotDeviceDistributionSystemOperatorIndex>(table =>
     {
       table.CreateIndex(
-        "IDX_OzdsMeasurementDeviceDistributionSystemOperatorIndex_DeviceId",
+        "IDX_OzdsIotDeviceDistributionSystemOperatorIndex_DeviceId",
         "DeviceId"
       );
       table.CreateIndex(
-        "IDX_OzdsMeasurementDeviceDistributionSystemOperatorIndex_RepresentativeUserId",
+        "IDX_OzdsIotDeviceDistributionSystemOperatorIndex_RepresentativeUserId",
         "DistributionSystemOperatorRepresentativeUserId"
       );
     });
@@ -602,7 +602,7 @@ internal static class CreateAsyncMigrations
     var contentDefinitionManager =
       serviceProvider.GetRequiredService<IContentDefinitionManager>();
 
-    schemaBuilder.CreateMapIndexTable<OzdsMeasurementDeviceClosedDistributionSystemIndex>(
+    schemaBuilder.CreateMapIndexTable<OzdsIotDeviceClosedDistributionSystemIndex>(
       table =>
         table
           .Column<string>("ContentItemId", c => c.WithLength(64))
@@ -617,14 +617,14 @@ internal static class CreateAsyncMigrations
             c => c.WithLength(64)
           )
     );
-    schemaBuilder.AlterIndexTable<OzdsMeasurementDeviceClosedDistributionSystemIndex>(table =>
+    schemaBuilder.AlterIndexTable<OzdsIotDeviceClosedDistributionSystemIndex>(table =>
     {
       table.CreateIndex(
-        "IDX_OzdsMeasurementDeviceClosedDistributionSystemIndex_DeviceId",
+        "IDX_OzdsIotDeviceClosedDistributionSystemIndex_DeviceId",
         "DeviceId"
       );
       table.CreateIndex(
-        "IDX_OzdsMeasurementDeviceClosedDistributionSystemIndex_RepresentativeUserId",
+        "IDX_OzdsIotDeviceClosedDistributionSystemIndex_RepresentativeUserId",
         "ClosedDistributionSystemRepresentativeUserId"
       );
     });
@@ -807,7 +807,7 @@ internal static class CreateAsyncMigrations
     var contentDefinitionManager =
       serviceProvider.GetRequiredService<IContentDefinitionManager>();
 
-    schemaBuilder.CreateMapIndexTable<OzdsMeasurementDeviceDistributionSystemUnitIndex>(
+    schemaBuilder.CreateMapIndexTable<OzdsIotDeviceDistributionSystemUnitIndex>(
       table =>
         table
           .Column<string>("ContentItemId", c => c.WithLength(64))
@@ -822,14 +822,14 @@ internal static class CreateAsyncMigrations
             c => c.WithLength(64)
           )
     );
-    schemaBuilder.AlterIndexTable<OzdsMeasurementDeviceDistributionSystemUnitIndex>(table =>
+    schemaBuilder.AlterIndexTable<OzdsIotDeviceDistributionSystemUnitIndex>(table =>
     {
       table.CreateIndex(
-        "IDX_OzdsMeasurementDeviceDistributionSystemUnitIndex_DeviceId",
+        "IDX_OzdsIotDeviceDistributionSystemUnitIndex_DeviceId",
         "DeviceId"
       );
       table.CreateIndex(
-        "IDX_OzdsMeasurementDeviceDistributionSystemUnitIndex_RepresentativeUserId",
+        "IDX_OzdsIotDeviceDistributionSystemUnitIndex_RepresentativeUserId",
         "DistributionSystemUnitRepresentativeUserId"
       );
     });
@@ -954,45 +954,45 @@ internal static class CreateAsyncMigrations
 
     if (hostEnvironment.IsDevelopment())
     {
-      var pidgeonMeasurementDevice =
-        await contentManager.NewContentAsync<PidgeonMeasurementDeviceItem>();
-      pidgeonMeasurementDevice.Alter(
-        pidgeonMeasurementDevice => pidgeonMeasurementDevice.TitlePart,
+      var pidgeonIotDevice =
+        await contentManager.NewContentAsync<PidgeonIotDeviceItem>();
+      pidgeonIotDevice.Alter(
+        pidgeonIotDevice => pidgeonIotDevice.TitlePart,
         titlePart =>
         {
           titlePart.Title = "pidgeon";
         }
       );
-      pidgeonMeasurementDevice.Alter(
-        pidgeonMeasurementDevice =>
-          pidgeonMeasurementDevice.MeasurementDevicePart,
+      pidgeonIotDevice.Alter(
+        pidgeonIotDevice =>
+          pidgeonIotDevice.IotDevicePart,
         measurementDevicePart =>
         {
           measurementDevicePart.DeviceId = new() { Text = "pidgeon" };
         }
       );
-      pidgeonMeasurementDevice.Alter(
-        pidgeonMeasurementDevice =>
-          pidgeonMeasurementDevice.PidgeonMeasurementDevicePart,
-        pidgeonMeasurementDevicePart =>
+      pidgeonIotDevice.Alter(
+        pidgeonIotDevice =>
+          pidgeonIotDevice.PidgeonIotDevicePart,
+        pidgeonIotDevicePart =>
         {
-          pidgeonMeasurementDevicePart.ApiKey =
+          pidgeonIotDevicePart.ApiKey =
             apiKeyFieldService.HashApiKeyField("pidgeon");
         }
       );
-      pidgeonMeasurementDevice.Alter(
-        pidgeonMeasurementDevice =>
-          pidgeonMeasurementDevice.OzdsMeasurementDevicePart,
-        ozdsMeasurementDevicePart =>
+      pidgeonIotDevice.Alter(
+        pidgeonIotDevice =>
+          pidgeonIotDevice.OzdsIotDevicePart,
+        ozdsIotDevicePart =>
         {
-          ozdsMeasurementDevicePart.DistributionSystemUnit = new()
+          ozdsIotDevicePart.DistributionSystemUnit = new()
           {
             ContentItemIds = new[] { unitContentItemId }
           };
         }
       );
       await contentManager.CreateAsync(
-        pidgeonMeasurementDevice,
+        pidgeonIotDevice,
         VersionOptions.Latest
       );
     }
@@ -1007,7 +1007,7 @@ internal static class CreateAsyncMigrations
       serviceProvider.GetRequiredService<IContentDefinitionManager>();
 
     contentDefinitionManager.AlterPartDefinition(
-      "PidgeonMeasurementDevicePart",
+      "PidgeonIotDevicePart",
       builder =>
         builder
           .Attachable()
@@ -1030,7 +1030,7 @@ internal static class CreateAsyncMigrations
     );
 
     contentDefinitionManager.AlterTypeDefinition(
-      "PidgeonMeasurementDevice",
+      "PidgeonIotDevice",
       builder =>
         builder
           .Creatable()
@@ -1053,19 +1053,19 @@ internal static class CreateAsyncMigrations
                     RenderTitle = true,
                     Options = TitlePartOptions.GeneratedDisabled,
                     Pattern =
-                      @"{%- ContentItem.Content.MeasurementDevicePart.DeviceId.Text -%}"
+                      @"{%- ContentItem.Content.IotDevicePart.DeviceId.Text -%}"
                   }
                 )
           )
           .WithPart(
-            "MeasurementDevicePart",
+            "IotDevicePart",
             part =>
               part.WithDisplayName("Measurement device")
                 .WithDescription("A measurement device.")
                 .WithPosition("2")
           )
           .WithPart(
-            "PidgeonMeasurementDevicePart",
+            "PidgeonIotDevicePart",
             part =>
               part.WithDisplayName("Pidgeon measurement device")
                 .WithDescription("A Pidgeon measurement device.")
@@ -1115,7 +1115,7 @@ internal static class CreateAsyncMigrations
         abbChart => abbChart.TimeseriesChartPart,
         timeseriesChartPart =>
         {
-          timeseriesChartPart.ChartContentType = "AbbMeasurementDevice";
+          timeseriesChartPart.ChartContentType = "AbbIotDevice";
           timeseriesChartPart.History = new()
           {
             Value = new(Unit: IntervalUnit.Minute, Count: 10)
@@ -1129,49 +1129,49 @@ internal static class CreateAsyncMigrations
       );
       await contentManager.CreateAsync(abbChart, VersionOptions.Latest);
 
-      var abbMeasurementDevice =
-        await contentManager.NewContentAsync<AbbMeasurementDeviceItem>();
-      abbMeasurementDevice.Alter(
-        abbMeasurementDevice => abbMeasurementDevice.TitlePart,
+      var abbIotDevice =
+        await contentManager.NewContentAsync<AbbIotDeviceItem>();
+      abbIotDevice.Alter(
+        abbIotDevice => abbIotDevice.TitlePart,
         titlePart =>
         {
           titlePart.Title = "Abb";
         }
       );
-      abbMeasurementDevice.Alter(
-        abbMeasurementDevice => abbMeasurementDevice.MeasurementDevicePart,
+      abbIotDevice.Alter(
+        abbIotDevice => abbIotDevice.IotDevicePart,
         measurementDevicePart =>
         {
           measurementDevicePart.DeviceId = new() { Text = "abb" };
         }
       );
-      abbMeasurementDevice.Alter(
-        abbMeasurementDevice => abbMeasurementDevice.OzdsMeasurementDevicePart,
-        ozdsMeasurementDevicePart =>
+      abbIotDevice.Alter(
+        abbIotDevice => abbIotDevice.OzdsIotDevicePart,
+        ozdsIotDevicePart =>
         {
-          ozdsMeasurementDevicePart.DistributionSystemUnit = new()
+          ozdsIotDevicePart.DistributionSystemUnit = new()
           {
             ContentItemIds = new[] { unitContentItemId }
           };
-          ozdsMeasurementDevicePart.UsageCatalogue = new()
+          ozdsIotDevicePart.UsageCatalogue = new()
           {
             ContentItemIds = new[] { usageCatalogueContentItemId }
           };
-          ozdsMeasurementDevicePart.SupplyCatalogue = new()
+          ozdsIotDevicePart.SupplyCatalogue = new()
           {
             ContentItemIds = new[] { supplyCatalogueContentItemId }
           };
         }
       );
-      abbMeasurementDevice.Alter(
-        abbMeasurementDevice => abbMeasurementDevice.ChartPart,
+      abbIotDevice.Alter(
+        abbIotDevice => abbIotDevice.ChartPart,
         chartPart =>
         {
           chartPart.ChartContentItemId = abbChart.ContentItemId;
         }
       );
       await contentManager.CreateAsync(
-        abbMeasurementDevice,
+        abbIotDevice,
         VersionOptions.Latest
       );
     }
@@ -1186,7 +1186,7 @@ internal static class CreateAsyncMigrations
       serviceProvider.GetRequiredService<IContentDefinitionManager>();
 
     contentDefinitionManager.AlterPartDefinition(
-      "AbbMeasurementDevicePart",
+      "AbbIotDevicePart",
       builder =>
         builder
           .Attachable()
@@ -1195,7 +1195,7 @@ internal static class CreateAsyncMigrations
     );
 
     contentDefinitionManager.AlterTypeDefinition(
-      "AbbMeasurementDevice",
+      "AbbIotDevice",
       builder =>
         builder
           .Creatable()
@@ -1218,26 +1218,26 @@ internal static class CreateAsyncMigrations
                     RenderTitle = true,
                     Options = TitlePartOptions.GeneratedDisabled,
                     Pattern =
-                      @"{%- ContentItem.Content.MeasurementDevicePart.DeviceId.Text -%}"
+                      @"{%- ContentItem.Content.IotDevicePart.DeviceId.Text -%}"
                   }
                 )
           )
           .WithPart(
-            "MeasurementDevicePart",
+            "IotDevicePart",
             part =>
               part.WithDisplayName("Measurement device")
                 .WithDescription("A measurement device.")
                 .WithPosition("2")
           )
           .WithPart(
-            "OzdsMeasurementDevicePart",
+            "OzdsIotDevicePart",
             part =>
               part.WithDisplayName("OZDS Measurement device")
                 .WithDescription("An OZDS measurement device.")
                 .WithPosition("3")
           )
           .WithPart(
-            "AbbMeasurementDevicePart",
+            "AbbIotDevicePart",
             part =>
               part.WithDisplayName("Abb measurement device")
                 .WithDescription("An Abb measurement device.")
@@ -1439,7 +1439,7 @@ internal static class CreateAsyncMigrations
                 )
           )
           .WithField(
-            "MeasurementDeviceFee",
+            "IotDeviceFee",
             fieldBuilder =>
               fieldBuilder
                 .OfType("NumericField")
@@ -1481,7 +1481,7 @@ internal static class CreateAsyncMigrations
         operatorCataloguePart.HighEnergyPrice = new() { Value = 0.04M };
         operatorCataloguePart.LowEnergyPrice = new() { Value = 0.02M };
         operatorCataloguePart.MaxPowerPrice = new() { Value = 14.00M };
-        operatorCataloguePart.MeasurementDeviceFee = new() { Value = 68.00M };
+        operatorCataloguePart.IotDeviceFee = new() { Value = 68.00M };
       }
     );
     await contentManager.CreateAsync(
@@ -1507,7 +1507,7 @@ internal static class CreateAsyncMigrations
         operatorCataloguePart.HighEnergyPrice = new() { Value = 0.14M };
         operatorCataloguePart.LowEnergyPrice = new() { Value = 0.07M };
         operatorCataloguePart.MaxPowerPrice = new() { Value = 26.00M };
-        operatorCataloguePart.MeasurementDeviceFee = new() { Value = 66.00M };
+        operatorCataloguePart.IotDeviceFee = new() { Value = 66.00M };
       }
     );
     await contentManager.CreateAsync(
@@ -1531,7 +1531,7 @@ internal static class CreateAsyncMigrations
         operatorCataloguePart.Voltage = new() { Text = "Low" };
         operatorCataloguePart.Model = new() { Text = "Blue" };
         operatorCataloguePart.EnergyPrice = new() { Value = 0.31M };
-        operatorCataloguePart.MeasurementDeviceFee = new() { Value = 41.30M };
+        operatorCataloguePart.IotDeviceFee = new() { Value = 41.30M };
       }
     );
     await contentManager.CreateAsync(
@@ -1556,7 +1556,7 @@ internal static class CreateAsyncMigrations
         operatorCataloguePart.Model = new() { Text = "White" };
         operatorCataloguePart.HighEnergyPrice = new() { Value = 0.39M };
         operatorCataloguePart.LowEnergyPrice = new() { Value = 0.17M };
-        operatorCataloguePart.MeasurementDeviceFee = new() { Value = 41.30M };
+        operatorCataloguePart.IotDeviceFee = new() { Value = 41.30M };
       }
     );
     await contentManager.CreateAsync(
@@ -1582,7 +1582,7 @@ internal static class CreateAsyncMigrations
         operatorCataloguePart.HighEnergyPrice = new() { Value = 0.22M };
         operatorCataloguePart.LowEnergyPrice = new() { Value = 0.1M };
         operatorCataloguePart.MaxPowerPrice = new() { Value = 39.00M };
-        operatorCataloguePart.MeasurementDeviceFee = new() { Value = 41.30M };
+        operatorCataloguePart.IotDeviceFee = new() { Value = 41.30M };
       }
     );
     await contentManager.CreateAsync(
@@ -1606,7 +1606,7 @@ internal static class CreateAsyncMigrations
         operatorCataloguePart.Voltage = new() { Text = "Low" };
         operatorCataloguePart.Model = new() { Text = "Yellow" };
         operatorCataloguePart.EnergyPrice = new() { Value = 0.24M };
-        operatorCataloguePart.MeasurementDeviceFee = new() { Value = 15.45M };
+        operatorCataloguePart.IotDeviceFee = new() { Value = 15.45M };
       }
     );
     await contentManager.CreateAsync(

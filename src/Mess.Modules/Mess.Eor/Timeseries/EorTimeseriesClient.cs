@@ -179,9 +179,7 @@ public class EorTimeseriesClient : IEorTimeseriesClient
       );
     });
 
-  public async Task<
-    IReadOnlyList<EorSummary>
-  > GetEorMeasurementDeviceSummariesAsync(
+  public async Task<IReadOnlyList<EorSummary>> GetEorIotDeviceSummariesAsync(
     IReadOnlyCollection<string> sources
   ) =>
     await _services.WithTimeseriesDbContextAsync<
@@ -249,7 +247,7 @@ public class EorTimeseriesClient : IEorTimeseriesClient
         .ToList();
     });
 
-  public IReadOnlyList<EorSummary> GetEorMeasurementDeviceSummaries(
+  public IReadOnlyList<EorSummary> GetEorIotDeviceSummaries(
     IReadOnlyCollection<string> sources
   ) =>
     _services.WithTimeseriesDbContext<
@@ -361,7 +359,7 @@ public class EorTimeseriesClient : IEorTimeseriesClient
         .LastOrDefault();
     });
 
-  public Task<EorSummary?> GetEorMeasurementDeviceSummaryAsync(string source) =>
+  public Task<EorSummary?> GetEorIotDeviceSummaryAsync(string source) =>
     _services.WithTimeseriesDbContextAsync<
       EorTimeseriesDbContext,
       EorSummary?
@@ -386,7 +384,7 @@ public class EorTimeseriesClient : IEorTimeseriesClient
       return EorSummary.From(_shellSettings.Name, source, measurement, status);
     });
 
-  public EorSummary? GetEorMeasurementDeviceSummary(string source) =>
+  public EorSummary? GetEorIotDeviceSummary(string source) =>
     _services.WithTimeseriesDbContext<
       EorTimeseriesDbContext,
       EorSummary?

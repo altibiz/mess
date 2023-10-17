@@ -28,14 +28,14 @@ public class AdminMenu : INavigationProvider
               .AddClass("devices")
               .Id("devices")
               .Action(
-                nameof(EorMeasurementDeviceAdminController.List),
-                typeof(EorMeasurementDeviceAdminController).ControllerName(),
+                nameof(EorIotDeviceAdminController.List),
+                typeof(EorIotDeviceAdminController).ControllerName(),
                 "Mess.Eor"
               )
               .Permission(
                 ContentTypePermissionsHelper.CreateDynamicPermission(
                   CommonPermissions.ViewOwnContent,
-                  "EorMeasurementDevice"
+                  "EorIotDevice"
                 )
               )
               .LocalNav()

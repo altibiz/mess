@@ -28,17 +28,17 @@ export const diodeBridgeStateSchema = zod.enum(["Ok", "Error"]);
 
 export type DiodeBridgeState = zod.infer<typeof diodeBridgeStateSchema>;
 
-export const eorMeasurementDeviceControlsSchema = zod.object({
+export const eorIotDeviceControlsSchema = zod.object({
   mode: zod.number(),
   runState: runStateSchema,
   resetState: resetStateSchema,
 });
 
-export type EorMeasurementDeviceControls = zod.infer<
-  typeof eorMeasurementDeviceControlsSchema
+export type EorIotDeviceControls = zod.infer<
+  typeof eorIotDeviceControlsSchema
 >;
 
-export const eorMeasurementDeviceMeasurementSchema = zod.object({
+export const eorIotDeviceMeasurementSchema = zod.object({
   tenant: zod.string(),
   deviceId: zod.string(),
   timestamp: zod.coerce.date(),
@@ -49,11 +49,11 @@ export const eorMeasurementDeviceMeasurementSchema = zod.object({
   heatsinkFans: zod.boolean(),
 });
 
-export type EorMeasurementDeviceMeasurement = zod.infer<
-  typeof eorMeasurementDeviceMeasurementSchema
+export type EorIotDeviceMeasurement = zod.infer<
+  typeof eorIotDeviceMeasurementSchema
 >;
 
-export const eorMeasurementDeviceStatusSchema = zod.object({
+export const eorIotDeviceStatusSchema = zod.object({
   tenant: zod.string(),
   deviceId: zod.string(),
   timestamp: zod.coerce.date(),
@@ -70,26 +70,26 @@ export const eorMeasurementDeviceStatusSchema = zod.object({
   secondDiodeBridgeState: diodeBridgeStateSchema,
 });
 
-export type EorMeasurementDeviceStatus = zod.infer<
-  typeof eorMeasurementDeviceStatusSchema
+export type EorIotDeviceStatus = zod.infer<
+  typeof eorIotDeviceStatusSchema
 >;
 
-export const eorMeasurementDeviceSummarySchema = zod.object({
+export const eorIotDeviceSummarySchema = zod.object({
   tenant: zod.string(),
   deviceId: zod.string(),
-  lastMeasurement: eorMeasurementDeviceMeasurementSchema,
-  status: eorMeasurementDeviceStatusSchema,
+  lastMeasurement: eorIotDeviceMeasurementSchema,
+  status: eorIotDeviceStatusSchema,
 });
 
-export type EorMeasurementDeviceSummary = zod.infer<
-  typeof eorMeasurementDeviceSummarySchema
+export type EorIotDeviceSummary = zod.infer<
+  typeof eorIotDeviceSummarySchema
 >;
 
-export const eorMeasurementDeviceDataSchema = zod.object({
-  eorMeasurementDeviceControls: eorMeasurementDeviceControlsSchema,
-  eorMeasurementDeviceSummary: eorMeasurementDeviceSummarySchema,
+export const eorIotDeviceDataSchema = zod.object({
+  eorIotDeviceControls: eorIotDeviceControlsSchema,
+  eorIotDeviceSummary: eorIotDeviceSummarySchema,
 });
 
-export type EorMeasurementDeviceData = zod.infer<
-  typeof eorMeasurementDeviceDataSchema
+export type EorIotDeviceData = zod.infer<
+  typeof eorIotDeviceDataSchema
 >;

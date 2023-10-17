@@ -1,0 +1,50 @@
+@inherits ContentItemRazorPage<EorIotDeviceItem>
+
+<section>
+  <h3>@ContentItem.TitlePart.Value.Title</h3>
+  <div>
+    <div>
+      <div>
+        <strong>@T["Date of manufacture"]</strong>
+        <span>
+          @ContentItem.EorIotDevicePart.Value.ManufactureDate.Value
+        </span>
+      </div>
+      <div>
+        <strong>@T["Manufacturer"]</strong>
+        <span>
+          @ContentItem.EorIotDevicePart.Value.Manufacturer.Text
+        </span>
+      </div>
+      <div>
+        <strong>@T["Date of commision"]</strong>
+        <span>
+          @ContentItem.EorIotDevicePart.Value.CommisionDate.Value
+        </span>
+      </div>
+      <div>
+        <strong>@T["Product number"]</strong>
+        <span>
+          @ContentItem.EorIotDevicePart.Value.ProductNumber.Text
+        </span>
+      </div>
+      <div>
+        <strong>@T["Location"]</strong>
+        <span>
+          @ContentItem.EorIotDevicePart.Value.Latitude.Value
+          ,
+          @ContentItem.EorIotDevicePart.Value.Longitude.Value
+        </span>
+      </div>
+    </div>
+  </div>
+  <div>
+    <a
+        asp-route-area="Mess.Eor"
+        asp-controller="EorIotDevice"
+        asp-action="Detail"
+        asp-route-contentITemId="@ContentItem.ContentItemId">
+      @T["More..."]
+    </a>
+  </div>
+</section>

@@ -18,6 +18,6 @@ public class OperatorCataloguePart : ContentPart
 
   public NumericField MaxPowerPrice { get; set; } = new() { Value = 0.00M };
 
-  public NumericField MeasurementDeviceFee { get; set; } =
+  public NumericField IotDeviceFee { get; set; } =
     new() { Value = 0.00M };
 }

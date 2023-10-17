@@ -12,8 +12,8 @@ using Mess.Iot.Abstractions.Caches;
 namespace Mess.Iot.Controllers;
 
 [IgnoreAntiforgeryToken]
-[MeasurementDeviceAuthorization]
-[MeasurementDeviceAsciiResponse]
+[IotDeviceAuthorization]
+[IotDeviceAsciiResponse]
 public class IotDeviceController : Controller
 {
   [HttpPost]

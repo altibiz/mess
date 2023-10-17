@@ -36,7 +36,7 @@ public class ClosedDistributionSystemController : Controller
       contentItems = await _session
         .Query<
           ContentItem,
-          OzdsMeasurementDeviceDistributionSystemOperatorIndex
+          OzdsIotDeviceDistributionSystemOperatorIndex
         >()
         .Where(
           index =>
@@ -51,7 +51,7 @@ public class ClosedDistributionSystemController : Controller
     }
 
     return View(
-      new OzdsMeasurementDeviceListViewModel
+      new OzdsIotDeviceListViewModel
       {
         ContentItems = contentItems
           .Select(
@@ -59,8 +59,8 @@ public class ClosedDistributionSystemController : Controller
               (
                 ContentItem: contentItem,
                 TitlePart: contentItem.As<TitlePart>(),
-                OzdsMeasurementDevicePart: contentItem.As<OzdsMeasurementDevicePart>(),
-                MeasurementDevicePart: contentItem.As<IotDevicePart>()
+                OzdsIotDevicePart: contentItem.As<OzdsIotDevicePart>(),
+                IotDevicePart: contentItem.As<IotDevicePart>()
               )
           )
           .ToList()
@@ -76,8 +76,8 @@ public class ClosedDistributionSystemController : Controller
       return NotFound();
     }
 
-    var ozdsMeasurementDevicePart = contentItem.As<OzdsMeasurementDevicePart>();
-    if (ozdsMeasurementDevicePart == null)
+    var ozdsIotDevicePart = contentItem.As<OzdsIotDevicePart>();
+    if (ozdsIotDevicePart == null)
     {
       return NotFound();
     }
@@ -89,7 +89,7 @@ public class ClosedDistributionSystemController : Controller
         orchardCoreUser.RoleNames.Contains(
           "DistributionSystemOperatorRepresentative"
         )
-        && ozdsMeasurementDevicePart.DistributionSystemOperatorRepresentativeUserIds.Contains(
+        && ozdsIotDevicePart.DistributionSystemOperatorRepresentativeUserIds.Contains(
           orchardCoreUser.UserId
         )
       )
@@ -99,12 +99,12 @@ public class ClosedDistributionSystemController : Controller
     }
 
     return View(
-      new OzdsMeasurementDeviceDetailViewModel
+      new OzdsIotDeviceDetailViewModel
       {
         ContentItem = contentItem,
         TitlePart = contentItem.As<TitlePart>(),
-        OzdsMeasurementDevicePart = contentItem.As<OzdsMeasurementDevicePart>(),
-        MeasurementDevicePart = contentItem.As<IotDevicePart>()
+        OzdsIotDevicePart = contentItem.As<OzdsIotDevicePart>(),
+        IotDevicePart = contentItem.As<IotDevicePart>()
       }
     );
   }

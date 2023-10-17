@@ -41,9 +41,9 @@ export const useRefresh = ({
     const data = await getData(requestUrlPrefix, contentItemId);
 
     const status =
-      data.eorMeasurementDeviceSummary.status.processFault === 0
+      data.eorIotDeviceSummary.status.processFault === 0
         ? { text: "OK", class: "status status-ok" }
-        : data.eorMeasurementDeviceSummary.status.processFault === 999
+        : data.eorIotDeviceSummary.status.processFault === 999
         ? { text: "OFF", class: "status status-warning" }
         : { text: "ERROR", class: "status status-error" };
     setElementText(id.status, status.text);
@@ -51,35 +51,35 @@ export const useRefresh = ({
 
     setElementText(
       id.communicationFault,
-      data.eorMeasurementDeviceSummary.status.communicationFault,
+      data.eorIotDeviceSummary.status.communicationFault,
     );
 
     setElementText(
       id.processFault,
-      data.eorMeasurementDeviceSummary.status.processFault,
+      data.eorIotDeviceSummary.status.processFault,
     );
     setElementInnerHtml(
       id.processFaults,
-      data.eorMeasurementDeviceSummary.status.processFaults
+      data.eorIotDeviceSummary.status.processFaults
         ? "<p>" +
-            data.eorMeasurementDeviceSummary.status.processFaults.join("<p>")
+            data.eorIotDeviceSummary.status.processFaults.join("<p>")
         : "",
     );
 
     const deviceControlStatus =
-      data.eorMeasurementDeviceSummary.status.resetState === "ShouldReset"
+      data.eorIotDeviceSummary.status.resetState === "ShouldReset"
         ? { text: "Reset", class: "status status-warning" }
-        : data.eorMeasurementDeviceSummary.status.runState === "Started"
+        : data.eorIotDeviceSummary.status.runState === "Started"
         ? { text: "Started", class: "status status-ok" }
-        : data.eorMeasurementDeviceSummary.status.runState === "Stopped"
+        : data.eorIotDeviceSummary.status.runState === "Stopped"
         ? { text: "Stopped", class: "status status-error" }
         : { text: "Unknown", class: "status status-warning" };
     const serverControlStatus =
-      data.eorMeasurementDeviceControls.resetState === "ShouldReset"
+      data.eorIotDeviceControls.resetState === "ShouldReset"
         ? { text: "Reset", class: "status status-warning" }
-        : data.eorMeasurementDeviceControls.runState === "Started"
+        : data.eorIotDeviceControls.runState === "Started"
         ? { text: "Started", class: "status status-ok" }
-        : data.eorMeasurementDeviceControls.runState === "Stopped"
+        : data.eorIotDeviceControls.runState === "Stopped"
         ? { text: "Stopped", class: "status status-error" }
         : { text: "Unknown", class: "status status-warning" };
     setElementInnerHtml(
@@ -92,45 +92,45 @@ export const useRefresh = ({
 
     setElementInnerHtml(
       id.modeLabel,
-      data.eorMeasurementDeviceControls.mode !=
-        data.eorMeasurementDeviceSummary.status.mode
-        ? `Position (${data.eorMeasurementDeviceSummary.status.mode})`
+      data.eorIotDeviceControls.mode !=
+        data.eorIotDeviceSummary.status.mode
+        ? `Position (${data.eorIotDeviceSummary.status.mode})`
         : `Position`,
     );
-    setInputElementValue(id.modeInput, data.eorMeasurementDeviceControls.mode);
+    setInputElementValue(id.modeInput, data.eorIotDeviceControls.mode);
 
     setElementText(
       id.doorState,
-      data.eorMeasurementDeviceSummary.status.doorState,
+      data.eorIotDeviceSummary.status.doorState,
     );
 
     setElementText(
       id.mainCircuitBreakerState,
-      data.eorMeasurementDeviceSummary.status.mainCircuitBreakerState,
+      data.eorIotDeviceSummary.status.mainCircuitBreakerState,
     );
 
     setElementText(
       id.powerRelay,
-      data.eorMeasurementDeviceSummary.status.processFault === 0
+      data.eorIotDeviceSummary.status.processFault === 0
         ? "On"
-        : data.eorMeasurementDeviceSummary.status.processFault === 999
+        : data.eorIotDeviceSummary.status.processFault === 999
         ? "Off"
         : "Error",
     );
 
     setElementText(
       id.voltage,
-      data.eorMeasurementDeviceSummary.lastMeasurement.voltage,
+      data.eorIotDeviceSummary.lastMeasurement.voltage,
     );
 
     setElementText(
       id.current,
-      data.eorMeasurementDeviceSummary.lastMeasurement.current,
+      data.eorIotDeviceSummary.lastMeasurement.current,
     );
 
     setElementText(
       id.temperature,
-      data.eorMeasurementDeviceSummary.lastMeasurement.temperature,
+      data.eorIotDeviceSummary.lastMeasurement.temperature,
     );
   };
 };

@@ -12,7 +12,7 @@ public record OzdsExpenditureData(
   OzdsExpenditureItemData? LowEnergyItem,
   OzdsExpenditureItemData? EnergyItem,
   OzdsExpenditureItemData? MaxPowerItem,
-  OzdsExpenditureItemData? MeasurementDeviceFee,
+  OzdsExpenditureItemData? IotDeviceFee,
   decimal Total
 );
 

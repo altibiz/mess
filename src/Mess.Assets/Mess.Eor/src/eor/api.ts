@@ -1,16 +1,16 @@
 import {
-  EorMeasurementDeviceData,
-  eorMeasurementDeviceDataSchema,
+  EorIotDeviceData,
+  eorIotDeviceDataSchema,
 } from "./schema";
 
 export const getData = async (
   requestUrlPrefix: string,
   contentItemId: string,
-): Promise<EorMeasurementDeviceData> => {
+): Promise<EorIotDeviceData> => {
   const response = await fetch(
     `${requestUrlPrefix}/Devices/${contentItemId}/Data`,
   );
   const rawData = await response.json();
-  const parsedData = await eorMeasurementDeviceDataSchema.parseAsync(rawData);
+  const parsedData = await eorIotDeviceDataSchema.parseAsync(rawData);
   return parsedData;
 };

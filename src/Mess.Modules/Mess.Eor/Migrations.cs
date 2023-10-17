@@ -31,7 +31,7 @@ public class Migrations : DataMigration
   public async Task<int> CreateAsync()
   {
     _contentDefinitionManager.AlterPartDefinition(
-      "EorMeasurementDevicePart",
+      "EorIotDevicePart",
       builder =>
         builder
           .Attachable()
@@ -168,7 +168,7 @@ public class Migrations : DataMigration
     );
 
     _contentDefinitionManager.AlterTypeDefinition(
-      "EorMeasurementDevice",
+      "EorIotDevice",
       builder =>
         builder
           .Creatable()
@@ -190,19 +190,19 @@ public class Migrations : DataMigration
                     RenderTitle = true,
                     Options = TitlePartOptions.GeneratedHidden,
                     Pattern =
-                      @"{{- ContentItem.Content.MeasurementDevicePart.DeviceId.Text -}}"
+                      @"{{- ContentItem.Content.IotDevicePart.DeviceId.Text -}}"
                   }
                 )
           )
           .WithPart(
-            "MeasurementDevicePart",
+            "IotDevicePart",
             part =>
               part.WithDisplayName("Measurement device")
                 .WithDescription("A measurement device.")
                 .WithPosition("2")
           )
           .WithPart(
-            "EorMeasurementDevicePart",
+            "EorIotDevicePart",
             part =>
               part.WithDisplayName("Eor measurement device")
                 .WithDescription("An Eor measurement device.")
@@ -229,14 +229,14 @@ public class Migrations : DataMigration
     );
     SchemaBuilder.AlterIndexTable<EorIotDeviceIndex>(table =>
     {
-      table.CreateIndex("IDX_EorMeasurementDeviceIndex_OwnerId", "OwnerId");
-      table.CreateIndex("IDX_EorMeasurementDeviceIndex_Author", "Author");
+      table.CreateIndex("IDX_EorIotDeviceIndex_OwnerId", "OwnerId");
+      table.CreateIndex("IDX_EorIotDeviceIndex_Author", "Author");
     });
 
     await _roleManager.CreateAsync(
       new Role
       {
-        NormalizedRoleName = "EorMeasurementDeviceAdmin",
+        NormalizedRoleName = "EorIotDeviceAdmin",
         RoleName = "EOR measurement device administrator",
         RoleDescription = "Administrator of an EOR measurement devices.",
         RoleClaims = new()
@@ -264,27 +264,27 @@ public class Migrations : DataMigration
           new RoleClaim
           {
             ClaimType = Permission.ClaimType,
-            ClaimValue = "ViewOwn_EorMeasurementDevice"
+            ClaimValue = "ViewOwn_EorIotDevice"
           },
           new RoleClaim
           {
             ClaimType = Permission.ClaimType,
-            ClaimValue = "ControlOwn_EorMeasurementDevice"
+            ClaimValue = "ControlOwn_EorIotDevice"
           },
           new RoleClaim
           {
             ClaimType = Permission.ClaimType,
-            ClaimValue = "PublishOwn_EorMeasurementDevice"
+            ClaimValue = "PublishOwn_EorIotDevice"
           },
           new RoleClaim
           {
             ClaimType = Permission.ClaimType,
-            ClaimValue = "EditOwn_EorMeasurementDevice"
+            ClaimValue = "EditOwn_EorIotDevice"
           },
           new RoleClaim
           {
             ClaimType = Permission.ClaimType,
-            ClaimValue = "DeleteOwn_EorMeasurementDevice"
+            ClaimValue = "DeleteOwn_EorIotDevice"
           },
         }
       }
@@ -293,7 +293,7 @@ public class Migrations : DataMigration
     await _roleManager.CreateAsync(
       new Role
       {
-        NormalizedRoleName = "EorMeasurementDeviceOwner",
+        NormalizedRoleName = "EorIotDeviceOwner",
         RoleName = "EOR measurement device owner",
         RoleDescription = "Owner of an EOR measurement devices.",
         RoleClaims = new()
@@ -301,12 +301,12 @@ public class Migrations : DataMigration
           new RoleClaim
           {
             ClaimType = Permission.ClaimType,
-            ClaimValue = "ViewOwned_EorMeasurementDevice"
+            ClaimValue = "ViewOwned_EorIotDevice"
           },
           new RoleClaim
           {
             ClaimType = Permission.ClaimType,
-            ClaimValue = "ControlOwned_EorMeasurementDevice"
+            ClaimValue = "ControlOwned_EorIotDevice"
           }
         }
       }
@@ -386,7 +386,7 @@ public class Migrations : DataMigration
         eorChart => eorChart.TimeseriesChartPart,
         timeseriesChartPart =>
         {
-          timeseriesChartPart.ChartContentType = "EorMeasurementDevice";
+          timeseriesChartPart.ChartContentType = "EorIotDevice";
           timeseriesChartPart.History = new()
           {
             Value = new(Unit: IntervalUnit.Minute, Count: 10)
@@ -407,62 +407,51 @@ public class Migrations : DataMigration
 
       var eorDeviceId = "eor";
       var eorApiKey = "eor";
-      var eorMeasurementDevice =
+      var eorIotDevice =
         (
           await _session
             .Query<ContentItem, IotDeviceIndex>()
             .Where(index => index.DeviceId == eorDeviceId)
             .FirstOrDefaultAsync()
-        )?.AsContent<EorMeasurementDeviceItem>()
-        ?? await _contentManager.NewContentAsync<EorMeasurementDeviceItem>();
-      eorMeasurementDevice.Inner.Owner = adminId;
-      eorMeasurementDevice.Alter(
-        eorMeasurementDevice => eorMeasurementDevice.TitlePart,
+        )?.AsContent<EorIotDeviceItem>()
+        ?? await _contentManager.NewContentAsync<EorIotDeviceItem>();
+      eorIotDevice.Inner.Owner = adminId;
+      eorIotDevice.Alter(
+        eorIotDevice => eorIotDevice.TitlePart,
         titlePart =>
         {
           titlePart.Title = eorDeviceId;
         }
       );
-      eorMeasurementDevice.Alter(
-        eorMeasurementDevice => eorMeasurementDevice.MeasurementDevicePart,
+      eorIotDevice.Alter(
+        eorIotDevice => eorIotDevice.IotDevicePart,
         measurementDevicePart =>
         {
           measurementDevicePart.DeviceId = new() { Text = eorDeviceId };
         }
       );
-      eorMeasurementDevice.Alter(
-        eorMeasurementDevice => eorMeasurementDevice.ChartPart,
+      eorIotDevice.Alter(
+        eorIotDevice => eorIotDevice.ChartPart,
         chartPart =>
         {
           chartPart.ChartContentItemId = eorChart.ContentItemId;
         }
       );
-      eorMeasurementDevice.Alter(
-        eorMeasurementDevice => eorMeasurementDevice.EorMeasurementDevicePart,
-        eorMeasurementDevice =>
+      eorIotDevice.Alter(
+        eorIotDevice => eorIotDevice.EorIotDevicePart,
+        eorIotDevice =>
         {
-          eorMeasurementDevice.Owner = new() { UserIds = new[] { ownerId } };
-          eorMeasurementDevice.ManufactureDate = new()
-          {
-            Value = DateTime.UtcNow
-          };
-          eorMeasurementDevice.Manufacturer = new() { Text = "Siemens" };
-          eorMeasurementDevice.CommisionDate = new()
-          {
-            Value = DateTime.UtcNow
-          };
-          eorMeasurementDevice.ProductNumber = new() { Text = "123456789" };
-          eorMeasurementDevice.Longitude = new() { Value = -100.784430m };
-          eorMeasurementDevice.Latitude = new() { Value = 31.697256m };
-          eorMeasurementDevice.ApiKey = _apiKeyFieldService.HashApiKeyField(
-            eorApiKey
-          );
+          eorIotDevice.Owner = new() { UserIds = new[] { ownerId } };
+          eorIotDevice.ManufactureDate = new() { Value = DateTime.UtcNow };
+          eorIotDevice.Manufacturer = new() { Text = "Siemens" };
+          eorIotDevice.CommisionDate = new() { Value = DateTime.UtcNow };
+          eorIotDevice.ProductNumber = new() { Text = "123456789" };
+          eorIotDevice.Longitude = new() { Value = -100.784430m };
+          eorIotDevice.Latitude = new() { Value = 31.697256m };
+          eorIotDevice.ApiKey = _apiKeyFieldService.HashApiKeyField(eorApiKey);
         }
       );
-      await _contentManager.CreateAsync(
-        eorMeasurementDevice,
-        VersionOptions.Latest
-      );
+      await _contentManager.CreateAsync(eorIotDevice, VersionOptions.Latest);
     }
 
     return 1;

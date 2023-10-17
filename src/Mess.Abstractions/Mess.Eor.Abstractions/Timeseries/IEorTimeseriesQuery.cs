@@ -40,11 +40,11 @@ public interface IEorTimeseriesQuery
     IReadOnlyList<EorMeasurement> Measurements
   ) GetEorData(string source, DateTimeOffset beginning, DateTimeOffset end);
 
-  public Task<IReadOnlyList<EorSummary>> GetEorMeasurementDeviceSummariesAsync(
+  public Task<IReadOnlyList<EorSummary>> GetEorIotDeviceSummariesAsync(
     IReadOnlyCollection<string> sources
   );
 
-  public IReadOnlyList<EorSummary> GetEorMeasurementDeviceSummaries(
+  public IReadOnlyList<EorSummary> GetEorIotDeviceSummaries(
     IReadOnlyCollection<string> sources
   );
 
@@ -56,7 +56,7 @@ public interface IEorTimeseriesQuery
 
   public EorStatus? GetEorStatus(string source);
 
-  public Task<EorSummary?> GetEorMeasurementDeviceSummaryAsync(string source);
+  public Task<EorSummary?> GetEorIotDeviceSummaryAsync(string source);
 
-  public EorSummary? GetEorMeasurementDeviceSummary(string source);
+  public EorSummary? GetEorIotDeviceSummary(string source);
 }

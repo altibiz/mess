@@ -16,9 +16,9 @@ public class EorStatusEntity : HypertableEntity
 
   public int CommunicationFault { get; set; } = default!;
 
-  public EorMeasurementDeviceRunState RunState { get; set; } = default!;
+  public EorRunState RunState { get; set; } = default!;
 
-  public EorMeasurementDeviceResetState ResetState { get; set; } = default!;
+  public EorResetState ResetState { get; set; } = default!;
 
   public EorDoorState DoorState { get; set; } = default!;
 

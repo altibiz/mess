@@ -1,6 +1,6 @@
 import { cmd, plopd, task } from "../../lib/index";
 
-const exampleName = "MeasurementDevice";
+const exampleName = "IotDevice";
 const exampleDescription =
   "The Measurement Device module adds" +
   " support for push and pull type measurement devices.";

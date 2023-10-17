@@ -9,10 +9,10 @@ public class EgaugeIotDeviceItem : ContentItemBase
 {
   public Lazy<TitlePart> TitlePart { get; private set; } = default!;
 
-  public Lazy<IotDevicePart> MeasurementDevicePart { get; private set; } =
+  public Lazy<IotDevicePart> IotDevicePart { get; private set; } =
     default!;
 
-  public Lazy<EgaugeIotDevicePart> EgaugeMeasurementDevicePart
+  public Lazy<EgaugeIotDevicePart> EgaugeIotDevicePart
   {
     get;
     private set;

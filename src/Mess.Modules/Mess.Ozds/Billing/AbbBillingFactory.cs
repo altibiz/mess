@@ -6,29 +6,29 @@ using YesSql;
 
 namespace Mess.Ozds.Billing;
 
-public class AbbBillingFactory : OzdsBillingFactory<AbbMeasurementDeviceItem>
+public class AbbBillingFactory : OzdsBillingFactory<AbbIotDeviceItem>
 {
   protected override OzdsBillingData? FetchBillingData(
-    AbbMeasurementDeviceItem measurementDeviceItem,
+    AbbIotDeviceItem measurementDeviceItem,
     DateTimeOffset from,
     DateTimeOffset to
   )
   {
     return _query.GetAbbBillingData(
-      measurementDeviceItem.MeasurementDevicePart.Value.DeviceId.Text,
+      measurementDeviceItem.IotDevicePart.Value.DeviceId.Text,
       from,
       to
     );
   }
 
   protected override async Task<OzdsBillingData?> FetchBillingDataAsync(
-    AbbMeasurementDeviceItem measurementDeviceItem,
+    AbbIotDeviceItem measurementDeviceItem,
     DateTimeOffset from,
     DateTimeOffset to
   )
   {
     return await _query.GetAbbBillingDataAsync(
-      measurementDeviceItem.MeasurementDevicePart.Value.DeviceId.Text,
+      measurementDeviceItem.IotDevicePart.Value.DeviceId.Text,
       from,
       to
     );

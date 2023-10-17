@@ -4,7 +4,7 @@ using Mess.Eor.Controllers;
 using Mess.Eor.Indexes;
 using Mess.Eor.Iot;
 using Mess.Iot.Abstractions.Extensions;
-using Mess.Iot.Abstractions.Models;
+using Mess.Eor.Abstractions.Models;
 using Mess.OrchardCore.Extensions.Microsoft;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
@@ -38,13 +38,13 @@ public class Startup : StartupBase
       IEorTimeseriesQuery
     >();
 
-    services.AddContentPart<EorMeasurementDevicePart>();
+    services.AddContentPart<EorIotDevicePart>();
     services.AddIotPushHandler<EorPushHandler>();
     services.AddIotPollHandler<EorPollHandler>();
     services.AddIotUpdateHandler<EorUpdateHandler>();
     services.AddIotAuthorizationHandler<EorAuthorizationHandler>();
-    services.AddChartFactory<EorChartProvider>();
-    services.AddIndexProvider<EorMeasurementDeviceIndexProvider>();
+    services.AddChartFactory<EorIotDeviceChartProvider>();
+    services.AddIndexProvider<EorIotDeviceIndexProvider>();
   }
 
   public override void Configure(
@@ -58,112 +58,112 @@ public class Startup : StartupBase
       .Value.AdminUrlPrefix;
 
     routes.MapAreaControllerRoute(
-      name: "Mess.Eor.MeasurementDeviceAdminController.List",
+      name: "Mess.Eor.EorIotDeviceAdminController.List",
       areaName: "Mess.Eor",
       pattern: adminUrlPrefix + "/Devices",
       defaults: new
       {
-        controller = typeof(EorMeasurementDeviceAdminController).ControllerName(),
-        action = nameof(EorMeasurementDeviceAdminController.List)
+        controller = typeof(EorIotDeviceAdminController).ControllerName(),
+        action = nameof(EorIotDeviceAdminController.List)
       }
     );
 
     routes.MapAreaControllerRoute(
-      name: "Mess.Eor.MeasurementDeviceAdminController.Detail",
+      name: "Mess.Eor.EorIotDeviceAdminController.Detail",
       areaName: "Mess.Eor",
       pattern: adminUrlPrefix + "/Devices/{contentItemId}",
       defaults: new
       {
-        controller = typeof(EorMeasurementDeviceAdminController).ControllerName(),
-        action = nameof(EorMeasurementDeviceAdminController.Detail)
+        controller = typeof(EorIotDeviceAdminController).ControllerName(),
+        action = nameof(EorIotDeviceAdminController.Detail)
       }
     );
 
     routes.MapAreaControllerRoute(
-      name: "Mess.Eor.MeasurementDeviceController.List",
+      name: "Mess.Eor.EorIotDeviceController.List",
       areaName: "Mess.Eor",
       pattern: "/Devices",
       defaults: new
       {
-        controller = typeof(EorMeasurementDeviceController).ControllerName(),
-        action = nameof(EorMeasurementDeviceController.List)
+        controller = typeof(EorIotDeviceController).ControllerName(),
+        action = nameof(EorIotDeviceController.List)
       }
     );
 
     routes.MapAreaControllerRoute(
-      name: "Mess.Eor.MeasurementDeviceController.Detail",
+      name: "Mess.Eor.EorIotDeviceController.Detail",
       areaName: "Mess.Eor",
       pattern: "/Devices/{contentItemId}",
       defaults: new
       {
-        controller = typeof(EorMeasurementDeviceController).ControllerName(),
-        action = nameof(EorMeasurementDeviceController.Detail)
+        controller = typeof(EorIotDeviceController).ControllerName(),
+        action = nameof(EorIotDeviceController.Detail)
       }
     );
 
     routes.MapAreaControllerRoute(
-      name: "Mess.Eor.MeasurementDeviceDataController.Data",
+      name: "Mess.Eor.EorIotDeviceDataController.Data",
       areaName: "Mess.Eor",
       pattern: "/Devices/{contentItemId}/Data",
       defaults: new
       {
-        controller = typeof(EorMeasurementDeviceDataController).ControllerName(),
-        action = nameof(EorMeasurementDeviceDataController.Index)
+        controller = typeof(EorIotDeviceDataController).ControllerName(),
+        action = nameof(EorIotDeviceDataController.Index)
       }
     );
 
     routes.MapAreaControllerRoute(
-      name: "Mess.Eor.MeasurementDeviceControlsController.ToggleRunState",
+      name: "Mess.Eor.EorIotDeviceControlsController.ToggleRunState",
       areaName: "Mess.Eor",
       pattern: "/Devices/{contentItemId}/ToggleRunState",
       defaults: new
       {
-        controller = typeof(EorMeasurementDeviceControlsController).ControllerName(),
-        action = nameof(EorMeasurementDeviceControlsController.ToggleRunState)
+        controller = typeof(EorIotDeviceControlsController).ControllerName(),
+        action = nameof(EorIotDeviceControlsController.ToggleRunState)
       }
     );
 
     routes.MapAreaControllerRoute(
-      name: "Mess.Eor.MeasurementDeviceControlsController.Start",
+      name: "Mess.Eor.EorIotDeviceControlsController.Start",
       areaName: "Mess.Eor",
       pattern: "/Devices/{contentItemId}/Start",
       defaults: new
       {
-        controller = typeof(EorMeasurementDeviceControlsController).ControllerName(),
-        action = nameof(EorMeasurementDeviceControlsController.Start)
+        controller = typeof(EorIotDeviceControlsController).ControllerName(),
+        action = nameof(EorIotDeviceControlsController.Start)
       }
     );
 
     routes.MapAreaControllerRoute(
-      name: "Mess.Eor.MeasurementDeviceControlsController.Stop",
+      name: "Mess.Eor.EorIotDeviceControlsController.Stop",
       areaName: "Mess.Eor",
       pattern: "/Devices/{contentItemId}/Stop",
       defaults: new
       {
-        controller = typeof(EorMeasurementDeviceControlsController).ControllerName(),
-        action = nameof(EorMeasurementDeviceControlsController.Stop)
+        controller = typeof(EorIotDeviceControlsController).ControllerName(),
+        action = nameof(EorIotDeviceControlsController.Stop)
       }
     );
 
     routes.MapAreaControllerRoute(
-      name: "Mess.Eor.MeasurementDeviceControlsController.Reset",
+      name: "Mess.Eor.EorIotDeviceControlsController.Reset",
       areaName: "Mess.Eor",
       pattern: "/Devices/{contentItemId}/Reset",
       defaults: new
       {
-        controller = typeof(EorMeasurementDeviceControlsController).ControllerName(),
-        action = nameof(EorMeasurementDeviceControlsController.Reset)
+        controller = typeof(EorIotDeviceControlsController).ControllerName(),
+        action = nameof(EorIotDeviceControlsController.Reset)
       }
     );
 
     routes.MapAreaControllerRoute(
-      name: "Mess.Eor.MeasurementDeviceControlsController.SetMode",
+      name: "Mess.Eor.EorIotDeviceControlsController.SetMode",
       areaName: "Mess.Eor",
       pattern: "/Devices/{contentItemId}/SetMode",
       defaults: new
       {
-        controller = typeof(EorMeasurementDeviceControlsController).ControllerName(),
-        action = nameof(EorMeasurementDeviceControlsController.SetMode)
+        controller = typeof(EorIotDeviceControlsController).ControllerName(),
+        action = nameof(EorIotDeviceControlsController.SetMode)
       }
     );
 

@@ -4,8 +4,8 @@ namespace Mess.Ozds.Abstractions;
 
 public class Permissions : IPermissionProvider
 {
-  public static readonly Permission ListMeasurementDevices = new Permission(
-    "ListMeasurementDevices",
+  public static readonly Permission ListIotDevices = new Permission(
+    "ListIotDevices",
     "Listing measurement devices"
   );
 
@@ -32,7 +32,7 @@ public class Permissions : IPermissionProvider
     return Task.FromResult(
       new[]
       {
-        ListMeasurementDevices,
+        ListIotDevices,
         ListDistributionSystemOperators,
         ListClosedDistributionSystems,
         ListDistributionSystemUnits,
@@ -49,7 +49,7 @@ public class Permissions : IPermissionProvider
         Name = "Administrator",
         Permissions = new[]
         {
-          ListMeasurementDevices,
+          ListIotDevices,
           ListDistributionSystemOperators,
           ListClosedDistributionSystems,
           ListDistributionSystemUnits,

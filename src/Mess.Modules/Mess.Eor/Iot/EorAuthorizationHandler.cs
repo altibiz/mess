@@ -5,10 +5,10 @@ using Mess.Iot.Abstractions.Services;
 namespace Mess.Eor.Iot;
 
 public class EorAuthorizationHandler
-  : ApiKeyIotAuthorizationHandler<EorMeasurementDeviceItem>
+  : ApiKeyIotAuthorizationHandler<EorIotDeviceItem>
 {
-  public override ApiKeyField GetApiKey(EorMeasurementDeviceItem contentItem)
+  public override ApiKeyField GetApiKey(EorIotDeviceItem contentItem)
   {
-    return contentItem.EorMeasurementDevicePart.Value.ApiKey;
+    return contentItem.EorIotDevicePart.Value.ApiKey;
   }
 }

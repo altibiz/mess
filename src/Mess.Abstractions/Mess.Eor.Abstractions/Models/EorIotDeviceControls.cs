@@ -4,11 +4,9 @@ public class EorIotDeviceControls
 {
   public int Mode { get; set; } = 33;
 
-  public EorMeasurementDeviceRunState RunState { get; set; } =
-    EorMeasurementDeviceRunState.Stopped;
+  public EorRunState RunState { get; set; } = EorRunState.Stopped;
 
-  public EorMeasurementDeviceResetState ResetState { get; set; } =
-    EorMeasurementDeviceResetState.ShouldntReset;
+  public EorResetState ResetState { get; set; } = EorResetState.ShouldntReset;
 
   public int Stamp { get; set; } = 0;
 }
