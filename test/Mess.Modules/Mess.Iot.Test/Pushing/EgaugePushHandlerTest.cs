@@ -1,5 +1,5 @@
-using Mess.Iot.Pushing;
-using Mess.Iot.Abstractions.Client;
+using Mess.Iot.Iot;
+using Mess.Iot.Abstractions.Timeseries;
 using Moq;
 using OrchardCore.ContentManagement;
 
@@ -7,7 +7,7 @@ namespace Mess.Iot.Test;
 
 public record class EgaugePushHandlerTest(
   EgaugePushHandler Handler,
-  Mock<ITimeseriesClient> MeasurementClientMock,
+  Mock<IIotTimeseriesClient> MeasurementClientMock,
   ILogger<EgaugePushHandlerTest> Logger
 )
 {

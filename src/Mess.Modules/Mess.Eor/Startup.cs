@@ -2,7 +2,7 @@ using Mess.Chart.Abstractions.Extensions;
 using Mess.Eor.Chart;
 using Mess.Eor.Controllers;
 using Mess.Eor.Indexes;
-using Mess.Eor.Pushing;
+using Mess.Eor.Iot;
 using Mess.Iot.Abstractions.Extensions;
 using Mess.Iot.Abstractions.Models;
 using Mess.OrchardCore.Extensions.Microsoft;
@@ -10,19 +10,14 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Mess.Eor.Polling;
 using OrchardCore.Admin;
 using OrchardCore.ContentManagement;
 using OrchardCore.Data.Migration;
 using OrchardCore.Modules;
 using OrchardCore.Mvc.Core.Utilities;
-using Mess.Eor.Context;
 using Mess.Timeseries.Abstractions.Extensions;
-using Mess.Iot.Client;
-using Mess.Eor.Abstractions.Client;
-using Mess.Eor.Updating;
+using Mess.Eor.Abstractions.Timeseries;
 using OrchardCore.Environment.Shell.Configuration;
-using Mess.Eor.MeasurementDevice.Security;
 using Mess.Eor.Abstractions;
 
 namespace Mess.Eor;
@@ -37,17 +32,18 @@ public class Startup : StartupBase
     services.AddPermissionProvider<EorPermissions>();
 
     services.AddTimeseriesDbContext<EorTimeseriesDbContext>();
-    services.AddSingleton<IEorTimeseriesClient, EorTimeseriesClient>();
-    services.AddSingleton<IEorTimeseriesQuery>(
-      services => services.GetRequiredService<IEorTimeseriesClient>()
-    );
+    services.AddTimeseriesClient<
+      EorTimeseriesClient,
+      IEorTimeseriesClient,
+      IEorTimeseriesQuery
+    >();
 
     services.AddContentPart<EorMeasurementDevicePart>();
-    services.AddMeasurementDevicePushHandler<EorPushHandler>();
-    services.AddMeasurementDevicePollHandler<EorPollHandler>();
-    services.AddMeasurementDeviceUpdateHandler<EorUpdateHandler>();
-    services.AddMeasurementDeviceAuthorizationHandler<EorAuthorizationHandler>();
-    services.AddChartProvider<EorChartProvider>();
+    services.AddIotPushHandler<EorPushHandler>();
+    services.AddIotPollHandler<EorPollHandler>();
+    services.AddIotUpdateHandler<EorUpdateHandler>();
+    services.AddIotAuthorizationHandler<EorAuthorizationHandler>();
+    services.AddChartFactory<EorChartProvider>();
     services.AddIndexProvider<EorMeasurementDeviceIndexProvider>();
   }
 

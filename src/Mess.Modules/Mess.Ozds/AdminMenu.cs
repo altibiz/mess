@@ -14,29 +14,71 @@ namespace OrchardCore.Cors
 
     public Task BuildNavigationAsync(string name, NavigationBuilder builder)
     {
-      if (!String.Equals(name, "admin", StringComparison.OrdinalIgnoreCase))
+      if (!string.Equals(name, "admin", StringComparison.OrdinalIgnoreCase))
       {
         return Task.CompletedTask;
       }
 
       builder.Add(
-        S["Configuration"],
+        S["OZDS"],
         configuration =>
-          configuration.Add(
-            S["Settings"],
-            settings =>
-              settings.Add(
-                S["CORS"],
-                S["CORS"].PrefixPosition(),
-                entry =>
-                  entry
-                    .AddClass("cors")
-                    .Id("cors")
-                    .Action("Index", "Admin", new { area = "OrchardCore.Cors" })
-                    .Permission(Permissions.ManageCorsSettings)
-                    .LocalNav()
-              )
-          )
+          configuration
+            .Add(
+              S["Measurement devices"],
+              S["Measurement devices"].PrefixPosition(),
+              entry =>
+                entry
+                  .AddClass("measurement-devices")
+                  .Id("measurement-devices")
+                  .Action(
+                    "List",
+                    "MeasurementDeviceAdmin",
+                    new { area = "Mess.Ozds" }
+                  )
+                  .LocalNav()
+            )
+            .Add(
+              S["Distribution system units"],
+              S["Distribution system units"].PrefixPosition(),
+              entry =>
+                entry
+                  .AddClass("distribution-system-units")
+                  .Id("distribution-system-units")
+                  .Action(
+                    "List",
+                    "DistributionSystemUnitAdmin",
+                    new { area = "Mess.Ozds" }
+                  )
+                  .LocalNav()
+            )
+            .Add(
+              S["Closed distribution systems"],
+              S["Closed distribution systems"].PrefixPosition(),
+              entry =>
+                entry
+                  .AddClass("closed-distribution-systems")
+                  .Id("closed-distribution-systems")
+                  .Action(
+                    "List",
+                    "ClosedDistributionSystemAdmin",
+                    new { area = "Mess.Ozds" }
+                  )
+                  .LocalNav()
+            )
+            .Add(
+              S["Distribution system operators"],
+              S["Distribution system operators"].PrefixPosition(),
+              entry =>
+                entry
+                  .AddClass("distribution-system-operators")
+                  .Id("distribution-system-operators")
+                  .Action(
+                    "List",
+                    "DistributionSystemOperatorAdmin",
+                    new { area = "Mess.Ozds" }
+                  )
+                  .LocalNav()
+            )
       );
 
       return Task.CompletedTask;

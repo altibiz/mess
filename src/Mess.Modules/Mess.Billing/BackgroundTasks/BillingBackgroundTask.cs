@@ -1,4 +1,4 @@
-using Mess.Billing.Abstractions.Factory;
+using Mess.Billing.Abstractions.Services;
 using Mess.Billing.Abstractions.Indexes;
 using Mess.Billing.Abstractions.Models;
 using Mess.System.Extensions.Timestamps;
@@ -49,16 +49,6 @@ public class BillingBackgroundTask : IBackgroundTask
         nowLastMonthStart,
         nowLastMonthEnd
       );
-      invoiceItem.Alter<InvoicePart>(invoicePart =>
-      {
-        invoicePart.BillingContentItemId = billingItem.ContentItemId;
-        invoicePart.RecipientContentItemId = billingPart.RecipientContentItemId;
-        invoicePart.RecipientRepresentativeUserIds =
-          billingPart.RecipientRepresentativeUserIds;
-        invoicePart.IssuerContentItemId = billingPart.IssuerContentItemId;
-        invoicePart.IssuerRepresentativeUserIds =
-          billingPart.IssuerRepresentativeUserIds;
-      });
       await contentManager.CreateAsync(invoiceItem);
     }
   }

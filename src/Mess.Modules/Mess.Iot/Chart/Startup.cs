@@ -11,6 +11,6 @@ public class Startup : StartupBase
   public override void ConfigureServices(IServiceCollection services)
   {
     services.AddDataMigration<Migrations>();
-    services.AddChartProvider<EgaugeChartProvider>();
+    services.AddChartFactory<EgaugeChartFactory>();
   }
 }

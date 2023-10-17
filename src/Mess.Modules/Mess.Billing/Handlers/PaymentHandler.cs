@@ -2,7 +2,7 @@ using Mess.Billing.Abstractions.Models;
 using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Handlers;
 
-namespace Mess.Billing.Handler;
+namespace Mess.Billing.Handlers;
 
 public class PaymentHandler : ContentHandlerBase
 {

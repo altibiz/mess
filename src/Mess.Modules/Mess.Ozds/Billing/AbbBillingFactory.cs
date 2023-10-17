@@ -1,7 +1,8 @@
 using Mess.Ozds.Abstractions.Billing;
-using Mess.Ozds.Abstractions.Client;
+using Mess.Ozds.Abstractions.Timeseries;
 using Mess.Ozds.Abstractions.Models;
 using OrchardCore.ContentManagement;
+using YesSql;
 
 namespace Mess.Ozds.Billing;
 
@@ -33,11 +34,15 @@ public class AbbBillingFactory : OzdsBillingFactory<AbbMeasurementDeviceItem>
     );
   }
 
-  public AbbBillingFactory(IContentManager contentManager, IOzdsQuery query)
-    : base(contentManager)
+  public AbbBillingFactory(
+    IContentManager contentManager,
+    ISession session,
+    IOzdsTimeseriesQuery query
+  )
+    : base(contentManager, session)
   {
     _query = query;
   }
 
-  private readonly IOzdsQuery _query;
+  private readonly IOzdsTimeseriesQuery _query;
 }

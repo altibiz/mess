@@ -1,4 +1,4 @@
-using Mess.Eor.Abstractions.Client;
+using Mess.Eor.Abstractions.Timeseries;
 using Mess.Eor.Abstractions.Indexes;
 using Mess.Eor.Abstractions.Models;
 using Mess.Eor.Extensions;
@@ -33,7 +33,7 @@ public class EorMeasurementDeviceAdminController : Controller
 
     var orchardCoreUser = await this.GetAuthenticatedOrchardCoreUserAsync();
     var contentItems = await _session
-      .Query<ContentItem, EorMeasurementDeviceIndex>()
+      .Query<ContentItem, EorIotDeviceIndex>()
       .Where(index => index.Author == orchardCoreUser.UserId)
       .ListAsync();
 

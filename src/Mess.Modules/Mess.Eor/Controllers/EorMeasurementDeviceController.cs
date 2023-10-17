@@ -8,7 +8,7 @@ using OrchardCore.ContentManagement;
 using Mess.OrchardCore;
 using YesSql;
 using Mess.Eor.ViewModels;
-using Mess.Eor.Abstractions.Client;
+using Mess.Eor.Abstractions.Timeseries;
 using Mess.Eor.Extensions;
 using OrchardCore.Contents;
 
@@ -36,7 +36,7 @@ public class EorMeasurementDeviceController : Controller
 
     var orchardCoreUser = await this.GetAuthenticatedOrchardCoreUserAsync();
     var contentItems = await _session
-      .Query<ContentItem, EorMeasurementDeviceIndex>()
+      .Query<ContentItem, EorIotDeviceIndex>()
       .Where(
         canViewOwned
           ? index => index.OwnerId == orchardCoreUser.UserId

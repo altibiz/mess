@@ -8,16 +8,14 @@ using OrchardCore.Mvc.Core.Utilities;
 using OrchardCore.ResourceManagement;
 using OrchardCore.ContentManagement;
 using Mess.Timeseries.Abstractions.Extensions;
-using Mess.Iot.Abstractions.Client;
-using Mess.Iot.Client;
+using Mess.Iot.Abstractions.Timeseries;
+using Mess.Iot.Timeseries;
 using Mess.Iot.Controllers;
-using Mess.Iot.Pushing;
+using Mess.Iot.Iot;
 using Mess.Iot.Abstractions.Models;
 using Mess.Iot.Abstractions.Extensions;
 using Mess.Iot.Indexes;
-using YesSql.Indexes;
-using Mess.Iot.Context;
-using Mess.Iot.Abstractions.Services;
+using Mess.Iot.Abstractions.Caches;
 using Mess.Iot.Services;
 using Mess.OrchardCore.Extensions.Microsoft;
 
@@ -33,24 +31,21 @@ public class Startup : StartupBase
       Resources
     >();
 
-    services.AddContentPart<MeasurementDevicePart>();
+    services.AddContentPart<IotDevicePart>();
 
-    services.AddTimeseriesDbContext<MeasurementDbContext>();
-
-    services.AddSingleton<ITimeseriesClient, TimeseriesClient>();
-    services.AddSingleton<ITimeseriesQuery>(
-      services => services.GetRequiredService<ITimeseriesClient>()
-    );
-
-    services.AddIndexProvider<MeasurementDeviceIndexProvider>();
-
-    services.AddScoped<
-      IMeasurementDeviceContentItemCache,
-      MeasurementDeviceContentItemCache
+    services.AddTimeseriesDbContext<IotTimeseriesDbContext>();
+    services.AddTimeseriesClient<
+      IotTimeseriesClient,
+      IIotTimeseriesClient,
+      IIotTimeseriesQuery
     >();
 
-    services.AddContentPart<EgaugeMeasurementDevicePart>();
-    services.AddMeasurementDevicePushHandler<EgaugePushHandler>();
+    services.AddIndexProvider<IotDeviceIndexProvider>();
+
+    services.AddScoped<IIotDeviceContentItemCache, IotDeviceContentItemCache>();
+
+    services.AddContentPart<EgaugeIotDevicePart>();
+    services.AddIotPushHandler<EgaugePushHandler>();
   }
 
   public override void Configure(
@@ -65,8 +60,8 @@ public class Startup : StartupBase
       pattern: "/Push/{deviceId}",
       defaults: new
       {
-        controller = typeof(DeviceController).ControllerName(),
-        action = nameof(DeviceController.Push)
+        controller = typeof(IotDeviceController).ControllerName(),
+        action = nameof(IotDeviceController.Push)
       }
     );
 
@@ -76,8 +71,8 @@ public class Startup : StartupBase
       pattern: "/Update/{deviceId}",
       defaults: new
       {
-        controller = typeof(DeviceController).ControllerName(),
-        action = nameof(DeviceController.Update)
+        controller = typeof(IotDeviceController).ControllerName(),
+        action = nameof(IotDeviceController.Update)
       }
     );
 
@@ -87,8 +82,8 @@ public class Startup : StartupBase
       pattern: "/Poll/{deviceId}",
       defaults: new
       {
-        controller = typeof(DeviceController).ControllerName(),
-        action = nameof(DeviceController.Poll)
+        controller = typeof(IotDeviceController).ControllerName(),
+        action = nameof(IotDeviceController.Poll)
       }
     );
   }

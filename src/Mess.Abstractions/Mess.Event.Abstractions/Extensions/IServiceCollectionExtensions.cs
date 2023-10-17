@@ -4,11 +4,9 @@ namespace Mess.Event.Abstractions.Extensions;
 
 public static class IServiceCollectionExtensions
 {
-  public static void AddProjectionDispatcher<T>(
-    this IServiceCollection services
-  )
-    where T : class, IProjectionApplicator
+  public static void AddEventDispatcher<T>(this IServiceCollection services)
+    where T : class, IEventDispatcher
   {
-    services.AddScoped<IProjectionApplicator, T>();
+    services.AddScoped<IEventDispatcher, T>();
   }
 }

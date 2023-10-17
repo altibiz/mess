@@ -11,5 +11,5 @@ public class OzdsMeasurementDeviceDetailViewModel
   public TitlePart TitlePart { get; set; } = default!;
   public OzdsMeasurementDevicePart OzdsMeasurementDevicePart { get; set; } =
     default!;
-  public MeasurementDevicePart MeasurementDevicePart { get; set; } = default!;
+  public IotDevicePart MeasurementDevicePart { get; set; } = default!;
 }

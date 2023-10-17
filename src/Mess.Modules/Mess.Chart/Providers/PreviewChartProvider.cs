@@ -1,13 +1,13 @@
 using Mess.Chart.Abstractions.Descriptors;
 using Mess.Chart.Abstractions.Models;
-using Mess.Chart.Abstractions.Providers;
+using Mess.Chart.Abstractions.Services;
 using Mess.Fields.Abstractions;
 using OrchardCore.ContentManagement;
 using Mess.OrchardCore;
 
 namespace Mess.Chart.Providers;
 
-public class PreviewChartProvider : IChartProvider
+public class PreviewChartProvider : IChartFactory
 {
   public const string ChartContentType = "Preview";
 

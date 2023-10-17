@@ -85,7 +85,7 @@ public static class IEndpointRouteBuilderExtensions
     return endpoints;
   }
 
-  public static void MapMessControllerRoute<T>(
+  public static void MapAreaControllerRoute<T>(
     this IEndpointRouteBuilder endpoints,
     string action,
     string pattern
@@ -106,10 +106,6 @@ public static class IEndpointRouteBuilderExtensions
       defaults: new { controller, action }
     );
   }
-
-  public static void MapControllerNamespaceRoutes(
-    this IEndpointRouteBuilder endpoints
-  ) { }
 }
 
 public record Redirective(

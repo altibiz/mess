@@ -8,7 +8,7 @@ using OrchardCore.Recipes.Services;
 using OrchardCore.Title.Models;
 using Mess.OrchardCore;
 using Mess.Iot.Abstractions.Models;
-using Mess.Iot.Abstractions.Client;
+using Mess.Iot.Abstractions.Timeseries;
 using YesSql;
 using Mess.Iot.Abstractions.Indexes;
 using Mess.Fields.Abstractions;
@@ -115,11 +115,11 @@ public class Migrations : DataMigration
       var egaugeMeasurementDevice =
         (
           await _session
-            .Query<ContentItem, MeasurementDeviceIndex>()
+            .Query<ContentItem, IotDeviceIndex>()
             .Where(index => index.DeviceId == "egauge")
             .FirstOrDefaultAsync()
-        )?.AsContent<EgaugeMeasurementDeviceItem>()
-        ?? await _contentManager.NewContentAsync<EgaugeMeasurementDeviceItem>();
+        )?.AsContent<EgaugeIotDeviceItem>()
+        ?? await _contentManager.NewContentAsync<EgaugeIotDeviceItem>();
       egaugeMeasurementDevice.Alter(
         egaugeMeasurementDevice =>
           egaugeMeasurementDevice.MeasurementDevicePart,

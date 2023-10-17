@@ -11,6 +11,6 @@ public class OzdsMeasurementDeviceListViewModel
     ContentItem ContentItem,
     TitlePart TitlePart,
     OzdsMeasurementDevicePart OzdsMeasurementDevicePart,
-    MeasurementDevicePart MeasurementDevicePart
+    IotDevicePart MeasurementDevicePart
   )> ContentItems { get; set; } = default!;
 }

@@ -8,10 +8,9 @@ using OrchardCore.Data.Migration;
 using OrchardCore.Modules;
 using Mess.Ozds.Controllers;
 using OrchardCore.Mvc.Core.Utilities;
-using Mess.Ozds.Context;
+using Mess.Ozds.Timeseries;
 using Mess.Timeseries.Abstractions.Extensions;
-using Mess.Ozds.Abstractions.Client;
-using Mess.Ozds.Client;
+using Mess.Ozds.Abstractions.Timeseries;
 using Mess.Ozds.Chart;
 using Mess.Chart.Abstractions.Extensions;
 using OrchardCore.ContentManagement;
@@ -33,12 +32,12 @@ public class Startup : StartupBase
     services.AddDataMigration<Migrations>();
     services.AddResources<Resources>();
 
-    services.AddTimeseriesDbContext<OzdsDbContext>();
-
-    services.AddSingleton<IOzdsClient, OzdsClient>();
-    services.AddSingleton<IOzdsQuery>(
-      services => services.GetRequiredService<IOzdsClient>()
-    );
+    services.AddTimeseriesDbContext<OzdsTimeseriesDbContext>();
+    services.AddTimeseriesClient<
+      OzdsTimeseriesClient,
+      IOzdsTimeseriesClient,
+      IOzdsTimeseriesQuery
+    >();
 
     services.AddContentPart<OzdsMeasurementDevicePart>();
     services.AddIndexProvider<DistributionSystemUnitIndexProvider>();
@@ -48,12 +47,12 @@ public class Startup : StartupBase
     services.AddContentHandler<OzdsMeasurementDeviceHandler>();
 
     services.AddContentPart<PidgeonMeasurementDevicePart>();
-    services.AddMeasurementDevicePushHandler<PidgeonPushHandler>();
-    services.AddMeasurementDeviceAuthorizationHandler<PidgeonAuthorizationHandler>();
+    services.AddIotPushHandler<PidgeonPushHandler>();
+    services.AddIotAuthorizationHandler<PidgeonAuthorizationHandler>();
 
     services.AddContentPart<AbbMeasurementDevicePart>();
-    services.AddMeasurementDevicePushHandler<AbbPushHandler>();
-    services.AddChartProvider<AbbChartProvider>();
+    services.AddIotPushHandler<AbbPushHandler>();
+    services.AddChartFactory<AbbChartProvider>();
     services.AddBillingFactory<AbbBillingFactory>();
 
     services.AddContentPart<DistributionSystemOperatorPart>();
@@ -78,9 +77,9 @@ public class Startup : StartupBase
       .GetRequiredService<IOptions<AdminOptions>>()
       .Value.AdminUrlPrefix;
 
-    routes.MapMessControllerRoute<UnitController>(
-      nameof(UnitController.List),
-      adminUrlPrefix + "/List/{contentType}"
+    routes.MapAreaControllerRoute<DistributionSystemUnitController>(
+      nameof(DistributionSystemUnitController.List),
+      adminUrlPrefix + "/DistributionSystemUnit/List/{contentType}"
     );
 
     routes.MapAreaControllerRoute(
@@ -89,8 +88,8 @@ public class Startup : StartupBase
       pattern: adminUrlPrefix + "/List/{contentType}",
       defaults: new
       {
-        controller = typeof(UnitController).ControllerName(),
-        action = nameof(UnitController.List)
+        controller = typeof(DistributionSystemUnitController).ControllerName(),
+        action = nameof(DistributionSystemUnitController.List)
       }
     );
 
@@ -100,8 +99,8 @@ public class Startup : StartupBase
       pattern: adminUrlPrefix + "/Device/{contentItemId}",
       defaults: new
       {
-        controller = typeof(UnitController).ControllerName(),
-        action = nameof(UnitController.Detail)
+        controller = typeof(DistributionSystemUnitController).ControllerName(),
+        action = nameof(DistributionSystemUnitController.Detail)
       }
     );
 
@@ -111,8 +110,8 @@ public class Startup : StartupBase
       pattern: "/Devices",
       defaults: new
       {
-        controller = typeof(DeviceController).ControllerName(),
-        action = nameof(DeviceController.List)
+        controller = typeof(MeasurementDeviceController).ControllerName(),
+        action = nameof(MeasurementDeviceController.List)
       }
     );
 
@@ -122,8 +121,8 @@ public class Startup : StartupBase
       pattern: "/Detail/{contentItemId}",
       defaults: new
       {
-        controller = typeof(DeviceController).ControllerName(),
-        action = nameof(DeviceController.Detail)
+        controller = typeof(MeasurementDeviceController).ControllerName(),
+        action = nameof(MeasurementDeviceController.Detail)
       }
     );
 

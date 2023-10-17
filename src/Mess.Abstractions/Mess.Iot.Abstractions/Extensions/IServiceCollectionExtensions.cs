@@ -1,45 +1,45 @@
-using Mess.Iot.Abstractions.Pushing;
-using Mess.Iot.Abstractions.Polling;
-using Mess.Iot.Abstractions.Updating;
-using Mess.Iot.Abstractions.Security;
+using Mess.Iot.Abstractions.Services;
+using Mess.Iot.Abstractions.Services;
+using Mess.Iot.Abstractions.Services;
+using Mess.Iot.Abstractions.Services;
 
 namespace Mess.Iot.Abstractions.Extensions;
 
 public static class IServiceCollectionExtensions
 {
-  public static IServiceCollection AddMeasurementDevicePushHandler<T>(
+  public static IServiceCollection AddIotPushHandler<T>(
     this IServiceCollection services
   )
-    where T : class, IMeasurementDevicePushHandler
+    where T : class, IIotPushHandler
   {
-    services.AddScoped<IMeasurementDevicePushHandler, T>();
+    services.AddScoped<IIotPushHandler, T>();
     return services;
   }
 
-  public static IServiceCollection AddMeasurementDevicePollHandler<T>(
+  public static IServiceCollection AddIotPollHandler<T>(
     this IServiceCollection services
   )
-    where T : class, IMeasurementDevicePollHandler
+    where T : class, IIotPollHandler
   {
-    services.AddScoped<IMeasurementDevicePollHandler, T>();
+    services.AddScoped<IIotPollHandler, T>();
     return services;
   }
 
-  public static IServiceCollection AddMeasurementDeviceUpdateHandler<T>(
+  public static IServiceCollection AddIotUpdateHandler<T>(
     this IServiceCollection services
   )
-    where T : class, IMeasurementDeviceUpdateHandler
+    where T : class, IIotUpdateHandler
   {
-    services.AddScoped<IMeasurementDeviceUpdateHandler, T>();
+    services.AddScoped<IIotUpdateHandler, T>();
     return services;
   }
 
-  public static IServiceCollection AddMeasurementDeviceAuthorizationHandler<T>(
+  public static IServiceCollection AddIotAuthorizationHandler<T>(
     this IServiceCollection services
   )
-    where T : class, IMeasurementDeviceAuthorizationHandler
+    where T : class, IIotAuthorizationHandler
   {
-    services.AddScoped<IMeasurementDeviceAuthorizationHandler, T>();
+    services.AddScoped<IIotAuthorizationHandler, T>();
     return services;
   }
 }

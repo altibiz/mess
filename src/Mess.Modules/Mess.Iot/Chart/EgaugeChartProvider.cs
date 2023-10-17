@@ -1,15 +1,13 @@
-using Mess.Iot.Abstractions.Client;
-using Mess.Chart.Abstractions.Providers;
+using Mess.Iot.Abstractions.Timeseries;
+using Mess.Chart.Abstractions.Services;
 using Mess.Chart.Abstractions.Descriptors;
-using OrchardCore.ContentManagement;
 using Mess.Chart.Abstractions.Models;
 using Mess.Iot.Abstractions.Models;
 using Mess.Fields.Abstractions;
-using Mess.OrchardCore;
 
 namespace Mess.Iot.Chart;
 
-public class EgaugeChartProvider : ChartProvider<EgaugeMeasurementDeviceItem>
+public class EgaugeChartFactory : ChartFactory<EgaugeIotDeviceItem>
 {
   public override IEnumerable<string> TimeseriesChartDatasetProperties =>
     new[]
@@ -19,7 +17,7 @@ public class EgaugeChartProvider : ChartProvider<EgaugeMeasurementDeviceItem>
     };
 
   protected override async Task<TimeseriesChartDescriptor?> CreateTimeseriesChartAsync(
-    EgaugeMeasurementDeviceItem egaugeMeasurementDevice,
+    EgaugeIotDeviceItem egaugeMeasurementDevice,
     TimeseriesChartItem chart,
     IEnumerable<TimeseriesChartDatasetItem> datasets
   )
@@ -62,10 +60,10 @@ public class EgaugeChartProvider : ChartProvider<EgaugeMeasurementDeviceItem>
     );
   }
 
-  public EgaugeChartProvider(ITimeseriesClient client)
+  public EgaugeChartFactory(IIotTimeseriesClient client)
   {
     _client = client;
   }
 
-  private readonly ITimeseriesClient _client;
+  private readonly IIotTimeseriesClient _client;
 }

@@ -1,8 +1,9 @@
-using Mess.Billing.Abstractions.Factory;
+using Mess.Billing.Abstractions.Services;
 using Mess.Iot.Abstractions.Models;
 using Mess.OrchardCore;
 using Mess.Ozds.Abstractions.Models;
 using OrchardCore.ContentManagement;
+using ISession = YesSql.ISession;
 
 namespace Mess.Ozds.Abstractions.Billing;
 
@@ -30,7 +31,7 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
   )
   {
     var measurementDevicePart =
-      contentItem.As<MeasurementDevicePart>()
+      contentItem.As<IotDevicePart>()
       ?? throw new NullReferenceException("MeasurementDevicePart is null");
     var ozdsMeasurementDevicePart =
       contentItem.As<OzdsMeasurementDevicePart>()
@@ -137,7 +138,7 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
   )
   {
     var measurementDevicePart =
-      contentItem.As<MeasurementDevicePart>()
+      contentItem.As<IotDevicePart>()
       ?? throw new NullReferenceException("MeasurementDevicePart is null");
     var ozdsMeasurementDevicePart =
       contentItem.As<OzdsMeasurementDevicePart>()
@@ -229,7 +230,7 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
   )
   {
     var measurementDevicePart =
-      contentItem.As<MeasurementDevicePart>()
+      contentItem.As<IotDevicePart>()
       ?? throw new NullReferenceException("MeasurementDevicePart is null");
     var ozdsMeasurementDevicePart =
       contentItem.As<OzdsMeasurementDevicePart>()
@@ -324,7 +325,7 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
   )
   {
     var measurementDevicePart =
-      contentItem.As<MeasurementDevicePart>()
+      contentItem.As<IotDevicePart>()
       ?? throw new NullReferenceException("MeasurementDevicePart is null");
     var ozdsMeasurementDevicePart =
       contentItem.As<OzdsMeasurementDevicePart>()
@@ -666,10 +667,13 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
     return CreateReceiptData(invoiceData);
   }
 
-  protected OzdsBillingFactory(IContentManager contentManager)
+  protected OzdsBillingFactory(IContentManager contentManager, ISession session)
   {
     _contnetManager = contentManager;
+    _session = session;
   }
 
   private readonly IContentManager _contnetManager;
+
+  private readonly ISession _session;
 }

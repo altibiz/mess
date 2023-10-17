@@ -10,7 +10,7 @@ using OrchardCore.Title.Models;
 using Mess.OrchardCore;
 using YesSql.Sql;
 using Microsoft.Extensions.Hosting;
-using Mess.Fields.Abstractions.Services;
+using Mess.Fields.Abstractions.ApiKeys;
 
 namespace Mess.Iot;
 
@@ -94,14 +94,14 @@ public class Migrations : DataMigration
           )
     );
 
-    SchemaBuilder.CreateMapIndexTable<MeasurementDeviceIndex>(
+    SchemaBuilder.CreateMapIndexTable<IotDeviceIndex>(
       table =>
         table
           .Column<string>("ContentItemId", c => c.WithLength(64))
           .Column<string>("DeviceId", c => c.WithLength(64))
           .Column<bool>("IsMessenger")
     );
-    SchemaBuilder.AlterIndexTable<MeasurementDeviceIndex>(
+    SchemaBuilder.AlterIndexTable<IotDeviceIndex>(
       table =>
         table.CreateIndex("IDX_MeasurementDeviceIndex_DeviceId", "DeviceId")
     );
@@ -109,7 +109,7 @@ public class Migrations : DataMigration
     if (_hostEnvironment.IsDevelopment())
     {
       var egaugeMeasurementDevice =
-        await _contentManager.NewContentAsync<EgaugeMeasurementDeviceItem>();
+        await _contentManager.NewContentAsync<EgaugeIotDeviceItem>();
       egaugeMeasurementDevice.Alter(
         egaugeMeasurementDevice =>
           egaugeMeasurementDevice.MeasurementDevicePart,

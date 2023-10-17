@@ -30,12 +30,15 @@ public static class ObjectSerializationExtensions
         .AddMessSystemJsonConverters()
     );
 
-  public static T? FromJson<T>(this string @this) =>
+  public static T FromJson<T>(this string @this) =>
     JsonSerializer.Deserialize<T>(
       @this,
       new JsonSerializerOptions()
         .AddMessSystemJsonOptions()
         .AddMessSystemJsonConverters()
+    )
+    ?? throw new InvalidOperationException(
+      $"Could not deserialize json string '{@this}' to type '{typeof(T).Name}'"
     );
 
   public static string ToXml<T>(this T @this)
@@ -61,19 +64,26 @@ public static class ObjectSerializationExtensions
     return result;
   }
 
-  public static T? FromXml<T>(this string @this)
+  public static T FromXml<T>(this string @this)
   {
     var serializer = new XmlSerializer(typeof(T));
     using var stream = new MemoryStream(Encoding.UTF8.GetBytes(@this));
     var result = serializer.Deserialize(stream);
-    return result is not null ? (T)result : default;
+    return result is not null
+      ? (T)result
+      : throw new InvalidOperationException(
+        $"Could not deserialize xml string '{@this}' to type '{typeof(T).Name}'"
+      );
   }
 
-  public static XDocument? FromXml(this string @this)
+  public static XDocument FromXml(this string @this)
   {
     using var stream = new MemoryStream(Encoding.UTF8.GetBytes(@this));
     var result = XDocument.Load(stream);
-    return result;
+    return result
+      ?? throw new InvalidOperationException(
+        $"Could not deserialize xml string '{@this}' to type '{typeof(XDocument).Name}'"
+      );
   }
 
   public static string GetJsonSha256Hash(this object @this)

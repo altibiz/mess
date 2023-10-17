@@ -1,15 +1,15 @@
-using Mess.Chart.Abstractions.Providers;
+using Mess.Chart.Abstractions.Services;
 using Mess.Chart.Abstractions.Descriptors;
 using OrchardCore.ContentManagement;
 using Mess.Chart.Abstractions.Models;
 using Mess.Ozds.Abstractions.Models;
 using Mess.Fields.Abstractions;
 using Mess.OrchardCore;
-using Mess.Ozds.Abstractions.Client;
+using Mess.Ozds.Abstractions.Timeseries;
 
 namespace Mess.Ozds.Chart;
 
-public class AbbChartProvider : ChartProvider<AbbMeasurementDeviceItem>
+public class AbbChartProvider : ChartFactory<AbbMeasurementDeviceItem>
 {
   public override IEnumerable<string> TimeseriesChartDatasetProperties =>
     new[]
@@ -82,10 +82,10 @@ public class AbbChartProvider : ChartProvider<AbbMeasurementDeviceItem>
     );
   }
 
-  public AbbChartProvider(IOzdsClient client)
+  public AbbChartProvider(IOzdsTimeseriesClient client)
   {
     _client = client;
   }
 
-  private readonly IOzdsClient _client;
+  private readonly IOzdsTimeseriesClient _client;
 }

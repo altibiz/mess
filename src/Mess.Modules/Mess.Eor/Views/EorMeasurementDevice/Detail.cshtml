@@ -1,5 +1,5 @@
 @using Microsoft.AspNetCore.Authorization
-@using Mess.Eor.Abstractions.Client
+@using Mess.Eor.Abstractions.Timeseries
 @using Mess.OrchardCore.Extensions.Microsoft
 @using Mess.Eor.Extensions
 
@@ -27,7 +27,7 @@
 
 @if (Model.EorMeasurementDeviceSummary.Status is not null)
 {
-  var status = 
+  var status =
     Model.EorMeasurementDeviceSummary.Status.ProcessFault == 0
       ? (Class: "status-ok", Text: "OK")
       : Model.EorMeasurementDeviceSummary.Status.ProcessFault == 999
@@ -36,7 +36,7 @@
   <section>
     <h3 class="section-header">
       Status
-      <span id="@statusId" class="status @status.Class">@T[status.Text]</span>  
+      <span id="@statusId" class="status @status.Class">@T[status.Text]</span>
     </h3>
     <div class="section-content">
       <div class="property-table">
@@ -131,7 +131,7 @@
             {
               <p>
                 @processFault
-              </p> 
+              </p>
             }
           </div>
         </div>
@@ -149,7 +149,7 @@
 )
 {
   var deviceStatus =
-    Model.EorMeasurementDeviceSummary.Status.ResetState == 
+    Model.EorMeasurementDeviceSummary.Status.ResetState ==
       EorMeasurementDeviceResetState.ShouldReset
     ? (Class: "status-warning", Text: "Reset")
     : Model.EorMeasurementDeviceSummary.Status.RunState ==
@@ -160,13 +160,13 @@
     ? (Class: "status-error", Text: "Stopped")
     : (Class: "status-warning", Text: "Unknown");
   var serverStatus =
-    Model.EorMeasurementDevice.EorMeasurementDevicePart.Value.Controls.ResetState == 
+    Model.EorMeasurementDevice.EorMeasurementDevicePart.Value.Controls.ResetState ==
       EorMeasurementDeviceResetState.ShouldReset
     ? (Class: "status-warning", Text: "Reset")
-    : Model.EorMeasurementDevice.EorMeasurementDevicePart.Value.Controls.RunState == 
+    : Model.EorMeasurementDevice.EorMeasurementDevicePart.Value.Controls.RunState ==
         EorMeasurementDeviceRunState.Started
     ? (Class: "status-ok", Text: "Started")
-    : Model.EorMeasurementDevice.EorMeasurementDevicePart.Value.Controls.RunState == 
+    : Model.EorMeasurementDevice.EorMeasurementDevicePart.Value.Controls.RunState ==
         EorMeasurementDeviceRunState.Stopped
     ? (Class: "status-error", Text: "Stopped")
     : (Class: "status-warning", Text: "Unknown");
@@ -196,7 +196,7 @@
         </div>
       <div class="control-table">
         <div class="start-stop-reset-controls">
-          <form 
+          <form
               asp-route-area="Mess.Eor"
               asp-controller="EorMeasurementDeviceControls"
               asp-action="Start"
@@ -206,7 +206,7 @@
               @T["START"]
             </button>
           </form>
-          <form 
+          <form
               asp-route-area="Mess.Eor"
               asp-controller="EorMeasurementDeviceControls"
               asp-action="Stop"
@@ -216,7 +216,7 @@
               @T["STOP"]
             </button>
           </form>
-          <form 
+          <form
               asp-route-area="Mess.Eor"
               asp-controller="EorMeasurementDeviceControls"
               asp-action="Reset"
@@ -228,7 +228,7 @@
           </form>
         </div>
         <div class="input-controls">
-          <form 
+          <form
               asp-route-area="Mess.Eor"
               asp-controller="EorMeasurementDeviceControls"
               asp-action="SetMode"

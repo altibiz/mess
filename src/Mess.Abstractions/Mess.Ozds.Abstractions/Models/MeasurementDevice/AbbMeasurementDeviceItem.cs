@@ -11,11 +11,8 @@ public class AbbMeasurementDeviceItem : ContentItemBase
 {
   public Lazy<TitlePart> TitlePart { get; private set; } = default!;
 
-  public Lazy<MeasurementDevicePart> MeasurementDevicePart
-  {
-    get;
-    private set;
-  } = default!;
+  public Lazy<IotDevicePart> MeasurementDevicePart { get; private set; } =
+    default!;
 
   public Lazy<OzdsMeasurementDevicePart> OzdsMeasurementDevicePart
   {

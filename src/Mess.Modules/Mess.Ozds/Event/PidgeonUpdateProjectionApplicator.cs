@@ -1,7 +1,7 @@
 using Mess.Event.Abstractions.Events;
-using Mess.Iot.Abstractions.Client;
+using Mess.Iot.Abstractions.Timeseries;
 using Mess.Iot.Abstractions.Indexes;
-using Mess.Iot.Abstractions.Updating;
+using Mess.Iot.Abstractions.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OrchardCore.ContentManagement;
@@ -9,11 +9,11 @@ using YesSql;
 
 namespace Mess.Ozds.Event;
 
-public class PidgeonUpdateProjectionApplicator : IProjectionApplicator
+public class PidgeonUpdateProjectionApplicator : IEventDispatcher
 {
-  public void Apply(IServiceProvider services, IEvents events)
+  public void Appl(IServiceProvider services, IEvents events)
   {
-    var client = services.GetRequiredService<ITimeseriesClient>();
+    var client = services.GetRequiredService<IIotTimeseriesClient>();
     var session = services.GetRequiredService<ISession>();
     var logger = services.GetRequiredService<
       ILogger<PidgeonUpdateProjectionApplicator>
@@ -22,7 +22,7 @@ public class PidgeonUpdateProjectionApplicator : IProjectionApplicator
     foreach (var @event in events.OfType<PidgeonUpdated>())
     {
       var contentItem = session
-        .Query<ContentItem, MeasurementDeviceIndex>()
+        .Query<ContentItem, IotDeviceIndex>()
         .Where(index => index.DeviceId == @event.DeviceId)
         .FirstOrDefaultAsync()
         .Result;
@@ -32,7 +32,7 @@ public class PidgeonUpdateProjectionApplicator : IProjectionApplicator
       }
 
       var handler = services
-        .GetServices<IMeasurementDeviceUpdateHandler>()
+        .GetServices<IIotUpdateHandler>()
         .FirstOrDefault(
           handler => handler.ContentType == contentItem.ContentType
         );
@@ -53,13 +53,13 @@ public class PidgeonUpdateProjectionApplicator : IProjectionApplicator
     session.SaveChangesAsync().RunSynchronously();
   }
 
-  public async Task ApplyAsync(
+  public async Task DispatchAsync(
     IServiceProvider services,
     IEvents events,
     CancellationToken cancellationToken
   )
   {
-    var client = services.GetRequiredService<ITimeseriesClient>();
+    var client = services.GetRequiredService<IIotTimeseriesClient>();
     var session = services.GetRequiredService<ISession>();
     var logger = services.GetRequiredService<
       ILogger<PidgeonUpdateProjectionApplicator>
@@ -68,7 +68,7 @@ public class PidgeonUpdateProjectionApplicator : IProjectionApplicator
     foreach (var @event in events.OfType<PidgeonUpdated>())
     {
       var contentItem = await session
-        .Query<ContentItem, MeasurementDeviceIndex>()
+        .Query<ContentItem, IotDeviceIndex>()
         .Where(index => index.DeviceId == @event.DeviceId)
         .FirstOrDefaultAsync();
       if (contentItem is null)
@@ -77,7 +77,7 @@ public class PidgeonUpdateProjectionApplicator : IProjectionApplicator
       }
 
       var handler = services
-        .GetServices<IMeasurementDeviceUpdateHandler>()
+        .GetServices<IIotUpdateHandler>()
         .FirstOrDefault(
           handler => handler.ContentType == contentItem.ContentType
         );

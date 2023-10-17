@@ -1,13 +1,13 @@
-using Mess.Chart.Abstractions.Providers;
+using Mess.Chart.Abstractions.Services;
 using Mess.Chart.Abstractions.Descriptors;
 using Mess.Fields.Abstractions;
 using Mess.Chart.Abstractions.Models;
-using Mess.Eor.Abstractions.Client;
+using Mess.Eor.Abstractions.Timeseries;
 using Mess.Eor.Abstractions.Models;
 
 namespace Mess.Eor.Chart;
 
-public class EorChartProvider : ChartProvider<EorMeasurementDeviceItem>
+public class EorChartProvider : ChartFactory<EorMeasurementDeviceItem>
 {
   public override IEnumerable<string> TimeseriesChartDatasetProperties =>
     new[]

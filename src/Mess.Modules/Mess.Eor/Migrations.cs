@@ -1,5 +1,5 @@
 using Mess.Chart.Abstractions.Models;
-using Mess.Eor.Abstractions.Client;
+using Mess.Eor.Abstractions.Timeseries;
 using Mess.Eor.Abstractions.Indexes;
 using Mess.Eor.Abstractions.Models;
 using Mess.Iot.Abstractions.Indexes;
@@ -20,7 +20,7 @@ using OrchardCore.Users.Models;
 using OrchardCore.Users.Services;
 using YesSql;
 using YesSql.Sql;
-using Mess.Fields.Abstractions.Services;
+using Mess.Fields.Abstractions.ApiKeys;
 using Mess.Fields.Abstractions.Settings;
 using Mess.Fields.Abstractions;
 
@@ -219,7 +219,7 @@ public class Migrations : DataMigration
           )
     );
 
-    SchemaBuilder.CreateMapIndexTable<EorMeasurementDeviceIndex>(
+    SchemaBuilder.CreateMapIndexTable<EorIotDeviceIndex>(
       table =>
         table
           .Column<string>("ContentItemId", c => c.WithLength(64))
@@ -227,7 +227,7 @@ public class Migrations : DataMigration
           .Column<string>("OwnerId", c => c.WithLength(64))
           .Column<string>("Author", c => c.WithLength(256))
     );
-    SchemaBuilder.AlterIndexTable<EorMeasurementDeviceIndex>(table =>
+    SchemaBuilder.AlterIndexTable<EorIotDeviceIndex>(table =>
     {
       table.CreateIndex("IDX_EorMeasurementDeviceIndex_OwnerId", "OwnerId");
       table.CreateIndex("IDX_EorMeasurementDeviceIndex_Author", "Author");
@@ -410,7 +410,7 @@ public class Migrations : DataMigration
       var eorMeasurementDevice =
         (
           await _session
-            .Query<ContentItem, MeasurementDeviceIndex>()
+            .Query<ContentItem, IotDeviceIndex>()
             .Where(index => index.DeviceId == eorDeviceId)
             .FirstOrDefaultAsync()
         )?.AsContent<EorMeasurementDeviceItem>()

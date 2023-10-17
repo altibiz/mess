@@ -1,5 +1,5 @@
 using Mess.Billing.Abstractions;
-using Mess.Billing.Abstractions.Factory;
+using Mess.Billing.Abstractions.Services;
 using Mess.Billing.Abstractions.Indexes;
 using Mess.Billing.Abstractions.Models;
 using Mess.Billing.ViewModels;
@@ -14,6 +14,7 @@ using OrchardCore.Mvc.Core.Utilities;
 using OrchardCore.Users.Services;
 using YesSql;
 using ContentAdminController = OrchardCore.Contents.Controllers.AdminController;
+using OrchardCore.ContentFields.Indexing.SQL;
 
 namespace Mess.Billing.Controllers;
 
@@ -34,11 +35,17 @@ public class AdminController : Controller
     {
       var orchardCoreUser =
         await _userService.GetAuthenticatedOrchardCoreUserAsync(User);
-      contentItems = await _session
-        .Query<ContentItem, IssuerBillIndex>()
+      var issuerItem = await _session
+        .Query<ContentItem, UserPickerFieldIndex>()
         .Where(
-          index => index.IssuerRepresentativeUserId == orchardCoreUser.UserId
+          index =>
+            index.SelectedUserId == orchardCoreUser.UserId
+            && index.ContentPart == "LegalEntityPart"
         )
+        .FirstOrDefaultAsync();
+      contentItems = await _session
+        .Query<ContentItem, BillingIndex>()
+        .Where(index => index.IssuerContentItemId == issuerItem.ContentItemId)
         .ListAsync();
     }
     else if (
@@ -50,10 +57,18 @@ public class AdminController : Controller
     {
       var orchardCoreUser =
         await _userService.GetAuthenticatedOrchardCoreUserAsync(User);
-      contentItems = await _session
-        .Query<ContentItem, RecipientBillIndex>()
+      var recipientItem = await _session
+        .Query<ContentItem, UserPickerFieldIndex>()
         .Where(
-          index => index.RecipientRepresentativeUserId == orchardCoreUser.UserId
+          index =>
+            index.SelectedUserId == orchardCoreUser.UserId
+            && index.ContentPart == "LegalEntityPart"
+        )
+        .FirstOrDefaultAsync();
+      contentItems = await _session
+        .Query<ContentItem, BillingIndex>()
+        .Where(
+          index => index.RecipientContentItemId == recipientItem.ContentItemId
         )
         .ListAsync();
     }
@@ -73,8 +88,9 @@ public class AdminController : Controller
               .Where(
                 contentItem =>
                   contentItem.Has<ReceiptPart>()
-                  && contentItem.As<ReceiptPart>().InvoiceContentItemId
-                    == contentItem.ContentItemId
+                  && contentItem
+                    .As<ReceiptPart>()
+                    .Invoice.ContentItemIds.Contains(contentItem.ContentItemId)
               )
               .FirstOrDefault()
           }
@@ -129,16 +145,6 @@ public class AdminController : Controller
       nowLastMonthStart,
       nowLastMonthEnd
     );
-    invoiceItem.Alter<InvoicePart>(invoicePart =>
-    {
-      invoicePart.BillingContentItemId = billingItem.ContentItemId;
-      invoicePart.RecipientContentItemId = billingPart.RecipientContentItemId;
-      invoicePart.RecipientRepresentativeUserIds =
-        billingPart.RecipientRepresentativeUserIds;
-      invoicePart.IssuerContentItemId = billingPart.IssuerContentItemId;
-      invoicePart.IssuerRepresentativeUserIds =
-        billingPart.IssuerRepresentativeUserIds;
-    });
     await _contentManager.CreateAsync(invoiceItem);
 
     return RedirectToAction(
@@ -177,8 +183,17 @@ public class AdminController : Controller
       return Forbid();
     }
 
+    var paymentIndex = await _session
+      .QueryIndex<PaymentIndex>()
+      .Where(index => index.InvoiceContentItemId == invoiceItem.ContentItemId)
+      .FirstOrDefaultAsync();
+    if (paymentIndex == null)
+    {
+      return NotFound();
+    }
+
     var billingItem = await _contentManager.GetAsync(
-      invoicePart.BillingContentItemId
+      paymentIndex.BillingContentItemId
     );
     if (billingItem == null)
     {
@@ -205,24 +220,7 @@ public class AdminController : Controller
       contentItem: billingItem,
       invoiceContentItem: invoiceItem
     );
-    receiptItem.Alter<ReceiptPart>(receiptPart =>
-    {
-      receiptPart.BillingContentItemId = billingItem.ContentItemId;
-      receiptPart.RecipientContentItemId = billingPart.RecipientContentItemId;
-      receiptPart.RecipientRepresentativeUserIds =
-        billingPart.RecipientRepresentativeUserIds;
-      receiptPart.IssuerContentItemId = billingPart.IssuerContentItemId;
-      receiptPart.IssuerRepresentativeUserIds =
-        billingPart.IssuerRepresentativeUserIds;
-      receiptPart.InvoiceContentItemId = invoiceItem.ContentItemId;
-    });
     await _contentManager.CreateAsync(receiptItem);
-
-    invoiceItem.Alter<InvoicePart>(invoicePart =>
-    {
-      invoicePart.ReceiptContentItemId = receiptItem.ContentItemId;
-    });
-    await _contentManager.UpdateAsync(invoiceItem);
 
     return RedirectToAction(
       actionName: nameof(ContentAdminController.Display),

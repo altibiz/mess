@@ -17,12 +17,11 @@ public record class Projection(IServiceProvider Services) : IProjection
 
     var events = new Events(streams);
 
-    var applicators =
-      scope.ServiceProvider.GetServices<IProjectionApplicator>();
+    var applicators = scope.ServiceProvider.GetServices<IEventDispatcher>();
 
     foreach (var applicator in applicators)
     {
-      applicator.Apply(scope.ServiceProvider, events);
+      applicator.Appl(scope.ServiceProvider, events);
     }
   }
 
@@ -36,12 +35,11 @@ public record class Projection(IServiceProvider Services) : IProjection
 
     var events = new Events(streams);
 
-    var applicators =
-      scope.ServiceProvider.GetServices<IProjectionApplicator>();
+    var applicators = scope.ServiceProvider.GetServices<IEventDispatcher>();
 
     foreach (var applicator in applicators)
     {
-      await applicator.ApplyAsync(
+      await applicator.DispatchAsync(
         scope.ServiceProvider,
         events,
         cancellationToken

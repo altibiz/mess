@@ -19,12 +19,15 @@ public static class ObjectSerializationExtensions
         .AddMessNewtonsoftJsonConverters()
     );
 
-  public static T? FromNewtonsoftJson<T>(this string @this) =>
+  public static T FromNewtonsoftJson<T>(this string @this) =>
     JsonConvert.DeserializeObject<T>(
       @this,
       new JsonSerializerSettings { }
         .AddMessNewtonsoftJsonSettings()
         .AddMessNewtonsoftJsonConverters()
+    )
+    ?? throw new InvalidOperationException(
+      $"Could not deserialize json string '{@this}' to type '{typeof(T).Name}'"
     );
 
   public static object? FromNewtonsoftJson(this string @this, Type type) =>

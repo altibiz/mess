@@ -1,4 +1,4 @@
-using Mess.Billing.Abstractions.Factory;
+using Mess.Billing.Abstractions.Services;
 
 namespace Mess.Billing.Abstractions.Extensions;
 

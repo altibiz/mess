@@ -1,21 +1,20 @@
 using Mess.Event.Abstractions.Events;
-using Mess.Iot.Abstractions.Client;
-using Mess.Iot.Abstractions.Pushing;
+using Mess.Iot.Abstractions.Timeseries;
 using Mess.Iot.Abstractions.Services;
+using Mess.Iot.Abstractions.Caches;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using YesSql;
 
 namespace Mess.Ozds.Event;
 
-public class PidgeonPushProjectionApplicator : IProjectionApplicator
+public class PidgeonPushProjectionApplicator : IEventDispatcher
 {
-  public void Apply(IServiceProvider services, IEvents events)
+  public void Appl(IServiceProvider services, IEvents events)
   {
-    var client = services.GetRequiredService<ITimeseriesClient>();
+    var client = services.GetRequiredService<IIotTimeseriesClient>();
     var session = services.GetRequiredService<ISession>();
-    var cache =
-      services.GetRequiredService<IMeasurementDeviceContentItemCache>();
+    var cache = services.GetRequiredService<IIotDeviceContentItemCache>();
     var logger = services.GetRequiredService<
       ILogger<PidgeonPushProjectionApplicator>
     >();
@@ -29,7 +28,7 @@ public class PidgeonPushProjectionApplicator : IProjectionApplicator
       }
 
       var handler = services
-        .GetServices<IMeasurementDevicePushHandler>()
+        .GetServices<IIotPushHandler>()
         .FirstOrDefault(
           handler => handler.ContentType == contentItem.ContentType
         );
@@ -50,16 +49,15 @@ public class PidgeonPushProjectionApplicator : IProjectionApplicator
     session.SaveChangesAsync().RunSynchronously();
   }
 
-  public async Task ApplyAsync(
+  public async Task DispatchAsync(
     IServiceProvider services,
     IEvents events,
     CancellationToken cancellationToken
   )
   {
-    var client = services.GetRequiredService<ITimeseriesClient>();
+    var client = services.GetRequiredService<IIotTimeseriesClient>();
     var session = services.GetRequiredService<ISession>();
-    var cache =
-      services.GetRequiredService<IMeasurementDeviceContentItemCache>();
+    var cache = services.GetRequiredService<IIotDeviceContentItemCache>();
     var logger = services.GetRequiredService<
       ILogger<PidgeonPushProjectionApplicator>
     >();
@@ -73,7 +71,7 @@ public class PidgeonPushProjectionApplicator : IProjectionApplicator
       }
 
       var handler = services
-        .GetServices<IMeasurementDevicePushHandler>()
+        .GetServices<IIotPushHandler>()
         .FirstOrDefault(
           handler => handler.ContentType == contentItem.ContentType
         );

@@ -16,11 +16,11 @@ public class OzdsMeasurementDeviceDistributionSystemOperatorIndexProvider
       .When(
         contentItem =>
           contentItem.Has<OzdsMeasurementDevicePart>()
-          && contentItem.Has<MeasurementDevicePart>()
+          && contentItem.Has<IotDevicePart>()
       )
       .Map(contentItem =>
       {
-        var measurementDevicePart = contentItem.As<MeasurementDevicePart>();
+        var measurementDevicePart = contentItem.As<IotDevicePart>();
         var ozdsMeasurementDevicePart =
           contentItem.As<OzdsMeasurementDevicePart>();
 

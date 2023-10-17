@@ -12,14 +12,14 @@ public class EorMeasurementDeviceIndexProvider : IndexProvider<ContentItem>
   public override void Describe(DescribeContext<ContentItem> context)
   {
     context
-      .For<EorMeasurementDeviceIndex>()
+      .For<EorIotDeviceIndex>()
       .When(contentItem => contentItem.Has<EorMeasurementDevicePart>())
       .Map(contentItem =>
       {
         var eorMeasurementDevice =
           contentItem.AsContent<EorMeasurementDeviceItem>();
 
-        return new EorMeasurementDeviceIndex
+        return new EorIotDeviceIndex
         {
           ContentItemId = eorMeasurementDevice.ContentItemId,
           DeviceId = eorMeasurementDevice

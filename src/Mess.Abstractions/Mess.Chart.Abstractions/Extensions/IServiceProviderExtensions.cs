@@ -1,12 +1,12 @@
-using Mess.Chart.Abstractions.Providers;
+using Mess.Chart.Abstractions.Services;
 
 namespace Mess.Chart.Abstractions.Extensions;
 
 public static class IServiceProviderExtensions
 {
-  public static void AddChartProvider<T>(this IServiceCollection services)
-    where T : class, IChartProvider
+  public static void AddChartFactory<T>(this IServiceCollection services)
+    where T : class, IChartFactory
   {
-    services.AddScoped<IChartProvider, T>();
+    services.AddScoped<IChartFactory, T>();
   }
 }

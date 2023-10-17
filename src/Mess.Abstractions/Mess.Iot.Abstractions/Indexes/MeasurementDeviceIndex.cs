@@ -2,7 +2,7 @@ using YesSql.Indexes;
 
 namespace Mess.Iot.Abstractions.Indexes;
 
-public class MeasurementDeviceIndex : MapIndex
+public class IotDeviceIndex : MapIndex
 {
   public string ContentItemId { get; set; } = default!;
 

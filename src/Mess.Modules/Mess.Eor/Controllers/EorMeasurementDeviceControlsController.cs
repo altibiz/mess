@@ -1,4 +1,4 @@
-using Mess.Eor.Abstractions.Client;
+using Mess.Eor.Abstractions.Timeseries;
 using Mess.Eor.Abstractions.Models;
 using Mess.Eor.Extensions;
 using Mess.OrchardCore;

@@ -1,5 +1,5 @@
-using Mess.Iot.Abstractions.Security;
 using Mess.Iot.Abstractions.Services;
+using Mess.Iot.Abstractions.Caches;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,7 +23,7 @@ public class MeasurementDeviceAuthorization
     }
 
     var cache =
-      context.HttpContext.RequestServices.GetRequiredService<IMeasurementDeviceContentItemCache>();
+      context.HttpContext.RequestServices.GetRequiredService<IIotDeviceContentItemCache>();
     var contentItem = await cache.GetAsync(deviceId);
     if (contentItem is null)
     {
@@ -33,7 +33,7 @@ public class MeasurementDeviceAuthorization
 
     var handler =
       context.HttpContext.RequestServices
-        .GetServices<IMeasurementDeviceAuthorizationHandler>()
+        .GetServices<IIotAuthorizationHandler>()
         .FirstOrDefault(
           handler => handler.ContentType == contentItem.ContentType
         )

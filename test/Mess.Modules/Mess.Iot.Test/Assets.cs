@@ -1,4 +1,4 @@
-using Mess.Iot.Abstractions.Client;
+using Mess.Iot.Abstractions.Timeseries;
 using Mess.System;
 
 namespace Mess.Iot.Test;

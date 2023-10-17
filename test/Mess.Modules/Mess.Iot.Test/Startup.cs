@@ -1,9 +1,9 @@
 using Mess.Event.Test.Abstractions.Extensions;
 using Mess.Timeseries.Test.Abstractions.Extensions;
-using Mess.Iot.Abstractions.Pushing;
-using Mess.Iot.Pushing;
+using Mess.Iot.Abstractions.Services;
+using Mess.Iot.Iot;
 using Moq;
-using Mess.Iot.Abstractions.Client;
+using Mess.Iot.Abstractions.Timeseries;
 
 namespace Mess.Iot.Test;
 
@@ -20,9 +20,9 @@ public class Startup : Mess.OrchardCore.Test.Startup
     services.AddTestTimeseriesStore();
 
     services.AddScoped<EgaugePushHandler>();
-    services.AddScoped<IMeasurementDevicePushHandler, EgaugePushHandler>();
+    services.AddScoped<IIotPushHandler, EgaugePushHandler>();
 
-    var measurementClient = new Mock<ITimeseriesClient>();
+    var measurementClient = new Mock<IIotTimeseriesClient>();
     services.AddSingleton(measurementClient);
     services.AddSingleton(measurementClient.Object);
   }

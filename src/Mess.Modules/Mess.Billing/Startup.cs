@@ -1,7 +1,7 @@
 using Mess.Billing.Abstractions.Models;
 using Mess.Billing.BackgroundTasks;
 using Mess.Billing.Controllers;
-using Mess.Billing.Handler;
+using Mess.Billing.Handlers;
 using Mess.Billing.Indexes;
 using Mess.Billing.Drivers;
 using Mess.OrchardCore.Extensions.Microsoft;
@@ -42,7 +42,7 @@ public class Startup : StartupBase
       .AddContentPart<InvoicePart>()
       .UseDisplayDriver<InvoicePartDisplayDriver>();
     services.AddIndexProvider<RecipientBillIndexProvider>();
-    services.AddIndexProvider<IssuerBillIndexProvider>();
+    services.AddIndexProvider<PaymentIndexProvider>();
     services.AddContentHandler<PaymentHandler>();
   }
 
