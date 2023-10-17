@@ -32,66 +32,20 @@ public class Migrations : DataMigration
       _serviceProvider,
       SchemaBuilder
     );
-
     await CreateAsyncMigrations.MigrateOperatorCatalogue(
       _serviceProvider,
       SchemaBuilder
     );
-
     await CreateAsyncMigrations.MigrateOperator(
       _serviceProvider,
       SchemaBuilder
     );
-
     await CreateAsyncMigrations.MigrateSystem(_serviceProvider, SchemaBuilder);
-
     await CreateAsyncMigrations.MigrateUnit(_serviceProvider, SchemaBuilder);
-
-    var contentDefinitionManager =
-      _serviceProvider.GetRequiredService<IContentDefinitionManager>();
-
-    contentDefinitionManager.AlterPartDefinition(
-      "OzdsIotDevicePart",
-      builder =>
-        builder
-          .Attachable()
-          .WithDescription("An OZDS measurement device.")
-          .WithDisplayName("OZDS measurement device")
-          .WithField(
-            "DistributionSystemUnit",
-            fieldBuilder =>
-              fieldBuilder
-                .OfType("ContentPickerField")
-                .WithDisplayName("Distribution system unit")
-                .WithDescription("Distribution system unit.")
-                .WithSettings<ContentPickerFieldSettings>(
-                  new()
-                  {
-                    Hint = "Distribution system unit.",
-                    Multiple = false,
-                    Required = true,
-                    DisplayedContentTypes = new[] { "DistributionSystemUnit" },
-                    DisplayAllContentTypes = false
-                  }
-                )
-          )
-    );
-
-    contentDefinitionManager.AlterPartDefinition(
-      "OzdsCalculationPart",
-      builder =>
-        builder
-          .Attachable()
-          .WithDescription("An OZDS billing calculation.")
-          .WithDisplayName("OZDS billing calculation")
-    );
-
     await CreateAsyncMigrations.MigrateInvoice(_serviceProvider, SchemaBuilder);
-
     await CreateAsyncMigrations.MigrateReceipt(_serviceProvider, SchemaBuilder);
-
+    await CreateAsyncMigrations.MigrateDevice(_serviceProvider, SchemaBuilder);
     await CreateAsyncMigrations.MigratePidgeon(_serviceProvider, SchemaBuilder);
-
     await CreateAsyncMigrations.MigrateAbb(_serviceProvider, SchemaBuilder);
 
     var regulatoryAgencyCatalogueContentItemId =
@@ -353,33 +307,6 @@ internal static class CreateAsyncMigrations
     var contentDefinitionManager =
       serviceProvider.GetRequiredService<IContentDefinitionManager>();
 
-    schemaBuilder.CreateMapIndexTable<OzdsIotDeviceDistributionSystemOperatorIndex>(
-      table =>
-        table
-          .Column<string>("ContentItemId", c => c.WithLength(64))
-          .Column<string>("DeviceId", c => c.WithLength(64))
-          .Column<bool>("IsMessenger")
-          .Column<string>(
-            "DistributionSystemOperatorContentItemId",
-            c => c.WithLength(64)
-          )
-          .Column<string>(
-            "DistributionSystemOperatorRepresentativeUserId",
-            c => c.WithLength(64)
-          )
-    );
-    schemaBuilder.AlterIndexTable<OzdsIotDeviceDistributionSystemOperatorIndex>(table =>
-    {
-      table.CreateIndex(
-        "IDX_OzdsIotDeviceDistributionSystemOperatorIndex_DeviceId",
-        "DeviceId"
-      );
-      table.CreateIndex(
-        "IDX_OzdsIotDeviceDistributionSystemOperatorIndex_RepresentativeUserId",
-        "DistributionSystemOperatorRepresentativeUserId"
-      );
-    });
-
     contentDefinitionManager.AlterPartDefinition(
       "DistributionSystemOperatorPart",
       builder =>
@@ -602,30 +529,27 @@ internal static class CreateAsyncMigrations
     var contentDefinitionManager =
       serviceProvider.GetRequiredService<IContentDefinitionManager>();
 
-    schemaBuilder.CreateMapIndexTable<OzdsIotDeviceClosedDistributionSystemIndex>(
+    schemaBuilder.CreateMapIndexTable<ClosedDistributionSystemIndex>(
       table =>
         table
-          .Column<string>("ContentItemId", c => c.WithLength(64))
-          .Column<string>("DeviceId", c => c.WithLength(64))
-          .Column<bool>("IsMessenger", c => c.WithDefault(false))
           .Column<string>(
             "ClosedDistributionSystemContentItemId",
             c => c.WithLength(64)
           )
           .Column<string>(
-            "ClosedDistributionSystemRepresentativeUserId",
+            "DistributionSystemOperatorContentItemId",
             c => c.WithLength(64)
           )
     );
-    schemaBuilder.AlterIndexTable<OzdsIotDeviceClosedDistributionSystemIndex>(table =>
+    schemaBuilder.AlterIndexTable<ClosedDistributionSystemIndex>(table =>
     {
       table.CreateIndex(
-        "IDX_OzdsIotDeviceClosedDistributionSystemIndex_DeviceId",
-        "DeviceId"
+        "IDX_ClosedDistributionSystemIndex_CloseDistributionSystemContentItemId",
+        "ClosedDistributionSystemContentItemId"
       );
       table.CreateIndex(
-        "IDX_OzdsIotDeviceClosedDistributionSystemIndex_RepresentativeUserId",
-        "ClosedDistributionSystemRepresentativeUserId"
+        "IDX_ClosedDistributionSystemIndex_DistributionSystemOperatorContentItemId",
+        "DistributionSystemOperatorContentItemId"
       );
     });
 
@@ -807,33 +731,6 @@ internal static class CreateAsyncMigrations
     var contentDefinitionManager =
       serviceProvider.GetRequiredService<IContentDefinitionManager>();
 
-    schemaBuilder.CreateMapIndexTable<OzdsIotDeviceDistributionSystemUnitIndex>(
-      table =>
-        table
-          .Column<string>("ContentItemId", c => c.WithLength(64))
-          .Column<string>("DeviceId", c => c.WithLength(64))
-          .Column<bool>("IsMessenger")
-          .Column<string>(
-            "DistributionSystemUnitContentItemId",
-            c => c.WithLength(64)
-          )
-          .Column<string>(
-            "DistributionSystemUnitRepresentativeUserId",
-            c => c.WithLength(64)
-          )
-    );
-    schemaBuilder.AlterIndexTable<OzdsIotDeviceDistributionSystemUnitIndex>(table =>
-    {
-      table.CreateIndex(
-        "IDX_OzdsIotDeviceDistributionSystemUnitIndex_DeviceId",
-        "DeviceId"
-      );
-      table.CreateIndex(
-        "IDX_OzdsIotDeviceDistributionSystemUnitIndex_RepresentativeUserId",
-        "DistributionSystemUnitRepresentativeUserId"
-      );
-    });
-
     schemaBuilder.CreateMapIndexTable<DistributionSystemUnitIndex>(
       table =>
         table
@@ -964,25 +861,23 @@ internal static class CreateAsyncMigrations
         }
       );
       pidgeonIotDevice.Alter(
-        pidgeonIotDevice =>
-          pidgeonIotDevice.IotDevicePart,
+        pidgeonIotDevice => pidgeonIotDevice.IotDevicePart,
         measurementDevicePart =>
         {
           measurementDevicePart.DeviceId = new() { Text = "pidgeon" };
         }
       );
       pidgeonIotDevice.Alter(
-        pidgeonIotDevice =>
-          pidgeonIotDevice.PidgeonIotDevicePart,
+        pidgeonIotDevice => pidgeonIotDevice.PidgeonIotDevicePart,
         pidgeonIotDevicePart =>
         {
-          pidgeonIotDevicePart.ApiKey =
-            apiKeyFieldService.HashApiKeyField("pidgeon");
+          pidgeonIotDevicePart.ApiKey = apiKeyFieldService.HashApiKeyField(
+            "pidgeon"
+          );
         }
       );
       pidgeonIotDevice.Alter(
-        pidgeonIotDevice =>
-          pidgeonIotDevice.OzdsIotDevicePart,
+        pidgeonIotDevice => pidgeonIotDevice.OzdsIotDevicePart,
         ozdsIotDevicePart =>
         {
           ozdsIotDevicePart.DistributionSystemUnit = new()
@@ -991,10 +886,7 @@ internal static class CreateAsyncMigrations
           };
         }
       );
-      await contentManager.CreateAsync(
-        pidgeonIotDevice,
-        VersionOptions.Latest
-      );
+      await contentManager.CreateAsync(pidgeonIotDevice, VersionOptions.Latest);
     }
   }
 
@@ -1170,10 +1062,7 @@ internal static class CreateAsyncMigrations
           chartPart.ChartContentItemId = abbChart.ContentItemId;
         }
       );
-      await contentManager.CreateAsync(
-        abbIotDevice,
-        VersionOptions.Latest
-      );
+      await contentManager.CreateAsync(abbIotDevice, VersionOptions.Latest);
     }
   }
 
@@ -1450,6 +1339,39 @@ internal static class CreateAsyncMigrations
                 )
           )
     );
+
+    schemaBuilder.CreateMapIndexTable<OperatorCatalogueIndex>(
+      builder =>
+        builder.Column<string>(
+          "OperatorCatalogueContentItemId",
+          c => c.WithLength(64)
+        )
+        .Column<string>(
+          "Voltage",
+          c => c.WithLength(64)
+        )
+        .Column<string>(
+          "Model",
+          c => c.WithLength(64)
+        )
+    );
+
+    schemaBuilder.AlterIndexTable<OperatorCatalogueIndex>(table => {
+      table.CreateIndex(
+        "IDX_OperatorCatalogueIndex_OperatorCatalogueContentItemId",
+        "OperatorCatalogueContentItemId"
+      );
+
+      table.CreateIndex(
+        "IDX_OperatorCatalogueIndex_Voltage",
+        "Voltage"
+      );
+
+      table.CreateIndex(
+        "IDX_OperatorCatalogueIndex_Model",
+        "Model"
+      );
+    });
   }
 
   internal static async Task<(
@@ -1750,5 +1672,97 @@ internal static class CreateAsyncMigrations
                 .WithPosition("4")
           )
     );
+  }
+
+  internal static async Task MigrateDevice(
+    IServiceProvider serviceProvider,
+    ISchemaBuilder schemaBuilder
+  )
+  {
+    var contentDefinitionManager =
+      serviceProvider.GetRequiredService<IContentDefinitionManager>();
+
+    contentDefinitionManager.AlterPartDefinition(
+      "OzdsIotDevicePart",
+      builder =>
+        builder
+          .Attachable()
+          .WithDescription("An OZDS measurement device.")
+          .WithDisplayName("OZDS measurement device")
+          .WithField(
+            "DistributionSystemUnit",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("ContentPickerField")
+                .WithDisplayName("Distribution system unit")
+                .WithDescription("Distribution system unit.")
+                .WithSettings<ContentPickerFieldSettings>(
+                  new()
+                  {
+                    Hint = "Distribution system unit.",
+                    Multiple = false,
+                    Required = true,
+                    DisplayedContentTypes = new[] { "DistributionSystemUnit" },
+                    DisplayAllContentTypes = false
+                  }
+                )
+          )
+    );
+
+    contentDefinitionManager.AlterPartDefinition(
+      "OzdsCalculationPart",
+      builder =>
+        builder
+          .Attachable()
+          .WithDescription("An OZDS billing calculation.")
+          .WithDisplayName("OZDS billing calculation")
+    );
+
+    schemaBuilder.CreateMapIndexTable<OzdsIotDeviceIndex>(
+      builder =>
+        builder
+          .Column<string>("OzdsIotDeviceContentItemId", c => c.WithLength(64))
+          .Column<string>("DeviceId", c => c.WithLength(64))
+          .Column<bool>("IsMessenger")
+          .Column<string>(
+            "DistributionSystemUnitContentItemId",
+            c => c.WithLength(64)
+          )
+          .Column<string>(
+            "ClosedDistributionSystemContentItemId",
+            c => c.WithLength(64)
+          )
+          .Column<string>(
+            "DistributionSystemOperatorContentItemId",
+            c => c.WithLength(64)
+          )
+    );
+
+    schemaBuilder.AlterIndexTable<OzdsIotDeviceIndex>(table =>
+    {
+      table.CreateIndex(
+        "IDX_OzdsIotDeviceIndex_OzdsIotDeviceContentItemId",
+        "OzdsIotDeviceContentItemId"
+      );
+
+      table.CreateIndex("IDX_OzdsIotDeviceIndex_DeviceId", "DeviceId");
+
+      table.CreateIndex("IDX_OzdsIotDeviceIndex_IsMessenger", "IsMessenger");
+
+      table.CreateIndex(
+        "IDX_OzdsIotDeviceIndex_DistributionSystemUnitContentItemId",
+        "DistributionSystemUnitContentItemId"
+      );
+
+      table.CreateIndex(
+        "IDX_OzdsIotDeviceIndex_ClosedDistributionSystemContentItemId",
+        "ClosedDistributionSystemContentItemId"
+      );
+
+      table.CreateIndex(
+        "IDX_OzdsIotDeviceIndex_DistributionSystemOperatorContentItemId",
+        "DistributionSystemOperatorContentItemId"
+      );
+    });
   }
 }

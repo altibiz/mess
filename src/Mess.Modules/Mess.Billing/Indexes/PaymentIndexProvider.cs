@@ -24,7 +24,7 @@ public class PaymentIndexProvider : IndexProvider<ContentItem>
           {
             var indexer = serviceProvider
               .GetServices<IPaymentIndexer>()
-              .Where(indexer => indexer.ContentType == contentItem.ContentType)
+              .Where(indexer => indexer.IsApplicable(contentItem))
               .FirstOrDefault();
             if (indexer is null)
             {

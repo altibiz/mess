@@ -4,7 +4,7 @@ namespace Mess.Billing.Abstractions.Services;
 
 public interface IBillingFactory
 {
-  string ContentType { get; }
+  public bool IsApplicable(ContentItem contentItem);
 
   ContentItem CreateInvoice(
     ContentItem contentItem,

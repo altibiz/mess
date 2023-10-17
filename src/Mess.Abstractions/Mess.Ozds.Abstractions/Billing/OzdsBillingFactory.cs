@@ -1,11 +1,15 @@
 using Mess.Billing.Abstractions.Services;
 using Mess.Iot.Abstractions.Models;
 using Mess.OrchardCore;
+using Mess.Ozds.Abstractions.Indexes;
 using Mess.Ozds.Abstractions.Models;
 using OrchardCore.ContentManagement;
+using YesSql;
 using ISession = YesSql.ISession;
 
 namespace Mess.Ozds.Abstractions.Billing;
+
+// TODO: shorten the hell out of this thing
 
 public abstract class OzdsBillingFactory<T> : IBillingFactory
   where T : ContentItemBase
@@ -22,8 +26,6 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
     DateTimeOffset to
   );
 
-  public string ContentType => typeof(T).ContentTypeName();
-
   public ContentItem CreateInvoice(
     ContentItem contentItem,
     DateTimeOffset from,
@@ -37,17 +39,27 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
       contentItem.As<OzdsIotDevicePart>()
       ?? throw new NullReferenceException("OzdsIotDevicePart is null");
 
+    var ozdsIotDeviceIndex =
+      _session
+        .QueryIndex<OzdsIotDeviceIndex>()
+        .Where(
+          index => index.OzdsIotDeviceContentItemId == contentItem.ContentItemId
+        )
+        .FirstOrDefaultAsync()
+        .Result
+      ?? throw new NullReferenceException("OzdsIotDeviceIndex is null");
+
     var unitItem =
       _contnetManager
         .GetContentAsync<DistributionSystemUnitItem>(
-          ozdsIotDevicePart.DistributionSystemUnitContentItemId
+          ozdsIotDeviceIndex.DistributionSystemUnitContentItemId
         )
         .Result
       ?? throw new NullReferenceException("Distribution system unit not found");
     var systemItem =
       _contnetManager
         .GetContentAsync<ClosedDistributionSystemItem>(
-          ozdsIotDevicePart.ClosedDistributionSystemContentItemId
+          ozdsIotDeviceIndex.ClosedDistributionSystemContentItemId
         )
         .Result
       ?? throw new NullReferenceException(
@@ -56,7 +68,7 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
     var operatorItem =
       _contnetManager
         .GetContentAsync<DistributionSystemOperatorItem>(
-          ozdsIotDevicePart.DistributionSystemOperatorContentItemId
+          ozdsIotDeviceIndex.DistributionSystemOperatorContentItemId
         )
         .Result
       ?? throw new NullReferenceException(
@@ -144,21 +156,30 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
       contentItem.As<OzdsIotDevicePart>()
       ?? throw new NullReferenceException("OzdsIotDevicePart is null");
 
+    var ozdsIotDeviceIndex =
+      await _session
+        .QueryIndex<OzdsIotDeviceIndex>()
+        .Where(
+          index => index.OzdsIotDeviceContentItemId == contentItem.ContentItemId
+        )
+        .FirstOrDefaultAsync()
+      ?? throw new NullReferenceException("OzdsIotDeviceIndex is null");
+
     var unitItem =
       await _contnetManager.GetContentAsync<DistributionSystemUnitItem>(
-        ozdsIotDevicePart.DistributionSystemUnitContentItemId
+        ozdsIotDeviceIndex.DistributionSystemUnitContentItemId
       )
       ?? throw new NullReferenceException("Distribution system unit not found");
     var systemItem =
       await _contnetManager.GetContentAsync<ClosedDistributionSystemItem>(
-        ozdsIotDevicePart.ClosedDistributionSystemContentItemId
+        ozdsIotDeviceIndex.ClosedDistributionSystemContentItemId
       )
       ?? throw new NullReferenceException(
         "Closed distribution system not found"
       );
     var operatorItem =
       await _contnetManager.GetContentAsync<DistributionSystemOperatorItem>(
-        ozdsIotDevicePart.DistributionSystemOperatorContentItemId
+        ozdsIotDeviceIndex.DistributionSystemOperatorContentItemId
       )
       ?? throw new NullReferenceException(
         "Distribution system operator not found"
@@ -240,17 +261,27 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
       invoiceContentItem.AsContent<OzdsInvoiceItem>()
       ?? throw new NullReferenceException("InvoiceItem is null");
 
+    var ozdsIotDeviceIndex =
+      _session
+        .QueryIndex<OzdsIotDeviceIndex>()
+        .Where(
+          index => index.OzdsIotDeviceContentItemId == contentItem.ContentItemId
+        )
+        .FirstOrDefaultAsync()
+        .Result
+      ?? throw new NullReferenceException("OzdsIotDeviceIndex is null");
+
     var unitItem =
       _contnetManager
         .GetContentAsync<DistributionSystemUnitItem>(
-          ozdsIotDevicePart.DistributionSystemUnitContentItemId
+          ozdsIotDeviceIndex.DistributionSystemUnitContentItemId
         )
         .Result
       ?? throw new NullReferenceException("Distribution system unit not found");
     var systemItem =
       _contnetManager
         .GetContentAsync<ClosedDistributionSystemItem>(
-          ozdsIotDevicePart.ClosedDistributionSystemContentItemId
+          ozdsIotDeviceIndex.ClosedDistributionSystemContentItemId
         )
         .Result
       ?? throw new NullReferenceException(
@@ -259,7 +290,7 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
     var operatorItem =
       _contnetManager
         .GetContentAsync<DistributionSystemOperatorItem>(
-          ozdsIotDevicePart.DistributionSystemOperatorContentItemId
+          ozdsIotDeviceIndex.DistributionSystemOperatorContentItemId
         )
         .Result
       ?? throw new NullReferenceException(
@@ -324,7 +355,7 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
     ContentItem invoiceContentItem
   )
   {
-    var measurementDevicePart =
+    var iotDevicePart =
       contentItem.As<IotDevicePart>()
       ?? throw new NullReferenceException("IotDevicePart is null");
     var ozdsIotDevicePart =
@@ -335,21 +366,31 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
       invoiceContentItem.AsContent<OzdsInvoiceItem>()
       ?? throw new NullReferenceException("InvoiceItem is null");
 
+    var ozdsIotDeviceIndex =
+      _session
+        .QueryIndex<OzdsIotDeviceIndex>()
+        .Where(
+          index => index.OzdsIotDeviceContentItemId == contentItem.ContentItemId
+        )
+        .FirstOrDefaultAsync()
+        .Result
+      ?? throw new NullReferenceException("OzdsIotDeviceIndex is null");
+
     var unitItem =
       await _contnetManager.GetContentAsync<DistributionSystemUnitItem>(
-        ozdsIotDevicePart.DistributionSystemUnitContentItemId
+        ozdsIotDeviceIndex.DistributionSystemUnitContentItemId
       )
       ?? throw new NullReferenceException("Distribution system unit not found");
     var systemItem =
       await _contnetManager.GetContentAsync<ClosedDistributionSystemItem>(
-        ozdsIotDevicePart.ClosedDistributionSystemContentItemId
+        ozdsIotDeviceIndex.ClosedDistributionSystemContentItemId
       )
       ?? throw new NullReferenceException(
         "Closed distribution system not found"
       );
     var operatorItem =
       await _contnetManager.GetContentAsync<DistributionSystemOperatorItem>(
-        ozdsIotDevicePart.DistributionSystemOperatorContentItemId
+        ozdsIotDeviceIndex.DistributionSystemOperatorContentItemId
       )
       ?? throw new NullReferenceException(
         "Distribution system operator not found"
@@ -400,6 +441,11 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
     );
 
     return receiptItem;
+  }
+
+  public bool IsApplicable(ContentItem contentItem)
+  {
+    return contentItem.ContentType == typeof(T).ContentTypeName();
   }
 
   private OzdsCalculationData CreateCalculationData(
@@ -493,8 +539,7 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
         );
 
     var measurementDeviceFeePrice =
-      catalogueItem.OperatorCataloguePart.Value.IotDeviceFee.Value
-      ?? 0.0M;
+      catalogueItem.OperatorCataloguePart.Value.IotDeviceFee.Value ?? 0.0M;
     var measurementDeviceFeeAmount = 1.0M;
     var measurementDeviceFeeTotal =
       measurementDeviceFeeAmount * measurementDeviceFeePrice;

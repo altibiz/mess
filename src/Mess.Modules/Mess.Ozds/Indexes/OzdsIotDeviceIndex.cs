@@ -1,27 +1,47 @@
-using Mess.OrchardCore;
+using Mess.Iot.Abstractions.Models;
 using Mess.Ozds.Abstractions.Indexes;
 using Mess.Ozds.Abstractions.Models;
 using Mess.System.Extensions.Microsoft;
+using Mess.OrchardCore;
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.ContentManagement;
 using YesSql.Indexes;
 
 namespace Mess.Ozds.Indexes;
 
-public class DistributionSystemUnitIndexProvider : IndexProvider<ContentItem>
+public class OzdsIotDeviceIndexProvider : IndexProvider<ContentItem>
 {
   public override void Describe(DescribeContext<ContentItem> context)
   {
     context
-      .For<DistributionSystemUnitIndex>()
-      .When(contentItem => contentItem.Has<DistributionSystemUnitPart>())
+      .For<OzdsIotDeviceIndex>()
+      .When(
+        contentItem =>
+          contentItem.Has<OzdsIotDevicePart>()
+          && contentItem.Has<IotDevicePart>()
+      )
       .Map(async contentItem =>
       {
-        var distributionSystemUnitPart =
-          contentItem.As<DistributionSystemUnitPart>();
+        var iotDevicePart = contentItem.As<IotDevicePart>();
+        var ozdsIotDevicePart = contentItem.As<OzdsIotDevicePart>();
 
+        var distributionSystemUnitContentItemId =
+          ozdsIotDevicePart.DistributionSystemUnit.ContentItemIds.First();
+
+        var distributionSystemUnitItem =
+          await _serviceProvider.AwaitScopeAsync(async serviceProvider =>
+          {
+            var contentManager =
+              serviceProvider.GetRequiredService<IContentManager>();
+            return await contentManager.GetContentAsync<DistributionSystemUnitItem>(
+              distributionSystemUnitContentItemId
+            );
+          })
+          ?? throw new InvalidOperationException(
+            $"Distribution system unit with content item id '{distributionSystemUnitContentItemId}' not found."
+          );
         var closedDistributionSystemContentItemId =
-          distributionSystemUnitPart.ClosedDistributionSystem.ContentItemIds.First();
+          distributionSystemUnitItem.DistributionSystemUnitPart.Value.ClosedDistributionSystem.ContentItemIds.First();
 
         var closedDistributionSystemItem =
           await _serviceProvider.AwaitScopeAsync(async serviceProvider =>
@@ -51,18 +71,22 @@ public class DistributionSystemUnitIndexProvider : IndexProvider<ContentItem>
             $"Distribution system operator with content item id '{distributionSystemOperatorContentItemId}' not found."
           );
 
-        return new DistributionSystemUnitIndex
+        return new OzdsIotDeviceIndex
         {
-          DistributionSystemUnitContentItemId = contentItem.ContentItemId,
+          OzdsIotDeviceContentItemId = contentItem.ContentItemId,
+          DeviceId = iotDevicePart.DeviceId.Text,
+          IsMessenger = iotDevicePart.IsMessenger,
+          DistributionSystemUnitContentItemId =
+            distributionSystemUnitContentItemId,
           ClosedDistributionSystemContentItemId =
-            closedDistributionSystemItem.ContentItemId,
+            closedDistributionSystemContentItemId,
           DistributionSystemOperatorContentItemId =
             distributionSystemOperatorContentItemId
         };
       });
   }
 
-  public DistributionSystemUnitIndexProvider(IServiceProvider serviceProvider)
+  public OzdsIotDeviceIndexProvider(IServiceProvider serviceProvider)
   {
     _serviceProvider = serviceProvider;
   }

@@ -1,10 +1,8 @@
 using Mess.Chart.Abstractions.Services;
 using Mess.Chart.Abstractions.Descriptors;
-using OrchardCore.ContentManagement;
 using Mess.Chart.Abstractions.Models;
 using Mess.Ozds.Abstractions.Models;
 using Mess.Fields.Abstractions;
-using Mess.OrchardCore;
 using Mess.Ozds.Abstractions.Timeseries;
 
 namespace Mess.Ozds.Chart;

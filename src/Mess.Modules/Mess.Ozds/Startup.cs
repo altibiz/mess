@@ -21,7 +21,6 @@ using Mess.Ozds.Indexes;
 using Mess.Ozds.Security;
 using Mess.Billing.Abstractions.Extensions;
 using Mess.Ozds.Billing;
-using Mess.Ozds.Handlers;
 
 namespace Mess.Ozds;
 
@@ -29,9 +28,13 @@ public class Startup : StartupBase
 {
   public override void ConfigureServices(IServiceCollection services)
   {
+    // Migrations
     services.AddDataMigration<Migrations>();
+
+    // Resources
     services.AddResources<Resources>();
 
+    // Timeseries
     services.AddTimeseriesDbContext<OzdsTimeseriesDbContext>();
     services.AddTimeseriesClient<
       OzdsTimeseriesClient,
@@ -39,29 +42,34 @@ public class Startup : StartupBase
       IOzdsTimeseriesQuery
     >();
 
-    services.AddContentPart<OzdsIotDevicePart>();
-    services.AddIndexProvider<DistributionSystemUnitIndexProvider>();
-    services.AddIndexProvider<OzdsIotDeviceClosedDistributionSystemIndexProvider>();
-    services.AddIndexProvider<OzdsIotDeviceDistributionSystemOperatorIndexProvider>();
-    services.AddIndexProvider<OzdsIotDeviceDistributionSystemUnitIndexProvider>();
-    services.AddContentHandler<OzdsIotDeviceHandler>();
+    // Billing
+    services.AddBillingFactory<AbbBillingFactory>();
+    services.AddBillingIndexer<OzdsBillingIndexer>();
+    services.AddPaymentIndexer<OzdsPaymentIndexer>();
 
-    services.AddContentPart<PidgeonIotDevicePart>();
+    // Iot
     services.AddIotPushHandler<PidgeonPushHandler>();
     services.AddIotAuthorizationHandler<PidgeonAuthorizationHandler>();
-
-    services.AddContentPart<AbbIotDevicePart>();
     services.AddIotPushHandler<AbbPushHandler>();
-    services.AddChartFactory<AbbChartProvider>();
-    services.AddBillingFactory<AbbBillingFactory>();
 
+    // Chart
+    services.AddChartFactory<AbbChartProvider>();
+
+    // Indexes
+    services.AddIndexProvider<DistributionSystemUnitIndexProvider>();
+    services.AddIndexProvider<ClosedDistributionSystemIndexProvider>();
+    services.AddIndexProvider<OperatorCatalogueIndexProvider>();
+    services.AddIndexProvider<OzdsIotDeviceIndexProvider>();
+
+    // Content
+    services.AddContentPart<OzdsIotDevicePart>();
+    services.AddContentPart<PidgeonIotDevicePart>();
+    services.AddContentPart<AbbIotDevicePart>();
     services.AddContentPart<DistributionSystemOperatorPart>();
     services.AddContentPart<ClosedDistributionSystemPart>();
     services.AddContentPart<DistributionSystemUnitPart>();
-
     services.AddContentPart<OperatorCataloguePart>();
     services.AddContentPart<RegulatoryAgencyCataloguePart>();
-
     services.AddContentPart<OzdsCalculationPart>();
     services.AddContentPart<OzdsReceiptPart>();
     services.AddContentPart<OzdsInvoicePart>();
@@ -77,53 +85,58 @@ public class Startup : StartupBase
       .GetRequiredService<IOptions<AdminOptions>>()
       .Value.AdminUrlPrefix;
 
+    routes.MapAreaControllerRoute<DistributionSystemUnitAdminController>(
+      nameof(DistributionSystemUnitAdminController.List),
+      adminUrlPrefix + "/DistributionSystemUnit/List"
+    );
+    routes.MapAreaControllerRoute<DistributionSystemUnitAdminController>(
+      nameof(DistributionSystemUnitAdminController.Detail),
+      adminUrlPrefix + "/DistributionSystemUnit/Detail/{contentItemId}"
+    );
+
+    routes.MapAreaControllerRoute<ClosedDistributionSystemAdminController>(
+      nameof(ClosedDistributionSystemAdminController.List),
+      adminUrlPrefix + "/ClosedDistributionSystem/List"
+    );
+    routes.MapAreaControllerRoute<ClosedDistributionSystemAdminController>(
+      nameof(ClosedDistributionSystemAdminController.Detail),
+      adminUrlPrefix + "/ClosedDistributionSystem/Detail/{contentItemId}"
+    );
+
+    routes.MapAreaControllerRoute<DistributionSystemOperatorAdminController>(
+      nameof(DistributionSystemOperatorAdminController.List),
+      adminUrlPrefix + "/DistributionSystemOperator/List"
+    );
+    routes.MapAreaControllerRoute<DistributionSystemOperatorAdminController>(
+      nameof(DistributionSystemOperatorAdminController.Detail),
+      adminUrlPrefix + "/DistributionSystemOperator/Detail/{contentItemId}"
+    );
+
     routes.MapAreaControllerRoute<DistributionSystemUnitController>(
       nameof(DistributionSystemUnitController.List),
-      adminUrlPrefix + "/DistributionSystemUnit/List/{contentType}"
+      "/DistributionSystemUnit/List"
+    );
+    routes.MapAreaControllerRoute<DistributionSystemUnitController>(
+      nameof(DistributionSystemUnitController.Detail),
+      "/DistributionSystemUnit/Detail/{contentItemId}"
     );
 
-    routes.MapAreaControllerRoute(
-      name: "Mess.Ozds.AdminController.List",
-      areaName: "Mess.Ozds",
-      pattern: adminUrlPrefix + "/List/{contentType}",
-      defaults: new
-      {
-        controller = typeof(DistributionSystemUnitController).ControllerName(),
-        action = nameof(DistributionSystemUnitController.List)
-      }
+    routes.MapAreaControllerRoute<ClosedDistributionSystemController>(
+      nameof(ClosedDistributionSystemController.List),
+      "/ClosedDistributionSystem/List"
+    );
+    routes.MapAreaControllerRoute<ClosedDistributionSystemController>(
+      nameof(ClosedDistributionSystemController.Detail),
+      "/ClosedDistributionSystem/Detail/{contentItemId}"
     );
 
-    routes.MapAreaControllerRoute(
-      name: "Mess.Ozds.AdminController.Detail",
-      areaName: "Mess.Ozds",
-      pattern: adminUrlPrefix + "/Device/{contentItemId}",
-      defaults: new
-      {
-        controller = typeof(DistributionSystemUnitController).ControllerName(),
-        action = nameof(DistributionSystemUnitController.Detail)
-      }
+    routes.MapAreaControllerRoute<DistributionSystemOperatorController>(
+      nameof(DistributionSystemOperatorController.List),
+      "/DistributionSystemOperator/List"
     );
-
-    routes.MapAreaControllerRoute(
-      name: "Mess.Ozds.OzdsController.List",
-      areaName: "Mess.Ozds",
-      pattern: "/Devices",
-      defaults: new
-      {
-        controller = typeof(IotDeviceController).ControllerName(),
-        action = nameof(IotDeviceController.List)
-      }
-    );
-
-    routes.MapAreaControllerRoute(
-      name: "Mess.Ozds.IotDeviceController.Detail",
-      areaName: "Mess.Ozds",
-      pattern: "/Detail/{contentItemId}",
-      defaults: new
-      {
-        controller = typeof(IotDeviceController).ControllerName(),
-        action = nameof(IotDeviceController.Detail)
-      }
+    routes.MapAreaControllerRoute<DistributionSystemOperatorController>(
+      nameof(DistributionSystemOperatorController.Detail),
+      "/DistributionSystemOperator/Detail/{contentItemId}"
     );
 
     app.UseEndpoints(endpoints =>

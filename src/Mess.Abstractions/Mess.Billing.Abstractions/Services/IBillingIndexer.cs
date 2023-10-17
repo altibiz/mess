@@ -5,7 +5,7 @@ namespace Mess.Billing.Abstractions.Services;
 
 public interface IBillingIndexer
 {
-  public string ContentType { get; }
+  public bool IsApplicable(ContentItem contentItem);
 
   public BillingIndex IndexBilling(ContentItem contentItem);
 

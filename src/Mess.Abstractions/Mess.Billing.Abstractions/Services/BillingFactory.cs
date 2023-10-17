@@ -6,8 +6,6 @@ namespace Mess.Billing.Abstractions.Services;
 public abstract class BillingFactory<T> : IBillingFactory
   where T : ContentItemBase
 {
-  public string ContentType => typeof(T).ContentTypeName();
-
   public abstract ContentItem CreateInvoice(
     T contentItem,
     DateTimeOffset from,
@@ -46,5 +44,10 @@ public abstract class BillingFactory<T> : IBillingFactory
   )
   {
     return await CreateInvoiceAsync(contentItem.AsContent<T>(), from, to);
+  }
+
+  public bool IsApplicable(ContentItem contentItem)
+  {
+    return contentItem.ContentType == typeof(T).ContentTypeName();
   }
 }

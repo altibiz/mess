@@ -2,7 +2,7 @@ using YesSql.Indexes;
 
 namespace Mess.Ozds.Abstractions.Indexes;
 
-public class OzdsIotDeviceClosedDistributionSystemIndex : MapIndex
+public class OzdsIotDeviceIndex : MapIndex
 {
   public string OzdsIotDeviceContentItemId { get; set; } = default!;
 

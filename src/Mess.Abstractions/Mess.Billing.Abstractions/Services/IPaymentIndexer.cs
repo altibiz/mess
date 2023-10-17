@@ -5,7 +5,7 @@ namespace Mess.Billing.Abstractions.Services;
 
 public interface IPaymentIndexer
 {
-  public string ContentType { get; }
+  public bool IsApplicable(ContentItem contentItem);
 
   public PaymentIndex IndexPayment(ContentItem contentItem);
 

@@ -11,11 +11,6 @@ public abstract class PaymentIndexer<T> : IPaymentIndexer
 
   protected abstract Task<PaymentIndex> IndexPaymentAsync(T contentItem);
 
-  public string ContentType
-  {
-    get => typeof(T).ContentTypeName();
-  }
-
   public PaymentIndex IndexPayment(ContentItem contentItem)
   {
     var item = contentItem.AsContent<T>();
@@ -40,5 +35,10 @@ public abstract class PaymentIndexer<T> : IPaymentIndexer
     }
 
     return await IndexPaymentAsync(item);
+  }
+
+  public bool IsApplicable(ContentItem contentItem)
+  {
+    return contentItem.ContentType == typeof(T).ContentTypeName();
   }
 }

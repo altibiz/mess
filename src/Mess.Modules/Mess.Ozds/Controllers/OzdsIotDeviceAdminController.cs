@@ -14,7 +14,7 @@ using OrchardCore.Admin;
 namespace Mess.Ozds.Controllers;
 
 [Admin]
-public class IotDeviceController : Controller
+public class OzdsIotDeviceAdminController : Controller
 {
   public async Task<IActionResult> List()
   {
@@ -33,10 +33,7 @@ public class IotDeviceController : Controller
     )
     {
       contentItems = await _session
-        .Query<
-          ContentItem,
-          OzdsIotDeviceDistributionSystemOperatorIndex
-        >()
+        .Query<ContentItem, OzdsIotDeviceDistributionSystemOperatorIndex>()
         .Where(
           index =>
             index.DistributionSystemOperatorRepresentativeUserId
@@ -51,10 +48,7 @@ public class IotDeviceController : Controller
     )
     {
       contentItems = await _session
-        .Query<
-          ContentItem,
-          OzdsIotDeviceClosedDistributionSystemIndex
-        >()
+        .Query<ContentItem, OzdsIotDeviceIndex>()
         .Where(
           index =>
             index.ClosedDistributionSystemRepresentativeUserId
@@ -139,7 +133,7 @@ public class IotDeviceController : Controller
     );
   }
 
-  public IotDeviceController(
+  public OzdsIotDeviceAdminController(
     IAuthorizationService authorizationService,
     IContentManager contentManager,
     ISession session

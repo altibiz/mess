@@ -1,5 +1,4 @@
 using Mess.Ozds.Abstractions.Timeseries;
-using Mess.Ozds.Abstractions.Indexes;
 using Mess.Ozds.ViewModels;
 using Mess.OrchardCore.Extensions.Microsoft;
 using Microsoft.AspNetCore.Authorization;
@@ -35,10 +34,7 @@ public class ClosedDistributionSystemAdminController : Controller
     )
     {
       contentItems = await _session
-        .Query<
-          ContentItem,
-          OzdsIotDeviceDistributionSystemOperatorIndex
-        >()
+        .Query<ContentItem, OzdsIotDeviceDistributionSystemOperatorIndex>()
         .Where(
           index =>
             index.DistributionSystemOperatorRepresentativeUserId

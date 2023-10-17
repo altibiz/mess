@@ -1,20 +1,14 @@
 using Mess.Fields.Abstractions.Fields;
 using Mess.Iot.Abstractions.Services;
 using Mess.Ozds.Abstractions.Models;
-using OrchardCore.ContentManagement;
 
 namespace Mess.Ozds.Security;
 
-public class PidgeonAuthorizationHandler : ApiKeyIotAuthorizationHandler
+public class PidgeonAuthorizationHandler
+  : ApiKeyIotAuthorizationHandler<PidgeonIotDeviceItem>
 {
-  public const string AuthorizationContentType = "PidgeonIotDevice";
-
-  public override string ContentType => AuthorizationContentType;
-
-  public override ApiKeyField? GetApiKey(ContentItem measurementDevice)
+  public override ApiKeyField GetApiKey(PidgeonIotDeviceItem contentItem)
   {
-    var pidgeonIotDevice =
-      measurementDevice.As<PidgeonIotDevicePart>();
-    return pidgeonIotDevice?.ApiKey;
+    return contentItem.PidgeonIotDevicePart.Value.ApiKey;
   }
 }

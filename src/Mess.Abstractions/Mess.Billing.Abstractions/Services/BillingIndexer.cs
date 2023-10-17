@@ -11,11 +11,6 @@ public abstract class BillingIndexer<T> : IBillingIndexer
 
   protected abstract Task<BillingIndex> IndexBillingAsync(T contentItem);
 
-  public string ContentType
-  {
-    get => typeof(T).ContentTypeName();
-  }
-
   public BillingIndex IndexBilling(ContentItem contentItem)
   {
     var item = contentItem.AsContent<T>();
@@ -40,5 +35,10 @@ public abstract class BillingIndexer<T> : IBillingIndexer
     }
 
     return await IndexBillingAsync(item);
+  }
+
+  public bool IsApplicable(ContentItem contentItem)
+  {
+    return contentItem.ContentType == typeof(T).ContentTypeName();
   }
 }
