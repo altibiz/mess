@@ -21,6 +21,7 @@ using Mess.Billing.Abstractions.Extensions;
 using Mess.Ozds.Billing;
 using Microsoft.AspNetCore.Authorization;
 using Mess.Ozds.Security;
+using SixLabors.ImageSharp.ColorSpaces.Companding;
 
 namespace Mess.Ozds;
 
@@ -30,6 +31,7 @@ public class Startup : StartupBase
   {
     // Migrations
     services.AddDataMigration<Migrations>();
+    services.AddModularTenantEvents<PopulationTenantEvents>();
 
     // Resources
     services.AddResources<Resources>();
