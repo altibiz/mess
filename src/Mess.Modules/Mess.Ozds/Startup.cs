@@ -19,9 +19,8 @@ using Mess.Ozds.Iot;
 using Mess.Ozds.Indexes;
 using Mess.Billing.Abstractions.Extensions;
 using Mess.Ozds.Billing;
-using Microsoft.AspNetCore.Authorization;
 using Mess.Ozds.Security;
-using SixLabors.ImageSharp.ColorSpaces.Companding;
+using Etch.OrchardCore.Fields.Colour;
 
 namespace Mess.Ozds;
 
@@ -31,10 +30,14 @@ public class Startup : StartupBase
   {
     // Migrations
     services.AddDataMigration<Migrations>();
-    services.AddModularTenantEvents<PopulationTenantEvents>();
+    // FIXME: ozds_UserIndex does not exist ...
+    // services.AddModularTenantEvents<PopulationTenantEvents>();
 
     // Resources
     services.AddResources<Resources>();
+
+    // Navigation
+    services.AddNavigationProvider<AdminMenu>();
 
     // Timeseries
     services.AddTimeseriesDbContext<OzdsTimeseriesDbContext>();
@@ -106,6 +109,15 @@ public class Startup : StartupBase
       adminUrlPrefix + "/ClosedDistributionSystem/Detail/{contentItemId}"
     );
 
+    routes.MapAreaControllerRoute<OzdsIotDeviceAdminController>(
+      nameof(OzdsIotDeviceAdminController.List),
+      adminUrlPrefix + "/OzdsIotDevice/List"
+    );
+    routes.MapAreaControllerRoute<OzdsIotDeviceAdminController>(
+      nameof(OzdsIotDeviceAdminController.Detail),
+      adminUrlPrefix + "/OzdsIotDevice/Detail/{contentItemId}"
+    );
+
     routes.MapAreaControllerRoute<DistributionSystemOperatorAdminController>(
       nameof(DistributionSystemOperatorAdminController.List),
       adminUrlPrefix + "/DistributionSystemOperator/List"
@@ -142,9 +154,18 @@ public class Startup : StartupBase
       "/DistributionSystemOperator/Detail/{contentItemId}"
     );
 
+    routes.MapAreaControllerRoute<OzdsIotDeviceController>(
+      nameof(OzdsIotDeviceController.List),
+      "/OzdsIotDevice/List"
+    );
+    routes.MapAreaControllerRoute<OzdsIotDeviceController>(
+      nameof(OzdsIotDeviceController.Detail),
+      "/OzdsIotDevice/Detail/{contentItemId}"
+    );
+
     app.UseEndpoints(endpoints =>
     {
-      endpoints.Redirect("/", "/List/");
+      endpoints.Redirect("/", "/OzdsIotDevice/List");
     });
   }
 }

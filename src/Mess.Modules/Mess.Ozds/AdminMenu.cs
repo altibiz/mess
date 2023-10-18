@@ -1,4 +1,6 @@
+using Mess.Ozds.Controllers;
 using Microsoft.Extensions.Localization;
+using OrchardCore.Mvc.Core.Utilities;
 using OrchardCore.Navigation;
 
 namespace OrchardCore.Cors
@@ -24,15 +26,15 @@ namespace OrchardCore.Cors
         configuration =>
           configuration
             .Add(
-              S["Measurement devices"],
-              S["Measurement devices"].PrefixPosition(),
+              S["IOT devices"],
+              S["IOT devices"].PrefixPosition(),
               entry =>
                 entry
-                  .AddClass("measurement-devices")
-                  .Id("measurement-devices")
+                  .AddClass("iot-devices")
+                  .Id("iot-devices")
                   .Action(
-                    "List",
-                    "IotDeviceAdmin",
+                    nameof(OzdsIotDeviceAdminController.List),
+                    typeof(OzdsIotDeviceAdminController).ControllerName(),
                     new { area = "Mess.Ozds" }
                   )
                   .LocalNav()
@@ -45,8 +47,8 @@ namespace OrchardCore.Cors
                   .AddClass("distribution-system-units")
                   .Id("distribution-system-units")
                   .Action(
-                    "List",
-                    "DistributionSystemUnitAdmin",
+                    nameof(DistributionSystemUnitController.List),
+                    typeof(DistributionSystemUnitController).ControllerName(),
                     new { area = "Mess.Ozds" }
                   )
                   .LocalNav()
@@ -59,8 +61,8 @@ namespace OrchardCore.Cors
                   .AddClass("closed-distribution-systems")
                   .Id("closed-distribution-systems")
                   .Action(
-                    "List",
-                    "ClosedDistributionSystemAdmin",
+                    nameof(ClosedDistributionSystemAdminController.List),
+                    typeof(ClosedDistributionSystemAdminController).ControllerName(),
                     new { area = "Mess.Ozds" }
                   )
                   .LocalNav()
@@ -73,8 +75,8 @@ namespace OrchardCore.Cors
                   .AddClass("distribution-system-operators")
                   .Id("distribution-system-operators")
                   .Action(
-                    "List",
-                    "DistributionSystemOperatorAdmin",
+                    nameof(DistributionSystemOperatorController.List),
+                    typeof(DistributionSystemOperatorController).ControllerName(),
                     new { area = "Mess.Ozds" }
                   )
                   .LocalNav()

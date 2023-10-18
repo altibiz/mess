@@ -1,5 +1,7 @@
 using Mess.Billing.Abstractions;
+using Mess.Billing.Controllers;
 using Microsoft.Extensions.Localization;
+using OrchardCore.Mvc.Core.Utilities;
 using OrchardCore.Navigation;
 
 namespace Mess.Billing;
@@ -24,7 +26,11 @@ public class AdminMenu : INavigationProvider
               entry
                 .AddClass("payments")
                 .Id("payments")
-                .Action("Payments", "Admin", new { area = "Mess.Billing" })
+                .Action(
+                  nameof(AdminController.Bills),
+                  typeof(AdminController).ControllerName(),
+                  new { area = "Mess.Billing" }
+                )
                 .Permission(Permissions.ListIssuedBills)
                 .LocalNav()
           )
@@ -35,7 +41,11 @@ public class AdminMenu : INavigationProvider
               entry
                 .AddClass("payments")
                 .Id("payments")
-                .Action("Payments", "Admin", new { area = "Mess.Billing" })
+                .Action(
+                  nameof(AdminController.Bills),
+                  typeof(AdminController).ControllerName(),
+                  new { area = "Mess.Billing" }
+                )
                 .Permission(Permissions.ListReceivedBills)
                 .LocalNav()
           )
