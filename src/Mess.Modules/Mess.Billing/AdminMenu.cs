@@ -20,12 +20,12 @@ public class AdminMenu : INavigationProvider
       configuration =>
         configuration
           .Add(
-            S["Payments"],
-            S["Payments"].PrefixPosition(),
+            S["Issued"],
+            S["Issued"].PrefixPosition(),
             entry =>
               entry
-                .AddClass("payments")
-                .Id("payments")
+                .AddClass("issued-bills")
+                .Id("issued-bills")
                 .Action(
                   nameof(AdminController.Bills),
                   typeof(AdminController).ControllerName(),
@@ -35,12 +35,12 @@ public class AdminMenu : INavigationProvider
                 .LocalNav()
           )
           .Add(
-            S["Payments"],
-            S["Payments"].PrefixPosition(),
+            S["Received"],
+            S["Received"].PrefixPosition(),
             entry =>
               entry
-                .AddClass("payments")
-                .Id("payments")
+                .AddClass("received-bills")
+                .Id("received-bills")
                 .Action(
                   nameof(AdminController.Bills),
                   typeof(AdminController).ControllerName(),
