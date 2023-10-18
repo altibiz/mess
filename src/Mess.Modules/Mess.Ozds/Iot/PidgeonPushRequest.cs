@@ -1,12 +1,12 @@
 namespace Mess.Ozds.Iot;
 
 public record PidgeonPushRequest(
-  DateTimeOffset timestamp,
-  PidgeonPushRequestMeasurement[] measurements
+  DateTimeOffset Timestamp,
+  PidgeonPushRequestMeasurement[] Measurements
 );
 
 public record PidgeonPushRequestMeasurement(
-  string deviceId,
-  DateTimeOffset timestamp,
-  string data
+  string DeviceId,
+  DateTimeOffset Timestamp,
+  string Data
 );
