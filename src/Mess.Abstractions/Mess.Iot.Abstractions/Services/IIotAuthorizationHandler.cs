@@ -5,15 +5,15 @@ namespace Mess.Iot.Abstractions.Services;
 
 public interface IIotAuthorizationHandler
 {
-  public string ContentType { get; }
+  public bool IsApplicable(ContentItem contentItem);
 
   public Task AuthorizeAsync(
     AuthorizationFilterContext context,
-    ContentItem measurementDevice
+    ContentItem contentItem
   );
 
   public void Authorize(
     AuthorizationFilterContext context,
-    ContentItem measurementDevice
+    ContentItem contentItem
   );
 }

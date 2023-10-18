@@ -7,7 +7,7 @@ namespace Mess.Ozds.Iot;
 public class PidgeonAuthorizationHandler
   : ApiKeyIotAuthorizationHandler<PidgeonIotDeviceItem>
 {
-  public override ApiKeyField GetApiKey(PidgeonIotDeviceItem contentItem)
+  protected override ApiKeyField GetApiKey(PidgeonIotDeviceItem contentItem)
   {
     return contentItem.PidgeonIotDevicePart.Value.ApiKey;
   }

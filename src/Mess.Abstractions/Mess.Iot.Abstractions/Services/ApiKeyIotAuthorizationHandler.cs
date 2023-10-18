@@ -8,18 +8,13 @@ using Mess.OrchardCore;
 namespace Mess.Iot.Abstractions.Services;
 
 public abstract class ApiKeyIotAuthorizationHandler<T>
-  : IIotAuthorizationHandler
+  : IotAuthorizationHandler<T>
   where T : ContentItemBase
 {
-  public abstract ApiKeyField GetApiKey(T contentItem);
+  protected abstract ApiKeyField GetApiKey(T contentItem);
 
-  public void Authorize(
-    AuthorizationFilterContext context,
-    ContentItem contentItem
-  )
+  protected override void Authorize(AuthorizationFilterContext context, T item)
   {
-    var item = contentItem.AsContent<T>();
-
     var apiKey = context.HttpContext.Request.Headers[
       "X-API-Key"
     ].FirstOrDefault();
@@ -41,18 +36,11 @@ public abstract class ApiKeyIotAuthorizationHandler<T>
     }
   }
 
-  public async Task AuthorizeAsync(
+  protected override async Task AuthorizeAsync(
     AuthorizationFilterContext context,
-    ContentItem contentItem
+    T item
   )
   {
-    var item = contentItem.AsContent<T>();
-    if (item is null)
-    {
-      context.Result = new NotFoundResult();
-      return;
-    }
-
     var apiKey = context.HttpContext.Request.Headers[
       "X-API-Key"
     ].FirstOrDefault();
@@ -81,6 +69,4 @@ public abstract class ApiKeyIotAuthorizationHandler<T>
       return;
     }
   }
-
-  public string ContentType => typeof(T).ContentTypeName();
 }
