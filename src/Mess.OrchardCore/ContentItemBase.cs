@@ -155,9 +155,7 @@ public static class ContentItemExtensions
     var orchardContentItem = await content.GetAsync(id);
     if (orchardContentItem is null)
     {
-      throw new InvalidOperationException(
-        $"Could not get content item of type {typeof(T)} with id {id}"
-      );
+      return null;
     }
 
     return orchardContentItem.AsContent<T>();
@@ -173,9 +171,7 @@ public static class ContentItemExtensions
     var orchardContentItem = await content.GetAsync(id, options);
     if (orchardContentItem is null)
     {
-      throw new InvalidOperationException(
-        $"Could not get content item of type {typeof(T)} with id {id}"
-      );
+      return null;
     }
 
     return orchardContentItem.AsContent<T>();
@@ -190,9 +186,7 @@ public static class ContentItemExtensions
     var orchardContentItem = await content.GetVersionAsync(id);
     if (orchardContentItem is null)
     {
-      throw new InvalidOperationException(
-        $"Could not get content item of type {typeof(T)} with id {id}"
-      );
+      return null;
     }
 
     return orchardContentItem.AsContent<T>();
@@ -207,9 +201,7 @@ public static class ContentItemExtensions
     var orchardContentItems = await content.GetAsync(ids);
     if (orchardContentItems is null)
     {
-      throw new InvalidOperationException(
-        $"Could not get content items of type {typeof(T)} with ids {string.Join(", ", ids)}"
-      );
+      return Enumerable.Empty<T>();
     }
 
     return orchardContentItems

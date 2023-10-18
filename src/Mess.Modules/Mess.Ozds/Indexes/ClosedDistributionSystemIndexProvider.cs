@@ -28,7 +28,7 @@ public class ClosedDistributionSystemIndexProvider : IndexProvider<ContentItem>
           {
             var contentManager =
               serviceProvider.GetRequiredService<IContentManager>();
-            return await contentManager.GetContentAsync<ClosedDistributionSystemItem>(
+            return await contentManager.GetContentAsync<DistributionSystemOperatorItem>(
               distributionSystemOperatorContentItemId
             );
           })

@@ -211,7 +211,7 @@ public class Migrations : DataMigration
       );
       table.CreateIndex(
         "IDX_PaymentIndex_RecipientContentItemId",
-        "LegalEntityContentItemId"
+        "RecipientContentItemId"
       );
       table.CreateIndex(
         "IDX_PaymentIndex_IssuerContentItemId",
