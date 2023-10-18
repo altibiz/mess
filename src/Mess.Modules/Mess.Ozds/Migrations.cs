@@ -21,6 +21,7 @@ using Mess.Ozds.Abstractions.Timeseries;
 using Mess.Fields.Abstractions;
 using OrchardCore.ContentFields.Settings;
 using Microsoft.Extensions.DependencyInjection;
+using Mess.System.Extensions.Microsoft;
 
 namespace Mess.Ozds;
 
@@ -49,8 +50,8 @@ public class Migrations : DataMigration
     await CreateAsyncMigrations.MigrateAbb(_serviceProvider, SchemaBuilder);
 
     var regulatoryAgencyCatalogueContentItemId =
-      await CreateAsyncMigrations.PopulateRegulatoryAgencyCatalogue(
-        _serviceProvider
+      await _serviceProvider.AwaitScopeAsync(
+        CreateAsyncMigrations.PopulateRegulatoryAgencyCatalogue
       );
 
     (
@@ -60,8 +61,8 @@ public class Migrations : DataMigration
       string whiteLowVoltageOperatorCatalogueContentItemId,
       string redOperatorCatalogueContentItemId,
       string yellowOperatorCatalogueContentItemId
-    ) = await CreateAsyncMigrations.PopulateOperatorCatalogues(
-      _serviceProvider
+    ) = await _serviceProvider.AwaitScopeAsync(
+      CreateAsyncMigrations.PopulateOperatorCatalogues
     );
 
     (
@@ -71,54 +72,69 @@ public class Migrations : DataMigration
       string whiteLowVoltageSystemCatalogueContentItemId,
       string redSystemCatalogueContentItemId,
       string yellowSystemCatalogueContentItemId
-    ) = await CreateAsyncMigrations.PopulateOperatorCatalogues(
-      _serviceProvider
+    ) = await _serviceProvider.AwaitScopeAsync(
+      CreateAsyncMigrations.PopulateOperatorCatalogues
     );
 
     (string? operatorUserId, string? operatorContentItemId) =
-      await CreateAsyncMigrations.PopulateOperator(
-        _serviceProvider,
-        regulatoryAgencyCatalogueContentItemId,
-        whiteHighVoltageOperatorCatalogueContentItemId!,
-        whiteMediumVoltageOperatorCatalogueContentItemId!,
-        blueOperatorCatalogueContentItemId!,
-        whiteLowVoltageOperatorCatalogueContentItemId!,
-        redOperatorCatalogueContentItemId!,
-        yellowOperatorCatalogueContentItemId!
+      await _serviceProvider.AwaitScopeAsync(
+        async serviceProvider =>
+          await CreateAsyncMigrations.PopulateOperator(
+            serviceProvider,
+            regulatoryAgencyCatalogueContentItemId,
+            whiteHighVoltageOperatorCatalogueContentItemId!,
+            whiteMediumVoltageOperatorCatalogueContentItemId!,
+            blueOperatorCatalogueContentItemId!,
+            whiteLowVoltageOperatorCatalogueContentItemId!,
+            redOperatorCatalogueContentItemId!,
+            yellowOperatorCatalogueContentItemId!
+          )
       );
 
     (string? systemUserId, string? systemContentItemId) =
-      await CreateAsyncMigrations.PopulateSystem(
-        _serviceProvider,
-        operatorUserId!,
-        operatorContentItemId!,
-        whiteHighVoltageSystemCatalogueContentItemId!,
-        whiteMediumVoltageSystemCatalogueContentItemId!,
-        blueSystemCatalogueContentItemId!,
-        whiteLowVoltageSystemCatalogueContentItemId!,
-        redSystemCatalogueContentItemId!,
-        yellowSystemCatalogueContentItemId!
+      await _serviceProvider.AwaitScopeAsync(
+        async serviceProvider =>
+          await CreateAsyncMigrations.PopulateSystem(
+            serviceProvider,
+            operatorUserId!,
+            operatorContentItemId!,
+            whiteHighVoltageSystemCatalogueContentItemId!,
+            whiteMediumVoltageSystemCatalogueContentItemId!,
+            blueSystemCatalogueContentItemId!,
+            whiteLowVoltageSystemCatalogueContentItemId!,
+            redSystemCatalogueContentItemId!,
+            yellowSystemCatalogueContentItemId!
+          )
       );
 
     (string? unitUserId, string? unitContentItemId) =
-      await CreateAsyncMigrations.PopulateUnit(
-        _serviceProvider,
-        operatorUserId!,
-        operatorContentItemId!,
-        systemUserId!,
-        systemContentItemId!
+      await _serviceProvider.AwaitScopeAsync(
+        async serviceProvider =>
+          await CreateAsyncMigrations.PopulateUnit(
+            serviceProvider,
+            operatorUserId!,
+            operatorContentItemId!,
+            systemUserId!,
+            systemContentItemId!
+          )
       );
 
-    await CreateAsyncMigrations.PopulatePidgeon(
-      _serviceProvider,
-      unitContentItemId!
+    await _serviceProvider.AwaitScopeAsync(
+      async serviceProvider =>
+        await CreateAsyncMigrations.PopulatePidgeon(
+          serviceProvider,
+          unitContentItemId!
+        )
     );
 
-    await CreateAsyncMigrations.PopulateAbb(
-      _serviceProvider,
-      unitContentItemId!,
-      whiteLowVoltageOperatorCatalogueContentItemId!,
-      whiteLowVoltageSystemCatalogueContentItemId!
+    await _serviceProvider.AwaitScopeAsync(
+      async serviceProvider =>
+        await CreateAsyncMigrations.PopulateAbb(
+          serviceProvider,
+          unitContentItemId!,
+          whiteLowVoltageOperatorCatalogueContentItemId!,
+          whiteLowVoltageSystemCatalogueContentItemId!
+        )
     );
 
     return 1;
@@ -1342,35 +1358,25 @@ internal static class CreateAsyncMigrations
 
     schemaBuilder.CreateMapIndexTable<OperatorCatalogueIndex>(
       builder =>
-        builder.Column<string>(
-          "OperatorCatalogueContentItemId",
-          c => c.WithLength(64)
-        )
-        .Column<string>(
-          "Voltage",
-          c => c.WithLength(64)
-        )
-        .Column<string>(
-          "Model",
-          c => c.WithLength(64)
-        )
+        builder
+          .Column<string>(
+            "OperatorCatalogueContentItemId",
+            c => c.WithLength(64)
+          )
+          .Column<string>("Voltage", c => c.WithLength(64))
+          .Column<string>("Model", c => c.WithLength(64))
     );
 
-    schemaBuilder.AlterIndexTable<OperatorCatalogueIndex>(table => {
+    schemaBuilder.AlterIndexTable<OperatorCatalogueIndex>(table =>
+    {
       table.CreateIndex(
         "IDX_OperatorCatalogueIndex_OperatorCatalogueContentItemId",
         "OperatorCatalogueContentItemId"
       );
 
-      table.CreateIndex(
-        "IDX_OperatorCatalogueIndex_Voltage",
-        "Voltage"
-      );
+      table.CreateIndex("IDX_OperatorCatalogueIndex_Voltage", "Voltage");
 
-      table.CreateIndex(
-        "IDX_OperatorCatalogueIndex_Model",
-        "Model"
-      );
+      table.CreateIndex("IDX_OperatorCatalogueIndex_Model", "Model");
     });
   }
 
