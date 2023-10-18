@@ -10,7 +10,9 @@ using YesSql;
 using Mess.Ozds.Abstractions.Models;
 using OrchardCore.Title.Models;
 using Mess.Iot.Abstractions.Models;
-using Mess.Iot.Abstractions.Indexes;
+using Mess.OrchardCore;
+using OrchardCore.ContentFields.Indexing.SQL;
+using OrchardCore.ContentManagement.Records;
 
 namespace Mess.Ozds.Controllers;
 
@@ -20,30 +22,47 @@ public class DistributionSystemUnitController : Controller
   public async Task<IActionResult> List()
   {
     var orchardCoreUser = await this.GetAuthenticatedOrchardCoreUserAsync();
-    IEnumerable<ContentItem>? contentItems = null;
+    var legalEntityItem = await _session
+      .Query<ContentItem, UserPickerFieldIndex>()
+      .Where(index => index.ContentPart == "LegalEntityPart")
+      .Where(index => index.SelectedUserId == orchardCoreUser.UserId)
+      .FirstOrDefaultAsync();
+
+    IEnumerable<DistributionSystemUnitItem>? units = null;
     if (orchardCoreUser.RoleNames.Contains("Administrator"))
     {
-      contentItems = await _session
-        .Query<ContentItem, IotDeviceIndex>()
-        .ListAsync();
+      units = await _session
+        .Query<ContentItem, ContentItemIndex>()
+        .Where(index => index.ContentType == "DistributionSystemUnit")
+        .ListContentAsync<DistributionSystemUnitItem>();
     }
     else if (
-      orchardCoreUser.RoleNames.Contains(
-        "DistributionSystemOperatorRepresentative"
-      )
+      orchardCoreUser.RoleNames.Contains("DistributionSystemOperator")
+      && legalEntityItem is not null
     )
     {
-      contentItems = await _session
-        .Query<
-          ContentItem,
-          OzdsIotDeviceDistributionSystemOperatorIndex
-        >()
+      units = await _session
+        .Query<ContentItem, DistributionSystemUnitIndex>()
         .Where(
           index =>
-            index.DistributionSystemOperatorRepresentativeUserId
-            == orchardCoreUser.UserId
+            index.DistributionSystemOperatorContentItemId
+            == legalEntityItem.ContentItemId
         )
-        .ListAsync();
+        .ListContentAsync<DistributionSystemUnitItem>();
+    }
+    else if (
+      orchardCoreUser.RoleNames.Contains("ClosedDistributionSystem")
+      && legalEntityItem is not null
+    )
+    {
+      units = await _session
+        .Query<ContentItem, DistributionSystemUnitIndex>()
+        .Where(
+          index =>
+            index.ClosedDistributionSystemContentItemId
+            == legalEntityItem.ContentItemId
+        )
+        .ListContentAsync<DistributionSystemUnitItem>();
     }
     else
     {
@@ -51,47 +70,62 @@ public class DistributionSystemUnitController : Controller
     }
 
     return View(
-      new OzdsIotDeviceListViewModel
-      {
-        ContentItems = contentItems
-          .Select(
-            contentItem =>
-              (
-                ContentItem: contentItem,
-                TitlePart: contentItem.As<TitlePart>(),
-                OzdsIotDevicePart: contentItem.As<OzdsIotDevicePart>(),
-                IotDevicePart: contentItem.As<IotDevicePart>()
-              )
-          )
-          .ToList()
-      }
+      new DistributionSystemUnitListViewModel { ContentItems = units.ToList() }
     );
   }
 
   public async Task<IActionResult> Detail(string contentItemId)
   {
-    var contentItem = await _contentManager.GetAsync(contentItemId);
+    var contentItem =
+      await _contentManager.GetContentAsync<DistributionSystemUnitItem>(
+        contentItemId
+      );
     if (contentItem == null)
     {
       return NotFound();
     }
 
-    var ozdsIotDevicePart = contentItem.As<OzdsIotDevicePart>();
-    if (ozdsIotDevicePart == null)
-    {
-      return NotFound();
-    }
+    var index = await _session
+      .QueryIndex<DistributionSystemUnitIndex>()
+      .Where(
+        index => index.DistributionSystemUnitContentItemId == contentItemId
+      )
+      .FirstOrDefaultAsync();
 
     var orchardCoreUser = await this.GetAuthenticatedOrchardCoreUserAsync();
+    var legalEntityItem = await _session
+      .Query<ContentItem, UserPickerFieldIndex>()
+      .Where(index => index.ContentPart == "LegalEntityPart")
+      .Where(index => index.SelectedUserId == orchardCoreUser.UserId)
+      .FirstOrDefaultAsync();
     if (
       !orchardCoreUser.RoleNames.Contains("Administrator")
       && !(
         orchardCoreUser.RoleNames.Contains(
           "DistributionSystemOperatorRepresentative"
         )
-        && ozdsIotDevicePart.DistributionSystemOperatorRepresentativeUserIds.Contains(
-          orchardCoreUser.UserId
+        && legalEntityItem is not null
+        && index is not null
+        && index.DistributionSystemOperatorContentItemId
+          == legalEntityItem.ContentItemId
+      )
+      && !(
+        orchardCoreUser.RoleNames.Contains(
+          "ClosedDistributionSystemRepresentative"
         )
+        && legalEntityItem is not null
+        && index is not null
+        && index.ClosedDistributionSystemContentItemId
+          == legalEntityItem.ContentItemId
+      )
+      && !(
+        orchardCoreUser.RoleNames.Contains(
+          "DistributionSystemUnitRepresentative"
+        )
+        && legalEntityItem is not null
+        && index is not null
+        && index.DistributionSystemUnitContentItemId
+          == legalEntityItem.ContentItemId
       )
     )
     {
@@ -99,13 +133,7 @@ public class DistributionSystemUnitController : Controller
     }
 
     return View(
-      new OzdsIotDeviceDetailViewModel
-      {
-        ContentItem = contentItem,
-        TitlePart = contentItem.As<TitlePart>(),
-        OzdsIotDevicePart = contentItem.As<OzdsIotDevicePart>(),
-        IotDevicePart = contentItem.As<IotDevicePart>()
-      }
+      new DistributionSystemUnitDetailViewModel { ContentItem = contentItem }
     );
   }
 

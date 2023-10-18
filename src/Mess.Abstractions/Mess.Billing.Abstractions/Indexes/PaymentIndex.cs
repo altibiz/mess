@@ -10,11 +10,11 @@ public class PaymentIndex : MapIndex
 
   public string BillingContentItemId { get; set; } = default!;
 
-  public string InvoiceContentItemId { get; set; } = default!;
-
-  public string? ReceiptContentItemId { get; set; } = default!;
-
   public string IssuerContentItemId { get; set; } = default!;
 
+  public string InvoiceContentItemId { get; set; } = default!;
+
   public string RecipientContentItemId { get; set; } = default!;
+
+  public string? ReceiptContentItemId { get; set; } = default!;
 }

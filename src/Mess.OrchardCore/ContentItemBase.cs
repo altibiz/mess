@@ -6,6 +6,7 @@ using Mess.System.Extensions.Functions;
 using Mess.System.Extensions.Strings;
 using Mess.System.Extensions.Enumerables;
 using System.Linq.Expressions;
+using YesSql;
 
 namespace Mess.OrchardCore;
 
@@ -214,6 +215,29 @@ public static class ContentItemExtensions
     return orchardContentItems
       .Select(orchardContentItem => orchardContentItem.AsContent<T>())
       .WhereNotNull();
+  }
+
+  public static async Task<IEnumerable<T>> ListContentAsync<T>(
+    this IQuery<ContentItem> query
+  )
+    where T : ContentItemBase
+  {
+    var items = await query.ListAsync();
+    return items.Select(item => item.AsContent<T>());
+  }
+
+  public static async Task<T?> FirstOrDefaultContentAsync<T>(
+    this IQuery<ContentItem> query
+  )
+    where T : ContentItemBase
+  {
+    var items = await query.FirstOrDefaultAsync();
+    if (items is null)
+    {
+      return null;
+    }
+
+    return items.AsContent<T>();
   }
 
   internal static PropertyInfo GetProperty<TItem, TPart>(

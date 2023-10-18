@@ -1,49 +1,31 @@
 using Mess.Ozds.Abstractions.Timeseries;
-using Mess.Ozds.Abstractions.Indexes;
 using Mess.Ozds.ViewModels;
 using Mess.OrchardCore.Extensions.Microsoft;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using OrchardCore.Admin;
 using OrchardCore.ContentManagement;
+using Mess.OrchardCore;
 using YesSql;
 using Mess.Ozds.Abstractions.Models;
-using OrchardCore.Title.Models;
-using Mess.Iot.Abstractions.Models;
-using Mess.Iot.Abstractions.Indexes;
+using OrchardCore.ContentManagement.Records;
+using OrchardCore.ContentFields.Indexing.SQL;
 
 namespace Mess.Ozds.Controllers;
 
-[Admin]
+[Authorize]
 public class DistributionSystemOperatorController : Controller
 {
   public async Task<IActionResult> List()
   {
     var orchardCoreUser = await this.GetAuthenticatedOrchardCoreUserAsync();
-    IEnumerable<ContentItem>? contentItems = null;
+
+    IEnumerable<DistributionSystemOperatorItem>? operators = null;
     if (orchardCoreUser.RoleNames.Contains("Administrator"))
     {
-      contentItems = await _session
-        .Query<ContentItem, IotDeviceIndex>()
-        .ListAsync();
-    }
-    else if (
-      orchardCoreUser.RoleNames.Contains(
-        "DistributionSystemOperatorRepresentative"
-      )
-    )
-    {
-      contentItems = await _session
-        .Query<
-          ContentItem,
-          OzdsIotDeviceDistributionSystemOperatorIndex
-        >()
-        .Where(
-          index =>
-            index.DistributionSystemOperatorRepresentativeUserId
-            == orchardCoreUser.UserId
-        )
-        .ListAsync();
+      operators = await _session
+        .Query<ContentItem, ContentItemIndex>()
+        .Where(index => index.ContentType == "DistributionSystemOperator")
+        .ListContentAsync<DistributionSystemOperatorItem>();
     }
     else
     {
@@ -51,47 +33,40 @@ public class DistributionSystemOperatorController : Controller
     }
 
     return View(
-      new OzdsIotDeviceListViewModel
+      new DistributionSystemOperatorListViewModel
       {
-        ContentItems = contentItems
-          .Select(
-            contentItem =>
-              (
-                ContentItem: contentItem,
-                TitlePart: contentItem.As<TitlePart>(),
-                OzdsIotDevicePart: contentItem.As<OzdsIotDevicePart>(),
-                IotDevicePart: contentItem.As<IotDevicePart>()
-              )
-          )
-          .ToList()
+        ContentItems = operators.ToList()
       }
     );
   }
 
   public async Task<IActionResult> Detail(string contentItemId)
   {
-    var contentItem = await _contentManager.GetAsync(contentItemId);
+    var contentItem =
+      await _contentManager.GetContentAsync<DistributionSystemOperatorItem>(
+        contentItemId
+      );
     if (contentItem == null)
     {
       return NotFound();
     }
-
-    var ozdsIotDevicePart = contentItem.As<OzdsIotDevicePart>();
-    if (ozdsIotDevicePart == null)
-    {
-      return NotFound();
-    }
+    var distributionSystemOperatorContentItemId = contentItem.ContentItemId;
 
     var orchardCoreUser = await this.GetAuthenticatedOrchardCoreUserAsync();
+    var distributionSystemOperatorItem = await _session
+      .Query<ContentItem, UserPickerFieldIndex>()
+      .Where(index => index.ContentPart == "LegalEntityPart")
+      .Where(index => index.SelectedUserId == orchardCoreUser.UserId)
+      .FirstOrDefaultAsync();
     if (
       !orchardCoreUser.RoleNames.Contains("Administrator")
       && !(
         orchardCoreUser.RoleNames.Contains(
           "DistributionSystemOperatorRepresentative"
         )
-        && ozdsIotDevicePart.DistributionSystemOperatorRepresentativeUserIds.Contains(
-          orchardCoreUser.UserId
-        )
+        && distributionSystemOperatorItem is not null
+        && distributionSystemOperatorContentItemId
+          == distributionSystemOperatorItem.ContentItemId
       )
     )
     {
@@ -99,12 +74,9 @@ public class DistributionSystemOperatorController : Controller
     }
 
     return View(
-      new OzdsIotDeviceDetailViewModel
+      new DistributionSystemOperatorDetailViewModel
       {
-        ContentItem = contentItem,
-        TitlePart = contentItem.As<TitlePart>(),
-        OzdsIotDevicePart = contentItem.As<OzdsIotDevicePart>(),
-        IotDevicePart = contentItem.As<IotDevicePart>()
+        ContentItem = contentItem
       }
     );
   }
