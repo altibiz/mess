@@ -10,9 +10,7 @@ namespace Mess.Iot.Filters;
   AttributeTargets.Class | AttributeTargets.Method,
   Inherited = true
 )]
-public class IotDeviceAuthorization
-  : Attribute,
-    IAsyncAuthorizationFilter
+public class IotDeviceAuthorization : Attribute, IAsyncAuthorizationFilter
 {
   public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
   {
@@ -34,9 +32,7 @@ public class IotDeviceAuthorization
     var handler =
       context.HttpContext.RequestServices
         .GetServices<IIotAuthorizationHandler>()
-        .FirstOrDefault(
-          handler => handler.ContentType == contentItem.ContentType
-        )
+        .FirstOrDefault(handler => handler.IsApplicable(contentItem))
       ?? throw new NotImplementedException(
         "No measurement device authorization handler for "
           + contentItem.ContentType

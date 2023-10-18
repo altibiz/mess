@@ -36,7 +36,7 @@ public class BillingBackgroundTask : IBackgroundTask
 
       var billingFactory = serviceProvider
         .GetServices<IBillingFactory>()
-        .Where(factory => factory.ContentType == billingItem.ContentType)
+        .Where(factory => factory.IsApplicable(billingItem))
         .FirstOrDefault();
       if (billingFactory == null)
       {

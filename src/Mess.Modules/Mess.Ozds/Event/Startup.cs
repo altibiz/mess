@@ -9,7 +9,7 @@ public class Startup : StartupBase
 {
   public override void ConfigureServices(IServiceCollection services)
   {
-    services.AddEventDispatcher<PidgeonPushProjectionApplicator>();
-    services.AddEventDispatcher<PidgeonUpdateProjectionApplicator>();
+    services.AddEventDispatcher<PidgeonPushEventDispatcher>();
+    services.AddEventDispatcher<PidgeonUpdateUpdateEventDispatcher>();
   }
 }

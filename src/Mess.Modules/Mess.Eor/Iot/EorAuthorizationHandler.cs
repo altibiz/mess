@@ -7,7 +7,7 @@ namespace Mess.Eor.Iot;
 public class EorAuthorizationHandler
   : ApiKeyIotAuthorizationHandler<EorIotDeviceItem>
 {
-  public override ApiKeyField GetApiKey(EorIotDeviceItem contentItem)
+  protected override ApiKeyField GetApiKey(EorIotDeviceItem contentItem)
   {
     return contentItem.EorIotDevicePart.Value.ApiKey;
   }

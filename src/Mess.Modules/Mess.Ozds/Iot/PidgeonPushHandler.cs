@@ -24,14 +24,14 @@ public class PidgeonPushHandler
     {
       var client = _services.GetRequiredService<IEventStoreClient>();
       client.RecordEvents<PidgeonMeasurements>(
-        request.measurements
+        request.Measurements
           .Select(
             measurement =>
               new PidgeonMeasured(
                 Tenant: tenant,
-                Timestamp: measurement.timestamp,
-                DeviceId: measurement.deviceId,
-                Payload: measurement.data
+                Timestamp: measurement.Timestamp,
+                DeviceId: measurement.DeviceId,
+                Payload: measurement.Data
               )
           )
           .ToArray()
@@ -39,9 +39,9 @@ public class PidgeonPushHandler
     }
     else
     {
-      foreach (var measurement in request.measurements)
+      foreach (var measurement in request.Measurements)
       {
-        var measurementContentItem = _cache.Get(measurement.deviceId);
+        var measurementContentItem = _cache.Get(measurement.DeviceId);
         if (measurementContentItem is null)
         {
           continue;
@@ -58,11 +58,11 @@ public class PidgeonPushHandler
         }
 
         measurementHandler.Handle(
-          measurement.deviceId,
+          measurement.DeviceId,
           tenant,
-          measurement.timestamp,
+          measurement.Timestamp,
           measurementContentItem,
-          measurement.data
+          measurement.Data
         );
       }
     }
@@ -81,14 +81,14 @@ public class PidgeonPushHandler
     {
       var client = _services.GetRequiredService<IEventStoreClient>();
       await client.RecordEventsAsync<PidgeonMeasurements>(
-        request.measurements
+        request.Measurements
           .Select(
             measurement =>
               new PidgeonMeasured(
                 Tenant: tenant,
-                Timestamp: measurement.timestamp,
-                DeviceId: measurement.deviceId,
-                Payload: measurement.data
+                Timestamp: measurement.Timestamp,
+                DeviceId: measurement.DeviceId,
+                Payload: measurement.Data
               )
           )
           .ToArray()
@@ -96,10 +96,10 @@ public class PidgeonPushHandler
     }
     else
     {
-      foreach (var measurement in request.measurements)
+      foreach (var measurement in request.Measurements)
       {
         var measurementContentItem = await _cache.GetAsync(
-          measurement.deviceId
+          measurement.DeviceId
         );
         if (measurementContentItem is null)
         {
@@ -117,11 +117,11 @@ public class PidgeonPushHandler
         }
 
         await measurementHandler.HandleAsync(
-          measurement.deviceId,
+          measurement.DeviceId,
           tenant,
-          measurement.timestamp,
+          measurement.Timestamp,
           measurementContentItem,
-          measurement.data
+          measurement.Data
         );
       }
     }

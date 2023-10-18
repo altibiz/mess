@@ -9,14 +9,14 @@ using YesSql;
 
 namespace Mess.Ozds.Event;
 
-public class PidgeonUpdateProjectionApplicator : IEventDispatcher
+public class PidgeonUpdateUpdateEventDispatcher : IEventDispatcher
 {
-  public void Appl(IServiceProvider services, IEvents events)
+  public void Dispatch(IServiceProvider services, IEvents events)
   {
     var client = services.GetRequiredService<IIotTimeseriesClient>();
     var session = services.GetRequiredService<ISession>();
     var logger = services.GetRequiredService<
-      ILogger<PidgeonUpdateProjectionApplicator>
+      ILogger<PidgeonUpdateUpdateEventDispatcher>
     >();
 
     foreach (var @event in events.OfType<PidgeonUpdated>())
@@ -62,7 +62,7 @@ public class PidgeonUpdateProjectionApplicator : IEventDispatcher
     var client = services.GetRequiredService<IIotTimeseriesClient>();
     var session = services.GetRequiredService<ISession>();
     var logger = services.GetRequiredService<
-      ILogger<PidgeonUpdateProjectionApplicator>
+      ILogger<PidgeonUpdateUpdateEventDispatcher>
     >();
 
     foreach (var @event in events.OfType<PidgeonUpdated>())

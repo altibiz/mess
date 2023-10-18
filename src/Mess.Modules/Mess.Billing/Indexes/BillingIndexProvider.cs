@@ -21,7 +21,7 @@ public class BillingIndexProvider : IndexProvider<ContentItem>
           {
             var indexer = serviceProvider
               .GetServices<IBillingIndexer>()
-              .Where(indexer => indexer.ContentType == contentItem.ContentType)
+              .Where(indexer => indexer.IsApplicable(contentItem))
               .FirstOrDefault();
             if (indexer is null)
             {

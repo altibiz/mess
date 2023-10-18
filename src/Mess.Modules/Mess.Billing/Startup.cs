@@ -41,7 +41,6 @@ public class Startup : StartupBase
     services
       .AddContentPart<InvoicePart>()
       .UseDisplayDriver<InvoicePartDisplayDriver>();
-    services.AddIndexProvider<RecipientBillIndexProvider>();
     services.AddIndexProvider<PaymentIndexProvider>();
     services.AddContentHandler<PaymentHandler>();
   }

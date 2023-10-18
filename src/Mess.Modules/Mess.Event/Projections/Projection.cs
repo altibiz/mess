@@ -21,7 +21,7 @@ public record class Projection(IServiceProvider Services) : IProjection
 
     foreach (var applicator in applicators)
     {
-      applicator.Appl(scope.ServiceProvider, events);
+      applicator.Dispatch(scope.ServiceProvider, events);
     }
   }
 

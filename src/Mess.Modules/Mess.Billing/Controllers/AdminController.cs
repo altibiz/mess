@@ -129,7 +129,7 @@ public class AdminController : Controller
 
     var billingFactory = _serviceProvider
       .GetServices<IBillingFactory>()
-      .Where(factory => factory.ContentType == billingItem.ContentType)
+      .Where(factory => factory.IsApplicable(billingItem))
       .FirstOrDefault();
     if (billingFactory == null)
     {
@@ -207,7 +207,7 @@ public class AdminController : Controller
 
     var receiptFactory = _serviceProvider
       .GetServices<IBillingFactory>()
-      .Where(factory => factory.ContentType == billingItem.ContentType)
+      .Where(factory => factory.IsApplicable(billingItem))
       .FirstOrDefault();
     if (receiptFactory == null)
     {
