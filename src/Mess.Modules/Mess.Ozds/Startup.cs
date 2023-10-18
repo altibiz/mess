@@ -29,8 +29,8 @@ public class Startup : StartupBase
   {
     // Migrations
     services.AddDataMigration<Migrations>();
-    // FIXME: ozds_UserIndex does not exist ...
-    // services.AddModularTenantEvents<PopulationTenantEvents>();
+    // FIXME: singleton
+    // services.AddModularTenantEvents<Populations>();
 
     // Resources
     services.AddResources<Resources>();

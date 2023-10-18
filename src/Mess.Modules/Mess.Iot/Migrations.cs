@@ -1,5 +1,4 @@
 using Mess.Iot.Abstractions.Indexes;
-using Mess.Iot.Abstractions.Models;
 using OrchardCore.ContentFields.Settings;
 using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Metadata;
@@ -7,7 +6,6 @@ using OrchardCore.ContentManagement.Metadata.Settings;
 using OrchardCore.Data.Migration;
 using OrchardCore.Recipes.Services;
 using OrchardCore.Title.Models;
-using Mess.OrchardCore;
 using YesSql.Sql;
 using Microsoft.Extensions.Hosting;
 using Mess.Fields.Abstractions.ApiKeys;
@@ -102,49 +100,16 @@ public class Migrations : DataMigration
           .Column<bool>("IsMessenger")
     );
     SchemaBuilder.AlterIndexTable<IotDeviceIndex>(
-      table =>
-        table.CreateIndex("IDX_IotDeviceIndex_DeviceId", "DeviceId")
+      table => table.CreateIndex("IDX_IotDeviceIndex_DeviceId", "DeviceId")
     );
-
-    if (_hostEnvironment.IsDevelopment())
-    {
-      var egaugeIotDevice =
-        await _contentManager.NewContentAsync<EgaugeIotDeviceItem>();
-      egaugeIotDevice.Alter(
-        egaugeIotDevice =>
-          egaugeIotDevice.IotDevicePart,
-        measurementDevicePart =>
-        {
-          measurementDevicePart.DeviceId = new() { Text = "egauge" };
-        }
-      );
-      await _contentManager.CreateAsync(
-        egaugeIotDevice,
-        VersionOptions.Latest
-      );
-    }
 
     return 1;
   }
 
-  public Migrations(
-    IContentDefinitionManager contentDefinitionManager,
-    IContentManager contentManager,
-    IHostEnvironment hostEnvironment,
-    IRecipeMigrator recipeMigrator,
-    IApiKeyFieldService apiKeyFieldService
-  )
+  public Migrations(IContentDefinitionManager contentDefinitionManager)
   {
     _contentDefinitionManager = contentDefinitionManager;
-    _contentManager = contentManager;
-    _recipeMigrator = recipeMigrator;
-    _hostEnvironment = hostEnvironment;
-    _apiKeyFieldService = apiKeyFieldService;
   }
 
   private readonly IContentDefinitionManager _contentDefinitionManager;
-  private readonly IContentManager _contentManager;
-  private readonly IRecipeMigrator _recipeMigrator;
-  private readonly IHostEnvironment _hostEnvironment;
-  private readonly IApiKeyFieldService _apiKeyFieldService;
 }

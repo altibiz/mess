@@ -26,6 +26,8 @@ public class Startup : StartupBase
   public override void ConfigureServices(IServiceCollection services)
   {
     services.AddDataMigration<Migrations>();
+    // FIXME: singleton
+    // services.AddModularTenantEvents<Populations>();
     services.AddTransient<
       IConfigureOptions<ResourceManagementOptions>,
       Resources

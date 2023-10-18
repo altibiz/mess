@@ -18,7 +18,7 @@ using Mess.Fields.Abstractions;
 
 namespace Mess.Ozds;
 
-public class PopulationTenantEvents : ModularTenantEvents
+public class Populations : ModularTenantEvents
 {
   public override async Task ActivatedAsync()
   {
@@ -111,7 +111,7 @@ public class PopulationTenantEvents : ModularTenantEvents
     );
   }
 
-  public PopulationTenantEvents(IServiceProvider serviceProvider)
+  public Populations(IServiceProvider serviceProvider)
   {
     _serviceProvider = serviceProvider;
   }

@@ -1,4 +1,3 @@
-using Mess.Chart.Abstractions.Models;
 using Microsoft.Extensions.Hosting;
 using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Metadata;
@@ -6,12 +5,7 @@ using OrchardCore.ContentManagement.Metadata.Settings;
 using OrchardCore.Data.Migration;
 using OrchardCore.Recipes.Services;
 using OrchardCore.Title.Models;
-using Mess.OrchardCore;
-using Mess.Iot.Abstractions.Models;
-using Mess.Iot.Abstractions.Timeseries;
 using YesSql;
-using Mess.Iot.Abstractions.Indexes;
-using Mess.Fields.Abstractions;
 
 namespace Mess.Iot.Chart;
 
@@ -72,96 +66,13 @@ public class Migrations : DataMigration
           )
     );
 
-    if (_hostEnvironment.IsDevelopment())
-    {
-      var eguagePowerDataset =
-        await _contentManager.NewContentAsync<TimeseriesChartDatasetItem>();
-      eguagePowerDataset.Alter(
-        eguagePowerDataset => eguagePowerDataset.TimeseriesChartDatasetPart,
-        timeseriesChartDatasetPart =>
-        {
-          timeseriesChartDatasetPart.Color = new() { Value = "#ff0000" };
-          timeseriesChartDatasetPart.Label = new() { Text = "Power" };
-          timeseriesChartDatasetPart.Property = nameof(EgaugeMeasurement.Power);
-        }
-      );
-      var egaugeChart =
-        await _contentManager.NewContentAsync<TimeseriesChartItem>();
-      egaugeChart.Alter(
-        egaugeChart => egaugeChart.TitlePart,
-        titlePart =>
-        {
-          titlePart.Title = "Egauge";
-        }
-      );
-      egaugeChart.Alter(
-        egaugeChart => egaugeChart.TimeseriesChartPart,
-        timeseriesChartPart =>
-        {
-          timeseriesChartPart.ChartContentType = "EgaugeIotDevice";
-          timeseriesChartPart.History = new()
-          {
-            Value = new(Unit: IntervalUnit.Minute, Count: 10)
-          };
-          timeseriesChartPart.RefreshInterval = new()
-          {
-            Value = new(Unit: IntervalUnit.Second, Count: 10)
-          };
-          timeseriesChartPart.Datasets = new() { eguagePowerDataset };
-        }
-      );
-      await _contentManager.CreateAsync(egaugeChart, VersionOptions.Latest);
-
-      var egaugeIotDevice =
-        (
-          await _session
-            .Query<ContentItem, IotDeviceIndex>()
-            .Where(index => index.DeviceId == "egauge")
-            .FirstOrDefaultAsync()
-        )?.AsContent<EgaugeIotDeviceItem>()
-        ?? await _contentManager.NewContentAsync<EgaugeIotDeviceItem>();
-      egaugeIotDevice.Alter(
-        egaugeIotDevice =>
-          egaugeIotDevice.IotDevicePart,
-        measurementDevicePart =>
-        {
-          measurementDevicePart.DeviceId = new() { Text = "egauge" };
-        }
-      );
-      egaugeIotDevice.Alter(
-        egaugeIotDevice => egaugeIotDevice.ChartPart,
-        chartPart =>
-        {
-          chartPart.ChartContentItemId = egaugeChart.ContentItemId;
-        }
-      );
-      await _contentManager.CreateAsync(
-        egaugeIotDevice,
-        VersionOptions.Latest
-      );
-    }
-
     return 1;
   }
 
-  public Migrations(
-    IContentDefinitionManager contentDefinitionManager,
-    IRecipeMigrator recipeMigrator,
-    IHostEnvironment hostEnvironment,
-    IContentManager contentManager,
-    ISession session
-  )
+  public Migrations(IContentDefinitionManager contentDefinitionManager)
   {
     _contentDefinitionManager = contentDefinitionManager;
-    _recipeMigrator = recipeMigrator;
-    _hostEnvironment = hostEnvironment;
-    _contentManager = contentManager;
-    _session = session;
   }
 
   private readonly IContentDefinitionManager _contentDefinitionManager;
-  private readonly IRecipeMigrator _recipeMigrator;
-  private readonly IContentManager _contentManager;
-  private readonly IHostEnvironment _hostEnvironment;
-  private readonly ISession _session;
 }
