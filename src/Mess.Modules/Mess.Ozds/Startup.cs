@@ -19,6 +19,8 @@ using Mess.Ozds.Iot;
 using Mess.Ozds.Indexes;
 using Mess.Billing.Abstractions.Extensions;
 using Mess.Ozds.Billing;
+using Microsoft.AspNetCore.Authorization;
+using Mess.Ozds.Security;
 
 namespace Mess.Ozds;
 
@@ -53,13 +55,14 @@ public class Startup : StartupBase
     // Chart
     services.AddChartFactory<AbbChartProvider>();
 
-    // Indexes
+    // Ozds
+    services.AddAuthorizationHandler<OzdsAuthorizationHandler>();
+
     services.AddIndexProvider<DistributionSystemUnitIndexProvider>();
     services.AddIndexProvider<ClosedDistributionSystemIndexProvider>();
     services.AddIndexProvider<OperatorCatalogueIndexProvider>();
     services.AddIndexProvider<OzdsIotDeviceIndexProvider>();
 
-    // Content
     services.AddContentPart<OzdsIotDevicePart>();
     services.AddContentPart<PidgeonIotDevicePart>();
     services.AddContentPart<AbbIotDevicePart>();

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 using OrchardCore.BackgroundTasks;
 using OrchardCore.ContentManagement.Handlers;
@@ -112,6 +113,15 @@ public static class IServiceCollectionExtensions
     where TContentHandler : class, IContentHandler
   {
     services.AddScoped<IContentHandler, TContentHandler>();
+    return services;
+  }
+
+  public static IServiceCollection AddAuthorizationHandler<TAuthorizationHandler>(
+    this IServiceCollection services
+  )
+    where TAuthorizationHandler : class, IAuthorizationHandler
+  {
+    services.AddScoped<IAuthorizationHandler, TAuthorizationHandler>();
     return services;
   }
 }
