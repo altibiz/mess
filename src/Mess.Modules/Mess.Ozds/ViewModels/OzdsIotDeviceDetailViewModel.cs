@@ -8,8 +8,8 @@ namespace Mess.Ozds.ViewModels;
 public class OzdsIotDeviceDetailViewModel
 {
   public ContentItem ContentItem { get; set; } = default!;
-  public TitlePart TitlePart { get; set; } = default!;
-  public OzdsIotDevicePart OzdsIotDevicePart { get; set; } =
-    default!;
+
+  public OzdsIotDevicePart OzdsIotDevicePart { get; set; } = default!;
+
   public IotDevicePart IotDevicePart { get; set; } = default!;
 }

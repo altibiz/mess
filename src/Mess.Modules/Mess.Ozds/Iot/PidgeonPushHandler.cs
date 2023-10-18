@@ -3,12 +3,10 @@ using Mess.Iot.Abstractions.Services;
 using Mess.Iot.Abstractions.Caches;
 using Mess.Ozds.Event;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using OrchardCore.ContentManagement;
 using OrchardCore.Environment.Shell;
 using Mess.Ozds.Abstractions.Models;
 
-namespace Mess.Ozds.Pushing;
+namespace Mess.Ozds.Iot;
 
 public class PidgeonPushHandler
   : JsonIotPushHandler<PidgeonIotDeviceItem, PidgeonPushRequest>

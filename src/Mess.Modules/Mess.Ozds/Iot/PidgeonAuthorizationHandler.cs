@@ -2,7 +2,7 @@ using Mess.Fields.Abstractions.Fields;
 using Mess.Iot.Abstractions.Services;
 using Mess.Ozds.Abstractions.Models;
 
-namespace Mess.Ozds.Security;
+namespace Mess.Ozds.Iot;
 
 public class PidgeonAuthorizationHandler
   : ApiKeyIotAuthorizationHandler<PidgeonIotDeviceItem>

@@ -3,7 +3,7 @@ using Mess.Ozds.Abstractions.Models;
 using Mess.Ozds.Abstractions.Timeseries;
 using OrchardCore.ContentManagement;
 
-namespace Mess.Ozds.Pushing;
+namespace Mess.Ozds.Iot;
 
 public class AbbPushHandler
   : JsonIotPushHandler<AbbIotDeviceItem, AbbPushRequest>

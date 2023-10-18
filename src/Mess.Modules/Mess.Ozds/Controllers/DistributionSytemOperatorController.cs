@@ -53,7 +53,7 @@ public class DistributionSystemOperatorController : Controller
     var distributionSystemOperatorContentItemId = contentItem.ContentItemId;
 
     var orchardCoreUser = await this.GetAuthenticatedOrchardCoreUserAsync();
-    var distributionSystemOperatorItem = await _session
+    var legalEntityItem = await _session
       .Query<ContentItem, UserPickerFieldIndex>()
       .Where(index => index.ContentPart == "LegalEntityPart")
       .Where(index => index.SelectedUserId == orchardCoreUser.UserId)
@@ -64,9 +64,9 @@ public class DistributionSystemOperatorController : Controller
         orchardCoreUser.RoleNames.Contains(
           "DistributionSystemOperatorRepresentative"
         )
-        && distributionSystemOperatorItem is not null
+        && legalEntityItem is not null
         && distributionSystemOperatorContentItemId
-          == distributionSystemOperatorItem.ContentItemId
+          == legalEntityItem.ContentItemId
       )
     )
     {
