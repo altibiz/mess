@@ -20,6 +20,7 @@ using Mess.Ozds.Indexes;
 using Mess.Billing.Abstractions.Extensions;
 using Mess.Ozds.Billing;
 using Mess.Ozds.Security;
+using Mess.Population.Abstractions.Extensions;
 
 namespace Mess.Ozds;
 
@@ -56,7 +57,7 @@ public class Startup : StartupBase
     services.AddIndexProvider<OzdsIotDeviceIndexProvider>();
 
     // Populations
-    // services.AddPopulation<Populations>();
+    services.AddPopulation<Populations>();
 
     // Timeseries
     services.AddTimeseriesDbContext<OzdsTimeseriesDbContext>();

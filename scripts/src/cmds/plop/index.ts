@@ -1,6 +1,8 @@
 import { SUBCOMMANDS } from "../../lib/index";
 
+import assets from "./assets";
 import module from "./module";
+import tests from "./tests";
 import theme from "./theme";
 
 export default {
@@ -9,5 +11,7 @@ export default {
   [SUBCOMMANDS]: {
     module,
     theme,
+    assets,
+    tests,
   },
 };

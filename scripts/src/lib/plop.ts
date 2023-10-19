@@ -2,28 +2,7 @@ import fs from "fs/promises";
 import handlebars from "handlebars";
 import path from "path/posix";
 import { root } from "./fs";
-
-export const plopf = async (
-  template: string,
-  destination: string,
-  config: Record<string, unknown>,
-) => {
-  const templatePath = root(template);
-  const destinationPath = root(destination);
-  await fs.mkdir(destinationPath, { recursive: true });
-
-  const name = path.basename(templatePath);
-  const content = await fs.readFile(template, "utf8");
-
-  const nameTemplate = handlebars.compile(name.replace(/\.hbs$/, ""));
-  const resultName = nameTemplate(config);
-  const resultPath = path.join(destinationPath, resultName);
-
-  const contentTemplate = handlebars.compile(content);
-  const resultContent = contentTemplate(config);
-
-  await fs.writeFile(resultPath, resultContent, "utf8");
-};
+import { log } from "./log";
 
 export const plopd = async (
   template: string,
@@ -50,4 +29,30 @@ export const plopd = async (
       await plopf(namePath, destinationPath, config);
     }
   }
+
+  log.info({ message: `Plopped ${templatePath} in ${destinationPath}` });
+};
+
+export const plopf = async (
+  template: string,
+  destination: string,
+  config: Record<string, unknown>,
+) => {
+  const templatePath = root(template);
+  const destinationPath = root(destination);
+  await fs.mkdir(destinationPath, { recursive: true });
+
+  const name = path.basename(templatePath);
+  const content = await fs.readFile(template, "utf8");
+
+  const nameTemplate = handlebars.compile(name.replace(/\.hbs$/, ""));
+  const resultName = nameTemplate(config);
+  const resultPath = path.join(destinationPath, resultName);
+
+  const contentTemplate = handlebars.compile(content);
+  const resultContent = contentTemplate(config);
+
+  await fs.writeFile(resultPath, resultContent, "utf8");
+
+  log.debug({ message: `Plopped ${templatePath} in ${destinationPath}` });
 };
