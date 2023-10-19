@@ -7,6 +7,8 @@
   <ItemGroup>
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Iot.Abstractions/Mess.Iot.Abstractions.csproj" />
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Population.Abstractions/Mess.Population.Abstractions.csproj" />
+    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Timeseries.Abstractions/Mess.Timeseries.Abstractions.csproj" />
+    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Chart.Abstractions/Mess.Chart.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Mess.Iot.Timeseries.Migrations
+namespace Mess.Enms.Timeseries.Migrations
 {
   /// <inheritdoc />
   public partial class Initial : Migration

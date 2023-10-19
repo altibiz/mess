@@ -1,6 +1,6 @@
-namespace Mess.Iot.Abstractions.Timeseries;
+namespace Mess.Enms.Abstractions.Timeseries;
 
-public interface IIotTimeseriesQuery
+public interface IEnmsTimeseriesQuery
 {
   public Task<IReadOnlyList<EgaugeMeasurement>> GetEgaugeMeasurementsAsync(
     string source,

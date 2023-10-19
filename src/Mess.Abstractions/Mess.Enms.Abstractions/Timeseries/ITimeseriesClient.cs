@@ -1,6 +1,6 @@
-namespace Mess.Iot.Abstractions.Timeseries;
+namespace Mess.Enms.Abstractions.Timeseries;
 
-public interface IIotTimeseriesClient : IIotTimeseriesQuery
+public interface IEnmsTimeseriesClient : IEnmsTimeseriesQuery
 {
   public void AddEgaugeMeasurement(EgaugeMeasurement model);
 

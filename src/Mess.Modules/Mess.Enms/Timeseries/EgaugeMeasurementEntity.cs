@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using Mess.Iot.Abstractions.Timeseries;
+using Mess.Enms.Abstractions.Timeseries;
 using Mess.Timeseries.Abstractions.Entities;
 
-namespace Mess.Iot.Timeseries;
+namespace Mess.Enms.Timeseries;
 
 public class EgaugeMeasurementEntity : HypertableEntity
 {

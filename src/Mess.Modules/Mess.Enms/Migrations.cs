@@ -43,7 +43,7 @@ public class Migrations : DataMigration
                     RenderTitle = true,
                     Options = TitlePartOptions.GeneratedDisabled,
                     Pattern =
-                      @"{%- ContentItem.Content.IotDevicePart.DeviceId.Text -%}"
+                      @"{%- ContentItem.Content.EgaugeIotDevicePart.DeviceId.Text -%}"
                   }
                 )
           )
@@ -60,6 +60,15 @@ public class Migrations : DataMigration
               part.WithDisplayName("Egauge measurement device")
                 .WithDescription("An Egauge measurement device.")
                 .WithPosition("3")
+          )
+          .WithPart(
+            "ChartPart",
+            part =>
+              part.WithDisplayName("Chart")
+                .WithDescription(
+                  "Chart displaying the Egauge measurement device data."
+                )
+                .WithPosition("4")
           )
     );
 

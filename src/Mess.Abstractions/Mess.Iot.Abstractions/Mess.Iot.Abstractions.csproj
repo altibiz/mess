@@ -6,12 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="OrchardCore.ContentManagement.Display" Version="$(MessOrchardVersion)" />
-    <PackageReference Include="OrchardCore.Title" Version="$(MessOrchardVersion)" />
     <PackageReference Include="OrchardCore.ContentFields" Version="$(MessOrchardVersion)" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Chart.Abstractions/Mess.Chart.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

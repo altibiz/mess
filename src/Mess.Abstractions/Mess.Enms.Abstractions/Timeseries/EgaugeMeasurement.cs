@@ -1,4 +1,4 @@
-namespace Mess.Iot.Abstractions.Timeseries;
+namespace Mess.Enms.Abstractions.Timeseries;
 
 public record EgaugeMeasurement(
   string Tenant,

@@ -1,8 +1,8 @@
 using System.Xml.Linq;
 using Mess.Iot.Abstractions.Services;
-using Mess.Iot.Abstractions.Timeseries;
+using Mess.Enms.Abstractions.Timeseries;
 using OrchardCore.Environment.Shell.Scope;
-using Mess.Iot.Abstractions.Models;
+using Mess.Enms.Abstractions.Models;
 
 namespace Mess.Enms.Iot;
 
@@ -84,10 +84,10 @@ public class EgaugePushHandler
     return measurement;
   }
 
-  public EgaugePushHandler(IIotTimeseriesClient measurementClient)
+  public EgaugePushHandler(IEnmsTimeseriesClient measurementClient)
   {
     _measurementClient = measurementClient;
   }
 
-  private readonly IIotTimeseriesClient _measurementClient;
+  private readonly IEnmsTimeseriesClient _measurementClient;
 }

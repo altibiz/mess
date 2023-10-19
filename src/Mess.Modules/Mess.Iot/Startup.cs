@@ -5,9 +5,6 @@ using OrchardCore.Data.Migration;
 using OrchardCore.Modules;
 using OrchardCore.Mvc.Core.Utilities;
 using OrchardCore.ContentManagement;
-using Mess.Timeseries.Abstractions.Extensions;
-using Mess.Iot.Abstractions.Timeseries;
-using Mess.Iot.Timeseries;
 using Mess.Iot.Controllers;
 using Mess.Iot.Abstractions.Models;
 using Mess.Iot.Indexes;
@@ -25,15 +22,7 @@ public class Startup : StartupBase
 
     services.AddResources<Resources>();
 
-    services.AddTimeseriesDbContext<IotTimeseriesDbContext>();
-    services.AddTimeseriesClient<
-      IotTimeseriesClient,
-      IIotTimeseriesClient,
-      IIotTimeseriesQuery
-    >();
-
     services.AddContentPart<IotDevicePart>();
-    services.AddContentPart<EgaugeIotDevicePart>();
 
     services.AddIndexProvider<IotDeviceIndexProvider>();
 

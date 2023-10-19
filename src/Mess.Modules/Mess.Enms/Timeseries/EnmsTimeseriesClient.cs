@@ -1,21 +1,21 @@
-using Mess.Iot.Abstractions.Timeseries;
+using Mess.Enms.Abstractions.Timeseries;
 using Mess.Timeseries.Abstractions.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace Mess.Iot.Timeseries;
+namespace Mess.Enms.Timeseries;
 
-public class IotTimeseriesClient : IIotTimeseriesClient
+public class EnmsTimeseriesClient : IEnmsTimeseriesClient
 {
   public void AddEgaugeMeasurement(EgaugeMeasurement model) =>
-    _services.WithTimeseriesDbContext<IotTimeseriesDbContext>(context =>
+    _services.WithTimeseriesDbContext<EnmsTimeseriesDbContext>(context =>
     {
       context.EgaugeMeasurements.Add(model.ToEntity());
       context.SaveChanges();
     });
 
   public Task AddEgaugeMeasurementAsync(EgaugeMeasurement model) =>
-    _services.WithTimeseriesDbContextAsync<IotTimeseriesDbContext>(async context =>
+    _services.WithTimeseriesDbContextAsync<EnmsTimeseriesDbContext>(async context =>
     {
       context.EgaugeMeasurements.Add(model.ToEntity());
       await context.SaveChangesAsync();
@@ -27,7 +27,7 @@ public class IotTimeseriesClient : IIotTimeseriesClient
     DateTimeOffset end
   ) =>
     _services.WithTimeseriesDbContext<
-      IotTimeseriesDbContext,
+      EnmsTimeseriesDbContext,
       List<EgaugeMeasurement>
     >(context =>
     {
@@ -48,7 +48,7 @@ public class IotTimeseriesClient : IIotTimeseriesClient
     DateTimeOffset end
   ) =>
     await _services.WithTimeseriesDbContextAsync<
-      IotTimeseriesDbContext,
+      EnmsTimeseriesDbContext,
       List<EgaugeMeasurement>
     >(async context =>
     {
@@ -61,9 +61,9 @@ public class IotTimeseriesClient : IIotTimeseriesClient
         .ToListAsync();
     });
 
-  public IotTimeseriesClient(
+  public EnmsTimeseriesClient(
     IServiceProvider services,
-    ILogger<IotTimeseriesClient> logger
+    ILogger<EnmsTimeseriesClient> logger
   )
   {
     _services = services;

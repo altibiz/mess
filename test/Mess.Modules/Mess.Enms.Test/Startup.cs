@@ -1,3 +1,9 @@
+using Mess.Event.Test.Abstractions.Extensions;
+using Mess.Timeseries.Test.Abstractions.Extensions;
+using Mess.Iot.Abstractions.Services;
+using Moq;
+using Mess.Iot.Abstractions.Timeseries;
+
 namespace Mess.Enms.Test;
 
 public class Startup : Mess.OrchardCore.Test.Startup
@@ -8,5 +14,15 @@ public class Startup : Mess.OrchardCore.Test.Startup
   )
   {
     base.ConfigureServices(services, hostBuilderContext);
+
+    services.AddTestEventStore();
+    services.AddTestTimeseriesStore();
+
+    services.AddScoped<EgaugePushHandler>();
+    services.AddScoped<IIotPushHandler, EgaugePushHandler>();
+
+    var measurementClient = new Mock<IIotTimeseriesClient>();
+    services.AddSingleton(measurementClient);
+    services.AddSingleton(measurementClient.Object);
   }
 }

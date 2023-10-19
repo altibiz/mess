@@ -1,9 +1,9 @@
-using Mess.Iot.Iot;
+using Mess.Enms.Iot;
 using Mess.Iot.Abstractions.Timeseries;
 using Moq;
 using OrchardCore.ContentManagement;
 
-namespace Mess.Iot.Test;
+namespace Mess.Enms.Iot.Test;
 
 public record class EgaugePushHandlerTest(
   EgaugePushHandler Handler,

@@ -10,10 +10,5 @@ using ManifestConstants = Mess.OrchardCore.ManifestConstants;
   Version = ManifestConstants.Version,
   Category = ManifestConstants.Category,
   Tags = new[] { ManifestConstants.MessTag },
-  Dependencies = new[]
-  {
-    "OrchardCore.ContentFields",
-    "Mess.Timeseries",
-    "Mess.Fields"
-  }
+  Dependencies = new[] { "OrchardCore.ContentFields", "Mess.Fields" }
 )]

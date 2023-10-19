@@ -1,5 +1,5 @@
 using OrchardCore.ContentManagement;
 
-namespace Mess.Iot.Abstractions.Models;
+namespace Mess.Enms.Abstractions.Models;
 
 public class EgaugeIotDevicePart : ContentPart { }

@@ -1,7 +1,7 @@
 using Mess.Iot.Abstractions.Timeseries;
 using Mess.System;
 
-namespace Mess.Iot.Test;
+namespace Mess.Enms.Test;
 
 public static class Assets
 {

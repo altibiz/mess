@@ -1,11 +1,11 @@
-using Mess.Iot.Abstractions.Timeseries;
+using Mess.Enms.Abstractions.Timeseries;
 using Mess.Chart.Abstractions.Services;
 using Mess.Chart.Abstractions.Descriptors;
 using Mess.Chart.Abstractions.Models;
-using Mess.Iot.Abstractions.Models;
 using Mess.Fields.Abstractions;
+using Mess.Enms.Abstractions.Models;
 
-namespace Mess.Iot.Chart;
+namespace Mess.Enms.Chart;
 
 public class EgaugeChartFactory : ChartFactory<EgaugeIotDeviceItem>
 {
@@ -60,10 +60,10 @@ public class EgaugeChartFactory : ChartFactory<EgaugeIotDeviceItem>
     );
   }
 
-  public EgaugeChartFactory(IIotTimeseriesClient client)
+  public EgaugeChartFactory(IEnmsTimeseriesClient client)
   {
     _client = client;
   }
 
-  private readonly IIotTimeseriesClient _client;
+  private readonly IEnmsTimeseriesClient _client;
 }

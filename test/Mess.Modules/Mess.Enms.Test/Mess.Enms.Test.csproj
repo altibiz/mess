@@ -6,7 +6,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../../test/Mess.Abstractions/Mess.Enms.Test.Abstractions/Mess.Enms.Test.Abstractions.csproj" />
+    <ProjectReference Include="../../../test/Mess.Abstractions/Mess.Iot.Test.Abstractions/Mess.Iot.Test.Abstractions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../../test/Mess.Abstractions/Mess.Event.Test.Abstractions/Mess.Event.Test.Abstractions.csproj" />
+    <ProjectReference Include="../../../test/Mess.Abstractions/Mess.Timeseries.Test.Abstractions/Mess.Timeseries.Test.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>
