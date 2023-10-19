@@ -2,7 +2,7 @@ using Npgsql;
 using Mess.Timeseries.Abstractions.Connection;
 using OrchardCore.Environment.Shell.Scope;
 
-namespace Mess.Timeseries.Connection;
+namespace Mess.Timeseries;
 
 public sealed class TimeseriesDbConnection
   : ITimeseriesDbConnection,

@@ -1,7 +1,7 @@
 using Mess.Relational.Abstractions.Migrations;
 using OrchardCore.Modules;
 
-namespace Mess.Relational.Migrations;
+namespace Mess.Relational;
 
 public class RelationalDbMigrationModularTenantEvents : ModularTenantEvents
 {

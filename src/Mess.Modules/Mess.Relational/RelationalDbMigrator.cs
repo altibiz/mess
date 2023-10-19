@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OrchardCore.Environment.Shell;
 
-namespace Mess.Relational.Migrations;
+namespace Mess.Relational;
 
 public class RelationalDbMigrator : IRelationalDbMigrator
 {

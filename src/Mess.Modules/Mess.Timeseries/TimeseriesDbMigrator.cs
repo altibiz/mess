@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 using Npgsql;
 using OrchardCore.Environment.Shell;
 
-namespace Mess.Timeseries.Migrations;
+namespace Mess.Timeseries;
 
 public class TimeseriesDbMigrator : IRelationalDbMigrator
 {

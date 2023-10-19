@@ -48,7 +48,7 @@ public static class IServiceCollectionExtensions
   )
     where TModularTenantEvents : class, IModularTenantEvents
   {
-    services.AddSingleton<IModularTenantEvents, TModularTenantEvents>();
+    services.AddScoped<IModularTenantEvents, TModularTenantEvents>();
     return services;
   }
 
