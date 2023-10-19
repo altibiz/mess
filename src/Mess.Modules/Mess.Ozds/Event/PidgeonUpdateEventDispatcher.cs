@@ -1,11 +1,10 @@
-using Mess.Event.Abstractions.Events;
-using Mess.Iot.Abstractions.Timeseries;
 using Mess.Iot.Abstractions.Indexes;
 using Mess.Iot.Abstractions.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OrchardCore.ContentManagement;
 using YesSql;
+using Mess.Event.Abstractions.Events;
 
 namespace Mess.Ozds.Event;
 
@@ -13,7 +12,6 @@ public class PidgeonUpdateUpdateEventDispatcher : IEventDispatcher
 {
   public void Dispatch(IServiceProvider services, IEvents events)
   {
-    var client = services.GetRequiredService<IIotTimeseriesClient>();
     var session = services.GetRequiredService<ISession>();
     var logger = services.GetRequiredService<
       ILogger<PidgeonUpdateUpdateEventDispatcher>
@@ -59,7 +57,6 @@ public class PidgeonUpdateUpdateEventDispatcher : IEventDispatcher
     CancellationToken cancellationToken
   )
   {
-    var client = services.GetRequiredService<IIotTimeseriesClient>();
     var session = services.GetRequiredService<ISession>();
     var logger = services.GetRequiredService<
       ILogger<PidgeonUpdateUpdateEventDispatcher>

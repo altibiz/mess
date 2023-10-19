@@ -1,5 +1,4 @@
 using Mess.Event.Abstractions.Events;
-using Mess.Iot.Abstractions.Timeseries;
 using Mess.Iot.Abstractions.Services;
 using Mess.Iot.Abstractions.Caches;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,7 +11,6 @@ public class PushEventDispatcher : IEventDispatcher
 {
   public void Dispatch(IServiceProvider services, IEvents events)
   {
-    var client = services.GetRequiredService<IIotTimeseriesClient>();
     var session = services.GetRequiredService<ISession>();
     var cache = services.GetRequiredService<IIotDeviceContentItemCache>();
     var logger = services.GetRequiredService<ILogger<PushEventDispatcher>>();
@@ -53,7 +51,6 @@ public class PushEventDispatcher : IEventDispatcher
     CancellationToken cancellationToken
   )
   {
-    var client = services.GetRequiredService<IIotTimeseriesClient>();
     var session = services.GetRequiredService<ISession>();
     var cache = services.GetRequiredService<IIotDeviceContentItemCache>();
     var logger = services.GetRequiredService<ILogger<PushEventDispatcher>>();

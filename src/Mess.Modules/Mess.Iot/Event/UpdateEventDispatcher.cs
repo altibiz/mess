@@ -1,5 +1,4 @@
 using Mess.Event.Abstractions.Events;
-using Mess.Iot.Abstractions.Timeseries;
 using Mess.Iot.Abstractions.Indexes;
 using Mess.Iot.Abstractions.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,7 +12,6 @@ public class UpdateEventDispatcher : IEventDispatcher
 {
   public void Dispatch(IServiceProvider services, IEvents events)
   {
-    var client = services.GetRequiredService<IIotTimeseriesClient>();
     var session = services.GetRequiredService<ISession>();
     var logger = services.GetRequiredService<ILogger<UpdateEventDispatcher>>();
 
@@ -57,7 +55,6 @@ public class UpdateEventDispatcher : IEventDispatcher
     CancellationToken cancellationToken
   )
   {
-    var client = services.GetRequiredService<IIotTimeseriesClient>();
     var session = services.GetRequiredService<ISession>();
     var logger = services.GetRequiredService<ILogger<UpdateEventDispatcher>>();
 
