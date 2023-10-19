@@ -14,7 +14,7 @@ public class Startup : StartupBase
     services.AddDataMigration<Migrations>();
     services.AddResources<Resources>();
 
-    services.AddSingleton<PopulationTenantEvents>();
+    services.AddModularTenantEvents<PopulationTenantEvents>();
   }
 
   public override void Configure(

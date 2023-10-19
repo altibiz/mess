@@ -11,5 +11,6 @@ export const yarnFmt = (output?: string | null) =>
 export const dotnetFmt = (output?: string | null) =>
   `${"dotnet".padEnd(10)}: ${(output || "")
     .split("\n")
+    .filter((line) => line)
     .map((line) => line.substring(line.indexOf(":") + 1).trim())
-    .join(" ")}`;
+    .join("\n" + " ".repeat(12))}`;
