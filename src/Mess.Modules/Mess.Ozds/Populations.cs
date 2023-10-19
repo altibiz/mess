@@ -2,7 +2,6 @@ using Mess.System.Extensions.Microsoft;
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.ContentManagement;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Hosting;
 using OrchardCore.Users.Services;
 using OrchardCore.Security;
 using OrchardCore.Security.Permissions;
