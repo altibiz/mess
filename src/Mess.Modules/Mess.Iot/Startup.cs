@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.Data.Migration;
 using OrchardCore.Modules;
-using OrchardCore.Mvc.Core.Utilities;
 using OrchardCore.ContentManagement;
 using Mess.Iot.Controllers;
 using Mess.Iot.Abstractions.Models;
@@ -12,6 +11,8 @@ using Mess.Iot.Abstractions.Caches;
 using Mess.Iot.Caches;
 using Mess.Iot.Abstractions;
 using Mess.OrchardCore.Extensions.Microsoft;
+using Microsoft.Extensions.Options;
+using OrchardCore.Admin;
 
 namespace Mess.Iot;
 
@@ -39,37 +40,28 @@ public class Startup : StartupBase
     IServiceProvider services
   )
   {
-    routes.MapAreaControllerRoute(
-      name: "Mess.Iot.PushController.Index",
-      areaName: "Mess.Iot",
-      pattern: "/Push/{deviceId}",
-      defaults: new
-      {
-        controller = typeof(IotDeviceController).ControllerName(),
-        action = nameof(IotDeviceController.Push)
-      }
+    var adminUrlPrefix = app.ApplicationServices
+      .GetRequiredService<IOptions<AdminOptions>>()
+      .Value.AdminUrlPrefix;
+
+    routes.MapAreaControllerRoute<IotDeviceController>(
+      nameof(IotDeviceController.Push),
+      "/Push/{deviceId}"
     );
 
-    routes.MapAreaControllerRoute(
-      name: "Mess.Iot.UpdateController.Index",
-      areaName: "Mess.Iot",
-      pattern: "/Update/{deviceId}",
-      defaults: new
-      {
-        controller = typeof(IotDeviceController).ControllerName(),
-        action = nameof(IotDeviceController.Update)
-      }
+    routes.MapAreaControllerRoute<IotDeviceController>(
+      nameof(IotDeviceController.Update),
+      "/Update/{deviceId}"
     );
 
-    routes.MapAreaControllerRoute(
-      name: "Mess.Iot.PollController.Index",
-      areaName: "Mess.Iot",
-      pattern: "/Poll/{deviceId}",
-      defaults: new
-      {
-        controller = typeof(IotDeviceController).ControllerName(),
-        action = nameof(IotDeviceController.Poll)
-      }
+    routes.MapAreaControllerRoute<IotDeviceController>(
+      nameof(IotDeviceController.Poll),
+      "/Poll/{deviceId}"
+    );
+
+    routes.MapAreaControllerRoute<AdminController>(
+      nameof(AdminController.ListIotDevices),
+      adminUrlPrefix + "/IotDevices"
     );
   }
 }
