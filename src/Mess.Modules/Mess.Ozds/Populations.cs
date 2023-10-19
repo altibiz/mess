@@ -137,8 +137,6 @@ internal static partial class CreateAsyncMigrations
   {
     var roleManager = serviceProvider.GetRequiredService<RoleManager<IRole>>();
     var contentManager = serviceProvider.GetRequiredService<IContentManager>();
-    var hostEnvironment =
-      serviceProvider.GetRequiredService<IHostEnvironment>();
     var userService = serviceProvider.GetRequiredService<IUserService>();
 
     await roleManager.CreateAsync(
@@ -180,110 +178,102 @@ internal static partial class CreateAsyncMigrations
       }
     );
 
-    if (hostEnvironment.IsDevelopment())
-    {
-      var operatorUser = await userService.CreateDevUserAsync(
-        id: "OperatorId",
-        userName: "Operator",
-        roleNames: new[]
-        {
-          "DistributionSystemOperatorRepresentative",
-          "LegalEntityRepresentative",
-        }
-      );
+    var operatorUser = await userService.CreateDevUserAsync(
+      id: "OperatorId",
+      userName: "Operator",
+      roleNames: new[]
+      {
+        "DistributionSystemOperatorRepresentative",
+        "LegalEntityRepresentative",
+      }
+    );
 
-      var distributionSystemOperator =
-        await contentManager.NewContentAsync<DistributionSystemOperatorItem>();
-      distributionSystemOperator.Alter(
-        distributionSystemOperator => distributionSystemOperator.TitlePart,
-        titlePart =>
+    var distributionSystemOperator =
+      await contentManager.NewContentAsync<DistributionSystemOperatorItem>();
+    distributionSystemOperator.Alter(
+      distributionSystemOperator => distributionSystemOperator.TitlePart,
+      titlePart =>
+      {
+        titlePart.Title = "Operator";
+      }
+    );
+    distributionSystemOperator.Alter(
+      distributionSystemOperator => distributionSystemOperator.LegalEntityPart,
+      legalEntityPart =>
+      {
+        legalEntityPart.Name = new() { Text = "Operator" };
+        legalEntityPart.City = new() { Text = "City" };
+        legalEntityPart.Address = new() { Text = "Address" };
+        legalEntityPart.PostalCode = new() { Text = "Postal code" };
+        legalEntityPart.Email = new() { Text = "Email" };
+        legalEntityPart.SocialSecurityNumber = new()
         {
-          titlePart.Title = "Operator";
-        }
-      );
-      distributionSystemOperator.Alter(
-        distributionSystemOperator =>
-          distributionSystemOperator.LegalEntityPart,
-        legalEntityPart =>
+          Text = "Social security number"
+        };
+        legalEntityPart.Representatives = new()
         {
-          legalEntityPart.Name = new() { Text = "Operator" };
-          legalEntityPart.City = new() { Text = "City" };
-          legalEntityPart.Address = new() { Text = "Address" };
-          legalEntityPart.PostalCode = new() { Text = "Postal code" };
-          legalEntityPart.Email = new() { Text = "Email" };
-          legalEntityPart.SocialSecurityNumber = new()
-          {
-            Text = "Social security number"
-          };
-          legalEntityPart.Representatives = new()
-          {
-            UserIds = new[] { operatorUser.UserId }
-          };
-        }
-      );
-      distributionSystemOperator.Alter(
-        distributionSystemOperator =>
-          distributionSystemOperator.DistributionSystemOperatorPart,
-        distributionSystemOperatorPart =>
+          UserIds = new[] { operatorUser.UserId }
+        };
+      }
+    );
+    distributionSystemOperator.Alter(
+      distributionSystemOperator =>
+        distributionSystemOperator.DistributionSystemOperatorPart,
+      distributionSystemOperatorPart =>
+      {
+        distributionSystemOperatorPart.RegulatoryCatalogue = new()
         {
-          distributionSystemOperatorPart.RegulatoryCatalogue = new()
-          {
-            ContentItemIds = new[] { regulatoryAgencyCatalogueContentItemId }
-          };
+          ContentItemIds = new[] { regulatoryAgencyCatalogueContentItemId }
+        };
 
-          distributionSystemOperatorPart.WhiteHighVoltageOperatorCatalogue =
-            new()
+        distributionSystemOperatorPart.WhiteHighVoltageOperatorCatalogue = new()
+        {
+          ContentItemIds = new[]
+          {
+            whiteHighVoltageOperatorCatalogueContentItemId
+          }
+        };
+
+        distributionSystemOperatorPart.WhiteMediumVoltageOperatorCatalogue =
+          new()
+          {
+            ContentItemIds = new[]
             {
-              ContentItemIds = new[]
-              {
-                whiteHighVoltageOperatorCatalogueContentItemId
-              }
-            };
-
-          distributionSystemOperatorPart.WhiteMediumVoltageOperatorCatalogue =
-            new()
-            {
-              ContentItemIds = new[]
-              {
-                whiteMediumVoltageOperatorCatalogueContentItemId
-              }
-            };
-
-          distributionSystemOperatorPart.BlueOperatorCatalogue = new()
-          {
-            ContentItemIds = new[] { blueOperatorCatalogueContentItemId }
+              whiteMediumVoltageOperatorCatalogueContentItemId
+            }
           };
 
-          distributionSystemOperatorPart.WhiteLowVoltageOperatorCatalogue =
-            new()
-            {
-              ContentItemIds = new[]
-              {
-                whiteLowVoltageOperatorCatalogueContentItemId
-              }
-            };
+        distributionSystemOperatorPart.BlueOperatorCatalogue = new()
+        {
+          ContentItemIds = new[] { blueOperatorCatalogueContentItemId }
+        };
 
-          distributionSystemOperatorPart.RedOperatorCatalogue = new()
+        distributionSystemOperatorPart.WhiteLowVoltageOperatorCatalogue = new()
+        {
+          ContentItemIds = new[]
           {
-            ContentItemIds = new[] { redOperatorCatalogueContentItemId }
-          };
+            whiteLowVoltageOperatorCatalogueContentItemId
+          }
+        };
 
-          distributionSystemOperatorPart.YellowOperatorCatalogue = new()
-          {
-            ContentItemIds = new[] { yellowOperatorCatalogueContentItemId }
-          };
-        }
-      );
+        distributionSystemOperatorPart.RedOperatorCatalogue = new()
+        {
+          ContentItemIds = new[] { redOperatorCatalogueContentItemId }
+        };
 
-      await contentManager.CreateAsync(
-        distributionSystemOperator,
-        VersionOptions.Latest
-      );
+        distributionSystemOperatorPart.YellowOperatorCatalogue = new()
+        {
+          ContentItemIds = new[] { yellowOperatorCatalogueContentItemId }
+        };
+      }
+    );
 
-      return (operatorUser.UserId, distributionSystemOperator.ContentItemId);
-    }
+    await contentManager.CreateAsync(
+      distributionSystemOperator,
+      VersionOptions.Latest
+    );
 
-    return (null, null);
+    return (operatorUser.UserId, distributionSystemOperator.ContentItemId);
   }
 
   internal static async Task<(
@@ -302,8 +292,6 @@ internal static partial class CreateAsyncMigrations
   )
   {
     var roleManager = serviceProvider.GetRequiredService<RoleManager<IRole>>();
-    var hostEnvironment =
-      serviceProvider.GetRequiredService<IHostEnvironment>();
     var userService = serviceProvider.GetRequiredService<IUserService>();
     var contentManager = serviceProvider.GetRequiredService<IContentManager>();
 
@@ -345,107 +333,101 @@ internal static partial class CreateAsyncMigrations
       }
     );
 
-    if (hostEnvironment.IsDevelopment())
-    {
-      var systemUser = await userService.CreateDevUserAsync(
-        id: "SystemId",
-        userName: "System",
-        roleNames: new[]
+    var systemUser = await userService.CreateDevUserAsync(
+      id: "SystemId",
+      userName: "System",
+      roleNames: new[]
+      {
+        "ClosedDistributionSystemRepresentative",
+        "LegalEntityRepresentative",
+      }
+    );
+
+    var closedDistributionSystem =
+      await contentManager.NewContentAsync<ClosedDistributionSystemItem>();
+    closedDistributionSystem.Alter(
+      closedDistributionSystem => closedDistributionSystem.TitlePart,
+      titlePart =>
+      {
+        titlePart.Title = "System";
+      }
+    );
+    closedDistributionSystem.Alter(
+      closedDistributionSystem => closedDistributionSystem.LegalEntityPart,
+      legalEntityPart =>
+      {
+        legalEntityPart.Name = new() { Text = "System" };
+        legalEntityPart.City = new() { Text = "City" };
+        legalEntityPart.Address = new() { Text = "Address" };
+        legalEntityPart.PostalCode = new() { Text = "Postal code" };
+        legalEntityPart.Email = new() { Text = "Email" };
+        legalEntityPart.SocialSecurityNumber = new()
         {
-          "ClosedDistributionSystemRepresentative",
-          "LegalEntityRepresentative",
-        }
-      );
-
-      var closedDistributionSystem =
-        await contentManager.NewContentAsync<ClosedDistributionSystemItem>();
-      closedDistributionSystem.Alter(
-        closedDistributionSystem => closedDistributionSystem.TitlePart,
-        titlePart =>
+          Text = "Social security number"
+        };
+        legalEntityPart.Representatives = new()
         {
-          titlePart.Title = "System";
-        }
-      );
-      closedDistributionSystem.Alter(
-        closedDistributionSystem => closedDistributionSystem.LegalEntityPart,
-        legalEntityPart =>
+          UserIds = new[] { systemUser.UserId }
+        };
+      }
+    );
+    closedDistributionSystem.Alter(
+      closedDistributionSystem =>
+        closedDistributionSystem.ClosedDistributionSystemPart,
+      closedDistributionSystemPart =>
+      {
+        closedDistributionSystemPart.DistributionSystemOperator = new()
         {
-          legalEntityPart.Name = new() { Text = "System" };
-          legalEntityPart.City = new() { Text = "City" };
-          legalEntityPart.Address = new() { Text = "Address" };
-          legalEntityPart.PostalCode = new() { Text = "Postal code" };
-          legalEntityPart.Email = new() { Text = "Email" };
-          legalEntityPart.SocialSecurityNumber = new()
-          {
-            Text = "Social security number"
-          };
-          legalEntityPart.Representatives = new()
-          {
-            UserIds = new[] { systemUser.UserId }
-          };
-        }
-      );
-      closedDistributionSystem.Alter(
-        closedDistributionSystem =>
-          closedDistributionSystem.ClosedDistributionSystemPart,
-        closedDistributionSystemPart =>
+          ContentItemIds = new[] { operatorContentItemId }
+        };
+
+        closedDistributionSystemPart.WhiteHighVoltageOperatorCatalogue = new()
         {
-          closedDistributionSystemPart.DistributionSystemOperator = new()
+          ContentItemIds = new[]
           {
-            ContentItemIds = new[] { operatorContentItemId }
-          };
+            whiteHighVoltageOperatorCatalogueContentItemId
+          }
+        };
 
-          closedDistributionSystemPart.WhiteHighVoltageOperatorCatalogue = new()
+        closedDistributionSystemPart.WhiteMediumVoltageOperatorCatalogue = new()
+        {
+          ContentItemIds = new[]
           {
-            ContentItemIds = new[]
-            {
-              whiteHighVoltageOperatorCatalogueContentItemId
-            }
-          };
+            whiteMediumVoltageOperatorCatalogueContentItemId
+          }
+        };
 
-          closedDistributionSystemPart.WhiteMediumVoltageOperatorCatalogue =
-            new()
-            {
-              ContentItemIds = new[]
-              {
-                whiteMediumVoltageOperatorCatalogueContentItemId
-              }
-            };
+        closedDistributionSystemPart.BlueOperatorCatalogue = new()
+        {
+          ContentItemIds = new[] { blueOperatorCatalogueContentItemId }
+        };
 
-          closedDistributionSystemPart.BlueOperatorCatalogue = new()
+        closedDistributionSystemPart.WhiteLowVoltageOperatorCatalogue = new()
+        {
+          ContentItemIds = new[]
           {
-            ContentItemIds = new[] { blueOperatorCatalogueContentItemId }
-          };
+            whiteLowVoltageOperatorCatalogueContentItemId
+          }
+        };
 
-          closedDistributionSystemPart.WhiteLowVoltageOperatorCatalogue = new()
-          {
-            ContentItemIds = new[]
-            {
-              whiteLowVoltageOperatorCatalogueContentItemId
-            }
-          };
+        closedDistributionSystemPart.RedOperatorCatalogue = new()
+        {
+          ContentItemIds = new[] { redOperatorCatalogueContentItemId }
+        };
 
-          closedDistributionSystemPart.RedOperatorCatalogue = new()
-          {
-            ContentItemIds = new[] { redOperatorCatalogueContentItemId }
-          };
+        closedDistributionSystemPart.YellowOperatorCatalogue = new()
+        {
+          ContentItemIds = new[] { yellowOperatorCatalogueContentItemId }
+        };
+      }
+    );
 
-          closedDistributionSystemPart.YellowOperatorCatalogue = new()
-          {
-            ContentItemIds = new[] { yellowOperatorCatalogueContentItemId }
-          };
-        }
-      );
+    await contentManager.CreateAsync(
+      closedDistributionSystem,
+      VersionOptions.Latest
+    );
 
-      await contentManager.CreateAsync(
-        closedDistributionSystem,
-        VersionOptions.Latest
-      );
-
-      return (systemUser.UserId, closedDistributionSystem.ContentItemId);
-    }
-
-    return (null, null);
+    return (systemUser.UserId, closedDistributionSystem.ContentItemId);
   }
 
   internal static async Task<(
@@ -460,8 +442,6 @@ internal static partial class CreateAsyncMigrations
   )
   {
     var roleManager = serviceProvider.GetRequiredService<RoleManager<IRole>>();
-    var hostEnvironment =
-      serviceProvider.GetRequiredService<IHostEnvironment>();
     var userService = serviceProvider.GetRequiredService<IUserService>();
     var contentManager = serviceProvider.GetRequiredService<IContentManager>();
 
@@ -482,67 +462,62 @@ internal static partial class CreateAsyncMigrations
       }
     );
 
-    if (hostEnvironment.IsDevelopment())
-    {
-      var unitUser = await userService.CreateDevUserAsync(
-        id: "UnitId",
-        userName: "Unit",
-        roleNames: new[]
-        {
-          "DistributionSystemUnitRepresentative",
-          "LegalEntityRepresentative",
-        }
-      );
+    var unitUser = await userService.CreateDevUserAsync(
+      id: "UnitId",
+      userName: "Unit",
+      roleNames: new[]
+      {
+        "DistributionSystemUnitRepresentative",
+        "LegalEntityRepresentative",
+      }
+    );
 
-      var distributionSystemUnit =
-        await contentManager.NewContentAsync<DistributionSystemUnitItem>();
-      distributionSystemUnit.Alter(
-        distributionSystemUnit => distributionSystemUnit.TitlePart,
-        titlePart =>
+    var distributionSystemUnit =
+      await contentManager.NewContentAsync<DistributionSystemUnitItem>();
+    distributionSystemUnit.Alter(
+      distributionSystemUnit => distributionSystemUnit.TitlePart,
+      titlePart =>
+      {
+        titlePart.Title = "Unit";
+      }
+    );
+    distributionSystemUnit.Alter(
+      distributionSystemUnit => distributionSystemUnit.LegalEntityPart,
+      legalEntityPart =>
+      {
+        legalEntityPart.Name = new() { Text = "Unit" };
+        legalEntityPart.City = new() { Text = "City" };
+        legalEntityPart.Address = new() { Text = "Address" };
+        legalEntityPart.PostalCode = new() { Text = "Postal code" };
+        legalEntityPart.Email = new() { Text = "Email" };
+        legalEntityPart.SocialSecurityNumber = new()
         {
-          titlePart.Title = "Unit";
-        }
-      );
-      distributionSystemUnit.Alter(
-        distributionSystemUnit => distributionSystemUnit.LegalEntityPart,
-        legalEntityPart =>
+          Text = "Social security number"
+        };
+        legalEntityPart.Representatives = new()
         {
-          legalEntityPart.Name = new() { Text = "Unit" };
-          legalEntityPart.City = new() { Text = "City" };
-          legalEntityPart.Address = new() { Text = "Address" };
-          legalEntityPart.PostalCode = new() { Text = "Postal code" };
-          legalEntityPart.Email = new() { Text = "Email" };
-          legalEntityPart.SocialSecurityNumber = new()
-          {
-            Text = "Social security number"
-          };
-          legalEntityPart.Representatives = new()
-          {
-            UserIds = new[] { unitUser.UserId }
-          };
-        }
-      );
-      distributionSystemUnit.Alter(
-        distributionSystemUnit =>
-          distributionSystemUnit.DistributionSystemUnitPart,
-        distributionSystemUnitPart =>
+          UserIds = new[] { unitUser.UserId }
+        };
+      }
+    );
+    distributionSystemUnit.Alter(
+      distributionSystemUnit =>
+        distributionSystemUnit.DistributionSystemUnitPart,
+      distributionSystemUnitPart =>
+      {
+        distributionSystemUnitPart.ClosedDistributionSystem = new()
         {
-          distributionSystemUnitPart.ClosedDistributionSystem = new()
-          {
-            ContentItemIds = new[] { systemContentItemId }
-          };
-        }
-      );
+          ContentItemIds = new[] { systemContentItemId }
+        };
+      }
+    );
 
-      await contentManager.CreateAsync(
-        distributionSystemUnit,
-        VersionOptions.Latest
-      );
+    await contentManager.CreateAsync(
+      distributionSystemUnit,
+      VersionOptions.Latest
+    );
 
-      return (unitUser.UserId, distributionSystemUnit.ContentItemId);
-    }
-
-    return (null, null);
+    return (unitUser.UserId, distributionSystemUnit.ContentItemId);
   }
 
   internal static async Task PopulatePidgeon(
@@ -551,52 +526,47 @@ internal static partial class CreateAsyncMigrations
   )
   {
     var roleManager = serviceProvider.GetRequiredService<RoleManager<IRole>>();
-    var hostEnvironment =
-      serviceProvider.GetRequiredService<IHostEnvironment>();
     var userService = serviceProvider.GetRequiredService<IUserService>();
     var contentManager = serviceProvider.GetRequiredService<IContentManager>();
     var apiKeyFieldService =
       serviceProvider.GetRequiredService<IApiKeyFieldService>();
 
-    if (hostEnvironment.IsDevelopment())
-    {
-      var pidgeonIotDevice =
-        await contentManager.NewContentAsync<PidgeonIotDeviceItem>();
-      pidgeonIotDevice.Alter(
-        pidgeonIotDevice => pidgeonIotDevice.TitlePart,
-        titlePart =>
+    var pidgeonIotDevice =
+      await contentManager.NewContentAsync<PidgeonIotDeviceItem>();
+    pidgeonIotDevice.Alter(
+      pidgeonIotDevice => pidgeonIotDevice.TitlePart,
+      titlePart =>
+      {
+        titlePart.Title = "pidgeon";
+      }
+    );
+    pidgeonIotDevice.Alter(
+      pidgeonIotDevice => pidgeonIotDevice.IotDevicePart,
+      measurementDevicePart =>
+      {
+        measurementDevicePart.DeviceId = new() { Text = "pidgeon" };
+      }
+    );
+    pidgeonIotDevice.Alter(
+      pidgeonIotDevice => pidgeonIotDevice.PidgeonIotDevicePart,
+      pidgeonIotDevicePart =>
+      {
+        pidgeonIotDevicePart.ApiKey = apiKeyFieldService.HashApiKeyField(
+          "pidgeon"
+        );
+      }
+    );
+    pidgeonIotDevice.Alter(
+      pidgeonIotDevice => pidgeonIotDevice.OzdsIotDevicePart,
+      ozdsIotDevicePart =>
+      {
+        ozdsIotDevicePart.DistributionSystemUnit = new()
         {
-          titlePart.Title = "pidgeon";
-        }
-      );
-      pidgeonIotDevice.Alter(
-        pidgeonIotDevice => pidgeonIotDevice.IotDevicePart,
-        measurementDevicePart =>
-        {
-          measurementDevicePart.DeviceId = new() { Text = "pidgeon" };
-        }
-      );
-      pidgeonIotDevice.Alter(
-        pidgeonIotDevice => pidgeonIotDevice.PidgeonIotDevicePart,
-        pidgeonIotDevicePart =>
-        {
-          pidgeonIotDevicePart.ApiKey = apiKeyFieldService.HashApiKeyField(
-            "pidgeon"
-          );
-        }
-      );
-      pidgeonIotDevice.Alter(
-        pidgeonIotDevice => pidgeonIotDevice.OzdsIotDevicePart,
-        ozdsIotDevicePart =>
-        {
-          ozdsIotDevicePart.DistributionSystemUnit = new()
-          {
-            ContentItemIds = new[] { unitContentItemId }
-          };
-        }
-      );
-      await contentManager.CreateAsync(pidgeonIotDevice, VersionOptions.Latest);
-    }
+          ContentItemIds = new[] { unitContentItemId }
+        };
+      }
+    );
+    await contentManager.CreateAsync(pidgeonIotDevice, VersionOptions.Latest);
   }
 
   internal static async Task PopulateAbb(
@@ -607,96 +577,89 @@ internal static partial class CreateAsyncMigrations
   )
   {
     var roleManager = serviceProvider.GetRequiredService<RoleManager<IRole>>();
-    var hostEnvironment =
-      serviceProvider.GetRequiredService<IHostEnvironment>();
     var userService = serviceProvider.GetRequiredService<IUserService>();
     var contentManager = serviceProvider.GetRequiredService<IContentManager>();
     var apiKeyFieldService =
       serviceProvider.GetRequiredService<IApiKeyFieldService>();
 
-    if (hostEnvironment.IsDevelopment())
-    {
-      var abbPowerDataset =
-        await contentManager.NewContentAsync<TimeseriesChartDatasetItem>();
-      abbPowerDataset.Alter(
-        eguagePowerDataset => eguagePowerDataset.TimeseriesChartDatasetPart,
-        timeseriesChartDatasetPart =>
+    var abbPowerDataset =
+      await contentManager.NewContentAsync<TimeseriesChartDatasetItem>();
+    abbPowerDataset.Alter(
+      eguagePowerDataset => eguagePowerDataset.TimeseriesChartDatasetPart,
+      timeseriesChartDatasetPart =>
+      {
+        timeseriesChartDatasetPart.Color = new() { Value = "#ff0000" };
+        timeseriesChartDatasetPart.Label = new() { Text = "Power" };
+        timeseriesChartDatasetPart.Property = nameof(AbbMeasurement.Power);
+      }
+    );
+    var abbChart = await contentManager.NewContentAsync<TimeseriesChartItem>();
+    abbChart.Alter(
+      abbChart => abbChart.TitlePart,
+      titlePart =>
+      {
+        titlePart.Title = "abb";
+      }
+    );
+    abbChart.Alter(
+      abbChart => abbChart.TimeseriesChartPart,
+      timeseriesChartPart =>
+      {
+        timeseriesChartPart.ChartContentType = "AbbIotDevice";
+        timeseriesChartPart.History = new()
         {
-          timeseriesChartDatasetPart.Color = new() { Value = "#ff0000" };
-          timeseriesChartDatasetPart.Label = new() { Text = "Power" };
-          timeseriesChartDatasetPart.Property = nameof(AbbMeasurement.Power);
-        }
-      );
-      var abbChart =
-        await contentManager.NewContentAsync<TimeseriesChartItem>();
-      abbChart.Alter(
-        abbChart => abbChart.TitlePart,
-        titlePart =>
+          Value = new(Unit: IntervalUnit.Minute, Count: 10)
+        };
+        timeseriesChartPart.RefreshInterval = new()
         {
-          titlePart.Title = "abb";
-        }
-      );
-      abbChart.Alter(
-        abbChart => abbChart.TimeseriesChartPart,
-        timeseriesChartPart =>
-        {
-          timeseriesChartPart.ChartContentType = "AbbIotDevice";
-          timeseriesChartPart.History = new()
-          {
-            Value = new(Unit: IntervalUnit.Minute, Count: 10)
-          };
-          timeseriesChartPart.RefreshInterval = new()
-          {
-            Value = new(Unit: IntervalUnit.Second, Count: 10)
-          };
-          timeseriesChartPart.Datasets = new() { abbPowerDataset };
-        }
-      );
-      await contentManager.CreateAsync(abbChart, VersionOptions.Latest);
+          Value = new(Unit: IntervalUnit.Second, Count: 10)
+        };
+        timeseriesChartPart.Datasets = new() { abbPowerDataset };
+      }
+    );
+    await contentManager.CreateAsync(abbChart, VersionOptions.Latest);
 
-      var abbIotDevice =
-        await contentManager.NewContentAsync<AbbIotDeviceItem>();
-      abbIotDevice.Alter(
-        abbIotDevice => abbIotDevice.TitlePart,
-        titlePart =>
+    var abbIotDevice = await contentManager.NewContentAsync<AbbIotDeviceItem>();
+    abbIotDevice.Alter(
+      abbIotDevice => abbIotDevice.TitlePart,
+      titlePart =>
+      {
+        titlePart.Title = "Abb";
+      }
+    );
+    abbIotDevice.Alter(
+      abbIotDevice => abbIotDevice.IotDevicePart,
+      measurementDevicePart =>
+      {
+        measurementDevicePart.DeviceId = new() { Text = "abb" };
+      }
+    );
+    abbIotDevice.Alter(
+      abbIotDevice => abbIotDevice.OzdsIotDevicePart,
+      ozdsIotDevicePart =>
+      {
+        ozdsIotDevicePart.DistributionSystemUnit = new()
         {
-          titlePart.Title = "Abb";
-        }
-      );
-      abbIotDevice.Alter(
-        abbIotDevice => abbIotDevice.IotDevicePart,
-        measurementDevicePart =>
+          ContentItemIds = new[] { unitContentItemId }
+        };
+        ozdsIotDevicePart.UsageCatalogue = new()
         {
-          measurementDevicePart.DeviceId = new() { Text = "abb" };
-        }
-      );
-      abbIotDevice.Alter(
-        abbIotDevice => abbIotDevice.OzdsIotDevicePart,
-        ozdsIotDevicePart =>
+          ContentItemIds = new[] { usageCatalogueContentItemId }
+        };
+        ozdsIotDevicePart.SupplyCatalogue = new()
         {
-          ozdsIotDevicePart.DistributionSystemUnit = new()
-          {
-            ContentItemIds = new[] { unitContentItemId }
-          };
-          ozdsIotDevicePart.UsageCatalogue = new()
-          {
-            ContentItemIds = new[] { usageCatalogueContentItemId }
-          };
-          ozdsIotDevicePart.SupplyCatalogue = new()
-          {
-            ContentItemIds = new[] { supplyCatalogueContentItemId }
-          };
-        }
-      );
-      abbIotDevice.Alter(
-        abbIotDevice => abbIotDevice.ChartPart,
-        chartPart =>
-        {
-          chartPart.ChartContentItemId = abbChart.ContentItemId;
-        }
-      );
-      await contentManager.CreateAsync(abbIotDevice, VersionOptions.Latest);
-    }
+          ContentItemIds = new[] { supplyCatalogueContentItemId }
+        };
+      }
+    );
+    abbIotDevice.Alter(
+      abbIotDevice => abbIotDevice.ChartPart,
+      chartPart =>
+      {
+        chartPart.ChartContentItemId = abbChart.ContentItemId;
+      }
+    );
+    await contentManager.CreateAsync(abbIotDevice, VersionOptions.Latest);
   }
 
   internal static async Task<string> PopulateRegulatoryAgencyCatalogue(

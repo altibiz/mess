@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using OrchardCore.Users.Models;
 using OrchardCore.Users.Services;
+using ISession = YesSql.ISession;
 
 namespace Mess.OrchardCore.Extensions.OrchardCore;
 
