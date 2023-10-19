@@ -19,6 +19,9 @@ public class AdminMenu : INavigationProvider
       S["Billing"],
       configuration =>
         configuration
+          .AddClass("icon-class-fas")
+          .AddClass("icon-class-fa-money-bill")
+          .Id("billing")
           .Add(
             S["Issued"],
             S["Issued"].PrefixPosition(),

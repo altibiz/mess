@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Reflection;
 using Mess.Relational.Abstractions.Migrations;
 using Mess.System.Extensions.Microsoft;
@@ -29,43 +30,59 @@ public class TimeseriesDbMigrator : IRelationalDbMigrator
       var entityTypes = context.Model.GetEntityTypes();
       foreach (var entityType in entityTypes)
       {
+        var tableName = entityType.GetTableName();
+        if (tableName == null)
+        {
+          continue;
+        }
+
         foreach (var property in entityType.GetProperties())
         {
           if (
             property.PropertyInfo?.GetCustomAttribute(
               typeof(HypertableColumnAttribute)
-            ) != null
+            )
+            is null
           )
           {
-            var tableName = entityType.GetTableName();
-            // TODO: use non deprecated version
-#pragma warning disable CS0618
-            var columnName = property.GetColumnName();
-#pragma warning restore CS0618
-            try
-            {
-              await context.Database.ExecuteSqlRawAsync(
-                $"SELECT create_hypertable('\"{tableName}\"', '{columnName}');"
-              );
-            }
-            catch (PostgresException exception)
-            {
-              // NOTE: hypertable already exists
-              if (exception.SqlState != "TS110")
-              {
-                throw exception;
-              }
-            }
-
-            _logger.LogDebug(
-              "Created hypertable {} for column {} on {} for {}",
-              tableName,
-              columnName,
-              context.GetType().Name,
-              _shellSettings.Name
-            );
+            continue;
           }
+
+          var columnName = property.GetColumnName();
+          await CreateHypertableAsync(context, tableName, columnName);
+
+          _logger.LogDebug(
+            "Created hypertable {} for column {} on {} for {}",
+            tableName,
+            columnName,
+            context.GetType().Name,
+            _shellSettings.Name
+          );
         }
+      }
+    }
+  }
+
+  // TODO: make this unstoppable by the debugger
+  // [DebuggerHidden]
+  private static async Task CreateHypertableAsync(
+    TimeseriesDbContext context,
+    string tableName,
+    string columnName
+  )
+  {
+    try
+    {
+      await context.Database.ExecuteSqlRawAsync(
+        $"SELECT create_hypertable('\"{tableName}\"', '{columnName}');"
+      );
+    }
+    catch (PostgresException exception)
+    {
+      // NOTE: hypertable already exists
+      if (exception.SqlState != "TS110")
+      {
+        throw exception;
       }
     }
   }

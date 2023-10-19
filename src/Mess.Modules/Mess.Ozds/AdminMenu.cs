@@ -25,6 +25,9 @@ public class AdminMenu : INavigationProvider
       S["OZDS"],
       configuration =>
         configuration
+          .AddClass("icon-class-fas")
+          .AddClass("icon-class-fa-bolt")
+          .Id("ozds")
           .Add(
             S["IOT devices"],
             S["IOT devices"].PrefixPosition(),
@@ -75,8 +78,8 @@ public class AdminMenu : INavigationProvider
                 .AddClass("distribution-system-operators")
                 .Id("distribution-system-operators")
                 .Action(
-                  nameof(DistributionSystemOperatorController.List),
-                  typeof(DistributionSystemOperatorController).ControllerName(),
+                  nameof(DistributionSystemOperatorAdminController.List),
+                  typeof(DistributionSystemOperatorAdminController).ControllerName(),
                   new { area = "Mess.Ozds" }
                 )
                 .LocalNav()

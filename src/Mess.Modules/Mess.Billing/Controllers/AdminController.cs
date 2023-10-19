@@ -23,7 +23,7 @@ public class AdminController : Controller
 {
   public async Task<IActionResult> Bills()
   {
-    PaymentsViewModel viewModel = new();
+    BillsViewModel viewModel = new();
     IEnumerable<ContentItem>? contentItems = null;
 
     if (
@@ -77,11 +77,11 @@ public class AdminController : Controller
       return Forbid();
     }
 
-    var payments = contentItems
+    var bills = contentItems
       .Where(contentItem => contentItem.Has<InvoicePart>())
       .Select(
         contentItem =>
-          new PaymentViewModel
+          new BillViewModel
           {
             InvoiceItem = contentItem,
             ReceiptItem = contentItems
@@ -97,9 +97,9 @@ public class AdminController : Controller
       )
       .ToList();
 
-    viewModel.Payments = payments;
+    viewModel.Bills = bills;
 
-    return Ok(viewModel);
+    return View(viewModel);
   }
 
   [HttpPost]

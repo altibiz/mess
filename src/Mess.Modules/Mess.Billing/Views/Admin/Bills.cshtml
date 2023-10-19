@@ -1,0 +1,8 @@
+@model BillsViewModel
+
+@foreach (var bill in Model.Bills)
+{
+  <div class="row">
+    @await Orchard.DisplayAsync(bill.InvoiceItem, "SummaryAdmin")
+  </div>
+}

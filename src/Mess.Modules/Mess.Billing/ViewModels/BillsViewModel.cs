@@ -2,12 +2,12 @@ using OrchardCore.ContentManagement;
 
 namespace Mess.Billing.ViewModels;
 
-public class PaymentsViewModel
+public class BillsViewModel
 {
-  public List<PaymentViewModel> Payments { get; set; } = default!;
+  public List<BillViewModel> Bills { get; set; } = default!;
 }
 
-public class PaymentViewModel
+public class BillViewModel
 {
   public ContentItem InvoiceItem { get; set; } = default!;
 

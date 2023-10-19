@@ -1,8 +1,0 @@
-@model PaymentsViewModel
-
-@foreach (var payment in Model.Payments)
-{
-  <div class="row">
-    @await Orchard.DisplayAsync(payment.InvoiceItem, "SummaryAdmin")
-  </div>
-}
