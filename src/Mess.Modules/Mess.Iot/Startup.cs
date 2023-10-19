@@ -27,7 +27,7 @@ public class Startup : StartupBase
   {
     services.AddDataMigration<Migrations>();
     // FIXME: singleton
-    // services.AddModularTenantEvents<Populations>();
+    services.AddModularTenantEvents<Populations>();
     services.AddTransient<
       IConfigureOptions<ResourceManagementOptions>,
       Resources

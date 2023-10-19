@@ -113,6 +113,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Billing.Test", "test\M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Billing.Test.Abstractions", "test\Mess.Abstractions\Mess.Billing.Test.Abstractions\Mess.Billing.Test.Abstractions.csproj", "{F2FCEEBF-F969-4DA4-A683-944006C7B12A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Population", "src\Mess.Modules\Mess.Population\Mess.Population.csproj", "{8D253433-C258-4D65-9AEC-7B7A0B896417}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Population.Abstractions", "src\Mess.Abstractions\Mess.Population.Abstractions\Mess.Population.Abstractions.csproj", "{177518E7-625D-4535-AFC4-FD43DC32760F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Population.Test", "test\Mess.Modules\Mess.Population.Test\Mess.Population.Test.csproj", "{92350956-EB87-4650-AA4F-D835B8E94655}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Population.Test.Abstractions", "test\Mess.Abstractions\Mess.Population.Test.Abstractions\Mess.Population.Test.Abstractions.csproj", "{885BC0AA-8A4F-41AA-8AF7-FEACCB0345E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -314,6 +322,22 @@ Global
 		{F2FCEEBF-F969-4DA4-A683-944006C7B12A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F2FCEEBF-F969-4DA4-A683-944006C7B12A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F2FCEEBF-F969-4DA4-A683-944006C7B12A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D253433-C258-4D65-9AEC-7B7A0B896417}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D253433-C258-4D65-9AEC-7B7A0B896417}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D253433-C258-4D65-9AEC-7B7A0B896417}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D253433-C258-4D65-9AEC-7B7A0B896417}.Release|Any CPU.Build.0 = Release|Any CPU
+		{177518E7-625D-4535-AFC4-FD43DC32760F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{177518E7-625D-4535-AFC4-FD43DC32760F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{177518E7-625D-4535-AFC4-FD43DC32760F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{177518E7-625D-4535-AFC4-FD43DC32760F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92350956-EB87-4650-AA4F-D835B8E94655}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92350956-EB87-4650-AA4F-D835B8E94655}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92350956-EB87-4650-AA4F-D835B8E94655}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92350956-EB87-4650-AA4F-D835B8E94655}.Release|Any CPU.Build.0 = Release|Any CPU
+		{885BC0AA-8A4F-41AA-8AF7-FEACCB0345E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{885BC0AA-8A4F-41AA-8AF7-FEACCB0345E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{885BC0AA-8A4F-41AA-8AF7-FEACCB0345E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{885BC0AA-8A4F-41AA-8AF7-FEACCB0345E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{D6EC15B8-1F91-4BC6-9108-1BC74E2FF428} = {80810728-A06F-41B9-99F3-5E6CD1250127}
@@ -369,5 +393,9 @@ Global
 		{50DBF146-6DDA-4363-BDA4-E2C39670C033} = {32F64CF4-695D-493F-B2DC-6177ECDF0A84}
 		{9DA939E0-9496-4FF7-91C4-885C8505340E} = {FF60624F-4E18-4E33-A4EF-62DFECAF3C75}
 		{F2FCEEBF-F969-4DA4-A683-944006C7B12A} = {D0DF296D-9309-4659-A9C0-4833F4201BAA}
+		{8D253433-C258-4D65-9AEC-7B7A0B896417} = {2B0D55BD-ADCC-4A97-B1AC-3FB928D66D40}
+		{177518E7-625D-4535-AFC4-FD43DC32760F} = {32F64CF4-695D-493F-B2DC-6177ECDF0A84}
+		{92350956-EB87-4650-AA4F-D835B8E94655} = {FF60624F-4E18-4E33-A4EF-62DFECAF3C75}
+		{885BC0AA-8A4F-41AA-8AF7-FEACCB0345E8} = {D0DF296D-9309-4659-A9C0-4833F4201BAA}
 	EndGlobalSection
 EndGlobal
