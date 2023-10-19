@@ -1,7 +1,7 @@
 {
-  "name": "eor",
-  "displayName": "EOR",
-  "description": "EOR project recipe",
+  "name": "enms",
+  "displayName": "ENMS",
+  "description": "ENMS project recipe",
   "author": "Altibiz",
   "website": "altibiz.com",
   "version": "0.0.1",
@@ -21,14 +21,14 @@
         "OrchardCore.Users.ResetPassword",
         "OrchardCore.Diagnostics",
         "TheAdmin",
-        "Mess.Eor",
-        "Mess.Forttech"
+        "Mess.Enms",
+        "Mess.Helb"
       ]
     },
     {
       "name": "themes",
       "admin": "TheAdmin",
-      "site": "Mess.Forttech"
+      "site": "Mess.Helb"
     }
   ]
 }

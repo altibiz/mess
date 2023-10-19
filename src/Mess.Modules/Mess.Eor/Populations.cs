@@ -11,13 +11,13 @@ using OrchardCore.Users.Services;
 using YesSql;
 using Mess.Fields.Abstractions.ApiKeys;
 using Mess.Fields.Abstractions;
-using OrchardCore.Modules;
+using Mess.Population.Abstractions;
 
 namespace Mess.Eor;
 
-public class Populations : ModularTenantEvents
+public class Populations : IPopulation
 {
-  public override async Task ActivatedAsync()
+  public async Task PopulateAsync()
   {
     if (_hostEnvironment.IsDevelopment())
     {

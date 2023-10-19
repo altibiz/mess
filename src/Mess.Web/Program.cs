@@ -1,6 +1,5 @@
 using OrchardCore.Logging;
 using Mess.OrchardCore.Extensions.Newtonsoft;
-using Mess.OrchardCore.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseNLogHost();
@@ -8,6 +7,7 @@ builder.Services
   .AddOrchardCms()
   .ConfigureServices(services =>
   {
+    // TODO: in a module??
     services
       .AddControllers()
       .AddNewtonsoftJson(
@@ -18,8 +18,6 @@ builder.Services
             )
             .AddMessNewtonsoftJsonConverters()
       );
-
-    services.AddScoped<IActionContextService, ActionContextService>();
   })
   .AddSetupFeatures("OrchardCore.AutoSetup");
 

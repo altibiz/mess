@@ -29,14 +29,34 @@ public class Startup : StartupBase
   {
     // Migrations
     services.AddDataMigration<Migrations>();
-    // FIXME: singleton
-    // services.AddModularTenantEvents<Populations>();
 
     // Resources
     services.AddResources<Resources>();
 
     // Navigation
     services.AddNavigationProvider<AdminMenu>();
+
+    // Contents
+    services.AddContentPart<OzdsIotDevicePart>();
+    services.AddContentPart<PidgeonIotDevicePart>();
+    services.AddContentPart<AbbIotDevicePart>();
+    services.AddContentPart<DistributionSystemOperatorPart>();
+    services.AddContentPart<ClosedDistributionSystemPart>();
+    services.AddContentPart<DistributionSystemUnitPart>();
+    services.AddContentPart<OperatorCataloguePart>();
+    services.AddContentPart<RegulatoryAgencyCataloguePart>();
+    services.AddContentPart<OzdsCalculationPart>();
+    services.AddContentPart<OzdsReceiptPart>();
+    services.AddContentPart<OzdsInvoicePart>();
+
+    // Indexing
+    services.AddIndexProvider<DistributionSystemUnitIndexProvider>();
+    services.AddIndexProvider<ClosedDistributionSystemIndexProvider>();
+    services.AddIndexProvider<OperatorCatalogueIndexProvider>();
+    services.AddIndexProvider<OzdsIotDeviceIndexProvider>();
+
+    // Populations
+    // services.AddPopulation<Populations>();
 
     // Timeseries
     services.AddTimeseriesDbContext<OzdsTimeseriesDbContext>();
@@ -61,23 +81,6 @@ public class Startup : StartupBase
 
     // Ozds
     services.AddAuthorizationHandler<OzdsAuthorizationHandler>();
-
-    services.AddIndexProvider<DistributionSystemUnitIndexProvider>();
-    services.AddIndexProvider<ClosedDistributionSystemIndexProvider>();
-    services.AddIndexProvider<OperatorCatalogueIndexProvider>();
-    services.AddIndexProvider<OzdsIotDeviceIndexProvider>();
-
-    services.AddContentPart<OzdsIotDevicePart>();
-    services.AddContentPart<PidgeonIotDevicePart>();
-    services.AddContentPart<AbbIotDevicePart>();
-    services.AddContentPart<DistributionSystemOperatorPart>();
-    services.AddContentPart<ClosedDistributionSystemPart>();
-    services.AddContentPart<DistributionSystemUnitPart>();
-    services.AddContentPart<OperatorCataloguePart>();
-    services.AddContentPart<RegulatoryAgencyCataloguePart>();
-    services.AddContentPart<OzdsCalculationPart>();
-    services.AddContentPart<OzdsReceiptPart>();
-    services.AddContentPart<OzdsInvoicePart>();
   }
 
   public override void Configure(

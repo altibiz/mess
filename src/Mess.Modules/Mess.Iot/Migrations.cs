@@ -39,59 +39,6 @@ public class Migrations : DataMigration
           )
     );
 
-    _contentDefinitionManager.AlterPartDefinition(
-      "EgaugeIotDevicePart",
-      builder =>
-        builder
-          .Attachable()
-          .WithDescription("An Egauge measurement device.")
-          .WithDisplayName("Egauge measurement device")
-    );
-
-    _contentDefinitionManager.AlterTypeDefinition(
-      "EgaugeIotDevice",
-      builder =>
-        builder
-          .Creatable()
-          .Listable()
-          .Draftable()
-          .Securable()
-          .DisplayedAs("Egauge measurement device")
-          .WithDescription("An Egauge measurement device.")
-          .WithPart(
-            "TitlePart",
-            part =>
-              part.WithDisplayName("Title")
-                .WithDescription(
-                  "Title displaying the identifier of the Egauge measurement device."
-                )
-                .WithPosition("1")
-                .WithSettings<TitlePartSettings>(
-                  new()
-                  {
-                    RenderTitle = true,
-                    Options = TitlePartOptions.GeneratedDisabled,
-                    Pattern =
-                      @"{%- ContentItem.Content.IotDevicePart.DeviceId.Text -%}"
-                  }
-                )
-          )
-          .WithPart(
-            "IotDevicePart",
-            part =>
-              part.WithDisplayName("Measurement device")
-                .WithDescription("A measurement device.")
-                .WithPosition("2")
-          )
-          .WithPart(
-            "EgaugeIotDevicePart",
-            part =>
-              part.WithDisplayName("Egauge measurement device")
-                .WithDescription("An Egauge measurement device.")
-                .WithPosition("3")
-          )
-    );
-
     SchemaBuilder.CreateMapIndexTable<IotDeviceIndex>(
       table =>
         table

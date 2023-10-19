@@ -1,6 +1,6 @@
 using Mess.System.Extensions.Dictionaries;
 
-namespace Mess.Iot.Iot;
+namespace Mess.Enms.Iot;
 
 public readonly record struct EgaugeMeasurementRegisters(
   IDictionary<string, EgaugeRegister> Registers,

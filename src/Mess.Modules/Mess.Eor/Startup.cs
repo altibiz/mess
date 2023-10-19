@@ -26,13 +26,28 @@ public class Startup : StartupBase
 {
   public override void ConfigureServices(IServiceCollection services)
   {
+    // Migrations
     services.AddDataMigration<Migrations>();
-    // FIXME: singleton ...
-    // services.AddModularTenantEvents<Populations>();
+
+    // Resources
     services.AddResources<Resources>();
+
+    // Navigation
     services.AddNavigationProvider<AdminMenu>();
+
+    // Permissions
     services.AddPermissionProvider<EorPermissions>();
 
+    // Populations
+    // services.AddPopulation<Populations>();
+
+    // Contents
+    services.AddContentPart<EorIotDevicePart>();
+
+    // Indexing
+    services.AddIndexProvider<EorIotDeviceIndexProvider>();
+
+    // Timeseries
     services.AddTimeseriesDbContext<EorTimeseriesDbContext>();
     services.AddTimeseriesClient<
       EorTimeseriesClient,
@@ -40,13 +55,14 @@ public class Startup : StartupBase
       IEorTimeseriesQuery
     >();
 
-    services.AddContentPart<EorIotDevicePart>();
+    // Iot
     services.AddIotPushHandler<EorPushHandler>();
     services.AddIotPollHandler<EorPollHandler>();
     services.AddIotUpdateHandler<EorUpdateHandler>();
     services.AddIotAuthorizationHandler<EorAuthorizationHandler>();
+
+    // Chart
     services.AddChartFactory<EorIotDeviceChartProvider>();
-    services.AddIndexProvider<EorIotDeviceIndexProvider>();
   }
 
   public override void Configure(

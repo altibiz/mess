@@ -13,6 +13,7 @@
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Iot.Abstractions/Mess.Iot.Abstractions.csproj" />
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Chart.Abstractions/Mess.Chart.Abstractions.csproj" />
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Fields.Abstractions/Mess.Fields.Abstractions.csproj" />
+    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Population.Abstractions/Mess.Population.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

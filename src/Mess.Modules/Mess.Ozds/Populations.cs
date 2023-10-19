@@ -15,12 +15,13 @@ using Mess.Fields.Abstractions.Extensions;
 using Mess.Chart.Abstractions.Models;
 using Mess.Ozds.Abstractions.Timeseries;
 using Mess.Fields.Abstractions;
+using Mess.Population.Abstractions;
 
 namespace Mess.Ozds;
 
-public class Populations : ModularTenantEvents
+public class Populations : IPopulation
 {
-  public override async Task ActivatedAsync()
+  public async Task PopulateAsync()
   {
     var regulatoryAgencyCatalogueContentItemId =
       await _serviceProvider.AwaitScopeAsync(

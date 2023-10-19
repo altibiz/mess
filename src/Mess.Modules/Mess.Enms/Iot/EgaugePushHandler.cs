@@ -4,7 +4,7 @@ using Mess.Iot.Abstractions.Timeseries;
 using OrchardCore.Environment.Shell.Scope;
 using Mess.Iot.Abstractions.Models;
 
-namespace Mess.Iot.Iot;
+namespace Mess.Enms.Iot;
 
 public class EgaugePushHandler
   : XmlIotPushHandler<EgaugeIotDeviceItem, EgaugeMeasurement>

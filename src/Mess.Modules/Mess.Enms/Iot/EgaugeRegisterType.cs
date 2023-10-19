@@ -1,4 +1,4 @@
-namespace Mess.Iot.Iot;
+namespace Mess.Enms.Iot;
 
 public enum EgaugeRegisterType
 {

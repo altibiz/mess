@@ -95,7 +95,7 @@ public static class IEndpointRouteBuilderExtensions
     var @namespace =
       type.Namespace
       ?? throw new NullReferenceException(
-        $"{typeof(T).Name} is not in a namespace is null"
+        $"Type '{typeof(T).Name}' is not in a namespace"
       );
     var controller = type.ControllerName();
 

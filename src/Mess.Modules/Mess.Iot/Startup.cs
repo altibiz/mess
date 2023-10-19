@@ -1,19 +1,15 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using OrchardCore.Data.Migration;
 using OrchardCore.Modules;
 using OrchardCore.Mvc.Core.Utilities;
-using OrchardCore.ResourceManagement;
 using OrchardCore.ContentManagement;
 using Mess.Timeseries.Abstractions.Extensions;
 using Mess.Iot.Abstractions.Timeseries;
 using Mess.Iot.Timeseries;
 using Mess.Iot.Controllers;
-using Mess.Iot.Iot;
 using Mess.Iot.Abstractions.Models;
-using Mess.Iot.Abstractions.Extensions;
 using Mess.Iot.Indexes;
 using Mess.Iot.Abstractions.Caches;
 using Mess.Iot.Services;
@@ -26,14 +22,8 @@ public class Startup : StartupBase
   public override void ConfigureServices(IServiceCollection services)
   {
     services.AddDataMigration<Migrations>();
-    // FIXME: singleton
-    services.AddModularTenantEvents<Populations>();
-    services.AddTransient<
-      IConfigureOptions<ResourceManagementOptions>,
-      Resources
-    >();
 
-    services.AddContentPart<IotDevicePart>();
+    services.AddResources<Resources>();
 
     services.AddTimeseriesDbContext<IotTimeseriesDbContext>();
     services.AddTimeseriesClient<
@@ -42,12 +32,12 @@ public class Startup : StartupBase
       IIotTimeseriesQuery
     >();
 
+    services.AddContentPart<IotDevicePart>();
+    services.AddContentPart<EgaugeIotDevicePart>();
+
     services.AddIndexProvider<IotDeviceIndexProvider>();
 
     services.AddScoped<IIotDeviceContentItemCache, IotDeviceContentItemCache>();
-
-    services.AddContentPart<EgaugeIotDevicePart>();
-    services.AddIotPushHandler<EgaugePushHandler>();
   }
 
   public override void Configure(

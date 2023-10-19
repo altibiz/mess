@@ -12,9 +12,7 @@ using ManifestConstants = Mess.OrchardCore.ManifestConstants;
   Tags = new[] { ManifestConstants.MessTag },
   Dependencies = new[]
   {
-    "OrchardCore.Contents",
     "OrchardCore.ContentFields",
-    "OrchardCore.Title",
     "Mess.Timeseries",
     "Mess.Fields"
   }
