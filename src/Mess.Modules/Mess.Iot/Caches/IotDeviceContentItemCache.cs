@@ -4,7 +4,7 @@ using Mess.Iot.Abstractions.Caches;
 using OrchardCore.ContentManagement;
 using YesSql;
 
-namespace Mess.Iot.Services;
+namespace Mess.Iot.Caches;
 
 public class IotDeviceContentItemCache : IIotDeviceContentItemCache
 {

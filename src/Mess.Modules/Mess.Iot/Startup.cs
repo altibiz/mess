@@ -9,7 +9,8 @@ using Mess.Iot.Controllers;
 using Mess.Iot.Abstractions.Models;
 using Mess.Iot.Indexes;
 using Mess.Iot.Abstractions.Caches;
-using Mess.Iot.Services;
+using Mess.Iot.Caches;
+using Mess.Iot.Abstractions;
 using Mess.OrchardCore.Extensions.Microsoft;
 
 namespace Mess.Iot;
@@ -21,6 +22,9 @@ public class Startup : StartupBase
     services.AddDataMigration<Migrations>();
 
     services.AddResources<Resources>();
+
+    services.AddNavigationProvider<AdminMenu>();
+    services.AddPermissionProvider<Permissions>();
 
     services.AddContentPart<IotDevicePart>();
 
