@@ -34,14 +34,12 @@ public class PopulationTenantEvents : ModularTenantEvents
       }
 
       var populations = scope.ServiceProvider.GetServices<IPopulation>();
-      var session = scope.ServiceProvider.GetRequiredService<ISession>();
-
       foreach (var population in populations)
       {
-        await session.BeginTransactionAsync();
         await population.PopulateAsync();
       }
 
+      var session = scope.ServiceProvider.GetRequiredService<ISession>();
       await session.SaveChangesAsync();
     });
   }

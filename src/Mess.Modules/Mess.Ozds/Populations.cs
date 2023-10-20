@@ -14,6 +14,7 @@ using Mess.Chart.Abstractions.Models;
 using Mess.Ozds.Abstractions.Timeseries;
 using Mess.Fields.Abstractions;
 using Mess.Population.Abstractions;
+using YesSql;
 
 namespace Mess.Ozds;
 
@@ -22,8 +23,8 @@ public class Populations : IPopulation
   public async Task PopulateAsync()
   {
     var regulatoryAgencyCatalogueContentItemId =
-      await _serviceProvider.AwaitScopeAsync(
-        CreateAsyncMigrations.PopulateRegulatoryAgencyCatalogue
+      await CreateAsyncMigrations.PopulateRegulatoryAgencyCatalogue(
+        _serviceProvider
       );
 
     (
@@ -33,8 +34,8 @@ public class Populations : IPopulation
       string whiteLowVoltageOperatorCatalogueContentItemId,
       string redOperatorCatalogueContentItemId,
       string yellowOperatorCatalogueContentItemId
-    ) = await _serviceProvider.AwaitScopeAsync(
-      CreateAsyncMigrations.PopulateOperatorCatalogues
+    ) = await CreateAsyncMigrations.PopulateOperatorCatalogues(
+      _serviceProvider
     );
 
     (
@@ -44,69 +45,54 @@ public class Populations : IPopulation
       string whiteLowVoltageSystemCatalogueContentItemId,
       string redSystemCatalogueContentItemId,
       string yellowSystemCatalogueContentItemId
-    ) = await _serviceProvider.AwaitScopeAsync(
-      CreateAsyncMigrations.PopulateOperatorCatalogues
+    ) = await CreateAsyncMigrations.PopulateOperatorCatalogues(
+      _serviceProvider
     );
 
     (string? operatorUserId, string? operatorContentItemId) =
-      await _serviceProvider.AwaitScopeAsync(
-        async serviceProvider =>
-          await CreateAsyncMigrations.PopulateOperator(
-            serviceProvider,
-            regulatoryAgencyCatalogueContentItemId,
-            whiteHighVoltageOperatorCatalogueContentItemId!,
-            whiteMediumVoltageOperatorCatalogueContentItemId!,
-            blueOperatorCatalogueContentItemId!,
-            whiteLowVoltageOperatorCatalogueContentItemId!,
-            redOperatorCatalogueContentItemId!,
-            yellowOperatorCatalogueContentItemId!
-          )
+      await CreateAsyncMigrations.PopulateOperator(
+        _serviceProvider,
+        regulatoryAgencyCatalogueContentItemId,
+        whiteHighVoltageOperatorCatalogueContentItemId!,
+        whiteMediumVoltageOperatorCatalogueContentItemId!,
+        blueOperatorCatalogueContentItemId!,
+        whiteLowVoltageOperatorCatalogueContentItemId!,
+        redOperatorCatalogueContentItemId!,
+        yellowOperatorCatalogueContentItemId!
       );
 
     (string? systemUserId, string? systemContentItemId) =
-      await _serviceProvider.AwaitScopeAsync(
-        async serviceProvider =>
-          await CreateAsyncMigrations.PopulateSystem(
-            serviceProvider,
-            operatorUserId!,
-            operatorContentItemId!,
-            whiteHighVoltageSystemCatalogueContentItemId!,
-            whiteMediumVoltageSystemCatalogueContentItemId!,
-            blueSystemCatalogueContentItemId!,
-            whiteLowVoltageSystemCatalogueContentItemId!,
-            redSystemCatalogueContentItemId!,
-            yellowSystemCatalogueContentItemId!
-          )
+      await CreateAsyncMigrations.PopulateSystem(
+        _serviceProvider,
+        operatorUserId!,
+        operatorContentItemId!,
+        whiteHighVoltageSystemCatalogueContentItemId!,
+        whiteMediumVoltageSystemCatalogueContentItemId!,
+        blueSystemCatalogueContentItemId!,
+        whiteLowVoltageSystemCatalogueContentItemId!,
+        redSystemCatalogueContentItemId!,
+        yellowSystemCatalogueContentItemId!
       );
 
     (string? unitUserId, string? unitContentItemId) =
-      await _serviceProvider.AwaitScopeAsync(
-        async serviceProvider =>
-          await CreateAsyncMigrations.PopulateUnit(
-            serviceProvider,
-            operatorUserId!,
-            operatorContentItemId!,
-            systemUserId!,
-            systemContentItemId!
-          )
+      await CreateAsyncMigrations.PopulateUnit(
+        _serviceProvider,
+        operatorUserId!,
+        operatorContentItemId!,
+        systemUserId!,
+        systemContentItemId!
       );
 
-    await _serviceProvider.AwaitScopeAsync(
-      async serviceProvider =>
-        await CreateAsyncMigrations.PopulatePidgeon(
-          serviceProvider,
-          unitContentItemId!
-        )
+    await CreateAsyncMigrations.PopulatePidgeon(
+      _serviceProvider,
+      unitContentItemId!
     );
 
-    await _serviceProvider.AwaitScopeAsync(
-      async serviceProvider =>
-        await CreateAsyncMigrations.PopulateAbb(
-          serviceProvider,
-          unitContentItemId!,
-          whiteLowVoltageOperatorCatalogueContentItemId!,
-          whiteLowVoltageSystemCatalogueContentItemId!
-        )
+    await CreateAsyncMigrations.PopulateAbb(
+      _serviceProvider,
+      unitContentItemId!,
+      whiteLowVoltageOperatorCatalogueContentItemId!,
+      whiteLowVoltageSystemCatalogueContentItemId!
     );
   }
 
@@ -137,6 +123,7 @@ internal static partial class CreateAsyncMigrations
     var roleManager = serviceProvider.GetRequiredService<RoleManager<IRole>>();
     var contentManager = serviceProvider.GetRequiredService<IContentManager>();
     var userService = serviceProvider.GetRequiredService<IUserService>();
+    var session = serviceProvider.GetRequiredService<ISession>();
 
     await roleManager.CreateAsync(
       new Role
@@ -272,6 +259,8 @@ internal static partial class CreateAsyncMigrations
       VersionOptions.Latest
     );
 
+    await session.SaveChangesAsync();
+
     return (operatorUser.UserId, distributionSystemOperator.ContentItemId);
   }
 
@@ -293,6 +282,7 @@ internal static partial class CreateAsyncMigrations
     var roleManager = serviceProvider.GetRequiredService<RoleManager<IRole>>();
     var userService = serviceProvider.GetRequiredService<IUserService>();
     var contentManager = serviceProvider.GetRequiredService<IContentManager>();
+    var session = serviceProvider.GetRequiredService<ISession>();
 
     await roleManager.CreateAsync(
       new Role
@@ -426,6 +416,8 @@ internal static partial class CreateAsyncMigrations
       VersionOptions.Latest
     );
 
+    await session.SaveChangesAsync();
+
     return (systemUser.UserId, closedDistributionSystem.ContentItemId);
   }
 
@@ -443,6 +435,7 @@ internal static partial class CreateAsyncMigrations
     var roleManager = serviceProvider.GetRequiredService<RoleManager<IRole>>();
     var userService = serviceProvider.GetRequiredService<IUserService>();
     var contentManager = serviceProvider.GetRequiredService<IContentManager>();
+    var session = serviceProvider.GetRequiredService<ISession>();
 
     await roleManager.CreateAsync(
       new Role
@@ -516,6 +509,8 @@ internal static partial class CreateAsyncMigrations
       VersionOptions.Latest
     );
 
+    await session.SaveChangesAsync();
+
     return (unitUser.UserId, distributionSystemUnit.ContentItemId);
   }
 
@@ -529,6 +524,7 @@ internal static partial class CreateAsyncMigrations
     var contentManager = serviceProvider.GetRequiredService<IContentManager>();
     var apiKeyFieldService =
       serviceProvider.GetRequiredService<IApiKeyFieldService>();
+    var session = serviceProvider.GetRequiredService<ISession>();
 
     var pidgeonIotDevice =
       await contentManager.NewContentAsync<PidgeonIotDeviceItem>();
@@ -566,6 +562,8 @@ internal static partial class CreateAsyncMigrations
       }
     );
     await contentManager.CreateAsync(pidgeonIotDevice, VersionOptions.Latest);
+
+    await session.SaveChangesAsync();
   }
 
   internal static async Task PopulateAbb(
@@ -580,6 +578,7 @@ internal static partial class CreateAsyncMigrations
     var contentManager = serviceProvider.GetRequiredService<IContentManager>();
     var apiKeyFieldService =
       serviceProvider.GetRequiredService<IApiKeyFieldService>();
+    var session = serviceProvider.GetRequiredService<ISession>();
 
     var abbPowerDataset =
       await contentManager.NewContentAsync<TimeseriesChartDatasetItem>();
@@ -659,6 +658,8 @@ internal static partial class CreateAsyncMigrations
       }
     );
     await contentManager.CreateAsync(abbIotDevice, VersionOptions.Latest);
+
+    await session.SaveChangesAsync();
   }
 
   internal static async Task<string> PopulateRegulatoryAgencyCatalogue(
@@ -666,6 +667,7 @@ internal static partial class CreateAsyncMigrations
   )
   {
     var contentManager = serviceProvider.GetRequiredService<IContentManager>();
+    var session = serviceProvider.GetRequiredService<ISession>();
 
     var regulatoryAgencyCatalogue =
       await contentManager.NewContentAsync<RegulatoryAgencyCatalogueItem>();
@@ -698,6 +700,8 @@ internal static partial class CreateAsyncMigrations
       VersionOptions.Latest
     );
 
+    await session.SaveChangesAsync();
+
     return regulatoryAgencyCatalogue.ContentItemId;
   }
 
@@ -711,6 +715,7 @@ internal static partial class CreateAsyncMigrations
   )> PopulateOperatorCatalogues(IServiceProvider serviceProvider)
   {
     var contentManager = serviceProvider.GetRequiredService<IContentManager>();
+    var session = serviceProvider.GetRequiredService<ISession>();
 
     var whiteHighVoltageOperatorCatalogue =
       await contentManager.NewContentAsync<OperatorCatalogueItem>();
@@ -862,6 +867,8 @@ internal static partial class CreateAsyncMigrations
       yellowOperatorCatalogue,
       VersionOptions.Latest
     );
+
+    await session.SaveChangesAsync();
 
     return (
       whiteHighVoltageOperatorCatalogue.ContentItemId,

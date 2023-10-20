@@ -22,14 +22,14 @@ public class BillingBackgroundTask : IBackgroundTask
       DateTimeOffset.UtcNow.AddMonths(-1).GetMonthRange();
 
     var session = serviceProvider.GetRequiredService<ISession>();
+    var billingItems = await session
+      .Query<ContentItem, BillingIndex>()
+      .ListAsync();
+
     var logger = serviceProvider.GetRequiredService<
       ILogger<BillingBackgroundTask>
     >();
     var contentManager = serviceProvider.GetRequiredService<IContentManager>();
-
-    var billingItems = await session
-      .Query<ContentItem, BillingIndex>()
-      .ListAsync();
     foreach (var billingItem in billingItems)
     {
       var billingPart = billingItem.As<BillingPart>()!;
@@ -44,12 +44,24 @@ public class BillingBackgroundTask : IBackgroundTask
         continue;
       }
 
-      var invoiceItem = await billingFactory.CreateInvoiceAsync(
-        billingItem,
-        nowLastMonthStart,
-        nowLastMonthEnd
-      );
-      await contentManager.CreateAsync(invoiceItem);
+      try
+      {
+        var invoiceItem = await billingFactory.CreateInvoiceAsync(
+          billingItem,
+          nowLastMonthStart,
+          nowLastMonthEnd
+        );
+        await contentManager.CreateAsync(invoiceItem);
+      }
+      catch (Exception exception)
+      {
+        logger.LogError(
+          $"Failed to create invoice for item '{billingItem.ContentItemId}' of type '{billingItem.ContentType}'",
+          exception
+        );
+      }
     }
+
+    await session.SaveChangesAsync();
   }
 }

@@ -50,8 +50,8 @@ public class AdminMenu : INavigationProvider
                 .AddClass("distribution-system-units")
                 .Id("distribution-system-units")
                 .Action(
-                  nameof(DistributionSystemUnitController.List),
-                  typeof(DistributionSystemUnitController).ControllerName(),
+                  nameof(DistributionSystemUnitAdminController.List),
+                  typeof(DistributionSystemUnitAdminController).ControllerName(),
                   new { area = "Mess.Ozds" }
                 )
                 .LocalNav()
