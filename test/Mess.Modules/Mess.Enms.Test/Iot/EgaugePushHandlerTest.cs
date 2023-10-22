@@ -1,5 +1,6 @@
 using Mess.Enms.Iot;
-using Mess.Iot.Abstractions.Timeseries;
+using Mess.Enms.Abstractions.Timeseries;
+using Mess.Enms.Test;
 using Moq;
 using OrchardCore.ContentManagement;
 
@@ -7,7 +8,7 @@ namespace Mess.Enms.Iot.Test;
 
 public record class EgaugePushHandlerTest(
   EgaugePushHandler Handler,
-  Mock<IIotTimeseriesClient> MeasurementClientMock,
+  Mock<IEnmsTimeseriesClient> TimeseriesClientMock,
   ILogger<EgaugePushHandlerTest> Logger
 )
 {
@@ -23,7 +24,7 @@ public record class EgaugePushHandlerTest(
       request
     );
 
-    MeasurementClientMock.Verify(
+    TimeseriesClientMock.Verify(
       client => client.AddEgaugeMeasurement(measurement),
       Times.Once
     );

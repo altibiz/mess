@@ -1,6 +1,6 @@
 using Mess.System.Test.Extensions.Microsoft;
 using Mess.Relational.Abstractions.Migrations;
-using Mess.Relational.Migrations;
+using Mess.Relational;
 using Mess.Relational.Test.Abstractions.Migrations;
 
 namespace Mess.Relational.Test.Abstractions.Extensions;

@@ -1,7 +1,5 @@
 using Mess.Relational.Test.Abstractions.Extensions;
-using Mess.Timeseries.Migrations;
 using Mess.Timeseries.Abstractions.Connection;
-using Mess.Timeseries.Connection;
 using Mess.Relational.Abstractions.Migrations;
 
 namespace Mess.Timeseries.Test.Abstractions.Extensions;

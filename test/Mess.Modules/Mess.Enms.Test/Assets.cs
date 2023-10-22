@@ -1,4 +1,4 @@
-using Mess.Iot.Abstractions.Timeseries;
+using Mess.Enms.Abstractions.Timeseries;
 using Mess.System;
 
 namespace Mess.Enms.Test;
