@@ -301,7 +301,7 @@
       @T["TOTAL"]:
     </span>
     <span>
-      @T["TAX"] (@decimal.ToInt32(regulatoryAgencyCatalogue.RegulatoryAgencyCataloguePart.Value.TaxRate.Value!.Value * 100M) %):
+      @T["TAX"] (@decimal.ToInt32(regulatoryAgencyCatalogue.RegulatoryAgencyCataloguePart.Value.TaxRate.Value!.Value * 100M)%):
     </span>
     <span>
       @T["TOTAL WITH TAX"]:
@@ -323,7 +323,6 @@
 </div>
 
 <div class="d-flex flex-row justify-content-start">
-  @operatorItem.LegalEntityPart.Value.City.Text
-  ,
+  @(operatorItem.LegalEntityPart.Value.City.Text),
   @ContentItem.InvoicePart.Value.Date.Value!.Value.ToShortDateString()
 </div>
