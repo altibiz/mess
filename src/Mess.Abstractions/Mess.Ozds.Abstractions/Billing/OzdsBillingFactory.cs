@@ -528,7 +528,7 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
     var maxPowerAmount = billingData.MaxPower;
     var maxPowerTotal = maxPowerAmount * maxPowerPrice;
     var maxPowerItem =
-      energyPrice == 0.0M
+      maxPowerPrice == 0.0M
         ? null
         : new OzdsExpenditureItemData(
           ValueFrom: 0.0M,
@@ -538,20 +538,19 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
           Total: maxPowerTotal
         );
 
-    var measurementDeviceFeePrice =
+    var iotDeviceFeePrice =
       catalogueItem.OperatorCataloguePart.Value.IotDeviceFee.Value ?? 0.0M;
-    var measurementDeviceFeeAmount = 1.0M;
-    var measurementDeviceFeeTotal =
-      measurementDeviceFeeAmount * measurementDeviceFeePrice;
-    var measurementDeviceFeeItem =
-      energyPrice == 0.0M
+    var iotDeviceFeeAmount = 1.0M;
+    var iotDeviceFeeTotal = iotDeviceFeeAmount * iotDeviceFeePrice;
+    var iotDeviceFee =
+      iotDeviceFeePrice == 0.0M
         ? null
         : new OzdsExpenditureItemData(
           ValueFrom: 0.0M,
           ValueTo: 0.0M,
-          Amount: measurementDeviceFeeAmount,
-          UnitPrice: measurementDeviceFeePrice,
-          Total: measurementDeviceFeeTotal
+          Amount: iotDeviceFeeAmount,
+          UnitPrice: iotDeviceFeePrice,
+          Total: iotDeviceFeeTotal
         );
 
     return new OzdsExpenditureData(
@@ -559,12 +558,12 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
       LowEnergyItem: lowEnergyItem,
       EnergyItem: energyItem,
       MaxPowerItem: maxPowerItem,
-      IotDeviceFee: measurementDeviceFeeItem,
+      IotDeviceFee: iotDeviceFee,
       Total: (highEnergyItem?.Total ?? 0.0M)
         + (lowEnergyItem?.Total ?? 0.0M)
         + (energyItem?.Total ?? 0.0M)
         + (maxPowerItem?.Total ?? 0.0M)
-        + (measurementDeviceFeeItem?.Total ?? 0.0M)
+        + (iotDeviceFee?.Total ?? 0.0M)
     );
   }
 
