@@ -51,6 +51,13 @@ public class BillingBackgroundTask : IBackgroundTask
           nowLastMonthStart,
           nowLastMonthEnd
         );
+        invoiceItem.Alter<InvoicePart>(invoicePart =>
+        {
+          invoicePart.Receipt = new();
+          invoicePart.Date = new() {
+            Value = DateTime.UtcNow
+          };
+        });
         await contentManager.CreateAsync(invoiceItem);
       }
       catch (Exception exception)

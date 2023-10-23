@@ -145,6 +145,11 @@ public class AdminController : Controller
       nowLastMonthStart,
       nowLastMonthEnd
     );
+    invoiceItem.Alter<InvoicePart>(invoicePart =>
+    {
+      invoicePart.Receipt = new();
+      invoicePart.Date = new() { Value = DateTime.UtcNow };
+    });
     await _contentManager.CreateAsync(invoiceItem);
 
     return RedirectToAction(
@@ -220,7 +225,24 @@ public class AdminController : Controller
       contentItem: billingItem,
       invoiceContentItem: invoiceItem
     );
+    receiptItem.Alter<ReceiptPart>(receiptPart =>
+    {
+      receiptPart.Invoice = new()
+      {
+        ContentItemIds = new[] { invoiceItem.ContentItemId }
+      };
+      receiptPart.Date = new() { Value = DateTime.UtcNow };
+    });
     await _contentManager.CreateAsync(receiptItem);
+
+    invoiceItem.Alter<InvoicePart>(invoicePart =>
+    {
+      invoicePart.Receipt = new()
+      {
+        ContentItemIds = new[] { receiptItem.ContentItemId }
+      };
+    });
+    await _contentManager.UpdateAsync(invoiceItem);
 
     return RedirectToAction(
       actionName: nameof(ContentAdminController.Display),

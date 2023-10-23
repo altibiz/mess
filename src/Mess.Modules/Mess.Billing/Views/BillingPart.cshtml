@@ -2,8 +2,8 @@
 
 <form
     asp-route-area="Mess.Billing"
-    asp-controller="Admin"
-    asp-action="CreateInvoice"
+    asp-controller="@typeof(AdminController).ControllerName()"
+    asp-action="@nameof(AdminController.IssueInvoice)"
     asp-route-contentItemId="@Model.ContentItemId">
   <button type="submit">
     <span>@T["Create invoice"]</span>
