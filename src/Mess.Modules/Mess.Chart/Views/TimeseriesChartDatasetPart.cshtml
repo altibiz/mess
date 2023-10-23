@@ -9,8 +9,8 @@
   <div class="float-end">
     <a
         asp-route-area="Mess.Chart"
-        asp-controller="@(typeof(TimeseriesChartDatasetAdmin).ControllerName())"
-        asp-action="Edit"
+        asp-controller="@typeof(TimeseriesChartDatasetAdminController).ControllerName()"
+        asp-action="@nameof(TimeseriesChartDatasetAdminController.Edit)"
         asp-route-contentItemId="@Model.Part.ContentItem.Content.ContentItemId"
         asp-route-datasetContentItemId="@Model.Part.ContentItem.ContentItemId"
         class="btn btn-primary btn-sm">
@@ -18,8 +18,8 @@
     </a>
     <a
         asp-route-area="Mess.Chart"
-        asp-controller="TimeseriesChartDatasetAdmin"
-        asp-action="Delete"
+        asp-controller="@typeof(TimeseriesChartDatasetAdminController).ControllerName()"
+        asp-action="@nameof(TimeseriesChartDatasetAdminController.Delete)"
         asp-route-contentItemId="@Model.Part.ContentItem.Content.ContentItemId"
         asp-route-datasetContentItemId="@Model.Part.ContentItem.ContentItemId"
         data-url-af="RemoveUrl UnsafeUrl"
