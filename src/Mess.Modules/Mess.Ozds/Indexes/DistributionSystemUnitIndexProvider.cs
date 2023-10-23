@@ -4,6 +4,7 @@ using Mess.Ozds.Abstractions.Models;
 using Mess.System.Extensions.Microsoft;
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.ContentManagement;
+using OrchardCore.Lists.Models;
 using YesSql.Indexes;
 
 namespace Mess.Ozds.Indexes;
@@ -19,9 +20,14 @@ public class DistributionSystemUnitIndexProvider : IndexProvider<ContentItem>
       {
         var distributionSystemUnitPart =
           contentItem.As<DistributionSystemUnitPart>();
+        var containedPart =
+          contentItem.As<ContainedPart>()
+          ?? throw new InvalidOperationException(
+            $"Distribution system unit '{contentItem.ContentItemId}' does not have a '{nameof(ContainedPart)}'."
+          );
 
         var closedDistributionSystemContentItemId =
-          distributionSystemUnitPart.ClosedDistributionSystem.ContentItemIds.First();
+          containedPart.ListContentItemId;
 
         var closedDistributionSystemItem =
           await _serviceProvider.AwaitScopeAsync(async serviceProvider =>
@@ -35,8 +41,12 @@ public class DistributionSystemUnitIndexProvider : IndexProvider<ContentItem>
           ?? throw new InvalidOperationException(
             $"Closed distribution system with content item id '{closedDistributionSystemContentItemId}' not found."
           );
-        var distributionSystemOperatorContentItemId =
-          closedDistributionSystemItem.ClosedDistributionSystemPart.Value.DistributionSystemOperator.ContentItemIds.First();
+        var distributionSystemOperatorContentItemId = (
+          closedDistributionSystemItem.ContainedPart.Value
+          ?? throw new InvalidOperationException(
+            $"Closed distribution system with content item id '{closedDistributionSystemContentItemId}' is not contained in a distribution system operator."
+          )
+        ).ListContentItemId;
 
         var distributionSystemOperator =
           await _serviceProvider.AwaitScopeAsync(async serviceProvider =>

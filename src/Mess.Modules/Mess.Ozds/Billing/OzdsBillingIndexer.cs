@@ -3,6 +3,7 @@ using Mess.Billing.Abstractions.Services;
 using Mess.Ozds.Abstractions.Models;
 using Mess.OrchardCore;
 using OrchardCore.ContentManagement;
+using OrchardCore.Lists.Models;
 
 namespace Mess.Ozds.Billing;
 
@@ -16,9 +17,13 @@ public class OzdsBillingIndexer : IBillingIndexer
   public BillingIndex IndexBilling(ContentItem contentItem)
   {
     var ozdsIotDevicePart = contentItem.As<OzdsIotDevicePart>();
+    var containedPart =
+      contentItem.As<ContainedPart>()
+      ?? throw new InvalidOperationException(
+        $"OZDS IoT device '{contentItem.ContentItemId}' does not have a '{nameof(ContainedPart)}'."
+      );
 
-    var distributionSystemUnitContentItemId =
-      ozdsIotDevicePart.DistributionSystemUnit.ContentItemIds.First();
+    var distributionSystemUnitContentItemId = containedPart.ListContentItemId;
 
     var distributionSystemUnitItem =
       _contentManager
@@ -29,8 +34,12 @@ public class OzdsBillingIndexer : IBillingIndexer
       ?? throw new InvalidOperationException(
         $"Distribution system unit with content item id '{distributionSystemUnitContentItemId}' not found."
       );
-    var closedDistributionSystemContentItemId =
-      distributionSystemUnitItem.DistributionSystemUnitPart.Value.ClosedDistributionSystem.ContentItemIds.First();
+    var closedDistributionSystemContentItemId = (
+      distributionSystemUnitItem.ContainedPart.Value
+      ?? throw new InvalidOperationException(
+        $"Distribution system unit with content item id '{distributionSystemUnitContentItemId}' is not contained in a closed distribution system."
+      )
+    ).ListContentItemId;
 
     var closedDistributionSystemItem =
       _contentManager
@@ -41,18 +50,12 @@ public class OzdsBillingIndexer : IBillingIndexer
       ?? throw new InvalidOperationException(
         $"Closed distribution system with content item id '{closedDistributionSystemContentItemId}' not found."
       );
-    var distributionSystemOperatorContentItemId =
-      closedDistributionSystemItem.ClosedDistributionSystemPart.Value.DistributionSystemOperator.ContentItemIds.First();
-
-    var distributionSystemOperator =
-      _contentManager
-        .GetContentAsync<DistributionSystemOperatorItem>(
-          distributionSystemOperatorContentItemId
-        )
-        .Result
+    var distributionSystemOperatorContentItemId = (
+      closedDistributionSystemItem.ContainedPart.Value
       ?? throw new InvalidOperationException(
-        $"Distribution system operator with content item id '{distributionSystemOperatorContentItemId}' not found."
-      );
+        $"Closed distribution system with content item id '{closedDistributionSystemContentItemId}' is not contained in a distribution system operator."
+      )
+    ).ListContentItemId;
 
     return new BillingIndex
     {
@@ -66,9 +69,13 @@ public class OzdsBillingIndexer : IBillingIndexer
   public async Task<BillingIndex> IndexBillingAsync(ContentItem contentItem)
   {
     var ozdsIotDevicePart = contentItem.As<OzdsIotDevicePart>();
+    var containedPart =
+      contentItem.As<ContainedPart>()
+      ?? throw new InvalidOperationException(
+        $"OZDS IoT device '{contentItem.ContentItemId}' does not have a '{nameof(ContainedPart)}'."
+      );
 
-    var distributionSystemUnitContentItemId =
-      ozdsIotDevicePart.DistributionSystemUnit.ContentItemIds.First();
+    var distributionSystemUnitContentItemId = containedPart.ListContentItemId;
 
     var distributionSystemUnitItem =
       await _contentManager.GetContentAsync<DistributionSystemUnitItem>(
@@ -77,8 +84,12 @@ public class OzdsBillingIndexer : IBillingIndexer
       ?? throw new InvalidOperationException(
         $"Distribution system unit with content item id '{distributionSystemUnitContentItemId}' not found."
       );
-    var closedDistributionSystemContentItemId =
-      distributionSystemUnitItem.DistributionSystemUnitPart.Value.ClosedDistributionSystem.ContentItemIds.First();
+    var closedDistributionSystemContentItemId = (
+      distributionSystemUnitItem.ContainedPart.Value
+      ?? throw new InvalidOperationException(
+        $"Distribution system unit with content item id '{distributionSystemUnitContentItemId}' is not contained in a closed distribution system."
+      )
+    ).ListContentItemId;
 
     var closedDistributionSystemItem =
       await _contentManager.GetContentAsync<ClosedDistributionSystemItem>(
@@ -87,8 +98,12 @@ public class OzdsBillingIndexer : IBillingIndexer
       ?? throw new InvalidOperationException(
         $"Closed distribution system with content item id '{closedDistributionSystemContentItemId}' not found."
       );
-    var distributionSystemOperatorContentItemId =
-      closedDistributionSystemItem.ClosedDistributionSystemPart.Value.DistributionSystemOperator.ContentItemIds.First();
+    var distributionSystemOperatorContentItemId = (
+      closedDistributionSystemItem.ContainedPart.Value
+      ?? throw new InvalidOperationException(
+        $"Closed distribution system with content item id '{closedDistributionSystemContentItemId}' is not contained in a distribution system operator."
+      )
+    ).ListContentItemId;
 
     var distributionSystemOperator =
       await _contentManager.GetContentAsync<DistributionSystemOperatorItem>(

@@ -6,6 +6,7 @@ using Mess.OrchardCore;
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.ContentManagement;
 using YesSql.Indexes;
+using OrchardCore.Lists.Models;
 
 namespace Mess.Ozds.Indexes;
 
@@ -24,9 +25,14 @@ public class OzdsIotDeviceIndexProvider : IndexProvider<ContentItem>
       {
         var iotDevicePart = contentItem.As<IotDevicePart>();
         var ozdsIotDevicePart = contentItem.As<OzdsIotDevicePart>();
+        var containedPart =
+          contentItem.As<ContainedPart>()
+          ?? throw new InvalidOperationException(
+            $"OZDS IoT device '{contentItem.ContentItemId}' does not have a '{nameof(ContainedPart)}'."
+          );
 
         var distributionSystemUnitContentItemId =
-          ozdsIotDevicePart.DistributionSystemUnit.ContentItemIds.First();
+          containedPart.ListContentItemId;
 
         var distributionSystemUnitItem =
           await _serviceProvider.AwaitScopeAsync(async serviceProvider =>
@@ -40,8 +46,12 @@ public class OzdsIotDeviceIndexProvider : IndexProvider<ContentItem>
           ?? throw new InvalidOperationException(
             $"Distribution system unit with content item id '{distributionSystemUnitContentItemId}' not found."
           );
-        var closedDistributionSystemContentItemId =
-          distributionSystemUnitItem.DistributionSystemUnitPart.Value.ClosedDistributionSystem.ContentItemIds.First();
+        var closedDistributionSystemContentItemId = (
+          distributionSystemUnitItem.ContainedPart.Value
+          ?? throw new InvalidOperationException(
+            $"Distribution system unit with content item id '{distributionSystemUnitContentItemId}' is not contained in a closed distribution system."
+          )
+        ).ListContentItemId;
 
         var closedDistributionSystemItem =
           await _serviceProvider.AwaitScopeAsync(async serviceProvider =>
@@ -55,8 +65,12 @@ public class OzdsIotDeviceIndexProvider : IndexProvider<ContentItem>
           ?? throw new InvalidOperationException(
             $"Closed distribution system with content item id '{closedDistributionSystemContentItemId}' not found."
           );
-        var distributionSystemOperatorContentItemId =
-          closedDistributionSystemItem.ClosedDistributionSystemPart.Value.DistributionSystemOperator.ContentItemIds.First();
+        var distributionSystemOperatorContentItemId = (
+          closedDistributionSystemItem.ContainedPart.Value
+          ?? throw new InvalidOperationException(
+            $"Closed distribution system with content item id '{closedDistributionSystemContentItemId}' is not contained in a distribution system operator."
+          )
+        ).ListContentItemId;
 
         var distributionSystemOperator =
           await _serviceProvider.AwaitScopeAsync(async serviceProvider =>

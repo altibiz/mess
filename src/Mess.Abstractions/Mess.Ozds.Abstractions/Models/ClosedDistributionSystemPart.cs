@@ -5,8 +5,6 @@ namespace Mess.Ozds.Abstractions.Models;
 
 public class ClosedDistributionSystemPart : ContentPart
 {
-  public ContentPickerField DistributionSystemOperator { get; set; } = default!;
-
   public ContentPickerField WhiteHighVoltageOperatorCatalogue { get; set; } =
     default!;
 

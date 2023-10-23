@@ -4,6 +4,7 @@ using Mess.Ozds.Abstractions.Models;
 using Mess.System.Extensions.Microsoft;
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.ContentManagement;
+using OrchardCore.Lists.Models;
 using YesSql.Indexes;
 
 namespace Mess.Ozds.Indexes;
@@ -19,9 +20,14 @@ public class ClosedDistributionSystemIndexProvider : IndexProvider<ContentItem>
       {
         var distributionSystemUnitPart =
           contentItem.As<ClosedDistributionSystemPart>();
+        var containedPart =
+          contentItem.As<ContainedPart>()
+          ?? throw new InvalidOperationException(
+            $"Closed distribution system '{contentItem.ContentItemId}' does not have a '{nameof(ContainedPart)}'."
+          );
 
         var distributionSystemOperatorContentItemId =
-          distributionSystemUnitPart.DistributionSystemOperator.ContentItemIds.First();
+          containedPart.ListContentItemId;
 
         var distributionSystemOperatorItem =
           await _serviceProvider.AwaitScopeAsync(async serviceProvider =>

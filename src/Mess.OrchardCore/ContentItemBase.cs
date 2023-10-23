@@ -19,7 +19,7 @@ public abstract class ContentItemBase
 
   public ContentItem Inner { get; init; }
 
-  public Lazy<ContainedPart?> ContainedPart { get; init; } = default!;
+  public Lazy<ContainedPart> ContainedPart { get; init; } = default!;
 
   public static implicit operator ContentItem(ContentItemBase @this) =>
     @this.Inner;

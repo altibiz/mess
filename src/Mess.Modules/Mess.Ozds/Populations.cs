@@ -361,15 +361,17 @@ internal static partial class CreateAsyncMigrations
       }
     );
     closedDistributionSystem.Alter(
+      closedDistributionSystem => closedDistributionSystem.ContainedPart,
+      containedPart =>
+      {
+        containedPart.ListContentItemId = operatorContentItemId;
+      }
+    );
+    closedDistributionSystem.Alter(
       closedDistributionSystem =>
         closedDistributionSystem.ClosedDistributionSystemPart,
       closedDistributionSystemPart =>
       {
-        closedDistributionSystemPart.DistributionSystemOperator = new()
-        {
-          ContentItemIds = new[] { operatorContentItemId }
-        };
-
         closedDistributionSystemPart.WhiteHighVoltageOperatorCatalogue = new()
         {
           ContentItemIds = new[]
@@ -493,15 +495,16 @@ internal static partial class CreateAsyncMigrations
       }
     );
     distributionSystemUnit.Alter(
+      distributionSystemUnit => distributionSystemUnit.ContainedPart,
+      containedPart =>
+      {
+        containedPart.ListContentItemId = systemContentItemId;
+      }
+    );
+    distributionSystemUnit.Alter(
       distributionSystemUnit =>
         distributionSystemUnit.DistributionSystemUnitPart,
-      distributionSystemUnitPart =>
-      {
-        distributionSystemUnitPart.ClosedDistributionSystem = new()
-        {
-          ContentItemIds = new[] { systemContentItemId }
-        };
-      }
+      distributionSystemUnitPart => { }
     );
 
     await contentManager.CreateAsync(
@@ -553,13 +556,7 @@ internal static partial class CreateAsyncMigrations
     );
     pidgeonIotDevice.Alter(
       pidgeonIotDevice => pidgeonIotDevice.OzdsIotDevicePart,
-      ozdsIotDevicePart =>
-      {
-        ozdsIotDevicePart.DistributionSystemUnit = new()
-        {
-          ContentItemIds = new[] { unitContentItemId }
-        };
-      }
+      ozdsIotDevicePart => { }
     );
     await contentManager.CreateAsync(pidgeonIotDevice, VersionOptions.Latest);
 
@@ -633,13 +630,16 @@ internal static partial class CreateAsyncMigrations
       }
     );
     abbIotDevice.Alter(
+      abbIotDevice => abbIotDevice.ContainedPart,
+      containedPart =>
+      {
+        containedPart.ListContentItemId = unitContentItemId;
+      }
+    );
+    abbIotDevice.Alter(
       abbIotDevice => abbIotDevice.OzdsIotDevicePart,
       ozdsIotDevicePart =>
       {
-        ozdsIotDevicePart.DistributionSystemUnit = new()
-        {
-          ContentItemIds = new[] { unitContentItemId }
-        };
         ozdsIotDevicePart.UsageCatalogue = new()
         {
           ContentItemIds = new[] { usageCatalogueContentItemId }
