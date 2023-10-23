@@ -2,8 +2,8 @@
 
 <form
     asp-route-area="Mess.Billing"
-    asp-controller="Admin"
-    asp-action="ConfirmPayment"
+    asp-controller="@typeof(AdminController).ControllerName()"
+    asp-action="@nameof(AdminController.ConfirmPayment)"
     asp-route-contentItemId="@Model.ContentItemId">
   <button type="submit">
     <span>@T["ConfirmPayment"]</span>

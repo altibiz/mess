@@ -558,6 +558,13 @@ internal static partial class CreateAsyncMigrations
       pidgeonIotDevice => pidgeonIotDevice.OzdsIotDevicePart,
       ozdsIotDevicePart => { }
     );
+    pidgeonIotDevice.Alter(
+      pidgeonIotDevice => pidgeonIotDevice.ContainedPart,
+      containedPart =>
+      {
+        containedPart.ListContentItemId = unitContentItemId;
+      }
+    );
     await contentManager.CreateAsync(pidgeonIotDevice, VersionOptions.Latest);
 
     await session.SaveChangesAsync();

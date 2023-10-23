@@ -9,7 +9,7 @@
   <div class="float-end">
     <a
         asp-route-area="Mess.Chart"
-        asp-controller="TimeseriesChartDatasetAdmin"
+        asp-controller="@(typeof(TimeseriesChartDatasetAdmin).ControllerName())"
         asp-action="Edit"
         asp-route-contentItemId="@Model.Part.ContentItem.Content.ContentItemId"
         asp-route-datasetContentItemId="@Model.Part.ContentItem.ContentItemId"
