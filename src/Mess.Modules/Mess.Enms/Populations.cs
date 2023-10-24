@@ -33,6 +33,7 @@ public class Populations : IPopulation
         titlePart.Title = "Egauge";
       }
     );
+    egaugeChart.Inner.DisplayText = "Egauge";
     egaugeChart.Alter(
       egaugeChart => egaugeChart.TimeseriesChartPart,
       timeseriesChartPart =>
@@ -53,6 +54,13 @@ public class Populations : IPopulation
 
     var egaugeIotDevice =
       await _contentManager.NewContentAsync<EgaugeIotDeviceItem>();
+    egaugeIotDevice.Alter(
+      egaugeIotDevice => egaugeIotDevice.TitlePart,
+      titlePart => {
+        titlePart.Title = "Egauge";
+      }
+    );
+    egaugeIotDevice.Inner.DisplayText = "Egauge";
     egaugeIotDevice.Alter(
       egaugeIotDevice => egaugeIotDevice.IotDevicePart,
       measurementDevicePart =>

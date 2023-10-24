@@ -1,4 +1,3 @@
-using Mess.System.Extensions.Microsoft;
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.ContentManagement;
 using Microsoft.AspNetCore.Identity;
@@ -38,17 +37,6 @@ public class Populations : IPopulation
       _serviceProvider
     );
 
-    (
-      string whiteHighVoltageSystemCatalogueContentItemId,
-      string whiteMediumVoltageSystemCatalogueContentItemId,
-      string blueSystemCatalogueContentItemId,
-      string whiteLowVoltageSystemCatalogueContentItemId,
-      string redSystemCatalogueContentItemId,
-      string yellowSystemCatalogueContentItemId
-    ) = await CreateAsyncMigrations.PopulateOperatorCatalogues(
-      _serviceProvider
-    );
-
     (string? operatorUserId, string? operatorContentItemId) =
       await CreateAsyncMigrations.PopulateOperator(
         _serviceProvider,
@@ -66,12 +54,12 @@ public class Populations : IPopulation
         _serviceProvider,
         operatorUserId!,
         operatorContentItemId!,
-        whiteHighVoltageSystemCatalogueContentItemId!,
-        whiteMediumVoltageSystemCatalogueContentItemId!,
-        blueSystemCatalogueContentItemId!,
-        whiteLowVoltageSystemCatalogueContentItemId!,
-        redSystemCatalogueContentItemId!,
-        yellowSystemCatalogueContentItemId!
+        whiteHighVoltageOperatorCatalogueContentItemId!,
+        whiteMediumVoltageOperatorCatalogueContentItemId!,
+        blueOperatorCatalogueContentItemId!,
+        whiteLowVoltageOperatorCatalogueContentItemId!,
+        redOperatorCatalogueContentItemId!,
+        yellowOperatorCatalogueContentItemId!
       );
 
     (string? unitUserId, string? unitContentItemId) =
@@ -92,7 +80,7 @@ public class Populations : IPopulation
       _serviceProvider,
       unitContentItemId!,
       whiteLowVoltageOperatorCatalogueContentItemId!,
-      whiteLowVoltageSystemCatalogueContentItemId!
+      whiteLowVoltageOperatorCatalogueContentItemId!
     );
   }
 
@@ -183,6 +171,7 @@ internal static partial class CreateAsyncMigrations
         titlePart.Title = "Operator";
       }
     );
+    distributionSystemOperator.Inner.DisplayText = "Operator";
     distributionSystemOperator.Alter(
       distributionSystemOperator => distributionSystemOperator.LegalEntityPart,
       legalEntityPart =>
@@ -341,6 +330,7 @@ internal static partial class CreateAsyncMigrations
         titlePart.Title = "System";
       }
     );
+    closedDistributionSystem.Inner.DisplayText = "System";
     closedDistributionSystem.Alter(
       closedDistributionSystem => closedDistributionSystem.LegalEntityPart,
       legalEntityPart =>
@@ -475,6 +465,7 @@ internal static partial class CreateAsyncMigrations
         titlePart.Title = "Unit";
       }
     );
+    distributionSystemUnit.Inner.DisplayText = "Unit";
     distributionSystemUnit.Alter(
       distributionSystemUnit => distributionSystemUnit.LegalEntityPart,
       legalEntityPart =>
@@ -535,9 +526,10 @@ internal static partial class CreateAsyncMigrations
       pidgeonIotDevice => pidgeonIotDevice.TitlePart,
       titlePart =>
       {
-        titlePart.Title = "pidgeon";
+        titlePart.Title = "Pidgeon";
       }
     );
+    pidgeonIotDevice.Inner.DisplayText = "Pidgeon";
     pidgeonIotDevice.Alter(
       pidgeonIotDevice => pidgeonIotDevice.IotDevicePart,
       measurementDevicePart =>
@@ -600,9 +592,10 @@ internal static partial class CreateAsyncMigrations
       abbChart => abbChart.TitlePart,
       titlePart =>
       {
-        titlePart.Title = "abb";
+        titlePart.Title = "Abb";
       }
     );
+    abbChart.Inner.DisplayText = "Abb";
     abbChart.Alter(
       abbChart => abbChart.TimeseriesChartPart,
       timeseriesChartPart =>
@@ -629,6 +622,7 @@ internal static partial class CreateAsyncMigrations
         titlePart.Title = "Abb";
       }
     );
+    abbIotDevice.Inner.DisplayText = "Abb";
     abbIotDevice.Alter(
       abbIotDevice => abbIotDevice.IotDevicePart,
       measurementDevicePart =>
@@ -685,6 +679,7 @@ internal static partial class CreateAsyncMigrations
         titlePart.Title = "Regulatory agency catalogue";
       }
     );
+    regulatoryAgencyCatalogue.Inner.DisplayText = "Regulatory agency catalogue";
     regulatoryAgencyCatalogue.Alter(
       regulatoryAgencyCatalogue =>
         regulatoryAgencyCatalogue.RegulatoryAgencyCataloguePart,
@@ -733,6 +728,8 @@ internal static partial class CreateAsyncMigrations
         titlePart.Title = "White high voltage operator catalogue";
       }
     );
+    whiteHighVoltageOperatorCatalogue.Inner.DisplayText =
+      "White high voltage operator catalogue";
     whiteHighVoltageOperatorCatalogue.Alter(
       operatorCatalogue => operatorCatalogue.OperatorCataloguePart,
       operatorCataloguePart =>
@@ -759,6 +756,8 @@ internal static partial class CreateAsyncMigrations
         titlePart.Title = "White medium voltage operator catalogue";
       }
     );
+    whiteMediumVoltageOperatorCatalogue.Inner.DisplayText =
+      "White medium voltage operator catalogue";
     whiteMediumVoltageOperatorCatalogue.Alter(
       operatorCatalogue => operatorCatalogue.OperatorCataloguePart,
       operatorCataloguePart =>
@@ -785,6 +784,7 @@ internal static partial class CreateAsyncMigrations
         titlePart.Title = "Blue operator catalogue";
       }
     );
+    blueOperatorCatalogue.Inner.DisplayText = "Blue operator catalogue";
     blueOperatorCatalogue.Alter(
       operatorCatalogue => operatorCatalogue.OperatorCataloguePart,
       operatorCataloguePart =>
@@ -809,6 +809,8 @@ internal static partial class CreateAsyncMigrations
         titlePart.Title = "White low voltage operator catalogue";
       }
     );
+    whiteLowVoltageOperatorCatalogue.Inner.DisplayText =
+      "White low voltage operator catalogue";
     whiteLowVoltageOperatorCatalogue.Alter(
       operatorCatalogue => operatorCatalogue.OperatorCataloguePart,
       operatorCataloguePart =>
@@ -834,6 +836,7 @@ internal static partial class CreateAsyncMigrations
         titlePart.Title = "Red operator catalogue";
       }
     );
+    redOperatorCatalogue.Inner.DisplayText = "Red operator catalogue";
     redOperatorCatalogue.Alter(
       operatorCatalogue => operatorCatalogue.OperatorCataloguePart,
       operatorCataloguePart =>
@@ -860,6 +863,7 @@ internal static partial class CreateAsyncMigrations
         titlePart.Title = "Yellow operator catalogue";
       }
     );
+    yellowOperatorCatalogue.Inner.DisplayText = "Yellow operator catalogue";
     yellowOperatorCatalogue.Alter(
       operatorCatalogue => operatorCatalogue.OperatorCataloguePart,
       operatorCataloguePart =>

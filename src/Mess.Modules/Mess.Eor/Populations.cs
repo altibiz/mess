@@ -85,6 +85,7 @@ public class Populations : IPopulation
         titlePart.Title = "Eor";
       }
     );
+    eorChart.Inner.DisplayText = "Eor";
     eorChart.Alter(
       eorChart => eorChart.TimeseriesChartPart,
       timeseriesChartPart =>
@@ -108,29 +109,22 @@ public class Populations : IPopulation
     );
     await _contentManager.CreateAsync(eorChart, VersionOptions.Latest);
 
-    var eorDeviceId = "eor";
-    var eorApiKey = "eor";
     var eorIotDevice =
-      (
-        await _session
-          .Query<ContentItem, IotDeviceIndex>()
-          .Where(index => index.DeviceId == eorDeviceId)
-          .FirstOrDefaultAsync()
-      )?.AsContent<EorIotDeviceItem>()
-      ?? await _contentManager.NewContentAsync<EorIotDeviceItem>();
+      await _contentManager.NewContentAsync<EorIotDeviceItem>();
     eorIotDevice.Inner.Owner = adminId;
     eorIotDevice.Alter(
       eorIotDevice => eorIotDevice.TitlePart,
       titlePart =>
       {
-        titlePart.Title = eorDeviceId;
+        titlePart.Title = "Eor";
       }
     );
+    eorIotDevice.Inner.DisplayText = "Eor";
     eorIotDevice.Alter(
       eorIotDevice => eorIotDevice.IotDevicePart,
       measurementDevicePart =>
       {
-        measurementDevicePart.DeviceId = new() { Text = eorDeviceId };
+        measurementDevicePart.DeviceId = new() { Text = "eor" };
       }
     );
     eorIotDevice.Alter(
@@ -151,7 +145,7 @@ public class Populations : IPopulation
         eorIotDevice.ProductNumber = new() { Text = "123456789" };
         eorIotDevice.Longitude = new() { Value = -100.784430m };
         eorIotDevice.Latitude = new() { Value = 31.697256m };
-        eorIotDevice.ApiKey = _apiKeyFieldService.HashApiKeyField(eorApiKey);
+        eorIotDevice.ApiKey = _apiKeyFieldService.HashApiKeyField("eor");
       }
     );
     await _contentManager.CreateAsync(eorIotDevice, VersionOptions.Latest);
