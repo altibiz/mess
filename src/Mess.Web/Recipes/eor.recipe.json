@@ -20,6 +20,7 @@
         "OrchardCore.Users.Registration",
         "OrchardCore.Users.ResetPassword",
         "OrchardCore.Diagnostics",
+        "OrchardCore.Deployment",
         "TheAdmin",
         "Mess.Eor",
         "Mess.Forttech"
