@@ -501,6 +501,54 @@ internal static partial class CreateAsyncMigrations
           .Attachable()
           .WithDescription("A regulatory agency catalogue.")
           .WithDisplayName("Regulatory agency catalogue")
+          .WithField(
+            "RenewableEnergyFee",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("Renewable energy fee")
+                .WithDescription("Renewable energy fee.")
+                .WithSettings<NumericFieldSettings>(
+                  new()
+                  {
+                    Hint = "Renewable energy fee.",
+                    Required = true,
+                    Minimum = 0.0M
+                  }
+                )
+          )
+          .WithField(
+            "BusinessUsageFee",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("Business usage fee")
+                .WithDescription("Business usage fee.")
+                .WithSettings<NumericFieldSettings>(
+                  new()
+                  {
+                    Hint = "Business usage fee.",
+                    Required = true,
+                    Minimum = 0.0M
+                  }
+                )
+          )
+          .WithField(
+            "TaxRate",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("Tax rate")
+                .WithDescription("Tax rate.")
+                .WithSettings<NumericFieldSettings>(
+                  new()
+                  {
+                    Hint = "Tax rate.",
+                    Required = true,
+                    Minimum = 0.0M
+                  }
+                )
+          )
     );
 
     contentDefinitionManager.AlterTypeDefinition(
@@ -525,9 +573,7 @@ internal static partial class CreateAsyncMigrations
                   new()
                   {
                     RenderTitle = true,
-                    Options = TitlePartOptions.GeneratedDisabled,
-                    Pattern =
-                      @"{%- ContentItem.Content.RegulatoryAgencyCataloguePart.RegulatoryAgencyCatalogueId.Text -%}"
+                    Options = TitlePartOptions.EditableRequired,
                   }
                 )
           )
@@ -632,6 +678,41 @@ internal static partial class CreateAsyncMigrations
                 .WithSettings<NumericFieldSettings>(
                   new() { Hint = "Measurement device fee.", }
                 )
+          )
+    );
+
+    contentDefinitionManager.AlterTypeDefinition(
+      "OperatorCatalogue",
+      builder =>
+        builder
+          .Creatable()
+          .Listable()
+          .Draftable()
+          .Securable()
+          .DisplayedAs("Operator catalogue")
+          .WithDescription("Operator catalogue.")
+          .WithPart(
+            "TitlePart",
+            part =>
+              part.WithDisplayName("Title")
+                .WithDescription(
+                  "Title displaying the identifier of the operator catalogue."
+                )
+                .WithPosition("1")
+                .WithSettings<TitlePartSettings>(
+                  new()
+                  {
+                    RenderTitle = true,
+                    Options = TitlePartOptions.EditableRequired,
+                  }
+                )
+          )
+          .WithPart(
+            "OperatorCataloguePart",
+            part =>
+              part.WithDisplayName("Operator catalogue")
+                .WithDescription("An operator catalogue.")
+                .WithPosition("2")
           )
     );
 
