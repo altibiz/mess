@@ -20,6 +20,7 @@ using ManifestConstants = Mess.OrchardCore.ManifestConstants;
     "OrchardCore.ContentFields.Indexing.SQL",
     "OrchardCore.ContentFields.Indexing.SQL.UserPicker",
     "OrchardCore.Title",
+    "OrchardCore.Lists",
     "Mess.Population",
     "Mess.Timeseries",
     "Mess.Iot",

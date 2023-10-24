@@ -47,7 +47,7 @@ public class Migrations : DataMigration
                     Multiple = true,
                     Required = false,
                     DisplayAllUsers = false,
-                    DisplayedRoles = new[] { "LegalEntityRepresentative" },
+                    DisplayedRoles = new[] { "Legal entity representative" },
                     Hint =
                       "Representatives acting on behalf of this legal entity."
                   }

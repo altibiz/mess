@@ -178,6 +178,23 @@ internal static partial class CreateAsyncMigrations
                 )
           )
           .WithField(
+            "WhiteLowVoltageOperatorCatalogue",
+            field =>
+              field
+                .OfType("ContentPickerField")
+                .WithDisplayName("White low voltage operator catalogue")
+                .WithDescription("White low voltage operator catalogue.")
+                .WithSettings<ContentPickerFieldSettings>(
+                  new()
+                  {
+                    DisplayedContentTypes = new[] { "OperatorCatalogue" },
+                    DisplayAllContentTypes = false,
+                    Multiple = false,
+                    Required = true,
+                  }
+                )
+          )
+          .WithField(
             "RedOperatorCatalogue",
             field =>
               field
@@ -363,6 +380,23 @@ internal static partial class CreateAsyncMigrations
                 .OfType("ContentPickerField")
                 .WithDisplayName("Blue operator catalogue")
                 .WithDescription("Blue operator catalogue.")
+                .WithSettings<ContentPickerFieldSettings>(
+                  new()
+                  {
+                    DisplayedContentTypes = new[] { "OperatorCatalogue" },
+                    DisplayAllContentTypes = false,
+                    Multiple = false,
+                    Required = true,
+                  }
+                )
+          )
+          .WithField(
+            "WhiteLowVoltageOperatorCatalogue",
+            field =>
+              field
+                .OfType("ContentPickerField")
+                .WithDisplayName("White low voltage operator catalogue")
+                .WithDescription("White low voltage operator catalogue.")
                 .WithSettings<ContentPickerFieldSettings>(
                   new()
                   {
@@ -567,7 +601,14 @@ internal static partial class CreateAsyncMigrations
                   "List of IOT devices in this distribution system unit."
                 )
                 .WithSettings<ListPartSettings>(
-                  new() { ContainedContentTypes = new[] { "AbbIotDevice" }, }
+                  new()
+                  {
+                    ContainedContentTypes = new[]
+                    {
+                      "AbbIotDevice",
+                      "PidgeonIotDevice"
+                    },
+                  }
                 )
           )
     );
