@@ -7,6 +7,7 @@ using Mess.Fields.Abstractions.Settings;
 using YesSql.Sql;
 using OrchardCore.ContentFields.Settings;
 using Microsoft.Extensions.DependencyInjection;
+using OrchardCore.Lists.Models;
 
 namespace Mess.Ozds;
 
@@ -62,6 +63,111 @@ internal static partial class CreateAsyncMigrations
           .Attachable()
           .WithDescription("A distribution system operator.")
           .WithDisplayName("Distribution system operator")
+          .WithField(
+            "RegulatoryAgencyCatalogue",
+            field =>
+              field
+                .OfType("ContentPickerField")
+                .WithDisplayName("Regulatory agency catalogue")
+                .WithDescription("Regulatory agency catalogue.")
+                .WithSettings<ContentPickerFieldSettings>(
+                  new()
+                  {
+                    DisplayedContentTypes = new[]
+                    {
+                      "RegulatoryAgencyCatalogue"
+                    },
+                    DisplayAllContentTypes = false,
+                    Multiple = false,
+                    Required = true,
+                  }
+                )
+          )
+          .WithField(
+            "WhiteHighVoltageOperatorCatalogue",
+            field =>
+              field
+                .OfType("ContentPickerField")
+                .WithDisplayName("White high voltage operator catalogue")
+                .WithDescription("White high voltage operator catalogue.")
+                .WithSettings<ContentPickerFieldSettings>(
+                  new()
+                  {
+                    DisplayedContentTypes = new[] { "OperatorCatalogue" },
+                    DisplayAllContentTypes = false,
+                    Multiple = false,
+                    Required = true,
+                  }
+                )
+          )
+          .WithField(
+            "WhiteMediumVoltageOperatorCatalogue",
+            field =>
+              field
+                .OfType("ContentPickerField")
+                .WithDisplayName("White medium voltage operator catalogue")
+                .WithDescription("White medium voltage operator catalogue.")
+                .WithSettings<ContentPickerFieldSettings>(
+                  new()
+                  {
+                    DisplayedContentTypes = new[] { "OperatorCatalogue" },
+                    DisplayAllContentTypes = false,
+                    Multiple = false,
+                    Required = true,
+                  }
+                )
+          )
+          .WithField(
+            "BlueOperatorCatalogue",
+            field =>
+              field
+                .OfType("ContentPickerField")
+                .WithDisplayName("Blue operator catalogue")
+                .WithDescription("Blue operator catalogue.")
+                .WithSettings<ContentPickerFieldSettings>(
+                  new()
+                  {
+                    DisplayedContentTypes = new[] { "OperatorCatalogue" },
+                    DisplayAllContentTypes = false,
+                    Multiple = false,
+                    Required = true,
+                  }
+                )
+          )
+          .WithField(
+            "RedOperatorCatalogue",
+            field =>
+              field
+                .OfType("ContentPickerField")
+                .WithDisplayName("Red operator catalogue")
+                .WithDescription("Red operator catalogue.")
+                .WithSettings<ContentPickerFieldSettings>(
+                  new()
+                  {
+                    DisplayedContentTypes = new[] { "OperatorCatalogue" },
+                    DisplayAllContentTypes = false,
+                    Multiple = false,
+                    Required = true,
+                  }
+                )
+          )
+          .WithField(
+            "YellowOperatorCatalogue",
+            field =>
+              field
+                .OfType("ContentPickerField")
+                .WithDisplayName("Yellow operator catalogue")
+                .WithDescription("Yellow operator catalogue.")
+                .WithSettings<ContentPickerFieldSettings>(
+                  new()
+                  {
+                    DisplayedContentTypes = new[] { "OperatorCatalogue" },
+                    DisplayAllContentTypes = false,
+                    Multiple = false,
+                    Required = true,
+                  }
+                )
+          )
     );
 
     contentDefinitionManager.AlterTypeDefinition(
@@ -79,7 +185,6 @@ internal static partial class CreateAsyncMigrations
             part =>
               part.WithDisplayName("Title")
                 .WithDescription("Title of the distribution system operator.")
-                .WithPosition("1")
                 .WithSettings<TitlePartSettings>(
                   new()
                   {
@@ -93,7 +198,6 @@ internal static partial class CreateAsyncMigrations
             part =>
               part.WithDisplayName("Distribution system operator")
                 .WithDescription("A distribution system operator.")
-                .WithPosition("2")
           )
           .WithPart(
             "LegalEntityPart",
@@ -102,7 +206,21 @@ internal static partial class CreateAsyncMigrations
                 .WithDescription(
                   "Identification, contact and address information the distributed system operator."
                 )
-                .WithPosition("3")
+          )
+          .WithPart(
+            "ListPart",
+            part =>
+              part.WithDisplayName("Closed distribution systems")
+                .WithDescription("List of owned closed distribution systems.")
+                .WithSettings<ListPartSettings>(
+                  new()
+                  {
+                    ContainedContentTypes = new[]
+                    {
+                      "ClosedDistributionSystem"
+                    },
+                  }
+                )
           )
     );
   }
@@ -114,6 +232,153 @@ internal static partial class CreateAsyncMigrations
   {
     var contentDefinitionManager =
       serviceProvider.GetRequiredService<IContentDefinitionManager>();
+
+    contentDefinitionManager.AlterPartDefinition(
+      "ClosedDistributionSystemPart",
+      builder =>
+        builder
+          .Attachable()
+          .WithDescription("A closed distribution system.")
+          .WithDisplayName("Closed distribution system")
+          .WithField(
+            "WhiteHighVoltageOperatorCatalogue",
+            field =>
+              field
+                .OfType("ContentPickerField")
+                .WithDisplayName("White high voltage operator catalogue")
+                .WithDescription("White high voltage operator catalogue.")
+                .WithSettings<ContentPickerFieldSettings>(
+                  new()
+                  {
+                    DisplayedContentTypes = new[] { "OperatorCatalogue" },
+                    DisplayAllContentTypes = false,
+                    Multiple = false,
+                    Required = true,
+                  }
+                )
+          )
+          .WithField(
+            "WhiteMediumVoltageOperatorCatalogue",
+            field =>
+              field
+                .OfType("ContentPickerField")
+                .WithDisplayName("White medium voltage operator catalogue")
+                .WithDescription("White medium voltage operator catalogue.")
+                .WithSettings<ContentPickerFieldSettings>(
+                  new()
+                  {
+                    DisplayedContentTypes = new[] { "OperatorCatalogue" },
+                    DisplayAllContentTypes = false,
+                    Multiple = false,
+                    Required = true,
+                  }
+                )
+          )
+          .WithField(
+            "BlueOperatorCatalogue",
+            field =>
+              field
+                .OfType("ContentPickerField")
+                .WithDisplayName("Blue operator catalogue")
+                .WithDescription("Blue operator catalogue.")
+                .WithSettings<ContentPickerFieldSettings>(
+                  new()
+                  {
+                    DisplayedContentTypes = new[] { "OperatorCatalogue" },
+                    DisplayAllContentTypes = false,
+                    Multiple = false,
+                    Required = true,
+                  }
+                )
+          )
+          .WithField(
+            "RedOperatorCatalogue",
+            field =>
+              field
+                .OfType("ContentPickerField")
+                .WithDisplayName("Red operator catalogue")
+                .WithDescription("Red operator catalogue.")
+                .WithSettings<ContentPickerFieldSettings>(
+                  new()
+                  {
+                    DisplayedContentTypes = new[] { "OperatorCatalogue" },
+                    DisplayAllContentTypes = false,
+                    Multiple = false,
+                    Required = true,
+                  }
+                )
+          )
+          .WithField(
+            "YellowOperatorCatalogue",
+            field =>
+              field
+                .OfType("ContentPickerField")
+                .WithDisplayName("Yellow operator catalogue")
+                .WithDescription("Yellow operator catalogue.")
+                .WithSettings<ContentPickerFieldSettings>(
+                  new()
+                  {
+                    DisplayedContentTypes = new[] { "OperatorCatalogue" },
+                    DisplayAllContentTypes = false,
+                    Multiple = false,
+                    Required = true,
+                  }
+                )
+          )
+    );
+
+    contentDefinitionManager.AlterTypeDefinition(
+      "ClosedDistributionSystem",
+      builder =>
+        builder
+          .Creatable()
+          .Listable()
+          .Draftable()
+          .Securable()
+          .DisplayedAs("Closed distribution system")
+          .WithDescription("A closed distribution system.")
+          .WithPart(
+            "TitlePart",
+            part =>
+              part.WithDisplayName("Title")
+                .WithDescription("Title of the closed distribution system.")
+                .WithSettings<TitlePartSettings>(
+                  new()
+                  {
+                    RenderTitle = true,
+                    Options = TitlePartOptions.EditableRequired,
+                  }
+                )
+          )
+          .WithPart(
+            "ClosedDistributionSystemPart",
+            part =>
+              part.WithDisplayName("Closed distribution system")
+                .WithDescription("A closed distribution system.")
+          )
+          .WithPart(
+            "LegalEntityPart",
+            part =>
+              part.WithDisplayName("Legal entity")
+                .WithDescription(
+                  "Identification, contact and address information the closed distributed system."
+                )
+          )
+          .WithPart(
+            "ListPart",
+            part =>
+              part.WithDisplayName("Distribution system units")
+                .WithDescription(
+                  "List of units in this closed distribution system."
+                )
+                .WithSettings<ListPartSettings>(
+                  new()
+                  {
+                    ContainedContentTypes = new[] { "DistributionSystemUnit" },
+                  }
+                )
+          )
+    );
 
     schemaBuilder.CreateMapIndexTable<ClosedDistributionSystemIndex>(
       table =>
@@ -138,78 +403,6 @@ internal static partial class CreateAsyncMigrations
         "DistributionSystemOperatorContentItemId"
       );
     });
-
-    contentDefinitionManager.AlterPartDefinition(
-      "ClosedDistributionSystemPart",
-      builder =>
-        builder
-          .Attachable()
-          .WithDescription("A closed distribution system.")
-          .WithDisplayName("Closed distribution system")
-          .WithField(
-            "DistributionSystemOperator",
-            fieldBuilder =>
-              fieldBuilder
-                .OfType("ContentPickerField")
-                .WithDisplayName("Distribution system operator")
-                .WithDescription("Distribution system operator.")
-                .WithSettings<ContentPickerFieldSettings>(
-                  new()
-                  {
-                    Hint = "Distribution system operator.",
-                    Multiple = false,
-                    Required = true,
-                    DisplayedContentTypes = new[]
-                    {
-                      "DistributionSystemOperator"
-                    },
-                    DisplayAllContentTypes = false
-                  }
-                )
-          )
-    );
-
-    contentDefinitionManager.AlterTypeDefinition(
-      "ClosedDistributionSystem",
-      builder =>
-        builder
-          .Creatable()
-          .Listable()
-          .Draftable()
-          .Securable()
-          .DisplayedAs("Closed distribution system")
-          .WithDescription("A closed distribution system.")
-          .WithPart(
-            "TitlePart",
-            part =>
-              part.WithDisplayName("Title")
-                .WithDescription("Title of the closed distribution system.")
-                .WithPosition("1")
-                .WithSettings<TitlePartSettings>(
-                  new()
-                  {
-                    RenderTitle = true,
-                    Options = TitlePartOptions.EditableRequired,
-                  }
-                )
-          )
-          .WithPart(
-            "ClosedDistributionSystemPart",
-            part =>
-              part.WithDisplayName("Closed distribution system")
-                .WithDescription("A closed distribution system.")
-                .WithPosition("2")
-          )
-          .WithPart(
-            "LegalEntityPart",
-            part =>
-              part.WithDisplayName("Legal entity")
-                .WithDescription(
-                  "Identification, contact and address information the closed distributed system."
-                )
-                .WithPosition("3")
-          )
-    );
   }
 
   internal static async Task MigrateUnit(
@@ -219,6 +412,65 @@ internal static partial class CreateAsyncMigrations
   {
     var contentDefinitionManager =
       serviceProvider.GetRequiredService<IContentDefinitionManager>();
+
+    contentDefinitionManager.AlterPartDefinition(
+      "DistributionSystemUnitPart",
+      builder =>
+        builder
+          .Attachable()
+          .WithDescription("A distribution system unit.")
+          .WithDisplayName("Distribution system unit")
+    );
+
+    contentDefinitionManager.AlterTypeDefinition(
+      "DistributionSystemUnit",
+      builder =>
+        builder
+          .Creatable()
+          .Listable()
+          .Draftable()
+          .Securable()
+          .DisplayedAs("Distribution system unit")
+          .WithDescription("A distribution system unit.")
+          .WithPart(
+            "TitlePart",
+            part =>
+              part.WithDisplayName("Title")
+                .WithDescription("Title of the distribution system unit.")
+                .WithSettings<TitlePartSettings>(
+                  new()
+                  {
+                    RenderTitle = true,
+                    Options = TitlePartOptions.EditableRequired,
+                  }
+                )
+          )
+          .WithPart(
+            "DistributionSystemUnitPart",
+            part =>
+              part.WithDisplayName("Distribution system unit")
+                .WithDescription("A distribution system unit.")
+          )
+          .WithPart(
+            "LegalEntityPart",
+            part =>
+              part.WithDisplayName("Legal entity")
+                .WithDescription(
+                  "Identification, contact and address information the distributed system unit."
+                )
+          )
+          .WithPart(
+            "ListPart",
+            part =>
+              part.WithDisplayName("IOT Devices")
+                .WithDescription(
+                  "List of IOT devices in this distribution system unit."
+                )
+                .WithSettings<ListPartSettings>(
+                  new() { ContainedContentTypes = new[] { "AbbIotDevice" }, }
+                )
+          )
+    );
 
     schemaBuilder.CreateMapIndexTable<DistributionSystemUnitIndex>(
       table =>
@@ -251,78 +503,6 @@ internal static partial class CreateAsyncMigrations
         "DistributionSystemOperatorContentItemId"
       );
     });
-
-    contentDefinitionManager.AlterPartDefinition(
-      "DistributionSystemUnitPart",
-      builder =>
-        builder
-          .Attachable()
-          .WithDescription("A distribution system unit.")
-          .WithDisplayName("Distribution system unit")
-          .WithField(
-            "ClosedDistributionSystem",
-            fieldBuilder =>
-              fieldBuilder
-                .OfType("ContentPickerField")
-                .WithDisplayName("Closed distribution system")
-                .WithDescription("Closed distribution system.")
-                .WithSettings<ContentPickerFieldSettings>(
-                  new()
-                  {
-                    Hint = "Closed distribution system.",
-                    Multiple = false,
-                    Required = true,
-                    DisplayedContentTypes = new[]
-                    {
-                      "ClosedDistributionSystem"
-                    },
-                    DisplayAllContentTypes = false
-                  }
-                )
-          )
-    );
-
-    contentDefinitionManager.AlterTypeDefinition(
-      "DistributionSystemUnit",
-      builder =>
-        builder
-          .Creatable()
-          .Listable()
-          .Draftable()
-          .Securable()
-          .DisplayedAs("Distribution system unit")
-          .WithDescription("A distribution system unit.")
-          .WithPart(
-            "TitlePart",
-            part =>
-              part.WithDisplayName("Title")
-                .WithDescription("Title of the distribution system unit.")
-                .WithPosition("1")
-                .WithSettings<TitlePartSettings>(
-                  new()
-                  {
-                    RenderTitle = true,
-                    Options = TitlePartOptions.EditableRequired,
-                  }
-                )
-          )
-          .WithPart(
-            "DistributionSystemUnitPart",
-            part =>
-              part.WithDisplayName("Distribution system unit")
-                .WithDescription("A distribution system unit.")
-                .WithPosition("2")
-          )
-          .WithPart(
-            "LegalEntityPart",
-            part =>
-              part.WithDisplayName("Legal entity")
-                .WithDescription(
-                  "Identification, contact and address information the distributed system unit."
-                )
-                .WithPosition("3")
-          )
-    );
   }
 
   internal static async Task MigratePidgeon(
@@ -373,7 +553,6 @@ internal static partial class CreateAsyncMigrations
                 .WithDescription(
                   "Title displaying the identifier of the Pidgeon measurement device."
                 )
-                .WithPosition("1")
                 .WithSettings<TitlePartSettings>(
                   new()
                   {
@@ -389,14 +568,12 @@ internal static partial class CreateAsyncMigrations
             part =>
               part.WithDisplayName("Measurement device")
                 .WithDescription("A measurement device.")
-                .WithPosition("2")
           )
           .WithPart(
             "PidgeonIotDevicePart",
             part =>
               part.WithDisplayName("Pidgeon measurement device")
                 .WithDescription("A Pidgeon measurement device.")
-                .WithPosition("3")
           )
     );
   }
@@ -435,7 +612,6 @@ internal static partial class CreateAsyncMigrations
                 .WithDescription(
                   "Title displaying the identifier of the Abb measurement device."
                 )
-                .WithPosition("1")
                 .WithSettings<TitlePartSettings>(
                   new()
                   {
@@ -451,21 +627,18 @@ internal static partial class CreateAsyncMigrations
             part =>
               part.WithDisplayName("Measurement device")
                 .WithDescription("A measurement device.")
-                .WithPosition("2")
           )
           .WithPart(
             "OzdsIotDevicePart",
             part =>
               part.WithDisplayName("OZDS Measurement device")
                 .WithDescription("An OZDS measurement device.")
-                .WithPosition("3")
           )
           .WithPart(
             "AbbIotDevicePart",
             part =>
               part.WithDisplayName("Abb measurement device")
                 .WithDescription("An Abb measurement device.")
-                .WithPosition("4")
           )
           .WithPart(
             "ChartPart",
@@ -474,14 +647,12 @@ internal static partial class CreateAsyncMigrations
                 .WithDescription(
                   "Chart displaying the Abb measurement device data."
                 )
-                .WithPosition("5")
           )
           .WithPart(
             "BillingPart",
             part =>
               part.WithDisplayName("Billing")
                 .WithDescription("Billing information.")
-                .WithPosition("6")
           )
     );
   }
@@ -568,7 +739,6 @@ internal static partial class CreateAsyncMigrations
                 .WithDescription(
                   "Title displaying the identifier of the regulatory agency catalogue."
                 )
-                .WithPosition("1")
                 .WithSettings<TitlePartSettings>(
                   new()
                   {
@@ -582,7 +752,6 @@ internal static partial class CreateAsyncMigrations
             part =>
               part.WithDisplayName("Regulatory agency catalogue")
                 .WithDescription("A regulatory agency catalogue.")
-                .WithPosition("2")
           )
     );
   }
@@ -698,7 +867,6 @@ internal static partial class CreateAsyncMigrations
                 .WithDescription(
                   "Title displaying the identifier of the operator catalogue."
                 )
-                .WithPosition("1")
                 .WithSettings<TitlePartSettings>(
                   new()
                   {
@@ -712,7 +880,6 @@ internal static partial class CreateAsyncMigrations
             part =>
               part.WithDisplayName("Operator catalogue")
                 .WithDescription("An operator catalogue.")
-                .WithPosition("2")
           )
     );
 
@@ -771,7 +938,6 @@ internal static partial class CreateAsyncMigrations
             part =>
               part.WithDisplayName("Title")
                 .WithDescription("Title.")
-                .WithPosition("1")
                 .WithSettings<TitlePartSettings>(
                   new()
                   {
@@ -783,23 +949,19 @@ internal static partial class CreateAsyncMigrations
           .WithPart(
             "InvoicePart",
             part =>
-              part.WithDisplayName("Invoice")
-                .WithDescription("An invoice")
-                .WithPosition("2")
+              part.WithDisplayName("Invoice").WithDescription("An invoice")
           )
           .WithPart(
             "OzdsCalculationPart",
             part =>
               part.WithDisplayName("OZDS calculation")
                 .WithDescription("An OZDS calculation.")
-                .WithPosition("3")
           )
           .WithPart(
             "OzdsInvoicePart",
             part =>
               part.WithDisplayName("OZDS Invoice")
                 .WithDescription("An OZDS invoice.")
-                .WithPosition("4")
           )
     );
   }
@@ -835,7 +997,6 @@ internal static partial class CreateAsyncMigrations
             part =>
               part.WithDisplayName("Title")
                 .WithDescription("Title.")
-                .WithPosition("1")
                 .WithSettings<TitlePartSettings>(
                   new()
                   {
@@ -847,23 +1008,19 @@ internal static partial class CreateAsyncMigrations
           .WithPart(
             "ReceiptPart",
             part =>
-              part.WithDisplayName("Receipt")
-                .WithDescription("An receipt")
-                .WithPosition("2")
+              part.WithDisplayName("Receipt").WithDescription("An receipt")
           )
           .WithPart(
             "OzdsCalculationPart",
             part =>
               part.WithDisplayName("OZDS calculation")
                 .WithDescription("An OZDS calculation.")
-                .WithPosition("3")
           )
           .WithPart(
             "OzdsReceiptPart",
             part =>
               part.WithDisplayName("OZDS Receipt")
                 .WithDescription("An OZDS receipt.")
-                .WithPosition("4")
           )
     );
   }
@@ -883,24 +1040,6 @@ internal static partial class CreateAsyncMigrations
           .Attachable()
           .WithDescription("An OZDS measurement device.")
           .WithDisplayName("OZDS measurement device")
-          .WithField(
-            "DistributionSystemUnit",
-            fieldBuilder =>
-              fieldBuilder
-                .OfType("ContentPickerField")
-                .WithDisplayName("Distribution system unit")
-                .WithDescription("Distribution system unit.")
-                .WithSettings<ContentPickerFieldSettings>(
-                  new()
-                  {
-                    Hint = "Distribution system unit.",
-                    Multiple = false,
-                    Required = true,
-                    DisplayedContentTypes = new[] { "DistributionSystemUnit" },
-                    DisplayAllContentTypes = false
-                  }
-                )
-          )
     );
 
     contentDefinitionManager.AlterPartDefinition(

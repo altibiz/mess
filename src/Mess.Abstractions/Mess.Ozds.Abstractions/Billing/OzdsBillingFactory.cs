@@ -78,7 +78,7 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
     var regulatoryAgencyCatalogueItem =
       _contnetManager
         .GetContentAsync<RegulatoryAgencyCatalogueItem>(
-          operatorItem.DistributionSystemOperatorPart.Value.RegulatoryCatalogue.ContentItemIds.First()
+          operatorItem.DistributionSystemOperatorPart.Value.RegulatoryAgencyCatalogue.ContentItemIds.First()
         )
         .Result
       ?? throw new NullReferenceException(
@@ -187,7 +187,7 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
 
     var regulatoryAgencyCatalogueItem =
       await _contnetManager.GetContentAsync<RegulatoryAgencyCatalogueItem>(
-        operatorItem.DistributionSystemOperatorPart.Value.RegulatoryCatalogue.ContentItemIds.First()
+        operatorItem.DistributionSystemOperatorPart.Value.RegulatoryAgencyCatalogue.ContentItemIds.First()
       )
       ?? throw new NullReferenceException(
         "Regulatory agency catalogue not found"
@@ -300,7 +300,7 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
     var regulatoryAgencyCatalogueItem =
       _contnetManager
         .GetContentAsync<RegulatoryAgencyCatalogueItem>(
-          operatorItem.DistributionSystemOperatorPart.Value.RegulatoryCatalogue.ContentItemIds.First()
+          operatorItem.DistributionSystemOperatorPart.Value.RegulatoryAgencyCatalogue.ContentItemIds.First()
         )
         .Result
       ?? throw new NullReferenceException(
@@ -398,7 +398,7 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
 
     var regulatoryAgencyCatalogueItem =
       await _contnetManager.GetContentAsync<RegulatoryAgencyCatalogueItem>(
-        operatorItem.DistributionSystemOperatorPart.Value.RegulatoryCatalogue.ContentItemIds.First()
+        operatorItem.DistributionSystemOperatorPart.Value.RegulatoryAgencyCatalogue.ContentItemIds.First()
       )
       ?? throw new NullReferenceException(
         "Regulatory agency catalogue not found"

@@ -5,7 +5,7 @@ namespace Mess.Ozds.Abstractions.Models;
 
 public class DistributionSystemOperatorPart : ContentPart
 {
-  public ContentPickerField RegulatoryCatalogue { get; set; } = default!;
+  public ContentPickerField RegulatoryAgencyCatalogue { get; set; } = default!;
 
   public ContentPickerField WhiteHighVoltageOperatorCatalogue { get; set; } =
     default!;

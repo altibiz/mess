@@ -207,7 +207,7 @@ internal static partial class CreateAsyncMigrations
         distributionSystemOperator.DistributionSystemOperatorPart,
       distributionSystemOperatorPart =>
       {
-        distributionSystemOperatorPart.RegulatoryCatalogue = new()
+        distributionSystemOperatorPart.RegulatoryAgencyCatalogue = new()
         {
           ContentItemIds = new[] { regulatoryAgencyCatalogueContentItemId }
         };

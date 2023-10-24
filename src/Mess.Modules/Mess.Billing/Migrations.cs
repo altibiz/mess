@@ -146,21 +146,84 @@ public class Migrations : DataMigration
     );
 
     _contentDefinitionManager.AlterPartDefinition(
-      "ReceiptPart",
-      builder =>
-        builder
-          .Attachable()
-          .WithDisplayName("Receipt")
-          .WithDescription("A receipt.")
-    );
-    _contentDefinitionManager.AlterPartDefinition(
       "InvoicePart",
       builder =>
         builder
           .Attachable()
           .WithDisplayName("Invoice")
           .WithDescription("An invoice.")
+          .WithField(
+            "Receipt",
+            field =>
+              field
+                .OfType("ContentPickerField")
+                .WithDisplayName("Receipt")
+                .WithDescription("Receipt of the invoice.")
+                .WithSettings(
+                  new ContentPickerFieldSettings
+                  {
+                    Required = true,
+                    Hint = "Receipt of the invoice."
+                  }
+                )
+          )
+          .WithField(
+            "Date",
+            field =>
+              field
+                .OfType("DateField")
+                .WithDisplayName("Date")
+                .WithDescription("Date of the invoice.")
+                .WithSettings(
+                  new DateFieldSettings
+                  {
+                    Required = true,
+                    Hint = "Date of the invoice."
+                  }
+                )
+          )
     );
+
+    _contentDefinitionManager.AlterPartDefinition(
+      "ReceiptPart",
+      builder =>
+        builder
+          .Attachable()
+          .WithDisplayName("Receipt")
+          .WithDescription("A receipt.")
+          .WithField(
+            "Invoice",
+            field =>
+              field
+                .OfType("ContentPickerField")
+                .WithDisplayName("Invoice")
+                .WithDescription("Invoice of the receipt.")
+                .WithSettings(
+                  new ContentPickerFieldSettings
+                  {
+                    DisplayedContentTypes = new[] { "Invoice" },
+                    Required = true,
+                    Hint = "Invoice of the receipt."
+                  }
+                )
+          )
+          .WithField(
+            "Date",
+            field =>
+              field
+                .OfType("DateField")
+                .WithDisplayName("Date")
+                .WithDescription("Date of the receipt.")
+                .WithSettings(
+                  new DateFieldSettings
+                  {
+                    Required = true,
+                    Hint = "Date of the receipt."
+                  }
+                )
+          )
+    );
+
     _contentDefinitionManager.AlterPartDefinition(
       "BillingPart",
       builder =>
