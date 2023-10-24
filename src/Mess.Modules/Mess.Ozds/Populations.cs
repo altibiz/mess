@@ -108,49 +108,9 @@ internal static partial class CreateAsyncMigrations
     string yellowOperatorCatalogueContentItemId
   )
   {
-    var roleManager = serviceProvider.GetRequiredService<RoleManager<IRole>>();
     var contentManager = serviceProvider.GetRequiredService<IContentManager>();
     var userService = serviceProvider.GetRequiredService<IUserService>();
     var session = serviceProvider.GetRequiredService<ISession>();
-
-    await roleManager.CreateAsync(
-      new Role
-      {
-        NormalizedRoleName = "DistributionSystemOperatorRepresentative",
-        RoleName = "Distribution System Operator Representative",
-        RoleDescription =
-          "Representative of closed distribution systems operator.",
-        RoleClaims = new()
-        {
-          new RoleClaim
-          {
-            ClaimType = Permission.ClaimType,
-            ClaimValue = "AccessAdminPanel"
-          },
-          new RoleClaim
-          {
-            ClaimType = Permission.ClaimType,
-            ClaimValue = "View Users"
-          },
-          new RoleClaim
-          {
-            ClaimType = Permission.ClaimType,
-            ClaimValue =
-              "ManageUsersInRole_Closed distribution system representative"
-          },
-          new RoleClaim
-          {
-            ClaimType = Permission.ClaimType,
-            ClaimValue = "AssignRole_Closed distribution system representative"
-          },
-          new RoleClaim
-          {
-            ClaimType = Permission.ClaimType,
-            ClaimValue = "Listing payments"
-          },
-        }
-      }
-    );
 
     var operatorUser = await userService.CreateDevUserAsync(
       id: "OperatorId",
@@ -268,48 +228,9 @@ internal static partial class CreateAsyncMigrations
     string yellowOperatorCatalogueContentItemId
   )
   {
-    var roleManager = serviceProvider.GetRequiredService<RoleManager<IRole>>();
     var userService = serviceProvider.GetRequiredService<IUserService>();
     var contentManager = serviceProvider.GetRequiredService<IContentManager>();
     var session = serviceProvider.GetRequiredService<ISession>();
-
-    await roleManager.CreateAsync(
-      new Role
-      {
-        NormalizedRoleName = "ClosedDistributionSystemRepresentative",
-        RoleName = "Closed Distribution System Representative",
-        RoleDescription = "Representative of a closed distribution system.",
-        RoleClaims = new()
-        {
-          new RoleClaim
-          {
-            ClaimType = Permission.ClaimType,
-            ClaimValue = "AccessAdminPanel"
-          },
-          new RoleClaim
-          {
-            ClaimType = Permission.ClaimType,
-            ClaimValue = "View Users"
-          },
-          new RoleClaim
-          {
-            ClaimType = Permission.ClaimType,
-            ClaimValue =
-              "ManageUsersInRole_Distribution system unit representative"
-          },
-          new RoleClaim
-          {
-            ClaimType = Permission.ClaimType,
-            ClaimValue = "AssignRole_Distribution system unit representative"
-          },
-          new RoleClaim
-          {
-            ClaimType = Permission.ClaimType,
-            ClaimValue = "Listing own payments"
-          },
-        }
-      }
-    );
 
     var systemUser = await userService.CreateDevUserAsync(
       id: "SystemId",
@@ -424,27 +345,9 @@ internal static partial class CreateAsyncMigrations
     string systemContentItemId
   )
   {
-    var roleManager = serviceProvider.GetRequiredService<RoleManager<IRole>>();
     var userService = serviceProvider.GetRequiredService<IUserService>();
     var contentManager = serviceProvider.GetRequiredService<IContentManager>();
     var session = serviceProvider.GetRequiredService<ISession>();
-
-    await roleManager.CreateAsync(
-      new Role
-      {
-        NormalizedRoleName = "DistributionSystemUnitRepresentative",
-        RoleName = "Distribution System Unit Representative",
-        RoleDescription = "Representative of a distribution system unit.",
-        RoleClaims = new()
-        {
-          new RoleClaim
-          {
-            ClaimType = Permission.ClaimType,
-            ClaimValue = "Listing own payments"
-          },
-        }
-      }
-    );
 
     var unitUser = await userService.CreateDevUserAsync(
       id: "UnitId",

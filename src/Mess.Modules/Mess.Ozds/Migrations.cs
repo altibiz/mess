@@ -8,6 +8,9 @@ using YesSql.Sql;
 using OrchardCore.ContentFields.Settings;
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.Lists.Models;
+using Microsoft.AspNetCore.Identity;
+using OrchardCore.Security;
+using OrchardCore.Security.Permissions;
 
 namespace Mess.Ozds;
 
@@ -55,6 +58,46 @@ internal static partial class CreateAsyncMigrations
   {
     var contentDefinitionManager =
       serviceProvider.GetRequiredService<IContentDefinitionManager>();
+    var roleManager = serviceProvider.GetRequiredService<RoleManager<IRole>>();
+
+    await roleManager.CreateAsync(
+      new Role
+      {
+        NormalizedRoleName = "DistributionSystemOperatorRepresentative",
+        RoleName = "Distribution System Operator Representative",
+        RoleDescription =
+          "Representative of closed distribution systems operator.",
+        RoleClaims = new()
+        {
+          new RoleClaim
+          {
+            ClaimType = Permission.ClaimType,
+            ClaimValue = "AccessAdminPanel"
+          },
+          new RoleClaim
+          {
+            ClaimType = Permission.ClaimType,
+            ClaimValue = "View Users"
+          },
+          new RoleClaim
+          {
+            ClaimType = Permission.ClaimType,
+            ClaimValue =
+              "ManageUsersInRole_Closed distribution system representative"
+          },
+          new RoleClaim
+          {
+            ClaimType = Permission.ClaimType,
+            ClaimValue = "AssignRole_Closed distribution system representative"
+          },
+          new RoleClaim
+          {
+            ClaimType = Permission.ClaimType,
+            ClaimValue = "Listing payments"
+          },
+        }
+      }
+    );
 
     contentDefinitionManager.AlterPartDefinition(
       "DistributionSystemOperatorPart",
@@ -232,6 +275,45 @@ internal static partial class CreateAsyncMigrations
   {
     var contentDefinitionManager =
       serviceProvider.GetRequiredService<IContentDefinitionManager>();
+    var roleManager = serviceProvider.GetRequiredService<RoleManager<IRole>>();
+
+    await roleManager.CreateAsync(
+      new Role
+      {
+        NormalizedRoleName = "ClosedDistributionSystemRepresentative",
+        RoleName = "Closed Distribution System Representative",
+        RoleDescription = "Representative of a closed distribution system.",
+        RoleClaims = new()
+        {
+          new RoleClaim
+          {
+            ClaimType = Permission.ClaimType,
+            ClaimValue = "AccessAdminPanel"
+          },
+          new RoleClaim
+          {
+            ClaimType = Permission.ClaimType,
+            ClaimValue = "View Users"
+          },
+          new RoleClaim
+          {
+            ClaimType = Permission.ClaimType,
+            ClaimValue =
+              "ManageUsersInRole_Distribution system unit representative"
+          },
+          new RoleClaim
+          {
+            ClaimType = Permission.ClaimType,
+            ClaimValue = "AssignRole_Distribution system unit representative"
+          },
+          new RoleClaim
+          {
+            ClaimType = Permission.ClaimType,
+            ClaimValue = "Listing own payments"
+          },
+        }
+      }
+    );
 
     contentDefinitionManager.AlterPartDefinition(
       "ClosedDistributionSystemPart",
@@ -412,6 +494,24 @@ internal static partial class CreateAsyncMigrations
   {
     var contentDefinitionManager =
       serviceProvider.GetRequiredService<IContentDefinitionManager>();
+    var roleManager = serviceProvider.GetRequiredService<RoleManager<IRole>>();
+
+    await roleManager.CreateAsync(
+      new Role
+      {
+        NormalizedRoleName = "DistributionSystemUnitRepresentative",
+        RoleName = "Distribution System Unit Representative",
+        RoleDescription = "Representative of a distribution system unit.",
+        RoleClaims = new()
+        {
+          new RoleClaim
+          {
+            ClaimType = Permission.ClaimType,
+            ClaimValue = "Listing own payments"
+          },
+        }
+      }
+    );
 
     contentDefinitionManager.AlterPartDefinition(
       "DistributionSystemUnitPart",
