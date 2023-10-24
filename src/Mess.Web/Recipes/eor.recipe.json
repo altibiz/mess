@@ -21,8 +21,6 @@
         "OrchardCore.Users.ResetPassword",
         "OrchardCore.Diagnostics",
         "TheAdmin",
-        "Mess.Chart",
-        "Mess.MeasurementDevice",
         "Mess.Eor",
         "Mess.Forttech"
       ]

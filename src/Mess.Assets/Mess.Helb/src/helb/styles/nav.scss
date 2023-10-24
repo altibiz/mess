@@ -1,0 +1,76 @@
+.nav-button {
+  position: absolute;
+  padding-inline: 12px;
+  padding-block: 8px;
+  background-color: var(--secondary);
+  color: var(--foreground);
+  top: 100%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: var(--level-nav);
+}
+
+.nav-button:hover {
+  cursor: pointer;
+  background-color: var(--primary);
+  color: var(--inverse-foreground);
+}
+
+.nav-button::before {
+  content: "☰";
+}
+
+.logout-button {
+  display: inline;
+  position: relative;
+  padding: 0;
+  color: var(--inverse-foreground);
+}
+
+.logout-button:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+nav {
+  position: relative;
+  max-height: 368px;
+  transition: max-height var(--normal);
+  overflow: hidden;
+}
+
+nav > .container {
+  margin-top: 48px;
+  margin-bottom: 64px;
+}
+
+nav.closed {
+  max-height: 0;
+}
+
+nav ul {
+  margin-bottom: 16px;
+}
+
+nav ul:last-child {
+  margin-bottom: 0;
+}
+
+nav li {
+  margin-bottom: 8px;
+}
+
+nav li:last-child {
+  margin-bottom: 0;
+}
+
+nav a {
+  display: inline;
+  padding: 0;
+  color: var(--link-inverse-foreground);
+}
+
+nav a:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}

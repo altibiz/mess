@@ -17,6 +17,8 @@ export const importMessengers = async (): Promise<
 > => ({
   eor: await import("./eor"),
   egauge: await import("./egauge"),
+  pidgeon: await import("./pidgeon"),
+  abb: await import("./abb"),
 });
 
 export default Messenger;

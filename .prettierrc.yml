@@ -2,5 +2,11 @@ printWidth: 80
 tabWidth: 2
 useTabs: false
 trailingComma: all
+endOfLine: lf
+proseWrap: preserve
 plugins:
   - "@shopify/prettier-plugin-liquid"
+overrides:
+  - files: "*.{md,mdx}"
+    options:
+      proseWrap: always

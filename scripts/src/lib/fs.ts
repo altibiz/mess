@@ -57,7 +57,7 @@ export const mv = async (src: fs.PathLike, dest: fs.PathLike) => {
 export const rmrf = async (path: fs.PathLike) => {
   const fullPath = root(path.toString());
   if (await exists(fullPath)) {
-    return await fsp.rm(fullPath, { recursive: true });
+    return await fsp.rm(fullPath, { recursive: true, force: true });
   }
 };
 

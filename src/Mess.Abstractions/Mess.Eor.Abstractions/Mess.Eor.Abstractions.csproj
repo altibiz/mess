@@ -11,9 +11,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.MeasurementDevice.Abstractions/Mess.MeasurementDevice.Abstractions.csproj" />
+    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Iot.Abstractions/Mess.Iot.Abstractions.csproj" />
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Chart.Abstractions/Mess.Chart.Abstractions.csproj" />
-    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.ContentFields.Abstractions/Mess.ContentFields.Abstractions.csproj" />
+    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Fields.Abstractions/Mess.Fields.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

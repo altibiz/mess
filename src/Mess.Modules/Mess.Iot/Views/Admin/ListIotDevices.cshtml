@@ -1,0 +1,8 @@
+@model IotDeviceListViewModel
+
+@foreach (var device in Model.Devices)
+{
+  <dev>
+    @await Orchard.DisplayAsync(device, "SummaryAdmin")
+  </dev>
+}

@@ -13,7 +13,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.ContentFields.Abstractions/Mess.ContentFields.Abstractions.csproj" />
+    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Fields.Abstractions/Mess.Fields.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

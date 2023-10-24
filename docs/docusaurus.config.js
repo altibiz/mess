@@ -76,8 +76,12 @@ const config = {
             title: "Docs",
             items: [
               {
-                label: "Introduction",
-                to: "/docs/intro",
+                label: "Mess",
+                to: "/docs/mess",
+              },
+              {
+                label: "CLI",
+                to: "/docs/cli",
               },
             ],
           },

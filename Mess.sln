@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Web", "src\Mess.Web\Me
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mess.Modules", "Mess.Modules", "{2B0D55BD-ADCC-4A97-B1AC-3FB928D66D40}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.EventStore", "src\Mess.Modules\Mess.EventStore\Mess.EventStore.csproj", "{9FB0C941-2C29-4474-8A59-4A2E83C13EA1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Event", "src\Mess.Modules\Mess.Event\Mess.Event.csproj", "{9FB0C941-2C29-4474-8A59-4A2E83C13EA1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Timeseries", "src\Mess.Modules\Mess.Timeseries\Mess.Timeseries.csproj", "{4D922804-5A44-4784-A875-92E56FDE64B7}"
 EndProject
@@ -17,7 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mess.Themes", "Mess.Themes"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mess.Abstractions", "Mess.Abstractions", "{32F64CF4-695D-493F-B2DC-6177ECDF0A84}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.EventStore.Abstractions", "src\Mess.Abstractions\Mess.EventStore.Abstractions\Mess.EventStore.Abstractions.csproj", "{27325C62-1FE3-4D21-A805-DB8EDE186940}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Event.Abstractions", "src\Mess.Abstractions\Mess.Event.Abstractions\Mess.Event.Abstractions.csproj", "{27325C62-1FE3-4D21-A805-DB8EDE186940}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Timeseries.Abstractions", "src\Mess.Abstractions\Mess.Timeseries.Abstractions\Mess.Timeseries.Abstractions.csproj", "{58A1CA13-C822-42DE-8149-B634A4544EF7}"
 EndProject
@@ -27,7 +27,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mess.Abstractions", "Mess.A
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mess.Modules", "Mess.Modules", "{FF60624F-4E18-4E33-A4EF-62DFECAF3C75}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.EventStore.Test", "test\Mess.Modules\Mess.EventStore.Test\Mess.EventStore.Test.csproj", "{510808D2-90FE-4844-AC97-C3BF26C98E3B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Event.Test", "test\Mess.Modules\Mess.Event.Test\Mess.Event.Test.csproj", "{510808D2-90FE-4844-AC97-C3BF26C98E3B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Timeseries.Test", "test\Mess.Modules\Mess.Timeseries.Test\Mess.Timeseries.Test.csproj", "{F8F8FB78-938D-4704-A82C-1559F57BA5B6}"
 EndProject
@@ -35,15 +35,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Chart", "src\Mess.Modu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Chart.Abstractions", "src\Mess.Abstractions\Mess.Chart.Abstractions\Mess.Chart.Abstractions.csproj", "{EA07C61F-86D4-44E0-BE7A-845026645942}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.MeasurementDevice", "src\Mess.Modules\Mess.MeasurementDevice\Mess.MeasurementDevice.csproj", "{AF5327A0-19BC-4511-84D5-8898BCD5BBD6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Iot", "src\Mess.Modules\Mess.Iot\Mess.Iot.csproj", "{AF5327A0-19BC-4511-84D5-8898BCD5BBD6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.MeasurementDevice.Abstractions", "src\Mess.Abstractions\Mess.MeasurementDevice.Abstractions\Mess.MeasurementDevice.Abstractions.csproj", "{580A285B-D623-432D-92AC-84DB2DC1DE91}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Iot.Abstractions", "src\Mess.Abstractions\Mess.Iot.Abstractions\Mess.Iot.Abstractions.csproj", "{580A285B-D623-432D-92AC-84DB2DC1DE91}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.EventStore.Test.Abstractions", "test\Mess.Abstractions\Mess.EventStore.Test.Abstractions\Mess.EventStore.Test.Abstractions.csproj", "{51EE78ED-A3BD-4289-8204-D6F5485EDD6A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Event.Test.Abstractions", "test\Mess.Abstractions\Mess.Event.Test.Abstractions\Mess.Event.Test.Abstractions.csproj", "{51EE78ED-A3BD-4289-8204-D6F5485EDD6A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Timeseries.Test.Abstractions", "test\Mess.Abstractions\Mess.Timeseries.Test.Abstractions\Mess.Timeseries.Test.Abstractions.csproj", "{842AD850-E112-482E-AD5D-9701A3BEAE63}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.MeasurementDevice.Test", "test\Mess.Modules\Mess.MeasurementDevice.Test\Mess.MeasurementDevice.Test.csproj", "{A0B4BA4D-14DF-465F-B489-E9D1771BC20F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Iot.Test", "test\Mess.Modules\Mess.Iot.Test\Mess.Iot.Test.csproj", "{A0B4BA4D-14DF-465F-B489-E9D1771BC20F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Chart.Test", "test\Mess.Modules\Mess.Chart.Test\Mess.Chart.Test.csproj", "{16EF6E41-1FD8-4CA0-9FC7-6AF9DDAA9335}"
 EndProject
@@ -65,7 +65,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.OrchardCore", "src\Mes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.System.Test", "test\Mess.System.Test\Mess.System.Test.csproj", "{C4A02241-BC11-43E8-AD40-16D900FEEBCD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.MeasurementDevice.Test.Abstractions", "test\Mess.Abstractions\Mess.MeasurementDevice.Test.Abstractions\Mess.MeasurementDevice.Test.Abstractions.csproj", "{118F82D9-1939-4081-836B-A2630D7165F1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Iot.Test.Abstractions", "test\Mess.Abstractions\Mess.Iot.Test.Abstractions\Mess.Iot.Test.Abstractions.csproj", "{118F82D9-1939-4081-836B-A2630D7165F1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Document.Abstractions", "src\Mess.Abstractions\Mess.Document.Abstractions\Mess.Document.Abstractions.csproj", "{47EC70F2-6ECD-468B-83D5-6314EF404806}"
 EndProject
@@ -87,13 +87,47 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Eor.Test", "test\Mess.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Relational.Test", "test\Mess.Modules\Mess.Relational.Test\Mess.Relational.Test.csproj", "{F1899FBB-6CB7-47DD-AEA3-06E4B0C32CC3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.ContentFields", "src\Mess.Modules\Mess.ContentFields\Mess.ContentFields.csproj", "{5A2C4539-933B-4D69-A9BE-E02796D6C559}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Fields", "src\Mess.Modules\Mess.Fields\Mess.Fields.csproj", "{5A2C4539-933B-4D69-A9BE-E02796D6C559}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.ContentFields.Abstractions", "src\Mess.Abstractions\Mess.ContentFields.Abstractions\Mess.ContentFields.Abstractions.csproj", "{63D90BC1-C32F-4D7D-ADE8-67FCA97BA9F7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Fields.Abstractions", "src\Mess.Abstractions\Mess.Fields.Abstractions\Mess.Fields.Abstractions.csproj", "{63D90BC1-C32F-4D7D-ADE8-67FCA97BA9F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.ContentFields.Test.Abstractions", "test\Mess.Abstractions\Mess.ContentFields.Test.Abstractions\Mess.ContentFields.Test.Abstractions.csproj", "{2897AE8A-0283-4E66-ABE2-FB38214813E6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Fields.Test.Abstractions", "test\Mess.Abstractions\Mess.Fields.Test.Abstractions\Mess.Fields.Test.Abstractions.csproj", "{2897AE8A-0283-4E66-ABE2-FB38214813E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.ContentFields.Test", "test\Mess.Modules\Mess.ContentFields.Test\Mess.ContentFields.Test.csproj", "{2EE494AE-9F69-4907-8158-34A5D8723360}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Fields.Test", "test\Mess.Modules\Mess.Fields.Test\Mess.Fields.Test.csproj", "{2EE494AE-9F69-4907-8158-34A5D8723360}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Ozds", "src\Mess.Modules\Mess.Ozds\Mess.Ozds.csproj", "{369B2DC1-E68E-4BC5-9C44-AF17ED9F975D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Ozds.Abstractions", "src\Mess.Abstractions\Mess.Ozds.Abstractions\Mess.Ozds.Abstractions.csproj", "{5EE49F39-0238-40EC-80A8-835FE8E6D3FE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Ozds.Test", "test\Mess.Modules\Mess.Ozds.Test\Mess.Ozds.Test.csproj", "{478E00BC-C23E-476E-9B3D-9BE7871E7965}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Ozds.Test.Abstractions", "test\Mess.Abstractions\Mess.Ozds.Test.Abstractions\Mess.Ozds.Test.Abstractions.csproj", "{1F3C405C-743A-4552-B0F1-8EA73A2666C9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Helb", "src\Mess.Themes\Mess.Helb\Mess.Helb.csproj", "{F6D2ABE6-F5BD-41B8-8C61-5B0E8B2995D4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Billing", "src\Mess.Modules\Mess.Billing\Mess.Billing.csproj", "{D5781826-02CF-4FFB-99CE-1C4AFBCA39E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Billing.Abstractions", "src\Mess.Abstractions\Mess.Billing.Abstractions\Mess.Billing.Abstractions.csproj", "{50DBF146-6DDA-4363-BDA4-E2C39670C033}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Billing.Test", "test\Mess.Modules\Mess.Billing.Test\Mess.Billing.Test.csproj", "{9DA939E0-9496-4FF7-91C4-885C8505340E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Billing.Test.Abstractions", "test\Mess.Abstractions\Mess.Billing.Test.Abstractions\Mess.Billing.Test.Abstractions.csproj", "{F2FCEEBF-F969-4DA4-A683-944006C7B12A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Population", "src\Mess.Modules\Mess.Population\Mess.Population.csproj", "{8D253433-C258-4D65-9AEC-7B7A0B896417}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Population.Abstractions", "src\Mess.Abstractions\Mess.Population.Abstractions\Mess.Population.Abstractions.csproj", "{177518E7-625D-4535-AFC4-FD43DC32760F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Population.Test", "test\Mess.Modules\Mess.Population.Test\Mess.Population.Test.csproj", "{92350956-EB87-4650-AA4F-D835B8E94655}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Population.Test.Abstractions", "test\Mess.Abstractions\Mess.Population.Test.Abstractions\Mess.Population.Test.Abstractions.csproj", "{885BC0AA-8A4F-41AA-8AF7-FEACCB0345E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Enms", "src\Mess.Modules\Mess.Enms\Mess.Enms.csproj", "{F8A3BFC7-E45C-4E2B-B886-18579FD2B339}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Enms.Abstractions", "src\Mess.Abstractions\Mess.Enms.Abstractions\Mess.Enms.Abstractions.csproj", "{78E90DC3-2D94-4AC5-BCDB-F9363FC1840B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Enms.Test", "test\Mess.Modules\Mess.Enms.Test\Mess.Enms.Test.csproj", "{689F5DB5-EB34-4B69-9CFD-560052F72A59}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Enms.Test.Abstractions", "test\Mess.Abstractions\Mess.Enms.Test.Abstractions\Mess.Enms.Test.Abstractions.csproj", "{1F43B82F-EFB2-4907-BF58-115E15E81A91}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -260,6 +294,74 @@ Global
 		{2EE494AE-9F69-4907-8158-34A5D8723360}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2EE494AE-9F69-4907-8158-34A5D8723360}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2EE494AE-9F69-4907-8158-34A5D8723360}.Release|Any CPU.Build.0 = Release|Any CPU
+		{369B2DC1-E68E-4BC5-9C44-AF17ED9F975D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{369B2DC1-E68E-4BC5-9C44-AF17ED9F975D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{369B2DC1-E68E-4BC5-9C44-AF17ED9F975D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{369B2DC1-E68E-4BC5-9C44-AF17ED9F975D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EE49F39-0238-40EC-80A8-835FE8E6D3FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EE49F39-0238-40EC-80A8-835FE8E6D3FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EE49F39-0238-40EC-80A8-835FE8E6D3FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EE49F39-0238-40EC-80A8-835FE8E6D3FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{478E00BC-C23E-476E-9B3D-9BE7871E7965}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{478E00BC-C23E-476E-9B3D-9BE7871E7965}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{478E00BC-C23E-476E-9B3D-9BE7871E7965}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{478E00BC-C23E-476E-9B3D-9BE7871E7965}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F3C405C-743A-4552-B0F1-8EA73A2666C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F3C405C-743A-4552-B0F1-8EA73A2666C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F3C405C-743A-4552-B0F1-8EA73A2666C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F3C405C-743A-4552-B0F1-8EA73A2666C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6D2ABE6-F5BD-41B8-8C61-5B0E8B2995D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6D2ABE6-F5BD-41B8-8C61-5B0E8B2995D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6D2ABE6-F5BD-41B8-8C61-5B0E8B2995D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6D2ABE6-F5BD-41B8-8C61-5B0E8B2995D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5781826-02CF-4FFB-99CE-1C4AFBCA39E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5781826-02CF-4FFB-99CE-1C4AFBCA39E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5781826-02CF-4FFB-99CE-1C4AFBCA39E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5781826-02CF-4FFB-99CE-1C4AFBCA39E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50DBF146-6DDA-4363-BDA4-E2C39670C033}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50DBF146-6DDA-4363-BDA4-E2C39670C033}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50DBF146-6DDA-4363-BDA4-E2C39670C033}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50DBF146-6DDA-4363-BDA4-E2C39670C033}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9DA939E0-9496-4FF7-91C4-885C8505340E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DA939E0-9496-4FF7-91C4-885C8505340E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DA939E0-9496-4FF7-91C4-885C8505340E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DA939E0-9496-4FF7-91C4-885C8505340E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2FCEEBF-F969-4DA4-A683-944006C7B12A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2FCEEBF-F969-4DA4-A683-944006C7B12A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2FCEEBF-F969-4DA4-A683-944006C7B12A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2FCEEBF-F969-4DA4-A683-944006C7B12A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D253433-C258-4D65-9AEC-7B7A0B896417}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D253433-C258-4D65-9AEC-7B7A0B896417}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D253433-C258-4D65-9AEC-7B7A0B896417}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D253433-C258-4D65-9AEC-7B7A0B896417}.Release|Any CPU.Build.0 = Release|Any CPU
+		{177518E7-625D-4535-AFC4-FD43DC32760F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{177518E7-625D-4535-AFC4-FD43DC32760F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{177518E7-625D-4535-AFC4-FD43DC32760F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{177518E7-625D-4535-AFC4-FD43DC32760F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92350956-EB87-4650-AA4F-D835B8E94655}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92350956-EB87-4650-AA4F-D835B8E94655}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92350956-EB87-4650-AA4F-D835B8E94655}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92350956-EB87-4650-AA4F-D835B8E94655}.Release|Any CPU.Build.0 = Release|Any CPU
+		{885BC0AA-8A4F-41AA-8AF7-FEACCB0345E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{885BC0AA-8A4F-41AA-8AF7-FEACCB0345E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{885BC0AA-8A4F-41AA-8AF7-FEACCB0345E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{885BC0AA-8A4F-41AA-8AF7-FEACCB0345E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8A3BFC7-E45C-4E2B-B886-18579FD2B339}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8A3BFC7-E45C-4E2B-B886-18579FD2B339}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8A3BFC7-E45C-4E2B-B886-18579FD2B339}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8A3BFC7-E45C-4E2B-B886-18579FD2B339}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78E90DC3-2D94-4AC5-BCDB-F9363FC1840B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78E90DC3-2D94-4AC5-BCDB-F9363FC1840B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78E90DC3-2D94-4AC5-BCDB-F9363FC1840B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78E90DC3-2D94-4AC5-BCDB-F9363FC1840B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{689F5DB5-EB34-4B69-9CFD-560052F72A59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{689F5DB5-EB34-4B69-9CFD-560052F72A59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{689F5DB5-EB34-4B69-9CFD-560052F72A59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{689F5DB5-EB34-4B69-9CFD-560052F72A59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F43B82F-EFB2-4907-BF58-115E15E81A91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F43B82F-EFB2-4907-BF58-115E15E81A91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F43B82F-EFB2-4907-BF58-115E15E81A91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F43B82F-EFB2-4907-BF58-115E15E81A91}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{D6EC15B8-1F91-4BC6-9108-1BC74E2FF428} = {80810728-A06F-41B9-99F3-5E6CD1250127}
@@ -306,5 +408,22 @@ Global
 		{63D90BC1-C32F-4D7D-ADE8-67FCA97BA9F7} = {32F64CF4-695D-493F-B2DC-6177ECDF0A84}
 		{2897AE8A-0283-4E66-ABE2-FB38214813E6} = {D0DF296D-9309-4659-A9C0-4833F4201BAA}
 		{2EE494AE-9F69-4907-8158-34A5D8723360} = {FF60624F-4E18-4E33-A4EF-62DFECAF3C75}
+		{369B2DC1-E68E-4BC5-9C44-AF17ED9F975D} = {2B0D55BD-ADCC-4A97-B1AC-3FB928D66D40}
+		{5EE49F39-0238-40EC-80A8-835FE8E6D3FE} = {32F64CF4-695D-493F-B2DC-6177ECDF0A84}
+		{478E00BC-C23E-476E-9B3D-9BE7871E7965} = {FF60624F-4E18-4E33-A4EF-62DFECAF3C75}
+		{1F3C405C-743A-4552-B0F1-8EA73A2666C9} = {D0DF296D-9309-4659-A9C0-4833F4201BAA}
+		{F6D2ABE6-F5BD-41B8-8C61-5B0E8B2995D4} = {B492CD32-8200-4886-A9C1-86FE5B8FBB97}
+		{D5781826-02CF-4FFB-99CE-1C4AFBCA39E3} = {2B0D55BD-ADCC-4A97-B1AC-3FB928D66D40}
+		{50DBF146-6DDA-4363-BDA4-E2C39670C033} = {32F64CF4-695D-493F-B2DC-6177ECDF0A84}
+		{9DA939E0-9496-4FF7-91C4-885C8505340E} = {FF60624F-4E18-4E33-A4EF-62DFECAF3C75}
+		{F2FCEEBF-F969-4DA4-A683-944006C7B12A} = {D0DF296D-9309-4659-A9C0-4833F4201BAA}
+		{8D253433-C258-4D65-9AEC-7B7A0B896417} = {2B0D55BD-ADCC-4A97-B1AC-3FB928D66D40}
+		{177518E7-625D-4535-AFC4-FD43DC32760F} = {32F64CF4-695D-493F-B2DC-6177ECDF0A84}
+		{92350956-EB87-4650-AA4F-D835B8E94655} = {FF60624F-4E18-4E33-A4EF-62DFECAF3C75}
+		{885BC0AA-8A4F-41AA-8AF7-FEACCB0345E8} = {D0DF296D-9309-4659-A9C0-4833F4201BAA}
+		{F8A3BFC7-E45C-4E2B-B886-18579FD2B339} = {2B0D55BD-ADCC-4A97-B1AC-3FB928D66D40}
+		{78E90DC3-2D94-4AC5-BCDB-F9363FC1840B} = {32F64CF4-695D-493F-B2DC-6177ECDF0A84}
+		{689F5DB5-EB34-4B69-9CFD-560052F72A59} = {FF60624F-4E18-4E33-A4EF-62DFECAF3C75}
+		{1F43B82F-EFB2-4907-BF58-115E15E81A91} = {D0DF296D-9309-4659-A9C0-4833F4201BAA}
 	EndGlobalSection
 EndGlobal

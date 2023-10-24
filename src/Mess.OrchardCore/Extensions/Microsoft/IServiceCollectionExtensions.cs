@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 using OrchardCore.BackgroundTasks;
+using OrchardCore.ContentManagement.Handlers;
 using OrchardCore.ContentTypes.Editors;
 using OrchardCore.Modules;
 using OrchardCore.Navigation;
@@ -46,7 +48,7 @@ public static class IServiceCollectionExtensions
   )
     where TModularTenantEvents : class, IModularTenantEvents
   {
-    services.AddSingleton<IModularTenantEvents, TModularTenantEvents>();
+    services.AddScoped<IModularTenantEvents, TModularTenantEvents>();
     return services;
   }
 
@@ -102,6 +104,24 @@ public static class IServiceCollectionExtensions
       IContentPartFieldDefinitionDisplayDriver,
       TContentPartFieldDefinitionDisplayDriver
     >();
+    return services;
+  }
+
+  public static IServiceCollection AddContentHandler<TContentHandler>(
+    this IServiceCollection services
+  )
+    where TContentHandler : class, IContentHandler
+  {
+    services.AddScoped<IContentHandler, TContentHandler>();
+    return services;
+  }
+
+  public static IServiceCollection AddAuthorizationHandler<TAuthorizationHandler>(
+    this IServiceCollection services
+  )
+    where TAuthorizationHandler : class, IAuthorizationHandler
+  {
+    services.AddScoped<IAuthorizationHandler, TAuthorizationHandler>();
     return services;
   }
 }

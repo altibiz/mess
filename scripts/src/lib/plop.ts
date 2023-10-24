@@ -1,7 +1,37 @@
-import handlebars from "handlebars";
 import fs from "fs/promises";
+import handlebars from "handlebars";
 import path from "path/posix";
 import { root } from "./fs";
+import { log } from "./log";
+
+export const plopd = async (
+  template: string,
+  destination: string,
+  config: Record<string, unknown>,
+) => {
+  const templatePath = root(`scripts/assets/plop/${template}`);
+  const destinationPath = root(destination);
+
+  const content = await fs.readdir(templatePath);
+  for (const name of content) {
+    const namePath = path.join(templatePath, name);
+    if ((await fs.stat(namePath)).isDirectory()) {
+      const nameTemplate = handlebars.compile(name);
+      const resultName = nameTemplate(config);
+      const resultPath = path.join(destinationPath, resultName);
+
+      await fs.mkdir(resultPath, { recursive: true });
+
+      // NOTE: a bit backwards, but we need to pass the relative path
+      const dirTemplate = path.relative(root("scripts/assets/plop"), namePath);
+      await plopd(dirTemplate, resultPath, config);
+    } else {
+      await plopf(namePath, destinationPath, config);
+    }
+  }
+
+  log.info({ message: `Plopped ${templatePath} in ${destinationPath}` });
+};
 
 export const plopf = async (
   template: string,
@@ -23,28 +53,6 @@ export const plopf = async (
   const resultContent = contentTemplate(config);
 
   await fs.writeFile(resultPath, resultContent, "utf8");
-};
 
-export const plopd = async (
-  template: string,
-  destination: string,
-  config: Record<string, unknown>,
-) => {
-  const templatePath = root(`scripts/plop/${template}`);
-  const destinationPath = root(destination);
-
-  const content = await fs.readdir(templatePath);
-  for (const name of content) {
-    const namePath = path.join(templatePath, name);
-    if ((await fs.stat(namePath)).isDirectory()) {
-      const nameTemplate = handlebars.compile(name);
-      const resultName = nameTemplate(config);
-      const resultPath = path.join(destinationPath, resultName);
-
-      await fs.mkdir(resultPath, { recursive: true });
-      await plopd(namePath, resultPath, config);
-    } else {
-      await plopf(namePath, destinationPath, config);
-    }
-  }
+  log.debug({ message: `Plopped ${templatePath} in ${destinationPath}` });
 };

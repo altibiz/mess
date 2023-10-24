@@ -2,7 +2,7 @@
   "name": "@mess/docs",
   "private": true,
   "scripts": {
-    "watch": "docusaurus start",
+    "watch": "docusaurus start --no-open",
     "lint:tsc": "tsc --noEmit",
     "lint": "run-s 'lint:*'"
   },

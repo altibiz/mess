@@ -9,7 +9,7 @@ using OrchardCore.ContentManagement.Metadata;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.DependencyInjection;
 using Mess.Chart.Providers;
-using Mess.Chart.Abstractions.Providers;
+using Mess.Chart.Abstractions.Services;
 using OrchardCore.Mvc.ModelBinding;
 
 namespace Mess.Chart.Drivers;
@@ -23,7 +23,7 @@ public class TimeseriesChartPartDisplayDriver
   )
   {
     var chartProviders = _serviceProvider
-      .GetServices<IChartProvider>()
+      .GetServices<IChartFactory>()
       .Where(
         chartDataProvider =>
           chartDataProvider.ContentType != PreviewChartProvider.ChartContentType
@@ -58,7 +58,7 @@ public class TimeseriesChartPartDisplayDriver
   )
   {
     var chartProviders = _serviceProvider
-      .GetServices<IChartProvider>()
+      .GetServices<IChartFactory>()
       .Where(
         chartDataProvider =>
           chartDataProvider.ContentType != PreviewChartProvider.ChartContentType

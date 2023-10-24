@@ -1,4 +1,4 @@
-using Mess.Chart.Abstractions.Providers;
+using Mess.Chart.Abstractions.Services;
 using Mess.Chart.Abstractions.Models;
 using Microsoft.AspNetCore.Mvc;
 using OrchardCore.ContentManagement;
@@ -37,7 +37,7 @@ public class ChartController : Controller
     }
 
     var dataProvider = _serviceProvider
-      .GetServices<IChartProvider>()
+      .GetServices<IChartFactory>()
       .FirstOrDefault(
         dataProvider =>
           dataProvider.ContentType == metadataPart.ContentItem.ContentType
@@ -91,7 +91,7 @@ public class ChartController : Controller
     }
 
     var dataProvider = _serviceProvider
-      .GetServices<IChartProvider>()
+      .GetServices<IChartFactory>()
       .FirstOrDefault(
         dataProvider =>
           dataProvider.ContentType == PreviewChartProvider.ChartContentType

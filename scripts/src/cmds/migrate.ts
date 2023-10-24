@@ -59,7 +59,7 @@ export default cmd({
   if (isInitial) {
     await mv(
       await globf(
-        `src/Mess.Modules/${project}/Mess/**/Timeseries/Migrations/*Snapshot.cs`,
+        `src/Mess.Modules/${project}/Mess/**/Timeseries/*Snapshot.cs`,
         "Initial migration snapshot not found",
       ),
       `src/Mess.Modules/${project}/Timeseries/Migrations`,
@@ -71,8 +71,9 @@ export default cmd({
   if (format) {
     await task(
       "Formatted with csharpier",
-      "dotnet csharpier" +
-        ` ${root(`src/Mess.Modules/${project}/Timeseries/Migrations`)}`,
+      `dotnet csharpier ${root(
+        `src/Mess.Modules/${project}/Timeseries/Migrations`,
+      )}`,
     );
   }
 });

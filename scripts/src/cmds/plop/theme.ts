@@ -1,4 +1,7 @@
-import { cmd, plopd } from "../../lib/index";
+import { cmd, plopd, task } from "../../lib/index";
+
+const exampleName = "Forttech";
+const exampleDescription = "The Forttech company theme.";
 
 export default cmd({
   usage: "theme <name> <description>",
@@ -6,15 +9,21 @@ export default cmd({
   builder: (_) =>
     _.positional("name", {
       type: "string",
-      group: "Theme name",
-    }).positional("description", {
-      type: "string",
-      group: "Theme description",
-    }),
-})(async ({ name, description }) => {
+      description: `Theme name (like '${exampleName}')`,
+    })
+      .positional("description", {
+        type: "string",
+        description: `Theme description (like '${exampleDescription}')`,
+      })
+      .option("format", {
+        type: "boolean",
+        description: "Format the code after plop",
+        default: true,
+      }),
+})(async ({ name, description, format }) => {
   const lowercaseName = name.toLowerCase();
   const longName = name.replace(/(a-z)(A-Z)/g, "$1 $2");
-  const hyphenatedName = name.replace(/([a-z])([A-Z])/g, "$1-$2");
+  const hyphenatedName = name.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
 
   const config = {
     name,
@@ -25,4 +34,20 @@ export default cmd({
   };
 
   await plopd("theme", `src/Mess.Themes/Mess.${name}`, config);
+  await task(
+    `Added project Mess.${name} to solution`,
+    `dotnet sln add src/Mess.Themes/Mess.${name}/Mess.${name}.csproj`,
+  );
+
+  if (format) {
+    await task("Formatted with csharpier", "dotnet csharpier .");
+
+    await task(
+      "Formatted with prettier",
+      "yarn prettier --write" +
+        " --ignore-path .prettierignore" +
+        " --cache --cache-strategy metadata" +
+        " .",
+    );
+  }
 });

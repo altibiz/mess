@@ -8,10 +8,11 @@ import styles from "./index.module.css";
 
 export default function Home(): JSX.Element {
   const { siteConfig } = useDocusaurusContext();
+
   return (
     <Layout
-      title={`Hello from ${siteConfig.title}`}
-      description="Description will go into a meta tag in <head />"
+      title={`${siteConfig.title} documentation`}
+      description={`${siteConfig.tagline}`}
     >
       <header className={clsx("hero hero--primary", styles.heroBanner)}>
         <div className="container">
@@ -20,14 +21,22 @@ export default function Home(): JSX.Element {
           <div className={styles.buttons}>
             <Link
               className="button button--secondary button--lg"
-              to="/docs/intro"
+              to="/docs/mess"
             >
-              Docusaurus Tutorial - 5min ⏱️
+              Docs
             </Link>
           </div>
         </div>
       </header>
-      <main>main</main>
+      <main className={styles.description}>
+        <p>
+          Mess is a web application designed to accumulate measurements and
+          metric data from various sources and display it in an easily
+          digestible web interface. It leverages the event store pattern to
+          handle data via push and pull mechanisms, providing a central hub for
+          all your metric data needs.
+        </p>
+      </main>
     </Layout>
   );
 }

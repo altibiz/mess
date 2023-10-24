@@ -12,12 +12,12 @@ public abstract class HypertableEntity
 
   [HypertableColumn]
   [Column(TypeName = "timestamptz")]
-  public DateTime Timestamp
+  public DateTimeOffset Timestamp
   {
     get => _timestamp.ToUniversalTime();
     set => _timestamp = value.ToUniversalTime();
   }
 
   [NotMapped]
-  private DateTime _timestamp = default!;
+  private DateTimeOffset _timestamp = default!;
 }

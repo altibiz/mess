@@ -24,6 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="../../../src/Mess.System/Mess.System.csproj" />
     <ProjectReference Include="../../../src/Mess.OrchardCore/Mess.OrchardCore.csproj" />
+    <ProjectReference Include="../../../src/Mess.Abstractions/*/*.csproj" />
   </ItemGroup>
 
   <ItemGroup>

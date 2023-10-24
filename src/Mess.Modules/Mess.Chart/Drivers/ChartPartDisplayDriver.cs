@@ -5,9 +5,8 @@ using OrchardCore.ContentManagement.Display.ContentDisplay;
 using OrchardCore.ContentManagement.Display.Models;
 using OrchardCore.DisplayManagement.ModelBinding;
 using OrchardCore.DisplayManagement.Views;
-using OrchardCore.ContentManagement.Metadata;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Mess.Chart.Abstractions.Providers;
+using Mess.Chart.Abstractions.Services;
 using Microsoft.Extensions.DependencyInjection;
 using YesSql;
 using Mess.Chart.Indexes;
@@ -40,7 +39,7 @@ public class ChartPartDisplayDriver : ContentPartDisplayDriver<ChartPart>
   )
   {
     var chartProvider = _serviceProvider
-      .GetServices<IChartProvider>()
+      .GetServices<IChartFactory>()
       .FirstOrDefault(
         provider => provider.ContentType == part.ContentItem.ContentType
       );

@@ -11,7 +11,7 @@ public class AdminMenu : INavigationProvider
 {
   public Task BuildNavigationAsync(string name, NavigationBuilder builder)
   {
-    if (!String.Equals(name, "admin", StringComparison.OrdinalIgnoreCase))
+    if (!string.Equals(name, "admin", StringComparison.OrdinalIgnoreCase))
     {
       return Task.CompletedTask;
     }
@@ -28,14 +28,14 @@ public class AdminMenu : INavigationProvider
               .AddClass("devices")
               .Id("devices")
               .Action(
-                nameof(EorMeasurementDeviceAdminController.List),
-                typeof(EorMeasurementDeviceAdminController).ControllerName(),
+                nameof(EorIotDeviceAdminController.List),
+                typeof(EorIotDeviceAdminController).ControllerName(),
                 "Mess.Eor"
               )
               .Permission(
                 ContentTypePermissionsHelper.CreateDynamicPermission(
                   CommonPermissions.ViewOwnContent,
-                  "EorMeasurementDevice"
+                  "EorIotDevice"
                 )
               )
               .LocalNav()

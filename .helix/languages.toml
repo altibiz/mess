@@ -1,6 +1,12 @@
 [[language]]
+name = "nix"
+auto-format = true
+formatter = { command = "nixpkgs-fmt" }
+
+[[language]]
 name = "c-sharp"
 formatter = { command = "dotnet", args = [ "csharpier" ] }
+language-server = { command = "OmniSharp", args = [ "-lsp" ], timeout = 10000 }
 auto-format = true
 
 [[language]]

@@ -12,24 +12,24 @@
     "scripts": "yarn workspace @mess/scripts",
     "docs": "yarn workspace @mess/docs",
     "publishing": "yarn workspace @mess/publishing",
-    "assets": "yarn workspace @mess/assets"
+    "assets": "yarn workspace @mess/pack"
   },
   "packageManager": "yarn@3.6.1",
   "workspaces": [
     "scripts",
     "docs",
     "src/Mess.Publishing",
-    "src/Mess.Assets",
-    "src/Mess.Assets/config/*",
-    "src/Mess.{Modules,Themes}/*/Assets"
+    "src/Mess.Pack",
+    "src/Mess.Pack/config/*",
+    "src/Mess.Assets/*"
   ],
   "devDependencies": {
     "@commitlint/cli": "^17.6.7",
     "@commitlint/config-conventional": "^17.6.7",
     "@shopify/prettier-plugin-liquid": "^1.2.2",
     "eslint": "^8.46.0",
+    "husky": "^8.0.3",
     "prettier": "^2.8.8",
-    "remark-cli": "^11.0.0",
     "typescript": "^5.1.6"
   },
   "engines": {

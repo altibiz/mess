@@ -4,9 +4,10 @@ $ROOT_DIR = [System.IO.Path]::GetDirectoryName($MyInvocation.MyCommand.Definitio
 
 $DOCKER_URL = "https://docs.docker.com/engine/install/"
 
-$DOTNET_VERSION = $(
+$EXACT_DOTNET_VERSION = $(
   Get-Content -Path "$ROOT_DIR/global.json" | ConvertFrom-Json
-).sdk.version.Split('.')[0]
+).sdk.version
+$DOTNET_VERSION = $EXACT_DOTNET_VERSION.Split('.')[0]
 $DOTNET_INSTALL_URL = "https://dot.net/v1/dotnet-install.ps1"
 $DOTNET_DOWNLOAD_URL = "https://dotnet.microsoft.com/download"
 $DOTNET_INSTALL_QUESTION = "Would you like to install version $DOTNET_VERSION using dotnet-install?"
@@ -120,35 +121,55 @@ function Get-Node-Version {
 }
 
 function Install-Dotnet {
-  $InstallDir = if (Test-Path 'C:\Program Files\dotnet') {
-    Write-Host "Installing .NET SDK $DOTNET_VERSION in 'C:\Program Files\dotnet'..."
-    'C:\Program Files\dotnet'
-  } else {
-    Write-Host "Installing .NET SDK $DOTNET_VERSION in default location..."
-    $null
-  }
-
   $TempFile = [System.IO.Path]::GetTempFileName()
   $TempScript = [System.IO.Path]::ChangeExtension($TempFile, 'ps1')
   Invoke-WebRequest -Uri $DOTNET_INSTALL_URL -OutFile $TempScript
+
+  $IsSystemInstall = if (Test-Path 'C:\Program Files\dotnet') {
+    Write-Host "Installing .NET SDK $DOTNET_VERSION machine wide..."
+    $true
+  } else {
+    Write-Host "Installing .NET SDK $DOTNET_VERSION for current user..."
+    $false
+  }
+  $InstallDir = if ($IsSystemInstall) {
+    "C:\Program Files\dotnet"
+  } else {
+    "$env:LOCALAPPDATA\Microsoft\dotnet"
+  }
+  $InstallDirArg = "-InstallDir '$InstallDir'"
+  $InstallExpression = "&'$TempScript' -Version $EXACT_DOTNET_VERSION $InstallDirArg -Verbose -NoPath"
 
   $ExitCodeFile = [System.IO.Path]::GetTempFileName()
   $WrapperFile = [System.IO.Path]::GetTempFileName()
   $WrapperScript = [System.IO.Path]::ChangeExtension($WrapperFile, 'ps1')
   $WrapperContent = @"
-`$exitCode = 0
+`$ExitCode = 2
 try {
-  Invoke-Expression "'$TempScript' -Version $DOTNET_VERSION -InstallDir '$InstallDir' -Verbose"
+  Invoke-Expression "$InstallExpression"
+  Write-Host 'Adding dotnet to path...'
+  `$EnvTarget = if ("$IsSystemInstall" -eq "True") {
+    [System.EnvironmentVariableTarget]::Machine
+  } else {
+    [System.EnvironmentVariableTarget]::User
+  }
+  [Environment]::SetEnvironmentVariable(
+    "Path",
+    [Environment]::GetEnvironmentVariable("Path", `$EnvTarget)
+      + ";$InstallDir",
+    `$EnvTarget
+  )
+  `$ExitCode = 0
 } catch {
-  Write-Host 'An error occurred during installation!'
-  `$exitCode = 1
+  Write-Host "An error occurred during installation:``n `$_"
+  `$ExitCode = 1
 }
-`$exitCode | Out-File '$ExitCodeFile'
+`$ExitCode | Out-File '$ExitCodeFile'
 Read-Host 'Press any key to continue...'
 "@
   Set-Content -Path $WrapperScript -Value $WrapperContent
 
-  Start-Process powershell `
+  Start-Process pwsh `
     -ArgumentList "-File", $WrapperScript `
     -Verb RunAs `
     -Wait
@@ -158,7 +179,7 @@ Read-Host 'Press any key to continue...'
   Remove-Item -Path $TempScript
   Remove-Item -Path $WrapperScript
 
-  if ($ExitCode -eq 1) {
+  if ($ExitCode -ne 0) {
     Write-Host "An error occurred during the .NET SDK installation."
     exit 1
   } else {
@@ -249,7 +270,14 @@ if ($InstalledDotnet -or $InstalledNode -or $InstalledYarn) {
 }
 
 Write-Output 'require("prettier")' | yarn node >$null 2>&1
-if (!$?) { Install-Yarn-Packages }
+if (!$?) {
+  Write-Warning (
+    "``prettier`` not found." +
+    " Please make sure you run ``mess prepare``" +
+    " before running any other command."
+  )
+  Install-Yarn-Packages
+}
 
 $YarnArgs = $args -join "' '"
 Invoke-Expression "yarn scripts start '$YarnArgs'"

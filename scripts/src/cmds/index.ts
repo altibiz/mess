@@ -1,5 +1,6 @@
 import clean from "./clean";
 import dev from "./dev";
+import docs from "./docs";
 import format from "./format";
 import lint from "./lint";
 import migrate from "./migrate";
@@ -18,4 +19,5 @@ export default {
   publish,
   test,
   dev,
+  docs,
 };

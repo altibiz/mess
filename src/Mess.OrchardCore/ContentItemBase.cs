@@ -6,6 +6,7 @@ using Mess.System.Extensions.Functions;
 using Mess.System.Extensions.Strings;
 using Mess.System.Extensions.Enumerables;
 using System.Linq.Expressions;
+using YesSql;
 
 namespace Mess.OrchardCore;
 
@@ -18,7 +19,7 @@ public abstract class ContentItemBase
 
   public ContentItem Inner { get; init; }
 
-  public Lazy<ContainedPart?> ContainedPart { get; init; } = default!;
+  public Lazy<ContainedPart> ContainedPart { get; init; } = default!;
 
   public static implicit operator ContentItem(ContentItemBase @this) =>
     @this.Inner;
@@ -154,9 +155,7 @@ public static class ContentItemExtensions
     var orchardContentItem = await content.GetAsync(id);
     if (orchardContentItem is null)
     {
-      throw new InvalidOperationException(
-        $"Could not get content item of type {typeof(T)} with id {id}"
-      );
+      return null;
     }
 
     return orchardContentItem.AsContent<T>();
@@ -172,9 +171,7 @@ public static class ContentItemExtensions
     var orchardContentItem = await content.GetAsync(id, options);
     if (orchardContentItem is null)
     {
-      throw new InvalidOperationException(
-        $"Could not get content item of type {typeof(T)} with id {id}"
-      );
+      return null;
     }
 
     return orchardContentItem.AsContent<T>();
@@ -189,9 +186,7 @@ public static class ContentItemExtensions
     var orchardContentItem = await content.GetVersionAsync(id);
     if (orchardContentItem is null)
     {
-      throw new InvalidOperationException(
-        $"Could not get content item of type {typeof(T)} with id {id}"
-      );
+      return null;
     }
 
     return orchardContentItem.AsContent<T>();
@@ -206,14 +201,35 @@ public static class ContentItemExtensions
     var orchardContentItems = await content.GetAsync(ids);
     if (orchardContentItems is null)
     {
-      throw new InvalidOperationException(
-        $"Could not get content items of type {typeof(T)} with ids {string.Join(", ", ids)}"
-      );
+      return Enumerable.Empty<T>();
     }
 
     return orchardContentItems
       .Select(orchardContentItem => orchardContentItem.AsContent<T>())
       .WhereNotNull();
+  }
+
+  public static async Task<IEnumerable<T>> ListContentAsync<T>(
+    this IQuery<ContentItem> query
+  )
+    where T : ContentItemBase
+  {
+    var items = await query.ListAsync();
+    return items.Select(item => item.AsContent<T>());
+  }
+
+  public static async Task<T?> FirstOrDefaultContentAsync<T>(
+    this IQuery<ContentItem> query
+  )
+    where T : ContentItemBase
+  {
+    var items = await query.FirstOrDefaultAsync();
+    if (items is null)
+    {
+      return null;
+    }
+
+    return items.AsContent<T>();
   }
 
   internal static PropertyInfo GetProperty<TItem, TPart>(

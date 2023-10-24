@@ -13,27 +13,27 @@ public static class AuthorizationServiceExtensions
     this IAuthorizationService authorizationService,
     ClaimsPrincipal claimsPrincipal,
     User user,
-    EorMeasurementDeviceItem eorMeasurementDevice
+    EorIotDeviceItem contentItem
   )
   {
     return await authorizationService.AuthorizeAsync(
         claimsPrincipal,
         CommonPermissions.ViewContent,
-        eorMeasurementDevice.Inner
+        contentItem.Inner
       )
       || (
         await authorizationService.AuthorizeAsync(
           claimsPrincipal,
           CommonPermissions.ViewOwnContent,
-          eorMeasurementDevice.Inner
+          contentItem.Inner
         )
       )
       || (
         await authorizationService.AuthorizeAsync(
           claimsPrincipal,
-          EorPermissions.ViewOwnedEorMeasurementDevices
+          EorPermissions.ViewOwnedEorIotDevices
         )
-        && eorMeasurementDevice.EorMeasurementDevicePart.Value.Owner.UserIds.FirstOrDefault()
+        && contentItem.EorIotDevicePart.Value.Owner.UserIds.FirstOrDefault()
           == user.UserId
       );
   }
@@ -42,27 +42,27 @@ public static class AuthorizationServiceExtensions
     this IAuthorizationService authorizationService,
     ClaimsPrincipal claimsPrincipal,
     User user,
-    EorMeasurementDeviceItem eorMeasurementDevice
+    EorIotDeviceItem contentItem
   )
   {
     return await authorizationService.AuthorizeAsync(
         claimsPrincipal,
-        EorPermissions.ControlEorMeasurementDevice,
-        eorMeasurementDevice.Inner
+        EorPermissions.ControlEorIotDevice,
+        contentItem.Inner
       )
       || (
         await authorizationService.AuthorizeAsync(
           claimsPrincipal,
-          EorPermissions.ControlOwnEorMeasurementDevice
+          EorPermissions.ControlOwnEorIotDevice
         )
-        && eorMeasurementDevice.Inner.Owner == user.UserId
+        && contentItem.Inner.Owner == user.UserId
       )
       || (
         await authorizationService.AuthorizeAsync(
           claimsPrincipal,
-          EorPermissions.ControlOwnedEorMeasurementDevice
+          EorPermissions.ControlOwnedEorIotDevice
         )
-        && eorMeasurementDevice.EorMeasurementDevicePart.Value.Owner.UserIds.FirstOrDefault()
+        && contentItem.EorIotDevicePart.Value.Owner.UserIds.FirstOrDefault()
           == user.UserId
       );
   }

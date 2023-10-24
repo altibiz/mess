@@ -1,0 +1,39 @@
+.status {
+  position: absolute;
+  right: 0;
+  top: 0;
+  border-radius: 16px;
+  padding-block: 12px;
+  padding-inline: 12px;
+  font-weight: 300;
+  font-style: normal;
+  font-size: 0.75rem;
+  line-height: 0;
+}
+
+.status-ok {
+  background-color: var(--success);
+  color: var(--background);
+}
+
+.status-ok::after {
+  content: " ✔";
+}
+
+.status-error {
+  background-color: var(--danger);
+  color: var(--background);
+}
+
+.status-error::after {
+  content: " ✘";
+}
+
+.status-warning {
+  background-color: var(--warning);
+  color: var(--foreground);
+}
+
+.status-warning::after {
+  content: " ✘";
+}

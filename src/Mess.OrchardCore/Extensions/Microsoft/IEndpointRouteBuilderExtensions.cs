@@ -1,7 +1,9 @@
 using Mess.OrchardCore.Extensions.OrchardCore;
+using Mess.System.Extensions.Strings;
 using Microsoft.Extensions.Options;
 using OrchardCore.Admin;
 using OrchardCore.Environment.Shell;
+using OrchardCore.Mvc.Core.Utilities;
 
 namespace Mess.OrchardCore.Extensions.Microsoft;
 
@@ -82,6 +84,28 @@ public static class IEndpointRouteBuilderExtensions
     }
 
     return endpoints;
+  }
+
+  public static void MapAreaControllerRoute<T>(
+    this IEndpointRouteBuilder endpoints,
+    string action,
+    string pattern
+  )
+  {
+    var type = typeof(T);
+    var module =
+      (type.Namespace
+      ?? throw new NullReferenceException(
+        $"Type '{typeof(T).Name}' is not in a namespace"
+      )).RegexRemove(@"\.Controllers$");
+    var controller = type.ControllerName();
+
+    endpoints.MapAreaControllerRoute(
+      name: $"{module}.{controller}.{action}",
+      pattern: pattern,
+      areaName: module,
+      defaults: new { controller, action }
+    );
   }
 }
 

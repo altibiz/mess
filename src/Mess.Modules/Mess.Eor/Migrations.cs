@@ -1,29 +1,14 @@
-using Mess.Chart.Abstractions.Models;
-using Mess.Eor.Abstractions.Client;
 using Mess.Eor.Abstractions.Indexes;
-using Mess.Eor.Abstractions.Models;
-using Mess.Eor.Chart.Providers;
-using Mess.MeasurementDevice.Abstractions.Indexes;
-using Mess.ContentFields.Abstractions.Extensions;
-using Mess.OrchardCore;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Hosting;
 using OrchardCore.ContentFields.Settings;
-using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.ContentManagement.Metadata.Settings;
 using OrchardCore.Data.Migration;
-using OrchardCore.Recipes.Services;
 using OrchardCore.Security;
 using OrchardCore.Security.Permissions;
 using OrchardCore.Title.Models;
-using OrchardCore.Users.Models;
-using OrchardCore.Users.Services;
-using YesSql;
 using YesSql.Sql;
-using Mess.ContentFields.Abstractions.Services;
-using Mess.ContentFields.Abstractions.Settings;
-using Mess.ContentFields.Abstractions;
+using Mess.Fields.Abstractions.Settings;
 
 namespace Mess.Eor;
 
@@ -32,7 +17,7 @@ public class Migrations : DataMigration
   public async Task<int> CreateAsync()
   {
     _contentDefinitionManager.AlterPartDefinition(
-      "EorMeasurementDevicePart",
+      "EorIotDevicePart",
       builder =>
         builder
           .Attachable()
@@ -169,7 +154,7 @@ public class Migrations : DataMigration
     );
 
     _contentDefinitionManager.AlterTypeDefinition(
-      "EorMeasurementDevice",
+      "EorIotDevice",
       builder =>
         builder
           .Creatable()
@@ -191,19 +176,19 @@ public class Migrations : DataMigration
                     RenderTitle = true,
                     Options = TitlePartOptions.GeneratedHidden,
                     Pattern =
-                      @"{{- ContentItem.Content.MeasurementDevicePart.DeviceId.Text -}}"
+                      @"{{- ContentItem.Content.IotDevicePart.DeviceId.Text -}}"
                   }
                 )
           )
           .WithPart(
-            "MeasurementDevicePart",
+            "IotDevicePart",
             part =>
               part.WithDisplayName("Measurement device")
                 .WithDescription("A measurement device.")
                 .WithPosition("2")
           )
           .WithPart(
-            "EorMeasurementDevicePart",
+            "EorIotDevicePart",
             part =>
               part.WithDisplayName("Eor measurement device")
                 .WithDescription("An Eor measurement device.")
@@ -220,7 +205,7 @@ public class Migrations : DataMigration
           )
     );
 
-    SchemaBuilder.CreateMapIndexTable<EorMeasurementDeviceIndex>(
+    SchemaBuilder.CreateMapIndexTable<EorIotDeviceIndex>(
       table =>
         table
           .Column<string>("ContentItemId", c => c.WithLength(64))
@@ -228,16 +213,16 @@ public class Migrations : DataMigration
           .Column<string>("OwnerId", c => c.WithLength(64))
           .Column<string>("Author", c => c.WithLength(256))
     );
-    SchemaBuilder.AlterIndexTable<EorMeasurementDeviceIndex>(table =>
+    SchemaBuilder.AlterIndexTable<EorIotDeviceIndex>(table =>
     {
-      table.CreateIndex("IDX_EorMeasurementDeviceIndex_OwnerId", "OwnerId");
-      table.CreateIndex("IDX_EorMeasurementDeviceIndex_Author", "Author");
+      table.CreateIndex("IDX_EorIotDeviceIndex_OwnerId", "OwnerId");
+      table.CreateIndex("IDX_EorIotDeviceIndex_Author", "Author");
     });
 
     await _roleManager.CreateAsync(
       new Role
       {
-        NormalizedRoleName = "EorMeasurementDeviceAdmin",
+        NormalizedRoleName = "EorIotDeviceAdmin",
         RoleName = "EOR measurement device administrator",
         RoleDescription = "Administrator of an EOR measurement devices.",
         RoleClaims = new()
@@ -265,27 +250,27 @@ public class Migrations : DataMigration
           new RoleClaim
           {
             ClaimType = Permission.ClaimType,
-            ClaimValue = "ViewOwn_EorMeasurementDevice"
+            ClaimValue = "ViewOwn_EorIotDevice"
           },
           new RoleClaim
           {
             ClaimType = Permission.ClaimType,
-            ClaimValue = "ControlOwn_EorMeasurementDevice"
+            ClaimValue = "ControlOwn_EorIotDevice"
           },
           new RoleClaim
           {
             ClaimType = Permission.ClaimType,
-            ClaimValue = "PublishOwn_EorMeasurementDevice"
+            ClaimValue = "PublishOwn_EorIotDevice"
           },
           new RoleClaim
           {
             ClaimType = Permission.ClaimType,
-            ClaimValue = "EditOwn_EorMeasurementDevice"
+            ClaimValue = "EditOwn_EorIotDevice"
           },
           new RoleClaim
           {
             ClaimType = Permission.ClaimType,
-            ClaimValue = "DeleteOwn_EorMeasurementDevice"
+            ClaimValue = "DeleteOwn_EorIotDevice"
           },
         }
       }
@@ -294,7 +279,7 @@ public class Migrations : DataMigration
     await _roleManager.CreateAsync(
       new Role
       {
-        NormalizedRoleName = "EorMeasurementDeviceOwner",
+        NormalizedRoleName = "EorIotDeviceOwner",
         RoleName = "EOR measurement device owner",
         RoleDescription = "Owner of an EOR measurement devices.",
         RoleClaims = new()
@@ -302,161 +287,15 @@ public class Migrations : DataMigration
           new RoleClaim
           {
             ClaimType = Permission.ClaimType,
-            ClaimValue = "ViewOwned_EorMeasurementDevice"
+            ClaimValue = "ViewOwned_EorIotDevice"
           },
           new RoleClaim
           {
             ClaimType = Permission.ClaimType,
-            ClaimValue = "ControlOwned_EorMeasurementDevice"
+            ClaimValue = "ControlOwned_EorIotDevice"
           }
         }
       }
-    );
-
-    var ownerId = "OwnerId";
-    await _userService.CreateUserAsync(
-      new User
-      {
-        UserId = ownerId,
-        UserName = "Owner",
-        Email = "owner@dev.com",
-        RoleNames = new[] { "EOR measurement device owner" }
-      },
-      "Owner123!",
-      (_, _) => { }
-    );
-
-    var adminId = "AdminId";
-    await _userService.CreateUserAsync(
-      new User
-      {
-        UserId = adminId,
-        UserName = "Admin",
-        Email = "admin@dev.com",
-        RoleNames = new[] { "EOR measurement device administrator" }
-      },
-      "Admin123!",
-      (_, _) => { }
-    );
-
-    var eorCurrentDataset =
-      await _contentManager.NewContentAsync<TimeseriesChartDatasetItem>();
-    eorCurrentDataset.Alter(
-      eorCurrentDataset => eorCurrentDataset.TimeseriesChartDatasetPart,
-      timeseriesChartDatasetPart =>
-      {
-        timeseriesChartDatasetPart.Color = new() { Value = "#ff0000" };
-        timeseriesChartDatasetPart.Label = new() { Text = "Current" };
-        timeseriesChartDatasetPart.Property = nameof(EorMeasurement.Current);
-      }
-    );
-    var eorVoltageDataset =
-      await _contentManager.NewContentAsync<TimeseriesChartDatasetItem>();
-    eorVoltageDataset.Alter(
-      eorVoltageDataset => eorVoltageDataset.TimeseriesChartDatasetPart,
-      timeseriesChartDatasetPart =>
-      {
-        timeseriesChartDatasetPart.Color = new() { Value = "#00ff00" };
-        timeseriesChartDatasetPart.Label = new() { Text = "Voltage" };
-        timeseriesChartDatasetPart.Property = nameof(EorMeasurement.Voltage);
-      }
-    );
-    var eorModeDataset =
-      await _contentManager.NewContentAsync<TimeseriesChartDatasetItem>();
-    eorModeDataset.Alter(
-      eorModeDataset => eorModeDataset.TimeseriesChartDatasetPart,
-      timeseriesChartDatasetPart =>
-      {
-        timeseriesChartDatasetPart.Color = new() { Value = "#0000ff" };
-        timeseriesChartDatasetPart.Label = new() { Text = "Mode" };
-        timeseriesChartDatasetPart.Property = nameof(EorStatus.Mode);
-      }
-    );
-    var eorChart = await _contentManager.NewContentAsync<TimeseriesChartItem>();
-    eorChart.Alter(
-      eorChart => eorChart.TitlePart,
-      titlePart =>
-      {
-        titlePart.Title = "Eor";
-      }
-    );
-    eorChart.Alter(
-      eorChart => eorChart.TimeseriesChartPart,
-      timeseriesChartPart =>
-      {
-        timeseriesChartPart.ChartContentType = "EorMeasurementDevice";
-        timeseriesChartPart.History = new()
-        {
-          Value = new(Unit: IntervalUnit.Minute, Count: 10)
-        };
-        timeseriesChartPart.RefreshInterval = new()
-        {
-          Value = new(Unit: IntervalUnit.Second, Count: 10)
-        };
-        timeseriesChartPart.Datasets = new()
-        {
-          eorCurrentDataset,
-          eorVoltageDataset,
-          eorModeDataset
-        };
-      }
-    );
-    await _contentManager.CreateAsync(eorChart, VersionOptions.Latest);
-
-    var eorDeviceId = "eor";
-    var eorApiKey = "eor";
-    var eorMeasurementDevice =
-      (
-        await _session
-          .Query<ContentItem, MeasurementDeviceIndex>()
-          .Where(index => index.DeviceId == eorDeviceId)
-          .FirstOrDefaultAsync()
-      )?.AsContent<EorMeasurementDeviceItem>()
-      ?? await _contentManager.NewContentAsync<EorMeasurementDeviceItem>();
-    eorMeasurementDevice.Inner.Owner = adminId;
-    eorMeasurementDevice.Alter(
-      eorMeasurementDevice => eorMeasurementDevice.TitlePart,
-      titlePart =>
-      {
-        titlePart.Title = eorDeviceId;
-      }
-    );
-    eorMeasurementDevice.Alter(
-      eorMeasurementDevice => eorMeasurementDevice.MeasurementDevicePart,
-      measurementDevicePart =>
-      {
-        measurementDevicePart.DeviceId = new() { Text = eorDeviceId };
-      }
-    );
-    eorMeasurementDevice.Alter(
-      eorMeasurementDevice => eorMeasurementDevice.ChartPart,
-      chartPart =>
-      {
-        chartPart.ChartContentItemId = eorChart.ContentItemId;
-      }
-    );
-    eorMeasurementDevice.Alter(
-      eorMeasurementDevice => eorMeasurementDevice.EorMeasurementDevicePart,
-      eorMeasurementDevice =>
-      {
-        eorMeasurementDevice.Owner = new() { UserIds = new[] { ownerId } };
-        eorMeasurementDevice.ManufactureDate = new()
-        {
-          Value = DateTime.UtcNow
-        };
-        eorMeasurementDevice.Manufacturer = new() { Text = "Siemens" };
-        eorMeasurementDevice.CommisionDate = new() { Value = DateTime.UtcNow };
-        eorMeasurementDevice.ProductNumber = new() { Text = "123456789" };
-        eorMeasurementDevice.Longitude = new() { Value = -100.784430m };
-        eorMeasurementDevice.Latitude = new() { Value = 31.697256m };
-        eorMeasurementDevice.ApiKey = _apiKeyFieldService.HashApiKeyField(
-          eorApiKey
-        );
-      }
-    );
-    await _contentManager.CreateAsync(
-      eorMeasurementDevice,
-      VersionOptions.Latest
     );
 
     return 1;
@@ -464,31 +303,13 @@ public class Migrations : DataMigration
 
   public Migrations(
     IContentDefinitionManager contentDefinitionManager,
-    IRecipeMigrator recipeMigrator,
-    RoleManager<IRole> roleManager,
-    IContentManager contentManager,
-    IHostEnvironment hostEnvironment,
-    ISession session,
-    IUserService userService,
-    IApiKeyFieldService apiKeyFieldService
+    RoleManager<IRole> roleManager
   )
   {
     _contentDefinitionManager = contentDefinitionManager;
-    _recipeMigrator = recipeMigrator;
     _roleManager = roleManager;
-    _contentManager = contentManager;
-    _hostEnvironment = hostEnvironment;
-    _session = session;
-    _userService = userService;
-    _apiKeyFieldService = apiKeyFieldService;
   }
 
   private readonly IContentDefinitionManager _contentDefinitionManager;
-  private readonly IRecipeMigrator _recipeMigrator;
   private readonly RoleManager<IRole> _roleManager;
-  private readonly IContentManager _contentManager;
-  private readonly IHostEnvironment _hostEnvironment;
-  private readonly ISession _session;
-  private readonly IUserService _userService;
-  private readonly IApiKeyFieldService _apiKeyFieldService;
 }

@@ -1,7 +1,7 @@
 {
   "name": "management",
   "displayName": "Management",
-  "description": "Management tenant recipe",
+  "description": "Management recipe",
   "author": "Altibiz",
   "website": "altibiz.com",
   "version": "0.0.1",
@@ -22,7 +22,7 @@
         "OrchardCore.Users",
         "OrchardCore.Tenants",
         "OrchardCore.Diagnostics",
-        "Mess.EventStore",
+        "Mess.Event",
         "Mess.Relational",
         "Mess.Timeseries",
         "TheAdmin",

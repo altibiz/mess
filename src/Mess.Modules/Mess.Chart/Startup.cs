@@ -12,7 +12,7 @@ using Mess.Chart.Abstractions.Models;
 using OrchardCore.Admin;
 using Mess.Chart.Providers;
 using Mess.Chart.Indexes;
-using Mess.Chart.Abstractions.Extensions.Microsoft;
+using Mess.Chart.Abstractions.Extensions;
 using Mess.OrchardCore.Extensions.Microsoft;
 
 namespace Mess.Chart;
@@ -25,7 +25,7 @@ public class Startup : StartupBase
     services.AddResources<Resources>();
 
     services.AddIndexProvider<ChartIndexProvider>();
-    services.AddChartProvider<PreviewChartProvider>();
+    services.AddChartFactory<PreviewChartProvider>();
     services
       .AddContentPart<ChartPart>()
       .UseDisplayDriver<ChartPartDisplayDriver>();
