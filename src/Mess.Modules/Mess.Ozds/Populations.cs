@@ -82,6 +82,13 @@ public class Populations : IPopulation
       whiteLowVoltageOperatorCatalogueContentItemId!,
       whiteLowVoltageOperatorCatalogueContentItemId!
     );
+
+    await CreateAsyncMigrations.PopulateSchneider(
+      _serviceProvider,
+      unitContentItemId!,
+      whiteLowVoltageOperatorCatalogueContentItemId!,
+      whiteLowVoltageOperatorCatalogueContentItemId!
+    );
   }
 
   public Populations(IServiceProvider serviceProvider)
@@ -531,6 +538,110 @@ internal static partial class CreateAsyncMigrations
       measurementDevicePart =>
       {
         measurementDevicePart.DeviceId = new() { Text = "abb" };
+      }
+    );
+    abbIotDevice.Alter(
+      abbIotDevice => abbIotDevice.ContainedPart,
+      containedPart =>
+      {
+        containedPart.ListContentItemId = unitContentItemId;
+      }
+    );
+    abbIotDevice.Alter(
+      abbIotDevice => abbIotDevice.OzdsIotDevicePart,
+      ozdsIotDevicePart =>
+      {
+        ozdsIotDevicePart.UsageCatalogue = new()
+        {
+          ContentItemIds = new[] { usageCatalogueContentItemId }
+        };
+        ozdsIotDevicePart.SupplyCatalogue = new()
+        {
+          ContentItemIds = new[] { supplyCatalogueContentItemId }
+        };
+      }
+    );
+    abbIotDevice.Alter(
+      abbIotDevice => abbIotDevice.ChartPart,
+      chartPart =>
+      {
+        chartPart.ChartContentItemId = abbChart.ContentItemId;
+      }
+    );
+    await contentManager.CreateAsync(abbIotDevice, VersionOptions.Latest);
+
+    await session.SaveChangesAsync();
+  }
+
+  internal static async Task PopulateSchneider(
+    IServiceProvider serviceProvider,
+    string unitContentItemId,
+    string usageCatalogueContentItemId,
+    string supplyCatalogueContentItemId
+  )
+  {
+    var roleManager = serviceProvider.GetRequiredService<RoleManager<IRole>>();
+    var userService = serviceProvider.GetRequiredService<IUserService>();
+    var contentManager = serviceProvider.GetRequiredService<IContentManager>();
+    var apiKeyFieldService =
+      serviceProvider.GetRequiredService<IApiKeyFieldService>();
+    var session = serviceProvider.GetRequiredService<ISession>();
+
+    var abbPowerDataset =
+      await contentManager.NewContentAsync<TimeseriesChartDatasetItem>();
+    abbPowerDataset.Alter(
+      eguagePowerDataset => eguagePowerDataset.TimeseriesChartDatasetPart,
+      timeseriesChartDatasetPart =>
+      {
+        timeseriesChartDatasetPart.Color = new() { Value = "#ff0000" };
+        timeseriesChartDatasetPart.Label = new() { Text = "Power" };
+        timeseriesChartDatasetPart.Property = nameof(
+          SchneiderMeasurement.Power
+        );
+      }
+    );
+    var abbChart = await contentManager.NewContentAsync<TimeseriesChartItem>();
+    abbChart.Alter(
+      abbChart => abbChart.TitlePart,
+      titlePart =>
+      {
+        titlePart.Title = "Schneider";
+      }
+    );
+    abbChart.Inner.DisplayText = "Schneider";
+    abbChart.Alter(
+      abbChart => abbChart.TimeseriesChartPart,
+      timeseriesChartPart =>
+      {
+        timeseriesChartPart.ChartContentType = "SchneiderIotDevice";
+        timeseriesChartPart.History = new()
+        {
+          Value = new(Unit: IntervalUnit.Minute, Count: 10)
+        };
+        timeseriesChartPart.RefreshInterval = new()
+        {
+          Value = new(Unit: IntervalUnit.Second, Count: 10)
+        };
+        timeseriesChartPart.Datasets = new() { abbPowerDataset };
+      }
+    );
+    await contentManager.CreateAsync(abbChart, VersionOptions.Latest);
+
+    var abbIotDevice =
+      await contentManager.NewContentAsync<SchneiderIotDeviceItem>();
+    abbIotDevice.Alter(
+      abbIotDevice => abbIotDevice.TitlePart,
+      titlePart =>
+      {
+        titlePart.Title = "Schneider";
+      }
+    );
+    abbIotDevice.Inner.DisplayText = "Schneider";
+    abbIotDevice.Alter(
+      abbIotDevice => abbIotDevice.IotDevicePart,
+      measurementDevicePart =>
+      {
+        measurementDevicePart.DeviceId = new() { Text = "schneider" };
       }
     );
     abbIotDevice.Alter(

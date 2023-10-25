@@ -3,8 +3,9 @@ import { importTemplates } from "../templates";
 import { push as abbPush } from "./abb";
 import compile from "./compile";
 import { Create } from "./index";
+import { push as schneiderPush } from "./schneider";
 
-const allowedTemplates = { abb: abbPush };
+const allowedTemplates = { abb: abbPush, schneider: schneiderPush };
 let templates: Awaited<ReturnType<typeof importTemplates>> | null = null;
 
 export const push: Create = async (template) => {
