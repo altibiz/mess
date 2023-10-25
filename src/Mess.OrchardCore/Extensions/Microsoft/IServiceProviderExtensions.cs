@@ -1,6 +1,6 @@
 using ISession = YesSql.ISession;
 
-namespace Mess.System.Extensions.Microsoft;
+namespace Mess.OrchardCore.Extensions.Microsoft;
 
 public static class IServiceProviderExtensions
 {

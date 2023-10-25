@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using OrchardCore.BackgroundTasks;
 using OrchardCore.ContentManagement.Handlers;
 using OrchardCore.ContentTypes.Editors;
+using OrchardCore.Data;
 using OrchardCore.Modules;
 using OrchardCore.Navigation;
 using OrchardCore.ResourceManagement;
@@ -18,7 +19,14 @@ public static class IServiceCollectionExtensions
   )
     where TIndexProvider : class, IIndexProvider
   {
-    services.AddSingleton<IIndexProvider, TIndexProvider>();
+    if (typeof(IScopedIndexProvider).IsAssignableFrom(typeof(TIndexProvider)))
+    {
+      services.AddScoped(typeof(IScopedIndexProvider), typeof(TIndexProvider));
+    }
+    else
+    {
+      services.AddSingleton(typeof(IIndexProvider), typeof(TIndexProvider));
+    }
     return services;
   }
 

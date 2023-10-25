@@ -1,15 +1,18 @@
 using Mess.OrchardCore;
 using Mess.Ozds.Abstractions.Indexes;
 using Mess.Ozds.Abstractions.Models;
-using Mess.System.Extensions.Microsoft;
+using Mess.OrchardCore.Extensions.Microsoft;
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.ContentManagement;
 using OrchardCore.Lists.Models;
 using YesSql.Indexes;
+using OrchardCore.Data;
 
 namespace Mess.Ozds.Indexes;
 
-public class DistributionSystemUnitIndexProvider : IndexProvider<ContentItem>
+public class DistributionSystemUnitIndexProvider
+  : IndexProvider<ContentItem>,
+    IScopedIndexProvider
 {
   public override void Describe(DescribeContext<ContentItem> context)
   {
@@ -18,6 +21,8 @@ public class DistributionSystemUnitIndexProvider : IndexProvider<ContentItem>
       .When(contentItem => contentItem.Has<DistributionSystemUnitPart>())
       .Map(async contentItem =>
       {
+        var contentManager =
+          _serviceProvider.GetRequiredService<IContentManager>();
         var distributionSystemUnitPart =
           contentItem.As<DistributionSystemUnitPart>();
         var containedPart =
@@ -30,14 +35,9 @@ public class DistributionSystemUnitIndexProvider : IndexProvider<ContentItem>
           containedPart.ListContentItemId;
 
         var closedDistributionSystemItem =
-          await _serviceProvider.AwaitScopeAsync(async serviceProvider =>
-          {
-            var contentManager =
-              serviceProvider.GetRequiredService<IContentManager>();
-            return await contentManager.GetContentAsync<ClosedDistributionSystemItem>(
-              closedDistributionSystemContentItemId
-            );
-          })
+          await contentManager.GetContentAsync<ClosedDistributionSystemItem>(
+            closedDistributionSystemContentItemId
+          )
           ?? throw new InvalidOperationException(
             $"Closed distribution system with content item id '{closedDistributionSystemContentItemId}' not found."
           );
@@ -49,14 +49,9 @@ public class DistributionSystemUnitIndexProvider : IndexProvider<ContentItem>
         ).ListContentItemId;
 
         var distributionSystemOperator =
-          await _serviceProvider.AwaitScopeAsync(async serviceProvider =>
-          {
-            var contentManager =
-              serviceProvider.GetRequiredService<IContentManager>();
-            return await contentManager.GetContentAsync<DistributionSystemOperatorItem>(
-              distributionSystemOperatorContentItemId
-            );
-          })
+          await contentManager.GetContentAsync<DistributionSystemOperatorItem>(
+            distributionSystemOperatorContentItemId
+          )
           ?? throw new InvalidOperationException(
             $"Distribution system operator with content item id '{distributionSystemOperatorContentItemId}' not found."
           );
