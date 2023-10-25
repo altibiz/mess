@@ -37,10 +37,10 @@ public class Startup : StartupBase
     // Navigation
     services.AddNavigationProvider<AdminMenu>();
 
+    // Authorization
+    services.AddAuthorizationHandler<OzdsAuthorizationHandler>();
+
     // Contents
-    services.AddContentPart<OzdsIotDevicePart>();
-    services.AddContentPart<PidgeonIotDevicePart>();
-    services.AddContentPart<AbbIotDevicePart>();
     services.AddContentPart<DistributionSystemOperatorPart>();
     services.AddContentPart<ClosedDistributionSystemPart>();
     services.AddContentPart<DistributionSystemUnitPart>();
@@ -49,6 +49,10 @@ public class Startup : StartupBase
     services.AddContentPart<OzdsCalculationPart>();
     services.AddContentPart<OzdsReceiptPart>();
     services.AddContentPart<OzdsInvoicePart>();
+    services.AddContentPart<OzdsIotDevicePart>();
+    services.AddContentPart<PidgeonIotDevicePart>();
+    services.AddContentPart<AbbIotDevicePart>();
+    services.AddContentPart<SchneiderIotDevicePart>();
 
     // Indexing
     services.AddIndexProvider<DistributionSystemUnitIndexProvider>();
@@ -68,20 +72,20 @@ public class Startup : StartupBase
     >();
 
     // Billing
-    services.AddBillingFactory<AbbBillingFactory>();
     services.AddBillingIndexer<OzdsBillingIndexer>();
     services.AddPaymentIndexer<OzdsPaymentIndexer>();
+    services.AddBillingFactory<AbbBillingFactory>();
+    services.AddBillingFactory<SchneiderBillingFactory>();
 
     // Iot
     services.AddIotPushHandler<PidgeonPushHandler>();
     services.AddIotAuthorizationHandler<PidgeonAuthorizationHandler>();
     services.AddIotPushHandler<AbbPushHandler>();
+    services.AddIotPushHandler<SchneiderPushHandler>();
 
     // Chart
     services.AddChartFactory<AbbChartProvider>();
-
-    // Ozds
-    services.AddAuthorizationHandler<OzdsAuthorizationHandler>();
+    services.AddChartFactory<SchneiderChartProvider>();
   }
 
   public override void Configure(

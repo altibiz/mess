@@ -16,6 +16,16 @@ namespace Mess.Ozds;
 
 public class Migrations : DataMigration
 {
+  public async Task<int> UpdateFrom1()
+  {
+    await CreateAsyncMigrations.MigrateSchneider(
+      _serviceProvider,
+      SchemaBuilder
+    );
+
+    return 2;
+  }
+
   public async Task<int> CreateAsync()
   {
     await CreateAsyncMigrations.MigrateRegulatoryAgencyCatalogue(
@@ -35,6 +45,7 @@ public class Migrations : DataMigration
     await CreateAsyncMigrations.MigrateInvoice(_serviceProvider, SchemaBuilder);
     await CreateAsyncMigrations.MigrateReceipt(_serviceProvider, SchemaBuilder);
     await CreateAsyncMigrations.MigrateDevice(_serviceProvider, SchemaBuilder);
+
     await CreateAsyncMigrations.MigratePidgeon(_serviceProvider, SchemaBuilder);
     await CreateAsyncMigrations.MigrateAbb(_serviceProvider, SchemaBuilder);
 
@@ -787,6 +798,85 @@ internal static partial class CreateAsyncMigrations
               part.WithDisplayName("Chart")
                 .WithDescription(
                   "Chart displaying the Abb measurement device data."
+                )
+          )
+          .WithPart(
+            "BillingPart",
+            part =>
+              part.WithDisplayName("Billing")
+                .WithDescription("Billing information.")
+          )
+    );
+  }
+
+  internal static async Task MigrateSchneider(
+    IServiceProvider serviceProvider,
+    ISchemaBuilder schemaBuilder
+  )
+  {
+    var contentDefinitionManager =
+      serviceProvider.GetRequiredService<IContentDefinitionManager>();
+
+    contentDefinitionManager.AlterPartDefinition(
+      "SchneiderIotDevicePart",
+      builder =>
+        builder
+          .Attachable()
+          .WithDescription("A Schneider measurement device.")
+          .WithDisplayName("Schneider measurement device")
+    );
+
+    contentDefinitionManager.AlterTypeDefinition(
+      "SchneiderIotDevice",
+      builder =>
+        builder
+          .Creatable()
+          .Listable()
+          .Draftable()
+          .Securable()
+          .DisplayedAs("Schneider measurement device")
+          .WithDescription("An Schneider measurement device.")
+          .WithPart(
+            "TitlePart",
+            part =>
+              part.WithDisplayName("Title")
+                .WithDescription(
+                  "Title displaying the identifier of the Schneider measurement device."
+                )
+                .WithSettings<TitlePartSettings>(
+                  new()
+                  {
+                    RenderTitle = true,
+                    Options = TitlePartOptions.GeneratedDisabled,
+                    Pattern =
+                      @"{%- ContentItem.Content.IotDevicePart.DeviceId.Text -%}"
+                  }
+                )
+          )
+          .WithPart(
+            "IotDevicePart",
+            part =>
+              part.WithDisplayName("Measurement device")
+                .WithDescription("A measurement device.")
+          )
+          .WithPart(
+            "OzdsIotDevicePart",
+            part =>
+              part.WithDisplayName("OZDS Measurement device")
+                .WithDescription("An OZDS measurement device.")
+          )
+          .WithPart(
+            "SchneiderIotDevicePart",
+            part =>
+              part.WithDisplayName("Schneider measurement device")
+                .WithDescription("An Schneider measurement device.")
+          )
+          .WithPart(
+            "ChartPart",
+            part =>
+              part.WithDisplayName("Chart")
+                .WithDescription(
+                  "Chart displaying the Schneider measurement device data."
                 )
           )
           .WithPart(

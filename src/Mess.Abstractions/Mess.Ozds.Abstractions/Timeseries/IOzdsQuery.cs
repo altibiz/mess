@@ -27,4 +27,30 @@ public interface IOzdsTimeseriesQuery
     DateTimeOffset beginning,
     DateTimeOffset end
   );
+
+  public Task<
+    IReadOnlyList<SchneiderMeasurement>
+  > GetSchneiderMeasurementsAsync(
+    string source,
+    DateTimeOffset beginning,
+    DateTimeOffset end
+  );
+
+  public IReadOnlyList<SchneiderMeasurement> GetSchneiderMeasurements(
+    string source,
+    DateTimeOffset beginning,
+    DateTimeOffset end
+  );
+
+  public OzdsBillingData? GetSchneiderBillingData(
+    string source,
+    DateTimeOffset beginning,
+    DateTimeOffset end
+  );
+
+  public Task<OzdsBillingData?> GetSchneiderBillingDataAsync(
+    string source,
+    DateTimeOffset beginning,
+    DateTimeOffset end
+  );
 }

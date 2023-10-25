@@ -9,6 +9,8 @@ public class OzdsTimeseriesDbContext : TimeseriesDbContext
 {
   public DbSet<AbbMeasurementEntity> AbbMeasurements { get; set; } = default!;
 
+  public DbSet<SchneiderMeasurementEntity> SchneiderMeasurements { get; set; } = default!;
+
   public OzdsTimeseriesDbContext(
     DbContextOptions<OzdsTimeseriesDbContext> options,
     ShellSettings shellSettings
