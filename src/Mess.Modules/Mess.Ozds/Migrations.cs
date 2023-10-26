@@ -617,6 +617,7 @@ internal static partial class CreateAsyncMigrations
                     ContainedContentTypes = new[]
                     {
                       "AbbIotDevice",
+                      "SchneiderIotDevice",
                       "PidgeonIotDevice"
                     },
                   }

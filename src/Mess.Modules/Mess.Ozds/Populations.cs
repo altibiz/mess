@@ -589,9 +589,9 @@ internal static partial class CreateAsyncMigrations
       serviceProvider.GetRequiredService<IApiKeyFieldService>();
     var session = serviceProvider.GetRequiredService<ISession>();
 
-    var abbPowerDataset =
+    var schneiderPowerDataset =
       await contentManager.NewContentAsync<TimeseriesChartDatasetItem>();
-    abbPowerDataset.Alter(
+    schneiderPowerDataset.Alter(
       eguagePowerDataset => eguagePowerDataset.TimeseriesChartDatasetPart,
       timeseriesChartDatasetPart =>
       {
@@ -602,17 +602,18 @@ internal static partial class CreateAsyncMigrations
         );
       }
     );
-    var abbChart = await contentManager.NewContentAsync<TimeseriesChartItem>();
-    abbChart.Alter(
-      abbChart => abbChart.TitlePart,
+    var schneiderChart =
+      await contentManager.NewContentAsync<TimeseriesChartItem>();
+    schneiderChart.Alter(
+      schneiderChart => schneiderChart.TitlePart,
       titlePart =>
       {
         titlePart.Title = "Schneider";
       }
     );
-    abbChart.Inner.DisplayText = "Schneider";
-    abbChart.Alter(
-      abbChart => abbChart.TimeseriesChartPart,
+    schneiderChart.Inner.DisplayText = "Schneider";
+    schneiderChart.Alter(
+      schneiderChart => schneiderChart.TimeseriesChartPart,
       timeseriesChartPart =>
       {
         timeseriesChartPart.ChartContentType = "SchneiderIotDevice";
@@ -624,37 +625,37 @@ internal static partial class CreateAsyncMigrations
         {
           Value = new(Unit: IntervalUnit.Second, Count: 10)
         };
-        timeseriesChartPart.Datasets = new() { abbPowerDataset };
+        timeseriesChartPart.Datasets = new() { schneiderPowerDataset };
       }
     );
-    await contentManager.CreateAsync(abbChart, VersionOptions.Latest);
+    await contentManager.CreateAsync(schneiderChart, VersionOptions.Latest);
 
-    var abbIotDevice =
+    var schneiderIotDevice =
       await contentManager.NewContentAsync<SchneiderIotDeviceItem>();
-    abbIotDevice.Alter(
-      abbIotDevice => abbIotDevice.TitlePart,
+    schneiderIotDevice.Alter(
+      schneiderIotDevice => schneiderIotDevice.TitlePart,
       titlePart =>
       {
         titlePart.Title = "Schneider";
       }
     );
-    abbIotDevice.Inner.DisplayText = "Schneider";
-    abbIotDevice.Alter(
-      abbIotDevice => abbIotDevice.IotDevicePart,
+    schneiderIotDevice.Inner.DisplayText = "Schneider";
+    schneiderIotDevice.Alter(
+      schneiderIotDevice => schneiderIotDevice.IotDevicePart,
       measurementDevicePart =>
       {
         measurementDevicePart.DeviceId = new() { Text = "schneider" };
       }
     );
-    abbIotDevice.Alter(
-      abbIotDevice => abbIotDevice.ContainedPart,
+    schneiderIotDevice.Alter(
+      schneiderIotDevice => schneiderIotDevice.ContainedPart,
       containedPart =>
       {
         containedPart.ListContentItemId = unitContentItemId;
       }
     );
-    abbIotDevice.Alter(
-      abbIotDevice => abbIotDevice.OzdsIotDevicePart,
+    schneiderIotDevice.Alter(
+      schneiderIotDevice => schneiderIotDevice.OzdsIotDevicePart,
       ozdsIotDevicePart =>
       {
         ozdsIotDevicePart.UsageCatalogue = new()
@@ -667,14 +668,14 @@ internal static partial class CreateAsyncMigrations
         };
       }
     );
-    abbIotDevice.Alter(
-      abbIotDevice => abbIotDevice.ChartPart,
+    schneiderIotDevice.Alter(
+      schneiderIotDevice => schneiderIotDevice.ChartPart,
       chartPart =>
       {
-        chartPart.ChartContentItemId = abbChart.ContentItemId;
+        chartPart.ChartContentItemId = schneiderChart.ContentItemId;
       }
     );
-    await contentManager.CreateAsync(abbIotDevice, VersionOptions.Latest);
+    await contentManager.CreateAsync(schneiderIotDevice, VersionOptions.Latest);
 
     await session.SaveChangesAsync();
   }
