@@ -91,7 +91,7 @@ public class ChartPartDisplayDriver : ContentPartDisplayDriver<ChartPart>
         );
       }
 
-      part.ChartContentItemId = part.ChartContentItemId;
+      part.ChartContentItemId = viewModel.ChartContentItemId;
     }
 
     return await EditAsync(part, context);
