@@ -3,6 +3,7 @@ using Mess.Timeseries.Abstractions.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Mess.Ozds.Abstractions.Billing;
+using Z.EntityFramework.Plus;
 
 namespace Mess.Ozds.Timeseries;
 
@@ -71,37 +72,53 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
       OzdsBillingData?
     >(context =>
     {
-      var first = context.AbbMeasurements
+      var firstQuery = context.AbbMeasurements
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp > beginning)
         .Where(measurement => measurement.Timestamp < end)
         .Where(
           measurement =>
-            measurement.Energy != null
-            && measurement.LowEnergy != null
-            && measurement.HighEnergy != null
+            measurement.ActiveEnergyImportTotal_kWh != null
+            && measurement.ActiveEnergyImportTariff1_kWh != null
+            && measurement.ActiveEnergyImportTariff2_kWh != null
         )
-        .FirstOrDefault();
+        .OrderBy(measurement => measurement.Timestamp)
+        .DeferredFirstOrDefault();
 
-      var last = context.AbbMeasurements
+      var lastQuery = context.AbbMeasurements
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp > beginning)
         .Where(measurement => measurement.Timestamp < end)
         .Where(
           measurement =>
-            measurement.Energy != null
-            && measurement.LowEnergy != null
-            && measurement.HighEnergy != null
+            measurement.ActiveEnergyImportTotal_kWh != null
+            && measurement.ActiveEnergyExportTariff1_kWh != null
+            && measurement.ActiveEnergyImportTariff2_kWh != null
         )
-        .LastOrDefault();
+        .OrderBy(measurement => measurement.Timestamp)
+        .DeferredLastOrDefault();
 
-      var peak = context.AbbMeasurements
+      var peakQuery = context.AbbMeasurements
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp > beginning)
         .Where(measurement => measurement.Timestamp < end)
-        .Where(measurement => measurement.Power != null)
-        .OrderByDescending(measurement => measurement.Power)
-        .FirstOrDefault();
+        .Where(measurement => measurement.ActivePowerTotal_W != null)
+        .GroupBy(measurement => measurement.Milliseconds / (1000 * 60 * 15))
+        .Select(
+          group =>
+            new
+            {
+              ActivePowerTotal_W = group.Average(
+                measurement => measurement.ActivePowerTotal_W!.Value
+              )
+            }
+        )
+        .OrderByDescending(measurement => measurement.ActivePowerTotal_W)
+        .DeferredFirstOrDefault();
+
+      var first = firstQuery.FutureValue().Value;
+      var last = lastQuery.FutureValue().Value;
+      var peak = peakQuery.FutureValue().Value;
 
       if (first is null || last is null || peak is null)
       {
@@ -109,13 +126,14 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
       }
 
       return new OzdsBillingData(
-        StartEnergy: (decimal)first.Energy!,
-        EndEnergy: (decimal)last.Energy!,
-        StartLowEnergy: (decimal)first.LowEnergy!,
-        EndLowEnergy: (decimal)last.LowEnergy!,
-        StartHighEnergy: (decimal)first.HighEnergy!,
-        EndHighEnergy: (decimal)last.HighEnergy!,
-        MaxPower: (decimal)peak.Power!
+        StartEnergyTotal_kWh: (decimal)first.ActiveEnergyImportTotal_kWh!,
+        EndEnergyTotal_kWh: (decimal)last.ActiveEnergyExportTotal_kWh!,
+        StartHighTariffEnergy_kWh: (decimal)
+          first.ActiveEnergyImportTariff1_kWh!,
+        EndHighTariffEnergy_kWh: (decimal)last.ActiveEnergyImportTariff1_kWh!,
+        StartLowTariffEnergy_kWh: (decimal)first.ActiveEnergyImportTariff2_kWh!,
+        EndLowTariffEnergy_kWh: (decimal)last.ActiveEnergyImportTariff2_kWh!,
+        PeakPowerTotal_kW: (decimal)peak.ActivePowerTotal_W! / 1000
       );
     });
   }
@@ -131,41 +149,53 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
       OzdsBillingData?
     >(async context =>
     {
-      var makeExtremeQuery = () =>
-        context.AbbMeasurements
-          .Where(measurement => measurement.Source == source)
-          .Where(measurement => measurement.Timestamp > beginning)
-          .Where(measurement => measurement.Timestamp < end)
-          .OrderBy(measurement => measurement.Timestamp)
-          .Select(
-            measurement =>
-              new
-              {
-                Energy = measurement.Energy!.Value,
-                LowEnergy = measurement.LowEnergy!.Value,
-                HighEnergy = measurement.HighEnergy!.Value
-              }
-          );
+      var firstQuery = context.AbbMeasurements
+        .Where(measurement => measurement.Source == source)
+        .Where(measurement => measurement.Timestamp > beginning)
+        .Where(measurement => measurement.Timestamp < end)
+        .Where(
+          measurement =>
+            measurement.ActiveEnergyImportTotal_kWh != null
+            && measurement.ActiveEnergyImportTariff1_kWh != null
+            && measurement.ActiveEnergyImportTariff2_kWh != null
+        )
+        .OrderBy(measurement => measurement.Timestamp)
+        .DeferredFirstOrDefault();
 
-      var makePeakQuery = () =>
-        context.AbbMeasurements
-          .Where(measurement => measurement.Source == source)
-          .Where(measurement => measurement.Timestamp > beginning)
-          .Where(measurement => measurement.Timestamp < end)
-          .Where(measurement => measurement.Power != null)
-          .GroupBy(measurement => measurement.Milliseconds / (1000 * 60 * 15))
-          .Select(
-            group =>
-              new
-              {
-                Power = group.Average(measurement => measurement.Power!.Value)
-              }
-          )
-          .OrderByDescending(measurement => measurement.Power);
+      var lastQuery = context.AbbMeasurements
+        .Where(measurement => measurement.Source == source)
+        .Where(measurement => measurement.Timestamp > beginning)
+        .Where(measurement => measurement.Timestamp < end)
+        .Where(
+          measurement =>
+            measurement.ActiveEnergyImportTotal_kWh != null
+            && measurement.ActiveEnergyExportTariff1_kWh != null
+            && measurement.ActiveEnergyImportTariff2_kWh != null
+        )
+        .OrderBy(measurement => measurement.Timestamp)
+        .DeferredLastOrDefault();
 
-      var first = await makeExtremeQuery().FirstOrDefaultAsync();
-      var last = await makeExtremeQuery().LastOrDefaultAsync();
-      var peak = await makePeakQuery().FirstOrDefaultAsync();
+      var peakQuery = context.AbbMeasurements
+        .Where(measurement => measurement.Source == source)
+        .Where(measurement => measurement.Timestamp > beginning)
+        .Where(measurement => measurement.Timestamp < end)
+        .Where(measurement => measurement.ActivePowerTotal_W != null)
+        .GroupBy(measurement => measurement.Milliseconds / (1000 * 60 * 15))
+        .Select(
+          group =>
+            new
+            {
+              ActivePowerTotal_W = group.Average(
+                measurement => measurement.ActivePowerTotal_W!.Value
+              )
+            }
+        )
+        .OrderByDescending(measurement => measurement.ActivePowerTotal_W)
+        .DeferredFirstOrDefault();
+
+      var first = await firstQuery.FutureValue().ValueAsync();
+      var last = await lastQuery.FutureValue().ValueAsync();
+      var peak = await peakQuery.FutureValue().ValueAsync();
 
       if (first is null || last is null || peak is null)
       {
@@ -173,13 +203,14 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
       }
 
       return new OzdsBillingData(
-        StartEnergy: (decimal)first.Energy,
-        EndEnergy: (decimal)last.Energy,
-        StartLowEnergy: (decimal)first.LowEnergy,
-        EndLowEnergy: (decimal)last.LowEnergy,
-        StartHighEnergy: (decimal)first.HighEnergy,
-        EndHighEnergy: (decimal)last.HighEnergy,
-        MaxPower: (decimal)peak.Power
+        StartEnergyTotal_kWh: (decimal)first.ActiveEnergyImportTotal_kWh!,
+        EndEnergyTotal_kWh: (decimal)last.ActiveEnergyExportTotal_kWh!,
+        StartHighTariffEnergy_kWh: (decimal)
+          first.ActiveEnergyImportTariff1_kWh!,
+        EndHighTariffEnergy_kWh: (decimal)last.ActiveEnergyImportTariff1_kWh!,
+        StartLowTariffEnergy_kWh: (decimal)first.ActiveEnergyImportTariff2_kWh!,
+        EndLowTariffEnergy_kWh: (decimal)last.ActiveEnergyImportTariff2_kWh!,
+        PeakPowerTotal_kW: (decimal)peak.ActivePowerTotal_W! / 1000
       );
     });
   }
@@ -249,37 +280,53 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
       OzdsBillingData?
     >(context =>
     {
-      var first = context.SchneiderMeasurements
+      var firstQuery = context.AbbMeasurements
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp > beginning)
         .Where(measurement => measurement.Timestamp < end)
         .Where(
           measurement =>
-            measurement.Energy != null
-            && measurement.LowEnergy != null
-            && measurement.HighEnergy != null
+            measurement.ActiveEnergyImportTotal_kWh != null
+            && measurement.ActiveEnergyImportTariff1_kWh != null
+            && measurement.ActiveEnergyImportTariff2_kWh != null
         )
-        .FirstOrDefault();
+        .OrderBy(measurement => measurement.Timestamp)
+        .DeferredFirstOrDefault();
 
-      var last = context.SchneiderMeasurements
+      var lastQuery = context.AbbMeasurements
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp > beginning)
         .Where(measurement => measurement.Timestamp < end)
         .Where(
           measurement =>
-            measurement.Energy != null
-            && measurement.LowEnergy != null
-            && measurement.HighEnergy != null
+            measurement.ActiveEnergyImportTotal_kWh != null
+            && measurement.ActiveEnergyExportTariff1_kWh != null
+            && measurement.ActiveEnergyImportTariff2_kWh != null
         )
-        .LastOrDefault();
+        .OrderBy(measurement => measurement.Timestamp)
+        .DeferredLastOrDefault();
 
-      var peak = context.SchneiderMeasurements
+      var peakQuery = context.AbbMeasurements
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp > beginning)
         .Where(measurement => measurement.Timestamp < end)
-        .Where(measurement => measurement.Power != null)
-        .OrderByDescending(measurement => measurement.Power)
-        .FirstOrDefault();
+        .Where(measurement => measurement.ActivePowerTotal_W != null)
+        .GroupBy(measurement => measurement.Milliseconds / (1000 * 60 * 15))
+        .Select(
+          group =>
+            new
+            {
+              ActivePowerTotal_W = group.Average(
+                measurement => measurement.ActivePowerTotal_W!.Value
+              )
+            }
+        )
+        .OrderByDescending(measurement => measurement.ActivePowerTotal_W)
+        .DeferredFirstOrDefault();
+
+      var first = firstQuery.FutureValue().Value;
+      var last = lastQuery.FutureValue().Value;
+      var peak = peakQuery.FutureValue().Value;
 
       if (first is null || last is null || peak is null)
       {
@@ -287,13 +334,14 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
       }
 
       return new OzdsBillingData(
-        StartEnergy: (decimal)first.Energy!,
-        EndEnergy: (decimal)last.Energy!,
-        StartLowEnergy: (decimal)first.LowEnergy!,
-        EndLowEnergy: (decimal)last.LowEnergy!,
-        StartHighEnergy: (decimal)first.HighEnergy!,
-        EndHighEnergy: (decimal)last.HighEnergy!,
-        MaxPower: (decimal)peak.Power!
+        StartEnergyTotal_kWh: (decimal)first.ActiveEnergyImportTotal_kWh!,
+        EndEnergyTotal_kWh: (decimal)last.ActiveEnergyExportTotal_kWh!,
+        StartHighTariffEnergy_kWh: (decimal)
+          first.ActiveEnergyImportTariff1_kWh!,
+        EndHighTariffEnergy_kWh: (decimal)last.ActiveEnergyImportTariff1_kWh!,
+        StartLowTariffEnergy_kWh: (decimal)first.ActiveEnergyImportTariff2_kWh!,
+        EndLowTariffEnergy_kWh: (decimal)last.ActiveEnergyImportTariff2_kWh!,
+        PeakPowerTotal_kW: (decimal)peak.ActivePowerTotal_W! / 1000
       );
     });
   }
@@ -309,41 +357,53 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
       OzdsBillingData?
     >(async context =>
     {
-      var makeExtremeQuery = () =>
-        context.SchneiderMeasurements
-          .Where(measurement => measurement.Source == source)
-          .Where(measurement => measurement.Timestamp > beginning)
-          .Where(measurement => measurement.Timestamp < end)
-          .OrderBy(measurement => measurement.Timestamp)
-          .Select(
-            measurement =>
-              new
-              {
-                Energy = measurement.Energy!.Value,
-                LowEnergy = measurement.LowEnergy!.Value,
-                HighEnergy = measurement.HighEnergy!.Value
-              }
-          );
+      var firstQuery = context.AbbMeasurements
+        .Where(measurement => measurement.Source == source)
+        .Where(measurement => measurement.Timestamp > beginning)
+        .Where(measurement => measurement.Timestamp < end)
+        .Where(
+          measurement =>
+            measurement.ActiveEnergyImportTotal_kWh != null
+            && measurement.ActiveEnergyImportTariff1_kWh != null
+            && measurement.ActiveEnergyImportTariff2_kWh != null
+        )
+        .OrderBy(measurement => measurement.Timestamp)
+        .DeferredFirstOrDefault();
 
-      var makePeakQuery = () =>
-        context.SchneiderMeasurements
-          .Where(measurement => measurement.Source == source)
-          .Where(measurement => measurement.Timestamp > beginning)
-          .Where(measurement => measurement.Timestamp < end)
-          .Where(measurement => measurement.Power != null)
-          .GroupBy(measurement => measurement.Milliseconds / (1000 * 60 * 15))
-          .Select(
-            group =>
-              new
-              {
-                Power = group.Average(measurement => measurement.Power!.Value)
-              }
-          )
-          .OrderByDescending(measurement => measurement.Power);
+      var lastQuery = context.AbbMeasurements
+        .Where(measurement => measurement.Source == source)
+        .Where(measurement => measurement.Timestamp > beginning)
+        .Where(measurement => measurement.Timestamp < end)
+        .Where(
+          measurement =>
+            measurement.ActiveEnergyImportTotal_kWh != null
+            && measurement.ActiveEnergyExportTariff1_kWh != null
+            && measurement.ActiveEnergyImportTariff2_kWh != null
+        )
+        .OrderBy(measurement => measurement.Timestamp)
+        .DeferredLastOrDefault();
 
-      var first = await makeExtremeQuery().FirstOrDefaultAsync();
-      var last = await makeExtremeQuery().LastOrDefaultAsync();
-      var peak = await makePeakQuery().FirstOrDefaultAsync();
+      var peakQuery = context.AbbMeasurements
+        .Where(measurement => measurement.Source == source)
+        .Where(measurement => measurement.Timestamp > beginning)
+        .Where(measurement => measurement.Timestamp < end)
+        .Where(measurement => measurement.ActivePowerTotal_W != null)
+        .GroupBy(measurement => measurement.Milliseconds / (1000 * 60 * 15))
+        .Select(
+          group =>
+            new
+            {
+              ActivePowerTotal_W = group.Average(
+                measurement => measurement.ActivePowerTotal_W!.Value
+              )
+            }
+        )
+        .OrderByDescending(measurement => measurement.ActivePowerTotal_W)
+        .DeferredFirstOrDefault();
+
+      var first = await firstQuery.FutureValue().ValueAsync();
+      var last = await lastQuery.FutureValue().ValueAsync();
+      var peak = await peakQuery.FutureValue().ValueAsync();
 
       if (first is null || last is null || peak is null)
       {
@@ -351,26 +411,22 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
       }
 
       return new OzdsBillingData(
-        StartEnergy: (decimal)first.Energy,
-        EndEnergy: (decimal)last.Energy,
-        StartLowEnergy: (decimal)first.LowEnergy,
-        EndLowEnergy: (decimal)last.LowEnergy,
-        StartHighEnergy: (decimal)first.HighEnergy,
-        EndHighEnergy: (decimal)last.HighEnergy,
-        MaxPower: (decimal)peak.Power
+        StartEnergyTotal_kWh: (decimal)first.ActiveEnergyImportTotal_kWh!,
+        EndEnergyTotal_kWh: (decimal)last.ActiveEnergyExportTotal_kWh!,
+        StartHighTariffEnergy_kWh: (decimal)
+          first.ActiveEnergyImportTariff1_kWh!,
+        EndHighTariffEnergy_kWh: (decimal)last.ActiveEnergyImportTariff1_kWh!,
+        StartLowTariffEnergy_kWh: (decimal)first.ActiveEnergyImportTariff2_kWh!,
+        EndLowTariffEnergy_kWh: (decimal)last.ActiveEnergyImportTariff2_kWh!,
+        PeakPowerTotal_kW: (decimal)peak.ActivePowerTotal_W! / 1000
       );
     });
   }
 
-  public OzdsTimeseriesClient(
-    IServiceProvider services,
-    ILogger<OzdsTimeseriesClient> logger
-  )
+  public OzdsTimeseriesClient(IServiceProvider services)
   {
     _services = services;
-    _logger = logger;
   }
 
   private readonly IServiceProvider _services;
-  private readonly ILogger _logger;
 }

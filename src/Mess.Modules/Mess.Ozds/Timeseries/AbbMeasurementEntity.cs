@@ -1,64 +1,100 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Mess.Ozds.Abstractions.Timeseries;
+using Mess.Timeseries.Abstractions.Entities;
 
 namespace Mess.Ozds.Timeseries;
 
-public class AbbMeasurementEntity : BillingEntity
+public class AbbMeasurementEntity : HypertableEntity
 {
-  [Column(TypeName = "float4")]
-  public float? CurrentL1 { get; set; } = default!;
+  [Column(TypeName = "int4")]
+  public int? VoltageL1_V { get; set; } = default!;
 
-  [Column(TypeName = "float4")]
-  public float? CurrentL2 { get; set; } = default!;
+  [Column(TypeName = "int4")]
+  public int? VoltageL2_V { get; set; } = default!;
 
-  [Column(TypeName = "float4")]
-  public float? CurrentL3 { get; set; } = default!;
+  [Column(TypeName = "int4")]
+  public int? VoltageL3_V { get; set; } = default!;
 
-  [Column(TypeName = "float4")]
-  public float? VoltageL1 { get; set; } = default!;
+  [Column(TypeName = "int4")]
+  public int? CurrentL1_A { get; set; } = default!;
 
-  [Column(TypeName = "float4")]
-  public float? VoltageL2 { get; set; } = default!;
+  [Column(TypeName = "int4")]
+  public int? CurrentL2_A { get; set; } = default!;
 
-  [Column(TypeName = "float4")]
-  public float? VoltageL3 { get; set; } = default!;
+  [Column(TypeName = "int4")]
+  public int? CurrentL3_A { get; set; } = default!;
 
-  [Column(TypeName = "float4")]
-  public float? ActivePowerL1 { get; set; } = default!;
+  [Column(TypeName = "int4")]
+  public int? ActivePowerTotal_W { get; set; } = default!;
 
-  [Column(TypeName = "float4")]
-  public float? ActivePowerL2 { get; set; } = default!;
+  [Column(TypeName = "int4")]
+  public int? ActivePowerL1_W { get; set; } = default!;
 
-  [Column(TypeName = "float4")]
-  public float? ActivePowerL3 { get; set; } = default!;
+  [Column(TypeName = "int4")]
+  public int? ActivePowerL2_W { get; set; } = default!;
 
-  [Column(TypeName = "float4")]
-  public float? ReactivePowerL1 { get; set; } = default!;
+  [Column(TypeName = "int4")]
+  public int? ActivePowerL3_W { get; set; } = default!;
 
-  [Column(TypeName = "float4")]
-  public float? ReactivePowerL2 { get; set; } = default!;
+  [Column(TypeName = "int4")]
+  public int? ReactivePowerTotal_VAR { get; set; } = default!;
 
-  [Column(TypeName = "float4")]
-  public float? ReactivePowerL3 { get; set; } = default!;
+  [Column(TypeName = "int4")]
+  public int? ReactivePowerL1_VAR { get; set; } = default!;
 
-  [Column(TypeName = "float4")]
-  public float? ApparentPowerL1 { get; set; } = default!;
+  [Column(TypeName = "int4")]
+  public int? ReactivePowerL2_VAR { get; set; } = default!;
 
-  [Column(TypeName = "float4")]
-  public float? ApparentPowerL2 { get; set; } = default!;
+  [Column(TypeName = "int4")]
+  public int? ReactivePowerL3_VAR { get; set; } = default!;
 
-  [Column(TypeName = "float4")]
-  public float? ApparentPowerL3 { get; set; } = default!;
+  [Column(TypeName = "int4")]
+  public int? ApparentPowerTotal_VA { get; set; } = default!;
 
-  [Column(TypeName = "float4")]
-  public float? PowerFactorL1 { get; set; } = default!;
+  [Column(TypeName = "int4")]
+  public int? ApparentPowerL1_VA { get; set; } = default!;
 
-  [Column(TypeName = "float4")]
-  public float? PowerFactorL2 { get; set; } = default!;
+  [Column(TypeName = "int4")]
+  public int? ApparentPowerL2_VA { get; set; } = default!;
 
-  [Column(TypeName = "float4")]
-  public float? PowerFactorL3 { get; set; } = default!;
+  [Column(TypeName = "int4")]
+  public int? ApparentPowerL3_VA { get; set; } = default!;
+
+  [Column(TypeName = "int2")]
+  public short? PowerFactorTotal { get; set; } = default!;
+
+  [Column(TypeName = "int2")]
+  public short? PowerFactorL1 { get; set; } = default!;
+
+  [Column(TypeName = "int2")]
+  public short? PowerFactorL2 { get; set; } = default!;
+
+  [Column(TypeName = "int2")]
+  public short? PowerFactorL3 { get; set; } = default!;
+
+  [Column(TypeName = "int8")]
+  public long? ActiveEnergyImportTotal_kWh { get; set; } = default!;
+
+  [Column(TypeName = "int8")]
+  public long? ActiveEnergyExportTotal_kWh { get; set; } = default!;
+
+  [Column(TypeName = "int8")]
+  public long? ActiveEnergyNetTotal_kWh { get; set; } = default!;
+
+  [Column(TypeName = "int8")]
+  public long? ActiveEnergyImportTariff1_kWh { get; set; } = default!;
+
+  [Column(TypeName = "int8")]
+  public long? ActiveEnergyImportTariff2_kWh { get; set; } = default!;
+
+  [Column(TypeName = "int8")]
+  public long? ActiveEnergyExportTariff1_kWh { get; set; } = default!;
+
+  [Column(TypeName = "int8")]
+  public long? ActiveEnergyExportTariff2_kWh { get; set; } = default!;
 }
+
+// TODO: safer conversions
 
 public static class AbbMeasurementEntityExtensions
 {
@@ -68,28 +104,38 @@ public static class AbbMeasurementEntityExtensions
       Tenant = model.Tenant,
       Timestamp = model.Timestamp,
       Source = model.DeviceId,
-      CurrentL1 = model.CurrentL1,
-      CurrentL2 = model.CurrentL2,
-      CurrentL3 = model.CurrentL3,
-      VoltageL1 = model.VoltageL1,
-      VoltageL2 = model.VoltageL2,
-      VoltageL3 = model.VoltageL3,
-      ActivePowerL1 = model.ActivePowerL1,
-      ActivePowerL2 = model.ActivePowerL2,
-      ActivePowerL3 = model.ActivePowerL3,
-      ReactivePowerL1 = model.ReactivePowerL1,
-      ReactivePowerL2 = model.ReactivePowerL2,
-      ReactivePowerL3 = model.ReactivePowerL3,
-      ApparentPowerL1 = model.ApparentPowerL1,
-      ApparentPowerL2 = model.ApparentPowerL2,
-      ApparentPowerL3 = model.ApparentPowerL3,
-      PowerFactorL1 = model.PowerFactorL1,
-      PowerFactorL2 = model.PowerFactorL2,
-      PowerFactorL3 = model.PowerFactorL3,
-      Energy = model.Energy,
-      LowEnergy = model.LowEnergy,
-      HighEnergy = model.HighEnergy,
-      Power = model.Power
+      VoltageL1_V = (int?)model.VoltageL1_V,
+      VoltageL2_V = (int?)model.VoltageL2_V,
+      VoltageL3_V = (int?)model.VoltageL3_V,
+      CurrentL1_A = (int?)model.CurrentL1_A,
+      CurrentL2_A = (int?)model.CurrentL2_A,
+      CurrentL3_A = (int?)model.CurrentL3_A,
+      ActivePowerTotal_W = (int?)model.ActivePowerTotal_W,
+      ActivePowerL1_W = (int?)model.ActivePowerL1_W,
+      ActivePowerL2_W = (int?)model.ActivePowerL2_W,
+      ActivePowerL3_W = (int?)model.ActivePowerL3_W,
+      ReactivePowerTotal_VAR = (int?)model.ReactivePowerTotal_VAR,
+      ReactivePowerL1_VAR = (int?)model.ReactivePowerL1_VAR,
+      ReactivePowerL2_VAR = (int?)model.ReactivePowerL2_VAR,
+      ReactivePowerL3_VAR = (int?)model.ReactivePowerL3_VAR,
+      ApparentPowerTotal_VA = (int?)model.ApparentPowerTotal_VA,
+      ApparentPowerL1_VA = (int?)model.ApparentPowerL1_VA,
+      ApparentPowerL2_VA = (int?)model.ApparentPowerL2_VA,
+      ApparentPowerL3_VA = (int?)model.ApparentPowerL3_VA,
+      PowerFactorTotal = (short?)model.PowerFactorTotal,
+      PowerFactorL1 = (short?)model.PowerFactorL1,
+      PowerFactorL2 = (short?)model.PowerFactorL2,
+      PowerFactorL3 = (short?)model.PowerFactorL3,
+      ActiveEnergyImportTotal_kWh = (long?)model.ActiveEnergyImportTotal_kWh,
+      ActiveEnergyExportTotal_kWh = (long?)model.ActiveEnergyExportTotal_kWh,
+      ActiveEnergyNetTotal_kWh = (long?)model.ActiveEnergyNetTotal_kWh,
+      ActiveEnergyImportTariff1_kWh = (long?)
+        model.ActiveEnergyImportTariff1_kWh,
+      ActiveEnergyImportTariff2_kWh = (long?)
+        model.ActiveEnergyImportTariff2_kWh,
+      ActiveEnergyExportTariff1_kWh = (long?)
+        model.ActiveEnergyExportTariff1_kWh,
+      ActiveEnergyExportTariff2_kWh = (long?)model.ActiveEnergyExportTariff2_kWh
     };
 
   public static AbbMeasurement ToModel(this AbbMeasurementEntity entity) =>
@@ -97,27 +143,34 @@ public static class AbbMeasurementEntityExtensions
       Tenant: entity.Tenant,
       DeviceId: entity.Source,
       Timestamp: entity.Timestamp,
-      CurrentL1: entity.CurrentL1,
-      CurrentL2: entity.CurrentL2,
-      CurrentL3: entity.CurrentL3,
-      VoltageL1: entity.VoltageL1,
-      VoltageL2: entity.VoltageL2,
-      VoltageL3: entity.VoltageL3,
-      ActivePowerL1: entity.ActivePowerL1,
-      ActivePowerL2: entity.ActivePowerL2,
-      ActivePowerL3: entity.ActivePowerL3,
-      ReactivePowerL1: entity.ReactivePowerL1,
-      ReactivePowerL2: entity.ReactivePowerL2,
-      ReactivePowerL3: entity.ReactivePowerL3,
-      ApparentPowerL1: entity.ApparentPowerL1,
-      ApparentPowerL2: entity.ApparentPowerL2,
-      ApparentPowerL3: entity.ApparentPowerL3,
+      VoltageL1_V: entity.VoltageL1_V,
+      VoltageL2_V: entity.VoltageL2_V,
+      VoltageL3_V: entity.VoltageL3_V,
+      CurrentL1_A: entity.CurrentL1_A,
+      CurrentL2_A: entity.CurrentL2_A,
+      CurrentL3_A: entity.CurrentL3_A,
+      ActivePowerTotal_W: entity.ActivePowerTotal_W,
+      ActivePowerL1_W: entity.ActivePowerL1_W,
+      ActivePowerL2_W: entity.ActivePowerL2_W,
+      ActivePowerL3_W: entity.ActivePowerL3_W,
+      ReactivePowerTotal_VAR: entity.ReactivePowerTotal_VAR,
+      ReactivePowerL1_VAR: entity.ReactivePowerL1_VAR,
+      ReactivePowerL2_VAR: entity.ReactivePowerL2_VAR,
+      ReactivePowerL3_VAR: entity.ReactivePowerL3_VAR,
+      ApparentPowerTotal_VA: entity.ApparentPowerTotal_VA,
+      ApparentPowerL1_VA: entity.ApparentPowerL1_VA,
+      ApparentPowerL2_VA: entity.ApparentPowerL2_VA,
+      ApparentPowerL3_VA: entity.ApparentPowerL3_VA,
+      PowerFactorTotal: entity.PowerFactorTotal,
       PowerFactorL1: entity.PowerFactorL1,
       PowerFactorL2: entity.PowerFactorL2,
       PowerFactorL3: entity.PowerFactorL3,
-      Energy: entity.Energy,
-      LowEnergy: entity.LowEnergy,
-      HighEnergy: entity.HighEnergy,
-      Power: entity.Power
+      ActiveEnergyImportTotal_kWh: entity.ActiveEnergyImportTotal_kWh,
+      ActiveEnergyExportTotal_kWh: entity.ActiveEnergyExportTotal_kWh,
+      ActiveEnergyNetTotal_kWh: entity.ActiveEnergyNetTotal_kWh,
+      ActiveEnergyImportTariff1_kWh: entity.ActiveEnergyImportTariff1_kWh,
+      ActiveEnergyImportTariff2_kWh: entity.ActiveEnergyImportTariff2_kWh,
+      ActiveEnergyExportTariff1_kWh: entity.ActiveEnergyExportTariff1_kWh,
+      ActiveEnergyExportTariff2_kWh: entity.ActiveEnergyExportTariff2_kWh
     );
 }

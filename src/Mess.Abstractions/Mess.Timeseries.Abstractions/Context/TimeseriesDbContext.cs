@@ -26,12 +26,16 @@ public abstract class TimeseriesDbContext : RelationalDbContext
           nameof(HypertableEntity.Timestamp)
         );
 
-        // TODO: try BRIN instead of Btree
-        // to do this we need a big data simulation of the database
         entity.HasIndex(
           nameof(HypertableEntity.Tenant),
           nameof(HypertableEntity.Source),
           nameof(HypertableEntity.Timestamp)
+        );
+
+        entity.HasIndex(
+          nameof(HypertableEntity.Tenant),
+          nameof(HypertableEntity.Source),
+          nameof(HypertableEntity.Milliseconds)
         );
       }
     );

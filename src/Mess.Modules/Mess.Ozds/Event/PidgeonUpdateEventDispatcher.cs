@@ -8,13 +8,13 @@ using Mess.Event.Abstractions.Events;
 
 namespace Mess.Ozds.Event;
 
-public class PidgeonUpdateUpdateEventDispatcher : IEventDispatcher
+public class PidgeonUpdateEventDispatcher : IEventDispatcher
 {
   public void Dispatch(IServiceProvider services, IEvents events)
   {
     var session = services.GetRequiredService<ISession>();
     var logger = services.GetRequiredService<
-      ILogger<PidgeonUpdateUpdateEventDispatcher>
+      ILogger<PidgeonUpdateEventDispatcher>
     >();
 
     foreach (var @event in events.OfType<PidgeonUpdated>())
@@ -59,7 +59,7 @@ public class PidgeonUpdateUpdateEventDispatcher : IEventDispatcher
   {
     var session = services.GetRequiredService<ISession>();
     var logger = services.GetRequiredService<
-      ILogger<PidgeonUpdateUpdateEventDispatcher>
+      ILogger<PidgeonUpdateEventDispatcher>
     >();
 
     foreach (var @event in events.OfType<PidgeonUpdated>())

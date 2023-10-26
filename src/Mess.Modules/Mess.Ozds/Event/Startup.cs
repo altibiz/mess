@@ -10,6 +10,6 @@ public class Startup : StartupBase
   public override void ConfigureServices(IServiceCollection services)
   {
     services.AddEventDispatcher<PidgeonPushEventDispatcher>();
-    services.AddEventDispatcher<PidgeonUpdateUpdateEventDispatcher>();
+    services.AddEventDispatcher<PidgeonUpdateEventDispatcher>();
   }
 }

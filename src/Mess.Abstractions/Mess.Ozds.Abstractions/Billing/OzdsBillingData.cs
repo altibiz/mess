@@ -1,11 +1,11 @@
 namespace Mess.Ozds.Abstractions.Billing;
 
 public record OzdsBillingData(
-  decimal StartEnergy,
-  decimal EndEnergy,
-  decimal StartHighEnergy,
-  decimal EndHighEnergy,
-  decimal StartLowEnergy,
-  decimal EndLowEnergy,
-  decimal MaxPower
+  decimal StartEnergyTotal_kWh,
+  decimal EndEnergyTotal_kWh,
+  decimal StartHighTariffEnergy_kWh,
+  decimal EndHighTariffEnergy_kWh,
+  decimal StartLowTariffEnergy_kWh,
+  decimal EndLowTariffEnergy_kWh,
+  decimal PeakPowerTotal_kW
 );
