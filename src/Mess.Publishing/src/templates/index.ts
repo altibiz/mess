@@ -31,6 +31,9 @@ export const importTemplates = async (): Promise<Record<string, Template>> => ({
   abb: {
     push: await importTemplate("abb.push.json.hbs"),
   },
+  schneider: {
+    push: await importTemplate("schneider.push.json.hbs"),
+  },
 });
 
 export default Template;

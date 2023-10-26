@@ -1,8 +1,9 @@
-import yargs from "yargs/yargs";
 import { hideBin } from "yargs/helpers";
+import yargs from "yargs/yargs";
 import * as env from "./env";
 
 // TODO: do i care about most of these arguments in dev?
+// FIXME: "Messenger  not found"
 
 export type Args = {
   mode: "client" | "server" | "proxy";
