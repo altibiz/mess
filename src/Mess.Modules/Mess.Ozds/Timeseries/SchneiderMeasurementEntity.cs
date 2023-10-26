@@ -1,9 +1,10 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Mess.Ozds.Abstractions.Timeseries;
+using Mess.Timeseries.Abstractions.Entities;
 
 namespace Mess.Ozds.Timeseries;
 
-public class SchneiderMeasurementEntity : BillingEntity
+public class SchneiderMeasurementEntity : HypertableEntity
 {
   [Column(TypeName = "float4")]
   public float? VoltageL1_V { get; set; } = default!;
