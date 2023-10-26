@@ -3,6 +3,7 @@ using Marten.Events;
 using Marten.Events.Projections;
 using Mess.Event.Abstractions.Events;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Mess.Event.Projections;
 
@@ -14,14 +15,26 @@ public record class Projection(IServiceProvider Services) : IProjection
   )
   {
     using var scope = Services.CreateScope();
+    var dispatchers = scope.ServiceProvider.GetServices<IEventDispatcher>();
+    var logger = scope.ServiceProvider.GetRequiredService<
+      ILogger<Projection>
+    >();
 
     var events = new Events(streams);
 
-    var applicators = scope.ServiceProvider.GetServices<IEventDispatcher>();
-
-    foreach (var applicator in applicators)
+    foreach (var dispatcher in dispatchers)
     {
-      applicator.Dispatch(scope.ServiceProvider, events);
+      try
+      {
+        dispatcher.Dispatch(scope.ServiceProvider, events);
+      }
+      catch (Exception exception)
+      {
+        logger.LogError(
+          exception,
+          $"Error while dispatching events of {dispatcher.GetType().Name}"
+        );
+      }
     }
   }
 
@@ -32,18 +45,30 @@ public record class Projection(IServiceProvider Services) : IProjection
   )
   {
     await using var scope = Services.CreateAsyncScope();
+    var dispatchers = scope.ServiceProvider.GetServices<IEventDispatcher>();
+    var logger = scope.ServiceProvider.GetRequiredService<
+      ILogger<Projection>
+    >();
 
     var events = new Events(streams);
 
-    var applicators = scope.ServiceProvider.GetServices<IEventDispatcher>();
-
-    foreach (var applicator in applicators)
+    foreach (var dispatcher in dispatchers)
     {
-      await applicator.DispatchAsync(
-        scope.ServiceProvider,
-        events,
-        cancellationToken
-      );
+      try
+      {
+        await dispatcher.DispatchAsync(
+          scope.ServiceProvider,
+          events,
+          cancellationToken
+        );
+      }
+      catch (Exception exception)
+      {
+        logger.LogError(
+          exception,
+          $"Error while dispatching events of {dispatcher.GetType().Name}"
+        );
+      }
     }
   }
 }

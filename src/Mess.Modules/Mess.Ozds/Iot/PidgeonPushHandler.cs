@@ -5,6 +5,7 @@ using Mess.Ozds.Event;
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.Environment.Shell;
 using Mess.Ozds.Abstractions.Models;
+using Microsoft.Extensions.Logging;
 
 namespace Mess.Ozds.Iot;
 
@@ -44,6 +45,9 @@ public class PidgeonPushHandler
         var measurementContentItem = _cache.Get(measurement.DeviceId);
         if (measurementContentItem is null)
         {
+          _logger.LogError(
+            $"Content item with device id {measurement.DeviceId} not found"
+          );
           continue;
         }
 
@@ -54,16 +58,29 @@ public class PidgeonPushHandler
           );
         if (measurementHandler is null)
         {
+          _logger.LogError(
+            $"Push handler for content item with device id {measurement.DeviceId} not found"
+          );
           continue;
         }
 
-        measurementHandler.Handle(
-          measurement.DeviceId,
-          tenant,
-          measurement.Timestamp,
-          measurementContentItem,
-          measurement.Data
-        );
+        try
+        {
+          measurementHandler.Handle(
+            measurement.DeviceId,
+            tenant,
+            measurement.Timestamp,
+            measurementContentItem,
+            measurement.Data
+          );
+        }
+        catch (Exception exception)
+        {
+          _logger.LogError(
+            exception,
+            $"Error while handling push event for device {measurement.DeviceId}"
+          );
+        }
       }
     }
   }
@@ -103,6 +120,9 @@ public class PidgeonPushHandler
         );
         if (measurementContentItem is null)
         {
+          _logger.LogError(
+            $"Content item with device id {measurement.DeviceId} not found"
+          );
           continue;
         }
 
@@ -113,16 +133,29 @@ public class PidgeonPushHandler
           );
         if (measurementHandler is null)
         {
+          _logger.LogError(
+            $"Push handler for content item with device id {measurement.DeviceId} not found"
+          );
           continue;
         }
 
-        await measurementHandler.HandleAsync(
-          measurement.DeviceId,
-          tenant,
-          measurement.Timestamp,
-          measurementContentItem,
-          measurement.Data
-        );
+        try
+        {
+          await measurementHandler.HandleAsync(
+            measurement.DeviceId,
+            tenant,
+            measurement.Timestamp,
+            measurementContentItem,
+            measurement.Data
+          );
+        }
+        catch (Exception exception)
+        {
+          _logger.LogError(
+            exception,
+            $"Error while handling push event for device {measurement.DeviceId}"
+          );
+        }
       }
     }
   }
@@ -130,12 +163,14 @@ public class PidgeonPushHandler
   public PidgeonPushHandler(
     IIotDeviceContentItemCache cache,
     IServiceProvider services,
-    IShellFeaturesManager shellFeaturesManager
+    IShellFeaturesManager shellFeaturesManager,
+    ILogger<PidgeonPushHandler> logger
   )
   {
     _cache = cache;
     _services = services;
     _shellFeaturesManager = shellFeaturesManager;
+    _logger = logger;
   }
 
   private readonly IIotDeviceContentItemCache _cache;
@@ -143,4 +178,6 @@ public class PidgeonPushHandler
   private readonly IServiceProvider _services;
 
   private readonly IShellFeaturesManager _shellFeaturesManager;
+
+  private readonly ILogger _logger;
 }

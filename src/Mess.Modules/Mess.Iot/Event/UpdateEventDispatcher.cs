@@ -24,6 +24,9 @@ public class UpdateEventDispatcher : IEventDispatcher
         .Result;
       if (contentItem is null)
       {
+        logger.LogError(
+          $"Content item with device id {@event.DeviceId} not found"
+        );
         continue;
       }
 
@@ -34,6 +37,9 @@ public class UpdateEventDispatcher : IEventDispatcher
         );
       if (handler is null)
       {
+        logger.LogError(
+          $"Update handler for content item with device id {@event.DeviceId} not found"
+        );
         continue;
       }
 
@@ -66,6 +72,9 @@ public class UpdateEventDispatcher : IEventDispatcher
         .FirstOrDefaultAsync();
       if (contentItem is null)
       {
+        logger.LogError(
+          $"Content item with device id {@event.DeviceId} not found"
+        );
         continue;
       }
 
@@ -76,16 +85,30 @@ public class UpdateEventDispatcher : IEventDispatcher
         );
       if (handler is null)
       {
+        logger.LogError(
+          $"Update handler for content item with device id {@event.DeviceId} not found"
+        );
         continue;
       }
 
-      await handler.HandleAsync(
-        @event.DeviceId,
-        @event.Tenant,
-        @event.Timestamp,
-        contentItem,
-        @event.Payload
-      );
+      try
+      {
+        await handler.HandleAsync(
+          @event.DeviceId,
+          @event.Tenant,
+          @event.Timestamp,
+          contentItem,
+          @event.Payload
+        );
+      }
+      catch (Exception exception)
+      {
+        logger.LogError(
+          exception,
+          $"Error while handling update event for device {@event.DeviceId}"
+        );
+      }
+
       if (cancellationToken.IsCancellationRequested)
       {
         await session.SaveChangesAsync();

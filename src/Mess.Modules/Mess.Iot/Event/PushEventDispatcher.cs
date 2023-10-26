@@ -20,6 +20,9 @@ public class PushEventDispatcher : IEventDispatcher
       var contentItem = cache.Get(@event.DeviceId);
       if (contentItem is null)
       {
+        logger.LogError(
+          $"Content item with device id {@event.DeviceId} not found"
+        );
         continue;
       }
 
@@ -30,16 +33,29 @@ public class PushEventDispatcher : IEventDispatcher
         );
       if (handler is null)
       {
+        logger.LogError(
+          $"Push handler for content item with device id {@event.DeviceId} not found"
+        );
         continue;
       }
 
-      handler.Handle(
-        @event.DeviceId,
-        @event.Tenant,
-        @event.Timestamp,
-        contentItem,
-        @event.Payload
-      );
+      try
+      {
+        handler.Handle(
+          @event.DeviceId,
+          @event.Tenant,
+          @event.Timestamp,
+          contentItem,
+          @event.Payload
+        );
+      }
+      catch (Exception exception)
+      {
+        logger.LogError(
+          exception,
+          $"Error while dispatching events of {handler.GetType().Name}"
+        );
+      }
     }
 
     session.SaveChangesAsync().RunSynchronously();
@@ -60,6 +76,9 @@ public class PushEventDispatcher : IEventDispatcher
       var contentItem = await cache.GetAsync(@event.DeviceId);
       if (contentItem is null)
       {
+        logger.LogError(
+          $"Content item with device id {@event.DeviceId} not found"
+        );
         continue;
       }
 
@@ -70,16 +89,30 @@ public class PushEventDispatcher : IEventDispatcher
         );
       if (handler is null)
       {
+        logger.LogError(
+          $"Push handler for content item with device id {@event.DeviceId} not found"
+        );
         continue;
       }
 
-      await handler.HandleAsync(
-        @event.DeviceId,
-        @event.Tenant,
-        @event.Timestamp,
-        contentItem,
-        @event.Payload
-      );
+      try
+      {
+        await handler.HandleAsync(
+          @event.DeviceId,
+          @event.Tenant,
+          @event.Timestamp,
+          contentItem,
+          @event.Payload
+        );
+      }
+      catch (Exception exception)
+      {
+        logger.LogError(
+          exception,
+          $"Error while dispatching events of {handler.GetType().Name}"
+        );
+      }
+
       if (cancellationToken.IsCancellationRequested)
       {
         await session.SaveChangesAsync();
