@@ -84,8 +84,8 @@ public class Startup : StartupBase
     services.AddIotPushHandler<SchneiderPushHandler>();
 
     // Chart
-    services.AddChartFactory<AbbChartProvider>();
-    services.AddChartFactory<SchneiderChartProvider>();
+    services.AddChartFactory<AbbChartFactory>();
+    services.AddChartFactory<SchneiderChartFactory>();
   }
 
   public override void Configure(

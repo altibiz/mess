@@ -7,7 +7,7 @@ using Mess.Eor.Abstractions.Models;
 
 namespace Mess.Eor.Chart;
 
-public class EorIotDeviceChartProvider : ChartFactory<EorIotDeviceItem>
+public class EorChartProvider : ChartFactory<EorIotDeviceItem>
 {
   public override IEnumerable<string> TimeseriesChartDatasetProperties =>
     new[]
@@ -31,12 +31,14 @@ public class EorIotDeviceChartProvider : ChartFactory<EorIotDeviceItem>
     );
 
     return new TimeseriesChartDescriptor(
-      RefreshInterval: chart.TimeseriesChartPart.Value.RefreshInterval.Value
-        .ToTimeSpan()
-        .TotalMilliseconds,
-      History: chart.TimeseriesChartPart.Value.History.Value
-        .ToTimeSpan()
-        .TotalMilliseconds,
+      RefreshInterval: (decimal)
+        chart.TimeseriesChartPart.Value.RefreshInterval.Value
+          .ToTimeSpan()
+          .TotalMilliseconds,
+      History: (decimal)
+        chart.TimeseriesChartPart.Value.History.Value
+          .ToTimeSpan()
+          .TotalMilliseconds,
       Datasets: datasets
         .Select(
           dataset =>
@@ -69,7 +71,7 @@ public class EorIotDeviceChartProvider : ChartFactory<EorIotDeviceItem>
     );
   }
 
-  public EorIotDeviceChartProvider(IEorTimeseriesClient client)
+  public EorChartProvider(IEorTimeseriesClient client)
   {
     _client = client;
   }

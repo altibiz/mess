@@ -7,7 +7,7 @@ using Mess.Ozds.Abstractions.Timeseries;
 
 namespace Mess.Ozds.Chart;
 
-public class SchneiderChartProvider : ChartFactory<SchneiderIotDeviceItem>
+public class SchneiderChartFactory : ChartFactory<SchneiderIotDeviceItem>
 {
   public override IEnumerable<string> TimeseriesChartDatasetProperties =>
     new[]
@@ -47,10 +47,10 @@ public class SchneiderChartProvider : ChartFactory<SchneiderIotDeviceItem>
     );
 
     return new TimeseriesChartDescriptor(
-      RefreshInterval: chart.TimeseriesChartPart.Value.RefreshInterval.Value
+      RefreshInterval: (decimal)chart.TimeseriesChartPart.Value.RefreshInterval.Value
         .ToTimeSpan()
         .TotalMilliseconds,
-      History: chart.TimeseriesChartPart.Value.History.Value
+      History: (decimal)chart.TimeseriesChartPart.Value.History.Value
         .ToTimeSpan()
         .TotalMilliseconds,
       Datasets: datasets
@@ -77,7 +77,7 @@ public class SchneiderChartProvider : ChartFactory<SchneiderIotDeviceItem>
     );
   }
 
-  public SchneiderChartProvider(IOzdsTimeseriesClient client)
+  public SchneiderChartFactory(IOzdsTimeseriesClient client)
   {
     _client = client;
   }

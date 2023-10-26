@@ -62,7 +62,7 @@ public class Startup : StartupBase
     services.AddIotAuthorizationHandler<EorAuthorizationHandler>();
 
     // Chart
-    services.AddChartFactory<EorIotDeviceChartProvider>();
+    services.AddChartFactory<EorChartProvider>();
   }
 
   public override void Configure(

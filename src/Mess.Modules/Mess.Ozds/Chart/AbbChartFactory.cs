@@ -7,7 +7,7 @@ using Mess.Ozds.Abstractions.Timeseries;
 
 namespace Mess.Ozds.Chart;
 
-public class AbbChartProvider : ChartFactory<AbbIotDeviceItem>
+public class AbbChartFactory : ChartFactory<AbbIotDeviceItem>
 {
   public override IEnumerable<string> TimeseriesChartDatasetProperties =>
     new[]
@@ -57,12 +57,14 @@ public class AbbChartProvider : ChartFactory<AbbIotDeviceItem>
     );
 
     return new TimeseriesChartDescriptor(
-      RefreshInterval: chart.TimeseriesChartPart.Value.RefreshInterval.Value
-        .ToTimeSpan()
-        .TotalMilliseconds,
-      History: chart.TimeseriesChartPart.Value.History.Value
-        .ToTimeSpan()
-        .TotalMilliseconds,
+      RefreshInterval: (decimal)
+        chart.TimeseriesChartPart.Value.RefreshInterval.Value
+          .ToTimeSpan()
+          .TotalMilliseconds,
+      History: (decimal)
+        chart.TimeseriesChartPart.Value.History.Value
+          .ToTimeSpan()
+          .TotalMilliseconds,
       Datasets: datasets
         .Select(
           dataset =>
@@ -87,7 +89,7 @@ public class AbbChartProvider : ChartFactory<AbbIotDeviceItem>
     );
   }
 
-  public AbbChartProvider(IOzdsTimeseriesClient client)
+  public AbbChartFactory(IOzdsTimeseriesClient client)
   {
     _client = client;
   }

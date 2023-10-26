@@ -53,36 +53,38 @@ public abstract class ChartFactory<T> : IChartFactory
     if (propertyInfo == null)
     {
       throw new InvalidOperationException(
-        $"Invalid timeseries property: {propertyInfo}"
+        "Timestamp property not found in timeseries data"
       );
     }
 
     var value = propertyInfo.GetValue(data);
     if (value == null)
     {
-      throw new InvalidOperationException($"Invalid timeseries value: {value}");
+      throw new InvalidOperationException(
+        $"Timestamp property value is null in timeseries data"
+      );
     }
 
     return (DateTimeOffset)value;
   }
 
-  protected float GetTimeseriesValue(object data, string property)
+  protected decimal GetTimeseriesValue(object data, string property)
   {
     var propertyInfo = data.GetType().GetProperty(property);
     if (propertyInfo == null)
     {
       throw new InvalidOperationException(
-        $"Invalid timeseries property: {propertyInfo}"
+        $"Invalid timeseries property: {property}"
       );
     }
 
     var value = propertyInfo.GetValue(data);
     if (value == null)
     {
-      throw new InvalidOperationException($"Invalid timeseries value: {value}");
+      return 0.0M;
     }
 
-    return Convert.ToSingle(value);
+    return Convert.ToDecimal(value);
   }
 
   public string ContentType => typeof(T).ContentTypeName();

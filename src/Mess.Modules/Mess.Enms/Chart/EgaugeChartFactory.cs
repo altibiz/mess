@@ -30,12 +30,14 @@ public class EgaugeChartFactory : ChartFactory<EgaugeIotDeviceItem>
     );
 
     return new TimeseriesChartDescriptor(
-      RefreshInterval: chart.TimeseriesChartPart.Value.RefreshInterval.Value
-        .ToTimeSpan()
-        .TotalMilliseconds,
-      History: chart.TimeseriesChartPart.Value.History.Value
-        .ToTimeSpan()
-        .TotalMilliseconds,
+      RefreshInterval: (decimal)
+        chart.TimeseriesChartPart.Value.RefreshInterval.Value
+          .ToTimeSpan()
+          .TotalMilliseconds,
+      History: (decimal)
+        chart.TimeseriesChartPart.Value.History.Value
+          .ToTimeSpan()
+          .TotalMilliseconds,
       Datasets: datasets
         .Select(
           dataset =>
