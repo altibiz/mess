@@ -42,7 +42,7 @@ public class IntervalFieldDisplayDriver
       GetEditorShapeType(context),
       model =>
       {
-        model.Value = field.Value;
+        model.Value = field.Value ?? new Interval(IntervalUnit.Minute, 5);
         model.Field = field;
         model.Part = context.ContentPart;
         model.PartFieldDefinition = context.PartFieldDefinition;
@@ -53,7 +53,7 @@ public class IntervalFieldDisplayDriver
               {
                 Text = unit.ToString(),
                 Value = unit.ToString(),
-                Selected = unit == field.Value.Unit
+                Selected = unit == model.Value.Unit
               }
           )
           .ToList();
