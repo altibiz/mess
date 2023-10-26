@@ -176,7 +176,7 @@ public class Migrations : DataMigration
                     RenderTitle = true,
                     Options = TitlePartOptions.GeneratedHidden,
                     Pattern =
-                      @"{{- ContentItem.Content.IotDevicePart.DeviceId.Text -}}"
+                      @"{{ ContentItem.Content.IotDevicePart.DeviceId.Text }}"
                   }
                 )
           )

@@ -43,7 +43,7 @@ public class Migrations : DataMigration
                     RenderTitle = true,
                     Options = TitlePartOptions.GeneratedDisabled,
                     Pattern =
-                      @"{%- ContentItem.Content.EgaugeIotDevicePart.DeviceId.Text -%}"
+                      @"{{ ContentItem.Content.EgaugeIotDevicePart.DeviceId.Text }}"
                   }
                 )
           )

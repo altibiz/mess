@@ -712,7 +712,7 @@ internal static partial class CreateAsyncMigrations
                     RenderTitle = true,
                     Options = TitlePartOptions.GeneratedDisabled,
                     Pattern =
-                      @"{%- ContentItem.Content.IotDevicePart.DeviceId.Text -%}"
+                      @"{{ ContentItem.Content.IotDevicePart.DeviceId.Text }}"
                   }
                 )
           )
@@ -771,7 +771,7 @@ internal static partial class CreateAsyncMigrations
                     RenderTitle = true,
                     Options = TitlePartOptions.GeneratedDisabled,
                     Pattern =
-                      @"{%- ContentItem.Content.IotDevicePart.DeviceId.Text -%}"
+                      @"{{ ContentItem.Content.IotDevicePart.DeviceId.Text }}"
                   }
                 )
           )
@@ -850,7 +850,7 @@ internal static partial class CreateAsyncMigrations
                     RenderTitle = true,
                     Options = TitlePartOptions.GeneratedDisabled,
                     Pattern =
-                      @"{%- ContentItem.Content.IotDevicePart.DeviceId.Text -%}"
+                      @"{{ ContentItem.Content.IotDevicePart.DeviceId.Text }}"
                   }
                 )
           )
