@@ -94,7 +94,7 @@ public class ChartController : Controller
       .GetServices<IChartFactory>()
       .FirstOrDefault(
         dataProvider =>
-          dataProvider.ContentType == PreviewChartProvider.ChartContentType
+          dataProvider.ContentType == PreviewChartFactory.ChartContentType
       );
     if (dataProvider is null)
     {

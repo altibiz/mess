@@ -26,7 +26,7 @@ public class TimeseriesChartPartDisplayDriver
       .GetServices<IChartFactory>()
       .Where(
         chartDataProvider =>
-          chartDataProvider.ContentType != PreviewChartProvider.ChartContentType
+          chartDataProvider.ContentType != PreviewChartFactory.ChartContentType
       );
     return Initialize<TimeseriesChartPartEditViewModel>(
         GetEditorShapeType(context),
@@ -61,7 +61,7 @@ public class TimeseriesChartPartDisplayDriver
       .GetServices<IChartFactory>()
       .Where(
         chartDataProvider =>
-          chartDataProvider.ContentType != PreviewChartProvider.ChartContentType
+          chartDataProvider.ContentType != PreviewChartFactory.ChartContentType
       );
     var viewModel = new TimeseriesChartPartEditViewModel();
 

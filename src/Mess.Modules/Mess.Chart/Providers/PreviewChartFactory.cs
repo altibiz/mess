@@ -7,7 +7,7 @@ using Mess.OrchardCore;
 
 namespace Mess.Chart.Providers;
 
-public class PreviewChartProvider : IChartFactory
+public class PreviewChartFactory : IChartFactory
 {
   public const string ChartContentType = "Preview";
 
@@ -41,7 +41,7 @@ public class PreviewChartProvider : IChartFactory
                 i =>
                   new TimeseriesChartDatapointDescriptor(
                     X: now.Subtract(TimeSpan.FromMinutes(i)),
-                    Y: Random.Shared.NextSingle() * 100
+                    Y: (decimal)Random.Shared.NextDouble() * 100
                   )
               )
               .Reverse()
@@ -51,12 +51,14 @@ public class PreviewChartProvider : IChartFactory
       );
 
       return new TimeseriesChartDescriptor(
-        RefreshInterval: timeseriesChart.TimeseriesChartPart.Value.RefreshInterval.Value
-          .ToTimeSpan()
-          .TotalMilliseconds,
-        History: timeseriesChart.TimeseriesChartPart.Value.History.Value
-          .ToTimeSpan()
-          .TotalMilliseconds,
+        RefreshInterval: (decimal)
+          timeseriesChart.TimeseriesChartPart.Value.RefreshInterval.Value
+            .ToTimeSpan()
+            .TotalMilliseconds,
+        History: (decimal)
+          timeseriesChart.TimeseriesChartPart.Value.History.Value
+            .ToTimeSpan()
+            .TotalMilliseconds,
         Datasets: datasetDescriptors.ToList().AsReadOnly()
       );
     }

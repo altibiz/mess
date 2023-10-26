@@ -25,7 +25,7 @@ public class Startup : StartupBase
     services.AddResources<Resources>();
 
     services.AddIndexProvider<ChartIndexProvider>();
-    services.AddChartFactory<PreviewChartProvider>();
+    services.AddChartFactory<PreviewChartFactory>();
     services
       .AddContentPart<ChartPart>()
       .UseDisplayDriver<ChartPartDisplayDriver>();
