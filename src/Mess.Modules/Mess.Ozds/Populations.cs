@@ -494,7 +494,9 @@ internal static partial class CreateAsyncMigrations
       {
         timeseriesChartDatasetPart.Color = new() { Value = "#ff0000" };
         timeseriesChartDatasetPart.Label = new() { Text = "Power" };
-        timeseriesChartDatasetPart.Property = nameof(AbbMeasurement.Power);
+        timeseriesChartDatasetPart.Property = nameof(
+          AbbMeasurement.ActivePowerTotal_W
+        );
       }
     );
     var abbChart = await contentManager.NewContentAsync<TimeseriesChartItem>();
@@ -596,7 +598,7 @@ internal static partial class CreateAsyncMigrations
         timeseriesChartDatasetPart.Color = new() { Value = "#ff0000" };
         timeseriesChartDatasetPart.Label = new() { Text = "Power" };
         timeseriesChartDatasetPart.Property = nameof(
-          SchneiderMeasurement.Power
+          SchneiderMeasurement.ActivePowerTotal_kW
         );
       }
     );

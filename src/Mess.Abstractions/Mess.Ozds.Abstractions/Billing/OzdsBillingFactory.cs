@@ -478,46 +478,50 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
     OperatorCatalogueItem catalogueItem
   )
   {
-    var highEnergyPrice =
+    var highTariffEnergyPrice =
       catalogueItem.OperatorCataloguePart.Value.HighEnergyPrice.Value ?? 0.0M;
-    var highEnergyAmount = billingData.EndEnergy - billingData.StartEnergy;
-    var highEnergyTotal = highEnergyAmount * highEnergyPrice;
-    var highEnergyItem =
-      highEnergyPrice == 0.0M
+    var highTariffEnergyAmount =
+      billingData.EndHighTariffEnergy_kWh
+      - billingData.StartHighTariffEnergy_kWh;
+    var highTariffEnergyTotal = highTariffEnergyAmount * highTariffEnergyPrice;
+    var highTariffEnergyItem =
+      highTariffEnergyPrice == 0.0M
         ? null
         : new OzdsExpenditureItemData(
-          ValueFrom: billingData.StartEnergy,
-          ValueTo: billingData.EndEnergy,
-          Amount: highEnergyAmount,
-          UnitPrice: highEnergyPrice,
-          Total: highEnergyTotal
+          ValueFrom: billingData.StartHighTariffEnergy_kWh,
+          ValueTo: billingData.EndHighTariffEnergy_kWh,
+          Amount: highTariffEnergyAmount,
+          UnitPrice: highTariffEnergyPrice,
+          Total: highTariffEnergyTotal
         );
 
-    var lowEnergyPrice =
+    var lowTariffEnergyPrice =
       catalogueItem.OperatorCataloguePart.Value.LowEnergyPrice.Value ?? 0.0M;
-    var lowEnergyAmount = billingData.EndLowEnergy - billingData.StartLowEnergy;
-    var lowEnergyTotal = lowEnergyAmount * lowEnergyPrice;
-    var lowEnergyItem =
-      lowEnergyPrice == 0.0M
+    var lowTariffEnergyAmount =
+      billingData.EndLowTariffEnergy_kWh - billingData.StartLowTariffEnergy_kWh;
+    var lowTariffEnergyTotal = lowTariffEnergyAmount * lowTariffEnergyPrice;
+    var lowTariffEnergyItem =
+      lowTariffEnergyPrice == 0.0M
         ? null
         : new OzdsExpenditureItemData(
-          ValueFrom: billingData.StartLowEnergy,
-          ValueTo: billingData.EndLowEnergy,
-          Amount: lowEnergyAmount,
-          UnitPrice: lowEnergyPrice,
-          Total: lowEnergyTotal
+          ValueFrom: billingData.StartLowTariffEnergy_kWh,
+          ValueTo: billingData.EndLowTariffEnergy_kWh,
+          Amount: lowTariffEnergyAmount,
+          UnitPrice: lowTariffEnergyPrice,
+          Total: lowTariffEnergyTotal
         );
 
     var energyPrice =
       catalogueItem.OperatorCataloguePart.Value.EnergyPrice.Value ?? 0.0M;
-    var energyAmount = billingData.EndEnergy - billingData.StartEnergy;
+    var energyAmount =
+      billingData.EndEnergyTotal_kWh - billingData.StartEnergyTotal_kWh;
     var energyTotal = energyAmount * energyPrice;
     var energyItem =
       energyPrice == 0.0M
         ? null
         : new OzdsExpenditureItemData(
-          ValueFrom: billingData.StartEnergy,
-          ValueTo: billingData.EndEnergy,
+          ValueFrom: billingData.StartEnergyTotal_kWh,
+          ValueTo: billingData.EndEnergyTotal_kWh,
           Amount: energyAmount,
           UnitPrice: energyPrice,
           Total: energyTotal
@@ -525,7 +529,7 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
 
     var maxPowerPrice =
       catalogueItem.OperatorCataloguePart.Value.MaxPowerPrice.Value ?? 0.0M;
-    var maxPowerAmount = billingData.MaxPower;
+    var maxPowerAmount = billingData.PeakPowerTotal_kW;
     var maxPowerTotal = maxPowerAmount * maxPowerPrice;
     var maxPowerItem =
       maxPowerPrice == 0.0M
@@ -554,13 +558,13 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
         );
 
     return new OzdsExpenditureData(
-      HighEnergyItem: highEnergyItem,
-      LowEnergyItem: lowEnergyItem,
+      HighEnergyItem: highTariffEnergyItem,
+      LowEnergyItem: lowTariffEnergyItem,
       EnergyItem: energyItem,
       MaxPowerItem: maxPowerItem,
       IotDeviceFee: iotDeviceFee,
-      Total: (highEnergyItem?.Total ?? 0.0M)
-        + (lowEnergyItem?.Total ?? 0.0M)
+      Total: (highTariffEnergyItem?.Total ?? 0.0M)
+        + (lowTariffEnergyItem?.Total ?? 0.0M)
         + (energyItem?.Total ?? 0.0M)
         + (maxPowerItem?.Total ?? 0.0M)
         + (iotDeviceFee?.Total ?? 0.0M)
