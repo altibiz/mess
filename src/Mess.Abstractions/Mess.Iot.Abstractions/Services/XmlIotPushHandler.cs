@@ -4,14 +4,15 @@ using Mess.System.Extensions.Objects;
 
 namespace Mess.Iot.Abstractions.Services;
 
-public abstract class XmlIotPushHandler<T, R> : IotPushHandler<T>
-  where T : ContentItemBase
+public abstract class XmlIotPushHandler<TItem, TResponse>
+  : IotPushHandler<TItem>
+  where TItem : ContentItemBase
 {
   protected override void Handle(
     string deviceId,
     string tenant,
     DateTimeOffset timestamp,
-    T contentItem,
+    TItem contentItem,
     string request
   )
   {
@@ -24,7 +25,7 @@ public abstract class XmlIotPushHandler<T, R> : IotPushHandler<T>
     string deviceId,
     string tenant,
     DateTimeOffset timestamp,
-    T contentItem,
+    TItem contentItem,
     string request
   )
   {
@@ -37,17 +38,17 @@ public abstract class XmlIotPushHandler<T, R> : IotPushHandler<T>
     string deviceId,
     string tenant,
     DateTimeOffset timestamp,
-    T contentItem,
-    R request
+    TItem contentItem,
+    TResponse request
   );
 
   protected abstract Task HandleAsync(
     string deviceId,
     string tenant,
     DateTimeOffset timestamp,
-    T contentItem,
-    R request
+    TItem contentItem,
+    TResponse request
   );
 
-  protected abstract R Parse(XDocument xml);
+  protected abstract TResponse Parse(XDocument xml);
 }

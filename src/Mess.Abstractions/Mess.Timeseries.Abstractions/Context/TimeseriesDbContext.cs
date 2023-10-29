@@ -8,8 +8,9 @@ namespace Mess.Timeseries.Abstractions.Context;
 
 public abstract class TimeseriesDbContext : RelationalDbContext
 {
-  protected override void OnConfiguring(DbContextOptionsBuilder builder) =>
-    builder.UseNpgsql(DatabaseConnectionString);
+  protected override void OnConfiguring(
+    DbContextOptionsBuilder optionsBuilder
+  ) => optionsBuilder.UseNpgsql(DatabaseConnectionString);
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
@@ -46,8 +47,8 @@ public abstract class TimeseriesDbContext : RelationalDbContext
   protected void CreateEnumPropertyTypes(ModelBuilder modelBuilder, Type @base)
   {
     foreach (
-      var entityType in this.GetType()
-        .Assembly.GetTypes()
+      var entityType in GetType().Assembly
+        .GetTypes()
         .Where(
           type => type.IsClass && !type.IsAbstract && type.IsAssignableTo(@base)
         )
@@ -68,14 +69,15 @@ public abstract class TimeseriesDbContext : RelationalDbContext
     }
   }
 
-  private static MethodInfo HasPostgresEnumMethod =
+  private static readonly MethodInfo HasPostgresEnumMethod =
     typeof(NpgsqlModelBuilderExtensions)
       .GetMethods()
       .First(
         method =>
           method.IsGenericMethod
           && method.Name == nameof(NpgsqlModelBuilderExtensions.HasPostgresEnum)
-      ) ?? throw new Exception("HasPostgresEnum method not found");
+      )
+    ?? throw new InvalidOperationException("HasPostgresEnum method not found");
 
   public TimeseriesDbContext(
     DbContextOptions options,

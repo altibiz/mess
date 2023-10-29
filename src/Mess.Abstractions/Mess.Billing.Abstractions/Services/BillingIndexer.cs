@@ -14,26 +14,12 @@ public abstract class BillingIndexer<T> : IBillingIndexer
   public BillingIndex IndexBilling(ContentItem contentItem)
   {
     var item = contentItem.AsContent<T>();
-    if (item is null)
-    {
-      throw new NullReferenceException(
-        $"Content item {contentItem.ContentItemId} is not of type {typeof(T).Name}"
-      );
-    }
-
     return IndexBilling(item);
   }
 
   public async Task<BillingIndex> IndexBillingAsync(ContentItem contentItem)
   {
     var item = contentItem.AsContent<T>();
-    if (item is null)
-    {
-      throw new NullReferenceException(
-        $"Content item {contentItem.ContentItemId} is not of type {typeof(T).Name}"
-      );
-    }
-
     return await IndexBillingAsync(item);
   }
 

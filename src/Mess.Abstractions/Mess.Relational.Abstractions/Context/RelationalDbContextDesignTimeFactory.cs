@@ -11,21 +11,19 @@ public abstract class RelationalDbContextDesignTimeFactory<T>
 {
   public T CreateDbContext(string[] args)
   {
-    var constructor = typeof(T)
-      .GetConstructors()
-      .FirstOrDefault(constructor =>
-      {
-        var parameters = constructor.GetParameters();
-        return parameters.Length == 2
-          && parameters[0].ParameterType == typeof(DbContextOptions<T>)
-          && parameters[1].ParameterType == typeof(ShellSettings);
-      });
-    if (constructor is null)
-    {
-      throw new InvalidOperationException(
+    var constructor =
+      typeof(T)
+        .GetConstructors()
+        .FirstOrDefault(constructor =>
+        {
+          var parameters = constructor.GetParameters();
+          return parameters.Length == 2
+            && parameters[0].ParameterType == typeof(DbContextOptions<T>)
+            && parameters[1].ParameterType == typeof(ShellSettings);
+        })
+      ?? throw new InvalidOperationException(
         $"Cannot find a suitable constructor for {typeof(T).Name}"
       );
-    }
 
     var optionsBuilder = new DbContextOptionsBuilder<T>();
     var shellSettings = new ShellSettings(
@@ -41,19 +39,18 @@ public abstract class RelationalDbContextDesignTimeFactory<T>
           )
           .Build()
       )
-    );
-    shellSettings.Name = "Default";
+    )
+    {
+      Name = "Default"
+    };
 
     var timeseriesContext =
       constructor.Invoke(
         new object[] { optionsBuilder.Options, shellSettings, }
-      ) as T;
-    if (timeseriesContext is null)
-    {
-      throw new InvalidOperationException(
+      ) as T
+      ?? throw new InvalidOperationException(
         $"Failed constructing {typeof(T).Name}"
       );
-    }
 
     return timeseriesContext;
   }

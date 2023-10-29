@@ -29,59 +29,42 @@ public static class IntervalExtensions
       IntervalUnit.Year => TimeSpan.FromDays(interval.Count * 365),
       _
         => throw new ArgumentOutOfRangeException(
-          nameof(interval.Unit),
-          interval.Unit,
+          nameof(interval),
+          interval,
           null
         )
     };
 
-  public static Interval ToInterval(this TimeSpan timeSpan)
-  {
-    if (timeSpan < TimeSpan.FromMilliseconds(1))
-    {
-      return new Interval(IntervalUnit.Millisecond, 0);
-    }
-
-    if (timeSpan < TimeSpan.FromSeconds(1))
-    {
-      return new Interval(
-        IntervalUnit.Millisecond,
-        (uint)timeSpan.TotalMilliseconds
-      );
-    }
-
-    if (timeSpan < TimeSpan.FromMinutes(1))
-    {
-      return new Interval(IntervalUnit.Second, (uint)timeSpan.TotalSeconds);
-    }
-
-    if (timeSpan < TimeSpan.FromHours(1))
-    {
-      return new Interval(IntervalUnit.Minute, (uint)timeSpan.Minutes);
-    }
-
-    if (timeSpan < TimeSpan.FromDays(1))
-    {
-      return new Interval(IntervalUnit.Hour, (uint)timeSpan.TotalHours);
-    }
-
-    if (timeSpan < TimeSpan.FromDays(7))
-    {
-      return new Interval(IntervalUnit.Day, (uint)(timeSpan.TotalDays));
-    }
-
-    if (timeSpan < TimeSpan.FromDays(30))
-    {
-      return new Interval(IntervalUnit.Week, (uint)(timeSpan.TotalDays / 7));
-    }
-
-    if (timeSpan < TimeSpan.FromDays(365))
-    {
-      return new Interval(IntervalUnit.Month, (uint)(timeSpan.TotalDays / 30));
-    }
-
-    return new Interval(IntervalUnit.Year, (uint)(timeSpan.TotalDays / 365));
-  }
+  public static Interval ToInterval(this TimeSpan timeSpan) =>
+    timeSpan < TimeSpan.FromMilliseconds(1)
+      ? new Interval(IntervalUnit.Millisecond, 0)
+      : timeSpan < TimeSpan.FromSeconds(1)
+        ? new Interval(
+          IntervalUnit.Millisecond,
+          (uint)timeSpan.TotalMilliseconds
+        )
+        : timeSpan < TimeSpan.FromMinutes(1)
+          ? new Interval(IntervalUnit.Second, (uint)timeSpan.TotalSeconds)
+          : timeSpan < TimeSpan.FromHours(1)
+            ? new Interval(IntervalUnit.Minute, (uint)timeSpan.TotalMinutes)
+            : timeSpan < TimeSpan.FromDays(1)
+              ? new Interval(IntervalUnit.Hour, (uint)timeSpan.TotalHours)
+              : timeSpan < TimeSpan.FromDays(7)
+                ? new Interval(IntervalUnit.Day, (uint)timeSpan.TotalDays)
+                : timeSpan < TimeSpan.FromDays(30)
+                  ? new Interval(
+                    IntervalUnit.Week,
+                    (uint)(timeSpan.TotalDays / 7)
+                  )
+                  : timeSpan < TimeSpan.FromDays(365)
+                    ? new Interval(
+                      IntervalUnit.Month,
+                      (uint)(timeSpan.TotalDays / 30)
+                    )
+                    : new Interval(
+                      IntervalUnit.Year,
+                      (uint)(timeSpan.TotalDays / 365)
+                    );
 
   public static string ToHumanString(this IntervalUnit intervalUnit) =>
     intervalUnit switch

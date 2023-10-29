@@ -6,26 +6,26 @@ public interface IOzdsTimeseriesQuery
 {
   public Task<IReadOnlyList<AbbMeasurement>> GetAbbMeasurementsAsync(
     string source,
-    DateTimeOffset beginning,
-    DateTimeOffset end
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
   );
 
   public IReadOnlyList<AbbMeasurement> GetAbbMeasurements(
     string source,
-    DateTimeOffset beginning,
-    DateTimeOffset end
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
   );
 
   public OzdsBillingData? GetAbbBillingData(
     string source,
-    DateTimeOffset beginning,
-    DateTimeOffset end
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
   );
 
   public Task<OzdsBillingData?> GetAbbBillingDataAsync(
     string source,
-    DateTimeOffset beginning,
-    DateTimeOffset end
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
   );
 
   public Task<

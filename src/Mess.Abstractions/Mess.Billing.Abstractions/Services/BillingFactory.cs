@@ -8,14 +8,14 @@ public abstract class BillingFactory<T> : IBillingFactory
 {
   public abstract ContentItem CreateInvoice(
     T contentItem,
-    DateTimeOffset from,
-    DateTimeOffset to
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
   );
 
   public abstract Task<ContentItem> CreateInvoiceAsync(
     T contentItem,
-    DateTimeOffset from,
-    DateTimeOffset to
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
   );
 
   public abstract ContentItem CreateReceipt(
@@ -30,20 +30,24 @@ public abstract class BillingFactory<T> : IBillingFactory
 
   public ContentItem CreateInvoice(
     ContentItem contentItem,
-    DateTimeOffset from,
-    DateTimeOffset to
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
   )
   {
-    return CreateInvoice(contentItem.AsContent<T>(), from, to);
+    return CreateInvoice(contentItem.AsContent<T>(), fromDate, toDate);
   }
 
   public async Task<ContentItem> CreateInvoiceAsync(
     ContentItem contentItem,
-    DateTimeOffset from,
-    DateTimeOffset to
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
   )
   {
-    return await CreateInvoiceAsync(contentItem.AsContent<T>(), from, to);
+    return await CreateInvoiceAsync(
+      contentItem.AsContent<T>(),
+      fromDate,
+      toDate
+    );
   }
 
   public bool IsApplicable(ContentItem contentItem)

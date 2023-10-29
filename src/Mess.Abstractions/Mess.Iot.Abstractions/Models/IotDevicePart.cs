@@ -7,5 +7,5 @@ public class IotDevicePart : ContentPart
 {
   public TextField DeviceId { get; set; } = default!;
 
-  public bool IsMessenger { get; set; } = false;
+  public bool IsMessenger { get; set; }
 }

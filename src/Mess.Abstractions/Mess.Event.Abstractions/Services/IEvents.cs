@@ -1,4 +1,4 @@
-namespace Mess.Event.Abstractions.Events;
+namespace Mess.Event.Abstractions.Services;
 
 public interface IEvents
 {

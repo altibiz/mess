@@ -10,14 +10,16 @@ public static class IServiceCollectionExtensions
     services.AddDbContext<T>();
   }
 
-  public static void AddRelationalClient<T, C, Q>(
+  public static void AddRelationalClient<TImplementation, TClient, TQuery>(
     this IServiceCollection services
   )
-    where T : class, C, Q
-    where C : class, Q
-    where Q : class
+    where TImplementation : class, TClient, TQuery
+    where TClient : class, TQuery
+    where TQuery : class
   {
-    services.AddSingleton<C, T>();
-    services.AddSingleton<Q>(services => services.GetRequiredService<C>());
+    services.AddSingleton<TClient, TImplementation>();
+    services.AddSingleton<TQuery>(
+      services => services.GetRequiredService<TClient>()
+    );
   }
 }

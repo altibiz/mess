@@ -4,7 +4,7 @@ namespace Mess.Iot.Abstractions.Caches;
 
 public interface IIotDeviceContentItemCache
 {
-  public Task<ContentItem?> GetAsync(string deviceId);
+  public Task<ContentItem?> GetIotDeviceAsync(string deviceId);
 
-  public ContentItem? Get(string deviceId);
+  public ContentItem? GetIotDevice(string deviceId);
 }

@@ -4,13 +4,13 @@ public interface IEnmsTimeseriesQuery
 {
   public Task<IReadOnlyList<EgaugeMeasurement>> GetEgaugeMeasurementsAsync(
     string source,
-    DateTimeOffset beginning,
-    DateTimeOffset end
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
   );
 
   public IReadOnlyList<EgaugeMeasurement> GetEgaugeMeasurements(
     string source,
-    DateTimeOffset beginning,
-    DateTimeOffset end
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
   );
 }

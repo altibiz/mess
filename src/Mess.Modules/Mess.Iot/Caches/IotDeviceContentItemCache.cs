@@ -8,9 +8,8 @@ namespace Mess.Iot.Caches;
 
 public class IotDeviceContentItemCache : IIotDeviceContentItemCache
 {
-  public ContentItem? Get(string deviceId)
-  {
-    return _cache
+  public ContentItem? GetIotDevice(string deviceId) =>
+    _cache
       .GetOrAdd(
         deviceId,
         _ =>
@@ -23,11 +22,9 @@ public class IotDeviceContentItemCache : IIotDeviceContentItemCache
           )
       )
       .Value.Result;
-  }
 
-  public async Task<ContentItem?> GetAsync(string deviceId)
-  {
-    return await _cache
+  public async Task<ContentItem?> GetIotDeviceAsync(string deviceId) =>
+    await _cache
       .GetOrAdd(
         deviceId,
         _ =>
@@ -40,7 +37,6 @@ public class IotDeviceContentItemCache : IIotDeviceContentItemCache
           )
       )
       .Value;
-  }
 
   public IotDeviceContentItemCache(ISession session)
   {
@@ -52,5 +48,5 @@ public class IotDeviceContentItemCache : IIotDeviceContentItemCache
   private readonly ConcurrentDictionary<
     string,
     Lazy<Task<ContentItem?>>
-  > _cache = new ConcurrentDictionary<string, Lazy<Task<ContentItem?>>>();
+  > _cache = new();
 }

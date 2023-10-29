@@ -26,8 +26,8 @@ public abstract class RelationalDbContext : DbContext
   )
   {
     foreach (
-      var entityType in this.GetType()
-        .Assembly.GetTypes()
+      var entityType in GetType().Assembly
+        .GetTypes()
         .Where(
           type => type.IsClass && !type.IsAbstract && type.IsAssignableTo(@base)
         )

@@ -12,7 +12,10 @@ public abstract class ApiKeyIotAuthorizationHandler<T>
 {
   protected abstract ApiKeyField GetApiKey(T contentItem);
 
-  protected override void Authorize(AuthorizationFilterContext context, T item)
+  protected override void Authorize(
+    AuthorizationFilterContext context,
+    T contentItem
+  )
   {
     var apiKey = context.HttpContext.Request.Headers[
       "X-API-Key"
@@ -23,7 +26,7 @@ public abstract class ApiKeyIotAuthorizationHandler<T>
       return;
     }
 
-    var apiKeyField = GetApiKey(item);
+    var apiKeyField = GetApiKey(contentItem);
 
     var apiKeyFieldService =
       context.HttpContext.RequestServices.GetRequiredService<IApiKeyFieldService>();
@@ -37,7 +40,7 @@ public abstract class ApiKeyIotAuthorizationHandler<T>
 
   protected override async Task AuthorizeAsync(
     AuthorizationFilterContext context,
-    T item
+    T contentItem
   )
   {
     var apiKey = context.HttpContext.Request.Headers[
@@ -49,7 +52,7 @@ public abstract class ApiKeyIotAuthorizationHandler<T>
       return;
     }
 
-    var apiKeyField = GetApiKey(item);
+    var apiKeyField = GetApiKey(contentItem);
     if (apiKeyField is null)
     {
       context.Result = new NotFoundResult();

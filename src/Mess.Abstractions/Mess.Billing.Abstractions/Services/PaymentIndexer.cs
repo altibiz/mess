@@ -14,26 +14,12 @@ public abstract class PaymentIndexer<T> : IPaymentIndexer
   public PaymentIndex IndexPayment(ContentItem contentItem)
   {
     var item = contentItem.AsContent<T>();
-    if (item is null)
-    {
-      throw new NullReferenceException(
-        $"Content item {contentItem.ContentItemId} is not of type {typeof(T).Name}"
-      );
-    }
-
     return IndexPayment(item);
   }
 
   public async Task<PaymentIndex> IndexPaymentAsync(ContentItem contentItem)
   {
     var item = contentItem.AsContent<T>();
-    if (item is null)
-    {
-      throw new NullReferenceException(
-        $"Content item {contentItem.ContentItemId} is not of type {typeof(T).Name}"
-      );
-    }
-
     return await IndexPaymentAsync(item);
   }
 

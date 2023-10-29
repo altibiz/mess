@@ -36,11 +36,10 @@ public class BillingBackgroundTask : IBackgroundTask
 
       var billingFactory = serviceProvider
         .GetServices<IBillingFactory>()
-        .Where(factory => factory.IsApplicable(billingItem))
-        .FirstOrDefault();
+        .FirstOrDefault(factory => factory.IsApplicable(billingItem));
       if (billingFactory == null)
       {
-        logger.LogError($"No receipt factory for {billingItem.ContentType}");
+        logger.LogError("No receipt factory for {}", billingItem.ContentType);
         continue;
       }
 
@@ -63,7 +62,9 @@ public class BillingBackgroundTask : IBackgroundTask
       catch (Exception exception)
       {
         logger.LogError(
-          $"Failed to create invoice for item '{billingItem.ContentItemId}' of type '{billingItem.ContentType}'",
+          "Failed to create invoice for item '{}' of type '{}': {}",
+          billingItem.ContentItemId,
+          billingItem.ContentType,
           exception
         );
       }

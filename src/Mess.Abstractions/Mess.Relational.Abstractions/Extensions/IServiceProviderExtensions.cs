@@ -4,49 +4,49 @@ namespace Mess.Relational.Abstractions.Extensions;
 
 public static class RelationalDbContextIServiceProviderExtensions
 {
-  public static async Task<T> WithRelationalDbContextAsync<C, T>(
-    this IServiceProvider services,
-    Func<C, Task<T>> todo
-  )
-    where C : RelationalDbContext
+  public static async Task<TReturn> WithRelationalDbContextAsync<
+    TContext,
+    TReturn
+  >(this IServiceProvider services, Func<TContext, Task<TReturn>> todo)
+    where TContext : RelationalDbContext
   {
     await using var scope = services.CreateAsyncScope();
-    var context = scope.ServiceProvider.GetRequiredService<C>();
+    var context = scope.ServiceProvider.GetRequiredService<TContext>();
     var result = await todo(context);
     return result;
   }
 
-  public static T WithRelationalDbContext<C, T>(
+  public static TReturn WithRelationalDbContext<TContext, TReturn>(
     this IServiceProvider services,
-    Func<C, T> todo
+    Func<TContext, TReturn> todo
   )
-    where C : RelationalDbContext
+    where TContext : RelationalDbContext
   {
     using var scope = services.CreateScope();
-    var context = scope.ServiceProvider.GetRequiredService<C>();
+    var context = scope.ServiceProvider.GetRequiredService<TContext>();
     var result = todo(context);
     return result;
   }
 
-  public static async Task WithRelationalDbContextAsync<C>(
+  public static async Task WithRelationalDbContextAsync<TContext>(
     this IServiceProvider services,
-    Func<C, Task> todo
+    Func<TContext, Task> todo
   )
-    where C : RelationalDbContext
+    where TContext : RelationalDbContext
   {
     await using var scope = services.CreateAsyncScope();
-    var context = scope.ServiceProvider.GetRequiredService<C>();
+    var context = scope.ServiceProvider.GetRequiredService<TContext>();
     await todo(context);
   }
 
-  public static void WithRelationalDbContext<C>(
+  public static void WithRelationalDbContext<TContext>(
     this IServiceProvider services,
-    Action<C> todo
+    Action<TContext> todo
   )
-    where C : RelationalDbContext
+    where TContext : RelationalDbContext
   {
     using var scope = services.CreateScope();
-    var context = scope.ServiceProvider.GetRequiredService<C>();
+    var context = scope.ServiceProvider.GetRequiredService<TContext>();
     todo(context);
   }
 }

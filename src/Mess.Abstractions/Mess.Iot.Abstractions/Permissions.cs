@@ -4,10 +4,8 @@ namespace Mess.Iot.Abstractions;
 
 public class Permissions : IPermissionProvider
 {
-  public static readonly Permission ListIotDevices = new Permission(
-    "ListIotDevices",
-    "Listing IOT devices"
-  );
+  public static readonly Permission ListIotDevices =
+    new("ListIotDevices", "Listing IOT devices");
 
   public Task<IEnumerable<Permission>> GetPermissionsAsync()
   {

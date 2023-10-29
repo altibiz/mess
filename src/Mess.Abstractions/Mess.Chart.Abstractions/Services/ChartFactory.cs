@@ -2,6 +2,7 @@ using Mess.Chart.Abstractions.Descriptors;
 using Mess.Chart.Abstractions.Models;
 using Mess.OrchardCore;
 using OrchardCore.ContentManagement;
+using System.Globalization;
 
 namespace Mess.Chart.Abstractions.Services;
 
@@ -41,8 +42,8 @@ public abstract class ChartFactory<T> : IChartFactory
     );
   }
 
-  protected bool ContainsTimeseriesProperty<P>(string property) =>
-    typeof(P)
+  protected bool ContainsTimeseriesProperty<TP>(string property) =>
+    typeof(TP)
       .GetProperties()
       .Select(property => property.Name)
       .Contains(property);
@@ -57,13 +58,9 @@ public abstract class ChartFactory<T> : IChartFactory
       );
     }
 
-    var value = propertyInfo.GetValue(data);
-    if (value == null)
-    {
-      throw new InvalidOperationException(
-        $"Timestamp property value is null in timeseries data"
-      );
-    }
+    var value =
+      propertyInfo.GetValue(data)
+      ?? throw new InvalidOperationException("Invalid timeseries value");
 
     return (DateTimeOffset)value;
   }

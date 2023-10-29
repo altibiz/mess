@@ -1,4 +1,4 @@
-using Mess.Event.Abstractions.Events;
+using Mess.Event.Abstractions.Services;
 
 namespace Mess.Event.Abstractions.Client;
 

@@ -1,5 +1,7 @@
 using Mess.Eor.Abstractions.Timeseries;
 
+namespace Mess.Eor.Abstractions.Models;
+
 public class EorIotDeviceControls
 {
   public int Mode { get; set; } = 33;
@@ -8,5 +10,5 @@ public class EorIotDeviceControls
 
   public EorResetState ResetState { get; set; } = EorResetState.ShouldntReset;
 
-  public int Stamp { get; set; } = 0;
+  public int Stamp { get; set; }
 }

@@ -1,6 +1,4 @@
 using DiffEngine;
-using VerifyTests;
-using VerifyXunit;
 
 namespace Mess.System.Test.Snapshots;
 
@@ -28,7 +26,7 @@ public static class VerifyInitializer
         }
       );
 
-      Verifier.DerivePathInfo(
+      DerivePathInfo(
         (sourceFile, projectDirectory, type, method) =>
         {
           var baseSnapshotDirectory = Path.Combine(
@@ -61,6 +59,6 @@ public static class VerifyInitializer
     }
   }
 
-  private static bool _initialized = false;
+  private static bool _initialized;
   private static readonly object _lock = new();
 }

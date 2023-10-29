@@ -3,28 +3,29 @@ using Mess.System.Extensions.Objects;
 
 namespace Mess.Iot.Abstractions.Services;
 
-public abstract class JsonIotPollHandler<T, R> : IotPollHandler<T>
-  where T : ContentItemBase
+public abstract class JsonIotPollHandler<TItem, TResponse>
+  : IotPollHandler<TItem>
+  where TItem : ContentItemBase
 {
-  protected abstract R MakeResponse(
+  protected abstract TResponse MakeResponse(
     string deviceId,
     string tenant,
     DateTimeOffset timestamp,
-    T contentItem
+    TItem contentItem
   );
 
-  protected abstract Task<R> MakeResponseAsync(
+  protected abstract Task<TResponse> MakeResponseAsync(
     string deviceId,
     string tenant,
     DateTimeOffset timestamp,
-    T contentItem
+    TItem contentItem
   );
 
   protected override string Handle(
     string deviceId,
     string tenant,
     DateTimeOffset timestamp,
-    T contentItem
+    TItem contentItem
   )
   {
     var response = MakeResponse(deviceId, tenant, timestamp, contentItem);
@@ -35,7 +36,7 @@ public abstract class JsonIotPollHandler<T, R> : IotPollHandler<T>
     string deviceId,
     string tenant,
     DateTimeOffset timestamp,
-    T contentItem
+    TItem contentItem
   )
   {
     var response = MakeResponseAsync(deviceId, tenant, timestamp, contentItem);
