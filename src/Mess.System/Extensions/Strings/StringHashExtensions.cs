@@ -7,12 +7,11 @@ public static class StringHashExtensions
 {
   public static string GetSha256Hash(this string @string)
   {
-    using var crypt = SHA256.Create();
     string hash = string.Empty;
-    byte[] crypto = crypt.ComputeHash(Encoding.UTF8.GetBytes(@string));
-    foreach (byte theByte in crypto)
+    byte[] crypto = SHA256.HashData(Encoding.UTF8.GetBytes(@string));
+    foreach (byte @byte in crypto)
     {
-      hash += theByte.ToString("x2");
+      hash += @byte.ToString("x2");
     }
     return hash;
   }

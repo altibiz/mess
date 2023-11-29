@@ -23,7 +23,7 @@ public class EorMeasurementEntity : HypertableEntity
 public static class EorMeasurementEntityExtensions
 {
   public static EorMeasurementEntity ToEntity(this EorMeasurement model) =>
-    new EorMeasurementEntity
+    new()
     {
       Tenant = model.Tenant,
       Timestamp = model.Timestamp,
@@ -36,7 +36,7 @@ public static class EorMeasurementEntityExtensions
     };
 
   public static EorMeasurement ToModel(this EorMeasurementEntity entity) =>
-    new EorMeasurement(
+    new(
       Tenant: entity.Tenant,
       DeviceId: entity.Source,
       Timestamp: entity.Timestamp,

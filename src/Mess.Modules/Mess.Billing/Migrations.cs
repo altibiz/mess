@@ -287,16 +287,13 @@ public class Migrations : DataMigration
 
   public Migrations(
     IContentDefinitionManager contentDefinitionManager,
-    IRecipeMigrator recipeMigrator,
     RoleManager<IRole> roleManager
   )
   {
     _contentDefinitionManager = contentDefinitionManager;
-    _recipeMigrator = recipeMigrator;
     _roleManager = roleManager;
   }
 
   private readonly IContentDefinitionManager _contentDefinitionManager;
-  private readonly IRecipeMigrator _recipeMigrator;
   private readonly RoleManager<IRole> _roleManager;
 }

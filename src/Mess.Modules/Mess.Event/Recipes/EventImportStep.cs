@@ -3,7 +3,7 @@ using OrchardCore.Recipes.Models;
 using OrchardCore.Recipes.Services;
 using Mess.Event.Abstractions.Client;
 using Mess.System.Extensions.Microsoft;
-using Mess.Event.Abstractions.Events;
+using Mess.Event.Abstractions.Services;
 
 namespace Mess.Event.Recipes;
 
@@ -39,13 +39,13 @@ public class EventImportStep : IRecipeStepHandler
       return;
     }
 
-    var streams = context.Step.Property("Streams")?.Value as JArray;
-    if (streams is null)
+    var streams = context.Step.Property("Streams")?.Value;
+    if (streams is not JArray)
     {
       return;
     }
 
-    foreach (JObject stream in streams)
+    foreach (JObject stream in streams.Cast<JObject>())
     {
       var aggregateTypeName = (string?)(
         stream.Property("AggregateType")?.Value as JValue
@@ -67,8 +67,8 @@ public class EventImportStep : IRecipeStepHandler
         ?.Select(
           (@event) =>
           {
-            var eventObject = @event as JObject;
-            if (eventObject is null)
+
+            if (@event is not JObject eventObject)
             {
               return null;
             }
@@ -89,8 +89,8 @@ public class EventImportStep : IRecipeStepHandler
               return null;
             }
 
-            var eventData = eventObject.Property("Data")?.Value as JObject;
-            if (eventData is null)
+            var eventData = eventObject.Property("Data")?.Value;
+            if (eventData is not JObject)
             {
               return null;
             }
@@ -100,6 +100,7 @@ public class EventImportStep : IRecipeStepHandler
         )
         .Cast<IEvent>()
         .Where(@event => @event is not null);
+
       if (events is null)
       {
         continue;

@@ -26,19 +26,4 @@ public class BillingPartDisplayDriver : ContentPartDisplayDriver<BillingPart>
       )
       .Location("Detail", "Content");
   }
-
-  public BillingPartDisplayDriver(
-    IServiceProvider serviceProvider,
-    IStringLocalizer<BillingPartDisplayDriver> localizer,
-    ISession session
-  )
-  {
-    _serviceProvider = serviceProvider;
-    _session = session;
-    S = localizer;
-  }
-
-  private readonly IStringLocalizer S;
-  private readonly IServiceProvider _serviceProvider;
-  private readonly ISession _session;
 }

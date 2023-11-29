@@ -26,7 +26,10 @@ public class BillingIndexProvider
         if (indexer is null)
         {
           _logger.LogError(
-            $"No billing indexer found for content item {contentItem.ContentItemId} of type {contentItem.ContentType}"
+            "No billing indexer found for content item {} of type {}",
+            contentItem.ContentItemId,
+            contentItem.ContentType
+
           );
           return Array.Empty<BillingIndex>();
         }

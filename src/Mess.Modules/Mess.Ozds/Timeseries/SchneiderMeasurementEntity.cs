@@ -71,7 +71,7 @@ public static class SchneiderMeasurementEntityExtensions
   public static SchneiderMeasurementEntity ToEntity(
     this SchneiderMeasurement model
   ) =>
-    new SchneiderMeasurementEntity
+    new()
     {
       Tenant = model.Tenant,
       Timestamp = model.Timestamp,
@@ -100,7 +100,7 @@ public static class SchneiderMeasurementEntityExtensions
   public static SchneiderMeasurement ToModel(
     this SchneiderMeasurementEntity entity
   ) =>
-    new SchneiderMeasurement(
+    new(
       Tenant: entity.Tenant,
       DeviceId: entity.Source,
       Timestamp: entity.Timestamp,

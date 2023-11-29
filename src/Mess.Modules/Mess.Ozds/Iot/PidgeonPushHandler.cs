@@ -42,11 +42,12 @@ public class PidgeonPushHandler
     {
       foreach (var measurement in request.Measurements)
       {
-        var measurementContentItem = _cache.Get(measurement.DeviceId);
+        var measurementContentItem = _cache.GetIotDevice(measurement.DeviceId);
         if (measurementContentItem is null)
         {
           _logger.LogError(
-            $"Content item with device id {measurement.DeviceId} not found"
+            "Content item with device id {} not found",
+            measurement.DeviceId
           );
           continue;
         }
@@ -59,7 +60,8 @@ public class PidgeonPushHandler
         if (measurementHandler is null)
         {
           _logger.LogError(
-            $"Push handler for content item with device id {measurement.DeviceId} not found"
+            "Push handler for content item with device id {} not found",
+            measurement.DeviceId
           );
           continue;
         }
@@ -78,7 +80,8 @@ public class PidgeonPushHandler
         {
           _logger.LogError(
             exception,
-            $"Error while handling push event for device {measurement.DeviceId}"
+            "Error while handling push event for device {}",
+            measurement.DeviceId
           );
         }
       }
@@ -115,13 +118,14 @@ public class PidgeonPushHandler
     {
       foreach (var measurement in request.Measurements)
       {
-        var measurementContentItem = await _cache.GetAsync(
+        var measurementContentItem = await _cache.GetIotDeviceAsync(
           measurement.DeviceId
         );
         if (measurementContentItem is null)
         {
           _logger.LogError(
-            $"Content item with device id {measurement.DeviceId} not found"
+            "Content item with device id {} not found",
+            measurement.DeviceId
           );
           continue;
         }
@@ -134,7 +138,8 @@ public class PidgeonPushHandler
         if (measurementHandler is null)
         {
           _logger.LogError(
-            $"Push handler for content item with device id {measurement.DeviceId} not found"
+            "Push handler for content item with device id {} not found",
+            measurement.DeviceId
           );
           continue;
         }
@@ -153,7 +158,8 @@ public class PidgeonPushHandler
         {
           _logger.LogError(
             exception,
-            $"Error while handling push event for device {measurement.DeviceId}"
+            "Error while handling push event for device {}",
+            measurement.DeviceId
           );
         }
       }

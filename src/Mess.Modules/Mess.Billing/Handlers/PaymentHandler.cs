@@ -2,6 +2,8 @@ using Mess.Billing.Abstractions.Models;
 using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Handlers;
 
+// TODO: Send email
+
 namespace Mess.Billing.Handlers;
 
 public class PaymentHandler : ContentHandlerBase
@@ -12,13 +14,11 @@ public class PaymentHandler : ContentHandlerBase
 
     if (contentItem.Has<ReceiptPart>())
     {
-      var receiptPart = contentItem.As<ReceiptPart>();
-      // TODO: Send email
+      var _ = contentItem.As<ReceiptPart>();
     }
     if (contentItem.Has<InvoicePart>())
     {
-      var invoicePart = contentItem.As<InvoicePart>();
-      // TODO: Send email
+      var _ = contentItem.As<InvoicePart>();
     }
   }
 }

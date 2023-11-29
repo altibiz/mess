@@ -10,7 +10,7 @@ using Mess.Event.Session;
 using Mess.OrchardCore.Extensions.OrchardCore;
 using OrchardCore.Environment.Shell;
 using Mess.System.Extensions.Microsoft;
-using Mess.Event.Abstractions.Events;
+using Mess.Event.Abstractions.Services;
 using JasperFx.CodeGeneration;
 using Microsoft.Extensions.Hosting;
 using Marten.Services.Json.Transformations;

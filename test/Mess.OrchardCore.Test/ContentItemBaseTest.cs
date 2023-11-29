@@ -9,8 +9,9 @@ public record class ContentItemBaseTest
   [Fact]
   public void OnePartTest()
   {
-    var item = new OrchardContentItem();
-    item.ContentType = "OnePart";
+    var item = new OrchardContentItem() {
+      ContentType = "OnePart"
+    };
     item.Weld(
       nameof(OnePartItem.StringPart),
       new StringPart { Value = "TestValue" }
@@ -35,8 +36,9 @@ public record class ContentItemBaseTest
   [Fact]
   public void TwoPartTest()
   {
-    var item = new OrchardContentItem();
-    item.ContentType = "TwoPart";
+    var item = new OrchardContentItem() {
+      ContentType =  "TwoPart"
+    };
     item.Weld(
       nameof(TwoPartItem.FirstStringPart),
       new StringPart { Value = "FirstTestValue" }
@@ -70,8 +72,9 @@ public record class ContentItemBaseTest
   [Fact]
   public void ContainedTest()
   {
-    var item = new OrchardContentItem();
-    item.ContentType = "Contained";
+    var item = new OrchardContentItem() {
+      ContentType = "Contaned"
+    };
     item.Weld(
       nameof(ContainedItem.StringPart),
       new StringPart { Value = "TestValue" }
@@ -103,23 +106,24 @@ public record class ContentItemBaseTest
       : base(inner) { }
   }
 
-  [Fact(Skip = "Not working yet")]
-  public void DerivedTest()
-  {
-    var item = new OrchardContentItem();
-    item.ContentType = "Derived";
-    item.Weld(
-      nameof(DerivedItem.StringPart),
-      new StringPart { Value = "TestValue" }
-    );
+  // TODO: make this work
+  // public void DerivedTest()
+  // {
+  //   var item = new OrchardContentItem() {
+  //     ContentType = "Derived"
+  //   };
+  //   item.Weld(
+  //     nameof(DerivedItem.StringPart),
+  //     new StringPart { Value = "TestValue" }
+  //   );
 
-    var type = item.AsContent<DerivedItem>();
-    Assert.NotNull(type);
+  //   var type = item.AsContent<DerivedItem>();
+  //   Assert.NotNull(type);
 
-    Assert.NotNull(type.StringPart);
-    Assert.NotNull(type.StringPart.Value);
-    Assert.Equal("TestValue", type.StringPart.Value.Value);
-  }
+  //   Assert.NotNull(type.StringPart);
+  //   Assert.NotNull(type.StringPart.Value);
+  //   Assert.Equal("TestValue", type.StringPart.Value.Value);
+  // }
 
   private class DerivedItem : ContentItemBase<DerivedItem>
   {

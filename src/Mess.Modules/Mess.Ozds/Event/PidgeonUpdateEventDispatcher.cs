@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OrchardCore.ContentManagement;
 using YesSql;
-using Mess.Event.Abstractions.Events;
+using Mess.Event.Abstractions.Services;
 
 namespace Mess.Ozds.Event;
 

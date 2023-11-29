@@ -47,6 +47,6 @@ public class StaticDataAttribute : DataAttribute
     };
   }
 
-  private Type? _class;
-  private string _field;
+  private readonly Type? _class;
+  private readonly string _field;
 }

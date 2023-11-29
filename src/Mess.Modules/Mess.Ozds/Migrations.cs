@@ -19,8 +19,7 @@ public class Migrations : DataMigration
   public async Task<int> UpdateFrom1()
   {
     await CreateAsyncMigrations.MigrateSchneider(
-      _serviceProvider,
-      SchemaBuilder
+      _serviceProvider
     );
 
     return 2;
@@ -29,25 +28,23 @@ public class Migrations : DataMigration
   public async Task<int> CreateAsync()
   {
     await CreateAsyncMigrations.MigrateRegulatoryAgencyCatalogue(
-      _serviceProvider,
-      SchemaBuilder
+      _serviceProvider
     );
     await CreateAsyncMigrations.MigrateOperatorCatalogue(
       _serviceProvider,
       SchemaBuilder
     );
     await CreateAsyncMigrations.MigrateOperator(
-      _serviceProvider,
-      SchemaBuilder
+      _serviceProvider
     );
     await CreateAsyncMigrations.MigrateSystem(_serviceProvider, SchemaBuilder);
     await CreateAsyncMigrations.MigrateUnit(_serviceProvider, SchemaBuilder);
-    await CreateAsyncMigrations.MigrateInvoice(_serviceProvider, SchemaBuilder);
-    await CreateAsyncMigrations.MigrateReceipt(_serviceProvider, SchemaBuilder);
+    await CreateAsyncMigrations.MigrateInvoice(_serviceProvider);
+    await CreateAsyncMigrations.MigrateReceipt(_serviceProvider);
     await CreateAsyncMigrations.MigrateDevice(_serviceProvider, SchemaBuilder);
 
-    await CreateAsyncMigrations.MigratePidgeon(_serviceProvider, SchemaBuilder);
-    await CreateAsyncMigrations.MigrateAbb(_serviceProvider, SchemaBuilder);
+    await CreateAsyncMigrations.MigratePidgeon(_serviceProvider);
+    await CreateAsyncMigrations.MigrateAbb(_serviceProvider);
 
     return 1;
   }
@@ -63,8 +60,7 @@ public class Migrations : DataMigration
 internal static partial class CreateAsyncMigrations
 {
   internal static async Task MigrateOperator(
-    IServiceProvider serviceProvider,
-    ISchemaBuilder schemaBuilder
+    IServiceProvider serviceProvider
   )
   {
     var contentDefinitionManager =
@@ -659,8 +655,7 @@ internal static partial class CreateAsyncMigrations
   }
 
   internal static async Task MigratePidgeon(
-    IServiceProvider serviceProvider,
-    ISchemaBuilder schemaBuilder
+    IServiceProvider serviceProvider
   )
   {
     var contentDefinitionManager =
@@ -732,8 +727,7 @@ internal static partial class CreateAsyncMigrations
   }
 
   internal static async Task MigrateAbb(
-    IServiceProvider serviceProvider,
-    ISchemaBuilder schemaBuilder
+    IServiceProvider serviceProvider
   )
   {
     var contentDefinitionManager =
@@ -811,8 +805,7 @@ internal static partial class CreateAsyncMigrations
   }
 
   internal static async Task MigrateSchneider(
-    IServiceProvider serviceProvider,
-    ISchemaBuilder schemaBuilder
+    IServiceProvider serviceProvider
   )
   {
     var contentDefinitionManager =
@@ -890,8 +883,7 @@ internal static partial class CreateAsyncMigrations
   }
 
   internal static async Task MigrateRegulatoryAgencyCatalogue(
-    IServiceProvider serviceProvider,
-    ISchemaBuilder schemaBuilder
+    IServiceProvider serviceProvider
   )
   {
     var contentDefinitionManager =
@@ -1140,8 +1132,7 @@ internal static partial class CreateAsyncMigrations
   }
 
   internal static async Task MigrateInvoice(
-    IServiceProvider serviceProvider,
-    ISchemaBuilder schemaBuilder
+    IServiceProvider serviceProvider
   )
   {
     var contentDefinitionManager =
@@ -1199,8 +1190,7 @@ internal static partial class CreateAsyncMigrations
   }
 
   internal static async Task MigrateReceipt(
-    IServiceProvider serviceProvider,
-    ISchemaBuilder schemaBuilder
+    IServiceProvider serviceProvider
   )
   {
     var contentDefinitionManager =

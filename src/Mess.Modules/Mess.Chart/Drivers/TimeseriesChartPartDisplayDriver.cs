@@ -101,16 +101,13 @@ public class TimeseriesChartPartDisplayDriver
 
   public TimeseriesChartPartDisplayDriver(
     IServiceProvider serviceProvider,
-    IStringLocalizer<TimeseriesChartPartDisplayDriver> localizer,
-    IContentDefinitionManager contentDefinitionManager
+    IStringLocalizer<TimeseriesChartPartDisplayDriver> localizer
   )
   {
     S = localizer;
-    _contentDefinitionManager = contentDefinitionManager;
     _serviceProvider = serviceProvider;
   }
 
   private readonly IStringLocalizer S;
-  private readonly IContentDefinitionManager _contentDefinitionManager;
   private readonly IServiceProvider _serviceProvider;
 }

@@ -7,7 +7,7 @@ using Xunit.DependencyInjection;
 
 namespace Mess.System.Test.Snapshots;
 
-public class SnapshotFixture : ISnapshotFixture, IDisposable, IAsyncDisposable
+public sealed class SnapshotFixture : ISnapshotFixture, IDisposable, IAsyncDisposable
 {
   public Task<string> MakeVerificationHash(params object?[]? parameters)
   {
@@ -31,7 +31,7 @@ public class SnapshotFixture : ISnapshotFixture, IDisposable, IAsyncDisposable
     return ValueTask.CompletedTask;
   }
 
-  private string MakeParameterHash(params object?[]? parameters)
+  private static string MakeParameterHash(params object?[]? parameters)
   {
     if (parameters is null or { Length: 0 })
     {

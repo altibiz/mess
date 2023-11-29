@@ -29,26 +29,16 @@ internal class E2eFixture : IE2eFixture, IAsyncDisposable, IDisposable
       await Browser.DisposeAsync();
     }
 
-    if (Playwright is not null)
-    {
-      Playwright.Dispose();
-    }
+    Playwright?.Dispose();
 
     ExecutionLock.Release();
   }
 
   void IDisposable.Dispose()
   {
-    if (Browser is not null)
-    {
-      // TODO: better
-      Browser.DisposeAsync().AsTask().RunSynchronously();
-    }
+    Browser?.DisposeAsync().AsTask().RunSynchronously();
 
-    if (Playwright is not null)
-    {
-      Playwright.Dispose();
-    }
+    Playwright?.Dispose();
 
     ExecutionLock.Release();
   }
@@ -63,5 +53,7 @@ internal class E2eFixture : IE2eFixture, IAsyncDisposable, IDisposable
 
   private string BaseUrl { get; } = default!;
 
+#pragma warning disable IDE0052
   private E2eTestServer TestServer { get; } = default!;
+#pragma warning restore IDE0052
 }

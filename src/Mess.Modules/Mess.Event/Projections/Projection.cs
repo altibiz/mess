@@ -1,7 +1,7 @@
 using Marten;
 using Marten.Events;
 using Marten.Events.Projections;
-using Mess.Event.Abstractions.Events;
+using Mess.Event.Abstractions.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -32,7 +32,8 @@ public record class Projection(IServiceProvider Services) : IProjection
       {
         logger.LogError(
           exception,
-          $"Error while dispatching events of {dispatcher.GetType().Name}"
+          "Error while dispatching events of {}",
+          dispatcher.GetType().Name
         );
       }
     }
@@ -66,7 +67,8 @@ public record class Projection(IServiceProvider Services) : IProjection
       {
         logger.LogError(
           exception,
-          $"Error while dispatching events of {dispatcher.GetType().Name}"
+          "Error while dispatching events of {}",
+          dispatcher.GetType().Name
         );
       }
     }

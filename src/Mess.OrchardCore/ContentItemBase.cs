@@ -233,7 +233,7 @@ public static class ContentItemExtensions
   }
 
   internal static PropertyInfo GetProperty<TItem, TPart>(
-    this TItem @this,
+    this TItem _,
     Expression<Func<TItem, Lazy<TPart>>> expression
   )
     where TItem : ContentItemBase

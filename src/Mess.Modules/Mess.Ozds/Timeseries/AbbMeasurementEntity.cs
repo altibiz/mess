@@ -99,7 +99,7 @@ public class AbbMeasurementEntity : HypertableEntity
 public static class AbbMeasurementEntityExtensions
 {
   public static AbbMeasurementEntity ToEntity(this AbbMeasurement model) =>
-    new AbbMeasurementEntity
+    new()
     {
       Tenant = model.Tenant,
       Timestamp = model.Timestamp,
@@ -139,7 +139,7 @@ public static class AbbMeasurementEntityExtensions
     };
 
   public static AbbMeasurement ToModel(this AbbMeasurementEntity entity) =>
-    new AbbMeasurement(
+    new(
       Tenant: entity.Tenant,
       DeviceId: entity.Source,
       Timestamp: entity.Timestamp,

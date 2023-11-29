@@ -62,14 +62,11 @@ public class EnmsTimeseriesClient : IEnmsTimeseriesClient
     });
 
   public EnmsTimeseriesClient(
-    IServiceProvider services,
-    ILogger<EnmsTimeseriesClient> logger
+    IServiceProvider services
   )
   {
     _services = services;
-    _logger = logger;
   }
 
   private readonly IServiceProvider _services;
-  private readonly ILogger _logger;
 }

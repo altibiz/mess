@@ -217,7 +217,7 @@ public class EorTimeseriesClient : IEorTimeseriesClient
         await Task.WhenAll(
           measurementQueries.Select(
             async (tuple) =>
-              (DeviceId: tuple.DeviceId, Value: await tuple.Query.ValueAsync())
+              (tuple.DeviceId, Value: await tuple.Query.ValueAsync())
           )
         )
       ).ToList();
@@ -226,7 +226,7 @@ public class EorTimeseriesClient : IEorTimeseriesClient
         await Task.WhenAll(
           statusQueries.Select(
             async tuple =>
-              (DeviceId: tuple.DeviceId, Value: await tuple.Query.ValueAsync())
+              (tuple.DeviceId, Value: await tuple.Query.ValueAsync())
           )
         )
       ).ToDictionary(tuple => tuple.DeviceId, tuple => tuple.Value);
@@ -282,11 +282,11 @@ public class EorTimeseriesClient : IEorTimeseriesClient
       );
 
       var measurements = measurementQueries
-        .Select(tuple => (DeviceId: tuple.DeviceId, Value: tuple.Query.Value))
+        .Select(tuple => (tuple.DeviceId, tuple.Query.Value))
         .ToList();
 
       var statuses = statusesQuery
-        .Select(tuple => (DeviceId: tuple.DeviceId, Value: tuple.Query.Value))
+        .Select(tuple => (tuple.DeviceId, tuple.Query.Value))
         .ToDictionary(tuple => tuple.DeviceId, tuple => tuple.Value);
 
       return measurements
@@ -416,16 +416,13 @@ public class EorTimeseriesClient : IEorTimeseriesClient
 
   public EorTimeseriesClient(
     IServiceProvider services,
-    ILogger<EorTimeseriesClient> logger,
     ShellSettings shellSettings
   )
   {
     _services = services;
-    _logger = logger;
     _shellSettings = shellSettings;
   }
 
   private readonly IServiceProvider _services;
-  private readonly ILogger _logger;
   private readonly ShellSettings _shellSettings;
 }

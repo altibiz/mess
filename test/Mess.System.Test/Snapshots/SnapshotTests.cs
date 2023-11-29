@@ -3,7 +3,7 @@ using Xunit.DependencyInjection;
 namespace Mess.System.Test.Snapshots;
 
 [Startup(typeof(Startup))]
-public record SnapshotTests(ISnapshotFixture snapshotFixture)
+public record SnapshotTests(ISnapshotFixture SnapshotFixture)
 {
   public record SnapshotTestRecord(string Property);
 
@@ -32,15 +32,15 @@ public record SnapshotTests(ISnapshotFixture snapshotFixture)
   [StaticData(nameof(MatchesSnapshotData))]
   public async Task MatchesSnapshot(object @object)
   {
-    var verificationHash = await snapshotFixture.MakeVerificationHash(@object);
-    await snapshotFixture.Verify(@object, verificationHash);
+    var verificationHash = await SnapshotFixture.MakeVerificationHash(@object);
+    await SnapshotFixture.Verify(@object, verificationHash);
   }
 
   [Theory]
   [JsonAssetData]
   public async Task MatchesSnapshotFromJson(SnapshotTestRecord @object)
   {
-    var verificationHash = await snapshotFixture.MakeVerificationHash(@object);
-    await snapshotFixture.Verify(@object, verificationHash);
+    var verificationHash = await SnapshotFixture.MakeVerificationHash(@object);
+    await SnapshotFixture.Verify(@object, verificationHash);
   }
 }

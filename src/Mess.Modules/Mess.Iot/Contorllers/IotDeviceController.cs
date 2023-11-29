@@ -22,7 +22,7 @@ public class IotDeviceController : Controller
     // TODO: on each push add a timer that will notify if there was no push
     // on next push just remove the timer
 
-    var contentItem = await _cache.GetAsync(deviceId);
+    var contentItem = await _cache.GetIotDeviceAsync(deviceId);
     if (contentItem is null)
     {
       return NotFound($"Unknown device");
@@ -66,7 +66,7 @@ public class IotDeviceController : Controller
   [HttpPost]
   public async Task<IActionResult> Update(string deviceId)
   {
-    var contentItem = await _cache.GetAsync(deviceId);
+    var contentItem = await _cache.GetIotDeviceAsync(deviceId);
     if (contentItem is null)
     {
       return NotFound($"Unknown device");
@@ -113,7 +113,7 @@ public class IotDeviceController : Controller
     // TODO: on each poll add a timer that will notify if there was no poll
     // on next poll just remove the timer
 
-    var contentItem = await _cache.GetAsync(deviceId);
+    var contentItem = await _cache.GetIotDeviceAsync(deviceId);
     if (contentItem is null)
     {
       return NotFound("Unknown device");

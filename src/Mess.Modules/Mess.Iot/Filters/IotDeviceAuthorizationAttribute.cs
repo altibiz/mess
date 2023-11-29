@@ -22,7 +22,7 @@ public class IotDeviceAuthorization : Attribute, IAsyncAuthorizationFilter
 
     var cache =
       context.HttpContext.RequestServices.GetRequiredService<IIotDeviceContentItemCache>();
-    var contentItem = await cache.GetAsync(deviceId);
+    var contentItem = await cache.GetIotDeviceAsync(deviceId);
     if (contentItem is null)
     {
       context.Result = new NotFoundResult();

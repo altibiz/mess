@@ -27,12 +27,11 @@ public class TimeSpanJsonConverter : JsonConverter<TimeSpan>
     JsonSerializer serializer
   )
   {
-    TimeSpan parsedTimeSpan;
     TimeSpan.TryParseExact(
       (string)reader.Value!,
       TimeSpanFormatString,
       null,
-      out parsedTimeSpan
+      out var parsedTimeSpan
     );
     return parsedTimeSpan;
   }

@@ -29,7 +29,9 @@
   },
   "FileOptions": {
     "excludeSearchPatterns": [
+      "**/.git/**/*",
       "**/node_modules/**/*",
+      "**/.nuget/**/*",
       "**/obj/**/*",
       "**/bin/**/*"
     ]

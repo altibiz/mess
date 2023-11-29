@@ -37,7 +37,7 @@ public class Populations : IPopulation
       _serviceProvider
     );
 
-    (string? operatorUserId, string? operatorContentItemId) =
+    (string? _, string? operatorContentItemId) =
       await CreateAsyncMigrations.PopulateOperator(
         _serviceProvider,
         regulatoryAgencyCatalogueContentItemId,
@@ -49,10 +49,9 @@ public class Populations : IPopulation
         yellowOperatorCatalogueContentItemId!
       );
 
-    (string? systemUserId, string? systemContentItemId) =
+    (string? _, string? systemContentItemId) =
       await CreateAsyncMigrations.PopulateSystem(
         _serviceProvider,
-        operatorUserId!,
         operatorContentItemId!,
         whiteHighVoltageOperatorCatalogueContentItemId!,
         whiteMediumVoltageOperatorCatalogueContentItemId!,
@@ -62,12 +61,9 @@ public class Populations : IPopulation
         yellowOperatorCatalogueContentItemId!
       );
 
-    (string? unitUserId, string? unitContentItemId) =
+    (string? _, string? unitContentItemId) =
       await CreateAsyncMigrations.PopulateUnit(
         _serviceProvider,
-        operatorUserId!,
-        operatorContentItemId!,
-        systemUserId!,
         systemContentItemId!
       );
 
@@ -225,7 +221,6 @@ internal static partial class CreateAsyncMigrations
     string? ContentItemId
   )> PopulateSystem(
     IServiceProvider serviceProvider,
-    string operatorUserId,
     string operatorContentItemId,
     string whiteHighVoltageOperatorCatalogueContentItemId,
     string whiteMediumVoltageOperatorCatalogueContentItemId,
@@ -346,9 +341,6 @@ internal static partial class CreateAsyncMigrations
     string? ContentItemId
   )> PopulateUnit(
     IServiceProvider serviceProvider,
-    string operatorUserId,
-    string operatorContentItemId,
-    string systemUserId,
     string systemContentItemId
   )
   {

@@ -22,7 +22,7 @@ public class TimeseriesDbMigrator : IRelationalDbMigrator
     {
       await context.Database.MigrateAsync();
       _logger.LogDebug(
-        "Timeseries database {0} migrated for tenant {1}",
+        "Timeseries database {} migrated for tenant {}",
         context.GetType().Name,
         _shellSettings.Name
       );

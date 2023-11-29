@@ -48,7 +48,7 @@ public class EorStatusEntity : HypertableEntity
 public static class EorStatusEntityExtensions
 {
   public static EorStatusEntity ToEntity(this EorStatus model) =>
-    new EorStatusEntity
+    new()
     {
       Tenant = model.Tenant,
       Source = model.DeviceId,
@@ -73,7 +73,7 @@ public static class EorStatusEntityExtensions
     };
 
   public static EorStatus ToModel(this EorStatusEntity entity) =>
-    new EorStatus(
+    new(
       Tenant: entity.Tenant,
       DeviceId: entity.Source,
       Stamp: entity.Stamp,

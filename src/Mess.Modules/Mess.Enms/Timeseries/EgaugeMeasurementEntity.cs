@@ -18,7 +18,7 @@ public static class EgaugeMeasurementEntityExtensions
   public static EgaugeMeasurementEntity ToEntity(
     this EgaugeMeasurement model
   ) =>
-    new EgaugeMeasurementEntity
+    new()
     {
       Tenant = model.Tenant,
       Timestamp = model.Timestamp,
@@ -30,7 +30,7 @@ public static class EgaugeMeasurementEntityExtensions
   public static EgaugeMeasurement ToModel(
     this EgaugeMeasurementEntity entity
   ) =>
-    new EgaugeMeasurement(
+    new (
       Tenant: entity.Tenant,
       DeviceId: entity.Source,
       Timestamp: entity.Timestamp,

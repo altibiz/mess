@@ -1,4 +1,4 @@
-using Mess.Event.Abstractions.Events;
+using Mess.Event.Abstractions.Services;
 using Mess.Iot.Abstractions.Services;
 using Mess.Iot.Abstractions.Caches;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,7 +19,7 @@ public class PidgeonPushEventDispatcher : IEventDispatcher
 
     foreach (var @event in events.OfType<PidgeonMeasured>())
     {
-      var contentItem = cache.Get(@event.DeviceId);
+      var contentItem = cache.GetIotDevice(@event.DeviceId);
       if (contentItem is null)
       {
         continue;
@@ -61,7 +61,7 @@ public class PidgeonPushEventDispatcher : IEventDispatcher
 
     foreach (var @event in events.OfType<PidgeonMeasured>())
     {
-      var contentItem = await cache.GetAsync(@event.DeviceId);
+      var contentItem = await cache.GetIotDeviceAsync(@event.DeviceId);
       if (contentItem is null)
       {
         continue;

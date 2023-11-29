@@ -76,14 +76,11 @@ public class Migrations : DataMigration
   }
 
   public Migrations(
-    IContentDefinitionManager contentDefinitionManager,
-    IRecipeMigrator recipeMigrator
+    IContentDefinitionManager contentDefinitionManager
   )
   {
     _contentDefinitionManager = contentDefinitionManager;
-    _recipeMigrator = recipeMigrator;
   }
 
   private readonly IContentDefinitionManager _contentDefinitionManager;
-  private readonly IRecipeMigrator _recipeMigrator;
 }

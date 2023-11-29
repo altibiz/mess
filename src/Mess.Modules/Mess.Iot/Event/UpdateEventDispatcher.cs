@@ -1,4 +1,4 @@
-using Mess.Event.Abstractions.Events;
+using Mess.Event.Abstractions.Services;
 using Mess.Iot.Abstractions.Indexes;
 using Mess.Iot.Abstractions.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,7 +25,8 @@ public class UpdateEventDispatcher : IEventDispatcher
       if (contentItem is null)
       {
         logger.LogError(
-          $"Content item with device id {@event.DeviceId} not found"
+          "Content item with device id {} not found",
+          @event.DeviceId
         );
         continue;
       }
@@ -38,7 +39,8 @@ public class UpdateEventDispatcher : IEventDispatcher
       if (handler is null)
       {
         logger.LogError(
-          $"Update handler for content item with device id {@event.DeviceId} not found"
+          "Update handler for content item with device id {} not found",
+          @event.DeviceId
         );
         continue;
       }
@@ -73,7 +75,8 @@ public class UpdateEventDispatcher : IEventDispatcher
       if (contentItem is null)
       {
         logger.LogError(
-          $"Content item with device id {@event.DeviceId} not found"
+          "Content item with device id {} not found",
+          @event.DeviceId
         );
         continue;
       }
@@ -86,7 +89,8 @@ public class UpdateEventDispatcher : IEventDispatcher
       if (handler is null)
       {
         logger.LogError(
-          $"Update handler for content item with device id {@event.DeviceId} not found"
+          "Update handler for content item with device id {} not found",
+          @event.DeviceId
         );
         continue;
       }
@@ -105,7 +109,8 @@ public class UpdateEventDispatcher : IEventDispatcher
       {
         logger.LogError(
           exception,
-          $"Error while handling update event for device {@event.DeviceId}"
+          "Error while handling update event for device {}",
+          @event.DeviceId
         );
       }
 

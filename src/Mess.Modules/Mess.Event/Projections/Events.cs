@@ -1,6 +1,6 @@
 using Marten.Events;
-using Mess.Event.Abstractions.Events;
-using IEvent = Mess.Event.Abstractions.Events.IEvent;
+using Mess.Event.Abstractions.Services;
+using IEvent = Mess.Event.Abstractions.Services.IEvent;
 
 namespace Mess.Event.Projections;
 

@@ -61,7 +61,7 @@ public sealed class TupleJsonConverter : JsonConverter
       // Check generics length against tuple length
       if (
         (genericsStack.Count - 1) * 7 + genericsStack.Peek().Length
-        != arr.Count()
+        != arr.Count
       )
       {
         // As you can omit tail elements in TypeScript tuples you might do some advanced check here

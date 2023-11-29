@@ -19,7 +19,7 @@ public class RelationalDbMigrator : IRelationalDbMigrator
       await context.Database.MigrateAsync();
 
       _logger.LogDebug(
-        "Relational database {0} migrated for tenant {1}",
+        "Relational database {} migrated for tenant {}",
         context.GetType().Name,
         _shellSettings.Name
       );

@@ -12,7 +12,7 @@ public static class ObjectSetFieldOrPropertyValueExtensions
   {
     if (@this is null)
     {
-      throw new ArgumentNullException($"Argument '{nameof(@this)}' is null");
+      throw new ArgumentNullException(nameof(@this));
     }
 
     var type = @this.GetType();
@@ -40,7 +40,7 @@ public static class ObjectSetFieldOrPropertyValueExtensions
 
     if (previous is null)
     {
-      return default(T?);
+      return default;
     }
     return (T)previous;
   }
@@ -58,7 +58,7 @@ public static class ObjectSetFieldOrPropertyValueExtensions
     );
     if (property is null)
     {
-      return default(T?);
+      return default;
     }
 
     var previous = property.GetValue(@this);
@@ -66,7 +66,7 @@ public static class ObjectSetFieldOrPropertyValueExtensions
 
     if (previous is null)
     {
-      return default(T?);
+      return default;
     }
     return (T)previous;
   }

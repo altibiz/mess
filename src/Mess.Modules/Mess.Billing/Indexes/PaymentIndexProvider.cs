@@ -30,7 +30,9 @@ public class PaymentIndexProvider
         if (indexer is null)
         {
           _logger.LogError(
-            $"No payment indexer found for content item {contentItem.ContentItemId} of type {contentItem.ContentType}"
+            "No payment indexer found for content item {} of type {}",
+            contentItem.ContentItemId,
+            contentItem.ContentType
           );
           return Array.Empty<PaymentIndex>();
         }

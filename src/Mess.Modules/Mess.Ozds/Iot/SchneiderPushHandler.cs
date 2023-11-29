@@ -30,7 +30,7 @@ public class SchneiderPushHandler
       MakeMeasurement(deviceId, tenant, timestamp, contentItem, request)
     );
 
-  private SchneiderMeasurement MakeMeasurement(
+  private static SchneiderMeasurement MakeMeasurement(
     string deviceId,
     string tenant,
     DateTimeOffset timestamp,

@@ -35,10 +35,10 @@ public class EnumJsonConverterFactory : JsonConverterFactory
         string enumString = reader.GetString()!;
         if (string.IsNullOrEmpty(enumString))
         {
-          return default(T)!;
+          return default!;
         }
 
-        if (Int32.TryParse(enumString, out int number))
+        if (int.TryParse(enumString, out int number))
         {
           return (T)Enum.ToObject(typeToConvert, number);
         }

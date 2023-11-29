@@ -9,7 +9,7 @@ public static class DictionaryGetOrDefaultExtensions
   {
     if (key is null)
     {
-      return default(TOut);
+      return default;
     }
 
     try

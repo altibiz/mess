@@ -14,7 +14,7 @@ public class PreviewChartFactory : IChartFactory
   public string ContentType => ChartContentType;
 
   public IEnumerable<string> TimeseriesChartDatasetProperties =>
-    new string[] { };
+    Array.Empty<string>();
 
   public async Task<ChartDescriptor?> CreateChartAsync(
     ContentItem metadata,

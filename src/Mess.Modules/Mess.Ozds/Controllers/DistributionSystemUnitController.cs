@@ -136,20 +136,14 @@ public class DistributionSystemUnitController : Controller
   }
 
   public DistributionSystemUnitController(
-    IAuthorizationService authorizationService,
     IContentManager contentManager,
-    ISession session,
-    IOzdsTimeseriesClient measurementClient
+    ISession session
   )
   {
     _contentManager = contentManager;
-    _authorizationService = authorizationService;
     _session = session;
-    _measurementClient = measurementClient;
   }
 
   private readonly IContentManager _contentManager;
-  private readonly IAuthorizationService _authorizationService;
   private readonly ISession _session;
-  private readonly IOzdsTimeseriesClient _measurementClient;
 }

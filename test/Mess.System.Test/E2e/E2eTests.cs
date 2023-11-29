@@ -1,10 +1,10 @@
 namespace Mess.System.Test.E2e;
 
-public record class E2eTests(IE2eFixture e2eFixture)
+public record class E2eTests(IE2eFixture E2eFixture)
 {
   [Fact]
   public async Task AdminTest()
   {
-    await e2eFixture.Page.GotoAsync("/admin");
+    await E2eFixture.Page.GotoAsync("/admin");
   }
 }

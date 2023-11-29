@@ -153,20 +153,16 @@ public class Populations : IPopulation
 
   public Populations(
     IContentManager contentManager,
-    ISession session,
     IUserService userService,
     IApiKeyFieldService apiKeyFieldService
   )
   {
     _contentManager = contentManager;
-    _session = session;
     _userService = userService;
     _apiKeyFieldService = apiKeyFieldService;
   }
 
   private readonly IContentManager _contentManager;
-
-  private readonly ISession _session;
 
   private readonly IUserService _userService;
 

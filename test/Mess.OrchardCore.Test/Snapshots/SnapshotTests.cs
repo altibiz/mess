@@ -2,7 +2,7 @@ using OrchardCore.ContentManagement;
 
 namespace Mess.OrchardCore.Test.Snapshots;
 
-public record SnapshotTests(ISnapshotFixture snapshotFixture)
+public record SnapshotTests(ISnapshotFixture SnapshotFixture)
 {
   public record SnapshotTestRecord(string Property);
 
@@ -31,25 +31,25 @@ public record SnapshotTests(ISnapshotFixture snapshotFixture)
   [StaticData(nameof(MatchesSnapshotData))]
   public async Task MatchesSnapshot(object @object)
   {
-    var verificationHash = await snapshotFixture.MakeVerificationHash(@object);
-    await snapshotFixture.Verify(@object, verificationHash);
+    var verificationHash = await SnapshotFixture.MakeVerificationHash(@object);
+    await SnapshotFixture.Verify(@object, verificationHash);
   }
 
   [Theory]
   [NewtonsoftJsonAssetData]
   public async Task MatchesSnapshotFromJson(SnapshotTestRecord @object)
   {
-    var verificationHash = await snapshotFixture.MakeVerificationHash(@object);
-    await snapshotFixture.Verify(@object, verificationHash);
+    var verificationHash = await SnapshotFixture.MakeVerificationHash(@object);
+    await SnapshotFixture.Verify(@object, verificationHash);
   }
 
   [Theory]
   [NewtonsoftJsonAssetData]
   public async Task MatchesContentItem(ContentItem contentItem)
   {
-    var verificationHash = await snapshotFixture.MakeVerificationHash(
+    var verificationHash = await SnapshotFixture.MakeVerificationHash(
       contentItem
     );
-    await snapshotFixture.Verify(contentItem, verificationHash);
+    await SnapshotFixture.Verify(contentItem, verificationHash);
   }
 }

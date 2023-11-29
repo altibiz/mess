@@ -19,23 +19,25 @@ public class EventStoreDiagnosticsBackgroundTask : IBackgroundTask
       ILogger<EventStoreDiagnosticsBackgroundTask>
     >();
 
-    var allProgress = await store.Advanced.AllProjectionProgress();
+    var allProgress = await store.Advanced.AllProjectionProgress(token: cancellationToken);
     foreach (var state in allProgress)
     {
-      logger.LogInformation($"{state.ShardName} is at {state.Sequence}");
+      logger.LogInformation("{} is at {}", state.ShardName,state.Sequence);
     }
 
-    var stats = await store.Advanced.FetchEventStoreStatistics();
+    var stats = await store.Advanced.FetchEventStoreStatistics(token: cancellationToken);
     logger.LogInformation(
-      $"The event store highest sequence is {stats.EventSequenceNumber}",
-      logger
+      "The event store highest sequence is {}",
+      stats.EventSequenceNumber
     );
 
     var daemonHighWaterMark = await store.Advanced.ProjectionProgressFor(
-      new ShardName(ShardState.HighWaterMark)
+      new ShardName(ShardState.HighWaterMark),
+      token: cancellationToken
     );
     logger.LogInformation(
-      $"The daemon high water sequence mark is {daemonHighWaterMark}"
+      "The daemon high water sequence mark is {}",
+      daemonHighWaterMark
     );
   }
 }

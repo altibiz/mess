@@ -9,16 +9,16 @@ public static class IUserServiceExtensions
 {
   public static async Task<User> GetAuthenticatedOrchardCoreUserAsync(
     this IUserService userService,
-    ClaimsPrincipal user
+    ClaimsPrincipal claimsPrincipal
   )
   {
-    var orchardUser = await userService.GetAuthenticatedUserAsync(user) as User;
-    if (orchardUser == null)
+    var orchardUser = await userService.GetAuthenticatedUserAsync(claimsPrincipal);
+    if (orchardUser is not User user)
     {
       throw new UnauthorizedAccessException();
     }
 
-    return orchardUser;
+    return user;
   }
 
   public static async Task<User> CreateDevUserAsync(

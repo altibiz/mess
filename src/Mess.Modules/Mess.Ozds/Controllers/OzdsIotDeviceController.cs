@@ -169,17 +169,14 @@ public class OzdsIotDeviceController : Controller
   }
 
   public OzdsIotDeviceController(
-    IAuthorizationService authorizationService,
     IContentManager contentManager,
     ISession session
   )
   {
     _contentManager = contentManager;
-    _authorizationService = authorizationService;
     _session = session;
   }
 
   private readonly IContentManager _contentManager;
-  private readonly IAuthorizationService _authorizationService;
   private readonly ISession _session;
 }

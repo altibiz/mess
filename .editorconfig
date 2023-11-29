@@ -70,3 +70,8 @@ dotnet_diagnostic.IDE0022.severity = none
 # Remove unnecessary import
 # comes up in generated files
 dotnet_diagnostic.IDE0005.severity = none
+
+# https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/style-rules/ide0051
+# Remove unused private member
+# using private constructors for content item types
+dotnet_diagnostic.IDE0051.severity = none

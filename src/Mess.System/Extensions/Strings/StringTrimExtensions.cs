@@ -7,7 +7,7 @@ public static class StringTrimExtensions
     string result = @string;
     while (result.StartsWith(trimString))
     {
-      result = result.Substring(trimString.Length);
+      result = result[trimString.Length..];
     }
 
     return result;
@@ -18,7 +18,7 @@ public static class StringTrimExtensions
     string result = @string;
     while (result.EndsWith(trimString))
     {
-      result = result.Substring(0, result.Length - trimString.Length);
+      result = result[0..(result.Length - trimString.Length)];
     }
 
     return result;

@@ -37,7 +37,7 @@ public class NewtonsoftJsonAssetDataAttribute : DataAttribute
     }
 
     var parameters = testMethod.GetParameters();
-    Type tupleType = parameters.Count() switch
+    Type tupleType = parameters.Length switch
     {
       7 => typeof(ValueTuple<,,,,,,>),
       6 => typeof(ValueTuple<,,,,,>),
@@ -77,8 +77,7 @@ public class NewtonsoftJsonAssetDataAttribute : DataAttribute
       type,
       assembly
     );
-    var castedResource = resource as System.Collections.IEnumerable;
-    if (castedResource is null)
+    if (resource is not System.Collections.IEnumerable castedResource)
     {
       throw new InvalidOperationException("Couldn't instantiate data");
     }
@@ -88,6 +87,6 @@ public class NewtonsoftJsonAssetDataAttribute : DataAttribute
       .Select(parameters => parameters.ToEnumerable().ToArray());
   }
 
-  private string? _id;
-  private Assembly? _assembly;
+  private readonly string? _id;
+  private readonly Assembly? _assembly;
 }

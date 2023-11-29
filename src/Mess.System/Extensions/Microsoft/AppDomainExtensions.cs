@@ -14,8 +14,8 @@ public static class AppDomainExtensions
           .FirstOrDefault(type => type.FullName == name)
     );
 
-  private static ConcurrentDictionary<string, Type?> _typeByNameCache =
-    new ConcurrentDictionary<string, Type?>();
+  private static readonly ConcurrentDictionary<string, Type?> _typeByNameCache =
+    new();
 
   public static IReadOnlyList<Type> FindTypesAssignableTo<T>(
     this AppDomain domain
@@ -30,9 +30,9 @@ public static class AppDomainExtensions
           .ToList()
     );
 
-  private static ConcurrentDictionary<
+  private static readonly ConcurrentDictionary<
     Type,
     IReadOnlyList<Type>
   > _typesAssignableToCache =
-    new ConcurrentDictionary<Type, IReadOnlyList<Type>>();
+    new ();
 }

@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Mess.Event.Abstractions.Client;
-using Mess.Event.Abstractions.Events;
+using Mess.Event.Abstractions.Services;
 using Mess.Event.Abstractions.Extensions;
 
 namespace Mess.Event.Client;
@@ -64,14 +64,12 @@ public class EventStoreClient : IEventStoreClient
     );
 
   public EventStoreClient(
-    IServiceProvider services,
-    ILogger<EventStoreClient> logger
+    IServiceProvider services
   )
   {
     _services = services;
-    _logger = logger;
+
   }
 
   private readonly IServiceProvider _services;
-  private readonly ILogger _logger;
 }

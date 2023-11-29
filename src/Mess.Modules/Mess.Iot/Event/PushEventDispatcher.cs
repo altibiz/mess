@@ -1,4 +1,4 @@
-using Mess.Event.Abstractions.Events;
+using Mess.Event.Abstractions.Services;
 using Mess.Iot.Abstractions.Services;
 using Mess.Iot.Abstractions.Caches;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,11 +17,12 @@ public class PushEventDispatcher : IEventDispatcher
 
     foreach (var @event in events.OfType<Measured>())
     {
-      var contentItem = cache.Get(@event.DeviceId);
+      var contentItem = cache.GetIotDevice(@event.DeviceId);
       if (contentItem is null)
       {
         logger.LogError(
-          $"Content item with device id {@event.DeviceId} not found"
+          "Content item with device id {} not found",
+          @event.DeviceId
         );
         continue;
       }
@@ -34,7 +35,8 @@ public class PushEventDispatcher : IEventDispatcher
       if (handler is null)
       {
         logger.LogError(
-          $"Push handler for content item with device id {@event.DeviceId} not found"
+          "Push handler for content item with device id {} not found",
+          @event.DeviceId
         );
         continue;
       }
@@ -53,7 +55,8 @@ public class PushEventDispatcher : IEventDispatcher
       {
         logger.LogError(
           exception,
-          $"Error while dispatching events of {handler.GetType().Name}"
+          "Error while dispatching events of {}",
+          handler.GetType().Name
         );
       }
     }
@@ -73,11 +76,12 @@ public class PushEventDispatcher : IEventDispatcher
 
     foreach (var @event in events.OfType<Measured>())
     {
-      var contentItem = await cache.GetAsync(@event.DeviceId);
+      var contentItem = await cache.GetIotDeviceAsync(@event.DeviceId);
       if (contentItem is null)
       {
         logger.LogError(
-          $"Content item with device id {@event.DeviceId} not found"
+          "Content item with device id {} not found",
+          @event.DeviceId
         );
         continue;
       }
@@ -90,7 +94,8 @@ public class PushEventDispatcher : IEventDispatcher
       if (handler is null)
       {
         logger.LogError(
-          $"Push handler for content item with device id {@event.DeviceId} not found"
+         "Push handler for content item with device id {} not found",
+         @event.DeviceId
         );
         continue;
       }
@@ -109,7 +114,8 @@ public class PushEventDispatcher : IEventDispatcher
       {
         logger.LogError(
           exception,
-          $"Error while dispatching events of {handler.GetType().Name}"
+          "Error while dispatching events of {}",
+          handler.GetType().Name
         );
       }
 

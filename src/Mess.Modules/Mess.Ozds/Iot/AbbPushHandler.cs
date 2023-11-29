@@ -30,7 +30,7 @@ public class AbbPushHandler
       MakeMeasurement(deviceId, tenant, timestamp, contentItem, request)
     );
 
-  private AbbMeasurement MakeMeasurement(
+  private static AbbMeasurement MakeMeasurement(
     string deviceId,
     string tenant,
     DateTimeOffset timestamp,

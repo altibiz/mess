@@ -23,5 +23,5 @@ public class Resources : IConfigureOptions<ResourceManagementOptions>
     options.ResourceManifests.Add(_manifest);
   }
 
-  private static ResourceManifest _manifest;
+  private static readonly ResourceManifest _manifest;
 }

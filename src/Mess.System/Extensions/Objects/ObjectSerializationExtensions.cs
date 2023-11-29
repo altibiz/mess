@@ -44,7 +44,7 @@ public static class ObjectSerializationExtensions
   public static string ToXml<T>(this T @this)
   {
     var serializer = new XmlSerializer(typeof(T));
-    string result = string.Empty;
+    string result;
     using var stream = new MemoryStream();
     serializer.Serialize(stream, @this);
     stream.Seek(0, SeekOrigin.Begin);
@@ -55,7 +55,7 @@ public static class ObjectSerializationExtensions
 
   public static string ToXml(this XDocument @this)
   {
-    string result = string.Empty;
+    string result;
     using var stream = new MemoryStream();
     @this.Save(stream);
     stream.Seek(0, SeekOrigin.Begin);

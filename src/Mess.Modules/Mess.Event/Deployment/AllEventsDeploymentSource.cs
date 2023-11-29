@@ -11,9 +11,7 @@ public class AllEventsDeploymentSource : IDeploymentSource
     DeploymentPlanResult result
   )
   {
-    var allTemplatesStep = step as AllEventsDeploymentStep;
-
-    if (allTemplatesStep is null)
+    if (step is not AllEventsDeploymentStep)
     {
       return;
     }

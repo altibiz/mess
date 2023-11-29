@@ -68,7 +68,7 @@ public static class IDocumentStoreExtensions
     }
     else
     {
-      logger.LogInformation(message);
+      logger.LogInformation("{}", message);
     }
   }
 }

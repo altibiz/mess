@@ -14,7 +14,7 @@ public static class ObjectGetFieldOrPropertyValueExtensions
   {
     if (@this is null)
     {
-      throw new ArgumentNullException($"Argument '{nameof(@this)}' is null");
+      throw new ArgumentNullException(nameof(@this));
     }
 
     var type = @this.GetType();
@@ -36,7 +36,7 @@ public static class ObjectGetFieldOrPropertyValueExtensions
     var @value = field.GetValue(@this);
     if (@value is null)
     {
-      return default(T?);
+      return default;
     }
 
     return (T)@value;
@@ -51,13 +51,13 @@ public static class ObjectGetFieldOrPropertyValueExtensions
     var property = type.GetProperty(fieldOrPropertyName);
     if (property is null)
     {
-      return default(T?);
+      return default;
     }
 
     var @value = property.GetValue(@this);
     if (@value is null)
     {
-      return default(T?);
+      return default;
     }
 
     return (T)@value;

@@ -4,7 +4,7 @@ namespace Mess.System.Test.E2e;
 
 internal class E2eTestServer : IAsyncDisposable, IDisposable
 {
-  public E2eTestServer(string baseUrl)
+  public E2eTestServer(string _)
   {
     ExecutionLock.Wait(TimeSpan.FromMilliseconds(100));
 
@@ -44,14 +44,14 @@ internal class E2eTestServer : IAsyncDisposable, IDisposable
 
   private static Task MakeServerTask(CancellationToken token)
   {
-    var serverTask = StartTestServer(token, "http://localhost:5000");
+    var serverTask = StartTestServer( "http://localhost:5000", token);
     WaitForTestServerToStart("http://localhost:5000", token).Wait(token);
     return serverTask;
   }
 
   private static async Task StartTestServer(
-    CancellationToken token,
-    string baseUrl
+    string baseUrl,
+    CancellationToken token
   )
   {
     var solutionDirectory = FindSolutionDirectory(
