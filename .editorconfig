@@ -11,14 +11,62 @@ insert_final_newline = true
 trim_trailing_whitespace = true
 
 [*.cs]
+# https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca2255
+# The ModuleInitializer attribute should not be used in libraries
+# for verify library initialization
 dotnet_diagnostic.CA2255.severity = none
-dotnet_diagnostic.xUnit1013.severity = none
+
+# This async method lacks 'await'
+# some interface implementation has await and some doesn't
 dotnet_diagnostic.CS1998.severity = none
-dotnet_diagnostic.IDE0160.severity = none
-dotnet_diagnostic.IDE0058.severity = none
-dotnet_diagnostic.IDE0008.severity = none
-dotnet_diagnostic.IDE0051.severity = none
-dotnet_diagnostic.IDE0022.severity = none
-dotnet_diagnostic.IDE0005.severity = none
+
+# https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-messages/using-directive-errors
+# Unnecessary using directive
+# appears on generated files
 dotnet_diagnostic.CS8019.severity = none
+# The using directive appeared previously as global using
+# appears on generated files
+dotnet_diagnostic.CS8933.severity = none
+
+# https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1848
+# Use the LoggerMessage delegates
+# only needed for high performance logging
 dotnet_diagnostic.CA1848.severity = none
+
+# https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1707
+# Identifiers should not contain underscores
+# it is really convenient for clarity to put measurement units like <name>_<unit>
+dotnet_diagnostic.CA1707.severity = none
+
+# https://xunit.net/xunit.analyzers/rules/xUnit1013
+# Public method should be marked as test
+# public methods in tests that are not tests
+dotnet_diagnostic.xUnit1013.severity = none
+
+# https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/style-rules/ide0160-ide0161
+# Use block-scoped namespace
+# promotes nesting
+dotnet_diagnostic.IDE0160.severity = none
+
+# https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/style-rules/ide0058
+# Remove unnecessary expression value
+# builder pattern sometimes not needed
+dotnet_diagnostic.IDE0058.severity = none
+
+# https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/style-rules/ide0007-ide0008
+# Use var instead of explicit type
+# no need to burden ourselves with types when we have type inference
+dotnet_diagnostic.IDE0008.severity = none
+# Use explicit type instead of var
+# no need to burden ourselves with types when we have type inference
+dotnet_diagnostic.IDE0007.severity = warning
+
+# https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/style-rules/ide0022
+# Use expression body for methods
+# sometimes a method is really simple
+dotnet_diagnostic.IDE0022.severity = none
+
+# https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/style-rules/ide0005
+# Remove unnecessary import
+# comes up in generated files
+dotnet_diagnostic.IDE0005.severity = none

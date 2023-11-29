@@ -50,13 +50,11 @@ public abstract class ChartFactory<T> : IChartFactory
 
   protected DateTimeOffset GetTimeseriesTimestamp(object data)
   {
-    var propertyInfo = data.GetType().GetProperty("Timestamp");
-    if (propertyInfo == null)
-    {
-      throw new InvalidOperationException(
+    var propertyInfo =
+      data.GetType().GetProperty("Timestamp")
+      ?? throw new InvalidOperationException(
         "Timestamp property not found in timeseries data"
       );
-    }
 
     var value =
       propertyInfo.GetValue(data)
@@ -67,21 +65,16 @@ public abstract class ChartFactory<T> : IChartFactory
 
   protected decimal GetTimeseriesValue(object data, string property)
   {
-    var propertyInfo = data.GetType().GetProperty(property);
-    if (propertyInfo == null)
-    {
-      throw new InvalidOperationException(
+    var propertyInfo =
+      data.GetType().GetProperty(property)
+      ?? throw new InvalidOperationException(
         $"Invalid timeseries property: {property}"
       );
-    }
 
     var value = propertyInfo.GetValue(data);
-    if (value == null)
-    {
-      return 0.0M;
-    }
-
-    return Convert.ToDecimal(value);
+    return value == null
+      ? 0.0M
+      : Convert.ToDecimal(value, CultureInfo.InvariantCulture);
   }
 
   public string ContentType => typeof(T).ContentTypeName();
