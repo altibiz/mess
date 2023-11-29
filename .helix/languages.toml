@@ -80,7 +80,7 @@ language-servers = ["typescript-language-server"]
 
 [[language]]
 name = "javascript"
-formatter = { command = "yarn prettier" }
+formatter = { command = "prettier", args = ["--parser", "babel"] }
 auto-format = true
 language-servers = ["typescript-language-server"]
 
@@ -95,11 +95,6 @@ name = "scss"
 formatter = { command = "prettier", args = ["--parser", "scss"] }
 auto-format = true
 language-servers = ["vscode-css-language-server"]
-
-[[language]]
-name = "toml"
-auto-format = true
-language-servers = ["taplo"]
 
 [[language]]
 name = "yaml"
@@ -118,3 +113,8 @@ name = "markdown"
 auto-format = true
 formatter = { command = "prettier", args = ["--parser", "markdown"] }
 language-servers = ["marksman"]
+
+[[language]]
+name = "toml"
+auto-format = true
+language-servers = ["taplo"]
