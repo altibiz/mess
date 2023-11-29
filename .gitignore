@@ -349,3 +349,6 @@ src/Mess.Web/Internal/Generated/
 
 # Nix
 .direnv
+
+# Netcoredbg 
+.netcoredbg_hist
