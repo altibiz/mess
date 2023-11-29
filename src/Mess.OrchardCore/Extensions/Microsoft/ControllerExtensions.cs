@@ -13,13 +13,10 @@ public static class ControllerExtensions
   {
     var userService =
       controller.HttpContext.RequestServices.GetRequiredService<IUserService>();
+
     var user = await userService.GetAuthenticatedOrchardCoreUserAsync(
       controller.User
-    );
-    if (user == null)
-    {
-      throw new UnauthorizedAccessException();
-    }
+    ) ?? throw new UnauthorizedAccessException();
 
     return user;
   }

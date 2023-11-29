@@ -2,7 +2,7 @@ using Mess.OrchardCore.Test.Extensions.Microsoft;
 
 namespace Mess.OrchardCore.Test;
 
-public class Startup : Mess.System.Test.Startup
+public class Startup : System.Test.Startup
 {
   public override void ConfigureServices(
     IServiceCollection services,

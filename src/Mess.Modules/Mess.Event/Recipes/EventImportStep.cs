@@ -29,7 +29,7 @@ public class EventImportStep : IRecipeStepHandler
   public async Task ExecuteAsync(RecipeExecutionContext context)
   {
     if (
-      !String.Equals(
+      !string.Equals(
         context.Name,
         "EventImport",
         StringComparison.OrdinalIgnoreCase
@@ -90,12 +90,8 @@ public class EventImportStep : IRecipeStepHandler
             }
 
             var eventData = eventObject.Property("Data")?.Value;
-            if (eventData is not JObject)
-            {
-              return null;
-            }
 
-            return eventData.ToObject(eventType);
+            return eventData is not JObject ? null : eventData.ToObject(eventType);
           }
         )
         .Cast<IEvent>()

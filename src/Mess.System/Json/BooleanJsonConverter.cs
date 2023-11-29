@@ -14,22 +14,12 @@ public class BooleanJsonConverter : JsonConverter<bool>
     if (reader.TokenType == JsonTokenType.String)
     {
       var stringValue = reader.GetString();
-      if (stringValue == "0" || stringValue == "false")
-      {
-        return false;
-      }
-      else if (stringValue == "1" || stringValue == "true")
-      {
-        return true;
-      }
-      else
-      {
-        throw new JsonException("Invalid value for boolean.");
-      }
+      return stringValue is not "0" and not "false"
+&& (stringValue is "1" or "true" ? true : throw new JsonException("Invalid value for boolean."));
     }
     else if (
-      reader.TokenType == JsonTokenType.True
-      || reader.TokenType == JsonTokenType.False
+      reader.TokenType is JsonTokenType.True
+      or JsonTokenType.False
     )
     {
       return reader.GetBoolean();
@@ -37,18 +27,7 @@ public class BooleanJsonConverter : JsonConverter<bool>
     else if (reader.TokenType == JsonTokenType.Number)
     {
       var numberValue = reader.GetInt32();
-      if (numberValue == 0)
-      {
-        return false;
-      }
-      else if (numberValue == 1)
-      {
-        return true;
-      }
-      else
-      {
-        throw new JsonException("Invalid value for boolean.");
-      }
+      return numberValue != 0 && (numberValue == 1 ? true : throw new JsonException("Invalid value for boolean."));
     }
     else
     {

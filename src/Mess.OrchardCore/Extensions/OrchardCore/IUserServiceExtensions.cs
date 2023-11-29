@@ -13,12 +13,8 @@ public static class IUserServiceExtensions
   )
   {
     var orchardUser = await userService.GetAuthenticatedUserAsync(claimsPrincipal);
-    if (orchardUser is not User user)
-    {
-      throw new UnauthorizedAccessException();
-    }
 
-    return user;
+    return orchardUser is not User user ? throw new UnauthorizedAccessException() : user;
   }
 
   public static async Task<User> CreateDevUserAsync(
@@ -32,7 +28,7 @@ public static class IUserServiceExtensions
     {
       UserId = id,
       UserName = userName,
-      Email = $"{userName.ToLower()}@dev.com",
+      Email = $"{userName.ToLowerInvariant()}@dev.com",
       RoleNames = roleNames is null or { Length: 0 }
         ? new[] { userName }
         : roleNames

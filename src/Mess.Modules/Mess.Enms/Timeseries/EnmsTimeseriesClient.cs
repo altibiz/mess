@@ -23,8 +23,8 @@ public class EnmsTimeseriesClient : IEnmsTimeseriesClient
 
   public IReadOnlyList<EgaugeMeasurement> GetEgaugeMeasurements(
     string source,
-    DateTimeOffset beginning,
-    DateTimeOffset end
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
   ) =>
     _services.WithTimeseriesDbContext<
       EnmsTimeseriesDbContext,
@@ -33,8 +33,8 @@ public class EnmsTimeseriesClient : IEnmsTimeseriesClient
     {
       return context.EgaugeMeasurements
         .Where(measurement => measurement.Source == source)
-        .Where(measurement => measurement.Timestamp > beginning)
-        .Where(measurement => measurement.Timestamp < end)
+        .Where(measurement => measurement.Timestamp > fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
         .OrderBy(measurement => measurement.Timestamp)
         .Select(measurement => measurement.ToModel())
         .ToList();
@@ -44,8 +44,8 @@ public class EnmsTimeseriesClient : IEnmsTimeseriesClient
     IReadOnlyList<EgaugeMeasurement>
   > GetEgaugeMeasurementsAsync(
     string source,
-    DateTimeOffset beginning,
-    DateTimeOffset end
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
   ) =>
     await _services.WithTimeseriesDbContextAsync<
       EnmsTimeseriesDbContext,
@@ -54,8 +54,8 @@ public class EnmsTimeseriesClient : IEnmsTimeseriesClient
     {
       return await context.EgaugeMeasurements
         .Where(measurement => measurement.Source == source)
-        .Where(measurement => measurement.Timestamp > beginning)
-        .Where(measurement => measurement.Timestamp < end)
+        .Where(measurement => measurement.Timestamp > fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
         .OrderBy(measurement => measurement.Timestamp)
         .Select(measurement => measurement.ToModel())
         .ToListAsync();

@@ -25,8 +25,7 @@ public class PaymentIndexProvider
       {
         var indexer = _serviceProvider
           .GetServices<IPaymentIndexer>()
-          .Where(indexer => indexer.IsApplicable(contentItem))
-          .FirstOrDefault();
+.FirstOrDefault(indexer => indexer.IsApplicable(contentItem));
         if (indexer is null)
         {
           _logger.LogError(

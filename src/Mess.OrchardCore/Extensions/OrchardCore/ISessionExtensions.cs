@@ -17,7 +17,7 @@ public static class ISessionExtensions
     {
       UserId = id,
       UserName = userName,
-      Email = $"{userName.ToLower()}@dev.com",
+      Email = $"{userName.ToLowerInvariant()}@dev.com",
       RoleNames = roleNames is null or { Length: 0 }
         ? new[] { userName }
         : roleNames

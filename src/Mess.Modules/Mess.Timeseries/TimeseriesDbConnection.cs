@@ -9,14 +9,10 @@ public sealed class TimeseriesDbConnection
     IDisposable,
     IAsyncDisposable
 {
-  public NpgsqlConnection Value
-  {
-    get =>
-      _value
+  public NpgsqlConnection Value => _value
       ?? throw new InvalidOperationException(
         "Connection has already been disposed"
       );
-  }
 
   public TimeseriesDbConnection()
   {
@@ -27,7 +23,7 @@ public sealed class TimeseriesDbConnection
     );
   }
 
-  private NpgsqlConnection? _value = null;
+  private NpgsqlConnection? _value;
 
   public void Dispose()
   {

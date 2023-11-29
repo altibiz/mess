@@ -10,17 +10,9 @@ public static class ITestOutputHelperExtensions
   {
     var testField = output
       .GetType()
-      .GetField("test", BindingFlags.Instance | BindingFlags.NonPublic);
-    if (testField is null)
-    {
-      throw new InvalidOperationException("Couldn't get test field");
-    }
+      .GetField("test", BindingFlags.Instance | BindingFlags.NonPublic) ?? throw new InvalidOperationException("Couldn't get test field");
 
-    var test = (ITest?)testField.GetValue(output);
-    if (test is null)
-    {
-      throw new InvalidOperationException("Couldn't get test");
-    }
+    var test = (ITest?)testField.GetValue(output) ?? throw new InvalidOperationException("Couldn't get test");
 
     return test;
   }

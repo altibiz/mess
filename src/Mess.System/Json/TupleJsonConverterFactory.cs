@@ -129,9 +129,8 @@ public class TupleJsonConverterFactory : JsonConverterFactory
 
   private static Type GetTupleTypeDefinition(Type objectType, int elementCount)
   {
-    if (objectType.IsValueType)
-    {
-      return elementCount switch
+    return objectType.IsValueType
+      ? elementCount switch
       {
         8 => typeof(ValueTuple<,,,,,,,>),
         7 => typeof(ValueTuple<,,,,,,>),
@@ -142,11 +141,9 @@ public class TupleJsonConverterFactory : JsonConverterFactory
         2 => typeof(ValueTuple<,>),
         1 => typeof(ValueTuple<>),
         0 => typeof(ValueTuple),
-        _ => throw new IndexOutOfRangeException(),
-      };
-    }
-
-    return elementCount switch
+        _ => throw new InvalidOperationException(),
+      }
+      : elementCount switch
     {
       8 => typeof(Tuple<,,,,,,,>),
       7 => typeof(Tuple<,,,,,,>),
@@ -156,7 +153,7 @@ public class TupleJsonConverterFactory : JsonConverterFactory
       3 => typeof(Tuple<,,>),
       2 => typeof(Tuple<,>),
       1 => typeof(Tuple<>),
-      _ => throw new IndexOutOfRangeException(),
+      _ => throw new InvalidOperationException(),
     };
   }
 }

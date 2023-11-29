@@ -10,7 +10,7 @@ public static class IServiceProviderExtensions
       .GetAssemblies()
       .SelectMany(assembly => assembly.GetTypes())
       .Where(type => type.IsAssignableTo(typeof(T)))
-      .Select(type => services.GetService(type))
+      .Select(services.GetService)
       .Where(service => service is not null)
       .Cast<T>();
 }

@@ -42,7 +42,7 @@ public record class Projection(IServiceProvider Services) : IProjection
   public async Task ApplyAsync(
     IDocumentOperations operations,
     IReadOnlyList<StreamAction> streams,
-    CancellationToken cancellationToken
+    CancellationToken cancellation
   )
   {
     await using var scope = Services.CreateAsyncScope();
@@ -60,7 +60,7 @@ public record class Projection(IServiceProvider Services) : IProjection
         await dispatcher.DispatchAsync(
           scope.ServiceProvider,
           events,
-          cancellationToken
+          cancellation
         );
       }
       catch (Exception exception)

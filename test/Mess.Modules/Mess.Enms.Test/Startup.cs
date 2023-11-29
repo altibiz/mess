@@ -7,7 +7,7 @@ using Mess.Enms.Iot;
 
 namespace Mess.Enms.Test;
 
-public class Startup : Mess.OrchardCore.Test.Startup
+public class Startup : OrchardCore.Test.Startup
 {
   public override void ConfigureServices(
     IServiceCollection services,

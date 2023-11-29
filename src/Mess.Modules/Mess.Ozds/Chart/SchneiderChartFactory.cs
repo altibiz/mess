@@ -34,14 +34,14 @@ public class SchneiderChartFactory : ChartFactory<SchneiderIotDeviceItem>
     };
 
   protected override async Task<TimeseriesChartDescriptor?> CreateTimeseriesChartAsync(
-    SchneiderIotDeviceItem abbIotDevice,
+    SchneiderIotDeviceItem metadata,
     TimeseriesChartItem chart,
     IEnumerable<TimeseriesChartDatasetItem> datasets
   )
   {
     var now = DateTimeOffset.UtcNow;
     var measurements = await _client.GetSchneiderMeasurementsAsync(
-      abbIotDevice.IotDevicePart.Value.DeviceId.Text,
+      metadata.IotDevicePart.Value.DeviceId.Text,
       now.Subtract(chart.TimeseriesChartPart.Value.History.Value.ToTimeSpan()),
       now
     );

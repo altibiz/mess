@@ -60,12 +60,8 @@ public class ChartController : Controller
       metadataContentItem,
       chartContentItem
     );
-    if (chart is null)
-    {
-      return StatusCode(500, "Chart creation failed");
-    }
 
-    return Json(chart);
+    return chart is null ? StatusCode(500, "Chart creation failed") : Json(chart);
   }
 
   public async Task<IActionResult> Preview(string contentItemId)
@@ -105,12 +101,8 @@ public class ChartController : Controller
       new ContentItem(),
       chartContentItem
     );
-    if (chart is null)
-    {
-      return StatusCode(500, "Chart creation failed");
-    }
 
-    return Json(chart);
+    return chart is null ? StatusCode(500, "Chart creation failed") : Json(chart);
   }
 
   public ChartController(

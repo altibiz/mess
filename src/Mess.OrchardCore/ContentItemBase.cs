@@ -21,8 +21,10 @@ public abstract class ContentItemBase
 
   public Lazy<ContainedPart> ContainedPart { get; init; } = default!;
 
-  public static implicit operator ContentItem(ContentItemBase @this) =>
-    @this.Inner;
+  public static implicit operator ContentItem(ContentItemBase @this)
+  {
+    return @this.Inner;
+  }
 
   public string ContentItemId => Inner.ContentItemId;
 }
@@ -66,19 +68,15 @@ public static class ContentItemExtensions
         new[] { @this },
         null
       );
-    if (
-      contentItem is null
+
+    return contentItem is null
       || contentItem
         .GetType()
         .IsAssignableTo(typeof(IContentTypeBaseDerivedIndicator))
-    )
-    {
-      throw new InvalidOperationException(
+      ? throw new InvalidOperationException(
         $"Could not create content item of type {typeof(T)}"
-      );
-    }
-
-    return contentItem.PopulateContent();
+      )
+      : contentItem.PopulateContent();
   }
 
   public static async Task<TItem> AlterAsync<TItem, TPart>(
@@ -118,13 +116,9 @@ public static class ContentItemExtensions
   {
     var orchardContentItem = await content.NewAsync(
       typeof(T).ContentTypeName()
-    );
-    if (orchardContentItem is null)
-    {
-      throw new InvalidOperationException(
+    ) ?? throw new InvalidOperationException(
         $"Could not create content item of type {typeof(T)}"
       );
-    }
 
     return orchardContentItem.AsContent<T>();
   }
@@ -135,13 +129,9 @@ public static class ContentItemExtensions
   )
     where T : ContentItemBase
   {
-    var orchardContentItem = await content.CloneAsync(item);
-    if (orchardContentItem is null)
-    {
-      throw new InvalidOperationException(
+    var orchardContentItem = await content.CloneAsync(item) ?? throw new InvalidOperationException(
         $"Could not clone content item of type {typeof(T)}"
       );
-    }
 
     return orchardContentItem.AsContent<T>();
   }
@@ -153,12 +143,8 @@ public static class ContentItemExtensions
     where T : ContentItemBase
   {
     var orchardContentItem = await content.GetAsync(id);
-    if (orchardContentItem is null)
-    {
-      return null;
-    }
 
-    return orchardContentItem.AsContent<T>();
+    return orchardContentItem?.AsContent<T>();
   }
 
   public static async Task<T?> GetContentAsync<T>(
@@ -169,12 +155,8 @@ public static class ContentItemExtensions
     where T : ContentItemBase
   {
     var orchardContentItem = await content.GetAsync(id, options);
-    if (orchardContentItem is null)
-    {
-      return null;
-    }
 
-    return orchardContentItem.AsContent<T>();
+    return orchardContentItem?.AsContent<T>();
   }
 
   public static async Task<T?> GetVersionedContentAsync<T>(
@@ -184,12 +166,8 @@ public static class ContentItemExtensions
     where T : ContentItemBase
   {
     var orchardContentItem = await content.GetVersionAsync(id);
-    if (orchardContentItem is null)
-    {
-      return null;
-    }
 
-    return orchardContentItem.AsContent<T>();
+    return orchardContentItem?.AsContent<T>();
   }
 
   public static async Task<IEnumerable<T>> GetContentAsync<T>(
@@ -199,12 +177,10 @@ public static class ContentItemExtensions
     where T : ContentItemBase
   {
     var orchardContentItems = await content.GetAsync(ids);
-    if (orchardContentItems is null)
-    {
-      return Enumerable.Empty<T>();
-    }
 
-    return orchardContentItems
+    return orchardContentItems is null
+      ? Enumerable.Empty<T>()
+      : orchardContentItems
       .Select(orchardContentItem => orchardContentItem.AsContent<T>())
       .WhereNotNull();
   }
@@ -224,12 +200,8 @@ public static class ContentItemExtensions
     where T : ContentItemBase
   {
     var items = await query.FirstOrDefaultAsync();
-    if (items is null)
-    {
-      return null;
-    }
 
-    return items.AsContent<T>();
+    return items?.AsContent<T>();
   }
 
   internal static PropertyInfo GetProperty<TItem, TPart>(
@@ -238,21 +210,15 @@ public static class ContentItemExtensions
   )
     where TItem : ContentItemBase
   {
-    if (expression.Body is not MemberExpression memberExpression)
-    {
-      throw new InvalidOperationException(
+    return expression.Body is not MemberExpression memberExpression
+      ? throw new InvalidOperationException(
         $"Expression {expression} is not a member expression"
-      );
-    }
-
-    if (memberExpression.Member is not PropertyInfo property)
-    {
-      throw new InvalidOperationException(
+      )
+      : memberExpression.Member is not PropertyInfo property
+      ? throw new InvalidOperationException(
         $"Expression {expression} is not a property expression"
-      );
-    }
-
-    return property;
+      )
+      : property;
   }
 
   internal static T PopulateContent<T>(this T content)
@@ -300,13 +266,9 @@ public static class ContentItemExtensions
       .MakeGenericType(new[] { partType })
       .GetConstructor(
         new[] { typeof(Func<>).MakeGenericType(new[] { partType }) }
-      );
-    if (constructor is null)
-    {
-      throw new InvalidOperationException(
+      ) ?? throw new InvalidOperationException(
         $"Could not find constructor for {typeof(Lazy<>).MakeGenericType(new[] { partType })}"
       );
-    }
 
     var lazy = constructor.Invoke(
       new[]

@@ -14,16 +14,12 @@ public static partial class EmbeddedResources
   {
     assembly ??= Assembly.GetCallingAssembly();
     var fullName = $"{assembly.GetName().Name}.{name}";
-    var stream = assembly.GetManifestResourceStream(fullName);
 
-    if (stream is null)
-    {
-      throw new InvalidOperationException(
+    var stream = assembly.GetManifestResourceStream(fullName) ?? throw new InvalidOperationException(
         $"Resource {fullName} does not exist. "
           + $"Here are the available resources for the given assembly '{assembly.GetName().Name}':\n"
           + string.Join("\n", assembly.GetManifestResourceNames())
       );
-    }
 
     return stream;
   }

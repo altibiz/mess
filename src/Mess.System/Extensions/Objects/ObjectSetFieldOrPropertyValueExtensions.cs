@@ -4,10 +4,10 @@ namespace Mess.System.Extensions.Objects;
 
 public static class ObjectSetFieldOrPropertyValueExtensions
 {
-  public static T? SetFieldOrPropertyValue<O, T>(
-    this O @this,
+  public static TValue? SetFieldOrPropertyValue<TObject, TValue>(
+    this TObject @this,
     string fieldOrPropertyName,
-    T value
+    TValue value
   )
   {
     if (@this is null)
@@ -16,14 +16,14 @@ public static class ObjectSetFieldOrPropertyValueExtensions
     }
 
     var type = @this.GetType();
-    return SetFieldValue<O, T>(@this, type, fieldOrPropertyName, value);
+    return SetFieldValue(@this, type, fieldOrPropertyName, value);
   }
 
-  private static T? SetFieldValue<O, T>(
-    this O @this,
-    global::System.Type type,
+  private static TValue? SetFieldValue<TObject, TValue>(
+    this TObject @this,
+    Type type,
     string fieldOrPropertyName,
-    T value
+    TValue value
   )
   {
     var field = type.GetField(
@@ -32,24 +32,20 @@ public static class ObjectSetFieldOrPropertyValueExtensions
     );
     if (field is null)
     {
-      return SetPropertyValue<O, T>(@this, type, fieldOrPropertyName, value);
+      return SetPropertyValue(@this, type, fieldOrPropertyName, value);
     }
 
     var previous = field.GetValue(@this);
     field.SetValue(@this, value);
 
-    if (previous is null)
-    {
-      return default;
-    }
-    return (T)previous;
+    return previous is null ? default : (TValue)previous;
   }
 
-  private static T? SetPropertyValue<O, T>(
-    this O @this,
-    global::System.Type type,
+  private static TValue? SetPropertyValue<TObject, TValue>(
+    this TObject @this,
+    Type type,
     string fieldOrPropertyName,
-    T value
+    TValue value
   )
   {
     var property = type.GetProperty(
@@ -64,10 +60,6 @@ public static class ObjectSetFieldOrPropertyValueExtensions
     var previous = property.GetValue(@this);
     property.SetValue(@this, value);
 
-    if (previous is null)
-    {
-      return default;
-    }
-    return (T)previous;
+    return previous is null ? default : (TValue)previous;
   }
 }

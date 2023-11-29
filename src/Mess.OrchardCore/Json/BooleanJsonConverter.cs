@@ -1,3 +1,4 @@
+using System.Globalization;
 using Newtonsoft.Json;
 
 namespace Mess.OrchardCore.Json;
@@ -24,18 +25,8 @@ public class BooleanJsonConverter : JsonConverter<bool>
     if (reader.TokenType == JsonToken.String)
     {
       var stringValue = reader.Value.ToString();
-      if (stringValue == "0" || stringValue == "false")
-      {
-        return false;
-      }
-      else if (stringValue == "1" || stringValue == "true")
-      {
-        return true;
-      }
-      else
-      {
-        throw new JsonSerializationException("Invalid value for boolean.");
-      }
+      return stringValue is not "0" and not "false"
+&& (stringValue is "1" or "true" ? true : throw new JsonSerializationException("Invalid value for boolean."));
     }
     else if (reader.TokenType == JsonToken.Boolean)
     {
@@ -43,19 +34,8 @@ public class BooleanJsonConverter : JsonConverter<bool>
     }
     else if (reader.TokenType == JsonToken.Integer)
     {
-      var numberValue = Convert.ToInt32(reader.Value);
-      if (numberValue == 0)
-      {
-        return false;
-      }
-      else if (numberValue == 1)
-      {
-        return true;
-      }
-      else
-      {
-        throw new JsonSerializationException("Invalid value for boolean.");
-      }
+      var numberValue = Convert.ToInt32(reader.Value, CultureInfo.InvariantCulture);
+      return numberValue != 0 && (numberValue == 1 ? true : throw new JsonSerializationException("Invalid value for boolean."));
     }
     else
     {

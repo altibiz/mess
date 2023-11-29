@@ -4,6 +4,7 @@ using System.Xml.Serialization;
 using System.Xml.Linq;
 using Mess.System.Extensions.Streams;
 using Mess.System.Extensions.Json;
+using System.Xml;
 
 namespace Mess.System.Extensions.Objects;
 
@@ -68,7 +69,7 @@ public static class ObjectSerializationExtensions
   {
     var serializer = new XmlSerializer(typeof(T));
     using var stream = new MemoryStream(Encoding.UTF8.GetBytes(@this));
-    var result = serializer.Deserialize(stream);
+    var result = serializer.Deserialize(XmlReader.Create(stream));
     return result is not null
       ? (T)result
       : throw new InvalidOperationException(
@@ -82,7 +83,7 @@ public static class ObjectSerializationExtensions
     var result = XDocument.Load(stream);
     return result
       ?? throw new InvalidOperationException(
-        $"Could not deserialize xml string '{@this}' to type '{typeof(XDocument).Name}'"
+        $"Could not deserialize xml string '{@this}' to type '{nameof(XDocument)}'"
       );
   }
 

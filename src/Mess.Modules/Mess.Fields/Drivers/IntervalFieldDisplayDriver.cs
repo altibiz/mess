@@ -17,16 +17,16 @@ public class IntervalFieldDisplayDriver
 {
   public override IDisplayResult Display(
     IntervalField field,
-    BuildFieldDisplayContext context
+    BuildFieldDisplayContext fieldDisplayContext
   )
   {
     return Initialize<IntervalFieldViewModel>(
-        GetDisplayShapeType(context),
+        GetDisplayShapeType(fieldDisplayContext),
         model =>
         {
           model.Field = field;
-          model.Part = context.ContentPart;
-          model.PartFieldDefinition = context.PartFieldDefinition;
+          model.Part = fieldDisplayContext.ContentPart;
+          model.PartFieldDefinition = fieldDisplayContext.PartFieldDefinition;
         }
       )
       .Location("Detail", "Content")

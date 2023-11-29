@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -14,22 +15,16 @@ public class TimeSpanJsonConverter : JsonConverter<TimeSpan>
     JsonSerializerOptions options
   )
   {
-    if (reader.TokenType != JsonTokenType.String)
-      throw new JsonException();
-
-    if (
-      TimeSpan.TryParseExact(
+    return reader.TokenType != JsonTokenType.String
+      ? throw new JsonException()
+      : TimeSpan.TryParseExact(
         reader.GetString(),
         TimeSpanFormatString,
         null,
         out var parsedTimeSpan
       )
-    )
-    {
-      return parsedTimeSpan;
-    }
-
-    throw new JsonException("Invalid TimeSpan format");
+      ? parsedTimeSpan
+      : throw new JsonException("Invalid TimeSpan format");
   }
 
   public override void Write(
@@ -38,6 +33,6 @@ public class TimeSpanJsonConverter : JsonConverter<TimeSpan>
     JsonSerializerOptions options
   )
   {
-    writer.WriteStringValue(value.ToString(TimeSpanFormatString));
+    writer.WriteStringValue(value.ToString(TimeSpanFormatString, CultureInfo.InvariantCulture));
   }
 }

@@ -42,8 +42,8 @@ public class EorTimeseriesClient : IEorTimeseriesClient
 
   public IReadOnlyList<EorMeasurement> GetEorMeasurements(
     string source,
-    DateTimeOffset beginning,
-    DateTimeOffset end
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
   ) =>
     _services.WithTimeseriesDbContext<
       EorTimeseriesDbContext,
@@ -52,8 +52,8 @@ public class EorTimeseriesClient : IEorTimeseriesClient
     {
       return context.EorMeasurements
         .Where(measurement => measurement.Source == source)
-        .Where(measurement => measurement.Timestamp > beginning)
-        .Where(measurement => measurement.Timestamp < end)
+        .Where(measurement => measurement.Timestamp > fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
         .OrderBy(measurement => measurement.Timestamp)
         .Select(measurement => measurement.ToModel())
         .ToList();
@@ -61,8 +61,8 @@ public class EorTimeseriesClient : IEorTimeseriesClient
 
   public async Task<IReadOnlyList<EorMeasurement>> GetEorMeasurementsAsync(
     string source,
-    DateTimeOffset beginning,
-    DateTimeOffset end
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
   ) =>
     await _services.WithTimeseriesDbContextAsync<
       EorTimeseriesDbContext,
@@ -71,8 +71,8 @@ public class EorTimeseriesClient : IEorTimeseriesClient
     {
       return await context.EorMeasurements
         .Where(measurement => measurement.Source == source)
-        .Where(measurement => measurement.Timestamp > beginning)
-        .Where(measurement => measurement.Timestamp < end)
+        .Where(measurement => measurement.Timestamp > fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
         .OrderBy(measurement => measurement.Timestamp)
         .Select(measurement => measurement.ToModel())
         .ToListAsync();
@@ -80,8 +80,8 @@ public class EorTimeseriesClient : IEorTimeseriesClient
 
   public IReadOnlyList<EorStatus> GetEorStatuses(
     string source,
-    DateTimeOffset beginning,
-    DateTimeOffset end
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
   ) =>
     _services.WithTimeseriesDbContext<
       EorTimeseriesDbContext,
@@ -90,8 +90,8 @@ public class EorTimeseriesClient : IEorTimeseriesClient
     {
       return context.EorStatuses
         .Where(measurement => measurement.Source == source)
-        .Where(measurement => measurement.Timestamp > beginning)
-        .Where(measurement => measurement.Timestamp < end)
+        .Where(measurement => measurement.Timestamp > fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
         .OrderBy(measurement => measurement.Timestamp)
         .Select(measurement => measurement.ToModel())
         .ToList();
@@ -99,8 +99,8 @@ public class EorTimeseriesClient : IEorTimeseriesClient
 
   public async Task<IReadOnlyList<EorStatus>> GetEorStatusesAsync(
     string source,
-    DateTimeOffset beginning,
-    DateTimeOffset end
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
   ) =>
     await _services.WithTimeseriesDbContextAsync<
       EorTimeseriesDbContext,
@@ -109,8 +109,8 @@ public class EorTimeseriesClient : IEorTimeseriesClient
     {
       return await context.EorStatuses
         .Where(measurement => measurement.Source == source)
-        .Where(measurement => measurement.Timestamp > beginning)
-        .Where(measurement => measurement.Timestamp < end)
+        .Where(measurement => measurement.Timestamp > fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
         .OrderBy(measurement => measurement.Timestamp)
         .Select(measurement => measurement.ToModel())
         .ToListAsync();
@@ -119,7 +119,7 @@ public class EorTimeseriesClient : IEorTimeseriesClient
   public (
     IReadOnlyList<EorStatus> Statuses,
     IReadOnlyList<EorMeasurement> Measurements
-  ) GetEorData(string source, DateTimeOffset beginning, DateTimeOffset end) =>
+  ) GetEorData(string source, DateTimeOffset fromDate, DateTimeOffset toDate) =>
     _services.WithTimeseriesDbContext<
       EorTimeseriesDbContext,
       (List<EorStatus> Statuses, List<EorMeasurement> Measurements)
@@ -127,16 +127,16 @@ public class EorTimeseriesClient : IEorTimeseriesClient
     {
       var statuses = context.EorStatuses
         .Where(measurement => measurement.Source == source)
-        .Where(measurement => measurement.Timestamp > beginning)
-        .Where(measurement => measurement.Timestamp < end)
+        .Where(measurement => measurement.Timestamp > fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
         .OrderBy(measurement => measurement.Timestamp)
         .Select(measurement => measurement.ToModel())
         .Future();
 
       var measurements = context.EorMeasurements
         .Where(measurement => measurement.Source == source)
-        .Where(measurement => measurement.Timestamp > beginning)
-        .Where(measurement => measurement.Timestamp < end)
+        .Where(measurement => measurement.Timestamp > fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
         .OrderBy(measurement => measurement.Timestamp)
         .Select(measurement => measurement.ToModel())
         .Future();
@@ -149,8 +149,8 @@ public class EorTimeseriesClient : IEorTimeseriesClient
     IReadOnlyList<EorMeasurement> Measurements
   )> GetEorDataAsync(
     string source,
-    DateTimeOffset beginning,
-    DateTimeOffset end
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
   ) =>
     await _services.WithTimeseriesDbContextAsync<
       EorTimeseriesDbContext,
@@ -159,16 +159,16 @@ public class EorTimeseriesClient : IEorTimeseriesClient
     {
       var statuses = context.EorStatuses
         .Where(measurement => measurement.Source == source)
-        .Where(measurement => measurement.Timestamp > beginning)
-        .Where(measurement => measurement.Timestamp < end)
+        .Where(measurement => measurement.Timestamp > fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
         .OrderBy(measurement => measurement.Timestamp)
         .Select(measurement => measurement.ToModel())
         .Future();
 
       var measurements = context.EorMeasurements
         .Where(measurement => measurement.Source == source)
-        .Where(measurement => measurement.Timestamp > beginning)
-        .Where(measurement => measurement.Timestamp < end)
+        .Where(measurement => measurement.Timestamp > fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
         .OrderBy(measurement => measurement.Timestamp)
         .Select(measurement => measurement.ToModel())
         .Future();

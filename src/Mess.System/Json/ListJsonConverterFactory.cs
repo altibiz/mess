@@ -118,16 +118,13 @@ public class ListJsonConverterFactory : JsonConverterFactory
         throw new JsonException("Expected a string or start array");
       }
 
-      if (type.IsArray)
-      {
-        return (T)
+      return type.IsArray
+        ? (T)
           typeof(Enumerable)
             .GetMethod(nameof(Enumerable.ToArray))!
             .MakeGenericMethod(itemType)
-            .Invoke(null, new object[] { result })!;
-      }
-
-      return (T)result;
+            .Invoke(null, new object[] { result })!
+        : (T)result;
     }
   }
 }

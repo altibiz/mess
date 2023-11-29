@@ -1,3 +1,4 @@
+using System.Globalization;
 using Newtonsoft.Json;
 
 namespace Mess.OrchardCore.Json;
@@ -15,7 +16,7 @@ public class TimeSpanJsonConverter : JsonConverter<TimeSpan>
     JsonSerializer serializer
   )
   {
-    var timespanFormatted = $"{value.ToString(TimeSpanFormatString)}";
+    var timespanFormatted = $"{value.ToString(TimeSpanFormatString, CultureInfo.InvariantCulture)}";
     writer.WriteValue(timespanFormatted);
   }
 

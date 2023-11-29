@@ -96,8 +96,8 @@ public class DistributionSystemUnitAdminController : Controller
       .Where(index => index.ContentPart == "LegalEntityPart")
       .Where(index => index.SelectedUserId == orchardCoreUser.UserId)
       .FirstOrDefaultAsync();
-    if (
-      !orchardCoreUser.RoleNames.Contains("Administrator")
+
+    return !orchardCoreUser.RoleNames.Contains("Administrator")
       && !(
         orchardCoreUser.RoleNames.Contains(
           "DistributionSystemOperatorRepresentative"
@@ -125,12 +125,8 @@ public class DistributionSystemUnitAdminController : Controller
         && index.DistributionSystemUnitContentItemId
           == legalEntityItem.ContentItemId
       )
-    )
-    {
-      return Forbid();
-    }
-
-    return View(
+      ? Forbid()
+      : View(
       new DistributionSystemUnitDetailViewModel { ContentItem = contentItem }
     );
   }

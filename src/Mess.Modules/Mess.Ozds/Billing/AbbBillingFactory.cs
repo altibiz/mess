@@ -10,27 +10,27 @@ public class AbbBillingFactory : OzdsBillingFactory<AbbIotDeviceItem>
 {
   protected override OzdsBillingData? FetchBillingData(
     AbbIotDeviceItem measurementDeviceItem,
-    DateTimeOffset from,
-    DateTimeOffset to
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
   )
   {
     return _query.GetAbbBillingData(
       measurementDeviceItem.IotDevicePart.Value.DeviceId.Text,
-      from,
-      to
+      fromDate,
+      toDate
     );
   }
 
   protected override async Task<OzdsBillingData?> FetchBillingDataAsync(
     AbbIotDeviceItem measurementDeviceItem,
-    DateTimeOffset from,
-    DateTimeOffset to
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
   )
   {
     return await _query.GetAbbBillingDataAsync(
       measurementDeviceItem.IotDevicePart.Value.DeviceId.Text,
-      from,
-      to
+      fromDate,
+      toDate
     );
   }
 

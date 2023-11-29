@@ -10,7 +10,7 @@ public static class IServiceCollectionExtensions
   public static void AddOrchardCoreShellSettings(
     this IServiceCollection services
   ) =>
-    services.AddTransient<ShellSettings>(services =>
+    services.AddTransient(services =>
     {
       var testId = services.GetTestId();
 

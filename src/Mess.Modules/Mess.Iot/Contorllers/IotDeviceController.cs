@@ -138,15 +138,12 @@ public class IotDeviceController : Controller
       contentItem
     );
 
-    if (response is null)
-    {
-      return StatusCode(
+    return response is null
+      ? StatusCode(
         500,
         $"Handler for {contentItem.ContentType} returned null"
-      );
-    }
-
-    return Ok(response);
+      )
+      : (IActionResult)Ok(response);
   }
 
   public IotDeviceController(

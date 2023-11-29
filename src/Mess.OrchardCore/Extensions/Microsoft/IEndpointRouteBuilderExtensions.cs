@@ -95,7 +95,7 @@ public static class IEndpointRouteBuilderExtensions
     var type = typeof(T);
     var module =
       (type.Namespace
-      ?? throw new NullReferenceException(
+      ?? throw new InvalidOperationException(
         $"Type '{typeof(T).Name}' is not in a namespace"
       )).RegexRemove(@"\.Controllers$");
     var controller = type.ControllerName();

@@ -18,14 +18,14 @@ public class EorChartProvider : ChartFactory<EorIotDeviceItem>
     };
 
   protected override async Task<TimeseriesChartDescriptor?> CreateTimeseriesChartAsync(
-    EorIotDeviceItem eorIotDevice,
+    EorIotDeviceItem metadata,
     TimeseriesChartItem chart,
     IEnumerable<TimeseriesChartDatasetItem> datasets
   )
   {
     var now = DateTimeOffset.UtcNow;
     var (statuses, measurements) = await _client.GetEorDataAsync(
-      eorIotDevice.IotDevicePart.Value.DeviceId.Text,
+      metadata.IotDevicePart.Value.DeviceId.Text,
       now.Subtract(chart.TimeseriesChartPart.Value.History.Value.ToTimeSpan()),
       now
     );
@@ -45,15 +45,15 @@ public class EorChartProvider : ChartFactory<EorIotDeviceItem>
             new TimeseriesChartDatasetDescriptor(
               Label: dataset.TimeseriesChartDatasetPart.Value.Label.Text,
               Color: dataset.TimeseriesChartDatasetPart.Value.Color.Value,
-              Datapoints: (
+              Datapoints: 
                 (
                   ContainsTimeseriesProperty<EorStatus>(
                     dataset.TimeseriesChartDatasetPart.Value.Property
                   )
-                    ? statuses as IEnumerable<object>
+                    ? statuses 
                     : measurements as IEnumerable<object>
                 )
-              )
+              
                 .Select(
                   measurement =>
                     new TimeseriesChartDatapointDescriptor(

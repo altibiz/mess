@@ -39,11 +39,11 @@ public static partial class StringRegexExtensions
     pattern.IsMatch(str);
 
   public static bool RegexMatch(this string str, string pattern) =>
-    (new Regex(pattern)).IsMatch(str);
+    new Regex(pattern).IsMatch(str);
 
   public static bool RegexMatch(
     this string str,
     string pattern,
     RegexOptions options
-  ) => (new Regex(pattern, options)).IsMatch(str);
+  ) => new Regex(pattern, options).IsMatch(str);
 }

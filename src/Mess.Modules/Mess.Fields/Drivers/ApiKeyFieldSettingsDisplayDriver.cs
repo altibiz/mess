@@ -10,29 +10,29 @@ namespace OrchardCore.ContentFields.Settings
     : ContentPartFieldDefinitionDisplayDriver<ApiKeyField>
   {
     public override IDisplayResult Edit(
-      ContentPartFieldDefinition partFieldDefinition
+      ContentPartFieldDefinition model
     )
     {
       return Initialize<ApiKeyFieldSettings>(
           "ApiKeyFieldSettings_Edit",
-          model => partFieldDefinition.PopulateSettings(model)
+          model => model.PopulateSettings(model)
         )
         .Location("Content");
     }
 
     public override async Task<IDisplayResult> UpdateAsync(
-      ContentPartFieldDefinition partFieldDefinition,
+      ContentPartFieldDefinition model,
       UpdatePartFieldEditorContext context
     )
     {
-      var model = new ApiKeyFieldSettings();
+      var settings = new ApiKeyFieldSettings();
 
-      if (await context.Updater.TryUpdateModelAsync(model, Prefix))
+      if (await context.Updater.TryUpdateModelAsync(settings, Prefix))
       {
-        context.Builder.WithSettings(model);
+        context.Builder.WithSettings(settings);
       }
 
-      return Edit(partFieldDefinition);
+      return Edit(model);
     }
   }
 }

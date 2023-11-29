@@ -23,20 +23,12 @@ public class StaticDataAttribute : DataAttribute
 
   public override IEnumerable<object[]> GetData(MethodInfo testMethod)
   {
-    var @class = _class ?? testMethod.DeclaringType;
-    if (@class is null)
-    {
-      throw new InvalidOperationException("Couldn't instantiate data");
-    }
+    var @class = (_class ?? testMethod.DeclaringType) ?? throw new InvalidOperationException("Couldn't instantiate data");
 
     var field = @class.GetField(
       _field,
       BindingFlags.Static | BindingFlags.Public
-    );
-    if (field is null)
-    {
-      throw new InvalidOperationException("Couldn't instantiate data");
-    }
+    ) ?? throw new InvalidOperationException("Couldn't instantiate data");
 
     return field.GetValue(_class) switch
     {

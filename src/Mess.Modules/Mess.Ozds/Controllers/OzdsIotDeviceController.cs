@@ -124,8 +124,8 @@ public class OzdsIotDeviceController : Controller
       .Where(index => index.ContentPart == "LegalEntityPart")
       .Where(index => index.SelectedUserId == orchardCoreUser.UserId)
       .FirstOrDefaultAsync();
-    if (
-      !orchardCoreUser.RoleNames.Contains("Administrator")
+
+    return !orchardCoreUser.RoleNames.Contains("Administrator")
       && !(
         orchardCoreUser.RoleNames.Contains(
           "DistributionSystemOperatorRepresentative"
@@ -153,12 +153,8 @@ public class OzdsIotDeviceController : Controller
         && index.DistributionSystemUnitContentItemId
           == legalEntityItem.ContentItemId
       )
-    )
-    {
-      return Forbid();
-    }
-
-    return View(
+      ? Forbid()
+      : View(
       new OzdsIotDeviceDetailViewModel
       {
         ContentItem = contentItem,

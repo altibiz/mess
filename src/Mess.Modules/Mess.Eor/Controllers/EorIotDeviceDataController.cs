@@ -41,12 +41,10 @@ public class EorIotDeviceDataController : Controller
       await _measurementClient.GetEorIotDeviceSummaryAsync(
         eorIotDevice.IotDevicePart.Value.DeviceId.Text
       );
-    if (eorIotDeviceSummary == null)
-    {
-      return NotFound();
-    }
 
-    return Json(
+    return eorIotDeviceSummary == null
+      ? NotFound()
+      : Json(
       new EorIotDeviceDataModel
       {
         Controls = eorIotDevice.EorIotDevicePart.Value.Controls,

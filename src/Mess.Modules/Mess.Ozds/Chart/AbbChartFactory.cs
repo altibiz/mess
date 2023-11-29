@@ -44,14 +44,14 @@ public class AbbChartFactory : ChartFactory<AbbIotDeviceItem>
     };
 
   protected override async Task<TimeseriesChartDescriptor?> CreateTimeseriesChartAsync(
-    AbbIotDeviceItem abbIotDevice,
+    AbbIotDeviceItem metadata,
     TimeseriesChartItem chart,
     IEnumerable<TimeseriesChartDatasetItem> datasets
   )
   {
     var now = DateTimeOffset.UtcNow;
     var measurements = await _client.GetAbbMeasurementsAsync(
-      abbIotDevice.IotDevicePart.Value.DeviceId.Text,
+      metadata.IotDevicePart.Value.DeviceId.Text,
       now.Subtract(chart.TimeseriesChartPart.Value.History.Value.ToTimeSpan()),
       now
     );

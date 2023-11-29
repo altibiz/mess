@@ -37,7 +37,7 @@ public class Startup : StartupBase
   public override void Configure(
     IApplicationBuilder app,
     IEndpointRouteBuilder routes,
-    IServiceProvider services
+    IServiceProvider serviceProvider
   )
   {
     var adminUrlPrefix = app.ApplicationServices

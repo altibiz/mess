@@ -3,7 +3,8 @@ namespace Mess.System.Extensions.Types;
 public static class TypeGetFieldAndPropertyNamesExtensions
 {
   public static IReadOnlyList<string> GetFieldAndPropertyNames<T>(
-    this global::System.Type type
+    this Type type
+
   )
   {
     return type.GetFields()

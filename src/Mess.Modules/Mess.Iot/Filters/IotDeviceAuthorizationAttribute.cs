@@ -10,7 +10,7 @@ namespace Mess.Iot.Filters;
   AttributeTargets.Class | AttributeTargets.Method,
   Inherited = true
 )]
-public class IotDeviceAuthorization : Attribute, IAsyncAuthorizationFilter
+public class IotDeviceAuthorizationAttribute : Attribute, IAsyncAuthorizationFilter
 {
   public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
   {

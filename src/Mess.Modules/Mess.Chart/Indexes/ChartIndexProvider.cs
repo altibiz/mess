@@ -1,3 +1,4 @@
+using System.Globalization;
 using OrchardCore.ContentManagement;
 using YesSql.Indexes;
 
@@ -17,7 +18,7 @@ public class ChartIndexProvider : IndexProvider<ContentItem>
     context
       .For<ChartIndex>()
       // TODO: with stereotype - IScopedIndexProvider, contentTypeDefinitionManager
-      .When(contentItem => contentItem.ContentType.EndsWith("Chart"))
+      .When(contentItem => contentItem.ContentType.EndsWith("Chart", ignoreCase: false, culture: CultureInfo.InvariantCulture))
       .Map(
         contentItem =>
           new ChartIndex

@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using Mess.System.Extensions.Json;
@@ -48,7 +49,7 @@ public static class StreamSerializationExtensions
 
   public static async Task<object?> FromJsonStreamAsync(
     this Stream @this,
-    global::System.Type type,
+    Type type,
     CancellationToken token = default
   ) =>
     await JsonSerializer.DeserializeAsync(
@@ -80,7 +81,8 @@ public static class StreamSerializationExtensions
   public static T? FromXmlStream<T>(this Stream @this)
   {
     var serializer = new XmlSerializer(typeof(T));
-    var result = serializer.Deserialize(@this);
+    var result = serializer.Deserialize(XmlReader.Create(@this));
+
     return result is not null ? (T)result : default;
   }
 

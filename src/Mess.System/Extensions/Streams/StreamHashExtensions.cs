@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Security.Cryptography;
 using HashDepot;
 
@@ -12,7 +13,7 @@ public static class StreamHashExtensions
     byte[] crypto = crypt.ComputeHash(stream);
     foreach (byte theByte in crypto)
     {
-      hash += theByte.ToString("x2");
+      hash += theByte.ToString("x2", CultureInfo.InvariantCulture);
     }
     return hash;
   }
@@ -23,7 +24,7 @@ public static class StreamHashExtensions
     var crypto = MurmurHash3.Hash128(stream, MurMurHashSeed);
     foreach (byte theByte in crypto)
     {
-      hash += theByte.ToString("x2");
+      hash += theByte.ToString("x2", CultureInfo.InvariantCulture);
     }
     return hash;
   }

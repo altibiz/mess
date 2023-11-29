@@ -41,13 +41,10 @@ public class TimeseriesChartDatasetPartDisplayDriver
     string contentType = part.ContentItem.Content.ChartContentType;
     var chartProvider = _serviceProvider
       .GetServices<IChartFactory>()
-      .FirstOrDefault(provider => provider.ContentType == contentType);
-    if (chartProvider == null)
-    {
+      .FirstOrDefault(provider => provider.ContentType == contentType) ??
       throw new NotImplementedException(
         "No chart provider implemented for this content type."
       );
-    }
 
     return Initialize<TimeseriesChartDatasetPartEditViewModel>(
       GetEditorShapeType(context),
@@ -76,13 +73,10 @@ public class TimeseriesChartDatasetPartDisplayDriver
     string contentType = part.ContentItem.Content.ChartContentType;
     var chartProvider = _serviceProvider
       .GetServices<IChartFactory>()
-      .FirstOrDefault(provider => provider.ContentType == contentType);
-    if (chartProvider == null)
-    {
+      .FirstOrDefault(provider => provider.ContentType == contentType) ??
       throw new NotImplementedException(
         "No chart provider implemented for this content type."
       );
-    }
 
     var viewModel = new TimeseriesChartDatasetPartEditViewModel();
 

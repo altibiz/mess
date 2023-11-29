@@ -14,14 +14,14 @@ public class EgaugePushHandler
     string tenant,
     DateTimeOffset timestamp,
     EgaugeIotDeviceItem contentItem,
-    EgaugeMeasurement measurement
+    EgaugeMeasurement request
   ) =>
     _measurementClient.AddEgaugeMeasurement(
-      measurement with
+      request with
       {
-        DeviceId = measurement.DeviceId,
-        Tenant = measurement.Tenant,
-        Timestamp = measurement.Timestamp
+        DeviceId = request.DeviceId,
+        Tenant = request.Tenant,
+        Timestamp = request.Timestamp
       }
     );
 
@@ -30,14 +30,14 @@ public class EgaugePushHandler
     string tenant,
     DateTimeOffset timestamp,
     EgaugeIotDeviceItem contentItem,
-    EgaugeMeasurement measurement
+    EgaugeMeasurement request
   ) =>
     await _measurementClient.AddEgaugeMeasurementAsync(
-      measurement with
+      request with
       {
-        DeviceId = measurement.DeviceId,
-        Tenant = measurement.Tenant,
-        Timestamp = measurement.Timestamp
+        DeviceId = request.DeviceId,
+        Tenant = request.Tenant,
+        Timestamp = request.Timestamp
       }
     );
 

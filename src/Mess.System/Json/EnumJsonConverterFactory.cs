@@ -33,19 +33,11 @@ public class EnumJsonConverterFactory : JsonConverterFactory
       if (reader.TokenType == JsonTokenType.String)
       {
         string enumString = reader.GetString()!;
-        if (string.IsNullOrEmpty(enumString))
-        {
-          return default!;
-        }
-
-        if (int.TryParse(enumString, out int number))
-        {
-          return (T)Enum.ToObject(typeToConvert, number);
-        }
-        else
-        {
-          return (T)Enum.Parse(typeToConvert, enumString, true);
-        }
+        return string.IsNullOrEmpty(enumString)
+          ? default!
+          : int.TryParse(enumString, out int number)
+          ? (T)Enum.ToObject(typeToConvert, number)
+          : (T)Enum.Parse(typeToConvert, enumString, true);
       }
       else if (reader.TokenType == JsonTokenType.Number)
       {

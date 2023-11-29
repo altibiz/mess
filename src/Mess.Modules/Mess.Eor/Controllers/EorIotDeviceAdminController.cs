@@ -96,12 +96,10 @@ public class EorIotDeviceAdminController : Controller
       await _measurementClient.GetEorIotDeviceSummaryAsync(
         eorIotDevice.IotDevicePart.Value.DeviceId.Text
       );
-    if (eorIotDeviceSummary == null)
-    {
-      return NotFound();
-    }
 
-    return View(
+    return eorIotDeviceSummary == null
+      ? NotFound()
+      : View(
       new EorIotDeviceDetailViewModel
       {
         EorIotDeviceItem = eorIotDevice,

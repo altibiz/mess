@@ -26,11 +26,11 @@ public static class IServiceCollectionExtensions
         }
       );
     });
-    services.AddScoped<IDocumentSession>(
+    services.AddScoped(
       services =>
         services.GetRequiredService<IDocumentStore>().LightweightSession()
     );
-    services.AddScoped<IQuerySession>(
+    services.AddScoped(
       services => services.GetRequiredService<IDocumentStore>().QuerySession()
     );
     return services;

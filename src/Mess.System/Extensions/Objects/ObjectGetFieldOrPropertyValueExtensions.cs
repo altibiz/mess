@@ -2,13 +2,13 @@ namespace Mess.System.Extensions.Objects;
 
 public static class ObjectGetFieldOrPropertyValueExtensions
 {
-  public static object? GetFieldOrPropertyValue<O>(
-    this O @this,
+  public static object? GetFieldOrPropertyValue<TObject>(
+    this TObject @this,
     string fieldOrPropertyName
-  ) => GetFieldOrPropertyValue<O, object>(@this, fieldOrPropertyName);
+  ) => GetFieldOrPropertyValue<TObject, object>(@this, fieldOrPropertyName);
 
-  public static T? GetFieldOrPropertyValue<O, T>(
-    this O @this,
+  public static TValue? GetFieldOrPropertyValue<TObject, TValue>(
+    this TObject @this,
     string fieldOrPropertyName
   )
   {
@@ -18,33 +18,29 @@ public static class ObjectGetFieldOrPropertyValueExtensions
     }
 
     var type = @this.GetType();
-    return GetFieldValue<O, T>(@this, type, fieldOrPropertyName);
+    return GetFieldValue<TObject, TValue>(@this, type, fieldOrPropertyName);
   }
 
-  private static T? GetFieldValue<O, T>(
-    this O @this,
-    global::System.Type type,
+  private static TValue? GetFieldValue<TObject, TValue>(
+    this TObject @this,
+    Type type,
     string fieldOrPropertyName
   )
   {
     var field = type.GetField(fieldOrPropertyName);
-    if (field is null || field.FieldType != typeof(T))
+    if (field is null || field.FieldType != typeof(TValue))
     {
-      return GetPropertyValue<O, T>(@this, type, fieldOrPropertyName);
+      return GetPropertyValue<TObject, TValue>(@this, type, fieldOrPropertyName);
     }
 
     var @value = field.GetValue(@this);
-    if (@value is null)
-    {
-      return default;
-    }
 
-    return (T)@value;
+    return @value is null ? default : (TValue)@value;
   }
 
-  private static T? GetPropertyValue<O, T>(
-    this O @this,
-    global::System.Type type,
+  private static TValue? GetPropertyValue<TObject, TValue>(
+    this TObject @this,
+    Type type,
     string fieldOrPropertyName
   )
   {
@@ -55,11 +51,7 @@ public static class ObjectGetFieldOrPropertyValueExtensions
     }
 
     var @value = property.GetValue(@this);
-    if (@value is null)
-    {
-      return default;
-    }
 
-    return (T)@value;
+    return @value is null ? default : (TValue)@value;
   }
 }

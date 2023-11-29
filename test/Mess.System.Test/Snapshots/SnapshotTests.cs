@@ -30,17 +30,17 @@ public record SnapshotTests(ISnapshotFixture SnapshotFixture)
 
   [Theory]
   [StaticData(nameof(MatchesSnapshotData))]
-  public async Task MatchesSnapshot(object @object)
+  public async Task MatchesSnapshot(object snapshot)
   {
-    var verificationHash = await SnapshotFixture.MakeVerificationHash(@object);
-    await SnapshotFixture.Verify(@object, verificationHash);
+    var verificationHash = await SnapshotFixture.MakeVerificationHash(snapshot);
+    await SnapshotFixture.Verify(snapshot, verificationHash);
   }
 
   [Theory]
   [JsonAssetData]
-  public async Task MatchesSnapshotFromJson(SnapshotTestRecord @object)
+  public async Task MatchesSnapshotFromJson(SnapshotTestRecord snapshot)
   {
-    var verificationHash = await SnapshotFixture.MakeVerificationHash(@object);
-    await SnapshotFixture.Verify(@object, verificationHash);
+    var verificationHash = await SnapshotFixture.MakeVerificationHash(snapshot);
+    await SnapshotFixture.Verify(snapshot, verificationHash);
   }
 }

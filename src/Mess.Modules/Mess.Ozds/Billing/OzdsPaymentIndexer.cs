@@ -41,9 +41,9 @@ public class OzdsPaymentIndexer : IPaymentIndexer
 
     var ozdsReceiptPart = contentItem.As<OzdsReceiptPart>();
     var receiptPart = contentItem.As<ReceiptPart>();
-    if (ozdsReceiptPart is not null && receiptPart is not null)
-    {
-      return new PaymentIndex
+
+    return ozdsReceiptPart is not null && receiptPart is not null
+      ? new PaymentIndex
       {
         ContentItemId = contentItem.ContentItemId,
         ContentType = contentItem.ContentType,
@@ -56,10 +56,8 @@ public class OzdsPaymentIndexer : IPaymentIndexer
         RecipientContentItemId = ozdsReceiptPart
           .DistributionSystemUnit
           .ContentItemId,
-      };
-    }
-
-    throw new InvalidOperationException(
+      }
+      : throw new InvalidOperationException(
       $"Payment with content item id '{contentItem.ContentItemId}' not found."
     );
   }

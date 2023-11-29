@@ -10,21 +10,17 @@ public sealed class EventStoreSession
     IDisposable,
     IAsyncDisposable
 {
-  public IDocumentSession Value
-  {
-    get =>
-      _value
+  public IDocumentSession Value => _value
       ?? throw new InvalidOperationException(
         "Session has already been disposed"
       );
-  }
 
   public EventStoreSession(IDocumentStore store, ShellSettings shellSettings)
   {
     _value = store.IdentitySession(shellSettings.GetDatabaseTablePrefix());
   }
 
-  private IDocumentSession? _value = null;
+  private IDocumentSession? _value;
 
   public void Dispose()
   {

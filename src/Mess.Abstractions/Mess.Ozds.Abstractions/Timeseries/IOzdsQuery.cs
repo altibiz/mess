@@ -32,25 +32,25 @@ public interface IOzdsTimeseriesQuery
     IReadOnlyList<SchneiderMeasurement>
   > GetSchneiderMeasurementsAsync(
     string source,
-    DateTimeOffset beginning,
-    DateTimeOffset end
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
   );
 
   public IReadOnlyList<SchneiderMeasurement> GetSchneiderMeasurements(
     string source,
-    DateTimeOffset beginning,
-    DateTimeOffset end
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
   );
 
   public OzdsBillingData? GetSchneiderBillingData(
     string source,
-    DateTimeOffset beginning,
-    DateTimeOffset end
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
   );
 
   public Task<OzdsBillingData?> GetSchneiderBillingDataAsync(
     string source,
-    DateTimeOffset beginning,
-    DateTimeOffset end
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
   );
 }

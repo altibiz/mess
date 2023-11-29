@@ -13,13 +13,10 @@ public static class RazorPageExtensions
   {
     var userService =
       page.Context.RequestServices.GetRequiredService<IUserService>();
+
     var user = await userService.GetAuthenticatedOrchardCoreUserAsync(
       page.User
-    );
-    if (user == null)
-    {
-      throw new UnauthorizedAccessException();
-    }
+    ) ?? throw new UnauthorizedAccessException();
 
     return user;
   }

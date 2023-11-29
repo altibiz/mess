@@ -81,8 +81,8 @@ public class ClosedDistributionSystemController : Controller
       .Where(index => index.ContentPart == "LegalEntityPart")
       .Where(index => index.SelectedUserId == orchardCoreUser.UserId)
       .FirstOrDefaultAsync();
-    if (
-      !orchardCoreUser.RoleNames.Contains("Administrator")
+
+    return !orchardCoreUser.RoleNames.Contains("Administrator")
       && !(
         orchardCoreUser.RoleNames.Contains(
           "DistributionSystemOperatorRepresentative"
@@ -101,12 +101,8 @@ public class ClosedDistributionSystemController : Controller
         && index.ClosedDistributionSystemContentItemId
           == legalEntityItem.ContentItemId
       )
-    )
-    {
-      return Forbid();
-    }
-
-    return View(
+      ? Forbid()
+      : View(
       new ClosedDistributionSystemDetailViewModel { ContentItem = contentItem }
     );
   }

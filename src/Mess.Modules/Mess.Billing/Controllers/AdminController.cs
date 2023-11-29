@@ -85,14 +85,12 @@ public class AdminController : Controller
           {
             InvoiceItem = contentItem,
             ReceiptItem = contentItems
-              .Where(
-                contentItem =>
+.FirstOrDefault(contentItem =>
                   contentItem.Has<ReceiptPart>()
                   && contentItem
                     .As<ReceiptPart>()
                     .Invoice.ContentItemIds.Contains(contentItem.ContentItemId)
-              )
-              .FirstOrDefault()
+)
           }
       )
       .ToList();
@@ -129,14 +127,10 @@ public class AdminController : Controller
 
     var billingFactory = _serviceProvider
       .GetServices<IBillingFactory>()
-      .Where(factory => factory.IsApplicable(billingItem))
-      .FirstOrDefault();
-    if (billingFactory == null)
-    {
+.FirstOrDefault(factory => factory.IsApplicable(billingItem)) ??
       throw new NotImplementedException(
         $"No receipt factory for {billingItem.ContentType}"
       );
-    }
 
     (DateTimeOffset nowLastMonthStart, DateTimeOffset nowLastMonthEnd) =
       DateTimeOffset.UtcNow.GetMonthRange();
@@ -212,14 +206,10 @@ public class AdminController : Controller
 
     var receiptFactory = _serviceProvider
       .GetServices<IBillingFactory>()
-      .Where(factory => factory.IsApplicable(billingItem))
-      .FirstOrDefault();
-    if (receiptFactory == null)
-    {
+.FirstOrDefault(factory => factory.IsApplicable(billingItem)) ??
       throw new NotImplementedException(
         $"No receipt factory for {billingItem.ContentType}"
       );
-    }
 
     var receiptItem = await receiptFactory.CreateReceiptAsync(
       contentItem: billingItem,

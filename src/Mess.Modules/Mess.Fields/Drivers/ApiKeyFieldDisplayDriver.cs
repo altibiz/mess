@@ -15,16 +15,16 @@ public class ApiKeyFieldDisplayDriver : ContentFieldDisplayDriver<ApiKeyField>
 {
   public override IDisplayResult Display(
     ApiKeyField field,
-    BuildFieldDisplayContext context
+    BuildFieldDisplayContext fieldDisplayContext
   )
   {
     return Initialize<ApiKeyFieldViewModel>(
-        GetDisplayShapeType(context),
+        GetDisplayShapeType(fieldDisplayContext),
         model =>
         {
           model.Field = field;
-          model.Part = context.ContentPart;
-          model.PartFieldDefinition = context.PartFieldDefinition;
+          model.Part = fieldDisplayContext.ContentPart;
+          model.PartFieldDefinition = fieldDisplayContext.PartFieldDefinition;
         }
       )
       .Location("Detail", "Content")
@@ -58,7 +58,7 @@ public class ApiKeyFieldDisplayDriver : ContentFieldDisplayDriver<ApiKeyField>
 
     if (await updater.TryUpdateModelAsync(viewModel, Prefix, f => f.Value))
     {
-      if (String.IsNullOrWhiteSpace(viewModel.Value))
+      if (string.IsNullOrWhiteSpace(viewModel.Value))
       {
         updater.ModelState.AddModelError(
           Prefix,

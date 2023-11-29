@@ -6,7 +6,7 @@ using Mess.Event.Test.Abstractions.Extensions;
 
 namespace Mess.Event.Test;
 
-public class Startup : Mess.OrchardCore.Test.Startup
+public class Startup : OrchardCore.Test.Startup
 {
   public override void ConfigureServices(
     IServiceCollection services,

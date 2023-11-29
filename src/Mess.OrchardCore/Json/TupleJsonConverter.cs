@@ -37,8 +37,8 @@ public sealed class TupleJsonConverter : JsonConverter
 
   public override object? ReadJson(
     JsonReader reader,
-    Type type,
-    object? _,
+    Type objectType,
+    object? existingValue,
     JsonSerializer serializer
   )
   {
@@ -48,7 +48,7 @@ public sealed class TupleJsonConverter : JsonConverter
 
       // Tuples have 7 elements max., 8th must be another tuple
       var genericsStack = new Stack<Type[]>();
-      var generics = type.GetGenericArguments();
+      var generics = objectType.GetGenericArguments();
       genericsStack.Push(generics);
       while (
         generics.Length > 7 && typeof(ITuple).IsAssignableFrom(generics[7])
@@ -60,7 +60,7 @@ public sealed class TupleJsonConverter : JsonConverter
 
       // Check generics length against tuple length
       if (
-        (genericsStack.Count - 1) * 7 + genericsStack.Peek().Length
+        ((genericsStack.Count - 1) * 7) + genericsStack.Peek().Length
         != arr.Count
       )
       {
@@ -76,7 +76,7 @@ public sealed class TupleJsonConverter : JsonConverter
       // deserialize tuples from inside do outside
       foreach (var chunk in genericsStack)
       {
-        var tupleType = GetTupleTypeDefinition(type, chunk.Length);
+        var tupleType = GetTupleTypeDefinition(objectType, chunk.Length);
 
         var args = new object?[chunk.Length];
 
@@ -115,9 +115,8 @@ public sealed class TupleJsonConverter : JsonConverter
 
   private static Type GetTupleTypeDefinition(Type objectType, int elementCount)
   {
-    if (objectType.IsValueType)
-    {
-      return elementCount switch
+    return objectType.IsValueType
+      ? elementCount switch
       {
         8 => typeof(ValueTuple<,,,,,,,>),
         7 => typeof(ValueTuple<,,,,,,>),
@@ -128,11 +127,9 @@ public sealed class TupleJsonConverter : JsonConverter
         2 => typeof(ValueTuple<,>),
         1 => typeof(ValueTuple<>),
         0 => typeof(ValueTuple),
-        _ => throw new IndexOutOfRangeException(),
-      };
-    }
-
-    return elementCount switch
+        _ => throw new InvalidOperationException(),
+      }
+      : elementCount switch
     {
       8 => typeof(Tuple<,,,,,,,>),
       7 => typeof(Tuple<,,,,,,>),
@@ -142,7 +139,7 @@ public sealed class TupleJsonConverter : JsonConverter
       3 => typeof(Tuple<,,>),
       2 => typeof(Tuple<,>),
       1 => typeof(Tuple<>),
-      _ => throw new IndexOutOfRangeException(),
+      _ => throw new InvalidOperationException(),
     };
   }
 }

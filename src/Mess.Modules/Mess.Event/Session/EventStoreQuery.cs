@@ -11,19 +11,15 @@ public sealed class EventStoreQuery
     IDisposable,
     IAsyncDisposable
 {
-  public IQuerySession Value
-  {
-    get =>
-      _value
+  public IQuerySession Value => _value
       ?? throw new InvalidOperationException("Query has already been disposed");
-  }
 
   public EventStoreQuery(IDocumentStore store, ShellSettings shellSettings)
   {
     _value = store.QuerySession(shellSettings.GetDatabaseTablePrefix());
   }
 
-  private IQuerySession? _value = null;
+  private IQuerySession? _value;
 
   public void Dispose()
   {

@@ -25,8 +25,8 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
 
   public IReadOnlyList<AbbMeasurement> GetAbbMeasurements(
     string source,
-    DateTimeOffset beginning,
-    DateTimeOffset end
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
   ) =>
     _services.WithTimeseriesDbContext<
       OzdsTimeseriesDbContext,
@@ -35,8 +35,8 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
     {
       return context.AbbMeasurements
         .Where(measurement => measurement.Source == source)
-        .Where(measurement => measurement.Timestamp > beginning)
-        .Where(measurement => measurement.Timestamp < end)
+        .Where(measurement => measurement.Timestamp > fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
         .OrderBy(measurement => measurement.Timestamp)
         .Select(measurement => measurement.ToModel())
         .ToList();
@@ -44,8 +44,8 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
 
   public async Task<IReadOnlyList<AbbMeasurement>> GetAbbMeasurementsAsync(
     string source,
-    DateTimeOffset beginning,
-    DateTimeOffset end
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
   ) =>
     await _services.WithTimeseriesDbContextAsync<
       OzdsTimeseriesDbContext,
@@ -54,8 +54,8 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
     {
       return await context.AbbMeasurements
         .Where(measurement => measurement.Source == source)
-        .Where(measurement => measurement.Timestamp > beginning)
-        .Where(measurement => measurement.Timestamp < end)
+        .Where(measurement => measurement.Timestamp > fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
         .OrderBy(measurement => measurement.Timestamp)
         .Select(measurement => measurement.ToModel())
         .ToListAsync();
@@ -63,8 +63,8 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
 
   public OzdsBillingData? GetAbbBillingData(
     string source,
-    DateTimeOffset beginning,
-    DateTimeOffset end
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
   )
   {
     return _services.WithTimeseriesDbContext<
@@ -74,8 +74,8 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
     {
       var firstQuery = context.AbbMeasurements
         .Where(measurement => measurement.Source == source)
-        .Where(measurement => measurement.Timestamp > beginning)
-        .Where(measurement => measurement.Timestamp < end)
+        .Where(measurement => measurement.Timestamp > fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
         .Where(
           measurement =>
             measurement.ActiveEnergyImportTotal_kWh != null
@@ -87,8 +87,8 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
 
       var lastQuery = context.AbbMeasurements
         .Where(measurement => measurement.Source == source)
-        .Where(measurement => measurement.Timestamp > beginning)
-        .Where(measurement => measurement.Timestamp < end)
+        .Where(measurement => measurement.Timestamp > fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
         .Where(
           measurement =>
             measurement.ActiveEnergyImportTotal_kWh != null
@@ -100,8 +100,8 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
 
       var peakQuery = context.AbbMeasurements
         .Where(measurement => measurement.Source == source)
-        .Where(measurement => measurement.Timestamp > beginning)
-        .Where(measurement => measurement.Timestamp < end)
+        .Where(measurement => measurement.Timestamp > fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
         .Where(measurement => measurement.ActivePowerTotal_W != null)
         .GroupBy(measurement => measurement.Milliseconds / (1000 * 60 * 15))
         .Select(
@@ -120,12 +120,9 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
       var last = lastQuery.FutureValue().Value;
       var peak = peakQuery.FutureValue().Value;
 
-      if (first is null || last is null || peak is null)
-      {
-        return null;
-      }
-
-      return new OzdsBillingData(
+      return first is null || last is null || peak is null
+        ? null
+        : new OzdsBillingData(
         StartEnergyTotal_kWh: (decimal)first.ActiveEnergyImportTotal_kWh!,
         EndEnergyTotal_kWh: (decimal)last.ActiveEnergyExportTotal_kWh!,
         StartHighTariffEnergy_kWh: (decimal)
@@ -140,8 +137,8 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
 
   public async Task<OzdsBillingData?> GetAbbBillingDataAsync(
     string source,
-    DateTimeOffset beginning,
-    DateTimeOffset end
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
   )
   {
     return await _services.WithTimeseriesDbContextAsync<
@@ -151,8 +148,8 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
     {
       var firstQuery = context.AbbMeasurements
         .Where(measurement => measurement.Source == source)
-        .Where(measurement => measurement.Timestamp > beginning)
-        .Where(measurement => measurement.Timestamp < end)
+        .Where(measurement => measurement.Timestamp > fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
         .Where(
           measurement =>
             measurement.ActiveEnergyImportTotal_kWh != null
@@ -164,8 +161,8 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
 
       var lastQuery = context.AbbMeasurements
         .Where(measurement => measurement.Source == source)
-        .Where(measurement => measurement.Timestamp > beginning)
-        .Where(measurement => measurement.Timestamp < end)
+        .Where(measurement => measurement.Timestamp > fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
         .Where(
           measurement =>
             measurement.ActiveEnergyImportTotal_kWh != null
@@ -177,8 +174,8 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
 
       var peakQuery = context.AbbMeasurements
         .Where(measurement => measurement.Source == source)
-        .Where(measurement => measurement.Timestamp > beginning)
-        .Where(measurement => measurement.Timestamp < end)
+        .Where(measurement => measurement.Timestamp > fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
         .Where(measurement => measurement.ActivePowerTotal_W != null)
         .GroupBy(measurement => measurement.Milliseconds / (1000 * 60 * 15))
         .Select(
@@ -197,12 +194,9 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
       var last = await lastQuery.FutureValue().ValueAsync();
       var peak = await peakQuery.FutureValue().ValueAsync();
 
-      if (first is null || last is null || peak is null)
-      {
-        return null;
-      }
-
-      return new OzdsBillingData(
+      return first is null || last is null || peak is null
+        ? null
+        : new OzdsBillingData(
         StartEnergyTotal_kWh: (decimal)first.ActiveEnergyImportTotal_kWh!,
         EndEnergyTotal_kWh: (decimal)last.ActiveEnergyExportTotal_kWh!,
         StartHighTariffEnergy_kWh: (decimal)
@@ -231,8 +225,8 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
 
   public IReadOnlyList<SchneiderMeasurement> GetSchneiderMeasurements(
     string source,
-    DateTimeOffset beginning,
-    DateTimeOffset end
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
   ) =>
     _services.WithTimeseriesDbContext<
       OzdsTimeseriesDbContext,
@@ -241,8 +235,8 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
     {
       return context.SchneiderMeasurements
         .Where(measurement => measurement.Source == source)
-        .Where(measurement => measurement.Timestamp > beginning)
-        .Where(measurement => measurement.Timestamp < end)
+        .Where(measurement => measurement.Timestamp > fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
         .OrderBy(measurement => measurement.Timestamp)
         .Select(measurement => measurement.ToModel())
         .ToList();
@@ -252,8 +246,8 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
     IReadOnlyList<SchneiderMeasurement>
   > GetSchneiderMeasurementsAsync(
     string source,
-    DateTimeOffset beginning,
-    DateTimeOffset end
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
   ) =>
     await _services.WithTimeseriesDbContextAsync<
       OzdsTimeseriesDbContext,
@@ -262,8 +256,8 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
     {
       return await context.SchneiderMeasurements
         .Where(measurement => measurement.Source == source)
-        .Where(measurement => measurement.Timestamp > beginning)
-        .Where(measurement => measurement.Timestamp < end)
+        .Where(measurement => measurement.Timestamp > fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
         .OrderBy(measurement => measurement.Timestamp)
         .Select(measurement => measurement.ToModel())
         .ToListAsync();
@@ -271,8 +265,8 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
 
   public OzdsBillingData? GetSchneiderBillingData(
     string source,
-    DateTimeOffset beginning,
-    DateTimeOffset end
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
   )
   {
     return _services.WithTimeseriesDbContext<
@@ -282,8 +276,8 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
     {
       var firstQuery = context.AbbMeasurements
         .Where(measurement => measurement.Source == source)
-        .Where(measurement => measurement.Timestamp > beginning)
-        .Where(measurement => measurement.Timestamp < end)
+        .Where(measurement => measurement.Timestamp > fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
         .Where(
           measurement =>
             measurement.ActiveEnergyImportTotal_kWh != null
@@ -295,8 +289,8 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
 
       var lastQuery = context.AbbMeasurements
         .Where(measurement => measurement.Source == source)
-        .Where(measurement => measurement.Timestamp > beginning)
-        .Where(measurement => measurement.Timestamp < end)
+        .Where(measurement => measurement.Timestamp > fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
         .Where(
           measurement =>
             measurement.ActiveEnergyImportTotal_kWh != null
@@ -308,8 +302,8 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
 
       var peakQuery = context.AbbMeasurements
         .Where(measurement => measurement.Source == source)
-        .Where(measurement => measurement.Timestamp > beginning)
-        .Where(measurement => measurement.Timestamp < end)
+        .Where(measurement => measurement.Timestamp > fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
         .Where(measurement => measurement.ActivePowerTotal_W != null)
         .GroupBy(measurement => measurement.Milliseconds / (1000 * 60 * 15))
         .Select(
@@ -328,12 +322,9 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
       var last = lastQuery.FutureValue().Value;
       var peak = peakQuery.FutureValue().Value;
 
-      if (first is null || last is null || peak is null)
-      {
-        return null;
-      }
-
-      return new OzdsBillingData(
+      return first is null || last is null || peak is null
+        ? null
+        : new OzdsBillingData(
         StartEnergyTotal_kWh: (decimal)first.ActiveEnergyImportTotal_kWh!,
         EndEnergyTotal_kWh: (decimal)last.ActiveEnergyExportTotal_kWh!,
         StartHighTariffEnergy_kWh: (decimal)
@@ -348,8 +339,8 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
 
   public async Task<OzdsBillingData?> GetSchneiderBillingDataAsync(
     string source,
-    DateTimeOffset beginning,
-    DateTimeOffset end
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
   )
   {
     return await _services.WithTimeseriesDbContextAsync<
@@ -359,8 +350,8 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
     {
       var firstQuery = context.AbbMeasurements
         .Where(measurement => measurement.Source == source)
-        .Where(measurement => measurement.Timestamp > beginning)
-        .Where(measurement => measurement.Timestamp < end)
+        .Where(measurement => measurement.Timestamp > fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
         .Where(
           measurement =>
             measurement.ActiveEnergyImportTotal_kWh != null
@@ -372,8 +363,8 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
 
       var lastQuery = context.AbbMeasurements
         .Where(measurement => measurement.Source == source)
-        .Where(measurement => measurement.Timestamp > beginning)
-        .Where(measurement => measurement.Timestamp < end)
+        .Where(measurement => measurement.Timestamp > fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
         .Where(
           measurement =>
             measurement.ActiveEnergyImportTotal_kWh != null
@@ -385,8 +376,8 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
 
       var peakQuery = context.AbbMeasurements
         .Where(measurement => measurement.Source == source)
-        .Where(measurement => measurement.Timestamp > beginning)
-        .Where(measurement => measurement.Timestamp < end)
+        .Where(measurement => measurement.Timestamp > fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
         .Where(measurement => measurement.ActivePowerTotal_W != null)
         .GroupBy(measurement => measurement.Milliseconds / (1000 * 60 * 15))
         .Select(
@@ -405,12 +396,9 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
       var last = await lastQuery.FutureValue().ValueAsync();
       var peak = await peakQuery.FutureValue().ValueAsync();
 
-      if (first is null || last is null || peak is null)
-      {
-        return null;
-      }
-
-      return new OzdsBillingData(
+      return first is null || last is null || peak is null
+        ? null
+        : new OzdsBillingData(
         StartEnergyTotal_kWh: (decimal)first.ActiveEnergyImportTotal_kWh!,
         EndEnergyTotal_kWh: (decimal)last.ActiveEnergyExportTotal_kWh!,
         StartHighTariffEnergy_kWh: (decimal)

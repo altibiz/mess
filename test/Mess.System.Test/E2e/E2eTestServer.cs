@@ -94,7 +94,7 @@ internal class E2eTestServer : IAsyncDisposable, IDisposable
 
     process.Start();
 
-    token.Register(() => process.Kill());
+    token.Register(process.Kill);
 
     try
     {

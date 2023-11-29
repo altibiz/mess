@@ -50,12 +50,9 @@ public class EorIotDeviceControlsController : Controller
     );
     await _contentManager.UpdateAsync(eorIotDevice);
 
-    if (returnUrl is not null)
-    {
-      return Redirect(returnUrl);
-    }
-
-    return RedirectToAction(
+    return returnUrl is not null
+      ? Redirect(returnUrl)
+      : RedirectToAction(
       nameof(EorIotDeviceController.Detail),
       nameof(EorIotDeviceController),
       new {  contentItemId }
@@ -97,12 +94,9 @@ public class EorIotDeviceControlsController : Controller
     );
     await _contentManager.UpdateAsync(eorIotDevice);
 
-    if (returnUrl is not null)
-    {
-      return Redirect(returnUrl);
-    }
-
-    return RedirectToAction(
+    return returnUrl is not null
+      ? Redirect(returnUrl)
+      : RedirectToAction(
       nameof(EorIotDeviceController.Detail),
       nameof(EorIotDeviceController),
       new {  contentItemId }
@@ -144,12 +138,9 @@ public class EorIotDeviceControlsController : Controller
     );
     await _contentManager.UpdateAsync(eorIotDevice);
 
-    if (returnUrl is not null)
-    {
-      return Redirect(returnUrl);
-    }
-
-    return RedirectToAction(
+    return returnUrl is not null
+      ? Redirect(returnUrl)
+      : RedirectToAction(
       nameof(EorIotDeviceController.Detail),
       nameof(EorIotDeviceController),
       new {  contentItemId }
@@ -192,12 +183,9 @@ public class EorIotDeviceControlsController : Controller
     );
     await _contentManager.UpdateAsync(eorIotDevice);
 
-    if (returnUrl is not null)
-    {
-      return Redirect(returnUrl);
-    }
-
-    return RedirectToAction(
+    return returnUrl is not null
+      ? Redirect(returnUrl)
+      : RedirectToAction(
       nameof(EorIotDeviceController.Detail),
       nameof(EorIotDeviceController),
       new {  contentItemId }
@@ -240,12 +228,9 @@ public class EorIotDeviceControlsController : Controller
     );
     await _contentManager.UpdateAsync(eorIotDevice);
 
-    if (returnUrl is not null)
-    {
-      return Redirect(returnUrl);
-    }
-
-    return RedirectToAction(
+    return returnUrl is not null
+      ? Redirect(returnUrl)
+      : RedirectToAction(
       nameof(EorIotDeviceController.Detail),
       nameof(EorIotDeviceController),
       new { contentItemId }

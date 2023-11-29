@@ -15,9 +15,9 @@ public sealed class SnapshotFixture : ISnapshotFixture, IDisposable, IAsyncDispo
     return Task.FromResult(verificationHash);
   }
 
-  public async Task Verify(object? @object, string verificationHash)
+  public async Task Verify(object? snapshot, string verificationHash)
   {
-    await Verifier.Verify(@object).UseTextForParameters(verificationHash);
+    await Verifier.Verify(snapshot).UseTextForParameters(verificationHash);
   }
 
   void IDisposable.Dispose()
@@ -33,19 +33,14 @@ public sealed class SnapshotFixture : ISnapshotFixture, IDisposable, IAsyncDispo
 
   private static string MakeParameterHash(params object?[]? parameters)
   {
-    if (parameters is null or { Length: 0 })
-    {
-      return "empty-parameters";
-    }
-    else
-    {
-      return parameters
+    return parameters is null or { Length: 0 }
+      ? "empty-parameters"
+      : parameters
         .Select(
           argument =>
             new { Type = argument?.GetType()?.FullName, Argument = argument }
         )
         .GetJsonMurMurHash();
-    }
   }
 
   public SnapshotFixture(

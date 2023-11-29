@@ -9,12 +9,9 @@ public static class TypeHasFieldOrPropertyValueExtensions
     string fieldOrPropertyName
   )
   {
-    if (@this is null)
-    {
-      throw new ArgumentNullException(nameof(@this));
-    }
-
-    return @this.GetField(fieldOrPropertyName) switch
+    return @this is null
+      ? throw new ArgumentNullException(nameof(@this))
+      : @this.GetField(fieldOrPropertyName) switch
     {
       FieldInfo field => field.FieldType == typeof(T),
       _

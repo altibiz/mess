@@ -47,7 +47,7 @@ public class JsonAssetDataAttribute : DataAttribute
       2 => typeof(ValueTuple<,>),
       1 => typeof(ValueTuple<>),
       0 => typeof(ValueTuple),
-      _ => throw new IndexOutOfRangeException("Couldn't instantiate data")
+      _ => throw new InvalidOperationException("Couldn't instantiate data")
     };
     var type = typeof(IEnumerable<>).MakeGenericType(
       tupleType.MakeGenericType(
@@ -58,16 +58,10 @@ public class JsonAssetDataAttribute : DataAttribute
     var id = _id;
     if (id is null)
     {
-      var declaringType = testMethod.DeclaringType;
-      if (declaringType is null)
-      {
-        throw new InvalidOperationException("Couldn't instantiate data");
-      }
-      var @namespace = declaringType.Namespace;
-      if (@namespace is null)
-      {
-        throw new InvalidOperationException("Couldn't instantiate data");
-      }
+      var declaringType = testMethod.DeclaringType ?? throw new InvalidOperationException("Couldn't instantiate data");
+
+      var @namespace = declaringType.Namespace ?? throw new InvalidOperationException("Couldn't instantiate data");
+
       var assetNamespace = @namespace.TrimStart(assemblyName).Trim(".");
       id = $"{assetNamespace}.{declaringType.Name}.{testMethod.Name}";
     }
@@ -77,12 +71,10 @@ public class JsonAssetDataAttribute : DataAttribute
       type,
       assembly
     );
-    if (resource is  not System.Collections.IEnumerable castedResource)
-    {
-      throw new InvalidOperationException("Couldn't instantiate data");
-    }
 
-    return castedResource
+    return resource is  not System.Collections.IEnumerable castedResource
+      ? throw new InvalidOperationException("Couldn't instantiate data")
+      : castedResource
       .Cast<ITuple>()
       .Select(parameters => parameters.ToEnumerable().ToArray());
   }

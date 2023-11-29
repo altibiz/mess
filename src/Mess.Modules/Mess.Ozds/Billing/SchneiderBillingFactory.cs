@@ -11,27 +11,27 @@ public class SchneiderBillingFactory
 {
   protected override OzdsBillingData? FetchBillingData(
     SchneiderIotDeviceItem measurementDeviceItem,
-    DateTimeOffset from,
-    DateTimeOffset to
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
   )
   {
     return _query.GetSchneiderBillingData(
       measurementDeviceItem.IotDevicePart.Value.DeviceId.Text,
-      from,
-      to
+      fromDate,
+      toDate
     );
   }
 
   protected override async Task<OzdsBillingData?> FetchBillingDataAsync(
     SchneiderIotDeviceItem measurementDeviceItem,
-    DateTimeOffset from,
-    DateTimeOffset to
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
   )
   {
     return await _query.GetSchneiderBillingDataAsync(
       measurementDeviceItem.IotDevicePart.Value.DeviceId.Text,
-      from,
-      to
+      fromDate,
+      toDate
     );
   }
 

@@ -75,15 +75,12 @@ public class ListJsonConverter : JsonConverter
       throw new JsonSerializationException("Expected a string or start array");
     }
 
-    if (objectType.IsArray)
-    {
-      return typeof(Enumerable)
+    return objectType.IsArray
+      ? typeof(Enumerable)
         .GetMethod(nameof(Enumerable.ToArray))!
         .MakeGenericMethod(itemType)
-        .Invoke(null, new object[] { result });
-    }
-
-    return result;
+        .Invoke(null, new object[] { result })
+      : result;
   }
 
   public override void WriteJson(
