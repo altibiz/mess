@@ -1,30 +1,101 @@
+[language-server]
+nil = { command = "nil" }
+taplo = { command = "taplo", args = ["lsp", "stdio"] }
+yaml-language-server = { command = "yaml-language-server", args = ["--stdio"] }
+marksman = { command = "marksman", args = ["server"] }
+
+[language-server.omnisharp]
+command = "OmniSharp"
+args = ["-lsp"]
+timeout = 10000
+
+[language-server.typescript-language-server]
+command = "typescript-language-server"
+args = ["--stdio"]
+config.hostInfo = "helix"
+
+[language-server.vscode-json-language-server]
+command = "vscode-json-language-server"
+args = ["--stdio"]
+
+[language-server.vscode-json-language-server.config]
+provideFormatter = true
+format = { enable = true }
+json = { validate = { enable = true } }
+
+[language-server.vscode-css-language-server]
+command = "vscode-css-language-server"
+args = ["--stdio"]
+
+[language-server.vscode-css-language-server.config]
+provideFormatter = true
+format = { enable = true }
+css = { validate = { enable = true } }
+
+[language-server.vscode-html-language-server]
+command = "vscode-html-language-server"
+args = ["--stdio"]
+
+[language-server.vscode-html-language-server.config]
+provideFormatter = true
+format = { enable = true }
+html = { validate = { enable = true } }
+
 [[language]]
 name = "nix"
 auto-format = true
 formatter = { command = "nixpkgs-fmt" }
+language-servers = ["nil"]
 
 [[language]]
 name = "c-sharp"
-formatter = { command = "dotnet", args = [ "csharpier" ] }
-language-server = { command = "OmniSharp", args = [ "-lsp" ], timeout = 10000 }
+formatter = { command = "dotnet", args = ["csharpier"] }
+language-servers = ["omnisharp"]
 auto-format = true
 
 [[language]]
 name = "typescript"
-formatter = { command = "yarn prettier" }
+formatter = { command = "prettier", args = ["--parser", "typescript"] }
 auto-format = true
+language-servers = ["typescript-language-server"]
 
 [[language]]
 name = "javascript"
 formatter = { command = "yarn prettier" }
 auto-format = true
+language-servers = ["typescript-language-server"]
 
 [[language]]
 name = "css"
-formatter = { command = "yarn prettier" }
+formatter = { command = "prettier", args = ["--parser", "css"] }
 auto-format = true
+language-servers = ["vscode-css-language-server"]
 
 [[language]]
 name = "scss"
-formatter = { command = "yarn prettier" }
+formatter = { command = "prettier", args = ["--parser", "scss"] }
 auto-format = true
+language-servers = ["vscode-css-language-server"]
+
+[[language]]
+name = "toml"
+auto-format = true
+language-servers = ["taplo"]
+
+[[language]]
+name = "yaml"
+auto-format = true
+formatter = { command = "prettier", args = ["--parser", "yaml"] }
+language-servers = ["yaml-language-server"]
+
+[[language]]
+name = "json"
+auto-format = true
+formatter = { command = "prettier", args = ["--parser", "json"] }
+language-servers = ["vscode-json-language-server"]
+
+[[language]]
+name = "markdown"
+auto-format = true
+formatter = { command = "prettier", args = ["--parser", "markdown"] }
+language-servers = ["marksman"]
