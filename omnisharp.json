@@ -27,6 +27,13 @@
       "forImplicitObjectCreation": true
     }
   },
+  "FileOptions": {
+    "excludeSearchPatterns": [
+      "**/node_modules/**/*",
+      "**/obj/**/*",
+      "**/bin/**/*"
+    ]
+  },
   "msbuild": {
     "EnablePackageAutoRestore": true
   }

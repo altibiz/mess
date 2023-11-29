@@ -33,21 +33,21 @@
               });
 
             # TODO: https://github.com/dotnet/sdk/issues/30546
-            csharpier =
-              (pkgs.buildDotnetGlobalTool {
-                pname = "dotnet-csharpier";
-                nugetName = "CSharpier";
-                version = "0.25.0";
-                nugetSha256 = "sha256-7yRDI7vdLTXv0XuUHKUdsIJsqzmw3cidWjmbZ5g5Vvg=";
-                dotnet-sdk = pkgs.dotnetCorePackages.sdk_6_0;
-                dotnet-runtime = pkgs.dotnetCorePackages.sdk_6_0;
-                meta = with pkgs.lib; {
-                  homepage = "https://github.com/belav/csharpier";
-                  changelog = "https://github.com/belav/csharpier/blob/main/CHANGELOG.md";
-                  license = licenses.mit;
-                  platforms = platforms.linux;
-                };
-              });
+            # csharpier =
+            #   (pkgs.buildDotnetGlobalTool {
+            #     pname = "dotnet-csharpier";
+            #     nugetName = "CSharpier";
+            #     version = "0.25.0";
+            #     nugetSha256 = "sha256-7yRDI7vdLTXv0XuUHKUdsIJsqzmw3cidWjmbZ5g5Vvg=";
+            #     dotnet-sdk = pkgs.dotnetCorePackages.sdk_6_0;
+            #     dotnet-runtime = pkgs.dotnetCorePackages.sdk_6_0;
+            #     meta = with pkgs.lib; {
+            #       homepage = "https://github.com/belav/csharpier";
+            #       changelog = "https://github.com/belav/csharpier/blob/main/CHANGELOG.md";
+            #       license = licenses.mit;
+            #       platforms = platforms.linux;
+            #     };
+            #   });
 
             usql = pkgs.writeShellApplication {
               name = "usql";
@@ -66,7 +66,7 @@
             dotnet-sdk
             omnisharp-roslyn
             netcoredbg
-            csharpier
+            # csharpier
 
             # Web
             nodejs
