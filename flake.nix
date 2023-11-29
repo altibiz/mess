@@ -85,6 +85,9 @@
             nodePackages.yaml-language-server
             marksman
             taplo
+
+            # Tools
+            mess
           ];
         };
     };
