@@ -75,3 +75,8 @@ dotnet_diagnostic.IDE0005.severity = none
 # Remove unused private member
 # using private constructors for content item types
 dotnet_diagnostic.IDE0051.severity = none
+
+# https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/style-rules/ide0130
+# Namespace does not match folder structure
+# so what
+dotnet_diagnostic.IDE0130.severity = none
