@@ -53,7 +53,8 @@ public class BillingBackgroundTask : IBackgroundTask
         invoiceItem.Alter<InvoicePart>(invoicePart =>
         {
           invoicePart.Receipt = new();
-          invoicePart.Date = new() {
+          invoicePart.Date = new()
+          {
             Value = DateTime.UtcNow
           };
         });

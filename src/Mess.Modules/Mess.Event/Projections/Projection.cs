@@ -13,64 +13,64 @@ public record class Projection(IServiceProvider Services) : IProjection
     IDocumentOperations operations,
     IReadOnlyList<StreamAction> streams
   )
+{
+  using var scope = Services.CreateScope();
+  var dispatchers = scope.ServiceProvider.GetServices<IEventDispatcher>();
+  var logger = scope.ServiceProvider.GetRequiredService<
+    ILogger<Projection>
+  >();
+
+  var events = new Events(streams);
+
+  foreach (var dispatcher in dispatchers)
   {
-    using var scope = Services.CreateScope();
-    var dispatchers = scope.ServiceProvider.GetServices<IEventDispatcher>();
-    var logger = scope.ServiceProvider.GetRequiredService<
-      ILogger<Projection>
-    >();
-
-    var events = new Events(streams);
-
-    foreach (var dispatcher in dispatchers)
+    try
     {
-      try
-      {
-        dispatcher.Dispatch(scope.ServiceProvider, events);
-      }
-      catch (Exception exception)
-      {
-        logger.LogError(
-          exception,
-          "Error while dispatching events of {}",
-          dispatcher.GetType().Name
-        );
-      }
+      dispatcher.Dispatch(scope.ServiceProvider, events);
+    }
+    catch (Exception exception)
+    {
+      logger.LogError(
+        exception,
+        "Error while dispatching events of {}",
+        dispatcher.GetType().Name
+      );
     }
   }
+}
 
-  public async Task ApplyAsync(
-    IDocumentOperations operations,
-    IReadOnlyList<StreamAction> streams,
-    CancellationToken cancellation
-  )
+public async Task ApplyAsync(
+  IDocumentOperations operations,
+  IReadOnlyList<StreamAction> streams,
+  CancellationToken cancellation
+)
+{
+  await using var scope = Services.CreateAsyncScope();
+  var dispatchers = scope.ServiceProvider.GetServices<IEventDispatcher>();
+  var logger = scope.ServiceProvider.GetRequiredService<
+    ILogger<Projection>
+  >();
+
+  var events = new Events(streams);
+
+  foreach (var dispatcher in dispatchers)
   {
-    await using var scope = Services.CreateAsyncScope();
-    var dispatchers = scope.ServiceProvider.GetServices<IEventDispatcher>();
-    var logger = scope.ServiceProvider.GetRequiredService<
-      ILogger<Projection>
-    >();
-
-    var events = new Events(streams);
-
-    foreach (var dispatcher in dispatchers)
+    try
     {
-      try
-      {
-        await dispatcher.DispatchAsync(
-          scope.ServiceProvider,
-          events,
-          cancellation
-        );
-      }
-      catch (Exception exception)
-      {
-        logger.LogError(
-          exception,
-          "Error while dispatching events of {}",
-          dispatcher.GetType().Name
-        );
-      }
+      await dispatcher.DispatchAsync(
+        scope.ServiceProvider,
+        events,
+        cancellation
+      );
+    }
+    catch (Exception exception)
+    {
+      logger.LogError(
+        exception,
+        "Error while dispatching events of {}",
+        dispatcher.GetType().Name
+      );
     }
   }
+}
 }

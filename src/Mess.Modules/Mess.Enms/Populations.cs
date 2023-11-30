@@ -56,7 +56,8 @@ public class Populations : IPopulation
       await _contentManager.NewContentAsync<EgaugeIotDeviceItem>();
     egaugeIotDevice.Alter(
       egaugeIotDevice => egaugeIotDevice.TitlePart,
-      titlePart => {
+      titlePart =>
+      {
         titlePart.Title = "Egauge";
       }
     );

@@ -12,14 +12,14 @@ public static class TypeHasFieldOrPropertyValueExtensions
     return @this is null
       ? throw new ArgumentNullException(nameof(@this))
       : @this.GetField(fieldOrPropertyName) switch
-    {
-      FieldInfo field => field.FieldType == typeof(T),
-      _
-        => @this.GetProperty(fieldOrPropertyName) switch
-        {
-          PropertyInfo property => property.PropertyType == typeof(T),
-          _ => false
-        }
-    };
+      {
+        FieldInfo field => field.FieldType == typeof(T),
+        _
+          => @this.GetProperty(fieldOrPropertyName) switch
+          {
+            PropertyInfo property => property.PropertyType == typeof(T),
+            _ => false
+          }
+      };
   }
 }

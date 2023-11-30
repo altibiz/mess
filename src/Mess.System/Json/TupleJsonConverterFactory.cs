@@ -144,16 +144,16 @@ public class TupleJsonConverterFactory : JsonConverterFactory
         _ => throw new InvalidOperationException(),
       }
       : elementCount switch
-    {
-      8 => typeof(Tuple<,,,,,,,>),
-      7 => typeof(Tuple<,,,,,,>),
-      6 => typeof(Tuple<,,,,,>),
-      5 => typeof(Tuple<,,,,>),
-      4 => typeof(Tuple<,,,>),
-      3 => typeof(Tuple<,,>),
-      2 => typeof(Tuple<,>),
-      1 => typeof(Tuple<>),
-      _ => throw new InvalidOperationException(),
-    };
+      {
+        8 => typeof(Tuple<,,,,,,,>),
+        7 => typeof(Tuple<,,,,,,>),
+        6 => typeof(Tuple<,,,,,>),
+        5 => typeof(Tuple<,,,,>),
+        4 => typeof(Tuple<,,,>),
+        3 => typeof(Tuple<,,>),
+        2 => typeof(Tuple<,>),
+        1 => typeof(Tuple<>),
+        _ => throw new InvalidOperationException(),
+      };
   }
 }

@@ -45,15 +45,15 @@ public class EorChartProvider : ChartFactory<EorIotDeviceItem>
             new TimeseriesChartDatasetDescriptor(
               Label: dataset.TimeseriesChartDatasetPart.Value.Label.Text,
               Color: dataset.TimeseriesChartDatasetPart.Value.Color.Value,
-              Datapoints: 
+              Datapoints:
                 (
                   ContainsTimeseriesProperty<EorStatus>(
                     dataset.TimeseriesChartDatasetPart.Value.Property
                   )
-                    ? statuses 
+                    ? statuses
                     : measurements as IEnumerable<object>
                 )
-              
+
                 .Select(
                   measurement =>
                     new TimeseriesChartDatapointDescriptor(

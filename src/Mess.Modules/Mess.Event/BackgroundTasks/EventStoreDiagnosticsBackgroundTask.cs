@@ -22,7 +22,7 @@ public class EventStoreDiagnosticsBackgroundTask : IBackgroundTask
     var allProgress = await store.Advanced.AllProjectionProgress(token: cancellationToken);
     foreach (var state in allProgress)
     {
-      logger.LogInformation("{} is at {}", state.ShardName,state.Sequence);
+      logger.LogInformation("{} is at {}", state.ShardName, state.Sequence);
     }
 
     var stats = await store.Advanced.FetchEventStoreStatistics(token: cancellationToken);

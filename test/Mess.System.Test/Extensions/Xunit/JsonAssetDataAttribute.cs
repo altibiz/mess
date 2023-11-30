@@ -72,7 +72,7 @@ public class JsonAssetDataAttribute : DataAttribute
       assembly
     );
 
-    return resource is  not System.Collections.IEnumerable castedResource
+    return resource is not System.Collections.IEnumerable castedResource
       ? throw new InvalidOperationException("Couldn't instantiate data")
       : castedResource
       .Cast<ITuple>()

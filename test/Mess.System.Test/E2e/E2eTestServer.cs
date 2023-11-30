@@ -44,7 +44,7 @@ internal class E2eTestServer : IAsyncDisposable, IDisposable
 
   private static Task MakeServerTask(CancellationToken token)
   {
-    var serverTask = StartTestServer( "http://localhost:5000", token);
+    var serverTask = StartTestServer("http://localhost:5000", token);
     WaitForTestServerToStart("http://localhost:5000", token).Wait(token);
     return serverTask;
   }

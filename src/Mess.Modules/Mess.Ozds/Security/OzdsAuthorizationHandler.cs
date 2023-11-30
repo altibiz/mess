@@ -10,5 +10,6 @@ public class OzdsAuthorizationHandler
   protected override async Task HandleRequirementAsync(
     AuthorizationHandlerContext context,
     PermissionRequirement requirement
-  ) { }
+  )
+  { }
 }

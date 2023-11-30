@@ -55,7 +55,7 @@ public class EorIotDeviceControlsController : Controller
       : RedirectToAction(
       nameof(EorIotDeviceController.Detail),
       nameof(EorIotDeviceController),
-      new {  contentItemId }
+      new { contentItemId }
     );
   }
 
@@ -99,7 +99,7 @@ public class EorIotDeviceControlsController : Controller
       : RedirectToAction(
       nameof(EorIotDeviceController.Detail),
       nameof(EorIotDeviceController),
-      new {  contentItemId }
+      new { contentItemId }
     );
   }
 
@@ -143,7 +143,7 @@ public class EorIotDeviceControlsController : Controller
       : RedirectToAction(
       nameof(EorIotDeviceController.Detail),
       nameof(EorIotDeviceController),
-      new {  contentItemId }
+      new { contentItemId }
     );
   }
 
@@ -188,7 +188,7 @@ public class EorIotDeviceControlsController : Controller
       : RedirectToAction(
       nameof(EorIotDeviceController.Detail),
       nameof(EorIotDeviceController),
-      new {  contentItemId }
+      new { contentItemId }
     );
   }
 

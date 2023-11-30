@@ -10,5 +10,6 @@ public class OzdsIotDeviceListViewModel
     ContentItem ContentItem,
     OzdsIotDevicePart OzdsIotDevicePart,
     IotDevicePart IotDevicePart
-  )> ContentItems { get; set; } = default!;
+  )> ContentItems
+  { get; set; } = default!;
 }

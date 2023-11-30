@@ -51,5 +51,6 @@ public class Startup : StartupBase
     IApplicationBuilder app,
     IEndpointRouteBuilder routes,
     IServiceProvider serviceProvider
-  ) { }
+  )
+  { }
 }

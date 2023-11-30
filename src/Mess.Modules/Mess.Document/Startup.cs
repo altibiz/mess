@@ -22,5 +22,6 @@ public class Startup : StartupBase
     IApplicationBuilder app,
     Microsoft.AspNetCore.Routing.IEndpointRouteBuilder routes,
     IServiceProvider serviceProvider
-  ) { }
+  )
+  { }
 }

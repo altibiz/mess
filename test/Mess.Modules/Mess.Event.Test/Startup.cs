@@ -1,4 +1,4 @@
-﻿using Mess.Event.Abstractions.Client;
+using Mess.Event.Abstractions.Client;
 using Mess.Event.Abstractions.Session;
 using Mess.Event.Client;
 using Mess.Event.Session;

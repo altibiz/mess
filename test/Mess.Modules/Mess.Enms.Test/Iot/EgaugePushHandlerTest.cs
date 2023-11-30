@@ -13,20 +13,20 @@ public record class EgaugePushHandlerTest(
 )
 {
   [Theory]
-  [StaticData(typeof(Assets), nameof(Assets.EgaugeMeasurements))]
-  public void HandleTest(string request, EgaugeMeasurement measurement)
-  {
-    Handler.Handle(
-      measurement.DeviceId,
-      measurement.Tenant,
-      measurement.Timestamp,
-      new ContentItem(),
-      request
-    );
+[StaticData(typeof(Assets), nameof(Assets.EgaugeMeasurements))]
+public void HandleTest(string request, EgaugeMeasurement measurement)
+{
+  Handler.Handle(
+    measurement.DeviceId,
+    measurement.Tenant,
+    measurement.Timestamp,
+    new ContentItem(),
+    request
+  );
 
-    TimeseriesClientMock.Verify(
-      client => client.AddEgaugeMeasurement(measurement),
-      Times.Once
-    );
-  }
+  TimeseriesClientMock.Verify(
+    client => client.AddEgaugeMeasurement(measurement),
+    Times.Once
+  );
+}
 }

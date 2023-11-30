@@ -4,19 +4,33 @@
   "tools": {
     "csharpier": {
       "version": "0.25.0",
-      "commands": ["dotnet-csharpier"]
+      "commands": [
+        "dotnet-csharpier"
+      ]
     },
     "dotnet-ef": {
       "version": "7.0.11",
-      "commands": ["dotnet-ef"]
+      "commands": [
+        "dotnet-ef"
+      ]
     },
     "diffenginetray": {
       "version": "12.3.0",
-      "commands": ["DiffEngineTray"]
+      "commands": [
+        "DiffEngineTray"
+      ]
     },
     "powershell": {
       "version": "7.3.7",
-      "commands": ["pwsh"]
+      "commands": [
+        "pwsh"
+      ]
+    },
+    "dotnet-format": {
+      "version": "5.1.250801",
+      "commands": [
+        "dotnet-format"
+      ]
     }
   }
 }

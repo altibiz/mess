@@ -9,7 +9,8 @@ public record class ContentItemBaseTest
   [Fact]
   public void OnePartTest()
   {
-    var item = new OrchardContentItem() {
+    var item = new OrchardContentItem()
+    {
       ContentType = "OnePart"
     };
     item.Weld(
@@ -36,8 +37,9 @@ public record class ContentItemBaseTest
   [Fact]
   public void TwoPartTest()
   {
-    var item = new OrchardContentItem() {
-      ContentType =  "TwoPart"
+    var item = new OrchardContentItem()
+    {
+      ContentType = "TwoPart"
     };
     item.Weld(
       nameof(TwoPartItem.FirstStringPart),
@@ -72,7 +74,8 @@ public record class ContentItemBaseTest
   [Fact]
   public void ContainedTest()
   {
-    var item = new OrchardContentItem() {
+    var item = new OrchardContentItem()
+    {
       ContentType = "Contaned"
     };
     item.Weld(

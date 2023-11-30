@@ -34,5 +34,5 @@ public static class AppDomainExtensions
     Type,
     IReadOnlyList<Type>
   > _typesAssignableToCache =
-    new ();
+    new();
 }
