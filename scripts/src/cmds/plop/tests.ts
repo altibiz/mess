@@ -3,7 +3,7 @@ import { cmd, plopd, task } from "../../lib/index";
 const exampleName = "IotDevice";
 
 export default cmd({
-  usage: "module <name> <description>",
+  usage: "tests <name>",
   description: "Plop tests for a module",
   builder: (_) =>
     _.positional("name", {
