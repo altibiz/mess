@@ -1,11 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.CustomElements" Version="$(MessBlazorWebAssemblyVersion)" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="$(MessBlazorWebAssemblyVersion)" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="$(MessBlazorWebAssemblyVersion)" />
-
-  </ItemGroup>
+<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <ItemGroup>
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Blazor.Abstractions/Mess.Blazor.Abstractions.csproj" />
