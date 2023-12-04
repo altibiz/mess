@@ -63,8 +63,6 @@ public class TimeseriesDbMigrator : IRelationalDbMigrator
     }
   }
 
-  // TODO: make this unstoppable by the debugger
-  // [DebuggerHidden]
   private static async Task CreateHypertableAsync(
     TimeseriesDbContext context,
     string tableName,
@@ -77,13 +75,9 @@ public class TimeseriesDbMigrator : IRelationalDbMigrator
         $"SELECT create_hypertable('\"{tableName}\"', '{columnName}');"
       );
     }
-    catch (PostgresException exception)
+    catch (PostgresException exception) when (exception.SqlState == "TS110")
     {
-      // NOTE: hypertable already exists
-      if (exception.SqlState != "TS110")
-      {
-        throw exception;
-      }
+      // NOTE: already a hypertable
     }
   }
 

@@ -50,8 +50,6 @@ language-servers = ["nil"]
 [[language]]
 name = "c-sharp"
 language-servers = ["omnisharp"]
-# formatter = { command = "dotnet", args = ["csharpier"] }
-# auto-format = true
 
 # TODO: https://github.com/helix-editor/helix/issues/8834
 

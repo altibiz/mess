@@ -35,6 +35,11 @@ dotnet_diagnostic.CS8933.severity = none
 # only needed for high performance logging
 dotnet_diagnostic.CA1848.severity = none
 
+# https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1861
+# Avoid constant arrays as arguments
+# lots of migrations are a pain without this
+dotnet_diagnostic.CA1861.severity = none
+
 # https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1707
 # Identifiers should not contain underscores
 # it is really convenient for clarity to put measurement units like <name>_<unit>

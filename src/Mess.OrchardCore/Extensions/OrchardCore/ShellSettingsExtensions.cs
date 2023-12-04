@@ -5,7 +5,7 @@ namespace Mess.OrchardCore.Extensions.OrchardCore;
 public static class ShellSettingsExtensions
 {
   public static string GetTenantName(this ShellSettings shellSettings) =>
-    shellSettings.Name ?? ShellHelper.DefaultShellName;
+    shellSettings.Name ?? ShellSettings.DefaultShellName;
 
   public static string GetDatabaseConnectionString(
     this ShellSettings shellSettings

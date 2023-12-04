@@ -143,7 +143,7 @@ internal class E2eTestServer : IAsyncDisposable, IDisposable
   {
     while (directory != null)
     {
-      if (directory.GetFiles("*.sln").Any())
+      if (directory.GetFiles("*.sln").Length != 0)
       {
         return directory;
       }

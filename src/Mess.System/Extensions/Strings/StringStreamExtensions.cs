@@ -22,6 +22,8 @@ public static class StringStreamExtensions
     var result = await Task.Run(() => reader.ReadToEnd());
 #elif NET7_0
     var result = await reader.ReadToEndAsync();
+#elif NET8_0
+    var result = await reader.ReadToEndAsync();
 #else
 #error Wrong target framwork
 #endif

@@ -11,5 +11,5 @@ public readonly record struct EgaugeMeasurementRegisters(
 {
   public float Power => (float)Registers.GetOrDefault("P").Value;
 
-public float Voltage => (float)Registers.GetOrDefault("L1 Voltage").Value;
+  public float Voltage => (float)Registers.GetOrDefault("L1 Voltage").Value;
 };

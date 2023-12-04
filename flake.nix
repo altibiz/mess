@@ -13,7 +13,7 @@
       };
       overlay = (final: prev: {
         nodejs = prev.nodejs_20;
-        dotnet-sdk = prev.dotnet-sdk_8;
+        dotnet-sdk = prev.dotnet-sdk_7;
       });
       shell = { pkgs }:
         pkgs.mkShell {
@@ -46,6 +46,8 @@
 
             # C#
             dotnet-sdk
+            dotnet-runtime
+            dotnet-aspnetcore
             omnisharp-roslyn
             netcoredbg
 
