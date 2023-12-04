@@ -44,7 +44,7 @@ export default cmd({
     await task(
       "Installed playwright",
       `dotnet pwsh ${await globf(
-        "test/Mess.System.Test/bin/Debug/**/playwright.ps1",
+        "test/Mess.Prelude.Test/bin/Debug/**/playwright.ps1",
         "Playwright install script not found",
       )} install --with-deps`,
     );

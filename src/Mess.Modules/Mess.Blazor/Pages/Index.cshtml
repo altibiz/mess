@@ -4,8 +4,7 @@
 
 @{
   ViewData["Title"] = "Blazor demo";
+  var counter = typeof(Mess.Blazor.Pages.Shared.Other);
 }
 
-<component
-  type="typeof(Mess.Blazor.Pages.Shared.Counter)"
-  render-mode="ServerPrerendered" />
+<component type="counter" render-mode="ServerPrerendered" />

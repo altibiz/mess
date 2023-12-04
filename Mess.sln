@@ -59,11 +59,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Relational", "src\Mess
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.OrchardCore.Test", "test\Mess.OrchardCore.Test\Mess.OrchardCore.Test.csproj", "{01FE96B3-62C0-4E58-BB7A-CE3502CE74EF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.System", "src\Mess.System\Mess.System.csproj", "{55D9AB09-7931-44F4-8C63-4C4EB0A5DCD0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Prelude", "src\Mess.Prelude\Mess.Prelude.csproj", "{55D9AB09-7931-44F4-8C63-4C4EB0A5DCD0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.OrchardCore", "src\Mess.OrchardCore\Mess.OrchardCore.csproj", "{77FEBFE4-5898-4D83-8EA4-2210D9947AF1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.System.Test", "test\Mess.System.Test\Mess.System.Test.csproj", "{C4A02241-BC11-43E8-AD40-16D900FEEBCD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Prelude.Test", "test\Mess.Prelude.Test\Mess.Prelude.Test.csproj", "{C4A02241-BC11-43E8-AD40-16D900FEEBCD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Iot.Test.Abstractions", "test\Mess.Abstractions\Mess.Iot.Test.Abstractions\Mess.Iot.Test.Abstractions.csproj", "{118F82D9-1939-4081-836B-A2630D7165F1}"
 EndProject

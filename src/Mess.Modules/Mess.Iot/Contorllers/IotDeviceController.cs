@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Mess.System.Extensions.Strings;
+using Mess.Prelude.Extensions.Strings;
 using OrchardCore.Environment.Shell;
 using Microsoft.Extensions.DependencyInjection;
 using Mess.Event.Abstractions.Client;

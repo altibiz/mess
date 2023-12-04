@@ -1,7 +1,7 @@
-using Mess.System.Test.Extensions.Xunit;
+using Mess.Prelude.Test.Extensions.Xunit;
 using Xunit.DependencyInjection;
 
-namespace Mess.System.Test.Extensions.Microsoft;
+namespace Mess.Prelude.Test.Extensions.Microsoft;
 
 public static class IServiceProviderExtensions
 {

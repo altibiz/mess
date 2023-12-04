@@ -1,5 +1,5 @@
 using Marten;
-using Mess.System.Test.Extensions.Microsoft;
+using Mess.Prelude.Test.Extensions.Microsoft;
 
 namespace Mess.Event.Test.Abstractions.Extensions;
 

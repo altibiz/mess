@@ -1,4 +1,4 @@
-using Mess.System.Extensions.Dictionaries;
+using Mess.Prelude.Extensions.Dictionaries;
 
 namespace Mess.Enms.Iot;
 

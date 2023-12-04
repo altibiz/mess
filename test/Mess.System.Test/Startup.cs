@@ -1,9 +1,9 @@
 using Xunit.DependencyInjection;
 using Xunit.DependencyInjection.Logging;
-using Mess.System.Test.Extensions.Microsoft;
-using Mess.System.Test.Migrations;
+using Mess.Prelude.Test.Extensions.Microsoft;
+using Mess.Prelude.Test.Migrations;
 
-namespace Mess.System.Test;
+namespace Mess.Prelude.Test;
 
 public class Startup
 {

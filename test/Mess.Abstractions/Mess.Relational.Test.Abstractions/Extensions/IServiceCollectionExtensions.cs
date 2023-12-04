@@ -1,4 +1,4 @@
-using Mess.System.Test.Extensions.Microsoft;
+using Mess.Prelude.Test.Extensions.Microsoft;
 using Mess.Relational.Abstractions.Migrations;
 using Mess.Relational;
 using Mess.Relational.Test.Abstractions.Migrations;

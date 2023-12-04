@@ -1,7 +1,7 @@
 using System.Reflection;
 using VerifyXunit;
 
-namespace Mess.System.Test.Extensions.Verify;
+namespace Mess.Prelude.Test.Extensions.Verify;
 
 public static class UsesVerifyAttributeExtensions
 {

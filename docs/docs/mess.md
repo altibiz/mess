@@ -60,13 +60,13 @@ their respective chapters.
 
 ## Utilities
 
-There are a couple of utility projects in the `src` directory (`Mess.System` and
-`Mess.OrchardCore`) that provide various utility functions to modules. These are
-separated in two different projects because `Mess.System` does not depend on
-Orchard Core and `Mess.OrchardCore` does. By doing this we can extend Mess
+There are a couple of utility projects in the `src` directory (`Mess.Prelude`
+and `Mess.OrchardCore`) that provide various utility functions to modules. These
+are separated in two different projects because `Mess.Prelude` does not depend
+on Orchard Core and `Mess.OrchardCore` does. By doing this we can extend Mess
 without relying on Orchard Core.
 
-This is reflected in the `test` directory where `Mess.System.Tests` and
+This is reflected in the `test` directory where `Mess.Prelude.Tests` and
 `Mess.OrchardCore.Tests` contain tests for the respective projects, but also
 provide utilities for module test projects.
 

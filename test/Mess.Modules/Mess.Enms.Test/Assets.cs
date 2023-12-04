@@ -1,5 +1,5 @@
 using Mess.Enms.Abstractions.Timeseries;
-using Mess.System;
+using Mess.Prelude;
 
 namespace Mess.Enms.Test;
 

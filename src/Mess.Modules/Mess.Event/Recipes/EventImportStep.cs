@@ -2,7 +2,7 @@ using Newtonsoft.Json.Linq;
 using OrchardCore.Recipes.Models;
 using OrchardCore.Recipes.Services;
 using Mess.Event.Abstractions.Client;
-using Mess.System.Extensions.Microsoft;
+using Mess.Prelude.Extensions.Microsoft;
 using Mess.Event.Abstractions.Services;
 
 namespace Mess.Event.Recipes;

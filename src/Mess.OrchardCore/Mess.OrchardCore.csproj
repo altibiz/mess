@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../src/Mess.System/Mess.System.csproj" />
+    <ProjectReference Include="../../src/Mess.Prelude/Mess.Prelude.csproj" />
   </ItemGroup>
 
 </Project>

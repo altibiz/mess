@@ -1,6 +1,6 @@
 using Microsoft.Playwright;
 
-namespace Mess.System.Test.E2e;
+namespace Mess.Prelude.Test.E2e;
 
 public interface IE2eFixture
 {

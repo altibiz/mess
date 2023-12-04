@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace Mess.System.Test.E2e;
+namespace Mess.Prelude.Test.E2e;
 
 internal class E2eTestServer : IAsyncDisposable, IDisposable
 {

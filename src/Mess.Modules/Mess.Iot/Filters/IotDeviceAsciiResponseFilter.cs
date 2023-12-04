@@ -1,4 +1,4 @@
-using Mess.System.Extensions.Strings;
+using Mess.Prelude.Extensions.Strings;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 

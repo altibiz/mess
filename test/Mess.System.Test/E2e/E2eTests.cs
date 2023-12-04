@@ -1,4 +1,4 @@
-namespace Mess.System.Test.E2e;
+namespace Mess.Prelude.Test.E2e;
 
 public record class E2eTests(IE2eFixture E2eFixture)
 {

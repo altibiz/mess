@@ -3,12 +3,12 @@
   <Import Project="../Directory.Build.props" />
 
   <ItemGroup>
-    <ProjectReference Include="../../../src/Mess.System/Mess.System.csproj" />
+    <ProjectReference Include="../../../src/Mess.Prelude/Mess.Prelude.csproj" />
     <ProjectReference Include="../../../src/Mess.OrchardCore/Mess.OrchardCore.csproj" />
   </ItemGroup>
-  
+
   <ItemGroup>
-    <ProjectReference Include="../../../test/Mess.System.Test/Mess.System.Test.csproj" />
+    <ProjectReference Include="../../../test/Mess.Prelude.Test/Mess.Prelude.Test.csproj" />
     <ProjectReference Include="../../../test/Mess.OrchardCore.Test/Mess.OrchardCore.Test.csproj" />
   </ItemGroup>
 

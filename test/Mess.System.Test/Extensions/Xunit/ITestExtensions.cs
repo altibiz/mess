@@ -1,7 +1,7 @@
 using Xunit.Abstractions;
-using Mess.System.Extensions.Strings;
+using Mess.Prelude.Extensions.Strings;
 
-namespace Mess.System.Test.Extensions.Xunit;
+namespace Mess.Prelude.Test.Extensions.Xunit;
 
 public static class ITestExtensions
 {

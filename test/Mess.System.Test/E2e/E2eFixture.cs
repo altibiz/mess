@@ -1,6 +1,6 @@
 using Microsoft.Playwright;
 
-namespace Mess.System.Test.E2e;
+namespace Mess.Prelude.Test.E2e;
 
 internal class E2eFixture : IE2eFixture, IAsyncDisposable, IDisposable
 {

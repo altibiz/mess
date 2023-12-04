@@ -1,8 +1,8 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Mess.OrchardCore;
-using Mess.System.Extensions.Tuples;
-using Mess.System.Extensions.Strings;
+using Mess.Prelude.Extensions.Tuples;
+using Mess.Prelude.Extensions.Strings;
 using Xunit.Sdk;
 
 namespace Xunit;

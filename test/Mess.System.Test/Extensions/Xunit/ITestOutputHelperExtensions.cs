@@ -1,7 +1,7 @@
 using System.Reflection;
 using Xunit.Abstractions;
 
-namespace Mess.System.Test.Extensions.Xunit;
+namespace Mess.Prelude.Test.Extensions.Xunit;
 
 public static class ITestOutputHelperExtensions
 {

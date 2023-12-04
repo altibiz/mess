@@ -1,4 +1,4 @@
-namespace Mess.System.Test.Migrations;
+namespace Mess.Prelude.Test.Migrations;
 
 public interface ITestMigrator
 {

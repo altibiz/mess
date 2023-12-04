@@ -1,7 +1,7 @@
-using Mess.System.Extensions.Objects;
-using Mess.System.Test.Migrations;
+using Mess.Prelude.Extensions.Objects;
+using Mess.Prelude.Test.Migrations;
 
-namespace Mess.System.Test.Extensions.Microsoft;
+namespace Mess.Prelude.Test.Extensions.Microsoft;
 
 public static class IServiceCollectionExtensions
 {
