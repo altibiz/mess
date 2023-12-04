@@ -1,6 +1,6 @@
 using DiffEngine;
 
-namespace Mess.System.Test.Snapshots;
+namespace Mess.Prelude.Test.Snapshots;
 
 public static class VerifyInitializer
 {

@@ -1,11 +1,11 @@
 using System.Reflection;
-using Mess.System.Extensions.Objects;
-using Mess.System.Test.Extensions.Verify;
-using Mess.System.Test.Extensions.Xunit;
+using Mess.Prelude.Extensions.Objects;
+using Mess.Prelude.Test.Extensions.Verify;
+using Mess.Prelude.Test.Extensions.Xunit;
 using Xunit.Abstractions;
 using Xunit.DependencyInjection;
 
-namespace Mess.System.Test.Snapshots;
+namespace Mess.Prelude.Test.Snapshots;
 
 public sealed class SnapshotFixture : ISnapshotFixture, IDisposable, IAsyncDisposable
 {

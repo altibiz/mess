@@ -51,25 +51,6 @@ language-servers = ["nil"]
 name = "c-sharp"
 language-servers = ["omnisharp"]
 
-# TODO: https://github.com/helix-editor/helix/issues/8834
-
-# [language.debugger]
-# name = "netcoredbg"
-# transport = "tcp"
-# command = "netcoredbg"
-# args = ["--interpreter=vscode"]
-# port-arg = "--server={}"
-
-# [[language.debugger.templates]]
-# name = "Mess.Web"
-# request = "launch"
-
-# [language.debugger.templates.args]
-# type = "coreclr"
-# console = "internalConsole"
-# internalConsoleOptions = "openOnSessionStart"
-# program = "src/Mess.Web/bin/Debug/net7.0/Mess.Web.dll"
-
 [[language]]
 name = "typescript"
 formatter = { command = "prettier", args = ["--parser", "typescript"] }

@@ -27,10 +27,7 @@
     "**/.docusaurus": true
   },
   "npm.packageManager": "yarn",
-  "prettier.prettierPath": ".yarn/sdks/prettier/index.js",
   "prettier.ignorePath": ".prettierignore",
-  "eslint.nodePath": ".yarn/sdks",
-  "typescript.tsdk": ".yarn/sdks/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "stylelint.packageManager": "yarn",
   "editor.defaultFormatter": "esbenp.prettier-vscode",

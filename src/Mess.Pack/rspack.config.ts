@@ -16,10 +16,10 @@ const configurations: Configuration[] = glob
     const projectPath = fs.existsSync(`../Mess.Modules/${project}`)
       ? `../Mess.Modules/${project}`
       : fs.existsSync(`../Mess.Themes/${project}`)
-      ? `../Mess.Themes/${project}`
-      : (() => {
-          throw new Error(`Project with name ${project} does not exist`);
-        })();
+        ? `../Mess.Themes/${project}`
+        : (() => {
+            throw new Error(`Project with name ${project} does not exist`);
+          })();
 
     const entries = (() => {
       const entries: Configuration["entry"] = {};

@@ -1,6 +1,6 @@
 using Xunit.DependencyInjection;
 
-namespace Mess.System.Test.Snapshots;
+namespace Mess.Prelude.Test.Snapshots;
 
 [Startup(typeof(Startup))]
 public record SnapshotTests(ISnapshotFixture SnapshotFixture)

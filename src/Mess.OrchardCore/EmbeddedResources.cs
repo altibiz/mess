@@ -9,7 +9,7 @@ public static class EmbeddedResources
     string name,
     Assembly? assemblyName = null
   ) =>
-    System.EmbeddedResources
+    Prelude.EmbeddedResources
       .GetEmbeddedResource(name, assemblyName ?? Assembly.GetCallingAssembly())
       .FromNewtonsoftJsonStream<T>()
     ?? throw new InvalidOperationException(
@@ -21,7 +21,7 @@ public static class EmbeddedResources
     Type type,
     Assembly? assemblyName = null
   ) =>
-    System.EmbeddedResources
+    Prelude.EmbeddedResources
       .GetEmbeddedResource(name, assemblyName ?? Assembly.GetCallingAssembly())
       .FromNewtonsoftJsonStream(type)
     ?? throw new InvalidOperationException(

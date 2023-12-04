@@ -1,4 +1,4 @@
-namespace Mess.System.Test.Snapshots;
+namespace Mess.Prelude.Test.Snapshots;
 
 public interface ISnapshotFixture
 {
