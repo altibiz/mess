@@ -1,7 +1,4 @@
-import {
-  EorIotDeviceData,
-  eorIotDeviceDataSchema,
-} from "./schema";
+import { EorIotDeviceData, eorIotDeviceDataSchema } from "./schema";
 
 export const getData = async (
   requestUrlPrefix: string,

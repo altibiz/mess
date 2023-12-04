@@ -76,9 +76,7 @@ export const globf = async (pattern: string, missing: string) => {
 export const globi = async (pattern: string) =>
   Object.fromEntries(
     await Promise.all(
-      (
-        await glob(script(pattern))
-      ).map(async (commandPath) => {
+      (await glob(script(pattern))).map(async (commandPath) => {
         const name = pp.basename(commandPath, ".ts");
         const dir = pp.dirname(commandPath);
         return [name, await import(pp.join(dir, `${name}.js`))];

@@ -44,8 +44,8 @@ export const useRefresh = ({
       data.eorIotDeviceSummary.status.processFault === 0
         ? { text: "OK", class: "status status-ok" }
         : data.eorIotDeviceSummary.status.processFault === 999
-        ? { text: "OFF", class: "status status-warning" }
-        : { text: "ERROR", class: "status status-error" };
+          ? { text: "OFF", class: "status status-warning" }
+          : { text: "ERROR", class: "status status-error" };
     setElementText(id.status, status.text);
     setElementClass(id.status, status.class);
 
@@ -61,8 +61,7 @@ export const useRefresh = ({
     setElementInnerHtml(
       id.processFaults,
       data.eorIotDeviceSummary.status.processFaults
-        ? "<p>" +
-            data.eorIotDeviceSummary.status.processFaults.join("<p>")
+        ? "<p>" + data.eorIotDeviceSummary.status.processFaults.join("<p>")
         : "",
     );
 
@@ -70,18 +69,18 @@ export const useRefresh = ({
       data.eorIotDeviceSummary.status.resetState === "ShouldReset"
         ? { text: "Reset", class: "status status-warning" }
         : data.eorIotDeviceSummary.status.runState === "Started"
-        ? { text: "Started", class: "status status-ok" }
-        : data.eorIotDeviceSummary.status.runState === "Stopped"
-        ? { text: "Stopped", class: "status status-error" }
-        : { text: "Unknown", class: "status status-warning" };
+          ? { text: "Started", class: "status status-ok" }
+          : data.eorIotDeviceSummary.status.runState === "Stopped"
+            ? { text: "Stopped", class: "status status-error" }
+            : { text: "Unknown", class: "status status-warning" };
     const serverControlStatus =
       data.eorIotDeviceControls.resetState === "ShouldReset"
         ? { text: "Reset", class: "status status-warning" }
         : data.eorIotDeviceControls.runState === "Started"
-        ? { text: "Started", class: "status status-ok" }
-        : data.eorIotDeviceControls.runState === "Stopped"
-        ? { text: "Stopped", class: "status status-error" }
-        : { text: "Unknown", class: "status status-warning" };
+          ? { text: "Started", class: "status status-ok" }
+          : data.eorIotDeviceControls.runState === "Stopped"
+            ? { text: "Stopped", class: "status status-error" }
+            : { text: "Unknown", class: "status status-warning" };
     setElementInnerHtml(
       id.controlStatus,
       deviceControlStatus.text !== serverControlStatus.text
@@ -92,17 +91,13 @@ export const useRefresh = ({
 
     setElementInnerHtml(
       id.modeLabel,
-      data.eorIotDeviceControls.mode !=
-        data.eorIotDeviceSummary.status.mode
+      data.eorIotDeviceControls.mode != data.eorIotDeviceSummary.status.mode
         ? `Position (${data.eorIotDeviceSummary.status.mode})`
         : `Position`,
     );
     setInputElementValue(id.modeInput, data.eorIotDeviceControls.mode);
 
-    setElementText(
-      id.doorState,
-      data.eorIotDeviceSummary.status.doorState,
-    );
+    setElementText(id.doorState, data.eorIotDeviceSummary.status.doorState);
 
     setElementText(
       id.mainCircuitBreakerState,
@@ -114,8 +109,8 @@ export const useRefresh = ({
       data.eorIotDeviceSummary.status.processFault === 0
         ? "On"
         : data.eorIotDeviceSummary.status.processFault === 999
-        ? "Off"
-        : "Error",
+          ? "Off"
+          : "Error",
     );
 
     setElementText(

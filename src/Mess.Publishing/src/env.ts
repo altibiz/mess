@@ -4,10 +4,10 @@ export const mode: "client" | "server" | "proxy" =
   process.env.MESS_PUBLISHING_MODE === "client"
     ? "client"
     : process.env.MESS_PUBLISHING_MODE === "server"
-    ? "server"
-    : process.env.MESS_PUBLISHING_MODE === "proxy"
-    ? "proxy"
-    : "client";
+      ? "server"
+      : process.env.MESS_PUBLISHING_MODE === "proxy"
+        ? "proxy"
+        : "client";
 
 export const modbusAddress: string =
   process.env.MESS_PUBLISHING_MODBUS_ADDRESS || "127.0.0.1";

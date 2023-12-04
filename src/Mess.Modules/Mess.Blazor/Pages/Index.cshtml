@@ -2,9 +2,12 @@
 
 @model dynamic
 
+@using Mess.Blazor.Pages.Shared
+
+@inherits OrchardCore.DisplayManagement.RazorPages.Page
+
 @{
   ViewData["Title"] = "Blazor demo";
-  var counter = typeof(Mess.Blazor.Pages.Shared.Counter);
 }
 
-<component type="counter" render-mode="ServerPrerendered" />
+<!--component type="typeof(Counter)" render-mode="ServerPrerendered" /-->

@@ -107,18 +107,24 @@ export const bindChart = (
               color: font?.color,
             },
           },
-          ...descriptor.datasets.reduce((scales, { label }) => {
-            scales[label] = {
-              type: "linear",
-              position: "left",
-              ticks: {
-                font: font,
-                color: font?.color,
-              },
-            };
+          ...descriptor.datasets.reduce(
+            (scales, { label }) => {
+              scales[label] = {
+                type: "linear",
+                position: "left",
+                ticks: {
+                  font: font,
+                  color: font?.color,
+                },
+              };
 
-            return scales;
-          }, {} as Record<string, DeepPartial<ScaleOptionsByType<keyof CartesianScaleTypeRegistry>>>),
+              return scales;
+            },
+            {} as Record<
+              string,
+              DeepPartial<ScaleOptionsByType<keyof CartesianScaleTypeRegistry>>
+            >,
+          ),
         },
       },
     }) as BoundTimeseriesChart;

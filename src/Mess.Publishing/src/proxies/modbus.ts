@@ -60,9 +60,8 @@ const vector: IServiceVector = {
       timestamp: luxon.DateTime.utc().toJSDate(),
     })
       .then(async (response) => {
-        const parsedResponse = await pollResponseScheme.safeParseAsync(
-          response,
-        );
+        const parsedResponse =
+          await pollResponseScheme.safeParseAsync(response);
         if (!parsedResponse.success) {
           console.error(
             "Received invalid modbus poll response",

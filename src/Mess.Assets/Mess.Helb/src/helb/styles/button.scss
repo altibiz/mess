@@ -2,7 +2,9 @@ button {
   cursor: pointer;
   padding-block: 8px;
   padding-inline: 12px;
-  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+  transition:
+    background-color 0.2s ease-in-out,
+    color 0.2s ease-in-out;
 }
 
 .button-primary {

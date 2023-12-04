@@ -15,15 +15,15 @@ export const log = winston.createLogger({
         pcmdString = error
           ? `${name}:\n${colorizer.colorize("error", error.trim())}\n\n`
           : stderr
-          ? colorizer.colorize(
-              "error",
-              fmt ? fmt(stdout) : formatTransparent(name, stderr),
-            )
-          : stdout
-          ? fmt
-            ? fmt(stdout)
-            : formatTransparent(name, stdout)
-          : "";
+            ? colorizer.colorize(
+                "error",
+                fmt ? fmt(stdout) : formatTransparent(name, stderr),
+              )
+            : stdout
+              ? fmt
+                ? fmt(stdout)
+                : formatTransparent(name, stdout)
+              : "";
         transparent = !error;
       }
 
@@ -40,8 +40,8 @@ export const log = winston.createLogger({
                   cmdEntries[0][1].stderr.trim(),
                 )}\n\n`
               : cmdEntries[0][1].stdout
-              ? `:\n${cmdEntries[0][1].stdout.trim()}\n\n`
-              : `: Done!\n\n`
+                ? `:\n${cmdEntries[0][1].stdout.trim()}\n\n`
+                : `: Done!\n\n`
             : cmdEntries.reduce(
                 (curr, [name, { stdout, stderr }]) =>
                   curr +
@@ -51,8 +51,8 @@ export const log = winston.createLogger({
                         stderr.trim(),
                       )}\n\n`
                     : stdout
-                    ? `${name}:\n${stdout.trim()}\n\n`
-                    : `${name}: Done!\n\n`),
+                      ? `${name}:\n${stdout.trim()}\n\n`
+                      : `${name}: Done!\n\n`),
                 "\n\n",
               );
       }
@@ -61,8 +61,8 @@ export const log = winston.createLogger({
       const extended = pcmdString
         ? `${pcmdString}`
         : cmdsString
-        ? `${cmdsString}`
-        : "\n";
+          ? `${cmdsString}`
+          : "\n";
 
       return transparent
         ? extended

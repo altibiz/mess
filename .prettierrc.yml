@@ -7,6 +7,6 @@ proseWrap: always
 plugins:
   - "@shopify/prettier-plugin-liquid"
 overrides:
-  - files: "*.{md,mdx}"
+  - files: ".github/workflows/*.{yaml,yml}"
     options:
-      proseWrap: always
+      proseWrap: preserve

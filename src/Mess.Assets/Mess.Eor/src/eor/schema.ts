@@ -34,9 +34,7 @@ export const eorIotDeviceControlsSchema = zod.object({
   resetState: resetStateSchema,
 });
 
-export type EorIotDeviceControls = zod.infer<
-  typeof eorIotDeviceControlsSchema
->;
+export type EorIotDeviceControls = zod.infer<typeof eorIotDeviceControlsSchema>;
 
 export const eorIotDeviceMeasurementSchema = zod.object({
   tenant: zod.string(),
@@ -70,9 +68,7 @@ export const eorIotDeviceStatusSchema = zod.object({
   secondDiodeBridgeState: diodeBridgeStateSchema,
 });
 
-export type EorIotDeviceStatus = zod.infer<
-  typeof eorIotDeviceStatusSchema
->;
+export type EorIotDeviceStatus = zod.infer<typeof eorIotDeviceStatusSchema>;
 
 export const eorIotDeviceSummarySchema = zod.object({
   tenant: zod.string(),
@@ -81,15 +77,11 @@ export const eorIotDeviceSummarySchema = zod.object({
   status: eorIotDeviceStatusSchema,
 });
 
-export type EorIotDeviceSummary = zod.infer<
-  typeof eorIotDeviceSummarySchema
->;
+export type EorIotDeviceSummary = zod.infer<typeof eorIotDeviceSummarySchema>;
 
 export const eorIotDeviceDataSchema = zod.object({
   eorIotDeviceControls: eorIotDeviceControlsSchema,
   eorIotDeviceSummary: eorIotDeviceSummarySchema,
 });
 
-export type EorIotDeviceData = zod.infer<
-  typeof eorIotDeviceDataSchema
->;
+export type EorIotDeviceData = zod.infer<typeof eorIotDeviceDataSchema>;

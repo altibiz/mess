@@ -6,11 +6,12 @@ export default cmd({
 })(async () => {
   env("NODE_OPTIONS", "--no-warnings");
 
-  await task("Formatted with csharpier", "dotnet csharpier .");
+  await task("Formatted with dotnet", "dotnet format");
 
   await task(
     "Formatted with prettier",
     "yarn prettier --write" +
+      " --ignore-path .gitignore" +
       " --ignore-path .prettierignore" +
       " --cache --cache-strategy metadata" +
       " .",
