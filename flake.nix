@@ -1,7 +1,6 @@
 {
   inputs = {
-    # NOTE: Node 20.4.0
-    nixpkgs.url = "github:nixos/nixpkgs?rev=fc4810bfca66fc4f3a8f5d4cceb1621e79bc91bb";
+    nixpkgs.url = "github:nixos/nixpkgs";
     utils.url = "github:numtide/flake-utils";
   };
 
@@ -14,7 +13,7 @@
       };
       overlay = (final: prev: {
         nodejs = prev.nodejs_20;
-        dotnet-sdk = prev.dotnet-sdk_7;
+        dotnet-sdk = prev.dotnet-sdk_8;
       });
       shell = { pkgs }:
         pkgs.mkShell {
@@ -24,30 +23,13 @@
                 name = "mess";
                 runtimeInputs = [ pkgs.nodePackages.yarn ];
                 text = ''
-                  echo 'require("prettier")' | 
+                  echo 'require("prettier")' |
                     yarn node >/dev/null 2>&1 ||
                     (yarn && yarn scripts start prepare --skip test)
 
                   yarn scripts start "$@"
                 '';
               });
-
-            # TODO: https://github.com/dotnet/sdk/issues/30546
-            # csharpier =
-            #   (pkgs.buildDotnetGlobalTool {
-            #     pname = "dotnet-csharpier";
-            #     nugetName = "CSharpier";
-            #     version = "0.25.0";
-            #     nugetSha256 = "sha256-7yRDI7vdLTXv0XuUHKUdsIJsqzmw3cidWjmbZ5g5Vvg=";
-            #     dotnet-sdk = pkgs.dotnetCorePackages.sdk_6_0;
-            #     dotnet-runtime = pkgs.dotnetCorePackages.sdk_6_0;
-            #     meta = with pkgs.lib; {
-            #       homepage = "https://github.com/belav/csharpier";
-            #       changelog = "https://github.com/belav/csharpier/blob/main/CHANGELOG.md";
-            #       license = licenses.mit;
-            #       platforms = platforms.linux;
-            #     };
-            #   });
 
             usql = pkgs.writeShellApplication {
               name = "usql";
@@ -66,7 +48,6 @@
             dotnet-sdk
             omnisharp-roslyn
             netcoredbg
-            # csharpier
 
             # Web
             nodejs

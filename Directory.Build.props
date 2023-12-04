@@ -1,15 +1,15 @@
 <Project>
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <LangVersion>11</LangVersion>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>12</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <PropertyGroup>
-    <MessOrchardVersion>1.5</MessOrchardVersion>
-    <MessEtchVersion>1.4.3</MessEtchVersion>
+    <MessOrchardVersion>1.7.2</MessOrchardVersion>
+    <MessEtchVersion>1.6.0</MessEtchVersion>
     <MessNewtonsoftJsonVersion>13.0.1</MessNewtonsoftJsonVersion>
 
     <!-- NOTE: these are connected -->
