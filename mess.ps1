@@ -269,7 +269,7 @@ if ($InstalledDotnet -or $InstalledNode -or $InstalledYarn) {
   Write-Host -NoNewline "`n`n"
 }
 
-Write-Output 'require("prettier")' | yarn node >$null 2>&1
+Write-Output 'require("husky")' | yarn node >$null 2>&1
 if (!$?) {
   Write-Warning (
     "``prettier`` not found." +

@@ -16,6 +16,8 @@
     <!-- NOTE: these are connected -->
     <MessNpgsqlVersion>7.0.4</MessNpgsqlVersion>
     <MessMartenVersion>6.0.0</MessMartenVersion>
+
+    <MessBlazorWebAssemblyVersion>7.0.14</MessBlazorWebAssemblyVersion>
   </PropertyGroup>
 
 </Project>

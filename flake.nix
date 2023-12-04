@@ -23,7 +23,7 @@
                 name = "mess";
                 runtimeInputs = [ pkgs.nodePackages.yarn ];
                 text = ''
-                  echo 'require("prettier")' |
+                  echo 'require("husky")' |
                     yarn node >/dev/null 2>&1 ||
                     (yarn && yarn scripts start prepare --skip test)
 
