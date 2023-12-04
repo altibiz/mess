@@ -23,6 +23,7 @@
         "OrchardCore.Deployment",
         "TheAdmin",
         "Mess.Ozds",
+        "Mess.Blazor",
         "Mess.Helb"
       ]
     },
