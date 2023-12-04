@@ -4,11 +4,11 @@
   "type": "commonjs",
   "main": "./index.js",
   "devDependencies": {
-    "@types/js-yaml": "^4.0.5",
+    "@types/js-yaml": "^4.0.9",
     "js-yaml": "^4.1.0",
-    "postcss": "^8.4.27",
-    "sass": "^1.64.2",
-    "stylelint": "^15.10.2",
-    "stylelint-config-standard-scss": "^10.0.0"
+    "postcss": "^8.4.32",
+    "sass": "^1.69.5",
+    "stylelint": "^15.11.0",
+    "stylelint-config-standard-scss": "^11.1.0"
   }
 }
