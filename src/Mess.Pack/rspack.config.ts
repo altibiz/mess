@@ -1,11 +1,11 @@
 import { Configuration } from "@rspack/cli";
+import * as rspack from "@rspack/core";
 import autoprefixer from "autoprefixer";
 import * as fs from "fs";
 import * as glob from "glob";
 import * as path from "path";
-// import ESLintPlugin from "eslint-webpack-plugin";
-// import StylelintPlugin from "stylelint-webpack-plugin";
-// import RemoveEmptyScriptsPlugin from "webpack-remove-empty-scripts";
+
+// TODO: eslint, stylelint, presetEnv
 
 const configurations: Configuration[] = glob
   .sync("../Mess.Assets/*", {
@@ -63,26 +63,30 @@ const configurations: Configuration[] = glob
         path: path.resolve(projectPath, "wwwroot/assets"),
         publicPath: `/${project}/assets/`,
       },
-      builtins: {
-        presetEnv: {
-          targets: ["Chrome >= 48"],
-        },
-        copy: {
-          patterns: [
-            {
-              from: `${workspace}/src/**/*.{png,jpg,jpeg,gif,svg,ico,woff,woff2}`,
-              to: "resources/[name][ext]",
-              noErrorOnMissing: true,
-            },
-          ],
-        },
-      },
       target: ["web", "es5"],
       experiments: {
         css: true,
+        lazyCompilation: true,
       },
       module: {
         rules: [
+          {
+            test: /\.(t|j)s$/,
+            exclude: [/[\\/]node_modules[\\/]/],
+            loader: "builtin:swc-loader",
+            options: {
+              sourceMap: true,
+              jsc: {
+                parser: {
+                  syntax: "typescript",
+                },
+                externalHelpers: true,
+              },
+              env: {
+                targets: "Chrome >= 48",
+              },
+            },
+          },
           {
             test: /\.(sa|sc|c)ss$/,
             type: "css",
@@ -107,26 +111,27 @@ const configurations: Configuration[] = glob
           },
         ],
       },
-      // plugins: [
-      //   new RemoveEmptyScriptsPlugin(),
-      //   new ESLintPlugin({
-      //     extensions: ["js", "ts"],
-      //   }),
-      //   new StylelintPlugin({
-      //     files: `${workspace}/src/**/*.{css,scss}`,
-      //   }),
-      // ],
+      plugins: [
+        new rspack.SwcCssMinimizerRspackPlugin({}),
+        new rspack.SwcJsMinimizerRspackPlugin({}),
+        new rspack.ProgressPlugin({}),
+        new rspack.HotModuleReplacementPlugin(),
+        new rspack.CopyRspackPlugin({
+          patterns: [
+            {
+              from: `${workspace}/src/**/*.{png,jpg,jpeg,gif,svg,ico,woff,woff2}`,
+              to: "resources/[name][ext]",
+              noErrorOnMissing: true,
+            },
+          ],
+        }),
+      ],
       devtool: process.env.NODE_ENV === "production" ? false : "source-map",
       resolve: {
         extensions: [".ts", ".js"],
       },
       context: path.resolve(__dirname),
-      // performance: {
-      //   hints: false,
-      //   maxEntrypointSize: 512000,
-      //   maxAssetSize: 512000,
-      // },
-      stats: "normal",
+      stats: "errors-warnings",
     };
 
     return configuration;
