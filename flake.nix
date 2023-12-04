@@ -7,7 +7,7 @@
   outputs = { self, nixpkgs, utils }:
     utils.lib.simpleFlake {
       inherit self nixpkgs;
-      name = "mess";
+      name = "altibiz-mess";
       config = {
         allowUnfree = true;
       };
