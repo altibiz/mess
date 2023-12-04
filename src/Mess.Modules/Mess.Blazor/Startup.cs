@@ -20,11 +20,6 @@ public class Startup : StartupBase
     IEndpointRouteBuilder routes,
     IServiceProvider serviceProvider
   ) {
-    app.UseStaticFiles(new StaticFileOptions
-    {
-        FileProvider = new ManifestEmbeddedFileProvider(typeof(IServerSideBlazorBuilder).Assembly),
-    });
-
     routes.MapBlazorHub();
   }
 }
