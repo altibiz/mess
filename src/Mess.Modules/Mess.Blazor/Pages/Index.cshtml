@@ -9,5 +9,7 @@
 }
 
 <component>
-  @(await Html.RenderComponentAsync<Components.Counter>(RenderMode.Server))
+  @(await Html.RenderComponentAsync<Components.Counter>(
+    RenderMode.ServerPrerendered
+  ))
 </component>
