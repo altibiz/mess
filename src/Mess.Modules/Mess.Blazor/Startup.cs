@@ -4,11 +4,10 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
-using OrchardCore.Modules;
 
 namespace Mess.Blazor;
 
-public class Startup : StartupBase
+public class Startup : OrchardCore.Modules.StartupBase
 {
   public override void ConfigureServices(IServiceCollection services)
   {
@@ -21,6 +20,11 @@ public class Startup : StartupBase
     IServiceProvider serviceProvider
   )
   {
+    app.UseStaticFiles(new StaticFileOptions
+    {
+      FileProvider = new ManifestEmbeddedFileProvider(typeof(IServerSideBlazorBuilder).Assembly),
+    });
+
     routes.MapBlazorHub();
   }
 }
