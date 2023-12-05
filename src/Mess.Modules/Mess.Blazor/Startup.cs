@@ -1,9 +1,12 @@
-using Mess.Cms.Extensions.Microsoft;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
+
+using MudBlazor.Services;
+
+using Mess.Cms.Extensions.Microsoft;
 
 namespace Mess.Blazor;
 
@@ -13,7 +16,9 @@ public class Startup : OrchardCore.Modules.StartupBase
   {
     services.AddServerSideBlazor();
 
-    services.AddScoped<ScriptMiddleware>();
+    services.AddScoped<ResourceMiddleware>();
+
+    services.AddMudServices();
   }
 
   public override void Configure(
@@ -27,7 +32,7 @@ public class Startup : OrchardCore.Modules.StartupBase
       FileProvider = new ManifestEmbeddedFileProvider(typeof(IServerSideBlazorBuilder).Assembly),
     });
 
-    app.UseMiddleware<ScriptMiddleware>();
+    app.UseMiddleware<ResourceMiddleware>();
 
     routes.MapBlazorHub();
   }
