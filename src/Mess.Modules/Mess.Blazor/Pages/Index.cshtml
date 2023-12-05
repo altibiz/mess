@@ -8,6 +8,6 @@
   ViewData["Title"] = "Blazor demo";
 }
 
-<component>
-  @(await Html.RenderComponentAsync<Counter>(RenderMode.ServerPrerendered))
-</component>
+@(await Html.RenderComponentAsync<Counter>(RenderMode.ServerPrerendered))
+
+@(await Html.RenderComponentAsync<Counter>(RenderMode.ServerPrerendered))

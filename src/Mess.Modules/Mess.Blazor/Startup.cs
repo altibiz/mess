@@ -12,6 +12,8 @@ public class Startup : OrchardCore.Modules.StartupBase
   public override void ConfigureServices(IServiceCollection services)
   {
     services.AddServerSideBlazor();
+
+    services.AddScoped<ScriptMiddleware>();
   }
 
   public override void Configure(
@@ -24,6 +26,8 @@ public class Startup : OrchardCore.Modules.StartupBase
     {
       FileProvider = new ManifestEmbeddedFileProvider(typeof(IServerSideBlazorBuilder).Assembly),
     });
+
+    app.UseMiddleware<ScriptMiddleware>();
 
     routes.MapBlazorHub();
   }
