@@ -57,11 +57,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Management", "src\Mess
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Relational", "src\Mess.Modules\Mess.Relational\Mess.Relational.csproj", "{232B322A-44EF-4F80-84C4-E5A37D30AA84}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.OrchardCore.Test", "test\Mess.OrchardCore.Test\Mess.OrchardCore.Test.csproj", "{01FE96B3-62C0-4E58-BB7A-CE3502CE74EF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Cms.Test", "test\Mess.Cms.Test\Mess.Cms.Test.csproj", "{01FE96B3-62C0-4E58-BB7A-CE3502CE74EF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Prelude", "src\Mess.Prelude\Mess.Prelude.csproj", "{55D9AB09-7931-44F4-8C63-4C4EB0A5DCD0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.OrchardCore", "src\Mess.OrchardCore\Mess.OrchardCore.csproj", "{77FEBFE4-5898-4D83-8EA4-2210D9947AF1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Cms", "src\Mess.Cms\Mess.Cms.csproj", "{77FEBFE4-5898-4D83-8EA4-2210D9947AF1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mess.Prelude.Test", "test\Mess.Prelude.Test\Mess.Prelude.Test.csproj", "{C4A02241-BC11-43E8-AD40-16D900FEEBCD}"
 EndProject
