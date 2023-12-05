@@ -34,4 +34,12 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Components\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Components\**" />
+  </ItemGroup>
+
 </Project>

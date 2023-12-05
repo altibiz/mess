@@ -39,12 +39,10 @@
 
   <ItemGroup>
     <None Remove="Components\**" />
-    <None Remove="Pages\**" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="Components\**" />
-    <Content Include="Pages\**" />
   </ItemGroup>
 
 </Project>
