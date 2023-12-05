@@ -11,13 +11,11 @@
   <PropertyGroup>
     <MessOrchardVersion>1.7.2</MessOrchardVersion>
     <MessEtchVersion>1.6.0</MessEtchVersion>
-    <MessNewtonsoftJsonVersion>13.0.1</MessNewtonsoftJsonVersion>
+    <MessNewtonsoftJsonVersion>13.0.3</MessNewtonsoftJsonVersion>
 
     <!-- NOTE: these are connected -->
     <MessNpgsqlVersion>7.0.4</MessNpgsqlVersion>
-    <MessMartenVersion>6.0.0</MessMartenVersion>
-
-    <MessBlazorWebAssemblyVersion>7.0.14</MessBlazorWebAssemblyVersion>
+    <MessMartenVersion>6.4.0</MessMartenVersion>
   </PropertyGroup>
 
 </Project>
