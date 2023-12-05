@@ -3,34 +3,24 @@
   "isRoot": true,
   "tools": {
     "dotnet-ef": {
-      "version": "8.0.0",
-      "commands": [
-        "dotnet-ef"
-      ]
+      "version": "7.0.14",
+      "commands": ["dotnet-ef"]
     },
     "diffenginetray": {
-      "version": "13.0.2",
-      "commands": [
-        "DiffEngineTray"
-      ]
+      "version": "12.4.2",
+      "commands": ["DiffEngineTray"]
     },
     "powershell": {
-      "version": "7.4.0",
-      "commands": [
-        "pwsh"
-      ]
+      "version": "7.3.10",
+      "commands": ["pwsh"]
     },
     "dotnet-format": {
       "version": "5.1.250801",
-      "commands": [
-        "dotnet-format"
-      ]
+      "commands": ["dotnet-format"]
     },
     "jetbrains.resharper.globaltools": {
       "version": "2023.3.0",
-      "commands": [
-        "jb"
-      ]
+      "commands": ["jb"]
     }
   }
 }
