@@ -1,4 +1,4 @@
-import { cmd, env, task } from "../lib/index";
+import { cmd, env, root, task } from "../lib/index";
 
 export default cmd({
   usage: "format",
@@ -6,7 +6,12 @@ export default cmd({
 })(async () => {
   env("NODE_OPTIONS", "--no-warnings");
 
-  await task("Formatted with dotnet", "dotnet format");
+  await task(
+    "Formatted with resharper",
+    `dotnet jb cleanupcode ${root("Mess.sln")} --no-build -o=${root(
+      ".resharper_out",
+    )}}`,
+  );
 
   await task(
     "Formatted with prettier",

@@ -352,3 +352,6 @@ src/Mess.Web/Internal/Generated/
 
 # Netcoredbg 
 .netcoredbg_hist
+
+# JetBrains ReSharper
+.resharper_out

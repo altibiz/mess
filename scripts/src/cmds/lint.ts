@@ -15,10 +15,8 @@ export default cmd({
     }),
 })(async ({ formatOnly, skipFormat }) => {
   if (!skipFormat) {
-    await task("Linted with csharpier", "dotnet csharpier . --check");
-
     await task(
-      "Linted with prettier",
+      "Linted with formatting",
       "yarn prettier --check" +
         " --ignore-path .prettierignore" +
         " --cache --cache-strategy metadata" +
@@ -28,12 +26,12 @@ export default cmd({
 
   if (!formatOnly) {
     await task("Linted workspaces", "yarn workspaces foreach -ip run lint");
+
     await task(
       "Linted projects",
-      `dotnet build ${root()}` +
-        ` --property "PublishDir=${root("artifacts")}"` +
-        " --property:TreatWarningsAsErrors=true" +
-        " --configuration Release",
+      `dotnet jb inspectcode ${root("Mess.sln")} --no-build -o=${root(
+        ".resharper_out",
+      )}`,
     );
   }
 });
