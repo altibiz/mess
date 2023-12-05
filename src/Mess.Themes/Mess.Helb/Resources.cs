@@ -14,10 +14,6 @@ public class Resources : IConfigureOptions<ResourceManagementOptions>
     _manifest
       .DefineStyle("mess-helb")
       .SetUrl("~/Mess.Helb/assets/styles/helb.css");
-
-    _manifest
-      .DefineScript("mess-helb")
-      .SetUrl("~/Mess.Helb/assets/scripts/helb.js");
   }
 
   public void Configure(ResourceManagementOptions options)

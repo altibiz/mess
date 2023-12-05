@@ -1,1 +1,1 @@
-<partial name="Chart" model="@new ChartViewModel { ContentItemId = Model.ContentItem.ContentItemId, IsPreview = true }"/>
+@(await Html.RenderComponentAsync<Chart>(RenderMode.ServerPrerendered))

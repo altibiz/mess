@@ -3,14 +3,16 @@
   <ItemGroup>
     <PackageReference Include="OrchardCore.ContentFields" Version="$(MessOrchardVersion)" />
     <PackageReference Include="Etch.OrchardCore.Fields" Version="$(MessEtchVersion)" />
+    <PackageReference Include="MudBlazor" Version="$(MessMudblazorVersion)" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Chart.Abstractions/Mess.Chart.Abstractions.csproj" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Fields.Abstractions/Mess.Fields.Abstractions.csproj" />
+    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Blazor.Abstractions/Mess.Blazor.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

@@ -21,6 +21,12 @@ public class ResourceMiddleware
     ShellSettings shellSettings
   )
   {
+    // TODO: check that this doesn't break anything else
+    resourceManager.RegisterHeadScript(
+      new HtmlString(
+        $"<base href='/{shellSettings.GetRequestUrlPrefix()}/' />"
+      )
+    );
     resourceManager.RegisterFootScript(
       new HtmlString(
         "<script src='/"
@@ -34,19 +40,13 @@ public class ResourceMiddleware
         "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap")
       .AddAttribute("rel", "stylesheet")
     );
-
     resourceManager.RegisterLink(new LinkEntry()
-      .AddAttribute("href",
-        "/" + shellSettings.GetRequestUrlPrefix() +
-        "/_content/MudBlazor/MudBlazor.min.css")
+      .AddAttribute("href", "/_content/MudBlazor/MudBlazor.min.css")
       .AddAttribute("rel", "stylesheet")
     );
-
     resourceManager.RegisterFootScript(
       new HtmlString(
-        "<script src='/"
-        + shellSettings.GetRequestUrlPrefix()
-        + "/_content/MudBlazor/MudBlazor.min.js'></script>"
+        "<script src='/_content/MudBlazor/MudBlazor.min.js'></script>"
       )
     );
 

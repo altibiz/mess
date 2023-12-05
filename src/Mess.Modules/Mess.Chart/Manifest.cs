@@ -19,6 +19,7 @@ using ManifestConstants = Mess.Cms.ManifestConstants;
     "OrchardCore.Flows",
     "OrchardCore.Title",
     "Etch.OrchardCore.Fields.Colour",
-    "Mess.Fields"
+    "Mess.Fields",
+    "Mess.Blazor"
   }
 )]
