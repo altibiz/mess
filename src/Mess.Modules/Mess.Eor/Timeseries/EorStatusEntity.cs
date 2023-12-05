@@ -6,49 +6,46 @@ namespace Mess.Eor.Iot;
 
 public class EorStatusEntity : HypertableEntity
 {
-  public int Stamp { get; set; } = default!;
+  public int Stamp { get; set; }
 
-  public int Mode { get; set; } = default!;
+  public int Mode { get; set; }
 
-  public int ProcessFault { get; set; } = default!;
+  public int ProcessFault { get; set; }
 
   public string[] ProcessFaults { get; set; } = default!;
 
-  public int CommunicationFault { get; set; } = default!;
+  public int CommunicationFault { get; set; }
 
-  public EorRunState RunState { get; set; } = default!;
+  public EorRunState RunState { get; set; }
 
-  public EorResetState ResetState { get; set; } = default!;
+  public EorResetState ResetState { get; set; }
 
-  public EorDoorState DoorState { get; set; } = default!;
+  public EorDoorState DoorState { get; set; }
 
-  public EorMainCircuitBreakerState MainCircuitBreakerState { get; set; } =
-    default!;
+  public EorMainCircuitBreakerState MainCircuitBreakerState { get; set; }
 
-  public EorTransformerContractorState TransformerContractorState { get; set; } =
-    default!;
+  public EorTransformerContractorState TransformerContractorState { get; set; }
 
-  public EorDiodeBridgeState FirstDiodeBridgeState { get; set; } = default!;
+  public EorDiodeBridgeState FirstDiodeBridgeState { get; set; }
 
-  public EorDiodeBridgeState SecondDiodeBridgeState { get; set; } = default!;
+  public EorDiodeBridgeState SecondDiodeBridgeState { get; set; }
 
-  [Column(TypeName = "float4")]
-  public float Current { get; set; } = default!;
+  [Column(TypeName = "float4")] public float Current { get; set; }
 
-  [Column(TypeName = "float4")]
-  public float Voltage { get; set; } = default!;
+  [Column(TypeName = "float4")] public float Voltage { get; set; }
 
-  public float Temperature { get; set; } = default!;
+  public float Temperature { get; set; }
 
-  public bool HeatsinkFans { get; set; } = default!;
+  public bool HeatsinkFans { get; set; }
 
-  public bool CoolingFans { get; set; } = default!;
+  public bool CoolingFans { get; set; }
 }
 
 public static class EorStatusEntityExtensions
 {
-  public static EorStatusEntity ToEntity(this EorStatus model) =>
-    new()
+  public static EorStatusEntity ToEntity(this EorStatus model)
+  {
+    return new EorStatusEntity
     {
       Tenant = model.Tenant,
       Source = model.DeviceId,
@@ -71,28 +68,31 @@ public static class EorStatusEntityExtensions
       HeatsinkFans = model.HeatsinkFans,
       CoolingFans = model.CoolingFans
     };
+  }
 
-  public static EorStatus ToModel(this EorStatusEntity entity) =>
-    new(
-      Tenant: entity.Tenant,
-      DeviceId: entity.Source,
-      Stamp: entity.Stamp,
-      Timestamp: entity.Timestamp,
-      Mode: entity.Mode,
-      ProcessFault: entity.ProcessFault,
-      ProcessFaults: entity.ProcessFaults,
-      CommunicationFault: entity.CommunicationFault,
-      RunState: entity.RunState,
-      ResetState: entity.ResetState,
-      DoorState: entity.DoorState,
-      MainCircuitBreakerState: entity.MainCircuitBreakerState,
-      TransformerContractorState: entity.TransformerContractorState,
-      FirstDiodeBridgeState: entity.FirstDiodeBridgeState,
-      SecondDiodeBridgeState: entity.SecondDiodeBridgeState,
-      Current: entity.Current,
-      Voltage: entity.Voltage,
-      Temperature: entity.Temperature,
-      HeatsinkFans: entity.HeatsinkFans,
-      CoolingFans: entity.CoolingFans
+  public static EorStatus ToModel(this EorStatusEntity entity)
+  {
+    return new EorStatus(
+      entity.Tenant,
+      entity.Source,
+      entity.Stamp,
+      entity.Timestamp,
+      entity.Mode,
+      entity.ProcessFault,
+      entity.ProcessFaults,
+      entity.CommunicationFault,
+      entity.RunState,
+      entity.ResetState,
+      entity.DoorState,
+      entity.MainCircuitBreakerState,
+      entity.TransformerContractorState,
+      entity.FirstDiodeBridgeState,
+      entity.SecondDiodeBridgeState,
+      entity.Current,
+      entity.Voltage,
+      entity.Temperature,
+      entity.HeatsinkFans,
+      entity.CoolingFans
     );
+  }
 }

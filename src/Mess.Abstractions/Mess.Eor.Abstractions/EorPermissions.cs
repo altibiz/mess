@@ -24,7 +24,7 @@ public class EorPermissions : IPermissionProvider
         ControlEorIotDevice,
         ControlOwnEorIotDevice,
         ControlOwnedEorIotDevice,
-        ViewOwnedEorIotDevices,
+        ViewOwnedEorIotDevices
       }.AsEnumerable()
     );
   }
@@ -41,7 +41,7 @@ public class EorPermissions : IPermissionProvider
           ControlEorIotDevice,
           ControlOwnEorIotDevice,
           ControlOwnedEorIotDevice,
-          ViewOwnedEorIotDevices,
+          ViewOwnedEorIotDevices
         }
       }
     };

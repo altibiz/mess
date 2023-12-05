@@ -1,5 +1,5 @@
-using Npgsql;
 using Mess.Timeseries.Abstractions.Connection;
+using Npgsql;
 
 namespace Mess.Timeseries.Abstractions.Extensions;
 

@@ -1,8 +1,8 @@
-using Mess.Fields.Abstractions.Fields;
+using Mess.Cms;
 using Mess.Fields.Abstractions.ApiKeys;
+using Mess.Fields.Abstractions.Fields;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Mess.Cms;
 
 namespace Mess.Iot.Abstractions.Services;
 
@@ -29,12 +29,12 @@ public abstract class ApiKeyIotAuthorizationHandler<T>
     var apiKeyField = GetApiKey(contentItem);
 
     var apiKeyFieldService =
-      context.HttpContext.RequestServices.GetRequiredService<IApiKeyFieldService>();
+      context.HttpContext.RequestServices
+        .GetRequiredService<IApiKeyFieldService>();
     var authorized = apiKeyFieldService.Authorize(apiKeyField, apiKey);
     if (!authorized)
     {
       context.Result = new UnauthorizedResult();
-      return;
     }
   }
 
@@ -60,7 +60,8 @@ public abstract class ApiKeyIotAuthorizationHandler<T>
     }
 
     var apiKeyFieldService =
-      context.HttpContext.RequestServices.GetRequiredService<IApiKeyFieldService>();
+      context.HttpContext.RequestServices
+        .GetRequiredService<IApiKeyFieldService>();
     var authorized = await apiKeyFieldService.AuthorizeAsync(
       apiKeyField,
       apiKey
@@ -68,7 +69,6 @@ public abstract class ApiKeyIotAuthorizationHandler<T>
     if (!authorized)
     {
       context.Result = new UnauthorizedResult();
-      return;
     }
   }
 }

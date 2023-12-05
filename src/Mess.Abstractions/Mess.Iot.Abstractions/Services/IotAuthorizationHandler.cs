@@ -7,16 +7,6 @@ namespace Mess.Iot.Abstractions.Services;
 public abstract class IotAuthorizationHandler<T> : IIotAuthorizationHandler
   where T : ContentItemBase
 {
-  protected abstract void Authorize(
-    AuthorizationFilterContext context,
-    T contentItem
-  );
-
-  protected abstract Task AuthorizeAsync(
-    AuthorizationFilterContext context,
-    T contentItem
-  );
-
   public bool IsApplicable(ContentItem contentItem)
   {
     return contentItem.ContentType == typeof(T).ContentTypeName();
@@ -39,4 +29,14 @@ public abstract class IotAuthorizationHandler<T> : IIotAuthorizationHandler
     var item = contentItem.AsContent<T>();
     await AuthorizeAsync(context, item);
   }
+
+  protected abstract void Authorize(
+    AuthorizationFilterContext context,
+    T contentItem
+  );
+
+  protected abstract Task AuthorizeAsync(
+    AuthorizationFilterContext context,
+    T contentItem
+  );
 }

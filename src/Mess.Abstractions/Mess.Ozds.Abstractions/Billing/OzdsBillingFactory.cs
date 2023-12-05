@@ -1,6 +1,6 @@
 using Mess.Billing.Abstractions.Services;
-using Mess.Iot.Abstractions.Models;
 using Mess.Cms;
+using Mess.Iot.Abstractions.Models;
 using Mess.Ozds.Abstractions.Indexes;
 using Mess.Ozds.Abstractions.Models;
 using OrchardCore.ContentManagement;
@@ -14,17 +14,15 @@ namespace Mess.Ozds.Abstractions.Billing;
 public abstract class OzdsBillingFactory<T> : IBillingFactory
   where T : ContentItemBase
 {
-  protected abstract OzdsBillingData? FetchBillingData(
-    T measurementDeviceItem,
-    DateTimeOffset fromDate,
-    DateTimeOffset toDate
-  );
+  private readonly IContentManager _contnetManager;
 
-  protected abstract Task<OzdsBillingData?> FetchBillingDataAsync(
-    T measurementDeviceItem,
-    DateTimeOffset fromDate,
-    DateTimeOffset toDate
-  );
+  private readonly ISession _session;
+
+  protected OzdsBillingFactory(IContentManager contentManager, ISession session)
+  {
+    _contnetManager = contentManager;
+    _session = session;
+  }
 
   public ContentItem CreateInvoice(
     ContentItem contentItem,
@@ -80,7 +78,8 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
     var regulatoryAgencyCatalogueItem =
       _contnetManager
         .GetContentAsync<RegulatoryAgencyCatalogueItem>(
-          operatorItem.DistributionSystemOperatorPart.Value.RegulatoryAgencyCatalogue.ContentItemIds.First()
+          operatorItem.DistributionSystemOperatorPart.Value
+            .RegulatoryAgencyCatalogue.ContentItemIds.First()
         )
         .Result
       ?? throw new InvalidOperationException(
@@ -191,7 +190,8 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
 
     var regulatoryAgencyCatalogueItem =
       await _contnetManager.GetContentAsync<RegulatoryAgencyCatalogueItem>(
-        operatorItem.DistributionSystemOperatorPart.Value.RegulatoryAgencyCatalogue.ContentItemIds.First()
+        operatorItem.DistributionSystemOperatorPart.Value
+          .RegulatoryAgencyCatalogue.ContentItemIds.First()
       )
       ?? throw new InvalidOperationException(
         "Regulatory agency catalogue not found"
@@ -306,7 +306,8 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
     var regulatoryAgencyCatalogueItem =
       _contnetManager
         .GetContentAsync<RegulatoryAgencyCatalogueItem>(
-          operatorItem.DistributionSystemOperatorPart.Value.RegulatoryAgencyCatalogue.ContentItemIds.First()
+          operatorItem.DistributionSystemOperatorPart.Value
+            .RegulatoryAgencyCatalogue.ContentItemIds.First()
         )
         .Result
       ?? throw new InvalidOperationException(
@@ -406,7 +407,8 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
 
     var regulatoryAgencyCatalogueItem =
       await _contnetManager.GetContentAsync<RegulatoryAgencyCatalogueItem>(
-        operatorItem.DistributionSystemOperatorPart.Value.RegulatoryAgencyCatalogue.ContentItemIds.First()
+        operatorItem.DistributionSystemOperatorPart.Value
+          .RegulatoryAgencyCatalogue.ContentItemIds.First()
       )
       ?? throw new InvalidOperationException(
         "Regulatory agency catalogue not found"
@@ -456,6 +458,18 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
     return contentItem.ContentType == typeof(T).ContentTypeName();
   }
 
+  protected abstract OzdsBillingData? FetchBillingData(
+    T measurementDeviceItem,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  );
+
+  protected abstract Task<OzdsBillingData?> FetchBillingDataAsync(
+    T measurementDeviceItem,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  );
+
   private static OzdsCalculationData CreateCalculationData(
     DateTimeOffset fromDate,
     DateTimeOffset toDate,
@@ -474,10 +488,10 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
     );
 
     return new OzdsCalculationData(
-      From: fromDate,
-      To: toDate,
-      UsageExpenditure: usageExpenditure,
-      SupplyExpenditure: supplyExpenditure
+      fromDate,
+      toDate,
+      usageExpenditure,
+      supplyExpenditure
     );
   }
 
@@ -496,11 +510,11 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
       highTariffEnergyPrice == 0.0M
         ? null
         : new OzdsExpenditureItemData(
-          ValueFrom: billingData.StartHighTariffEnergy_kWh,
-          ValueTo: billingData.EndHighTariffEnergy_kWh,
-          Amount: highTariffEnergyAmount,
-          UnitPrice: highTariffEnergyPrice,
-          Total: highTariffEnergyTotal
+          billingData.StartHighTariffEnergy_kWh,
+          billingData.EndHighTariffEnergy_kWh,
+          highTariffEnergyAmount,
+          highTariffEnergyPrice,
+          highTariffEnergyTotal
         );
 
     var lowTariffEnergyPrice =
@@ -512,11 +526,11 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
       lowTariffEnergyPrice == 0.0M
         ? null
         : new OzdsExpenditureItemData(
-          ValueFrom: billingData.StartLowTariffEnergy_kWh,
-          ValueTo: billingData.EndLowTariffEnergy_kWh,
-          Amount: lowTariffEnergyAmount,
-          UnitPrice: lowTariffEnergyPrice,
-          Total: lowTariffEnergyTotal
+          billingData.StartLowTariffEnergy_kWh,
+          billingData.EndLowTariffEnergy_kWh,
+          lowTariffEnergyAmount,
+          lowTariffEnergyPrice,
+          lowTariffEnergyTotal
         );
 
     var energyPrice =
@@ -528,11 +542,11 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
       energyPrice == 0.0M
         ? null
         : new OzdsExpenditureItemData(
-          ValueFrom: billingData.StartEnergyTotal_kWh,
-          ValueTo: billingData.EndEnergyTotal_kWh,
-          Amount: energyAmount,
-          UnitPrice: energyPrice,
-          Total: energyTotal
+          billingData.StartEnergyTotal_kWh,
+          billingData.EndEnergyTotal_kWh,
+          energyAmount,
+          energyPrice,
+          energyTotal
         );
 
     var maxPowerPrice =
@@ -543,11 +557,11 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
       maxPowerPrice == 0.0M
         ? null
         : new OzdsExpenditureItemData(
-          ValueFrom: 0.0M,
-          ValueTo: 0.0M,
-          Amount: maxPowerAmount,
-          UnitPrice: maxPowerPrice,
-          Total: maxPowerTotal
+          0.0M,
+          0.0M,
+          maxPowerAmount,
+          maxPowerPrice,
+          maxPowerTotal
         );
 
     var iotDeviceFeePrice =
@@ -558,24 +572,24 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
       iotDeviceFeePrice == 0.0M
         ? null
         : new OzdsExpenditureItemData(
-          ValueFrom: 0.0M,
-          ValueTo: 0.0M,
-          Amount: iotDeviceFeeAmount,
-          UnitPrice: iotDeviceFeePrice,
-          Total: iotDeviceFeeTotal
+          0.0M,
+          0.0M,
+          iotDeviceFeeAmount,
+          iotDeviceFeePrice,
+          iotDeviceFeeTotal
         );
 
     return new OzdsExpenditureData(
-      HighEnergyItem: highTariffEnergyItem,
-      LowEnergyItem: lowTariffEnergyItem,
-      EnergyItem: energyItem,
-      MaxPowerItem: maxPowerItem,
-      IotDeviceFee: iotDeviceFee,
-      Total: (highTariffEnergyItem?.Total ?? 0.0M)
-        + (lowTariffEnergyItem?.Total ?? 0.0M)
-        + (energyItem?.Total ?? 0.0M)
-        + (maxPowerItem?.Total ?? 0.0M)
-        + (iotDeviceFee?.Total ?? 0.0M)
+      highTariffEnergyItem,
+      lowTariffEnergyItem,
+      energyItem,
+      maxPowerItem,
+      iotDeviceFee,
+      (highTariffEnergyItem?.Total ?? 0.0M)
+      + (lowTariffEnergyItem?.Total ?? 0.0M)
+      + (energyItem?.Total ?? 0.0M)
+      + (maxPowerItem?.Total ?? 0.0M)
+      + (iotDeviceFee?.Total ?? 0.0M)
     );
   }
 
@@ -620,9 +634,9 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
       renewableEnergyFeePrice == 0.0M
         ? null
         : new OzdsInvoiceFeeData(
-          Amount: renewableEnergyFeeAmount,
-          UnitPrice: renewableEnergyFeePrice,
-          Total: renewableEnergyFeeAmount * renewableEnergyFeePrice
+          renewableEnergyFeeAmount,
+          renewableEnergyFeePrice,
+          renewableEnergyFeeAmount * renewableEnergyFeePrice
         );
 
     var businessUsageFeePrice =
@@ -640,9 +654,9 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
       businessUsageFeePrice == 0.0M
         ? null
         : new OzdsInvoiceFeeData(
-          Amount: businessUsageFeeAmount,
-          UnitPrice: businessUsageFeePrice,
-          Total: businessUsageFeeAmount * businessUsageFeePrice
+          businessUsageFeeAmount,
+          businessUsageFeePrice,
+          businessUsageFeeAmount * businessUsageFeePrice
         );
 
     var total =
@@ -659,16 +673,16 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
     var totalWithTax = total + tax;
 
     return new OzdsInvoiceData(
-      From: calculationData.From,
-      To: calculationData.To,
-      UsageFee: usageFee,
-      SupplyFee: supplyFee,
-      RenewableEnergyFee: renewableEnergyFeeItem,
-      BusinessUsageFee: businessUsageFeeItem,
-      Total: total,
-      TaxRate: taxRate,
-      Tax: tax,
-      TotalWithTax: totalWithTax
+      calculationData.From,
+      calculationData.To,
+      usageFee,
+      supplyFee,
+      renewableEnergyFeeItem,
+      businessUsageFeeItem,
+      total,
+      taxRate,
+      tax,
+      totalWithTax
     );
   }
 
@@ -686,31 +700,31 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
       invoiceData.RenewableEnergyFee == null
         ? null
         : new OzdsReceiptFeeData(
-          Amount: invoiceData.RenewableEnergyFee.Amount,
-          UnitPrice: invoiceData.RenewableEnergyFee.UnitPrice,
-          Total: invoiceData.RenewableEnergyFee.Total
+          invoiceData.RenewableEnergyFee.Amount,
+          invoiceData.RenewableEnergyFee.UnitPrice,
+          invoiceData.RenewableEnergyFee.Total
         );
 
     var businessUsageFee =
       invoiceData.BusinessUsageFee == null
         ? null
         : new OzdsReceiptFeeData(
-          Amount: invoiceData.BusinessUsageFee.Amount,
-          UnitPrice: invoiceData.BusinessUsageFee.UnitPrice,
-          Total: invoiceData.BusinessUsageFee.Total
+          invoiceData.BusinessUsageFee.Amount,
+          invoiceData.BusinessUsageFee.UnitPrice,
+          invoiceData.BusinessUsageFee.Total
         );
 
     return new OzdsReceiptData(
-      From: invoiceData.From,
-      To: invoiceData.To,
-      UsageFee: invoiceData.UsageFee,
-      SupplyFee: invoiceData.SupplyFee,
-      RenewableEnergyFee: renewableEnergyFee,
-      BusinessUsageFee: businessUsageFee,
-      Total: invoiceData.Total,
-      TaxRate: invoiceData.TaxRate,
-      Tax: invoiceData.Tax,
-      TotalWithTax: invoiceData.TotalWithTax
+      invoiceData.From,
+      invoiceData.To,
+      invoiceData.UsageFee,
+      invoiceData.SupplyFee,
+      renewableEnergyFee,
+      businessUsageFee,
+      invoiceData.Total,
+      invoiceData.TaxRate,
+      invoiceData.Tax,
+      invoiceData.TotalWithTax
     );
   }
 
@@ -720,14 +734,4 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
   {
     return CreateReceiptData(invoiceData);
   }
-
-  protected OzdsBillingFactory(IContentManager contentManager, ISession session)
-  {
-    _contnetManager = contentManager;
-    _session = session;
-  }
-
-  private readonly IContentManager _contnetManager;
-
-  private readonly ISession _session;
 }

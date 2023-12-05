@@ -5,11 +5,12 @@ namespace Xunit;
 
 [AttributeUsage(
   AttributeTargets.Method,
-  AllowMultiple = true,
-  Inherited = true
-)]
+  AllowMultiple = true)]
 public class StaticDataAttribute : DataAttribute
 {
+  private readonly Type? _class;
+  private readonly string _field;
+
   public StaticDataAttribute(Type @class, string field)
   {
     _class = @class;
@@ -23,7 +24,9 @@ public class StaticDataAttribute : DataAttribute
 
   public override IEnumerable<object[]> GetData(MethodInfo testMethod)
   {
-    var @class = (_class ?? testMethod.DeclaringType) ?? throw new InvalidOperationException("Couldn't instantiate data");
+    var @class = (_class ?? testMethod.DeclaringType) ??
+                 throw new InvalidOperationException(
+                   "Couldn't instantiate data");
 
     var field = @class.GetField(
       _field,
@@ -38,7 +41,4 @@ public class StaticDataAttribute : DataAttribute
       _ => throw new InvalidOperationException("Couldn't instantiate data")
     };
   }
-
-  private readonly Type? _class;
-  private readonly string _field;
 }

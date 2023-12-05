@@ -7,11 +7,9 @@ namespace Mess.Fields.ViewModels;
 
 public class IntervalFieldViewModel
 {
-  [ValidateNever]
-  public IntervalField Field { get; set; } = default!;
+  [ValidateNever] public IntervalField Field { get; set; } = default!;
 
-  [ValidateNever]
-  public ContentPart Part { get; set; } = default!;
+  [ValidateNever] public ContentPart Part { get; set; } = default!;
 
   [ValidateNever]
   public ContentPartFieldDefinition PartFieldDefinition { get; set; } =

@@ -1,7 +1,7 @@
+using Mess.Relational.Abstractions.Migrations;
+using Mess.Timeseries.Abstractions.Connection;
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.Modules;
-using Mess.Timeseries.Abstractions.Connection;
-using Mess.Relational.Abstractions.Migrations;
 
 namespace Mess.Timeseries;
 

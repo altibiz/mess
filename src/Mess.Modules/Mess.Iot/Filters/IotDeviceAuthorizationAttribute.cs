@@ -1,5 +1,5 @@
-using Mess.Iot.Abstractions.Services;
 using Mess.Iot.Abstractions.Caches;
+using Mess.Iot.Abstractions.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,10 +7,9 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Mess.Iot.Filters;
 
 [AttributeUsage(
-  AttributeTargets.Class | AttributeTargets.Method,
-  Inherited = true
-)]
-public class IotDeviceAuthorizationAttribute : Attribute, IAsyncAuthorizationFilter
+  AttributeTargets.Class | AttributeTargets.Method)]
+public class IotDeviceAuthorizationAttribute : Attribute,
+  IAsyncAuthorizationFilter
 {
   public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
   {
@@ -21,7 +20,8 @@ public class IotDeviceAuthorizationAttribute : Attribute, IAsyncAuthorizationFil
     }
 
     var cache =
-      context.HttpContext.RequestServices.GetRequiredService<IIotDeviceContentItemCache>();
+      context.HttpContext.RequestServices
+        .GetRequiredService<IIotDeviceContentItemCache>();
     var contentItem = await cache.GetIotDeviceAsync(deviceId);
     if (contentItem is null)
     {
@@ -35,7 +35,7 @@ public class IotDeviceAuthorizationAttribute : Attribute, IAsyncAuthorizationFil
         .FirstOrDefault(handler => handler.IsApplicable(contentItem))
       ?? throw new NotImplementedException(
         "No measurement device authorization handler for "
-          + contentItem.ContentType
+        + contentItem.ContentType
       );
 
     await handler.AuthorizeAsync(context, contentItem);

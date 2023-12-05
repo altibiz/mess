@@ -1,5 +1,5 @@
-using Npgsql;
 using Mess.Timeseries.Abstractions.Connection;
+using Npgsql;
 using OrchardCore.Environment.Shell.Scope;
 
 namespace Mess.Timeseries;
@@ -9,10 +9,7 @@ public sealed class TimeseriesDbConnection
     IDisposable,
     IAsyncDisposable
 {
-  public NpgsqlConnection Value => _value
-      ?? throw new InvalidOperationException(
-        "Connection has already been disposed"
-      );
+  private NpgsqlConnection? _value;
 
   public TimeseriesDbConnection()
   {
@@ -23,7 +20,14 @@ public sealed class TimeseriesDbConnection
     );
   }
 
-  private NpgsqlConnection? _value;
+  public async ValueTask DisposeAsync()
+  {
+    if (_value is not null)
+    {
+      await _value.DisposeAsync();
+      _value = null;
+    }
+  }
 
   public void Dispose()
   {
@@ -34,12 +38,8 @@ public sealed class TimeseriesDbConnection
     }
   }
 
-  public async ValueTask DisposeAsync()
-  {
-    if (_value is not null)
-    {
-      await _value.DisposeAsync();
-      _value = null;
-    }
-  }
+  public NpgsqlConnection Value => _value
+                                   ?? throw new InvalidOperationException(
+                                     "Connection has already been disposed"
+                                   );
 }

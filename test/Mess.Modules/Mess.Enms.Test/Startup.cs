@@ -1,13 +1,13 @@
-using Mess.Event.Test.Abstractions.Extensions;
-using Mess.Timeseries.Test.Abstractions.Extensions;
-using Mess.Iot.Abstractions.Services;
-using Moq;
 using Mess.Enms.Abstractions.Timeseries;
 using Mess.Enms.Iot;
+using Mess.Event.Test.Abstractions.Extensions;
+using Mess.Iot.Abstractions.Services;
+using Mess.Timeseries.Test.Abstractions.Extensions;
+using Moq;
 
 namespace Mess.Enms.Test;
 
-public class Startup : Mess.Cms.Test.Startup
+public class Startup : Cms.Test.Startup
 {
   public override void ConfigureServices(
     IServiceCollection services,

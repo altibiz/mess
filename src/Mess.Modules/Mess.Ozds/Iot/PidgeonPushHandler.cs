@@ -1,17 +1,38 @@
 using Mess.Event.Abstractions.Client;
-using Mess.Iot.Abstractions.Services;
 using Mess.Iot.Abstractions.Caches;
+using Mess.Iot.Abstractions.Services;
+using Mess.Ozds.Abstractions.Models;
 using Mess.Ozds.Event;
 using Microsoft.Extensions.DependencyInjection;
-using OrchardCore.Environment.Shell;
-using Mess.Ozds.Abstractions.Models;
 using Microsoft.Extensions.Logging;
+using OrchardCore.Environment.Shell;
 
 namespace Mess.Ozds.Iot;
 
 public class PidgeonPushHandler
   : JsonIotPushHandler<PidgeonIotDeviceItem, PidgeonPushRequest>
 {
+  private readonly IIotDeviceContentItemCache _cache;
+
+  private readonly ILogger _logger;
+
+  private readonly IServiceProvider _services;
+
+  private readonly IShellFeaturesManager _shellFeaturesManager;
+
+  public PidgeonPushHandler(
+    IIotDeviceContentItemCache cache,
+    IServiceProvider services,
+    IShellFeaturesManager shellFeaturesManager,
+    ILogger<PidgeonPushHandler> logger
+  )
+  {
+    _cache = cache;
+    _services = services;
+    _shellFeaturesManager = shellFeaturesManager;
+    _logger = logger;
+  }
+
   protected override void Handle(
     string deviceId,
     string tenant,
@@ -29,10 +50,10 @@ public class PidgeonPushHandler
           .Select(
             measurement =>
               new PidgeonMeasured(
-                Tenant: tenant,
-                Timestamp: measurement.Timestamp,
-                DeviceId: measurement.DeviceId,
-                Payload: measurement.Data
+                tenant,
+                measurement.Timestamp,
+                measurement.DeviceId,
+                measurement.Data
               )
           )
           .ToArray()
@@ -105,10 +126,10 @@ public class PidgeonPushHandler
           .Select(
             measurement =>
               new PidgeonMeasured(
-                Tenant: tenant,
-                Timestamp: measurement.Timestamp,
-                DeviceId: measurement.DeviceId,
-                Payload: measurement.Data
+                tenant,
+                measurement.Timestamp,
+                measurement.DeviceId,
+                measurement.Data
               )
           )
           .ToArray()
@@ -165,25 +186,4 @@ public class PidgeonPushHandler
       }
     }
   }
-
-  public PidgeonPushHandler(
-    IIotDeviceContentItemCache cache,
-    IServiceProvider services,
-    IShellFeaturesManager shellFeaturesManager,
-    ILogger<PidgeonPushHandler> logger
-  )
-  {
-    _cache = cache;
-    _services = services;
-    _shellFeaturesManager = shellFeaturesManager;
-    _logger = logger;
-  }
-
-  private readonly IIotDeviceContentItemCache _cache;
-
-  private readonly IServiceProvider _services;
-
-  private readonly IShellFeaturesManager _shellFeaturesManager;
-
-  private readonly ILogger _logger;
 }

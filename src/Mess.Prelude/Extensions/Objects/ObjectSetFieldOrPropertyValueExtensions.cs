@@ -10,10 +10,7 @@ public static class ObjectSetFieldOrPropertyValueExtensions
     TValue value
   )
   {
-    if (@this is null)
-    {
-      throw new ArgumentNullException(nameof(@this));
-    }
+    if (@this is null) throw new ArgumentNullException(nameof(@this));
 
     var type = @this.GetType();
     return SetFieldValue(@this, type, fieldOrPropertyName, value);
@@ -31,9 +28,7 @@ public static class ObjectSetFieldOrPropertyValueExtensions
       BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance
     );
     if (field is null)
-    {
       return SetPropertyValue(@this, type, fieldOrPropertyName, value);
-    }
 
     var previous = field.GetValue(@this);
     field.SetValue(@this, value);
@@ -52,10 +47,7 @@ public static class ObjectSetFieldOrPropertyValueExtensions
       fieldOrPropertyName,
       BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance
     );
-    if (property is null)
-    {
-      return default;
-    }
+    if (property is null) return default;
 
     var previous = property.GetValue(@this);
     property.SetValue(@this, value);

@@ -4,35 +4,32 @@ using OrchardCore.ContentManagement.Metadata.Models;
 using OrchardCore.ContentTypes.Editors;
 using OrchardCore.DisplayManagement.Views;
 
-namespace OrchardCore.ContentFields.Settings
+namespace OrchardCore.ContentFields.Settings;
+
+public class ApiKeyFieldSettingsDriver
+  : ContentPartFieldDefinitionDisplayDriver<ApiKeyField>
 {
-  public class ApiKeyFieldSettingsDriver
-    : ContentPartFieldDefinitionDisplayDriver<ApiKeyField>
+  public override IDisplayResult Edit(
+    ContentPartFieldDefinition model
+  )
   {
-    public override IDisplayResult Edit(
-      ContentPartFieldDefinition model
-    )
-    {
-      return Initialize<ApiKeyFieldSettings>(
-          "ApiKeyFieldSettings_Edit",
-          model => model.PopulateSettings(model)
-        )
-        .Location("Content");
-    }
+    return Initialize<ApiKeyFieldSettings>(
+        "ApiKeyFieldSettings_Edit",
+        model => model.PopulateSettings(model)
+      )
+      .Location("Content");
+  }
 
-    public override async Task<IDisplayResult> UpdateAsync(
-      ContentPartFieldDefinition model,
-      UpdatePartFieldEditorContext context
-    )
-    {
-      var settings = new ApiKeyFieldSettings();
+  public override async Task<IDisplayResult> UpdateAsync(
+    ContentPartFieldDefinition model,
+    UpdatePartFieldEditorContext context
+  )
+  {
+    var settings = new ApiKeyFieldSettings();
 
-      if (await context.Updater.TryUpdateModelAsync(settings, Prefix))
-      {
-        context.Builder.WithSettings(settings);
-      }
+    if (await context.Updater.TryUpdateModelAsync(settings, Prefix))
+      context.Builder.WithSettings(settings);
 
-      return Edit(model);
-    }
+    return Edit(model);
   }
 }

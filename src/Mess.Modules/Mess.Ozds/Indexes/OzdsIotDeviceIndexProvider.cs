@@ -1,13 +1,12 @@
+using Mess.Cms;
 using Mess.Iot.Abstractions.Models;
 using Mess.Ozds.Abstractions.Indexes;
 using Mess.Ozds.Abstractions.Models;
-using Mess.Cms.Extensions.Microsoft;
-using Mess.Cms;
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.ContentManagement;
-using YesSql.Indexes;
-using OrchardCore.Lists.Models;
 using OrchardCore.Data;
+using OrchardCore.Lists.Models;
+using YesSql.Indexes;
 
 namespace Mess.Ozds.Indexes;
 
@@ -15,6 +14,13 @@ public class OzdsIotDeviceIndexProvider
   : IndexProvider<ContentItem>,
     IScopedIndexProvider
 {
+  private readonly IServiceProvider _serviceProvider;
+
+  public OzdsIotDeviceIndexProvider(IServiceProvider serviceProvider)
+  {
+    _serviceProvider = serviceProvider;
+  }
+
   public override void Describe(DescribeContext<ContentItem> context)
   {
     context
@@ -90,11 +96,4 @@ public class OzdsIotDeviceIndexProvider
         };
       });
   }
-
-  public OzdsIotDeviceIndexProvider(IServiceProvider serviceProvider)
-  {
-    _serviceProvider = serviceProvider;
-  }
-
-  private readonly IServiceProvider _serviceProvider;
 }

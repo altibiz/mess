@@ -6,19 +6,18 @@ namespace Mess.Enms.Timeseries;
 
 public class EgaugeMeasurementEntity : HypertableEntity
 {
-  [Column(TypeName = "float4")]
-  public float Power { get; set; } = default!;
+  [Column(TypeName = "float4")] public float Power { get; set; }
 
-  [Column(TypeName = "float4")]
-  public float Voltage { get; set; } = default!;
+  [Column(TypeName = "float4")] public float Voltage { get; set; }
 }
 
 public static class EgaugeMeasurementEntityExtensions
 {
   public static EgaugeMeasurementEntity ToEntity(
     this EgaugeMeasurement model
-  ) =>
-    new()
+  )
+  {
+    return new EgaugeMeasurementEntity
     {
       Tenant = model.Tenant,
       Timestamp = model.Timestamp,
@@ -26,15 +25,18 @@ public static class EgaugeMeasurementEntityExtensions
       Voltage = model.Voltage,
       Power = model.Power
     };
+  }
 
   public static EgaugeMeasurement ToModel(
     this EgaugeMeasurementEntity entity
-  ) =>
-    new(
-      Tenant: entity.Tenant,
-      DeviceId: entity.Source,
-      Timestamp: entity.Timestamp,
+  )
+  {
+    return new EgaugeMeasurement(
+      entity.Tenant,
+      entity.Source,
+      entity.Timestamp,
       Power: entity.Power,
       Voltage: entity.Voltage
     );
+  }
 }

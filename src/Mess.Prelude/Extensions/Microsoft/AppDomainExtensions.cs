@@ -4,8 +4,18 @@ namespace Mess.Prelude.Extensions.Microsoft;
 
 public static class AppDomainExtensions
 {
-  public static Type? FindTypeByName(this AppDomain domain, string name) =>
-    _typeByNameCache.GetOrAdd(
+  private static readonly ConcurrentDictionary<string, Type?> _typeByNameCache =
+    new();
+
+  private static readonly ConcurrentDictionary<
+    Type,
+    IReadOnlyList<Type>
+  > _typesAssignableToCache =
+    new();
+
+  public static Type? FindTypeByName(this AppDomain domain, string name)
+  {
+    return _typeByNameCache.GetOrAdd(
       name,
       name =>
         domain
@@ -13,14 +23,13 @@ public static class AppDomainExtensions
           .SelectMany(assembly => assembly.GetTypes())
           .FirstOrDefault(type => type.FullName == name)
     );
-
-  private static readonly ConcurrentDictionary<string, Type?> _typeByNameCache =
-    new();
+  }
 
   public static IReadOnlyList<Type> FindTypesAssignableTo<T>(
     this AppDomain domain
-  ) =>
-    _typesAssignableToCache.GetOrAdd(
+  )
+  {
+    return _typesAssignableToCache.GetOrAdd(
       typeof(T),
       type =>
         domain
@@ -29,10 +38,5 @@ public static class AppDomainExtensions
           .Where(type => type.IsAssignableTo(typeof(T)))
           .ToList()
     );
-
-  private static readonly ConcurrentDictionary<
-    Type,
-    IReadOnlyList<Type>
-  > _typesAssignableToCache =
-    new();
+  }
 }

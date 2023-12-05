@@ -6,22 +6,6 @@ namespace Mess.Iot.Abstractions.Services;
 public abstract class IotUpdateHandler<T> : IIotUpdateHandler
   where T : ContentItemBase
 {
-  protected abstract void Handle(
-    string deviceId,
-    string tenant,
-    DateTimeOffset timestamp,
-    T contentItem,
-    string request
-  );
-
-  protected abstract Task HandleAsync(
-    string deviceId,
-    string tenant,
-    DateTimeOffset timestamp,
-    T contentItem,
-    string request
-  );
-
   public void Handle(
     string deviceId,
     string tenant,
@@ -47,4 +31,20 @@ public abstract class IotUpdateHandler<T> : IIotUpdateHandler
   }
 
   public string ContentType => typeof(T).ContentTypeName();
+
+  protected abstract void Handle(
+    string deviceId,
+    string tenant,
+    DateTimeOffset timestamp,
+    T contentItem,
+    string request
+  );
+
+  protected abstract Task HandleAsync(
+    string deviceId,
+    string tenant,
+    DateTimeOffset timestamp,
+    T contentItem,
+    string request
+  );
 }

@@ -5,17 +5,17 @@ public static class ObjectGetFieldOrPropertyValueExtensions
   public static object? GetFieldOrPropertyValue<TObject>(
     this TObject @this,
     string fieldOrPropertyName
-  ) => GetFieldOrPropertyValue<TObject, object>(@this, fieldOrPropertyName);
+  )
+  {
+    return GetFieldOrPropertyValue<TObject, object>(@this, fieldOrPropertyName);
+  }
 
   public static TValue? GetFieldOrPropertyValue<TObject, TValue>(
     this TObject @this,
     string fieldOrPropertyName
   )
   {
-    if (@this is null)
-    {
-      throw new ArgumentNullException(nameof(@this));
-    }
+    if (@this is null) throw new ArgumentNullException(nameof(@this));
 
     var type = @this.GetType();
     return GetFieldValue<TObject, TValue>(@this, type, fieldOrPropertyName);
@@ -29,13 +29,12 @@ public static class ObjectGetFieldOrPropertyValueExtensions
   {
     var field = type.GetField(fieldOrPropertyName);
     if (field is null || field.FieldType != typeof(TValue))
-    {
-      return GetPropertyValue<TObject, TValue>(@this, type, fieldOrPropertyName);
-    }
+      return GetPropertyValue<TObject, TValue>(@this, type,
+        fieldOrPropertyName);
 
-    var @value = field.GetValue(@this);
+    var value = field.GetValue(@this);
 
-    return @value is null ? default : (TValue)@value;
+    return value is null ? default : (TValue)value;
   }
 
   private static TValue? GetPropertyValue<TObject, TValue>(
@@ -45,13 +44,10 @@ public static class ObjectGetFieldOrPropertyValueExtensions
   )
   {
     var property = type.GetProperty(fieldOrPropertyName);
-    if (property is null)
-    {
-      return default;
-    }
+    if (property is null) return default;
 
-    var @value = property.GetValue(@this);
+    var value = property.GetValue(@this);
 
-    return @value is null ? default : (TValue)@value;
+    return value is null ? default : (TValue)value;
   }
 }

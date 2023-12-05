@@ -1,7 +1,7 @@
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using Mess.Fields.Abstractions.Fields;
 using Mess.Fields.Abstractions.ApiKeys;
+using Mess.Fields.Abstractions.Fields;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
 namespace Mess.Iot.Security;
@@ -12,27 +12,27 @@ public class ApiKeyFieldService : IApiKeyFieldService
 {
   public byte[] GenerateApiKeySalt()
   {
-    byte[] salt = RandomNumberGenerator.GetBytes(128 / 8);
+    var salt = RandomNumberGenerator.GetBytes(128 / 8);
 
     return salt;
   }
 
   public async Task<byte[]> GenerateApiKeySaltAsync()
   {
-    byte[] salt = RandomNumberGenerator.GetBytes(128 / 8);
+    var salt = RandomNumberGenerator.GetBytes(128 / 8);
 
     return salt;
   }
 
   public async Task<string> HashApiKeyAsync(string apiKey, byte[] salt)
   {
-    string hashed = Convert.ToBase64String(
+    var hashed = Convert.ToBase64String(
       KeyDerivation.Pbkdf2(
-        password: apiKey!,
-        salt: salt,
-        prf: KeyDerivationPrf.HMACSHA256,
-        iterationCount: 100000,
-        numBytesRequested: 256 / 8
+        apiKey!,
+        salt,
+        KeyDerivationPrf.HMACSHA256,
+        100000,
+        256 / 8
       )
     );
 
@@ -41,13 +41,13 @@ public class ApiKeyFieldService : IApiKeyFieldService
 
   public string HashApiKey(string apiKey, byte[] salt)
   {
-    string hashed = Convert.ToBase64String(
+    var hashed = Convert.ToBase64String(
       KeyDerivation.Pbkdf2(
-        password: apiKey!,
-        salt: salt,
-        prf: KeyDerivationPrf.HMACSHA256,
-        iterationCount: 100000,
-        numBytesRequested: 256 / 8
+        apiKey!,
+        salt,
+        KeyDerivationPrf.HMACSHA256,
+        100000,
+        256 / 8
       )
     );
 

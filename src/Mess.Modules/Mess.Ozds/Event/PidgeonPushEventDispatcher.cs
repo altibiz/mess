@@ -1,6 +1,6 @@
 using Mess.Event.Abstractions.Services;
-using Mess.Iot.Abstractions.Services;
 using Mess.Iot.Abstractions.Caches;
+using Mess.Iot.Abstractions.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using YesSql;
@@ -20,20 +20,14 @@ public class PidgeonPushEventDispatcher : IEventDispatcher
     foreach (var @event in events.OfType<PidgeonMeasured>())
     {
       var contentItem = cache.GetIotDevice(@event.DeviceId);
-      if (contentItem is null)
-      {
-        continue;
-      }
+      if (contentItem is null) continue;
 
       var handler = services
         .GetServices<IIotPushHandler>()
         .FirstOrDefault(
           handler => handler.ContentType == contentItem.ContentType
         );
-      if (handler is null)
-      {
-        continue;
-      }
+      if (handler is null) continue;
 
       handler.Handle(
         @event.DeviceId,
@@ -62,20 +56,14 @@ public class PidgeonPushEventDispatcher : IEventDispatcher
     foreach (var @event in events.OfType<PidgeonMeasured>())
     {
       var contentItem = await cache.GetIotDeviceAsync(@event.DeviceId);
-      if (contentItem is null)
-      {
-        continue;
-      }
+      if (contentItem is null) continue;
 
       var handler = services
         .GetServices<IIotPushHandler>()
         .FirstOrDefault(
           handler => handler.ContentType == contentItem.ContentType
         );
-      if (handler is null)
-      {
-        continue;
-      }
+      if (handler is null) continue;
 
       await handler.HandleAsync(
         @event.DeviceId,

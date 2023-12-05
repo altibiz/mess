@@ -6,8 +6,10 @@ namespace Mess.Prelude.Json;
 
 public class TupleJsonConverterFactory : JsonConverterFactory
 {
-  public override bool CanConvert(Type typeToConvert) =>
-    typeof(ITuple).IsAssignableFrom(typeToConvert);
+  public override bool CanConvert(Type typeToConvert)
+  {
+    return typeof(ITuple).IsAssignableFrom(typeToConvert);
+  }
 
   public override JsonConverter CreateConverter(
     Type typeToConvert,
@@ -18,6 +20,36 @@ public class TupleJsonConverterFactory : JsonConverterFactory
       Activator.CreateInstance(
         typeof(ValueTupleConverter<>).MakeGenericType(typeToConvert)
       )!;
+  }
+
+  private static Type GetTupleTypeDefinition(Type objectType, int elementCount)
+  {
+    return objectType.IsValueType
+      ? elementCount switch
+      {
+        8 => typeof(ValueTuple<,,,,,,,>),
+        7 => typeof(ValueTuple<,,,,,,>),
+        6 => typeof(ValueTuple<,,,,,>),
+        5 => typeof(ValueTuple<,,,,>),
+        4 => typeof(ValueTuple<,,,>),
+        3 => typeof(ValueTuple<,,>),
+        2 => typeof(ValueTuple<,>),
+        1 => typeof(ValueTuple<>),
+        0 => typeof(ValueTuple),
+        _ => throw new InvalidOperationException()
+      }
+      : elementCount switch
+      {
+        8 => typeof(Tuple<,,,,,,,>),
+        7 => typeof(Tuple<,,,,,,>),
+        6 => typeof(Tuple<,,,,,>),
+        5 => typeof(Tuple<,,,,>),
+        4 => typeof(Tuple<,,,>),
+        3 => typeof(Tuple<,,>),
+        2 => typeof(Tuple<,>),
+        1 => typeof(Tuple<>),
+        _ => throw new InvalidOperationException()
+      };
   }
 
   private class ValueTupleConverter<T> : JsonConverter<T>
@@ -33,10 +65,8 @@ public class TupleJsonConverterFactory : JsonConverterFactory
       {
         writer.WriteStartArray();
 
-        for (int tupleIndex = 0; tupleIndex < tuple.Length; tupleIndex++)
-        {
+        for (var tupleIndex = 0; tupleIndex < tuple.Length; tupleIndex++)
           JsonSerializer.Serialize(writer, tuple[tupleIndex]);
-        }
 
         writer.WriteEndArray();
       }
@@ -53,11 +83,9 @@ public class TupleJsonConverterFactory : JsonConverterFactory
     )
     {
       if (!reader.Read() || reader.TokenType == JsonTokenType.StartArray)
-      {
         throw new JsonException(
           $"Cannot deserialize token {reader.TokenType} to Tuple."
         );
-      }
 
       var genericsStack = new Stack<Type[]>();
       var generics = type.GetGenericArguments();
@@ -82,7 +110,7 @@ public class TupleJsonConverterFactory : JsonConverterFactory
         {
           tupleType = tupleType.MakeGenericType(chunk);
 
-          int arrayIndex = chunk.Length - 1;
+          var arrayIndex = chunk.Length - 1;
 
           if (arrayIndex == 7)
           {
@@ -99,61 +127,23 @@ public class TupleJsonConverterFactory : JsonConverterFactory
             );
 
             if (!reader.Read())
-            {
               throw new JsonException(
                 $"Failed reading JSON token. "
-                  + $"Last read token was '{reader.TokenType}'."
+                + $"Last read token was '{reader.TokenType}'."
               );
-            }
 
-            if (reader.TokenType == JsonTokenType.EndArray)
-            {
-              break;
-            }
+            if (reader.TokenType == JsonTokenType.EndArray) break;
           }
         }
 
         value = Activator.CreateInstance(tupleType, tupleConstructorArguments);
 
-        if (reader.TokenType == JsonTokenType.EndArray)
-        {
-          break;
-        }
+        if (reader.TokenType == JsonTokenType.EndArray) break;
       }
 
       var castedValue = (T?)value;
       return castedValue
-        ?? throw new JsonException("Failed deserializing Tuple.");
+             ?? throw new JsonException("Failed deserializing Tuple.");
     }
-  }
-
-  private static Type GetTupleTypeDefinition(Type objectType, int elementCount)
-  {
-    return objectType.IsValueType
-      ? elementCount switch
-      {
-        8 => typeof(ValueTuple<,,,,,,,>),
-        7 => typeof(ValueTuple<,,,,,,>),
-        6 => typeof(ValueTuple<,,,,,>),
-        5 => typeof(ValueTuple<,,,,>),
-        4 => typeof(ValueTuple<,,,>),
-        3 => typeof(ValueTuple<,,>),
-        2 => typeof(ValueTuple<,>),
-        1 => typeof(ValueTuple<>),
-        0 => typeof(ValueTuple),
-        _ => throw new InvalidOperationException(),
-      }
-      : elementCount switch
-      {
-        8 => typeof(Tuple<,,,,,,,>),
-        7 => typeof(Tuple<,,,,,,>),
-        6 => typeof(Tuple<,,,,,>),
-        5 => typeof(Tuple<,,,,>),
-        4 => typeof(Tuple<,,,>),
-        3 => typeof(Tuple<,,>),
-        2 => typeof(Tuple<,>),
-        1 => typeof(Tuple<>),
-        _ => throw new InvalidOperationException(),
-      };
   }
 }

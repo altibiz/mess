@@ -8,9 +8,16 @@ internal class E2eTestServer : IAsyncDisposable, IDisposable
   {
     ExecutionLock.Wait(TimeSpan.FromMilliseconds(100));
 
-    AppCancellationTokenSource = new();
+    AppCancellationTokenSource = new CancellationTokenSource();
     ServerTask = MakeServerTask(AppCancellationTokenSource.Token);
   }
+
+  private static SemaphoreSlim ExecutionLock { get; } = new(0, 1);
+
+  private CancellationTokenSource AppCancellationTokenSource { get; } =
+    default!;
+
+  private Task ServerTask { get; } = default!;
 
   async ValueTask IAsyncDisposable.DisposeAsync()
   {
@@ -34,13 +41,6 @@ internal class E2eTestServer : IAsyncDisposable, IDisposable
 
     ExecutionLock.Release();
   }
-
-  private static SemaphoreSlim ExecutionLock { get; } = new(0, 1);
-
-  private CancellationTokenSource AppCancellationTokenSource { get; } =
-    default!;
-
-  private Task ServerTask { get; } = default!;
 
   private static Task MakeServerTask(CancellationToken token)
   {
@@ -74,7 +74,7 @@ internal class E2eTestServer : IAsyncDisposable, IDisposable
       RedirectStandardError = true,
       UseShellExecute = false,
       CreateNoWindow = false,
-      WorkingDirectory = solutionDirectory.FullName,
+      WorkingDirectory = solutionDirectory.FullName
     };
     processStartInfo.Environment.Add("ASPNETCORE_ENVIRONMENT", "Development");
     processStartInfo.Environment.Add("DOTNET_ENVIRONMENT", "Development");
@@ -84,7 +84,7 @@ internal class E2eTestServer : IAsyncDisposable, IDisposable
     var process = new Process
     {
       StartInfo = processStartInfo,
-      EnableRaisingEvents = true,
+      EnableRaisingEvents = true
     };
 
     process.Exited += (sender, args) =>
@@ -118,10 +118,7 @@ internal class E2eTestServer : IAsyncDisposable, IDisposable
     var startTime = DateTimeOffset.UtcNow;
     while (DateTimeOffset.UtcNow.Subtract(startTime).TotalSeconds < 30)
     {
-      if (token.Value.IsCancellationRequested)
-      {
-        return;
-      }
+      if (token.Value.IsCancellationRequested) return;
 
       try
       {
@@ -143,10 +140,7 @@ internal class E2eTestServer : IAsyncDisposable, IDisposable
   {
     while (directory != null)
     {
-      if (directory.GetFiles("*.sln").Length != 0)
-      {
-        return directory;
-      }
+      if (directory.GetFiles("*.sln").Length != 0) return directory;
 
       directory = directory.Parent;
     }

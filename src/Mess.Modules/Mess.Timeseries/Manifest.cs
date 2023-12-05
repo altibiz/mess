@@ -4,7 +4,8 @@ using ManifestConstants = Mess.Cms.ManifestConstants;
 [assembly: Module(
   Id = "Mess.Timeseries",
   Name = "Timeseries",
-  Description = "The Timeseries module enables the usage of a timeseries database using TimescaleDb.",
+  Description =
+    "The Timeseries module enables the usage of a timeseries database using TimescaleDb.",
   Author = ManifestConstants.Author,
   Website = ManifestConstants.Website,
   Version = ManifestConstants.Version,

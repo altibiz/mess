@@ -6,6 +6,11 @@ namespace Mess.Ozds.Abstractions.Models;
 
 public class OperatorCatalogueItem : ContentItemBase
 {
+  private OperatorCatalogueItem(ContentItem contentItem)
+    : base(contentItem)
+  {
+  }
+
   public Lazy<TitlePart> TitlePart { get; private set; } = null!;
 
   public Lazy<OperatorCataloguePart> OperatorCataloguePart
@@ -13,7 +18,4 @@ public class OperatorCatalogueItem : ContentItemBase
     get;
     private set;
   } = null!;
-
-  private OperatorCatalogueItem(ContentItem contentItem)
-    : base(contentItem) { }
 }

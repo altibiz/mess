@@ -1,14 +1,21 @@
-using Mess.Chart.Abstractions.Services;
 using Mess.Chart.Abstractions.Descriptors;
-using Mess.Fields.Abstractions;
 using Mess.Chart.Abstractions.Models;
-using Mess.Eor.Abstractions.Timeseries;
+using Mess.Chart.Abstractions.Services;
 using Mess.Eor.Abstractions.Models;
+using Mess.Eor.Abstractions.Timeseries;
+using Mess.Fields.Abstractions;
 
 namespace Mess.Eor.Chart;
 
 public class EorChartProvider : ChartFactory<EorIotDeviceItem>
 {
+  private readonly IEorTimeseriesClient _client;
+
+  public EorChartProvider(IEorTimeseriesClient client)
+  {
+    _client = client;
+  }
+
   public override IEnumerable<string> TimeseriesChartDatasetProperties =>
     new[]
     {
@@ -17,11 +24,12 @@ public class EorChartProvider : ChartFactory<EorIotDeviceItem>
       nameof(EorStatus.Mode)
     };
 
-  protected override async Task<TimeseriesChartDescriptor?> CreateTimeseriesChartAsync(
-    EorIotDeviceItem metadata,
-    TimeseriesChartItem chart,
-    IEnumerable<TimeseriesChartDatasetItem> datasets
-  )
+  protected override async Task<TimeseriesChartDescriptor?>
+    CreateTimeseriesChartAsync(
+      EorIotDeviceItem metadata,
+      TimeseriesChartItem chart,
+      IEnumerable<TimeseriesChartDatasetItem> datasets
+    )
   {
     var now = DateTimeOffset.UtcNow;
     var (statuses, measurements) = await _client.GetEorDataAsync(
@@ -31,50 +39,41 @@ public class EorChartProvider : ChartFactory<EorIotDeviceItem>
     );
 
     return new TimeseriesChartDescriptor(
-      RefreshInterval: (decimal)
-        chart.TimeseriesChartPart.Value.RefreshInterval.Value
-          .ToTimeSpan()
-          .TotalMilliseconds,
-      History: (decimal)
-        chart.TimeseriesChartPart.Value.History.Value
-          .ToTimeSpan()
-          .TotalMilliseconds,
-      Datasets: datasets
+      (decimal)
+      chart.TimeseriesChartPart.Value.RefreshInterval.Value
+        .ToTimeSpan()
+        .TotalMilliseconds,
+      (decimal)
+      chart.TimeseriesChartPart.Value.History.Value
+        .ToTimeSpan()
+        .TotalMilliseconds,
+      datasets
         .Select(
           dataset =>
             new TimeseriesChartDatasetDescriptor(
-              Label: dataset.TimeseriesChartDatasetPart.Value.Label.Text,
-              Color: dataset.TimeseriesChartDatasetPart.Value.Color.Value,
-              Datapoints:
-                (
-                  ContainsTimeseriesProperty<EorStatus>(
-                    dataset.TimeseriesChartDatasetPart.Value.Property
-                  )
-                    ? statuses
-                    : measurements as IEnumerable<object>
+              dataset.TimeseriesChartDatasetPart.Value.Label.Text,
+              dataset.TimeseriesChartDatasetPart.Value.Color.Value,
+              (
+                ContainsTimeseriesProperty<EorStatus>(
+                  dataset.TimeseriesChartDatasetPart.Value.Property
                 )
-
-                .Select(
-                  measurement =>
-                    new TimeseriesChartDatapointDescriptor(
-                      X: GetTimeseriesTimestamp(measurement),
-                      Y: GetTimeseriesValue(
-                        measurement,
-                        dataset.TimeseriesChartDatasetPart.Value.Property
-                      )
+                  ? statuses
+                  : measurements as IEnumerable<object>
+              )
+              .Select(
+                measurement =>
+                  new TimeseriesChartDatapointDescriptor(
+                    GetTimeseriesTimestamp(measurement),
+                    GetTimeseriesValue(
+                      measurement,
+                      dataset.TimeseriesChartDatasetPart.Value.Property
                     )
-                )
-                .ToList()
+                  )
+              )
+              .ToList()
             )
         )
         .ToList()
     );
   }
-
-  public EorChartProvider(IEorTimeseriesClient client)
-  {
-    _client = client;
-  }
-
-  private readonly IEorTimeseriesClient _client;
 }

@@ -1,7 +1,7 @@
 using Marten;
+using Mess.Cms.Extensions.OrchardCore;
 using Mess.Event.Abstractions.Session;
 using OrchardCore.Environment.Shell;
-using Mess.Cms.Extensions.OrchardCore;
 
 namespace Mess.Event.Session;
 
@@ -10,25 +10,11 @@ public sealed class EventStoreSession
     IDisposable,
     IAsyncDisposable
 {
-  public IDocumentSession Value => _value
-      ?? throw new InvalidOperationException(
-        "Session has already been disposed"
-      );
+  private IDocumentSession? _value;
 
   public EventStoreSession(IDocumentStore store, ShellSettings shellSettings)
   {
     _value = store.IdentitySession(shellSettings.GetDatabaseTablePrefix());
-  }
-
-  private IDocumentSession? _value;
-
-  public void Dispose()
-  {
-    if (_value is not null)
-    {
-      _value.Dispose();
-      _value = null;
-    }
   }
 
   public async ValueTask DisposeAsync()
@@ -39,4 +25,18 @@ public sealed class EventStoreSession
       _value = null;
     }
   }
+
+  public void Dispose()
+  {
+    if (_value is not null)
+    {
+      _value.Dispose();
+      _value = null;
+    }
+  }
+
+  public IDocumentSession Value => _value
+                                   ?? throw new InvalidOperationException(
+                                     "Session has already been disposed"
+                                   );
 }

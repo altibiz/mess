@@ -6,6 +6,15 @@ namespace Mess.Prelude.Extensions.Json;
 
 public static class JsonSeriazlizerOptionsExtensions
 {
+  private static readonly JsonConverter[] Converters =
+  {
+    new EnumJsonConverterFactory(),
+    new BooleanJsonConverter(),
+    new TimeSpanJsonConverter(),
+    new ListJsonConverterFactory(),
+    new TupleJsonConverterFactory()
+  };
+
   public static JsonSerializerOptions AddMessSystemJsonOptions(
     this JsonSerializerOptions options,
     bool pretty = true
@@ -24,20 +33,8 @@ public static class JsonSeriazlizerOptionsExtensions
     this JsonSerializerOptions options
   )
   {
-    foreach (var converter in Converters)
-    {
-      options.Converters.Add(converter);
-    }
+    foreach (var converter in Converters) options.Converters.Add(converter);
 
     return options;
   }
-
-  private static readonly JsonConverter[] Converters = new JsonConverter[]
-  {
-    new EnumJsonConverterFactory(),
-    new BooleanJsonConverter(),
-    new TimeSpanJsonConverter(),
-    new ListJsonConverterFactory(),
-    new TupleJsonConverterFactory(),
-  };
 }

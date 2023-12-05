@@ -1,5 +1,5 @@
-using OrchardCore.DisplayManagement.Manifest;
 using Mess.Cms;
+using OrchardCore.DisplayManagement.Manifest;
 
 [assembly: Theme(
   Id = "Mess.Forttech",

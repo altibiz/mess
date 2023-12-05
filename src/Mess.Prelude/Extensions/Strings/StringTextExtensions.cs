@@ -4,8 +4,9 @@ namespace Mess.Prelude.Extensions.Strings;
 
 public static class StringTextExtensions
 {
-  public static string ToAscii(this string text) =>
-    Encoding.ASCII.GetString(
+  public static string ToAscii(this string text)
+  {
+    return Encoding.ASCII.GetString(
       Encoding.Convert(
         Encoding.UTF8,
         Encoding.GetEncoding(
@@ -16,4 +17,5 @@ public static class StringTextExtensions
         Encoding.UTF8.GetBytes(text)
       )
     );
+  }
 }

@@ -9,8 +9,10 @@ namespace Mess.Cms.Json;
 
 public sealed class TupleJsonConverter : JsonConverter
 {
-  public override bool CanConvert(Type objectType) =>
-    typeof(ITuple).IsAssignableFrom(objectType);
+  public override bool CanConvert(Type objectType)
+  {
+    return typeof(ITuple).IsAssignableFrom(objectType);
+  }
 
   public override void WriteJson(
     JsonWriter writer,
@@ -22,10 +24,8 @@ public sealed class TupleJsonConverter : JsonConverter
     {
       writer.WriteStartArray();
 
-      for (int i = 0; i < tuple.Length; i++)
-      {
+      for (var i = 0; i < tuple.Length; i++)
         serializer.Serialize(writer, tuple[i]);
-      }
 
       writer.WriteEndArray();
     }
@@ -60,16 +60,14 @@ public sealed class TupleJsonConverter : JsonConverter
 
       // Check generics length against tuple length
       if (
-        ((genericsStack.Count - 1) * 7) + genericsStack.Peek().Length
-        != arr.Count
-      )
-      {
+          (genericsStack.Count - 1) * 7 + genericsStack.Peek().Length
+          != arr.Count
+        )
         // As you can omit tail elements in TypeScript tuples you might do some advanced check here
         // (if fewer elements than generics, are the types of the omitted elements nullable or things like that...).
         throw new JsonSerializationException(
           "Cannot deserialize Tuple, because the number of elements do not match the specified Tuple type."
         );
-      }
 
       var argIndex = arr.Count;
       object? value = null;
@@ -85,7 +83,7 @@ public sealed class TupleJsonConverter : JsonConverter
           // make concrete tuple type
           tupleType = tupleType.MakeGenericType(chunk);
 
-          int i = chunk.Length - 1;
+          var i = chunk.Length - 1;
 
           // append previous tuple as 8th, inner tuple
           if (i == 7)
@@ -96,9 +94,7 @@ public sealed class TupleJsonConverter : JsonConverter
 
           // deserialize elements
           for (; i >= 0; i--)
-          {
             args[i] = arr[--argIndex].ToObject(chunk[i], serializer);
-          }
         }
 
         // create tuple instance
@@ -127,7 +123,7 @@ public sealed class TupleJsonConverter : JsonConverter
         2 => typeof(ValueTuple<,>),
         1 => typeof(ValueTuple<>),
         0 => typeof(ValueTuple),
-        _ => throw new InvalidOperationException(),
+        _ => throw new InvalidOperationException()
       }
       : elementCount switch
       {
@@ -139,7 +135,7 @@ public sealed class TupleJsonConverter : JsonConverter
         3 => typeof(Tuple<,,>),
         2 => typeof(Tuple<,>),
         1 => typeof(Tuple<>),
-        _ => throw new InvalidOperationException(),
+        _ => throw new InvalidOperationException()
       };
   }
 }

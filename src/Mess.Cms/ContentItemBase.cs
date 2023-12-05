@@ -1,11 +1,11 @@
+using System.Linq.Expressions;
 using System.Reflection;
+using Mess.Prelude.Extensions.Enumerables;
+using Mess.Prelude.Extensions.Functions;
+using Mess.Prelude.Extensions.Objects;
+using Mess.Prelude.Extensions.Strings;
 using OrchardCore.ContentManagement;
 using OrchardCore.Lists.Models;
-using Mess.Prelude.Extensions.Objects;
-using Mess.Prelude.Extensions.Functions;
-using Mess.Prelude.Extensions.Strings;
-using Mess.Prelude.Extensions.Enumerables;
-using System.Linq.Expressions;
 using YesSql;
 
 namespace Mess.Cms;
@@ -21,12 +21,12 @@ public abstract class ContentItemBase
 
   public Lazy<ContainedPart> ContainedPart { get; init; } = default!;
 
+  public string ContentItemId => Inner.ContentItemId;
+
   public static implicit operator ContentItem(ContentItemBase @this)
   {
     return @this.Inner;
   }
-
-  public string ContentItemId => Inner.ContentItemId;
 }
 
 // NOTE: don't use for now - needs more testing
@@ -44,21 +44,34 @@ public abstract class ContentItemBase<TDerived>
 
 public static class ContentItemExtensions
 {
-  public static string ContentTypeName(this Type @this) =>
-    @this.Name.RegexRemove("Item$");
+  private static readonly MethodInfo LazyFactoryCaster =
+    typeof(FunctionCastExtensions)
+      .GetMethods()
+      .Where(
+        method =>
+          method.Name == nameof(FunctionCastExtensions.Cast)
+          && method.GetGenericArguments().Length == 2
+      )
+      .First();
 
-  public static string ContentTypeName<T>() => typeof(T).ContentTypeName();
+  public static string ContentTypeName(this Type @this)
+  {
+    return @this.Name.RegexRemove("Item$");
+  }
+
+  public static string ContentTypeName<T>()
+  {
+    return typeof(T).ContentTypeName();
+  }
 
   public static T AsContent<T>(this ContentItem @this)
     where T : ContentItemBase
   {
     var contentTypeName = ContentTypeName<T>();
     if (@this.ContentType != contentTypeName)
-    {
       throw new InvalidOperationException(
         $"Content type mismatch: expected {contentTypeName}, got {@this.ContentType}"
       );
-    }
 
     var contentItem = (T?)
       Activator.CreateInstance(
@@ -70,9 +83,9 @@ public static class ContentItemExtensions
       );
 
     return contentItem is null
-      || contentItem
-        .GetType()
-        .IsAssignableTo(typeof(IContentTypeBaseDerivedIndicator))
+           || contentItem
+             .GetType()
+             .IsAssignableTo(typeof(IContentTypeBaseDerivedIndicator))
       ? throw new InvalidOperationException(
         $"Could not create content item of type {typeof(T)}"
       )
@@ -117,8 +130,8 @@ public static class ContentItemExtensions
     var orchardContentItem = await content.NewAsync(
       typeof(T).ContentTypeName()
     ) ?? throw new InvalidOperationException(
-        $"Could not create content item of type {typeof(T)}"
-      );
+      $"Could not create content item of type {typeof(T)}"
+    );
 
     return orchardContentItem.AsContent<T>();
   }
@@ -129,9 +142,10 @@ public static class ContentItemExtensions
   )
     where T : ContentItemBase
   {
-    var orchardContentItem = await content.CloneAsync(item) ?? throw new InvalidOperationException(
-        $"Could not clone content item of type {typeof(T)}"
-      );
+    var orchardContentItem = await content.CloneAsync(item) ??
+                             throw new InvalidOperationException(
+                               $"Could not clone content item of type {typeof(T)}"
+                             );
 
     return orchardContentItem.AsContent<T>();
   }
@@ -181,8 +195,8 @@ public static class ContentItemExtensions
     return orchardContentItems is null
       ? Enumerable.Empty<T>()
       : orchardContentItems
-      .Select(orchardContentItem => orchardContentItem.AsContent<T>())
-      .WhereNotNull();
+        .Select(orchardContentItem => orchardContentItem.AsContent<T>())
+        .WhereNotNull();
   }
 
   public static async Task<IEnumerable<T>> ListContentAsync<T>(
@@ -215,19 +229,17 @@ public static class ContentItemExtensions
         $"Expression {expression} is not a member expression"
       )
       : memberExpression.Member is not PropertyInfo property
-      ? throw new InvalidOperationException(
-        $"Expression {expression} is not a property expression"
-      )
-      : property;
+        ? throw new InvalidOperationException(
+          $"Expression {expression} is not a property expression"
+        )
+        : property;
   }
 
   internal static T PopulateContent<T>(this T content)
     where T : ContentItemBase
   {
     foreach (var property in typeof(T).GetProperties())
-    {
       PopulateContent(content, property);
-    }
 
     return content;
   }
@@ -242,15 +254,11 @@ public static class ContentItemExtensions
         typeof(Lazy<>)
       )
     )
-    {
       return;
-    }
 
     var partType = property.PropertyType.GetGenericArguments().FirstOrDefault();
-    if (partType is null || !partType.IsAssignableTo(typeof(ContentElement)))
-    {
-      return;
-    }
+    if (partType is null ||
+        !partType.IsAssignableTo(typeof(ContentElement))) return;
 
     var lazy = CreateLazy(content.Inner, partType, property.Name);
     content.SetFieldOrPropertyValue(property.Name, lazy);
@@ -263,18 +271,18 @@ public static class ContentItemExtensions
   )
   {
     var constructor = typeof(Lazy<>)
-      .MakeGenericType(new[] { partType })
+      .MakeGenericType(partType)
       .GetConstructor(
-        new[] { typeof(Func<>).MakeGenericType(new[] { partType }) }
+        new[] { typeof(Func<>).MakeGenericType(partType) }
       ) ?? throw new InvalidOperationException(
-        $"Could not find constructor for {typeof(Lazy<>).MakeGenericType(new[] { partType })}"
-      );
+      $"Could not find constructor for {typeof(Lazy<>).MakeGenericType(partType)}"
+    );
 
     var lazy = constructor.Invoke(
       new[]
       {
         LazyFactoryCaster
-          .MakeGenericMethod(new[] { typeof(ContentElement), partType })
+          .MakeGenericMethod(typeof(ContentElement), partType)
           .Invoke(
             null,
             new[]
@@ -289,16 +297,8 @@ public static class ContentItemExtensions
 
     return lazy;
   }
-
-  private static readonly MethodInfo LazyFactoryCaster =
-    typeof(FunctionCastExtensions)
-      .GetMethods()
-      .Where(
-        method =>
-          method.Name == nameof(FunctionCastExtensions.Cast)
-          && method.GetGenericArguments().Length == 2
-      )
-      .First();
 }
 
-internal interface IContentTypeBaseDerivedIndicator { }
+internal interface IContentTypeBaseDerivedIndicator
+{
+}

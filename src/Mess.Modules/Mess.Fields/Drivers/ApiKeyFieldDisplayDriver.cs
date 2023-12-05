@@ -1,5 +1,5 @@
-using Mess.Fields.Abstractions.Fields;
 using Mess.Fields.Abstractions.ApiKeys;
+using Mess.Fields.Abstractions.Fields;
 using Mess.Fields.ViewModels;
 using Microsoft.Extensions.Localization;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
@@ -13,6 +13,19 @@ namespace Mess.Fields.Drivers;
 
 public class ApiKeyFieldDisplayDriver : ContentFieldDisplayDriver<ApiKeyField>
 {
+  private readonly IApiKeyFieldService _apiKeyFieldService;
+
+  private readonly IStringLocalizer S;
+
+  public ApiKeyFieldDisplayDriver(
+    IStringLocalizer<ApiKeyFieldDisplayDriver> localizer,
+    IApiKeyFieldService apiKeyFieldService
+  )
+  {
+    S = localizer;
+    _apiKeyFieldService = apiKeyFieldService;
+  }
+
   public override IDisplayResult Display(
     ApiKeyField field,
     BuildFieldDisplayContext fieldDisplayContext
@@ -54,7 +67,7 @@ public class ApiKeyFieldDisplayDriver : ContentFieldDisplayDriver<ApiKeyField>
     UpdateFieldEditorContext context
   )
   {
-    var viewModel = new ApiKeyFieldEditViewModel { };
+    var viewModel = new ApiKeyFieldEditViewModel();
 
     if (await updater.TryUpdateModelAsync(viewModel, Prefix, f => f.Value))
     {
@@ -85,17 +98,4 @@ public class ApiKeyFieldDisplayDriver : ContentFieldDisplayDriver<ApiKeyField>
 
     return Edit(field, context);
   }
-
-  public ApiKeyFieldDisplayDriver(
-    IStringLocalizer<ApiKeyFieldDisplayDriver> localizer,
-    IApiKeyFieldService apiKeyFieldService
-  )
-  {
-    S = localizer;
-    _apiKeyFieldService = apiKeyFieldService;
-  }
-
-  private readonly IStringLocalizer S;
-
-  private readonly IApiKeyFieldService _apiKeyFieldService;
 }

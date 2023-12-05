@@ -4,6 +4,9 @@ using System.Runtime.CompilerServices;
 public class SnapshotInitializer
 {
   [ModuleInitializer]
-  public static void Initialize() => VerifyInitializer.Initialize();
+  public static void Initialize()
+  {
+    VerifyInitializer.Initialize();
+  }
 }
 #pragma warning restore CA1050

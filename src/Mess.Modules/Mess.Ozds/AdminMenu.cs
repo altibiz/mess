@@ -17,9 +17,7 @@ public class AdminMenu : INavigationProvider
   public Task BuildNavigationAsync(string name, NavigationBuilder builder)
   {
     if (!string.Equals(name, "admin", StringComparison.OrdinalIgnoreCase))
-    {
       return Task.CompletedTask;
-    }
 
     builder.Add(
       S["OZDS"],
@@ -51,7 +49,8 @@ public class AdminMenu : INavigationProvider
                 .Id("distribution-system-units")
                 .Action(
                   nameof(DistributionSystemUnitAdminController.List),
-                  typeof(DistributionSystemUnitAdminController).ControllerName(),
+                  typeof(DistributionSystemUnitAdminController)
+                    .ControllerName(),
                   new { area = "Mess.Ozds" }
                 )
                 .LocalNav()
@@ -65,7 +64,8 @@ public class AdminMenu : INavigationProvider
                 .Id("closed-distribution-systems")
                 .Action(
                   nameof(ClosedDistributionSystemAdminController.List),
-                  typeof(ClosedDistributionSystemAdminController).ControllerName(),
+                  typeof(ClosedDistributionSystemAdminController)
+                    .ControllerName(),
                   new { area = "Mess.Ozds" }
                 )
                 .LocalNav()
@@ -79,7 +79,8 @@ public class AdminMenu : INavigationProvider
                 .Id("distribution-system-operators")
                 .Action(
                   nameof(DistributionSystemOperatorAdminController.List),
-                  typeof(DistributionSystemOperatorAdminController).ControllerName(),
+                  typeof(DistributionSystemOperatorAdminController)
+                    .ControllerName(),
                   new { area = "Mess.Ozds" }
                 )
                 .LocalNav()

@@ -16,10 +16,10 @@ public record EorSummary(
   )
   {
     return new EorSummary(
-      Tenant: tenant,
-      DeviceId: deviceId,
-      LastMeasurement: lastMeasurement,
-      Status: status
+      tenant,
+      deviceId,
+      lastMeasurement,
+      status
     );
   }
 }

@@ -1,16 +1,25 @@
-using Microsoft.Extensions.Hosting;
-using OrchardCore.ContentManagement;
+using Etch.OrchardCore.Fields.Colour.Fields;
+using Mess.Chart.Abstractions.Models;
 using Mess.Cms;
 using Mess.Enms.Abstractions.Models;
-using Mess.Chart.Abstractions.Models;
-using Mess.Fields.Abstractions;
 using Mess.Enms.Abstractions.Timeseries;
+using Mess.Fields.Abstractions;
+using Mess.Fields.Abstractions.Fields;
 using Mess.Population.Abstractions;
+using OrchardCore.ContentFields.Fields;
+using OrchardCore.ContentManagement;
 
 namespace Mess.Enms;
 
 public class Populations : IPopulation
 {
+  private readonly IContentManager _contentManager;
+
+  public Populations(IContentManager contentManager)
+  {
+    _contentManager = contentManager;
+  }
+
   public async Task PopulateAsync()
   {
     var eguagePowerDataset =
@@ -19,8 +28,9 @@ public class Populations : IPopulation
       eguagePowerDataset => eguagePowerDataset.TimeseriesChartDatasetPart,
       timeseriesChartDatasetPart =>
       {
-        timeseriesChartDatasetPart.Color = new() { Value = "#ff0000" };
-        timeseriesChartDatasetPart.Label = new() { Text = "Power" };
+        timeseriesChartDatasetPart.Color =
+          new ColourField { Value = "#ff0000" };
+        timeseriesChartDatasetPart.Label = new TextField { Text = "Power" };
         timeseriesChartDatasetPart.Property = nameof(EgaugeMeasurement.Power);
       }
     );
@@ -28,10 +38,7 @@ public class Populations : IPopulation
       await _contentManager.NewContentAsync<TimeseriesChartItem>();
     egaugeChart.Alter(
       egaugeChart => egaugeChart.TitlePart,
-      titlePart =>
-      {
-        titlePart.Title = "Egauge";
-      }
+      titlePart => { titlePart.Title = "Egauge"; }
     );
     egaugeChart.Inner.DisplayText = "Egauge";
     egaugeChart.Alter(
@@ -39,15 +46,16 @@ public class Populations : IPopulation
       timeseriesChartPart =>
       {
         timeseriesChartPart.ChartContentType = "EgaugeIotDevice";
-        timeseriesChartPart.History = new()
+        timeseriesChartPart.History = new IntervalField
         {
-          Value = new(Unit: IntervalUnit.Minute, Count: 10)
+          Value = new Interval(IntervalUnit.Minute, 10)
         };
-        timeseriesChartPart.RefreshInterval = new()
+        timeseriesChartPart.RefreshInterval = new IntervalField
         {
-          Value = new(Unit: IntervalUnit.Second, Count: 10)
+          Value = new Interval(IntervalUnit.Second, 10)
         };
-        timeseriesChartPart.Datasets = new() { eguagePowerDataset };
+        timeseriesChartPart.Datasets = new List<ContentItem>
+          { eguagePowerDataset };
       }
     );
     await _contentManager.CreateAsync(egaugeChart, VersionOptions.Latest);
@@ -56,33 +64,20 @@ public class Populations : IPopulation
       await _contentManager.NewContentAsync<EgaugeIotDeviceItem>();
     egaugeIotDevice.Alter(
       egaugeIotDevice => egaugeIotDevice.TitlePart,
-      titlePart =>
-      {
-        titlePart.Title = "Egauge";
-      }
+      titlePart => { titlePart.Title = "Egauge"; }
     );
     egaugeIotDevice.Inner.DisplayText = "Egauge";
     egaugeIotDevice.Alter(
       egaugeIotDevice => egaugeIotDevice.IotDevicePart,
       measurementDevicePart =>
       {
-        measurementDevicePart.DeviceId = new() { Text = "egauge" };
+        measurementDevicePart.DeviceId = new TextField { Text = "egauge" };
       }
     );
     egaugeIotDevice.Alter(
       egaugeIotDevice => egaugeIotDevice.ChartPart,
-      chartPart =>
-      {
-        chartPart.ChartContentItemId = egaugeChart.ContentItemId;
-      }
+      chartPart => { chartPart.ChartContentItemId = egaugeChart.ContentItemId; }
     );
     await _contentManager.CreateAsync(egaugeIotDevice, VersionOptions.Latest);
   }
-
-  public Populations(IContentManager contentManager)
-  {
-    _contentManager = contentManager;
-  }
-
-  private readonly IContentManager _contentManager;
 }

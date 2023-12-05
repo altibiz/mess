@@ -1,16 +1,37 @@
-using Microsoft.EntityFrameworkCore;
-using Mess.Relational.Abstractions.Context;
-using OrchardCore.Environment.Shell;
-using Mess.Timeseries.Abstractions.Entities;
 using System.Reflection;
+using Mess.Relational.Abstractions.Context;
+using Mess.Timeseries.Abstractions.Entities;
+using Microsoft.EntityFrameworkCore;
+using OrchardCore.Environment.Shell;
 
 namespace Mess.Timeseries.Abstractions.Context;
 
 public abstract class TimeseriesDbContext : RelationalDbContext
 {
+  private static readonly MethodInfo HasPostgresEnumMethod =
+    typeof(NpgsqlModelBuilderExtensions)
+      .GetMethods()
+      .First(
+        method =>
+          method.IsGenericMethod
+          && method.Name == nameof(NpgsqlModelBuilderExtensions.HasPostgresEnum)
+      )
+    ?? throw new InvalidOperationException("HasPostgresEnum method not found");
+
+  public TimeseriesDbContext(
+    DbContextOptions options,
+    ShellSettings shellSettings
+  )
+    : base(options, shellSettings)
+  {
+  }
+
   protected override void OnConfiguring(
     DbContextOptionsBuilder optionsBuilder
-  ) => optionsBuilder.UseNpgsql(DatabaseConnectionString);
+  )
+  {
+    optionsBuilder.UseNpgsql(DatabaseConnectionString);
+  }
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
@@ -53,35 +74,15 @@ public abstract class TimeseriesDbContext : RelationalDbContext
           type => type.IsClass && !type.IsAbstract && type.IsAssignableTo(@base)
         )
     )
-    {
-      foreach (var property in entityType.GetProperties())
+    foreach (var property in entityType.GetProperties())
+      if (property.PropertyType.IsEnum)
       {
-        if (property.PropertyType.IsEnum)
-        {
-          var enumType = property.PropertyType;
-          var genericMethod = HasPostgresEnumMethod.MakeGenericMethod(enumType);
-          genericMethod.Invoke(
-            null,
-            new object?[] { modelBuilder, null, null, null }
-          );
-        }
+        var enumType = property.PropertyType;
+        var genericMethod = HasPostgresEnumMethod.MakeGenericMethod(enumType);
+        genericMethod.Invoke(
+          null,
+          new object?[] { modelBuilder, null, null, null }
+        );
       }
-    }
   }
-
-  private static readonly MethodInfo HasPostgresEnumMethod =
-    typeof(NpgsqlModelBuilderExtensions)
-      .GetMethods()
-      .First(
-        method =>
-          method.IsGenericMethod
-          && method.Name == nameof(NpgsqlModelBuilderExtensions.HasPostgresEnum)
-      )
-    ?? throw new InvalidOperationException("HasPostgresEnum method not found");
-
-  public TimeseriesDbContext(
-    DbContextOptions options,
-    ShellSettings shellSettings
-  )
-    : base(options, shellSettings) { }
 }

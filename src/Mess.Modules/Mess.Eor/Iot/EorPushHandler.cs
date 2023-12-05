@@ -1,12 +1,19 @@
-using Mess.Iot.Abstractions.Services;
-using Mess.Eor.Abstractions.Timeseries;
 using Mess.Eor.Abstractions.Models;
+using Mess.Eor.Abstractions.Timeseries;
+using Mess.Iot.Abstractions.Services;
 
 namespace Mess.Eor.Iot;
 
 public class EorPushHandler
   : JsonIotPushHandler<EorIotDeviceItem, EorPushRequest>
 {
+  private readonly IEorTimeseriesClient _measurementClient;
+
+  public EorPushHandler(IEorTimeseriesClient measurementClient)
+  {
+    _measurementClient = measurementClient;
+  }
+
   protected override void Handle(
     string deviceId,
     string tenant,
@@ -32,11 +39,4 @@ public class EorPushHandler
       request.ToMeasurement(deviceId, tenant)
     );
   }
-
-  public EorPushHandler(IEorTimeseriesClient measurementClient)
-  {
-    _measurementClient = measurementClient;
-  }
-
-  private readonly IEorTimeseriesClient _measurementClient;
 }

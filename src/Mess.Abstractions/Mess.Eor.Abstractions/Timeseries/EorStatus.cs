@@ -23,46 +23,46 @@ public record EorStatus(
   bool CoolingFans
 );
 
-public enum EorRunState : int
+public enum EorRunState
 {
   Stopped = default,
   Started = 1,
-  Error = 2,
-};
+  Error = 2
+}
 
-public enum EorResetState : int
+public enum EorResetState
 {
   ShouldntReset = default,
-  ShouldReset = 1,
-};
+  ShouldReset = 1
+}
 
-public enum EorPowerState : int
+public enum EorPowerState
 {
   On = default,
   Off = 999,
-  Error = 1,
-};
+  Error = 1
+}
 
-public enum EorDoorState : int
+public enum EorDoorState
 {
   Closed = default,
-  Open = 1,
-};
+  Open = 1
+}
 
-public enum EorMainCircuitBreakerState : int
+public enum EorMainCircuitBreakerState
 {
   Off = default,
-  On = 1,
-};
+  On = 1
+}
 
-public enum EorTransformerContractorState : int
+public enum EorTransformerContractorState
 {
   On = default,
-  Off = 1,
-};
+  Off = 1
+}
 
-public enum EorDiodeBridgeState : int
+public enum EorDiodeBridgeState
 {
   Error = default,
-  Ok = 1,
-};
+  Ok = 1
+}

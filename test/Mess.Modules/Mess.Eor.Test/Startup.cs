@@ -1,6 +1,6 @@
 namespace Mess.Eor.Test;
 
-public class Startup : Mess.Cms.Test.Startup
+public class Startup : Cms.Test.Startup
 {
   public override void ConfigureServices(
     IServiceCollection services,

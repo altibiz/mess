@@ -8,16 +8,25 @@ namespace Mess.Ozds.Iot;
 public class SchneiderPushHandler
   : JsonIotPushHandler<SchneiderIotDeviceItem, SchneiderPushRequest>
 {
+  private readonly IOzdsTimeseriesClient _measurementClient;
+
+  public SchneiderPushHandler(IOzdsTimeseriesClient measurementClient)
+  {
+    _measurementClient = measurementClient;
+  }
+
   protected override void Handle(
     string deviceId,
     string tenant,
     DateTimeOffset timestamp,
     SchneiderIotDeviceItem contentItem,
     SchneiderPushRequest request
-  ) =>
+  )
+  {
     _measurementClient.AddSchneiderMeasurement(
       MakeMeasurement(deviceId, tenant, timestamp, contentItem, request)
     );
+  }
 
   protected override async Task HandleAsync(
     string deviceId,
@@ -25,10 +34,12 @@ public class SchneiderPushHandler
     DateTimeOffset timestamp,
     SchneiderIotDeviceItem contentItem,
     SchneiderPushRequest request
-  ) =>
+  )
+  {
     await _measurementClient.AddSchneiderMeasurementAsync(
       MakeMeasurement(deviceId, tenant, timestamp, contentItem, request)
     );
+  }
 
   private static SchneiderMeasurement MakeMeasurement(
     string deviceId,
@@ -36,36 +47,31 @@ public class SchneiderPushHandler
     DateTimeOffset timestamp,
     ContentItem _,
     SchneiderPushRequest request
-  ) =>
-    new(
-      Tenant: tenant,
-      DeviceId: deviceId,
-      Timestamp: timestamp,
-      VoltageL1_V: request.VoltageL1_V,
-      VoltageL2_V: request.VoltageL2_V,
-      VoltageL3_V: request.VoltageL3_V,
-      VoltageAvg_V: request.VoltageAvg_V,
-      CurrentL1_A: request.CurrentL1_A,
-      CurrentL2_A: request.CurrentL2_A,
-      CurrentL3_A: request.CurrentL3_A,
-      CurrentAvg_A: request.CurrentAvg_A,
-      ActivePowerL1_kW: request.ActivePowerL1_kW,
-      ActivePowerL2_kW: request.ActivePowerL2_kW,
-      ActivePowerL3_kW: request.ActivePowerL3_kW,
-      ActivePowerTotal_kW: request.ActivePowerTotal_kW,
-      ReactivePowerTotal_kVAR: request.ReactivePowerTotal_kVAR,
-      ApparentPowerTotal_kVA: request.ApparentPowerTotal_kVA,
-      PowerFactorTotal: request.PowerFactorTotal,
-      ActiveEnergyImportTotal_Wh: request.ActiveEnergyImportTotal_Wh,
-      ActiveEnergyExportTotal_Wh: request.ActiveEnergyExportTotal_Wh,
-      ActiveEnergyImportRateA_Wh: request.ActiveEnergyImportRateA_Wh,
-      ActiveEnergyImportRateB_Wh: request.ActiveEnergyImportRateB_Wh
-    );
-
-  public SchneiderPushHandler(IOzdsTimeseriesClient measurementClient)
+  )
   {
-    _measurementClient = measurementClient;
+    return new SchneiderMeasurement(
+      tenant,
+      deviceId,
+      timestamp,
+      request.VoltageL1_V,
+      request.VoltageL2_V,
+      request.VoltageL3_V,
+      request.VoltageAvg_V,
+      request.CurrentL1_A,
+      request.CurrentL2_A,
+      request.CurrentL3_A,
+      request.CurrentAvg_A,
+      request.ActivePowerL1_kW,
+      request.ActivePowerL2_kW,
+      request.ActivePowerL3_kW,
+      request.ActivePowerTotal_kW,
+      request.ReactivePowerTotal_kVAR,
+      request.ApparentPowerTotal_kVA,
+      request.PowerFactorTotal,
+      request.ActiveEnergyImportTotal_Wh,
+      request.ActiveEnergyExportTotal_Wh,
+      request.ActiveEnergyImportRateA_Wh,
+      request.ActiveEnergyImportRateB_Wh
+    );
   }
-
-  private readonly IOzdsTimeseriesClient _measurementClient;
 }

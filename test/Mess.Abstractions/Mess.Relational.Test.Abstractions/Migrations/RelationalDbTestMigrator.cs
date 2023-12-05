@@ -5,15 +5,15 @@ namespace Mess.Relational.Test.Abstractions.Migrations;
 
 public class RelationalDbTestMigrator : ITestMigrator
 {
-  public async Task MigrateAsync()
-  {
-    await _migrator.MigrateAsync();
-  }
+  private readonly IRelationalDbMigrator _migrator;
 
   public RelationalDbTestMigrator(IRelationalDbMigrator migrator)
   {
     _migrator = migrator;
   }
 
-  private readonly IRelationalDbMigrator _migrator;
+  public async Task MigrateAsync()
+  {
+    await _migrator.MigrateAsync();
+  }
 }

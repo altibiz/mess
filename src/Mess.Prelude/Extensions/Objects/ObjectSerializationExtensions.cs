@@ -1,46 +1,52 @@
 using System.Text;
 using System.Text.Json;
-using System.Xml.Serialization;
-using System.Xml.Linq;
-using Mess.Prelude.Extensions.Streams;
-using Mess.Prelude.Extensions.Json;
 using System.Xml;
+using System.Xml.Linq;
+using System.Xml.Serialization;
+using Mess.Prelude.Extensions.Json;
+using Mess.Prelude.Extensions.Streams;
 
 namespace Mess.Prelude.Extensions.Objects;
 
 public static class ObjectSerializationExtensions
 {
-  public static string ToJson<T>(this T @this, bool pretty = true) =>
-    JsonSerializer.Serialize(
+  public static string ToJson<T>(this T @this, bool pretty = true)
+  {
+    return JsonSerializer.Serialize(
       @this,
       new JsonSerializerOptions()
         .AddMessSystemJsonOptions(pretty)
         .AddMessSystemJsonConverters()
     );
+  }
 
   public static string ToJson(
     this object @this,
     Type type,
     bool pretty = true
-  ) =>
-    JsonSerializer.Serialize(
+  )
+  {
+    return JsonSerializer.Serialize(
       @this,
       type,
       new JsonSerializerOptions()
         .AddMessSystemJsonOptions(pretty)
         .AddMessSystemJsonConverters()
     );
+  }
 
-  public static T FromJson<T>(this string @this) =>
-    JsonSerializer.Deserialize<T>(
-      @this,
-      new JsonSerializerOptions()
-        .AddMessSystemJsonOptions()
-        .AddMessSystemJsonConverters()
-    )
-    ?? throw new InvalidOperationException(
-      $"Could not deserialize json string '{@this}' to type '{typeof(T).Name}'"
-    );
+  public static T FromJson<T>(this string @this)
+  {
+    return JsonSerializer.Deserialize<T>(
+             @this,
+             new JsonSerializerOptions()
+               .AddMessSystemJsonOptions()
+               .AddMessSystemJsonConverters()
+           )
+           ?? throw new InvalidOperationException(
+             $"Could not deserialize json string '{@this}' to type '{typeof(T).Name}'"
+           );
+  }
 
   public static string ToXml<T>(this T @this)
   {
@@ -82,20 +88,20 @@ public static class ObjectSerializationExtensions
     using var stream = new MemoryStream(Encoding.UTF8.GetBytes(@this));
     var result = XDocument.Load(stream);
     return result
-      ?? throw new InvalidOperationException(
-        $"Could not deserialize xml string '{@this}' to type '{nameof(XDocument)}'"
-      );
+           ?? throw new InvalidOperationException(
+             $"Could not deserialize xml string '{@this}' to type '{nameof(XDocument)}'"
+           );
   }
 
   public static string GetJsonSha256Hash(this object @this)
   {
-    using var stream = @this.ToJsonStream(pretty: false);
-    return StreamHashExtensions.GetSha256Hash(stream);
+    using var stream = @this.ToJsonStream(false);
+    return stream.GetSha256Hash();
   }
 
   public static string GetJsonMurMurHash(this object @this)
   {
-    using var stream = @this.ToJsonStream(pretty: false);
-    return StreamHashExtensions.GetMurMurHash(stream);
+    using var stream = @this.ToJsonStream(false);
+    return stream.GetMurMurHash();
   }
 }

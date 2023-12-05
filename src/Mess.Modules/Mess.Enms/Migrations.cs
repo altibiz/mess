@@ -1,13 +1,21 @@
 using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.ContentManagement.Metadata.Settings;
 using OrchardCore.Data.Migration;
-using OrchardCore.Recipes.Services;
 using OrchardCore.Title.Models;
 
 namespace Mess.Enms;
 
 public class Migrations : DataMigration
 {
+  private readonly IContentDefinitionManager _contentDefinitionManager;
+
+  public Migrations(
+    IContentDefinitionManager contentDefinitionManager
+  )
+  {
+    _contentDefinitionManager = contentDefinitionManager;
+  }
+
   public int Create()
   {
     _contentDefinitionManager.AlterPartDefinition(
@@ -38,7 +46,7 @@ public class Migrations : DataMigration
                 )
                 .WithPosition("1")
                 .WithSettings<TitlePartSettings>(
-                  new()
+                  new TitlePartSettings
                   {
                     RenderTitle = true,
                     Options = TitlePartOptions.GeneratedDisabled,
@@ -74,13 +82,4 @@ public class Migrations : DataMigration
 
     return 1;
   }
-
-  public Migrations(
-    IContentDefinitionManager contentDefinitionManager
-  )
-  {
-    _contentDefinitionManager = contentDefinitionManager;
-  }
-
-  private readonly IContentDefinitionManager _contentDefinitionManager;
 }

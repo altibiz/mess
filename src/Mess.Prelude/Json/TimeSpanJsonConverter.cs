@@ -23,8 +23,8 @@ public class TimeSpanJsonConverter : JsonConverter<TimeSpan>
         null,
         out var parsedTimeSpan
       )
-      ? parsedTimeSpan
-      : throw new JsonException("Invalid TimeSpan format");
+        ? parsedTimeSpan
+        : throw new JsonException("Invalid TimeSpan format");
   }
 
   public override void Write(
@@ -33,6 +33,7 @@ public class TimeSpanJsonConverter : JsonConverter<TimeSpan>
     JsonSerializerOptions options
   )
   {
-    writer.WriteStringValue(value.ToString(TimeSpanFormatString, CultureInfo.InvariantCulture));
+    writer.WriteStringValue(value.ToString(TimeSpanFormatString,
+      CultureInfo.InvariantCulture));
   }
 }

@@ -1,9 +1,10 @@
+using Mess.Billing.Abstractions;
 using Mess.Billing.Abstractions.Models;
 using Mess.Billing.BackgroundTasks;
 using Mess.Billing.Controllers;
+using Mess.Billing.Drivers;
 using Mess.Billing.Handlers;
 using Mess.Billing.Indexes;
-using Mess.Billing.Drivers;
 using Mess.Cms.Extensions.Microsoft;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
@@ -15,7 +16,6 @@ using OrchardCore.ContentManagement.Display.ContentDisplay;
 using OrchardCore.Data.Migration;
 using OrchardCore.Modules;
 using OrchardCore.Mvc.Core.Utilities;
-using Mess.Billing.Abstractions;
 
 namespace Mess.Billing;
 
@@ -56,10 +56,10 @@ public class Startup : StartupBase
       .Value.AdminUrlPrefix;
 
     routes.MapAreaControllerRoute(
-      name: "Mess.Billing.AdminController.IssueInvoice",
-      areaName: "Mess.Billing",
-      pattern: adminUrlPrefix + "/IssueInvoice/{contentItemId}",
-      defaults: new
+      "Mess.Billing.AdminController.IssueInvoice",
+      "Mess.Billing",
+      adminUrlPrefix + "/IssueInvoice/{contentItemId}",
+      new
       {
         controller = typeof(AdminController).ControllerName(),
         action = nameof(AdminController.IssueInvoice)
@@ -67,10 +67,10 @@ public class Startup : StartupBase
     );
 
     routes.MapAreaControllerRoute(
-      name: "Mess.Billing.AdminController.ConfirmPayment",
-      areaName: "Mess.Billing",
-      pattern: adminUrlPrefix + "/ConfirmPayment/{contentItemId}",
-      defaults: new
+      "Mess.Billing.AdminController.ConfirmPayment",
+      "Mess.Billing",
+      adminUrlPrefix + "/ConfirmPayment/{contentItemId}",
+      new
       {
         controller = typeof(AdminController).ControllerName(),
         action = nameof(AdminController.ConfirmPayment)
@@ -78,10 +78,10 @@ public class Startup : StartupBase
     );
 
     routes.MapAreaControllerRoute(
-      name: "Mess.Billing.AdminController.Bills",
-      areaName: "Mess.Billing",
-      pattern: adminUrlPrefix + "/Bills",
-      defaults: new
+      "Mess.Billing.AdminController.Bills",
+      "Mess.Billing",
+      adminUrlPrefix + "/Bills",
+      new
       {
         controller = typeof(AdminController).ControllerName(),
         action = nameof(AdminController.Bills)

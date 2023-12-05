@@ -4,27 +4,13 @@ namespace Mess.Cms.Test.Snapshots;
 
 public record SnapshotTests(ISnapshotFixture SnapshotFixture)
 {
-  public record SnapshotTestRecord(string Property);
-
-  public class SnapshotTestClass
+  public static readonly object[][] MatchesSnapshotData =
   {
-    public string Property { get; set; } = default!;
-  }
-
-  public struct SnapshotTestStruct
-  {
-    public SnapshotTestStruct() { }
-
-    public string Property { get; set; } = default!;
-  }
-
-  public static readonly object[][] MatchesSnapshotData = new[]
-  {
-    new object[] { new object() },
+    new object[] { new() },
     new object[] { new { Property = "Value" } },
     new object[] { new SnapshotTestRecord("Value") },
-    new object[] { new SnapshotTestClass() { Property = "Value" } },
-    new object[] { new SnapshotTestStruct() { Property = "Value" } },
+    new object[] { new SnapshotTestClass { Property = "Value" } },
+    new object[] { new SnapshotTestStruct { Property = "Value" } }
   };
 
   [Theory]
@@ -51,5 +37,21 @@ public record SnapshotTests(ISnapshotFixture SnapshotFixture)
       contentItem
     );
     await SnapshotFixture.Verify(contentItem, verificationHash);
+  }
+
+  public record SnapshotTestRecord(string Property);
+
+  public class SnapshotTestClass
+  {
+    public string Property { get; set; } = default!;
+  }
+
+  public struct SnapshotTestStruct
+  {
+    public SnapshotTestStruct()
+    {
+    }
+
+    public string Property { get; set; } = default!;
   }
 }

@@ -1,10 +1,10 @@
+using Mess.Event.Abstractions.Services;
 using Mess.Iot.Abstractions.Indexes;
 using Mess.Iot.Abstractions.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OrchardCore.ContentManagement;
 using YesSql;
-using Mess.Event.Abstractions.Services;
 
 namespace Mess.Ozds.Event;
 
@@ -24,20 +24,14 @@ public class PidgeonUpdateEventDispatcher : IEventDispatcher
         .Where(index => index.DeviceId == @event.DeviceId)
         .FirstOrDefaultAsync()
         .Result;
-      if (contentItem is null)
-      {
-        continue;
-      }
+      if (contentItem is null) continue;
 
       var handler = services
         .GetServices<IIotUpdateHandler>()
         .FirstOrDefault(
           handler => handler.ContentType == contentItem.ContentType
         );
-      if (handler is null)
-      {
-        continue;
-      }
+      if (handler is null) continue;
 
       handler.Handle(
         @event.DeviceId,
@@ -68,20 +62,14 @@ public class PidgeonUpdateEventDispatcher : IEventDispatcher
         .Query<ContentItem, IotDeviceIndex>()
         .Where(index => index.DeviceId == @event.DeviceId)
         .FirstOrDefaultAsync();
-      if (contentItem is null)
-      {
-        continue;
-      }
+      if (contentItem is null) continue;
 
       var handler = services
         .GetServices<IIotUpdateHandler>()
         .FirstOrDefault(
           handler => handler.ContentType == contentItem.ContentType
         );
-      if (handler is null)
-      {
-        continue;
-      }
+      if (handler is null) continue;
 
       await handler.HandleAsync(
         @event.DeviceId,

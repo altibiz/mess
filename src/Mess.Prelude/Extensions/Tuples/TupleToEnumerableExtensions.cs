@@ -11,9 +11,7 @@ public static class TupleToEnumerableExtensions
 
     var bodyLength = hasTail ? tuple.Length - 1 : tuple.Length;
     for (var headIndex = 0; headIndex < bodyLength; headIndex++)
-    {
       body.Add(tuple[headIndex]!);
-    }
 
     if (hasTail)
     {

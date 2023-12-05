@@ -1,7 +1,6 @@
 using System.Security.Claims;
 using OrchardCore.Users.Models;
 using OrchardCore.Users.Services;
-using ISession = YesSql.ISession;
 
 namespace Mess.Cms.Extensions.OrchardCore;
 
@@ -12,9 +11,12 @@ public static class IUserServiceExtensions
     ClaimsPrincipal claimsPrincipal
   )
   {
-    var orchardUser = await userService.GetAuthenticatedUserAsync(claimsPrincipal);
+    var orchardUser =
+      await userService.GetAuthenticatedUserAsync(claimsPrincipal);
 
-    return orchardUser is not User user ? throw new UnauthorizedAccessException() : user;
+    return orchardUser is not User user
+      ? throw new UnauthorizedAccessException()
+      : user;
   }
 
   public static async Task<User> CreateDevUserAsync(

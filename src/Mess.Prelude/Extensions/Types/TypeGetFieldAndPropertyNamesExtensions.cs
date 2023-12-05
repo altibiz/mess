@@ -4,7 +4,6 @@ public static class TypeGetFieldAndPropertyNamesExtensions
 {
   public static IReadOnlyList<string> GetFieldAndPropertyNames<T>(
     this Type type
-
   )
   {
     return type.GetFields()

@@ -23,7 +23,6 @@ public record class Projection(IServiceProvider Services) : IProjection
     var events = new Events(streams);
 
     foreach (var dispatcher in dispatchers)
-    {
       try
       {
         dispatcher.Dispatch(scope.ServiceProvider, events);
@@ -36,7 +35,6 @@ public record class Projection(IServiceProvider Services) : IProjection
           dispatcher.GetType().Name
         );
       }
-    }
   }
 
   public async Task ApplyAsync(
@@ -54,7 +52,6 @@ public record class Projection(IServiceProvider Services) : IProjection
     var events = new Events(streams);
 
     foreach (var dispatcher in dispatchers)
-    {
       try
       {
         await dispatcher.DispatchAsync(
@@ -71,6 +68,5 @@ public record class Projection(IServiceProvider Services) : IProjection
           dispatcher.GetType().Name
         );
       }
-    }
   }
 }

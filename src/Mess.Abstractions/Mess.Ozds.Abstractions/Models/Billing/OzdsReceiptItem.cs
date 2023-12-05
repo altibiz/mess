@@ -7,6 +7,11 @@ namespace Mess.Ozds.Abstractions.Models;
 
 public class OzdsReceiptItem : ContentItemBase
 {
+  private OzdsReceiptItem(ContentItem contentItem)
+    : base(contentItem)
+  {
+  }
+
   public Lazy<TitlePart> TitlePart { get; private set; } = default!;
 
   public Lazy<ReceiptPart> ReceiptPart { get; private set; } = default!;
@@ -15,7 +20,4 @@ public class OzdsReceiptItem : ContentItemBase
     default!;
 
   public Lazy<OzdsReceiptPart> OzdsReceiptPart { get; private set; } = default!;
-
-  private OzdsReceiptItem(ContentItem contentItem)
-    : base(contentItem) { }
 }

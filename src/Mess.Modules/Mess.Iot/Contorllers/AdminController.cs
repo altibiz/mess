@@ -1,35 +1,20 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using OrchardCore.Admin;
-using YesSql;
 using Mess.Iot.Abstractions;
 using Mess.Iot.Abstractions.Indexes;
 using Mess.Iot.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using OrchardCore.Admin;
 using OrchardCore.ContentManagement;
+using YesSql;
 
 namespace Mess.Iot.Controllers;
 
 [Admin]
 public class AdminController : Controller
 {
-  public async Task<IActionResult> ListIotDevices()
-  {
-    if (
-      !await _authorizationService.AuthorizeAsync(
-        User,
-        Permissions.ListIotDevices
-      )
-    )
-    {
-      return Unauthorized();
-    }
+  private readonly IAuthorizationService _authorizationService;
 
-    var devices = await _session
-      .Query<ContentItem, IotDeviceIndex>()
-      .ListAsync();
-
-    return View(new IotDeviceListViewModel { Devices = devices.ToList() });
-  }
+  private readonly ISession _session;
 
   public AdminController(
     ISession session,
@@ -40,7 +25,20 @@ public class AdminController : Controller
     _authorizationService = authorizationService;
   }
 
-  private readonly ISession _session;
+  public async Task<IActionResult> ListIotDevices()
+  {
+    if (
+      !await _authorizationService.AuthorizeAsync(
+        User,
+        Permissions.ListIotDevices
+      )
+    )
+      return Unauthorized();
 
-  private readonly IAuthorizationService _authorizationService;
+    var devices = await _session
+      .Query<ContentItem, IotDeviceIndex>()
+      .ListAsync();
+
+    return View(new IotDeviceListViewModel { Devices = devices.ToList() });
+  }
 }

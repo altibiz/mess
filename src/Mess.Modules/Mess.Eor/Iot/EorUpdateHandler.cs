@@ -1,7 +1,7 @@
-using Mess.Eor.Abstractions.Timeseries;
-using Mess.Eor.Abstractions.Models;
-using Mess.Iot.Abstractions.Services;
 using Mess.Cms;
+using Mess.Eor.Abstractions.Models;
+using Mess.Eor.Abstractions.Timeseries;
+using Mess.Iot.Abstractions.Services;
 using OrchardCore.ContentManagement;
 
 namespace Mess.Eor.Iot;
@@ -9,6 +9,19 @@ namespace Mess.Eor.Iot;
 public class EorUpdateHandler
   : JsonIotUpdateHandler<EorIotDeviceItem, EorUpdateRequest>
 {
+  private readonly IContentManager _contentManager;
+
+  private readonly IEorTimeseriesClient _measurementClient;
+
+  public EorUpdateHandler(
+    IEorTimeseriesClient measurementClient,
+    IContentManager contentManager
+  )
+  {
+    _contentManager = contentManager;
+    _measurementClient = measurementClient;
+  }
+
   protected override void Handle(
     string deviceId,
     string tenant,
@@ -46,9 +59,9 @@ public class EorUpdateHandler
     if (
       contentItem.EorIotDevicePart.Value.Controls.Mode != status.Mode
       || contentItem.EorIotDevicePart.Value.Controls.ResetState
-        != status.ResetState
+      != status.ResetState
       || contentItem.EorIotDevicePart.Value.Controls.RunState
-        != status.RunState
+      != status.RunState
     )
     {
       contentItem.Alter(
@@ -65,17 +78,4 @@ public class EorUpdateHandler
 
     await _measurementClient.AddEorStatusAsync(status);
   }
-
-  public EorUpdateHandler(
-    IEorTimeseriesClient measurementClient,
-    IContentManager contentManager
-  )
-  {
-    _contentManager = contentManager;
-    _measurementClient = measurementClient;
-  }
-
-  private readonly IEorTimeseriesClient _measurementClient;
-
-  private readonly IContentManager _contentManager;
 }

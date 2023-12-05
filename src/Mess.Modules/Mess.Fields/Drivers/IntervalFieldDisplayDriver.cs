@@ -15,6 +15,15 @@ namespace Mess.Fields.Drivers;
 public class IntervalFieldDisplayDriver
   : ContentFieldDisplayDriver<IntervalField>
 {
+  private readonly IStringLocalizer S;
+
+  public IntervalFieldDisplayDriver(
+    IStringLocalizer<IntervalFieldDisplayDriver> localizer
+  )
+  {
+    S = localizer;
+  }
+
   public override IDisplayResult Display(
     IntervalField field,
     BuildFieldDisplayContext fieldDisplayContext
@@ -67,12 +76,11 @@ public class IntervalFieldDisplayDriver
     UpdateFieldEditorContext context
   )
   {
-    var viewModel = new IntervalFieldEditViewModel { };
+    var viewModel = new IntervalFieldEditViewModel();
 
     if (await updater.TryUpdateModelAsync(viewModel, Prefix, f => f.Value))
     {
       if (viewModel.Value == null)
-      {
         updater.ModelState.AddModelError(
           Prefix,
           nameof(viewModel.Value),
@@ -81,22 +89,10 @@ public class IntervalFieldDisplayDriver
             context.PartFieldDefinition.DisplayName()
           ]
         );
-      }
       else
-      {
         field.Value = viewModel.Value;
-      }
     }
 
     return Edit(field, context);
   }
-
-  public IntervalFieldDisplayDriver(
-    IStringLocalizer<IntervalFieldDisplayDriver> localizer
-  )
-  {
-    S = localizer;
-  }
-
-  private readonly IStringLocalizer S;
 }

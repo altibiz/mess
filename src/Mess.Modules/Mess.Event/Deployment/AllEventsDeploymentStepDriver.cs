@@ -1,8 +1,8 @@
+using Mess.Event.ViewModels;
 using OrchardCore.Deployment;
 using OrchardCore.DisplayManagement.Handlers;
 using OrchardCore.DisplayManagement.ModelBinding;
 using OrchardCore.DisplayManagement.Views;
-using Mess.Event.ViewModels;
 
 namespace Mess.Event.Deployment;
 

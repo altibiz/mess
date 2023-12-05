@@ -22,5 +22,6 @@ public class Startup : StartupBase
     IEndpointRouteBuilder routes,
     IServiceProvider serviceProvider
   )
-  { }
+  {
+  }
 }

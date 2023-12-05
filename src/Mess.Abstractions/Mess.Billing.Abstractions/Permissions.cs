@@ -43,7 +43,7 @@ public class Permissions : IPermissionProvider
           ListIssuedBills,
           ListReceivedBills
         }
-      },
+      }
     };
   }
 }

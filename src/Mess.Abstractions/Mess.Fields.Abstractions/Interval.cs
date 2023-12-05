@@ -12,12 +12,13 @@ public enum IntervalUnit
   Week,
   Month,
   Year
-};
+}
 
 public static class IntervalExtensions
 {
-  public static TimeSpan ToTimeSpan(this Interval interval) =>
-    interval.Unit switch
+  public static TimeSpan ToTimeSpan(this Interval interval)
+  {
+    return interval.Unit switch
     {
       IntervalUnit.Millisecond => TimeSpan.FromMilliseconds(interval.Count),
       IntervalUnit.Second => TimeSpan.FromSeconds(interval.Count),
@@ -34,9 +35,11 @@ public static class IntervalExtensions
           null
         )
     };
+  }
 
-  public static Interval ToInterval(this TimeSpan timeSpan) =>
-    timeSpan < TimeSpan.FromMilliseconds(1)
+  public static Interval ToInterval(this TimeSpan timeSpan)
+  {
+    return timeSpan < TimeSpan.FromMilliseconds(1)
       ? new Interval(IntervalUnit.Millisecond, 0)
       : timeSpan < TimeSpan.FromSeconds(1)
         ? new Interval(
@@ -65,9 +68,11 @@ public static class IntervalExtensions
                       IntervalUnit.Year,
                       (uint)(timeSpan.TotalDays / 365)
                     );
+  }
 
-  public static string ToHumanString(this IntervalUnit intervalUnit) =>
-    intervalUnit switch
+  public static string ToHumanString(this IntervalUnit intervalUnit)
+  {
+    return intervalUnit switch
     {
       IntervalUnit.Millisecond => "milliseconds",
       IntervalUnit.Second => "seconds",
@@ -84,4 +89,5 @@ public static class IntervalExtensions
           null
         )
     };
+  }
 }

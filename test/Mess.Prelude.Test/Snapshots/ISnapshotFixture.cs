@@ -4,5 +4,5 @@ public interface ISnapshotFixture
 {
   public Task<string> MakeVerificationHash(params object?[] parameters);
 
-  public Task Verify(object? @snapshot, string verificationHash);
+  public Task Verify(object? snapshot, string verificationHash);
 }

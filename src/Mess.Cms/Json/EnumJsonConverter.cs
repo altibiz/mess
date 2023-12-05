@@ -22,17 +22,18 @@ public class EnumJsonConverter : JsonConverter
       var enumString = reader.Value as string;
       return string.IsNullOrEmpty(enumString)
         ? null
-        : int.TryParse(enumString, out int number) ? Enum.ToObject(objectType, number) : Enum.Parse(objectType, enumString, true);
+        : int.TryParse(enumString, out var number)
+          ? Enum.ToObject(objectType, number)
+          : Enum.Parse(objectType, enumString, true);
     }
-    else if (reader.TokenType == JsonToken.Integer)
+
+    if (reader.TokenType == JsonToken.Integer)
     {
       var enumInt = Convert.ToInt32(reader.Value, CultureInfo.InvariantCulture);
       return Enum.ToObject(objectType, enumInt);
     }
-    else
-    {
-      throw new JsonSerializationException("Failed parsing enum");
-    }
+
+    throw new JsonSerializationException("Failed parsing enum");
   }
 
   public override void WriteJson(

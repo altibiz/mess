@@ -4,14 +4,14 @@ namespace Mess.Prelude.Test.Snapshots;
 
 public static class VerifyInitializer
 {
+  private static bool _initialized;
+  private static readonly object _lock = new();
+
   public static void Initialize()
   {
     lock (_lock)
     {
-      if (_initialized)
-      {
-        return;
-      }
+      if (_initialized) return;
 
       VerifierSettings.UseStrictJson();
       VerifierSettings.SortJsonObjects();
@@ -35,10 +35,10 @@ public static class VerifyInitializer
             "Snapshots"
           );
 
-          return new(
-            directory: baseSnapshotDirectory,
-            typeName: type.Name,
-            methodName: method.Name
+          return new PathInfo(
+            baseSnapshotDirectory,
+            type.Name,
+            method.Name
           );
         }
       );
@@ -58,7 +58,4 @@ public static class VerifyInitializer
       _initialized = true;
     }
   }
-
-  private static bool _initialized;
-  private static readonly object _lock = new();
 }

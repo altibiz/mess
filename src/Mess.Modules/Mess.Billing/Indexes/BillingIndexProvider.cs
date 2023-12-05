@@ -13,31 +13,9 @@ public class BillingIndexProvider
   : IndexProvider<ContentItem>,
     IScopedIndexProvider
 {
-  public override void Describe(DescribeContext<ContentItem> context) =>
-    context
-      .For<BillingIndex>()
-      .When(contentItem => contentItem.Has<BillingPart>())
-      .Map(async contentItem =>
-      {
-        var indexer = _serviceProvider
-          .GetServices<IBillingIndexer>()
-.FirstOrDefault(indexer => indexer.IsApplicable(contentItem));
-        if (indexer is null)
-        {
-          _logger.LogError(
-            "No billing indexer found for content item {} of type {}",
-            contentItem.ContentItemId,
-            contentItem.ContentType
+  private readonly ILogger _logger;
 
-          );
-          return Array.Empty<BillingIndex>();
-        }
-
-        return new BillingIndex[]
-        {
-          await indexer.IndexBillingAsync(contentItem)
-        };
-      });
+  private readonly IServiceProvider _serviceProvider;
 
   public BillingIndexProvider(
     IServiceProvider serviceProvider,
@@ -48,7 +26,30 @@ public class BillingIndexProvider
     _logger = logger;
   }
 
-  private readonly IServiceProvider _serviceProvider;
+  public override void Describe(DescribeContext<ContentItem> context)
+  {
+    context
+      .For<BillingIndex>()
+      .When(contentItem => contentItem.Has<BillingPart>())
+      .Map(async contentItem =>
+      {
+        var indexer = _serviceProvider
+          .GetServices<IBillingIndexer>()
+          .FirstOrDefault(indexer => indexer.IsApplicable(contentItem));
+        if (indexer is null)
+        {
+          _logger.LogError(
+            "No billing indexer found for content item {} of type {}",
+            contentItem.ContentItemId,
+            contentItem.ContentType
+          );
+          return Array.Empty<BillingIndex>();
+        }
 
-  private readonly ILogger _logger;
+        return new[]
+        {
+          await indexer.IndexBillingAsync(contentItem)
+        };
+      });
+  }
 }

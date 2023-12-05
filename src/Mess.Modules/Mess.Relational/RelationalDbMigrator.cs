@@ -9,6 +9,21 @@ namespace Mess.Relational;
 
 public class RelationalDbMigrator : IRelationalDbMigrator
 {
+  private readonly ILogger _logger;
+  private readonly IServiceProvider _serviceProvider;
+  private readonly ShellSettings _shellSettings;
+
+  public RelationalDbMigrator(
+    ILogger<RelationalDbMigrator> logger,
+    ShellSettings shellSettings,
+    IServiceProvider serviceProvider
+  )
+  {
+    _logger = logger;
+    _shellSettings = shellSettings;
+    _serviceProvider = serviceProvider;
+  }
+
   public async Task MigrateAsync()
   {
     var contexts =
@@ -25,19 +40,4 @@ public class RelationalDbMigrator : IRelationalDbMigrator
       );
     }
   }
-
-  public RelationalDbMigrator(
-    ILogger<RelationalDbMigrator> logger,
-    ShellSettings shellSettings,
-    IServiceProvider serviceProvider
-  )
-  {
-    _logger = logger;
-    _shellSettings = shellSettings;
-    _serviceProvider = serviceProvider;
-  }
-
-  private readonly ILogger _logger;
-  private readonly ShellSettings _shellSettings;
-  private readonly IServiceProvider _serviceProvider;
 }

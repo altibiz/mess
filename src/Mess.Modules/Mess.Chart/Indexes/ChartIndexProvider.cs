@@ -7,8 +7,8 @@ namespace Mess.Chart.Indexes;
 public class ChartIndex : MapIndex
 {
   public string ChartContentItemId { get; set; } = default!;
-  public string? ContentType { get; set; } = default!;
-  public string? Title { get; set; } = default!;
+  public string? ContentType { get; set; }
+  public string? Title { get; set; }
 }
 
 public class ChartIndexProvider : IndexProvider<ContentItem>
@@ -18,7 +18,9 @@ public class ChartIndexProvider : IndexProvider<ContentItem>
     context
       .For<ChartIndex>()
       // TODO: with stereotype - IScopedIndexProvider, contentTypeDefinitionManager
-      .When(contentItem => contentItem.ContentType.EndsWith("Chart", ignoreCase: false, culture: CultureInfo.InvariantCulture))
+      .When(contentItem =>
+        contentItem.ContentType.EndsWith("Chart", false,
+          CultureInfo.InvariantCulture))
       .Map(
         contentItem =>
           new ChartIndex

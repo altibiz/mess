@@ -1,21 +1,28 @@
+using Mess.Fields.Abstractions.Settings;
 using Mess.Ozds.Abstractions.Indexes;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
+using OrchardCore.ContentFields.Settings;
 using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.ContentManagement.Metadata.Settings;
 using OrchardCore.Data.Migration;
-using OrchardCore.Title.Models;
-using Mess.Fields.Abstractions.Settings;
-using YesSql.Sql;
-using OrchardCore.ContentFields.Settings;
-using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.Lists.Models;
-using Microsoft.AspNetCore.Identity;
 using OrchardCore.Security;
 using OrchardCore.Security.Permissions;
+using OrchardCore.Title.Models;
+using YesSql.Sql;
 
 namespace Mess.Ozds;
 
 public class Migrations : DataMigration
 {
+  private readonly IServiceProvider _serviceProvider;
+
+  public Migrations(IServiceProvider serviceProvider)
+  {
+    _serviceProvider = serviceProvider;
+  }
+
   public async Task<int> UpdateFrom1()
   {
     await CreateAsyncMigrations.MigrateSchneider(
@@ -48,13 +55,6 @@ public class Migrations : DataMigration
 
     return 1;
   }
-
-  public Migrations(IServiceProvider serviceProvider)
-  {
-    _serviceProvider = serviceProvider;
-  }
-
-  private readonly IServiceProvider _serviceProvider;
 }
 
 internal static partial class CreateAsyncMigrations
@@ -74,34 +74,34 @@ internal static partial class CreateAsyncMigrations
         RoleName = "Distribution System Operator Representative",
         RoleDescription =
           "Representative of closed distribution systems operator.",
-        RoleClaims = new()
+        RoleClaims = new List<RoleClaim>
         {
-          new RoleClaim
+          new()
           {
             ClaimType = Permission.ClaimType,
             ClaimValue = "AccessAdminPanel"
           },
-          new RoleClaim
+          new()
           {
             ClaimType = Permission.ClaimType,
             ClaimValue = "View Users"
           },
-          new RoleClaim
+          new()
           {
             ClaimType = Permission.ClaimType,
             ClaimValue =
               "ManageUsersInRole_Closed distribution system representative"
           },
-          new RoleClaim
+          new()
           {
             ClaimType = Permission.ClaimType,
             ClaimValue = "AssignRole_Closed distribution system representative"
           },
-          new RoleClaim
+          new()
           {
             ClaimType = Permission.ClaimType,
             ClaimValue = "Listing payments"
-          },
+          }
         }
       }
     );
@@ -120,8 +120,8 @@ internal static partial class CreateAsyncMigrations
                 .OfType("ContentPickerField")
                 .WithDisplayName("Regulatory agency catalogue")
                 .WithDescription("Regulatory agency catalogue.")
-                .WithSettings<ContentPickerFieldSettings>(
-                  new()
+                .WithSettings(
+                  new ContentPickerFieldSettings
                   {
                     DisplayedContentTypes = new[]
                     {
@@ -129,7 +129,7 @@ internal static partial class CreateAsyncMigrations
                     },
                     DisplayAllContentTypes = false,
                     Multiple = false,
-                    Required = true,
+                    Required = true
                   }
                 )
           )
@@ -140,13 +140,13 @@ internal static partial class CreateAsyncMigrations
                 .OfType("ContentPickerField")
                 .WithDisplayName("White high voltage operator catalogue")
                 .WithDescription("White high voltage operator catalogue.")
-                .WithSettings<ContentPickerFieldSettings>(
-                  new()
+                .WithSettings(
+                  new ContentPickerFieldSettings
                   {
                     DisplayedContentTypes = new[] { "OperatorCatalogue" },
                     DisplayAllContentTypes = false,
                     Multiple = false,
-                    Required = true,
+                    Required = true
                   }
                 )
           )
@@ -157,13 +157,13 @@ internal static partial class CreateAsyncMigrations
                 .OfType("ContentPickerField")
                 .WithDisplayName("White medium voltage operator catalogue")
                 .WithDescription("White medium voltage operator catalogue.")
-                .WithSettings<ContentPickerFieldSettings>(
-                  new()
+                .WithSettings(
+                  new ContentPickerFieldSettings
                   {
                     DisplayedContentTypes = new[] { "OperatorCatalogue" },
                     DisplayAllContentTypes = false,
                     Multiple = false,
-                    Required = true,
+                    Required = true
                   }
                 )
           )
@@ -174,13 +174,13 @@ internal static partial class CreateAsyncMigrations
                 .OfType("ContentPickerField")
                 .WithDisplayName("Blue operator catalogue")
                 .WithDescription("Blue operator catalogue.")
-                .WithSettings<ContentPickerFieldSettings>(
-                  new()
+                .WithSettings(
+                  new ContentPickerFieldSettings
                   {
                     DisplayedContentTypes = new[] { "OperatorCatalogue" },
                     DisplayAllContentTypes = false,
                     Multiple = false,
-                    Required = true,
+                    Required = true
                   }
                 )
           )
@@ -191,13 +191,13 @@ internal static partial class CreateAsyncMigrations
                 .OfType("ContentPickerField")
                 .WithDisplayName("White low voltage operator catalogue")
                 .WithDescription("White low voltage operator catalogue.")
-                .WithSettings<ContentPickerFieldSettings>(
-                  new()
+                .WithSettings(
+                  new ContentPickerFieldSettings
                   {
                     DisplayedContentTypes = new[] { "OperatorCatalogue" },
                     DisplayAllContentTypes = false,
                     Multiple = false,
-                    Required = true,
+                    Required = true
                   }
                 )
           )
@@ -208,13 +208,13 @@ internal static partial class CreateAsyncMigrations
                 .OfType("ContentPickerField")
                 .WithDisplayName("Red operator catalogue")
                 .WithDescription("Red operator catalogue.")
-                .WithSettings<ContentPickerFieldSettings>(
-                  new()
+                .WithSettings(
+                  new ContentPickerFieldSettings
                   {
                     DisplayedContentTypes = new[] { "OperatorCatalogue" },
                     DisplayAllContentTypes = false,
                     Multiple = false,
-                    Required = true,
+                    Required = true
                   }
                 )
           )
@@ -226,12 +226,12 @@ internal static partial class CreateAsyncMigrations
                 .WithDisplayName("Yellow operator catalogue")
                 .WithDescription("Yellow operator catalogue.")
                 .WithSettings<ContentPickerFieldSettings>(
-                  new()
+                  new ContentPickerFieldSettings
                   {
                     DisplayedContentTypes = new[] { "OperatorCatalogue" },
                     DisplayAllContentTypes = false,
                     Multiple = false,
-                    Required = true,
+                    Required = true
                   }
                 )
           )
@@ -252,11 +252,11 @@ internal static partial class CreateAsyncMigrations
             part =>
               part.WithDisplayName("Title")
                 .WithDescription("Title of the distribution system operator.")
-                .WithSettings<TitlePartSettings>(
-                  new()
+                .WithSettings(
+                  new TitlePartSettings
                   {
                     RenderTitle = true,
-                    Options = TitlePartOptions.EditableRequired,
+                    Options = TitlePartOptions.EditableRequired
                   }
                 )
           )
@@ -279,13 +279,13 @@ internal static partial class CreateAsyncMigrations
             part =>
               part.WithDisplayName("Closed distribution systems")
                 .WithDescription("List of owned closed distribution systems.")
-                .WithSettings<ListPartSettings>(
-                  new()
+                .WithSettings(
+                  new ListPartSettings
                   {
                     ContainedContentTypes = new[]
                     {
                       "ClosedDistributionSystem"
-                    },
+                    }
                   }
                 )
           )
@@ -307,34 +307,34 @@ internal static partial class CreateAsyncMigrations
         NormalizedRoleName = "ClosedDistributionSystemRepresentative",
         RoleName = "Closed Distribution System Representative",
         RoleDescription = "Representative of a closed distribution system.",
-        RoleClaims = new()
+        RoleClaims = new List<RoleClaim>
         {
-          new RoleClaim
+          new()
           {
             ClaimType = Permission.ClaimType,
             ClaimValue = "AccessAdminPanel"
           },
-          new RoleClaim
+          new()
           {
             ClaimType = Permission.ClaimType,
             ClaimValue = "View Users"
           },
-          new RoleClaim
+          new()
           {
             ClaimType = Permission.ClaimType,
             ClaimValue =
               "ManageUsersInRole_Distribution system unit representative"
           },
-          new RoleClaim
+          new()
           {
             ClaimType = Permission.ClaimType,
             ClaimValue = "AssignRole_Distribution system unit representative"
           },
-          new RoleClaim
+          new()
           {
             ClaimType = Permission.ClaimType,
             ClaimValue = "Listing own payments"
-          },
+          }
         }
       }
     );
@@ -353,13 +353,13 @@ internal static partial class CreateAsyncMigrations
                 .OfType("ContentPickerField")
                 .WithDisplayName("White high voltage operator catalogue")
                 .WithDescription("White high voltage operator catalogue.")
-                .WithSettings<ContentPickerFieldSettings>(
-                  new()
+                .WithSettings(
+                  new ContentPickerFieldSettings
                   {
                     DisplayedContentTypes = new[] { "OperatorCatalogue" },
                     DisplayAllContentTypes = false,
                     Multiple = false,
-                    Required = true,
+                    Required = true
                   }
                 )
           )
@@ -370,13 +370,13 @@ internal static partial class CreateAsyncMigrations
                 .OfType("ContentPickerField")
                 .WithDisplayName("White medium voltage operator catalogue")
                 .WithDescription("White medium voltage operator catalogue.")
-                .WithSettings<ContentPickerFieldSettings>(
-                  new()
+                .WithSettings(
+                  new ContentPickerFieldSettings
                   {
                     DisplayedContentTypes = new[] { "OperatorCatalogue" },
                     DisplayAllContentTypes = false,
                     Multiple = false,
-                    Required = true,
+                    Required = true
                   }
                 )
           )
@@ -387,13 +387,13 @@ internal static partial class CreateAsyncMigrations
                 .OfType("ContentPickerField")
                 .WithDisplayName("Blue operator catalogue")
                 .WithDescription("Blue operator catalogue.")
-                .WithSettings<ContentPickerFieldSettings>(
-                  new()
+                .WithSettings(
+                  new ContentPickerFieldSettings
                   {
                     DisplayedContentTypes = new[] { "OperatorCatalogue" },
                     DisplayAllContentTypes = false,
                     Multiple = false,
-                    Required = true,
+                    Required = true
                   }
                 )
           )
@@ -404,13 +404,13 @@ internal static partial class CreateAsyncMigrations
                 .OfType("ContentPickerField")
                 .WithDisplayName("White low voltage operator catalogue")
                 .WithDescription("White low voltage operator catalogue.")
-                .WithSettings<ContentPickerFieldSettings>(
-                  new()
+                .WithSettings(
+                  new ContentPickerFieldSettings
                   {
                     DisplayedContentTypes = new[] { "OperatorCatalogue" },
                     DisplayAllContentTypes = false,
                     Multiple = false,
-                    Required = true,
+                    Required = true
                   }
                 )
           )
@@ -421,13 +421,13 @@ internal static partial class CreateAsyncMigrations
                 .OfType("ContentPickerField")
                 .WithDisplayName("Red operator catalogue")
                 .WithDescription("Red operator catalogue.")
-                .WithSettings<ContentPickerFieldSettings>(
-                  new()
+                .WithSettings(
+                  new ContentPickerFieldSettings
                   {
                     DisplayedContentTypes = new[] { "OperatorCatalogue" },
                     DisplayAllContentTypes = false,
                     Multiple = false,
-                    Required = true,
+                    Required = true
                   }
                 )
           )
@@ -438,13 +438,13 @@ internal static partial class CreateAsyncMigrations
                 .OfType("ContentPickerField")
                 .WithDisplayName("Yellow operator catalogue")
                 .WithDescription("Yellow operator catalogue.")
-                .WithSettings<ContentPickerFieldSettings>(
-                  new()
+                .WithSettings(
+                  new ContentPickerFieldSettings
                   {
                     DisplayedContentTypes = new[] { "OperatorCatalogue" },
                     DisplayAllContentTypes = false,
                     Multiple = false,
-                    Required = true,
+                    Required = true
                   }
                 )
           )
@@ -465,11 +465,11 @@ internal static partial class CreateAsyncMigrations
             part =>
               part.WithDisplayName("Title")
                 .WithDescription("Title of the closed distribution system.")
-                .WithSettings<TitlePartSettings>(
-                  new()
+                .WithSettings(
+                  new TitlePartSettings
                   {
                     RenderTitle = true,
-                    Options = TitlePartOptions.EditableRequired,
+                    Options = TitlePartOptions.EditableRequired
                   }
                 )
           )
@@ -494,10 +494,10 @@ internal static partial class CreateAsyncMigrations
                 .WithDescription(
                   "List of units in this closed distribution system."
                 )
-                .WithSettings<ListPartSettings>(
-                  new()
+                .WithSettings(
+                  new ListPartSettings
                   {
-                    ContainedContentTypes = new[] { "DistributionSystemUnit" },
+                    ContainedContentTypes = new[] { "DistributionSystemUnit" }
                   }
                 )
           )
@@ -543,13 +543,13 @@ internal static partial class CreateAsyncMigrations
         NormalizedRoleName = "DistributionSystemUnitRepresentative",
         RoleName = "Distribution System Unit Representative",
         RoleDescription = "Representative of a distribution system unit.",
-        RoleClaims = new()
+        RoleClaims = new List<RoleClaim>
         {
-          new RoleClaim
+          new()
           {
             ClaimType = Permission.ClaimType,
             ClaimValue = "Listing own payments"
-          },
+          }
         }
       }
     );
@@ -578,11 +578,11 @@ internal static partial class CreateAsyncMigrations
             part =>
               part.WithDisplayName("Title")
                 .WithDescription("Title of the distribution system unit.")
-                .WithSettings<TitlePartSettings>(
-                  new()
+                .WithSettings(
+                  new TitlePartSettings
                   {
                     RenderTitle = true,
-                    Options = TitlePartOptions.EditableRequired,
+                    Options = TitlePartOptions.EditableRequired
                   }
                 )
           )
@@ -607,15 +607,15 @@ internal static partial class CreateAsyncMigrations
                 .WithDescription(
                   "List of IOT devices in this distribution system unit."
                 )
-                .WithSettings<ListPartSettings>(
-                  new()
+                .WithSettings(
+                  new ListPartSettings
                   {
                     ContainedContentTypes = new[]
                     {
                       "AbbIotDevice",
                       "SchneiderIotDevice",
                       "PidgeonIotDevice"
-                    },
+                    }
                   }
                 )
           )
@@ -675,8 +675,8 @@ internal static partial class CreateAsyncMigrations
                 .OfType("ApiKeyField")
                 .WithDisplayName("API key")
                 .WithDescription("API key.")
-                .WithSettings<ApiKeyFieldSettings>(
-                  new()
+                .WithSettings(
+                  new ApiKeyFieldSettings
                   {
                     Hint = "API key that will be used to authorize the device."
                   }
@@ -701,8 +701,8 @@ internal static partial class CreateAsyncMigrations
                 .WithDescription(
                   "Title displaying the identifier of the Pidgeon measurement device."
                 )
-                .WithSettings<TitlePartSettings>(
-                  new()
+                .WithSettings(
+                  new TitlePartSettings
                   {
                     RenderTitle = true,
                     Options = TitlePartOptions.GeneratedDisabled,
@@ -759,8 +759,8 @@ internal static partial class CreateAsyncMigrations
                 .WithDescription(
                   "Title displaying the identifier of the Abb measurement device."
                 )
-                .WithSettings<TitlePartSettings>(
-                  new()
+                .WithSettings(
+                  new TitlePartSettings
                   {
                     RenderTitle = true,
                     Options = TitlePartOptions.GeneratedDisabled,
@@ -837,8 +837,8 @@ internal static partial class CreateAsyncMigrations
                 .WithDescription(
                   "Title displaying the identifier of the Schneider measurement device."
                 )
-                .WithSettings<TitlePartSettings>(
-                  new()
+                .WithSettings(
+                  new TitlePartSettings
                   {
                     RenderTitle = true,
                     Options = TitlePartOptions.GeneratedDisabled,
@@ -903,8 +903,8 @@ internal static partial class CreateAsyncMigrations
                 .OfType("NumericField")
                 .WithDisplayName("Renewable energy fee")
                 .WithDescription("Renewable energy fee.")
-                .WithSettings<NumericFieldSettings>(
-                  new()
+                .WithSettings(
+                  new NumericFieldSettings
                   {
                     Hint = "Renewable energy fee.",
                     Required = true,
@@ -919,8 +919,8 @@ internal static partial class CreateAsyncMigrations
                 .OfType("NumericField")
                 .WithDisplayName("Business usage fee")
                 .WithDescription("Business usage fee.")
-                .WithSettings<NumericFieldSettings>(
-                  new()
+                .WithSettings(
+                  new NumericFieldSettings
                   {
                     Hint = "Business usage fee.",
                     Required = true,
@@ -935,8 +935,8 @@ internal static partial class CreateAsyncMigrations
                 .OfType("NumericField")
                 .WithDisplayName("Tax rate")
                 .WithDescription("Tax rate.")
-                .WithSettings<NumericFieldSettings>(
-                  new()
+                .WithSettings(
+                  new NumericFieldSettings
                   {
                     Hint = "Tax rate.",
                     Required = true,
@@ -963,11 +963,11 @@ internal static partial class CreateAsyncMigrations
                 .WithDescription(
                   "Title displaying the identifier of the regulatory agency catalogue."
                 )
-                .WithSettings<TitlePartSettings>(
-                  new()
+                .WithSettings(
+                  new TitlePartSettings
                   {
                     RenderTitle = true,
-                    Options = TitlePartOptions.EditableRequired,
+                    Options = TitlePartOptions.EditableRequired
                   }
                 )
           )
@@ -1002,8 +1002,8 @@ internal static partial class CreateAsyncMigrations
                 .OfType("TextField")
                 .WithDisplayName("Voltage")
                 .WithDescription("Voltage.")
-                .WithSettings<TextFieldSettings>(
-                  new() { Hint = "Voltage.", Required = true, }
+                .WithSettings(
+                  new TextFieldSettings { Hint = "Voltage.", Required = true }
                 )
           )
           .WithField(
@@ -1013,8 +1013,8 @@ internal static partial class CreateAsyncMigrations
                 .OfType("TextField")
                 .WithDisplayName("Model")
                 .WithDescription("Model.")
-                .WithSettings<TextFieldSettings>(
-                  new() { Hint = "Model.", Required = true, }
+                .WithSettings(
+                  new TextFieldSettings { Hint = "Model.", Required = true }
                 )
           )
           .WithField(
@@ -1024,8 +1024,8 @@ internal static partial class CreateAsyncMigrations
                 .OfType("NumericField")
                 .WithDisplayName("Energy price")
                 .WithDescription("Energy price.")
-                .WithSettings<NumericFieldSettings>(
-                  new() { Hint = "Energy price.", }
+                .WithSettings(
+                  new NumericFieldSettings { Hint = "Energy price." }
                 )
           )
           .WithField(
@@ -1035,8 +1035,8 @@ internal static partial class CreateAsyncMigrations
                 .OfType("NumericField")
                 .WithDisplayName("High energy price")
                 .WithDescription("High energy price.")
-                .WithSettings<NumericFieldSettings>(
-                  new() { Hint = "High energy price.", }
+                .WithSettings(
+                  new NumericFieldSettings { Hint = "High energy price." }
                 )
           )
           .WithField(
@@ -1046,8 +1046,8 @@ internal static partial class CreateAsyncMigrations
                 .OfType("NumericField")
                 .WithDisplayName("Low energy price")
                 .WithDescription("Low energy price.")
-                .WithSettings<NumericFieldSettings>(
-                  new() { Hint = "Low energy price.", }
+                .WithSettings(
+                  new NumericFieldSettings { Hint = "Low energy price." }
                 )
           )
           .WithField(
@@ -1057,8 +1057,8 @@ internal static partial class CreateAsyncMigrations
                 .OfType("NumericField")
                 .WithDisplayName("Max power price")
                 .WithDescription("Max power price.")
-                .WithSettings<NumericFieldSettings>(
-                  new() { Hint = "Max power price.", }
+                .WithSettings(
+                  new NumericFieldSettings { Hint = "Max power price." }
                 )
           )
           .WithField(
@@ -1069,7 +1069,7 @@ internal static partial class CreateAsyncMigrations
                 .WithDisplayName("Measurement device fee")
                 .WithDescription("Measurement device fee.")
                 .WithSettings<NumericFieldSettings>(
-                  new() { Hint = "Measurement device fee.", }
+                  new NumericFieldSettings { Hint = "Measurement device fee." }
                 )
           )
     );
@@ -1091,11 +1091,11 @@ internal static partial class CreateAsyncMigrations
                 .WithDescription(
                   "Title displaying the identifier of the operator catalogue."
                 )
-                .WithSettings<TitlePartSettings>(
-                  new()
+                .WithSettings(
+                  new TitlePartSettings
                   {
                     RenderTitle = true,
-                    Options = TitlePartOptions.EditableRequired,
+                    Options = TitlePartOptions.EditableRequired
                   }
                 )
           )
@@ -1161,11 +1161,11 @@ internal static partial class CreateAsyncMigrations
             part =>
               part.WithDisplayName("Title")
                 .WithDescription("Title.")
-                .WithSettings<TitlePartSettings>(
-                  new()
+                .WithSettings(
+                  new TitlePartSettings
                   {
                     RenderTitle = true,
-                    Options = TitlePartOptions.GeneratedDisabled,
+                    Options = TitlePartOptions.GeneratedDisabled
                   }
                 )
           )
@@ -1219,11 +1219,11 @@ internal static partial class CreateAsyncMigrations
             part =>
               part.WithDisplayName("Title")
                 .WithDescription("Title.")
-                .WithSettings<TitlePartSettings>(
-                  new()
+                .WithSettings(
+                  new TitlePartSettings
                   {
                     RenderTitle = true,
-                    Options = TitlePartOptions.GeneratedDisabled,
+                    Options = TitlePartOptions.GeneratedDisabled
                   }
                 )
           )

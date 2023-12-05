@@ -1,6 +1,6 @@
 using Mess.Ozds.Abstractions.Billing;
-using Mess.Ozds.Abstractions.Timeseries;
 using Mess.Ozds.Abstractions.Models;
+using Mess.Ozds.Abstractions.Timeseries;
 using OrchardCore.ContentManagement;
 using YesSql;
 
@@ -8,6 +8,18 @@ namespace Mess.Ozds.Billing;
 
 public class AbbBillingFactory : OzdsBillingFactory<AbbIotDeviceItem>
 {
+  private readonly IOzdsTimeseriesQuery _query;
+
+  public AbbBillingFactory(
+    IContentManager contentManager,
+    ISession session,
+    IOzdsTimeseriesQuery query
+  )
+    : base(contentManager, session)
+  {
+    _query = query;
+  }
+
   protected override OzdsBillingData? FetchBillingData(
     AbbIotDeviceItem measurementDeviceItem,
     DateTimeOffset fromDate,
@@ -33,16 +45,4 @@ public class AbbBillingFactory : OzdsBillingFactory<AbbIotDeviceItem>
       toDate
     );
   }
-
-  public AbbBillingFactory(
-    IContentManager contentManager,
-    ISession session,
-    IOzdsTimeseriesQuery query
-  )
-    : base(contentManager, session)
-  {
-    _query = query;
-  }
-
-  private readonly IOzdsTimeseriesQuery _query;
 }

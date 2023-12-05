@@ -4,12 +4,9 @@ namespace Mess.Event.Abstractions.Services;
 
 public interface IEvent
 {
-  [JsonIgnore]
-  public string Tenant { get; }
+  [JsonIgnore] public string Tenant { get; }
 
-  [JsonIgnore]
-  public DateTimeOffset Timestamp { get; }
+  [JsonIgnore] public DateTimeOffset Timestamp { get; }
 
-  [JsonIgnore]
-  public string Payload { get; }
+  [JsonIgnore] public string Payload { get; }
 }

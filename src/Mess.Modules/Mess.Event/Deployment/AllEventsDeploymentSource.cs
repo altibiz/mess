@@ -6,15 +6,19 @@ namespace Mess.Event.Deployment;
 
 public class AllEventsDeploymentSource : IDeploymentSource
 {
+  private readonly IEventStoreClient _client;
+
+  public AllEventsDeploymentSource(IEventStoreClient client)
+  {
+    _client = client;
+  }
+
   public async Task ProcessDeploymentStepAsync(
     DeploymentStep step,
     DeploymentPlanResult result
   )
   {
-    if (step is not AllEventsDeploymentStep)
-    {
-      return;
-    }
+    if (step is not AllEventsDeploymentStep) return;
 
     var streams = await _client.ExportAsync();
 
@@ -23,14 +27,12 @@ public class AllEventsDeploymentSource : IDeploymentSource
     {
       var eventObjects = new JArray();
       foreach (var @event in events)
-      {
         eventObjects.Add(
           new JObject(
             new JProperty("EventType", @event.GetType().FullName),
             new JProperty("Data", JObject.FromObject(@event))
           )
         );
-      }
 
       streamObjects.Add(
         new JObject(
@@ -47,11 +49,4 @@ public class AllEventsDeploymentSource : IDeploymentSource
       )
     );
   }
-
-  public AllEventsDeploymentSource(IEventStoreClient client)
-  {
-    _client = client;
-  }
-
-  private readonly IEventStoreClient _client;
 }

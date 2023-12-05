@@ -1,13 +1,13 @@
-using Microsoft.AspNetCore.Mvc;
-using Mess.Prelude.Extensions.Strings;
-using OrchardCore.Environment.Shell;
-using Microsoft.Extensions.DependencyInjection;
-using Mess.Event.Abstractions.Client;
-using Mess.Iot.Event;
-using Mess.Iot.Abstractions.Services;
-using Mess.Iot.Filters;
 using Mess.Cms.Extensions.OrchardCore;
+using Mess.Event.Abstractions.Client;
 using Mess.Iot.Abstractions.Caches;
+using Mess.Iot.Abstractions.Services;
+using Mess.Iot.Event;
+using Mess.Iot.Filters;
+using Mess.Prelude.Extensions.Strings;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using OrchardCore.Environment.Shell;
 
 namespace Mess.Iot.Controllers;
 
@@ -16,6 +16,27 @@ namespace Mess.Iot.Controllers;
 [IotDeviceAsciiResponse]
 public class IotDeviceController : Controller
 {
+  private readonly IIotDeviceContentItemCache _cache;
+
+  private readonly IServiceProvider _services;
+
+  private readonly IShellFeaturesManager _shellFeaturesManager;
+
+  private readonly ShellSettings _shellSettings;
+
+  public IotDeviceController(
+    ShellSettings shellSettings,
+    IServiceProvider services,
+    IIotDeviceContentItemCache cache,
+    IShellFeaturesManager shellFeaturesManager
+  )
+  {
+    _shellSettings = shellSettings;
+    _services = services;
+    _cache = cache;
+    _shellFeaturesManager = shellFeaturesManager;
+  }
+
   [HttpPost]
   public async Task<IActionResult> Push(string deviceId)
   {
@@ -23,10 +44,7 @@ public class IotDeviceController : Controller
     // on next push just remove the timer
 
     var contentItem = await _cache.GetIotDeviceAsync(deviceId);
-    if (contentItem is null)
-    {
-      return NotFound($"Unknown device");
-    }
+    if (contentItem is null) return NotFound("Unknown device");
 
     var handler = _services
       .GetServices<IIotPushHandler>()
@@ -34,9 +52,7 @@ public class IotDeviceController : Controller
         handler => handler.ContentType == contentItem.ContentType
       );
     if (handler is null)
-    {
       return StatusCode(500, $"Unknown handler for {contentItem.ContentType}");
-    }
 
     var tenant = _shellSettings.GetDatabaseTablePrefix();
     var now = DateTimeOffset.UtcNow;
@@ -48,10 +64,10 @@ public class IotDeviceController : Controller
       var client = _services.GetRequiredService<IEventStoreClient>();
       await client.RecordEventsAsync<Measurements>(
         new Measured(
-          Tenant: tenant,
-          Timestamp: now,
-          DeviceId: deviceId,
-          Payload: request
+          tenant,
+          now,
+          deviceId,
+          request
         )
       );
     }
@@ -67,10 +83,7 @@ public class IotDeviceController : Controller
   public async Task<IActionResult> Update(string deviceId)
   {
     var contentItem = await _cache.GetIotDeviceAsync(deviceId);
-    if (contentItem is null)
-    {
-      return NotFound($"Unknown device");
-    }
+    if (contentItem is null) return NotFound("Unknown device");
 
     var handler = _services
       .GetServices<IIotUpdateHandler>()
@@ -78,9 +91,7 @@ public class IotDeviceController : Controller
         handler => handler.ContentType == contentItem.ContentType
       );
     if (handler is null)
-    {
       return StatusCode(500, $"Unknown handler for {contentItem.ContentType}");
-    }
 
     var tenant = _shellSettings.GetDatabaseTablePrefix();
     var now = DateTimeOffset.UtcNow;
@@ -92,10 +103,10 @@ public class IotDeviceController : Controller
       var client = _services.GetRequiredService<IEventStoreClient>();
       await client.RecordEventsAsync<Updates>(
         new Updated(
-          Tenant: tenant,
-          Timestamp: now,
-          DeviceId: deviceId,
-          Payload: request
+          tenant,
+          now,
+          deviceId,
+          request
         )
       );
     }
@@ -114,10 +125,7 @@ public class IotDeviceController : Controller
     // on next poll just remove the timer
 
     var contentItem = await _cache.GetIotDeviceAsync(deviceId);
-    if (contentItem is null)
-    {
-      return NotFound("Unknown device");
-    }
+    if (contentItem is null) return NotFound("Unknown device");
 
     var handler = _services
       .GetServices<IIotPollHandler>()
@@ -125,9 +133,7 @@ public class IotDeviceController : Controller
         handler => handler.ContentType == contentItem.ContentType
       );
     if (handler is null)
-    {
       return StatusCode(500, $"Unknown handler for {contentItem.ContentType}");
-    }
 
     var tenant = _shellSettings.GetDatabaseTablePrefix();
     var now = DateTimeOffset.UtcNow;
@@ -145,25 +151,4 @@ public class IotDeviceController : Controller
       )
       : (IActionResult)Ok(response);
   }
-
-  public IotDeviceController(
-    ShellSettings shellSettings,
-    IServiceProvider services,
-    IIotDeviceContentItemCache cache,
-    IShellFeaturesManager shellFeaturesManager
-  )
-  {
-    _shellSettings = shellSettings;
-    _services = services;
-    _cache = cache;
-    _shellFeaturesManager = shellFeaturesManager;
-  }
-
-  private readonly ShellSettings _shellSettings;
-
-  private readonly IServiceProvider _services;
-
-  private readonly IIotDeviceContentItemCache _cache;
-
-  private readonly IShellFeaturesManager _shellFeaturesManager;
 }

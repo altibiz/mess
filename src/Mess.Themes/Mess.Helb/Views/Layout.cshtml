@@ -1,82 +1,82 @@
 @using Microsoft.AspNetCore.Authorization
 @using OrchardCore.Security.Permissions
-
 @inject IAuthorizationService AuthorizationService
 
 <!DOCTYPE html>
 <html lang="@Orchard.CultureName()">
-  <head>
-    <title>@RenderTitleSegments(Site.SiteName, "before")</title>
-    <link
-        type="image/x-icon"
-        rel="shortcut icon"
-        href="~/Mess.Helb/assets/resources/favicon.ico">
+<head>
+  <title>@RenderTitleSegments(Site.SiteName, "before")</title>
+  <link
+    type="image/x-icon"
+    rel="shortcut icon"
+    href="~/Mess.Helb/assets/resources/favicon.ico">
 
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    @await RenderSectionAsync("HeadMeta", required: false)
-    <resources type="Meta" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  @await RenderSectionAsync("HeadMeta", false)
+  <resources type="Meta"/>
 
-    <resources type="HeadLink" />
-    <resources type="HeadScript" />
+  <resources type="HeadLink"/>
+  <resources type="HeadScript"/>
 
-    <resources type="Stylesheet" />
+  <resources type="Stylesheet"/>
 
-    <style asp-name="mess-helb" at="Inline"></style>
-    <script asp-name="mess-helb" at="Inline"></script>
-  </head>
+  <style asp-name="mess-helb" at="Inline"></style>
+  <script asp-name="mess-helb" at="Inline"></script>
+</head>
 
-  <body dir="@Orchard.CultureDir()">
-    <header class="header">
-      <nav class="closed">
-        <div class="container">
-          <ul>
-            <li>
-              <a href="~/Devices">
-                <span>Devices</span>
-              </a>
-            </li>
-          </ul>
-          <ul>
-            @if (
-              await AuthorizationService.AuthorizeAsync(
-                User,
-                new Permission("AccessAdminPanel", "Access admin panel")
-              )
-            ) {
-              <li>
-                <a href="~/Admin" target="_blank">
-                  <span>Admin</span>
-                </a>
-              </li>
-            }
-            <li>
-              <a href="~/Login">
-                <span>Log In</span>
-              </a>
-            </li>
-            <li>
-              <form
-                  asp-route-area="OrchardCore.Users"
-                  asp-controller="Account"
-                  asp-action="LogOff">
-                <button type="submit" class="logout-button">
-                  <span>Log Out</span>
-                </button>
-              </form>
-            </li>
-          </ul>
-        </div>
-      </nav>
-      <div class="flex container">
-        <a href="~/">
-          <h1>
-            HELB
-          </h1>
-        </a>
-      </div>
-      <button id="nav-button" class="nav-button"></button>
-      <script>
+<body dir="@Orchard.CultureDir()">
+<header class="header">
+  <nav class="closed">
+    <div class="container">
+      <ul>
+        <li>
+          <a href="~/Devices">
+            <span>Devices</span>
+          </a>
+        </li>
+      </ul>
+      <ul>
+        @if (
+          await AuthorizationService.AuthorizeAsync(
+            User,
+            new Permission("AccessAdminPanel", "Access admin panel")
+          )
+        )
+        {
+          <li>
+            <a href="~/Admin" target="_blank">
+              <span>Admin</span>
+            </a>
+          </li>
+        }
+        <li>
+          <a href="~/Login">
+            <span>Log In</span>
+          </a>
+        </li>
+        <li>
+          <form
+            asp-route-area="OrchardCore.Users"
+            asp-controller="Account"
+            asp-action="LogOff">
+            <button type="submit" class="logout-button">
+              <span>Log Out</span>
+            </button>
+          </form>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <div class="flex container">
+    <a href="~/">
+      <h1>
+        HELB
+      </h1>
+    </a>
+  </div>
+  <button id="nav-button" class="nav-button"></button>
+  <script>
         document
           .getElementById("nav-button")
           .addEventListener("click", () => {
@@ -87,26 +87,26 @@
           document.querySelector("nav").classList.add("closed");
         });
       </script>
-    </header>
+</header>
 
-    <main>
-      <div class="container">
-        @if (IsSectionDefined("Messages"))
-        {
-          <section>
-            @await RenderSectionAsync("Messages", required: false)
-          </section>
-        }
-        @await RenderBodyAsync()
-      </div>
-    </main>
+<main>
+  <div class="container">
+    @if (IsSectionDefined("Messages"))
+    {
+      <section>
+        @await RenderSectionAsync("Messages", false)
+      </section>
+    }
+    @await RenderBodyAsync()
+  </div>
+</main>
 
-    <footer>
-      <div class="flex container">
-        @await RenderSectionAsync("Footer", required: false)
-      </div>
-    </footer>
+<footer>
+  <div class="flex container">
+    @await RenderSectionAsync("Footer", false)
+  </div>
+</footer>
 
-    <resources type="FootScript" />
-  </body>
+<resources type="FootScript"/>
+</body>
 </html>

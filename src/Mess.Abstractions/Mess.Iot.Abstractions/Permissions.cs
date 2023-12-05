@@ -9,7 +9,7 @@ public class Permissions : IPermissionProvider
 
   public Task<IEnumerable<Permission>> GetPermissionsAsync()
   {
-    return Task.FromResult(new[] { ListIotDevices, }.AsEnumerable());
+    return Task.FromResult(new[] { ListIotDevices }.AsEnumerable());
   }
 
   public IEnumerable<PermissionStereotype> GetDefaultStereotypes()
@@ -19,8 +19,8 @@ public class Permissions : IPermissionProvider
       new PermissionStereotype
       {
         Name = "Administrator",
-        Permissions = new[] { ListIotDevices, }
-      },
+        Permissions = new[] { ListIotDevices }
+      }
     };
   }
 }

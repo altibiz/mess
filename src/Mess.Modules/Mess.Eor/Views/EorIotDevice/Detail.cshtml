@@ -1,10 +1,9 @@
-@using Microsoft.AspNetCore.Authorization
-@using Mess.Eor.Abstractions.Timeseries
-@using Mess.Cms.Extensions.Microsoft
-@using Mess.Eor.Extensions
-
 @inject IAuthorizationService _authorizationService
 
+@using Mess.Cms.Extensions.Microsoft
+@using Mess.Eor.Extensions
+@using Microsoft.AspNetCore.Authorization
+@using Mess.Eor.Abstractions.Timeseries
 @model EorIotDeviceDetailViewModel
 
 @{
@@ -31,8 +30,8 @@
     Model.EorSummary.Status.ProcessFault == 0
       ? (Class: "status-ok", Text: "OK")
       : Model.EorSummary.Status.ProcessFault == 999
-      ? (Class: "status-warning", Text: "OFF")
-      : (Class: "status-error", Text: "ERROR");
+        ? (Class: "status-warning", Text: "OFF")
+        : (Class: "status-error", Text: "ERROR");
   <section>
     <h3 class="section-header">
       Status
@@ -58,23 +57,29 @@
               <li>
                 <strong>8081(32897)</strong>
                 <span
-                  >Incorrect version or incorrect format of the Web
-                  Control DB</span
+                >
+                  Incorrect version or incorrect format of the Web
+                  Control DB
+                </span
                 >
               </li>
               <li>
                 <strong>8082(32898)</strong>
                 <span
-                  >Incorrect version or incorrect format of the Web
-                  Control DB Web server is not enabled</span
+                >
+                  Incorrect version or incorrect format of the Web
+                  Control DB Web server is not enabled
+                </span
                 >
               </li>
               <li>
                 <strong>80C1(32898)</strong>
                 <span
-                  >There are no resources to initialize the web
+                >
+                  There are no resources to initialize the web
                   application (two or four web applications may be
-                  running)</span
+                  running)
+                </span
                 >
               </li>
               <li>
@@ -96,9 +101,10 @@
           </span>
           <div class="property-metadata">
             <ul
-              class="property-metadata-list property-metadata-list-small"
-            >
-              <li><strong>0</strong><span>No error occurred</span></li>
+              class="property-metadata-list property-metadata-list-small">
+              <li>
+                <strong>0</strong><span>No error occurred</span>
+              </li>
               <li>
                 <strong>1</strong><span>p. reley d.n. turn on</span>
               </li>
@@ -109,15 +115,33 @@
                 <strong>3</strong>
                 <span>output voltage out of range</span>
               </li>
-              <li><strong>4</strong><span>output current fault</span></li>
-              <li><strong>5</strong><span>communication fault</span></li>
-              <li><strong>6</strong><span>reset needed</span></li>
-              <li><strong>7</strong><span>door was open</span></li>
-              <li><strong>8</strong><span>current too high</span></li>
-              <li><strong>91</strong><span>partial power loss</span></li>
-              <li><strong>92</strong><span>complete power loss</span></li>
-              <li><strong>10</strong><span>heatsink 1 failure</span></li>
-              <li><strong>11</strong><span>heatsink 2 failure</span></li>
+              <li>
+                <strong>4</strong><span>output current fault</span>
+              </li>
+              <li>
+                <strong>5</strong><span>communication fault</span>
+              </li>
+              <li>
+                <strong>6</strong><span>reset needed</span>
+              </li>
+              <li>
+                <strong>7</strong><span>door was open</span>
+              </li>
+              <li>
+                <strong>8</strong><span>current too high</span>
+              </li>
+              <li>
+                <strong>91</strong><span>partial power loss</span>
+              </li>
+              <li>
+                <strong>92</strong><span>complete power loss</span>
+              </li>
+              <li>
+                <strong>10</strong><span>heatsink 1 failure</span>
+              </li>
+              <li>
+                <strong>11</strong><span>heatsink 2 failure</span>
+              </li>
               <li>
                 <strong>12</strong><span>temperature out of range</span>
               </li>
@@ -127,7 +151,7 @@
         <div class="message">
           <strong>Process fault messages</strong>
           <div id="@processFaultsId" class="message-list">
-            @foreach (var processFault in @Model.EorSummary.Status.ProcessFaults)
+            @foreach (var processFault in Model.EorSummary.Status.ProcessFaults)
             {
               <p>
                 @processFault
@@ -146,82 +170,81 @@
        await this.GetAuthenticatedOrchardCoreUserAsync(),
        Model.EorIotDeviceItem
      )
-)
+    )
 {
   var deviceStatus =
     Model.EorSummary.Status.ResetState ==
-      EorResetState.ShouldReset
-    ? (Class: "status-warning", Text: "Reset")
-    : Model.EorSummary.Status.RunState ==
+    EorResetState.ShouldReset
+      ? (Class: "status-warning", Text: "Reset")
+      : Model.EorSummary.Status.RunState ==
         EorRunState.Started
-    ? (Class: "status-ok", Text: "Started")
-    : Model.EorSummary.Status.RunState ==
-        EorRunState.Stopped
-    ? (Class: "status-error", Text: "Stopped")
-    : (Class: "status-warning", Text: "Unknown");
+        ? (Class: "status-ok", Text: "Started")
+        : Model.EorSummary.Status.RunState ==
+          EorRunState.Stopped
+          ? (Class: "status-error", Text: "Stopped")
+          : (Class: "status-warning", Text: "Unknown");
   var serverStatus =
     Model.EorIotDeviceItem.EorIotDevicePart.Value.Controls.ResetState ==
-      EorResetState.ShouldReset
-    ? (Class: "status-warning", Text: "Reset")
-    : Model.EorIotDeviceItem.EorIotDevicePart.Value.Controls.RunState ==
+    EorResetState.ShouldReset
+      ? (Class: "status-warning", Text: "Reset")
+      : Model.EorIotDeviceItem.EorIotDevicePart.Value.Controls.RunState ==
         EorRunState.Started
-    ? (Class: "status-ok", Text: "Started")
-    : Model.EorIotDeviceItem.EorIotDevicePart.Value.Controls.RunState ==
-        EorRunState.Stopped
-    ? (Class: "status-error", Text: "Stopped")
-    : (Class: "status-warning", Text: "Unknown");
+        ? (Class: "status-ok", Text: "Started")
+        : Model.EorIotDeviceItem.EorIotDevicePart.Value.Controls.RunState ==
+          EorRunState.Stopped
+          ? (Class: "status-error", Text: "Stopped")
+          : (Class: "status-warning", Text: "Unknown");
   <section>
     <h3 class="section-header">
       Controls
       <span id="@controlStatusId" class="status @serverStatus.Class">
         @T[serverStatus.Text]
-        @if (@deviceStatus.Text != @serverStatus.Text)
+        @if (deviceStatus.Text != serverStatus.Text)
         {
           <span>(@T[deviceStatus.Text])</span>
         }
       </span>
     </h3>
     <div class="section-content">
-      <div class="property-table">
-        <div class="message">
-          <strong>@T["Synchronization"]</strong>
-          <div
-            class="message-list"
-            style="min-height: 10rem"
-          >
-            <p>@T["All values except those in parentheses are saved on the server."]</p>
-            <p>@T["The values in parentheses are saved on the device."]</p>
-            <p>@T["The values saved on the device will be the same as the ones on the server when the device polls the server."]</p>
-          </div>
+    <div class="property-table">
+      <div class="message">
+        <strong>@T["Synchronization"]</strong>
+        <div
+          class="message-list"
+          style="min-height: 10rem">
+          <p>@T["All values except those in parentheses are saved on the server."]</p>
+          <p>@T["The values in parentheses are saved on the device."]</p>
+          <p>@T["The values saved on the device will be the same as the ones on the server when the device polls the server."]</p>
         </div>
+      </div>
       <div class="control-table">
         <div class="start-stop-reset-controls">
           <form
-              asp-route-area="Mess.Eor"
-              asp-controller="EorIotDeviceControls"
-              asp-action="Start"
-              asp-route-contentItemId="@Model.EorIotDeviceItem.ContentItemId"
-              asp-route-returnUrl="@FullRequestPath">
+            asp-route-area="Mess.Eor"
+            asp-controller="EorIotDeviceControls"
+            asp-action="Start"
+            asp-route-contentItemId="@Model.EorIotDeviceItem.ContentItemId"
+            asp-route-returnUrl="@FullRequestPath">
             <button class="button-success" type="submit">
               @T["START"]
             </button>
           </form>
           <form
-              asp-route-area="Mess.Eor"
-              asp-controller="EorIotDeviceControls"
-              asp-action="Stop"
-              asp-route-contentItemId="@Model.EorIotDeviceItem.ContentItemId"
-              asp-route-returnUrl="@FullRequestPath">
+            asp-route-area="Mess.Eor"
+            asp-controller="EorIotDeviceControls"
+            asp-action="Stop"
+            asp-route-contentItemId="@Model.EorIotDeviceItem.ContentItemId"
+            asp-route-returnUrl="@FullRequestPath">
             <button class="button-danger" type="submit">
               @T["STOP"]
             </button>
           </form>
           <form
-              asp-route-area="Mess.Eor"
-              asp-controller="EorIotDeviceControls"
-              asp-action="Reset"
-              asp-route-contentItemId="@Model.EorIotDeviceItem.ContentItemId"
-              asp-route-returnUrl="@FullRequestPath">
+            asp-route-area="Mess.Eor"
+            asp-controller="EorIotDeviceControls"
+            asp-action="Reset"
+            asp-route-contentItemId="@Model.EorIotDeviceItem.ContentItemId"
+            asp-route-returnUrl="@FullRequestPath">
             <button class="button-warning" type="submit">
               @T["RESET"]
             </button>
@@ -229,15 +252,15 @@
         </div>
         <div class="input-controls">
           <form
-              asp-route-area="Mess.Eor"
-              asp-controller="EorIotDeviceControls"
-              asp-action="SetMode"
-              asp-route-contentItemId="@Model.EorIotDeviceItem.ContentItemId"
-              asp-route-returnUrl="@FullRequestPath">
+            asp-route-area="Mess.Eor"
+            asp-controller="EorIotDeviceControls"
+            asp-action="SetMode"
+            asp-route-contentItemId="@Model.EorIotDeviceItem.ContentItemId"
+            asp-route-returnUrl="@FullRequestPath">
             <label id="@modeLabelId" for="Mode">
               @T["Position"]
               @if (Model.EorIotDeviceItem.EorIotDevicePart.Value.Controls.Mode !=
-                    Model.EorSummary.Status.Mode)
+                   Model.EorSummary.Status.Mode)
               {
                 <span>(@Model.EorSummary.Status.Mode)</span>
               }
@@ -248,8 +271,7 @@
               min="0"
               max="63"
               name="Mode"
-              value="@Model.EorIotDeviceItem.EorIotDevicePart.Value.Controls.Mode"
-            />
+              value="@Model.EorIotDeviceItem.EorIotDevicePart.Value.Controls.Mode"/>
             <button class="button-primary" type="submit">
               @T["SET"]
             </button>
@@ -264,7 +286,7 @@
      Model.EorSummary.LastMeasurement is not null)
 {
   var powerRelayText =
-     Model.EorSummary.Status.ProcessFault == 0
+    Model.EorSummary.Status.ProcessFault == 0
       ? "On"
       : Model.EorSummary.Status.ProcessFault == 999
         ? "Off"
@@ -311,11 +333,11 @@
         </div>
       </div>
       <div class="chart-container">
-        <canvas id="@chartCanvasId" class="chart" />
+        <canvas id="@chartCanvasId" class="chart"/>
         <script asp-name="mess-chart"></script>
         <script>
           window.mess.chart.useChart({
-            requestUrlPrefix: "@this.GetRequestUrlPrefix()",
+            requestUrlPrefix: "@(this.GetRequestUrlPrefix())",
             contentItemId: "@Model.EorIotDeviceItem.ContentItemId",
             isPreview: false,
             canvasId: "@chartCanvasId",
@@ -338,7 +360,7 @@
 <script asp-name="mess-eor"></script>
 <script>
   window.mess.eor.useRefresh({
-    requestUrlPrefix: "@this.GetRequestUrlPrefix()",
+    requestUrlPrefix: "@(this.GetRequestUrlPrefix())",
     contentItemId: "@Model.EorIotDeviceItem.ContentItemId",
     id: {
       status: "@statusId",

@@ -18,29 +18,30 @@ public class BooleanJsonConverter : JsonConverter<bool>
       || reader.TokenType == JsonToken.None
       || reader.Value == null
     )
-    {
       return false;
-    }
 
     if (reader.TokenType == JsonToken.String)
     {
       var stringValue = reader.Value.ToString();
       return stringValue is not "0" and not "false"
-&& (stringValue is "1" or "true" ? true : throw new JsonSerializationException("Invalid value for boolean."));
+             && (stringValue is "1" or "true"
+               ? true
+               : throw new JsonSerializationException(
+                 "Invalid value for boolean."));
     }
-    else if (reader.TokenType == JsonToken.Boolean)
+
+    if (reader.TokenType == JsonToken.Boolean) return (bool)reader.Value;
+
+    if (reader.TokenType == JsonToken.Integer)
     {
-      return (bool)reader.Value;
+      var numberValue =
+        Convert.ToInt32(reader.Value, CultureInfo.InvariantCulture);
+      return numberValue != 0 && (numberValue == 1
+        ? true
+        : throw new JsonSerializationException("Invalid value for boolean."));
     }
-    else if (reader.TokenType == JsonToken.Integer)
-    {
-      var numberValue = Convert.ToInt32(reader.Value, CultureInfo.InvariantCulture);
-      return numberValue != 0 && (numberValue == 1 ? true : throw new JsonSerializationException("Invalid value for boolean."));
-    }
-    else
-    {
-      throw new JsonSerializationException("Invalid token type.");
-    }
+
+    throw new JsonSerializationException("Invalid token type.");
   }
 
   public override void WriteJson(

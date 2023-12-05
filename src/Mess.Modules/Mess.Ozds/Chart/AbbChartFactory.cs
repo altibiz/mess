@@ -1,14 +1,21 @@
-using Mess.Chart.Abstractions.Services;
 using Mess.Chart.Abstractions.Descriptors;
 using Mess.Chart.Abstractions.Models;
-using Mess.Ozds.Abstractions.Models;
+using Mess.Chart.Abstractions.Services;
 using Mess.Fields.Abstractions;
+using Mess.Ozds.Abstractions.Models;
 using Mess.Ozds.Abstractions.Timeseries;
 
 namespace Mess.Ozds.Chart;
 
 public class AbbChartFactory : ChartFactory<AbbIotDeviceItem>
 {
+  private readonly IOzdsTimeseriesClient _client;
+
+  public AbbChartFactory(IOzdsTimeseriesClient client)
+  {
+    _client = client;
+  }
+
   public override IEnumerable<string> TimeseriesChartDatasetProperties =>
     new[]
     {
@@ -43,11 +50,12 @@ public class AbbChartFactory : ChartFactory<AbbIotDeviceItem>
       nameof(AbbMeasurement.ActiveEnergyExportTariff2_kWh)
     };
 
-  protected override async Task<TimeseriesChartDescriptor?> CreateTimeseriesChartAsync(
-    AbbIotDeviceItem metadata,
-    TimeseriesChartItem chart,
-    IEnumerable<TimeseriesChartDatasetItem> datasets
-  )
+  protected override async Task<TimeseriesChartDescriptor?>
+    CreateTimeseriesChartAsync(
+      AbbIotDeviceItem metadata,
+      TimeseriesChartItem chart,
+      IEnumerable<TimeseriesChartDatasetItem> datasets
+    )
   {
     var now = DateTimeOffset.UtcNow;
     var measurements = await _client.GetAbbMeasurementsAsync(
@@ -57,26 +65,26 @@ public class AbbChartFactory : ChartFactory<AbbIotDeviceItem>
     );
 
     return new TimeseriesChartDescriptor(
-      RefreshInterval: (decimal)
-        chart.TimeseriesChartPart.Value.RefreshInterval.Value
-          .ToTimeSpan()
-          .TotalMilliseconds,
-      History: (decimal)
-        chart.TimeseriesChartPart.Value.History.Value
-          .ToTimeSpan()
-          .TotalMilliseconds,
-      Datasets: datasets
+      (decimal)
+      chart.TimeseriesChartPart.Value.RefreshInterval.Value
+        .ToTimeSpan()
+        .TotalMilliseconds,
+      (decimal)
+      chart.TimeseriesChartPart.Value.History.Value
+        .ToTimeSpan()
+        .TotalMilliseconds,
+      datasets
         .Select(
           dataset =>
             new TimeseriesChartDatasetDescriptor(
-              Label: dataset.TimeseriesChartDatasetPart.Value.Label.Text,
-              Color: dataset.TimeseriesChartDatasetPart.Value.Color.Value,
-              Datapoints: measurements
+              dataset.TimeseriesChartDatasetPart.Value.Label.Text,
+              dataset.TimeseriesChartDatasetPart.Value.Color.Value,
+              measurements
                 .Select(
                   measurement =>
                     new TimeseriesChartDatapointDescriptor(
-                      X: measurement.Timestamp,
-                      Y: GetTimeseriesValue(
+                      measurement.Timestamp,
+                      GetTimeseriesValue(
                         measurement,
                         dataset.TimeseriesChartDatasetPart.Value.Property
                       )
@@ -88,11 +96,4 @@ public class AbbChartFactory : ChartFactory<AbbIotDeviceItem>
         .ToList()
     );
   }
-
-  public AbbChartFactory(IOzdsTimeseriesClient client)
-  {
-    _client = client;
-  }
-
-  private readonly IOzdsTimeseriesClient _client;
 }

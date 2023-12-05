@@ -9,12 +9,17 @@ namespace Mess.Eor;
 
 public class AdminMenu : INavigationProvider
 {
+  private readonly IStringLocalizer S;
+
+  public AdminMenu(IStringLocalizer<AdminMenu> localizer)
+  {
+    S = localizer;
+  }
+
   public Task BuildNavigationAsync(string name, NavigationBuilder builder)
   {
     if (!string.Equals(name, "admin", StringComparison.OrdinalIgnoreCase))
-    {
       return Task.CompletedTask;
-    }
 
     builder.Add(
       S["EOR"],
@@ -44,11 +49,4 @@ public class AdminMenu : INavigationProvider
 
     return Task.CompletedTask;
   }
-
-  public AdminMenu(IStringLocalizer<AdminMenu> localizer)
-  {
-    S = localizer;
-  }
-
-  private readonly IStringLocalizer S;
 }

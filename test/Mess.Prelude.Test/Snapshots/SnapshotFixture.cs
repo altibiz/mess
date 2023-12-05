@@ -7,41 +7,15 @@ using Xunit.DependencyInjection;
 
 namespace Mess.Prelude.Test.Snapshots;
 
-public sealed class SnapshotFixture : ISnapshotFixture, IDisposable, IAsyncDisposable
+public sealed class SnapshotFixture : ISnapshotFixture, IDisposable,
+  IAsyncDisposable
 {
-  public Task<string> MakeVerificationHash(params object?[]? parameters)
-  {
-    var verificationHash = _makeParameterHash(parameters);
-    return Task.FromResult(verificationHash);
-  }
+  private readonly AsyncLocal<MethodInfo?> _local;
 
-  public async Task Verify(object? snapshot, string verificationHash)
-  {
-    await Verifier.Verify(snapshot).UseTextForParameters(verificationHash);
-  }
+  private readonly Func<object?[]?, string> _makeParameterHash;
+  private readonly ITest _test;
 
-  void IDisposable.Dispose()
-  {
-    _local.Value = null;
-  }
-
-  ValueTask IAsyncDisposable.DisposeAsync()
-  {
-    _local.Value = null;
-    return ValueTask.CompletedTask;
-  }
-
-  private static string MakeParameterHash(params object?[]? parameters)
-  {
-    return parameters is null or { Length: 0 }
-      ? "empty-parameters"
-      : parameters
-        .Select(
-          argument =>
-            new { Type = argument?.GetType()?.FullName, Argument = argument }
-        )
-        .GetJsonMurMurHash();
-  }
+  private readonly ITestOutputHelper _testOutputHelper;
 
   public SnapshotFixture(
     IServiceProvider serviceProvider,
@@ -57,9 +31,37 @@ public sealed class SnapshotFixture : ISnapshotFixture, IDisposable, IAsyncDispo
     _makeParameterHash = makeParameterHash;
   }
 
-  private readonly ITestOutputHelper _testOutputHelper;
-  private readonly ITest _test;
-  private readonly AsyncLocal<MethodInfo?> _local;
+  ValueTask IAsyncDisposable.DisposeAsync()
+  {
+    _local.Value = null;
+    return ValueTask.CompletedTask;
+  }
 
-  private readonly Func<object?[]?, string> _makeParameterHash;
+  void IDisposable.Dispose()
+  {
+    _local.Value = null;
+  }
+
+  public Task<string> MakeVerificationHash(params object?[]? parameters)
+  {
+    var verificationHash = _makeParameterHash(parameters);
+    return Task.FromResult(verificationHash);
+  }
+
+  public async Task Verify(object? snapshot, string verificationHash)
+  {
+    await Verifier.Verify(snapshot).UseTextForParameters(verificationHash);
+  }
+
+  private static string MakeParameterHash(params object?[]? parameters)
+  {
+    return parameters is null or { Length: 0 }
+      ? "empty-parameters"
+      : parameters
+        .Select(
+          argument =>
+            new { Type = argument?.GetType()?.FullName, Argument = argument }
+        )
+        .GetJsonMurMurHash();
+  }
 }

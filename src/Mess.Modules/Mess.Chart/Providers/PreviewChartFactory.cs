@@ -1,9 +1,9 @@
 using Mess.Chart.Abstractions.Descriptors;
 using Mess.Chart.Abstractions.Models;
 using Mess.Chart.Abstractions.Services;
+using Mess.Cms;
 using Mess.Fields.Abstractions;
 using OrchardCore.ContentManagement;
-using Mess.Cms;
 
 namespace Mess.Chart.Providers;
 
@@ -40,8 +40,8 @@ public class PreviewChartFactory : IChartFactory
               .Select(
                 i =>
                   new TimeseriesChartDatapointDescriptor(
-                    X: now.Subtract(TimeSpan.FromMinutes(i)),
-                    Y: (decimal)Random.Shared.NextDouble() * 100
+                    now.Subtract(TimeSpan.FromMinutes(i)),
+                    (decimal)Random.Shared.NextDouble() * 100
                   )
               )
               .Reverse()
@@ -51,15 +51,15 @@ public class PreviewChartFactory : IChartFactory
       );
 
       return new TimeseriesChartDescriptor(
-        RefreshInterval: (decimal)
-          timeseriesChart.TimeseriesChartPart.Value.RefreshInterval.Value
-            .ToTimeSpan()
-            .TotalMilliseconds,
-        History: (decimal)
-          timeseriesChart.TimeseriesChartPart.Value.History.Value
-            .ToTimeSpan()
-            .TotalMilliseconds,
-        Datasets: datasetDescriptors.ToList().AsReadOnly()
+        (decimal)
+        timeseriesChart.TimeseriesChartPart.Value.RefreshInterval.Value
+          .ToTimeSpan()
+          .TotalMilliseconds,
+        (decimal)
+        timeseriesChart.TimeseriesChartPart.Value.History.Value
+          .ToTimeSpan()
+          .TotalMilliseconds,
+        datasetDescriptors.ToList().AsReadOnly()
       );
     }
 

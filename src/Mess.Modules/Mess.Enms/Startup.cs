@@ -1,18 +1,18 @@
+using Mess.Chart.Abstractions.Extensions;
 using Mess.Cms.Extensions.Microsoft;
+using Mess.Enms.Abstractions.Models;
+using Mess.Enms.Abstractions.Timeseries;
+using Mess.Enms.Chart;
+using Mess.Enms.Iot;
+using Mess.Enms.Timeseries;
+using Mess.Iot.Abstractions.Extensions;
+using Mess.Timeseries.Abstractions.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using OrchardCore.ContentManagement;
 using OrchardCore.Data.Migration;
 using OrchardCore.Modules;
-using Mess.Iot.Abstractions.Extensions;
-using Mess.Chart.Abstractions.Extensions;
-using Mess.Enms.Iot;
-using Mess.Enms.Chart;
-using Mess.Timeseries.Abstractions.Extensions;
-using Mess.Enms.Timeseries;
-using Mess.Enms.Abstractions.Models;
-using OrchardCore.ContentManagement;
-using Mess.Enms.Abstractions.Timeseries;
 
 namespace Mess.Enms;
 
@@ -52,5 +52,6 @@ public class Startup : StartupBase
     IEndpointRouteBuilder routes,
     IServiceProvider serviceProvider
   )
-  { }
+  {
+  }
 }

@@ -5,8 +5,7 @@ namespace Mess.Fields.Abstractions.Fields;
 
 public class ApiKeyField : ContentField
 {
-  [JsonIgnore]
-  public string Value { get; set; } = default!;
+  [JsonIgnore] public string Value { get; set; } = default!;
 
   public string Hash { get; set; } = default!;
 

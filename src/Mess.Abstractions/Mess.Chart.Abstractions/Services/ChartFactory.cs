@@ -1,20 +1,14 @@
+using System.Globalization;
 using Mess.Chart.Abstractions.Descriptors;
 using Mess.Chart.Abstractions.Models;
 using Mess.Cms;
 using OrchardCore.ContentManagement;
-using System.Globalization;
 
 namespace Mess.Chart.Abstractions.Services;
 
 public abstract class ChartFactory<T> : IChartFactory
   where T : ContentItemBase
 {
-  protected abstract Task<TimeseriesChartDescriptor?> CreateTimeseriesChartAsync(
-    T metadata,
-    TimeseriesChartItem chart,
-    IEnumerable<TimeseriesChartDatasetItem> datasets
-  );
-
   public abstract IEnumerable<string> TimeseriesChartDatasetProperties { get; }
 
   public async Task<ChartDescriptor?> CreateChartAsync(
@@ -42,11 +36,22 @@ public abstract class ChartFactory<T> : IChartFactory
     );
   }
 
-  protected bool ContainsTimeseriesProperty<TP>(string property) =>
-    typeof(TP)
+  public string ContentType => typeof(T).ContentTypeName();
+
+  protected abstract Task<TimeseriesChartDescriptor?>
+    CreateTimeseriesChartAsync(
+      T metadata,
+      TimeseriesChartItem chart,
+      IEnumerable<TimeseriesChartDatasetItem> datasets
+    );
+
+  protected bool ContainsTimeseriesProperty<TP>(string property)
+  {
+    return typeof(TP)
       .GetProperties()
       .Select(property => property.Name)
       .Contains(property);
+  }
 
   protected DateTimeOffset GetTimeseriesTimestamp(object data)
   {
@@ -76,6 +81,4 @@ public abstract class ChartFactory<T> : IChartFactory
       ? 0.0M
       : Convert.ToDecimal(value, CultureInfo.InvariantCulture);
   }
-
-  public string ContentType => typeof(T).ContentTypeName();
 }

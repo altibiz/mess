@@ -23,6 +23,6 @@ using ManifestConstants = Mess.Cms.ManifestConstants;
     "Mess.Timeseries",
     "Mess.Iot",
     "Mess.Chart",
-    "Mess.Fields",
+    "Mess.Fields"
   }
 )]

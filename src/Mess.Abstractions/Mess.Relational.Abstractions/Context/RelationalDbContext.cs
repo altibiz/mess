@@ -9,6 +9,23 @@ namespace Mess.Relational.Abstractions.Context;
 
 public abstract class RelationalDbContext : DbContext
 {
+  private readonly ShellSettings _shellSettings;
+
+  public RelationalDbContext(
+    DbContextOptions options,
+    ShellSettings shellSettings
+  )
+    : base(options)
+  {
+    _shellSettings = shellSettings;
+  }
+
+  protected string DatabaseTablePrefix =>
+    _shellSettings.GetDatabaseTablePrefix();
+
+  protected string DatabaseConnectionString =>
+    _shellSettings.GetDatabaseConnectionString();
+
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
     CreateTenantedEntitiesWithBase(
@@ -45,27 +62,10 @@ public abstract class RelationalDbContext : DbContext
               ),
               Expression.Constant(DatabaseTablePrefix)
             ),
-            new List<ParameterExpression>() { entityParameter }
+            new List<ParameterExpression> { entityParameter }
           )
         );
       configuration?.Invoke(entity);
     }
   }
-
-  protected string DatabaseTablePrefix =>
-    _shellSettings.GetDatabaseTablePrefix();
-
-  protected string DatabaseConnectionString =>
-    _shellSettings.GetDatabaseConnectionString();
-
-  public RelationalDbContext(
-    DbContextOptions options,
-    ShellSettings shellSettings
-  )
-    : base(options)
-  {
-    _shellSettings = shellSettings;
-  }
-
-  private readonly ShellSettings _shellSettings;
 }

@@ -15,9 +15,7 @@ public static class IDocumentStoreExtensions
   {
     var allProgress = await store.Advanced.AllProjectionProgress();
     foreach (var state in allProgress)
-    {
       Log($"{state.ShardName} is at {state.Sequence}", logger);
-    }
 
     var stats = await store.Advanced.FetchEventStoreStatistics();
     Log(
@@ -41,9 +39,7 @@ public static class IDocumentStoreExtensions
   {
     var allProgress = store.Advanced.AllProjectionProgress().Result;
     foreach (var state in allProgress)
-    {
       Log($"{state.ShardName} is at {state.Sequence}", logger);
-    }
 
     var stats = store.Advanced.FetchEventStoreStatistics().Result;
     Log(
@@ -63,12 +59,8 @@ public static class IDocumentStoreExtensions
   private static void Log(string message, ILogger? logger = null)
   {
     if (logger is null)
-    {
       Console.WriteLine(message);
-    }
     else
-    {
       logger.LogInformation("{}", message);
-    }
   }
 }

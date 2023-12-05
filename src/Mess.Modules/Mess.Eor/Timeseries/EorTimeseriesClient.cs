@@ -1,7 +1,6 @@
 using Mess.Eor.Abstractions.Timeseries;
 using Mess.Timeseries.Abstractions.Extensions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using OrchardCore.Environment.Shell;
 using Z.EntityFramework.Plus;
 
@@ -12,40 +11,63 @@ namespace Mess.Eor.Iot;
 
 public class EorTimeseriesClient : IEorTimeseriesClient
 {
-  public void AddEorMeasurement(EorMeasurement model) =>
+  private readonly IServiceProvider _services;
+  private readonly ShellSettings _shellSettings;
+
+  public EorTimeseriesClient(
+    IServiceProvider services,
+    ShellSettings shellSettings
+  )
+  {
+    _services = services;
+    _shellSettings = shellSettings;
+  }
+
+  public void AddEorMeasurement(EorMeasurement model)
+  {
     _services.WithTimeseriesDbContext<EorTimeseriesDbContext>(context =>
     {
       context.EorMeasurements.Add(model.ToEntity());
       context.SaveChanges();
     });
+  }
 
-  public Task AddEorMeasurementAsync(EorMeasurement model) =>
-    _services.WithTimeseriesDbContextAsync<EorTimeseriesDbContext>(async context =>
-    {
-      context.EorMeasurements.Add(model.ToEntity());
-      await context.SaveChangesAsync();
-    });
+  public Task AddEorMeasurementAsync(EorMeasurement model)
+  {
+    return _services.WithTimeseriesDbContextAsync<EorTimeseriesDbContext>(
+      async context =>
+      {
+        context.EorMeasurements.Add(model.ToEntity());
+        await context.SaveChangesAsync();
+      });
+  }
 
-  public void AddEorStatus(EorStatus model) =>
+  public void AddEorStatus(EorStatus model)
+  {
     _services.WithTimeseriesDbContext<EorTimeseriesDbContext>(context =>
     {
       context.EorStatuses.Add(model.ToEntity());
       context.SaveChanges();
     });
+  }
 
-  public Task AddEorStatusAsync(EorStatus model) =>
-    _services.WithTimeseriesDbContextAsync<EorTimeseriesDbContext>(async context =>
-    {
-      context.EorStatuses.Add(model.ToEntity());
-      await context.SaveChangesAsync();
-    });
+  public Task AddEorStatusAsync(EorStatus model)
+  {
+    return _services.WithTimeseriesDbContextAsync<EorTimeseriesDbContext>(
+      async context =>
+      {
+        context.EorStatuses.Add(model.ToEntity());
+        await context.SaveChangesAsync();
+      });
+  }
 
   public IReadOnlyList<EorMeasurement> GetEorMeasurements(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
-  ) =>
-    _services.WithTimeseriesDbContext<
+  )
+  {
+    return _services.WithTimeseriesDbContext<
       EorTimeseriesDbContext,
       List<EorMeasurement>
     >(context =>
@@ -58,13 +80,15 @@ public class EorTimeseriesClient : IEorTimeseriesClient
         .Select(measurement => measurement.ToModel())
         .ToList();
     });
+  }
 
   public async Task<IReadOnlyList<EorMeasurement>> GetEorMeasurementsAsync(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
-  ) =>
-    await _services.WithTimeseriesDbContextAsync<
+  )
+  {
+    return await _services.WithTimeseriesDbContextAsync<
       EorTimeseriesDbContext,
       List<EorMeasurement>
     >(async context =>
@@ -77,13 +101,15 @@ public class EorTimeseriesClient : IEorTimeseriesClient
         .Select(measurement => measurement.ToModel())
         .ToListAsync();
     });
+  }
 
   public IReadOnlyList<EorStatus> GetEorStatuses(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
-  ) =>
-    _services.WithTimeseriesDbContext<
+  )
+  {
+    return _services.WithTimeseriesDbContext<
       EorTimeseriesDbContext,
       List<EorStatus>
     >(context =>
@@ -96,13 +122,15 @@ public class EorTimeseriesClient : IEorTimeseriesClient
         .Select(measurement => measurement.ToModel())
         .ToList();
     });
+  }
 
   public async Task<IReadOnlyList<EorStatus>> GetEorStatusesAsync(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
-  ) =>
-    await _services.WithTimeseriesDbContextAsync<
+  )
+  {
+    return await _services.WithTimeseriesDbContextAsync<
       EorTimeseriesDbContext,
       List<EorStatus>
     >(async context =>
@@ -115,12 +143,14 @@ public class EorTimeseriesClient : IEorTimeseriesClient
         .Select(measurement => measurement.ToModel())
         .ToListAsync();
     });
+  }
 
   public (
     IReadOnlyList<EorStatus> Statuses,
     IReadOnlyList<EorMeasurement> Measurements
-  ) GetEorData(string source, DateTimeOffset fromDate, DateTimeOffset toDate) =>
-    _services.WithTimeseriesDbContext<
+    ) GetEorData(string source, DateTimeOffset fromDate, DateTimeOffset toDate)
+  {
+    return _services.WithTimeseriesDbContext<
       EorTimeseriesDbContext,
       (List<EorStatus> Statuses, List<EorMeasurement> Measurements)
     >(context =>
@@ -143,16 +173,18 @@ public class EorTimeseriesClient : IEorTimeseriesClient
 
       return (Statuses: statuses.ToList(), Measurements: measurements.ToList());
     });
+  }
 
   public async Task<(
     IReadOnlyList<EorStatus> Statuses,
     IReadOnlyList<EorMeasurement> Measurements
-  )> GetEorDataAsync(
+    )> GetEorDataAsync(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
-  ) =>
-    await _services.WithTimeseriesDbContextAsync<
+  )
+  {
+    return await _services.WithTimeseriesDbContextAsync<
       EorTimeseriesDbContext,
       (List<EorStatus> Statuses, List<EorMeasurement> Measurements)
     >(async context =>
@@ -178,45 +210,47 @@ public class EorTimeseriesClient : IEorTimeseriesClient
         Measurements: await measurements.ToListAsync()
       );
     });
+  }
 
   public async Task<IReadOnlyList<EorSummary>> GetEorIotDeviceSummariesAsync(
     IReadOnlyCollection<string> sources
-  ) =>
-    await _services.WithTimeseriesDbContextAsync<
+  )
+  {
+    return await _services.WithTimeseriesDbContextAsync<
       EorTimeseriesDbContext,
       IReadOnlyList<EorSummary>
     >(async context =>
     {
       var measurementQueries = sources.Select(
         source =>
-          (
-            DeviceId: source,
-            Query: context.EorMeasurements
-              .Where(measurement => measurement.Source == source)
-              .OrderBy(measurement => measurement.Timestamp)
-              .Select(measurement => measurement.ToModel())
-              .DeferredFirstOrDefault()
-              .FutureValue()
-          )
+        (
+          DeviceId: source,
+          Query: context.EorMeasurements
+            .Where(measurement => measurement.Source == source)
+            .OrderBy(measurement => measurement.Timestamp)
+            .Select(measurement => measurement.ToModel())
+            .DeferredFirstOrDefault()
+            .FutureValue()
+        )
       );
 
       var statusQueries = sources.Select(
         source =>
-          (
-            DeviceId: source,
-            Query: context.EorStatuses
-              .Where(status => status.Source == source)
-              .OrderBy(status => status.Timestamp)
-              .Select(status => status.ToModel())
-              .DeferredFirstOrDefault()
-              .FutureValue()
-          )
+        (
+          DeviceId: source,
+          Query: context.EorStatuses
+            .Where(status => status.Source == source)
+            .OrderBy(status => status.Timestamp)
+            .Select(status => status.ToModel())
+            .DeferredFirstOrDefault()
+            .FutureValue()
+        )
       );
 
       var measurements = (
         await Task.WhenAll(
           measurementQueries.Select(
-            async (tuple) =>
+            async tuple =>
               (tuple.DeviceId, Value: await tuple.Query.ValueAsync())
           )
         )
@@ -246,39 +280,41 @@ public class EorTimeseriesClient : IEorTimeseriesClient
         .Select(summary => summary!)
         .ToList();
     });
+  }
 
   public IReadOnlyList<EorSummary> GetEorIotDeviceSummaries(
     IReadOnlyCollection<string> sources
-  ) =>
-    _services.WithTimeseriesDbContext<
+  )
+  {
+    return _services.WithTimeseriesDbContext<
       EorTimeseriesDbContext,
       IReadOnlyList<EorSummary>
     >(context =>
     {
       var measurementQueries = sources.Select(
         source =>
-          (
-            DeviceId: source,
-            Query: context.EorMeasurements
-              .Where(measurement => measurement.Source == source)
-              .OrderBy(measurement => measurement.Timestamp)
-              .Select(measurement => measurement.ToModel())
-              .DeferredFirstOrDefault()
-              .FutureValue()
-          )
+        (
+          DeviceId: source,
+          Query: context.EorMeasurements
+            .Where(measurement => measurement.Source == source)
+            .OrderBy(measurement => measurement.Timestamp)
+            .Select(measurement => measurement.ToModel())
+            .DeferredFirstOrDefault()
+            .FutureValue()
+        )
       );
 
       var statusesQuery = sources.Select(
         source =>
-          (
-            DeviceId: source,
-            Query: context.EorStatuses
-              .Where(status => status.Source == source)
-              .OrderBy(status => status.Timestamp)
-              .Select(status => status.ToModel())
-              .DeferredFirstOrDefault()
-              .FutureValue()
-          )
+        (
+          DeviceId: source,
+          Query: context.EorStatuses
+            .Where(status => status.Source == source)
+            .OrderBy(status => status.Timestamp)
+            .Select(status => status.ToModel())
+            .DeferredFirstOrDefault()
+            .FutureValue()
+        )
       );
 
       var measurements = measurementQueries
@@ -304,11 +340,13 @@ public class EorTimeseriesClient : IEorTimeseriesClient
         .Select(summary => summary!)
         .ToList();
     });
+  }
 
   public async Task<EorMeasurement?> GetLastEorMeasurementAsync(
     string source
-  ) =>
-    await _services.WithTimeseriesDbContextAsync<
+  )
+  {
+    return await _services.WithTimeseriesDbContextAsync<
       EorTimeseriesDbContext,
       EorMeasurement?
     >(async context =>
@@ -319,9 +357,11 @@ public class EorTimeseriesClient : IEorTimeseriesClient
         .Select(status => status.ToModel())
         .LastOrDefaultAsync();
     });
+  }
 
-  public EorMeasurement? GetLastEorMeasurement(string source) =>
-    _services.WithTimeseriesDbContext<
+  public EorMeasurement? GetLastEorMeasurement(string source)
+  {
+    return _services.WithTimeseriesDbContext<
       EorTimeseriesDbContext,
       EorMeasurement?
     >(context =>
@@ -332,9 +372,11 @@ public class EorTimeseriesClient : IEorTimeseriesClient
         .Select(status => status.ToModel())
         .LastOrDefault();
     });
+  }
 
-  public async Task<EorStatus?> GetEorStatusAsync(string source) =>
-    await _services.WithTimeseriesDbContextAsync<
+  public async Task<EorStatus?> GetEorStatusAsync(string source)
+  {
+    return await _services.WithTimeseriesDbContextAsync<
       EorTimeseriesDbContext,
       EorStatus?
     >(async context =>
@@ -345,9 +387,11 @@ public class EorTimeseriesClient : IEorTimeseriesClient
         .Select(status => status.ToModel())
         .LastOrDefaultAsync();
     });
+  }
 
-  public EorStatus? GetEorStatus(string source) =>
-    _services.WithTimeseriesDbContext<
+  public EorStatus? GetEorStatus(string source)
+  {
+    return _services.WithTimeseriesDbContext<
       EorTimeseriesDbContext,
       EorStatus?
     >(context =>
@@ -358,9 +402,11 @@ public class EorTimeseriesClient : IEorTimeseriesClient
         .Select(status => status.ToModel())
         .LastOrDefault();
     });
+  }
 
-  public Task<EorSummary?> GetEorIotDeviceSummaryAsync(string source) =>
-    _services.WithTimeseriesDbContextAsync<
+  public Task<EorSummary?> GetEorIotDeviceSummaryAsync(string source)
+  {
+    return _services.WithTimeseriesDbContextAsync<
       EorTimeseriesDbContext,
       EorSummary?
     >(async context =>
@@ -383,9 +429,11 @@ public class EorTimeseriesClient : IEorTimeseriesClient
       var status = await statusQuery.ValueAsync();
       return EorSummary.From(_shellSettings.Name, source, measurement, status);
     });
+  }
 
-  public EorSummary? GetEorIotDeviceSummary(string source) =>
-    _services.WithTimeseriesDbContext<
+  public EorSummary? GetEorIotDeviceSummary(string source)
+  {
+    return _services.WithTimeseriesDbContext<
       EorTimeseriesDbContext,
       EorSummary?
     >(context =>
@@ -413,16 +461,5 @@ public class EorTimeseriesClient : IEorTimeseriesClient
         status
       );
     });
-
-  public EorTimeseriesClient(
-    IServiceProvider services,
-    ShellSettings shellSettings
-  )
-  {
-    _services = services;
-    _shellSettings = shellSettings;
   }
-
-  private readonly IServiceProvider _services;
-  private readonly ShellSettings _shellSettings;
 }

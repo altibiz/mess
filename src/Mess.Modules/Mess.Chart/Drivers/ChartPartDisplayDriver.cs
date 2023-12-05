@@ -1,19 +1,32 @@
 using Mess.Chart.Abstractions.Models;
+using Mess.Chart.Indexes;
 using Mess.Chart.ViewModels;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Localization;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
 using OrchardCore.ContentManagement.Display.Models;
 using OrchardCore.DisplayManagement.ModelBinding;
 using OrchardCore.DisplayManagement.Views;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using YesSql;
-using Mess.Chart.Indexes;
 using OrchardCore.Mvc.ModelBinding;
+using YesSql;
 
 namespace Mess.Chart.Drivers;
 
 public class ChartPartDisplayDriver : ContentPartDisplayDriver<ChartPart>
 {
+  private readonly ISession _session;
+
+  private readonly IStringLocalizer S;
+
+  public ChartPartDisplayDriver(
+    IStringLocalizer<ChartPartDisplayDriver> localizer,
+    ISession session
+  )
+  {
+    _session = session;
+    S = localizer;
+  }
+
   public override IDisplayResult Display(
     ChartPart part,
     BuildPartDisplayContext context
@@ -83,29 +96,15 @@ public class ChartPartDisplayDriver : ContentPartDisplayDriver<ChartPart>
     )
     {
       if (string.IsNullOrWhiteSpace(viewModel.ChartContentItemId))
-      {
         updater.ModelState.AddModelError(
           Prefix,
           nameof(viewModel.ChartContentItemId),
           S["A value is required for {0}.", context.TypePartDefinition.Name]
         );
-      }
 
       part.ChartContentItemId = viewModel.ChartContentItemId;
     }
 
     return await EditAsync(part, context);
   }
-
-  public ChartPartDisplayDriver(
-    IStringLocalizer<ChartPartDisplayDriver> localizer,
-    ISession session
-  )
-  {
-    _session = session;
-    S = localizer;
-  }
-
-  private readonly IStringLocalizer S;
-  private readonly ISession _session;
 }

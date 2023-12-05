@@ -1,7 +1,7 @@
-using Xunit.DependencyInjection;
-using Xunit.DependencyInjection.Logging;
 using Mess.Prelude.Test.Extensions.Microsoft;
 using Mess.Prelude.Test.Migrations;
+using Xunit.DependencyInjection;
+using Xunit.DependencyInjection.Logging;
 
 namespace Mess.Prelude.Test;
 
@@ -32,9 +32,6 @@ public class Startup
   {
     using var scope = serviceProvider.CreateScope();
     var migrators = scope.ServiceProvider.GetServices<ITestMigrator>();
-    foreach (var migrator in migrators)
-    {
-      migrator.MigrateAsync().Wait();
-    }
+    foreach (var migrator in migrators) migrator.MigrateAsync().Wait();
   }
 }

@@ -8,8 +8,9 @@ namespace Mess.Prelude.Extensions.Streams;
 
 public static class StreamSerializationExtensions
 {
-  public static Stream ToJsonStream<T>(this T @this, bool pretty = true) =>
-    new MemoryStream(
+  public static Stream ToJsonStream<T>(this T @this, bool pretty = true)
+  {
+    return new MemoryStream(
       JsonSerializer.SerializeToUtf8Bytes(
         @this,
         new JsonSerializerOptions()
@@ -17,42 +18,50 @@ public static class StreamSerializationExtensions
           .AddMessSystemJsonConverters()
       )
     );
+  }
 
-  public static T? FromJsonStream<T>(this Stream @this) =>
-    JsonSerializer.Deserialize<T>(
+  public static T? FromJsonStream<T>(this Stream @this)
+  {
+    return JsonSerializer.Deserialize<T>(
       @this,
       new JsonSerializerOptions()
         .AddMessSystemJsonOptions()
         .AddMessSystemJsonConverters()
     );
+  }
 
-  public static object? FromJsonStream(this Stream @this, Type type) =>
-    JsonSerializer.Deserialize(
+  public static object? FromJsonStream(this Stream @this, Type type)
+  {
+    return JsonSerializer.Deserialize(
       @this,
       type,
       new JsonSerializerOptions()
         .AddMessSystemJsonOptions()
         .AddMessSystemJsonConverters()
     );
+  }
 
   public static async Task<T?> FromJsonStreamAsync<T>(
     this Stream @this,
     CancellationToken token = default
-  ) =>
-    await JsonSerializer.DeserializeAsync<T>(
+  )
+  {
+    return await JsonSerializer.DeserializeAsync<T>(
       @this,
       new JsonSerializerOptions()
         .AddMessSystemJsonOptions()
         .AddMessSystemJsonConverters(),
       token
     );
+  }
 
   public static async Task<object?> FromJsonStreamAsync(
     this Stream @this,
     Type type,
     CancellationToken token = default
-  ) =>
-    await JsonSerializer.DeserializeAsync(
+  )
+  {
+    return await JsonSerializer.DeserializeAsync(
       @this,
       type,
       new JsonSerializerOptions()
@@ -60,6 +69,7 @@ public static class StreamSerializationExtensions
         .AddMessSystemJsonConverters(),
       token
     );
+  }
 
   public static Stream ToXmlStream<T>(this T @this)
   {
@@ -97,7 +107,7 @@ public static class StreamSerializationExtensions
     CancellationToken token = default
   )
   {
-    var result = await XDocument.LoadAsync(@this, new(), token);
+    var result = await XDocument.LoadAsync(@this, new LoadOptions(), token);
     return result;
   }
 }

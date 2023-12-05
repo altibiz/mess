@@ -4,4 +4,5 @@ namespace Mess.Ozds.Timeseries;
 
 public class OzdsTimeseriesDbContextDesignTimeFactory
   : TimeseriesDbContextDesignTimeFactory<OzdsTimeseriesDbContext>
-{ }
+{
+}

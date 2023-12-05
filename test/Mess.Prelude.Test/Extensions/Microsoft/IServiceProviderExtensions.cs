@@ -10,8 +10,8 @@ public static class IServiceProviderExtensions
     var testOutputHelper = serviceProvider
       .GetRequiredService<ITestOutputHelperAccessor>()
       .Output ?? throw new InvalidOperationException(
-        "ITestOutputHelperAccessor.Output is null."
-      );
+      "ITestOutputHelperAccessor.Output is null."
+    );
 
     var test = testOutputHelper.GetTest();
 

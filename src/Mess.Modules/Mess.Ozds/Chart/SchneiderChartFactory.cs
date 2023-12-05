@@ -1,14 +1,21 @@
-using Mess.Chart.Abstractions.Services;
 using Mess.Chart.Abstractions.Descriptors;
 using Mess.Chart.Abstractions.Models;
-using Mess.Ozds.Abstractions.Models;
+using Mess.Chart.Abstractions.Services;
 using Mess.Fields.Abstractions;
+using Mess.Ozds.Abstractions.Models;
 using Mess.Ozds.Abstractions.Timeseries;
 
 namespace Mess.Ozds.Chart;
 
 public class SchneiderChartFactory : ChartFactory<SchneiderIotDeviceItem>
 {
+  private readonly IOzdsTimeseriesClient _client;
+
+  public SchneiderChartFactory(IOzdsTimeseriesClient client)
+  {
+    _client = client;
+  }
+
   public override IEnumerable<string> TimeseriesChartDatasetProperties =>
     new[]
     {
@@ -33,11 +40,12 @@ public class SchneiderChartFactory : ChartFactory<SchneiderIotDeviceItem>
       nameof(SchneiderMeasurement.ActiveEnergyImportRateB_Wh)
     };
 
-  protected override async Task<TimeseriesChartDescriptor?> CreateTimeseriesChartAsync(
-    SchneiderIotDeviceItem metadata,
-    TimeseriesChartItem chart,
-    IEnumerable<TimeseriesChartDatasetItem> datasets
-  )
+  protected override async Task<TimeseriesChartDescriptor?>
+    CreateTimeseriesChartAsync(
+      SchneiderIotDeviceItem metadata,
+      TimeseriesChartItem chart,
+      IEnumerable<TimeseriesChartDatasetItem> datasets
+    )
   {
     var now = DateTimeOffset.UtcNow;
     var measurements = await _client.GetSchneiderMeasurementsAsync(
@@ -47,24 +55,24 @@ public class SchneiderChartFactory : ChartFactory<SchneiderIotDeviceItem>
     );
 
     return new TimeseriesChartDescriptor(
-      RefreshInterval: (decimal)chart.TimeseriesChartPart.Value.RefreshInterval.Value
+      (decimal)chart.TimeseriesChartPart.Value.RefreshInterval.Value
         .ToTimeSpan()
         .TotalMilliseconds,
-      History: (decimal)chart.TimeseriesChartPart.Value.History.Value
+      (decimal)chart.TimeseriesChartPart.Value.History.Value
         .ToTimeSpan()
         .TotalMilliseconds,
-      Datasets: datasets
+      datasets
         .Select(
           dataset =>
             new TimeseriesChartDatasetDescriptor(
-              Label: dataset.TimeseriesChartDatasetPart.Value.Label.Text,
-              Color: dataset.TimeseriesChartDatasetPart.Value.Color.Value,
-              Datapoints: measurements
+              dataset.TimeseriesChartDatasetPart.Value.Label.Text,
+              dataset.TimeseriesChartDatasetPart.Value.Color.Value,
+              measurements
                 .Select(
                   measurement =>
                     new TimeseriesChartDatapointDescriptor(
-                      X: measurement.Timestamp,
-                      Y: GetTimeseriesValue(
+                      measurement.Timestamp,
+                      GetTimeseriesValue(
                         measurement,
                         dataset.TimeseriesChartDatasetPart.Value.Property
                       )
@@ -76,11 +84,4 @@ public class SchneiderChartFactory : ChartFactory<SchneiderIotDeviceItem>
         .ToList()
     );
   }
-
-  public SchneiderChartFactory(IOzdsTimeseriesClient client)
-  {
-    _client = client;
-  }
-
-  private readonly IOzdsTimeseriesClient _client;
 }

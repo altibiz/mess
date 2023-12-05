@@ -1,20 +1,25 @@
+using System.Collections;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Mess.Prelude;
-using Mess.Prelude.Extensions.Tuples;
 using Mess.Prelude.Extensions.Strings;
+using Mess.Prelude.Extensions.Tuples;
 using Xunit.Sdk;
 
 namespace Xunit;
 
 [AttributeUsage(
   AttributeTargets.Method,
-  AllowMultiple = true,
-  Inherited = true
-)]
+  AllowMultiple = true)]
 public class JsonAssetDataAttribute : DataAttribute
 {
-  public JsonAssetDataAttribute() { }
+  private readonly Assembly? _assembly;
+
+  private readonly string? _id;
+
+  public JsonAssetDataAttribute()
+  {
+  }
 
   public JsonAssetDataAttribute(string id)
   {
@@ -32,12 +37,10 @@ public class JsonAssetDataAttribute : DataAttribute
     var assembly = _assembly ?? testMethod.DeclaringType?.Assembly;
     var assemblyName = assembly?.GetName().Name;
     if (assembly is null || assemblyName is null)
-    {
       throw new InvalidOperationException("Couldn't instantiate data");
-    }
 
     var parameters = testMethod.GetParameters();
-    Type tupleType = parameters.Length switch
+    var tupleType = parameters.Length switch
     {
       7 => typeof(ValueTuple<,,,,,,>),
       6 => typeof(ValueTuple<,,,,,>),
@@ -58,9 +61,13 @@ public class JsonAssetDataAttribute : DataAttribute
     var id = _id;
     if (id is null)
     {
-      var declaringType = testMethod.DeclaringType ?? throw new InvalidOperationException("Couldn't instantiate data");
+      var declaringType = testMethod.DeclaringType ??
+                          throw new InvalidOperationException(
+                            "Couldn't instantiate data");
 
-      var @namespace = declaringType.Namespace ?? throw new InvalidOperationException("Couldn't instantiate data");
+      var @namespace = declaringType.Namespace ??
+                       throw new InvalidOperationException(
+                         "Couldn't instantiate data");
 
       var assetNamespace = @namespace.TrimStart(assemblyName).Trim(".");
       id = $"{assetNamespace}.{declaringType.Name}.{testMethod.Name}";
@@ -72,13 +79,10 @@ public class JsonAssetDataAttribute : DataAttribute
       assembly
     );
 
-    return resource is not System.Collections.IEnumerable castedResource
+    return resource is not IEnumerable castedResource
       ? throw new InvalidOperationException("Couldn't instantiate data")
       : castedResource
-      .Cast<ITuple>()
-      .Select(parameters => parameters.ToEnumerable().ToArray());
+        .Cast<ITuple>()
+        .Select(parameters => parameters.ToEnumerable().ToArray());
   }
-
-  private readonly string? _id;
-  private readonly Assembly? _assembly;
 }

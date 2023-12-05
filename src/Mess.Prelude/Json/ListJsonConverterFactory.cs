@@ -6,14 +6,16 @@ namespace Mess.Prelude.Json;
 
 public class ListJsonConverterFactory : JsonConverterFactory
 {
-  public override bool CanConvert(Type typeToConvert) =>
-    typeof(IList).IsAssignableFrom(typeToConvert)
-    && (
-      (
-        typeToConvert.IsGenericType
-        && typeToConvert.GetConstructor(Type.EmptyTypes) is not null
-      ) || typeToConvert.IsArray
-    );
+  public override bool CanConvert(Type typeToConvert)
+  {
+    return typeof(IList).IsAssignableFrom(typeToConvert)
+           && (
+             (
+               typeToConvert.IsGenericType
+               && typeToConvert.GetConstructor(Type.EmptyTypes) is not null
+             ) || typeToConvert.IsArray
+           );
+  }
 
   public override JsonConverter CreateConverter(
     Type typeToConvert,
@@ -40,9 +42,7 @@ public class ListJsonConverterFactory : JsonConverterFactory
         writer.WriteStartArray();
 
         foreach (var item in list)
-        {
           JsonSerializer.Serialize(writer, item, options);
-        }
 
         writer.WriteEndArray();
       }
@@ -72,14 +72,9 @@ public class ListJsonConverterFactory : JsonConverterFactory
         itemType = type.GetGenericArguments()[0];
       }
 
-      if (result is null)
-      {
-        throw new JsonException($"Cannot create type {type}");
-      }
+      if (result is null) throw new JsonException($"Cannot create type {type}");
       if (itemType is null)
-      {
         throw new JsonException($"Cannot get item type for {type}");
-      }
 
       if (reader.TokenType == JsonTokenType.StartArray)
       {
@@ -99,10 +94,7 @@ public class ListJsonConverterFactory : JsonConverterFactory
       {
         foreach (var item in str.Split(','))
         {
-          if (string.IsNullOrEmpty(item))
-          {
-            continue;
-          }
+          if (string.IsNullOrEmpty(item)) continue;
 
           var deserializedItem = JsonSerializer.Deserialize(
             item,
@@ -120,10 +112,10 @@ public class ListJsonConverterFactory : JsonConverterFactory
 
       return type.IsArray
         ? (T)
-          typeof(Enumerable)
-            .GetMethod(nameof(Enumerable.ToArray))!
-            .MakeGenericMethod(itemType)
-            .Invoke(null, new object[] { result })!
+        typeof(Enumerable)
+          .GetMethod(nameof(Enumerable.ToArray))!
+          .MakeGenericMethod(itemType)
+          .Invoke(null, new object[] { result })!
         : (T)result;
     }
   }

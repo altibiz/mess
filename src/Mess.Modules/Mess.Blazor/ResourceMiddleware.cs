@@ -1,6 +1,6 @@
 using Mess.Cms.Extensions.OrchardCore;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Html;
+using Microsoft.AspNetCore.Http;
 using OrchardCore.Environment.Shell;
 using OrchardCore.ResourceManagement;
 
@@ -12,7 +12,7 @@ public class ResourceMiddleware
 
   public ResourceMiddleware(RequestDelegate next)
   {
-      _next = next;
+    _next = next;
   }
 
   public async Task InvokeAsync(
@@ -24,26 +24,29 @@ public class ResourceMiddleware
     resourceManager.RegisterFootScript(
       new HtmlString(
         "<script src='/"
-          + shellSettings.GetRequestUrlPrefix()
-          + "/_framework/blazor.server.js'></script>"
+        + shellSettings.GetRequestUrlPrefix()
+        + "/_framework/blazor.server.js'></script>"
       )
     );
 
     resourceManager.RegisterLink(new LinkEntry()
-      .AddAttribute("href", "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap")
+      .AddAttribute("href",
+        "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap")
       .AddAttribute("rel", "stylesheet")
     );
 
     resourceManager.RegisterLink(new LinkEntry()
-      .AddAttribute("href", "/" + shellSettings.GetRequestUrlPrefix() +  "/_content/MudBlazor/MudBlazor.min.css")
+      .AddAttribute("href",
+        "/" + shellSettings.GetRequestUrlPrefix() +
+        "/_content/MudBlazor/MudBlazor.min.css")
       .AddAttribute("rel", "stylesheet")
     );
 
     resourceManager.RegisterFootScript(
       new HtmlString(
         "<script src='/"
-          + shellSettings.GetRequestUrlPrefix()
-          + "/_content/MudBlazor/MudBlazor.min.js'></script>"
+        + shellSettings.GetRequestUrlPrefix()
+        + "/_content/MudBlazor/MudBlazor.min.js'></script>"
       )
     );
 

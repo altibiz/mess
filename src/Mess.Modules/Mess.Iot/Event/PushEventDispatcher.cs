@@ -1,6 +1,6 @@
 using Mess.Event.Abstractions.Services;
-using Mess.Iot.Abstractions.Services;
 using Mess.Iot.Abstractions.Caches;
+using Mess.Iot.Abstractions.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using YesSql;
@@ -94,8 +94,8 @@ public class PushEventDispatcher : IEventDispatcher
       if (handler is null)
       {
         logger.LogError(
-         "Push handler for content item with device id {} not found",
-         @event.DeviceId
+          "Push handler for content item with device id {} not found",
+          @event.DeviceId
         );
         continue;
       }

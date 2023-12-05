@@ -1,21 +1,39 @@
+using Etch.OrchardCore.Fields.Colour.Fields;
 using Mess.Chart.Abstractions.Models;
-using Mess.Eor.Abstractions.Timeseries;
-using Mess.Eor.Abstractions.Models;
-using Mess.Iot.Abstractions.Indexes;
-using Mess.Fields.Abstractions.Extensions;
 using Mess.Cms;
+using Mess.Eor.Abstractions.Models;
+using Mess.Eor.Abstractions.Timeseries;
+using Mess.Fields.Abstractions;
+using Mess.Fields.Abstractions.ApiKeys;
+using Mess.Fields.Abstractions.Extensions;
+using Mess.Fields.Abstractions.Fields;
+using Mess.Population.Abstractions;
+using OrchardCore.ContentFields.Fields;
 using OrchardCore.ContentManagement;
 using OrchardCore.Users.Models;
 using OrchardCore.Users.Services;
-using YesSql;
-using Mess.Fields.Abstractions.ApiKeys;
-using Mess.Fields.Abstractions;
-using Mess.Population.Abstractions;
 
 namespace Mess.Eor;
 
 public class Populations : IPopulation
 {
+  private readonly IApiKeyFieldService _apiKeyFieldService;
+
+  private readonly IContentManager _contentManager;
+
+  private readonly IUserService _userService;
+
+  public Populations(
+    IContentManager contentManager,
+    IUserService userService,
+    IApiKeyFieldService apiKeyFieldService
+  )
+  {
+    _contentManager = contentManager;
+    _userService = userService;
+    _apiKeyFieldService = apiKeyFieldService;
+  }
+
   public async Task PopulateAsync()
   {
     var ownerId = "OwnerId";
@@ -50,8 +68,9 @@ public class Populations : IPopulation
       eorCurrentDataset => eorCurrentDataset.TimeseriesChartDatasetPart,
       timeseriesChartDatasetPart =>
       {
-        timeseriesChartDatasetPart.Color = new() { Value = "#ff0000" };
-        timeseriesChartDatasetPart.Label = new() { Text = "Current" };
+        timeseriesChartDatasetPart.Color =
+          new ColourField { Value = "#ff0000" };
+        timeseriesChartDatasetPart.Label = new TextField { Text = "Current" };
         timeseriesChartDatasetPart.Property = nameof(EorMeasurement.Current);
       }
     );
@@ -61,8 +80,9 @@ public class Populations : IPopulation
       eorVoltageDataset => eorVoltageDataset.TimeseriesChartDatasetPart,
       timeseriesChartDatasetPart =>
       {
-        timeseriesChartDatasetPart.Color = new() { Value = "#00ff00" };
-        timeseriesChartDatasetPart.Label = new() { Text = "Voltage" };
+        timeseriesChartDatasetPart.Color =
+          new ColourField { Value = "#00ff00" };
+        timeseriesChartDatasetPart.Label = new TextField { Text = "Voltage" };
         timeseriesChartDatasetPart.Property = nameof(EorMeasurement.Voltage);
       }
     );
@@ -72,18 +92,16 @@ public class Populations : IPopulation
       eorModeDataset => eorModeDataset.TimeseriesChartDatasetPart,
       timeseriesChartDatasetPart =>
       {
-        timeseriesChartDatasetPart.Color = new() { Value = "#0000ff" };
-        timeseriesChartDatasetPart.Label = new() { Text = "Mode" };
+        timeseriesChartDatasetPart.Color =
+          new ColourField { Value = "#0000ff" };
+        timeseriesChartDatasetPart.Label = new TextField { Text = "Mode" };
         timeseriesChartDatasetPart.Property = nameof(EorStatus.Mode);
       }
     );
     var eorChart = await _contentManager.NewContentAsync<TimeseriesChartItem>();
     eorChart.Alter(
       eorChart => eorChart.TitlePart,
-      titlePart =>
-      {
-        titlePart.Title = "Eor";
-      }
+      titlePart => { titlePart.Title = "Eor"; }
     );
     eorChart.Inner.DisplayText = "Eor";
     eorChart.Alter(
@@ -91,15 +109,15 @@ public class Populations : IPopulation
       timeseriesChartPart =>
       {
         timeseriesChartPart.ChartContentType = "EorIotDevice";
-        timeseriesChartPart.History = new()
+        timeseriesChartPart.History = new IntervalField
         {
-          Value = new(Unit: IntervalUnit.Minute, Count: 10)
+          Value = new Interval(IntervalUnit.Minute, 10)
         };
-        timeseriesChartPart.RefreshInterval = new()
+        timeseriesChartPart.RefreshInterval = new IntervalField
         {
-          Value = new(Unit: IntervalUnit.Second, Count: 10)
+          Value = new Interval(IntervalUnit.Second, 10)
         };
-        timeseriesChartPart.Datasets = new()
+        timeseriesChartPart.Datasets = new List<ContentItem>
         {
           eorCurrentDataset,
           eorVoltageDataset,
@@ -114,57 +132,36 @@ public class Populations : IPopulation
     eorIotDevice.Inner.Owner = adminId;
     eorIotDevice.Alter(
       eorIotDevice => eorIotDevice.TitlePart,
-      titlePart =>
-      {
-        titlePart.Title = "Eor";
-      }
+      titlePart => { titlePart.Title = "Eor"; }
     );
     eorIotDevice.Inner.DisplayText = "Eor";
     eorIotDevice.Alter(
       eorIotDevice => eorIotDevice.IotDevicePart,
       measurementDevicePart =>
       {
-        measurementDevicePart.DeviceId = new() { Text = "eor" };
+        measurementDevicePart.DeviceId = new TextField { Text = "eor" };
       }
     );
     eorIotDevice.Alter(
       eorIotDevice => eorIotDevice.ChartPart,
-      chartPart =>
-      {
-        chartPart.ChartContentItemId = eorChart.ContentItemId;
-      }
+      chartPart => { chartPart.ChartContentItemId = eorChart.ContentItemId; }
     );
     eorIotDevice.Alter(
       eorIotDevice => eorIotDevice.EorIotDevicePart,
       eorIotDevice =>
       {
-        eorIotDevice.Owner = new() { UserIds = new[] { ownerId } };
-        eorIotDevice.ManufactureDate = new() { Value = DateTime.UtcNow };
-        eorIotDevice.Manufacturer = new() { Text = "Siemens" };
-        eorIotDevice.CommisionDate = new() { Value = DateTime.UtcNow };
-        eorIotDevice.ProductNumber = new() { Text = "123456789" };
-        eorIotDevice.Longitude = new() { Value = -100.784430m };
-        eorIotDevice.Latitude = new() { Value = 31.697256m };
+        eorIotDevice.Owner = new UserPickerField
+          { UserIds = new[] { ownerId } };
+        eorIotDevice.ManufactureDate =
+          new DateField { Value = DateTime.UtcNow };
+        eorIotDevice.Manufacturer = new TextField { Text = "Siemens" };
+        eorIotDevice.CommisionDate = new DateField { Value = DateTime.UtcNow };
+        eorIotDevice.ProductNumber = new TextField { Text = "123456789" };
+        eorIotDevice.Longitude = new NumericField { Value = -100.784430m };
+        eorIotDevice.Latitude = new NumericField { Value = 31.697256m };
         eorIotDevice.ApiKey = _apiKeyFieldService.HashApiKeyField("eor");
       }
     );
     await _contentManager.CreateAsync(eorIotDevice, VersionOptions.Latest);
   }
-
-  public Populations(
-    IContentManager contentManager,
-    IUserService userService,
-    IApiKeyFieldService apiKeyFieldService
-  )
-  {
-    _contentManager = contentManager;
-    _userService = userService;
-    _apiKeyFieldService = apiKeyFieldService;
-  }
-
-  private readonly IContentManager _contentManager;
-
-  private readonly IUserService _userService;
-
-  private readonly IApiKeyFieldService _apiKeyFieldService;
 }

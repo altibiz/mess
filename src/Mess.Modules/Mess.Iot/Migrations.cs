@@ -9,6 +9,13 @@ namespace Mess.Iot;
 
 public class Migrations : DataMigration
 {
+  private readonly IContentDefinitionManager _contentDefinitionManager;
+
+  public Migrations(IContentDefinitionManager contentDefinitionManager)
+  {
+    _contentDefinitionManager = contentDefinitionManager;
+  }
+
   public async Task<int> CreateAsync()
   {
     _contentDefinitionManager.AlterPartDefinition(
@@ -47,11 +54,4 @@ public class Migrations : DataMigration
 
     return 1;
   }
-
-  public Migrations(IContentDefinitionManager contentDefinitionManager)
-  {
-    _contentDefinitionManager = contentDefinitionManager;
-  }
-
-  private readonly IContentDefinitionManager _contentDefinitionManager;
 }

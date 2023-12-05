@@ -1,7 +1,7 @@
 using Mess.Billing.Abstractions.Indexes;
 using Mess.Billing.Abstractions.Services;
-using Mess.Ozds.Abstractions.Models;
 using Mess.Cms;
+using Mess.Ozds.Abstractions.Models;
 using OrchardCore.ContentManagement;
 using OrchardCore.Lists.Models;
 
@@ -9,6 +9,13 @@ namespace Mess.Ozds.Billing;
 
 public class OzdsBillingIndexer : IBillingIndexer
 {
+  private readonly IContentManager _contentManager;
+
+  public OzdsBillingIndexer(IContentManager contentManager)
+  {
+    _contentManager = contentManager;
+  }
+
   public bool IsApplicable(ContentItem contentItem)
   {
     return contentItem.Has<OzdsIotDevicePart>();
@@ -121,11 +128,4 @@ public class OzdsBillingIndexer : IBillingIndexer
       RecipientContentItemId = distributionSystemUnitContentItemId
     };
   }
-
-  public OzdsBillingIndexer(IContentManager contentManager)
-  {
-    _contentManager = contentManager;
-  }
-
-  private readonly IContentManager _contentManager;
 }

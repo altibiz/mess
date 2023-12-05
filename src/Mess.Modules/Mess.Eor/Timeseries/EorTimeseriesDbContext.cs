@@ -6,13 +6,15 @@ namespace Mess.Eor.Iot;
 
 public class EorTimeseriesDbContext : TimeseriesDbContext
 {
-  public DbSet<EorMeasurementEntity> EorMeasurements { get; set; } = default!;
-
-  public DbSet<EorStatusEntity> EorStatuses { get; set; } = default!;
-
   public EorTimeseriesDbContext(
     DbContextOptions<EorTimeseriesDbContext> options,
     ShellSettings shellSettings
   )
-    : base(options, shellSettings) { }
+    : base(options, shellSettings)
+  {
+  }
+
+  public DbSet<EorMeasurementEntity> EorMeasurements { get; set; } = default!;
+
+  public DbSet<EorStatusEntity> EorStatuses { get; set; } = default!;
 }

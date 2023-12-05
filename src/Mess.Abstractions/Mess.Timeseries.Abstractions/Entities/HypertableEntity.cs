@@ -4,11 +4,11 @@ namespace Mess.Timeseries.Abstractions.Entities;
 
 public abstract class HypertableEntity
 {
-  [Column(TypeName = "text")]
-  public string Tenant { get; set; } = default!;
+  [NotMapped] private DateTimeOffset _timestamp;
 
-  [Column(TypeName = "text")]
-  public string Source { get; set; } = default!;
+  [Column(TypeName = "text")] public string Tenant { get; set; } = default!;
+
+  [Column(TypeName = "text")] public string Source { get; set; } = default!;
 
   [HypertableColumn]
   [Column(TypeName = "timestamptz")]
@@ -25,7 +25,4 @@ public abstract class HypertableEntity
     // NOTE: https://stackoverflow.com/a/52367289
     private set { }
   }
-
-  [NotMapped]
-  private DateTimeOffset _timestamp = default!;
 }

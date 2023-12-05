@@ -1,4 +1,6 @@
 namespace Mess.Timeseries.Abstractions.Entities;
 
 [AttributeUsage(AttributeTargets.Property)]
-public class HypertableColumnAttribute : Attribute { }
+public class HypertableColumnAttribute : Attribute
+{
+}

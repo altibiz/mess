@@ -4,4 +4,5 @@ namespace Mess.Enms.Timeseries;
 
 public class EnmsTimeseriesDbContextDesignTimeFactory
   : TimeseriesDbContextDesignTimeFactory<EnmsTimeseriesDbContext>
-{ }
+{
+}

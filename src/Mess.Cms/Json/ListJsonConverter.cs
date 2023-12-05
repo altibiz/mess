@@ -1,5 +1,5 @@
-using Newtonsoft.Json;
 using System.Collections;
+using Newtonsoft.Json;
 
 namespace Mess.Cms.Json;
 
@@ -8,12 +8,12 @@ public class ListJsonConverter : JsonConverter
   public override bool CanConvert(Type objectType)
   {
     return typeof(IList).IsAssignableFrom(objectType)
-      && (
-        (
-          objectType.IsGenericType
-          && objectType.GetConstructor(Type.EmptyTypes) != null
-        ) || objectType.IsArray
-      );
+           && (
+             (
+               objectType.IsGenericType
+               && objectType.GetConstructor(Type.EmptyTypes) != null
+             ) || objectType.IsArray
+           );
   }
 
   public override object? ReadJson(
@@ -38,15 +38,11 @@ public class ListJsonConverter : JsonConverter
     }
 
     if (result == null)
-    {
       throw new JsonSerializationException($"Cannot create type {objectType}");
-    }
     if (itemType == null)
-    {
       throw new JsonSerializationException(
         $"Cannot get item type for {objectType}"
       );
-    }
 
     if (reader.TokenType == JsonToken.StartArray)
     {
@@ -61,10 +57,7 @@ public class ListJsonConverter : JsonConverter
       var str = (reader.Value as string)!;
       foreach (var item in str.Split(','))
       {
-        if (string.IsNullOrEmpty(item))
-        {
-          continue;
-        }
+        if (string.IsNullOrEmpty(item)) continue;
 
         var deserializedItem = JsonConvert.DeserializeObject(item, itemType);
         result.Add(deserializedItem);
@@ -93,10 +86,7 @@ public class ListJsonConverter : JsonConverter
     {
       writer.WriteStartArray();
 
-      foreach (var item in list)
-      {
-        serializer.Serialize(writer, item);
-      }
+      foreach (var item in list) serializer.Serialize(writer, item);
 
       writer.WriteEndArray();
     }

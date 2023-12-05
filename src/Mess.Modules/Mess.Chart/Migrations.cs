@@ -5,7 +5,6 @@ using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.ContentManagement.Metadata.Settings;
 using OrchardCore.Data.Migration;
 using OrchardCore.Flows.Models;
-using OrchardCore.Recipes.Services;
 using OrchardCore.Title.Models;
 using YesSql.Sql;
 
@@ -13,6 +12,15 @@ namespace Mess.Chart;
 
 public class Migrations : DataMigration
 {
+  private readonly IContentDefinitionManager _contentDefinitionManager;
+
+  public Migrations(
+    IContentDefinitionManager contentDefinitionManager
+  )
+  {
+    _contentDefinitionManager = contentDefinitionManager;
+  }
+
   public int Create()
   {
     _contentDefinitionManager.AlterPartDefinition(
@@ -66,8 +74,9 @@ public class Migrations : DataMigration
                 .OfType("TextField")
                 .WithDisplayName("Label")
                 .WithDescription("The label for the dataset.")
-                .WithSettings<TextFieldSettings>(
-                  new() { Hint = "The label for the dataset.", Required = true }
+                .WithSettings(
+                  new TextFieldSettings
+                    { Hint = "The label for the dataset.", Required = true }
                 )
                 .WithPosition("0")
           )
@@ -79,7 +88,7 @@ public class Migrations : DataMigration
                 .WithDisplayName("Color")
                 .WithDescription("The color for the line of the dataset.")
                 .WithSettings<ColourFieldSettings>(
-                  new()
+                  new ColourFieldSettings
                   {
                     Hint = "The color for the line of the dataset.",
                     DefaultValue = "#0000FF",
@@ -114,8 +123,9 @@ public class Migrations : DataMigration
             builder =>
               builder
                 .WithDisplayName("Title")
-                .WithSettings<TitlePartSettings>(
-                  new() { Options = TitlePartOptions.EditableRequired, }
+                .WithSettings(
+                  new TitlePartSettings
+                    { Options = TitlePartOptions.EditableRequired }
                 )
                 .WithPosition("0")
           )
@@ -150,8 +160,9 @@ public class Migrations : DataMigration
             builder =>
               builder
                 .WithDisplayName("Title")
-                .WithSettings<TitlePartSettings>(
-                  new() { Options = TitlePartOptions.EditableRequired, }
+                .WithSettings(
+                  new TitlePartSettings
+                    { Options = TitlePartOptions.EditableRequired }
                 )
                 .WithPosition("0")
           )
@@ -161,7 +172,8 @@ public class Migrations : DataMigration
               builder
                 .WithDisplayName("Charts")
                 .WithSettings<FlowPartSettings>(
-                  new() { ContainedContentTypes = new[] { "TimeseriesChart" }, }
+                  new FlowPartSettings
+                    { ContainedContentTypes = new[] { "TimeseriesChart" } }
                 )
                 .WithPosition("1")
           )
@@ -180,13 +192,4 @@ public class Migrations : DataMigration
 
     return 1;
   }
-
-  public Migrations(
-    IContentDefinitionManager contentDefinitionManager
-  )
-  {
-    _contentDefinitionManager = contentDefinitionManager;
-  }
-
-  private readonly IContentDefinitionManager _contentDefinitionManager;
 }

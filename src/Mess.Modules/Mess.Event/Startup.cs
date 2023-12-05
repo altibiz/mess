@@ -1,20 +1,20 @@
-using Microsoft.Extensions.DependencyInjection;
-using OrchardCore.Modules;
-using Mess.Event.Abstractions.Client;
-using Mess.Event.Client;
+using JasperFx.CodeGeneration;
 using Marten;
 using Marten.Events.Projections;
-using Mess.Event.Projections;
-using Mess.Event.Abstractions.Session;
-using Mess.Event.Session;
-using Mess.Cms.Extensions.OrchardCore;
-using OrchardCore.Environment.Shell;
-using Mess.Prelude.Extensions.Microsoft;
-using Mess.Event.Abstractions.Services;
-using JasperFx.CodeGeneration;
-using Microsoft.Extensions.Hosting;
 using Marten.Services.Json.Transformations;
+using Mess.Cms.Extensions.OrchardCore;
+using Mess.Event.Abstractions.Client;
+using Mess.Event.Abstractions.Services;
+using Mess.Event.Abstractions.Session;
+using Mess.Event.Client;
+using Mess.Event.Projections;
+using Mess.Event.Session;
+using Mess.Prelude.Extensions.Microsoft;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using OrchardCore.Environment.Shell;
+using OrchardCore.Modules;
 using Weasel.Core;
 
 // using Mess.Event.Extensions.Marten;
@@ -26,7 +26,7 @@ public class Startup : StartupBase
   public override void ConfigureServices(IServiceCollection services)
   {
     services.AddMarten(
-      (IServiceProvider services) =>
+      services =>
       {
         var hostEnvironment = services.GetRequiredService<IHostEnvironment>();
         var shellSettings = services.GetRequiredService<ShellSettings>();
@@ -46,7 +46,7 @@ public class Startup : StartupBase
         {
           databases
             .AddMultipleTenantDatabase(databaseConnectionString)
-            .ForTenants(new[] { databaseTablePrefix });
+            .ForTenants(databaseTablePrefix);
         });
 
         var eventTypes = AppDomain.CurrentDomain
@@ -60,7 +60,7 @@ public class Startup : StartupBase
           {
             try
             {
-              return Activator.CreateInstance(type, new[] { services });
+              return Activator.CreateInstance(type, services);
             }
             catch (Exception exception)
             {

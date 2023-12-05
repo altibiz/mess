@@ -1,9 +1,9 @@
 using Fluid;
-using Mess.Fields.Abstractions.Fields;
+using Mess.Cms.Extensions.Microsoft;
 using Mess.Fields.Abstractions.ApiKeys;
+using Mess.Fields.Abstractions.Fields;
 using Mess.Fields.Drivers;
 using Mess.Iot.Security;
-using Mess.Cms.Extensions.Microsoft;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,7 +31,8 @@ public class Startup : StartupBase
     services
       .AddContentField<ApiKeyField>()
       .UseDisplayDriver<ApiKeyFieldDisplayDriver>();
-    services.AddContentPartFieldDefinitionDisplayDriver<ApiKeyFieldSettingsDriver>();
+    services
+      .AddContentPartFieldDefinitionDisplayDriver<ApiKeyFieldSettingsDriver>();
     services.AddSingleton<IApiKeyFieldService, ApiKeyFieldService>();
 
     // IntervalField
@@ -49,5 +50,6 @@ public class Startup : StartupBase
     IEndpointRouteBuilder routes,
     IServiceProvider serviceProvider
   )
-  { }
+  {
+  }
 }

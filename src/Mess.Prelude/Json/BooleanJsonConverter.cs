@@ -15,24 +15,26 @@ public class BooleanJsonConverter : JsonConverter<bool>
     {
       var stringValue = reader.GetString();
       return stringValue is not "0" and not "false"
-&& (stringValue is "1" or "true" ? true : throw new JsonException("Invalid value for boolean."));
+             && (stringValue is "1" or "true"
+               ? true
+               : throw new JsonException("Invalid value for boolean."));
     }
-    else if (
+
+    if (
       reader.TokenType is JsonTokenType.True
       or JsonTokenType.False
     )
-    {
       return reader.GetBoolean();
-    }
-    else if (reader.TokenType == JsonTokenType.Number)
+
+    if (reader.TokenType == JsonTokenType.Number)
     {
       var numberValue = reader.GetInt32();
-      return numberValue != 0 && (numberValue == 1 ? true : throw new JsonException("Invalid value for boolean."));
+      return numberValue != 0 && (numberValue == 1
+        ? true
+        : throw new JsonException("Invalid value for boolean."));
     }
-    else
-    {
-      throw new JsonException("Invalid token type.");
-    }
+
+    throw new JsonException("Invalid token type.");
   }
 
   public override void Write(

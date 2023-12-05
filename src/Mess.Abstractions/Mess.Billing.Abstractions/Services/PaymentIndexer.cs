@@ -7,10 +7,6 @@ namespace Mess.Billing.Abstractions.Services;
 public abstract class PaymentIndexer<T> : IPaymentIndexer
   where T : ContentItemBase
 {
-  protected abstract PaymentIndex IndexPayment(T contentItem);
-
-  protected abstract Task<PaymentIndex> IndexPaymentAsync(T contentItem);
-
   public PaymentIndex IndexPayment(ContentItem contentItem)
   {
     var item = contentItem.AsContent<T>();
@@ -27,4 +23,8 @@ public abstract class PaymentIndexer<T> : IPaymentIndexer
   {
     return contentItem.ContentType == typeof(T).ContentTypeName();
   }
+
+  protected abstract PaymentIndex IndexPayment(T contentItem);
+
+  protected abstract Task<PaymentIndex> IndexPaymentAsync(T contentItem);
 }

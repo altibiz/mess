@@ -1,8 +1,8 @@
-using Mess.Eor.Abstractions.Timeseries;
-using Mess.Eor.Abstractions.Models;
-using Mess.Eor.Extensions;
 using Mess.Cms;
 using Mess.Cms.Extensions.Microsoft;
+using Mess.Eor.Abstractions.Models;
+using Mess.Eor.Abstractions.Timeseries;
+using Mess.Eor.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OrchardCore.ContentManagement;
@@ -12,6 +12,19 @@ namespace Mess.Eor.Controllers;
 [Authorize]
 public class EorIotDeviceControlsController : Controller
 {
+  private readonly IAuthorizationService _authorizationService;
+
+  private readonly IContentManager _contentManager;
+
+  public EorIotDeviceControlsController(
+    IAuthorizationService authorizationService,
+    IContentManager contentManager
+  )
+  {
+    _contentManager = contentManager;
+    _authorizationService = authorizationService;
+  }
+
   [HttpPost]
   public async Task<IActionResult> ToggleRunState(
     string contentItemId,
@@ -19,10 +32,7 @@ public class EorIotDeviceControlsController : Controller
   )
   {
     var contentItem = await _contentManager.GetAsync(contentItemId);
-    if (contentItem == null)
-    {
-      return NotFound();
-    }
+    if (contentItem == null) return NotFound();
 
     var eorIotDevice = contentItem.AsContent<EorIotDeviceItem>();
 
@@ -34,9 +44,7 @@ public class EorIotDeviceControlsController : Controller
         eorIotDevice
       )
     )
-    {
       return Forbid();
-    }
 
     eorIotDevice.Alter(
       eorIotDevice => eorIotDevice.EorIotDevicePart,
@@ -53,10 +61,10 @@ public class EorIotDeviceControlsController : Controller
     return returnUrl is not null
       ? Redirect(returnUrl)
       : RedirectToAction(
-      nameof(EorIotDeviceController.Detail),
-      nameof(EorIotDeviceController),
-      new { contentItemId }
-    );
+        nameof(EorIotDeviceController.Detail),
+        nameof(EorIotDeviceController),
+        new { contentItemId }
+      );
   }
 
   [HttpPost]
@@ -66,10 +74,7 @@ public class EorIotDeviceControlsController : Controller
   )
   {
     var contentItem = await _contentManager.GetAsync(contentItemId);
-    if (contentItem == null)
-    {
-      return NotFound();
-    }
+    if (contentItem == null) return NotFound();
 
     var eorIotDevice = contentItem.AsContent<EorIotDeviceItem>();
 
@@ -81,26 +86,21 @@ public class EorIotDeviceControlsController : Controller
         eorIotDevice
       )
     )
-    {
       return Forbid();
-    }
 
     eorIotDevice.Alter(
       eorIotDevice => eorIotDevice.EorIotDevicePart,
-      eorIotDevice =>
-      {
-        eorIotDevice.Controls.RunState = EorRunState.Started;
-      }
+      eorIotDevice => { eorIotDevice.Controls.RunState = EorRunState.Started; }
     );
     await _contentManager.UpdateAsync(eorIotDevice);
 
     return returnUrl is not null
       ? Redirect(returnUrl)
       : RedirectToAction(
-      nameof(EorIotDeviceController.Detail),
-      nameof(EorIotDeviceController),
-      new { contentItemId }
-    );
+        nameof(EorIotDeviceController.Detail),
+        nameof(EorIotDeviceController),
+        new { contentItemId }
+      );
   }
 
   [HttpPost]
@@ -110,10 +110,7 @@ public class EorIotDeviceControlsController : Controller
   )
   {
     var contentItem = await _contentManager.GetAsync(contentItemId);
-    if (contentItem == null)
-    {
-      return NotFound();
-    }
+    if (contentItem == null) return NotFound();
 
     var eorIotDevice = contentItem.AsContent<EorIotDeviceItem>();
 
@@ -125,26 +122,21 @@ public class EorIotDeviceControlsController : Controller
         eorIotDevice
       )
     )
-    {
       return Forbid();
-    }
 
     eorIotDevice.Alter(
       eorIotDevice => eorIotDevice.EorIotDevicePart,
-      eorIotDevice =>
-      {
-        eorIotDevice.Controls.RunState = EorRunState.Stopped;
-      }
+      eorIotDevice => { eorIotDevice.Controls.RunState = EorRunState.Stopped; }
     );
     await _contentManager.UpdateAsync(eorIotDevice);
 
     return returnUrl is not null
       ? Redirect(returnUrl)
       : RedirectToAction(
-      nameof(EorIotDeviceController.Detail),
-      nameof(EorIotDeviceController),
-      new { contentItemId }
-    );
+        nameof(EorIotDeviceController.Detail),
+        nameof(EorIotDeviceController),
+        new { contentItemId }
+      );
   }
 
   [HttpPost]
@@ -154,10 +146,7 @@ public class EorIotDeviceControlsController : Controller
   )
   {
     var contentItem = await _contentManager.GetAsync(contentItemId);
-    if (contentItem == null)
-    {
-      return NotFound();
-    }
+    if (contentItem == null) return NotFound();
 
     var eorIotDevice = contentItem.AsContent<EorIotDeviceItem>();
 
@@ -169,9 +158,7 @@ public class EorIotDeviceControlsController : Controller
         eorIotDevice
       )
     )
-    {
       return Forbid();
-    }
 
     eorIotDevice.Alter(
       eorIotDevice => eorIotDevice.EorIotDevicePart,
@@ -186,10 +173,10 @@ public class EorIotDeviceControlsController : Controller
     return returnUrl is not null
       ? Redirect(returnUrl)
       : RedirectToAction(
-      nameof(EorIotDeviceController.Detail),
-      nameof(EorIotDeviceController),
-      new { contentItemId }
-    );
+        nameof(EorIotDeviceController.Detail),
+        nameof(EorIotDeviceController),
+        new { contentItemId }
+      );
   }
 
   [HttpPost]
@@ -200,10 +187,7 @@ public class EorIotDeviceControlsController : Controller
   )
   {
     var contentItem = await _contentManager.GetAsync(contentItemId);
-    if (contentItem == null)
-    {
-      return NotFound();
-    }
+    if (contentItem == null) return NotFound();
 
     var eorIotDevice = contentItem.AsContent<EorIotDeviceItem>();
 
@@ -215,37 +199,20 @@ public class EorIotDeviceControlsController : Controller
         eorIotDevice
       )
     )
-    {
       return Forbid();
-    }
 
     eorIotDevice.Alter(
       eorIotDevice => eorIotDevice.EorIotDevicePart,
-      eorIotDevice =>
-      {
-        eorIotDevice.Controls.Mode = mode;
-      }
+      eorIotDevice => { eorIotDevice.Controls.Mode = mode; }
     );
     await _contentManager.UpdateAsync(eorIotDevice);
 
     return returnUrl is not null
       ? Redirect(returnUrl)
       : RedirectToAction(
-      nameof(EorIotDeviceController.Detail),
-      nameof(EorIotDeviceController),
-      new { contentItemId }
-    );
+        nameof(EorIotDeviceController.Detail),
+        nameof(EorIotDeviceController),
+        new { contentItemId }
+      );
   }
-
-  public EorIotDeviceControlsController(
-    IAuthorizationService authorizationService,
-    IContentManager contentManager
-  )
-  {
-    _contentManager = contentManager;
-    _authorizationService = authorizationService;
-  }
-
-  private readonly IContentManager _contentManager;
-  private readonly IAuthorizationService _authorizationService;
 }

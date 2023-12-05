@@ -1,15 +1,15 @@
+using Mess.Chart.Abstractions.Models;
+using Mess.Chart.Abstractions.Services;
+using Mess.Chart.Providers;
+using Mess.Chart.ViewModels;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
+using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
 using OrchardCore.ContentManagement.Display.Models;
 using OrchardCore.DisplayManagement.ModelBinding;
 using OrchardCore.DisplayManagement.Views;
-using Mess.Chart.Abstractions.Models;
-using Mess.Chart.ViewModels;
-using OrchardCore.ContentManagement.Metadata;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.DependencyInjection;
-using Mess.Chart.Providers;
-using Mess.Chart.Abstractions.Services;
 using OrchardCore.Mvc.ModelBinding;
 
 namespace Mess.Chart.Drivers;
@@ -17,6 +17,19 @@ namespace Mess.Chart.Drivers;
 public class TimeseriesChartPartDisplayDriver
   : ContentPartDisplayDriver<TimeseriesChartPart>
 {
+  private readonly IServiceProvider _serviceProvider;
+
+  private readonly IStringLocalizer S;
+
+  public TimeseriesChartPartDisplayDriver(
+    IServiceProvider serviceProvider,
+    IStringLocalizer<TimeseriesChartPartDisplayDriver> localizer
+  )
+  {
+    S = localizer;
+    _serviceProvider = serviceProvider;
+  }
+
   public override IDisplayResult Edit(
     TimeseriesChartPart part,
     BuildPartEditorContext context
@@ -88,9 +101,7 @@ public class TimeseriesChartPartDisplayDriver
       else
       {
         if (part.ChartContentType != viewModel.ChartContentType)
-        {
-          part.Datasets = new();
-        }
+          part.Datasets = new List<ContentItem>();
       }
 
       part.ChartContentType = viewModel.ChartContentType;
@@ -98,16 +109,4 @@ public class TimeseriesChartPartDisplayDriver
 
     return Edit(part, context);
   }
-
-  public TimeseriesChartPartDisplayDriver(
-    IServiceProvider serviceProvider,
-    IStringLocalizer<TimeseriesChartPartDisplayDriver> localizer
-  )
-  {
-    S = localizer;
-    _serviceProvider = serviceProvider;
-  }
-
-  private readonly IStringLocalizer S;
-  private readonly IServiceProvider _serviceProvider;
 }

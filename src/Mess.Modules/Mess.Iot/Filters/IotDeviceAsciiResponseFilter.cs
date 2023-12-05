@@ -13,8 +13,6 @@ public class IotDeviceAsciiResponseAttribute : ActionFilterAttribute
       context.Result is ObjectResult objectResult
       && objectResult.Value is string response
     )
-    {
       objectResult.Value = response.ToAscii();
-    }
   }
 }

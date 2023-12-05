@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using OrchardCore.Data.Migration;
@@ -20,8 +21,9 @@ public class Startup : StartupBase
 
   public override void Configure(
     IApplicationBuilder app,
-    Microsoft.AspNetCore.Routing.IEndpointRouteBuilder routes,
+    IEndpointRouteBuilder routes,
     IServiceProvider serviceProvider
   )
-  { }
+  {
+  }
 }

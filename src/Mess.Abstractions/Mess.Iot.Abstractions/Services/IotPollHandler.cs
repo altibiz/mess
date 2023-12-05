@@ -6,20 +6,6 @@ namespace Mess.Iot.Abstractions.Services;
 public abstract class IotPollHandler<T> : IIotPollHandler
   where T : ContentItemBase
 {
-  protected abstract string Handle(
-    string deviceId,
-    string tenant,
-    DateTimeOffset timestamp,
-    T contentItem
-  );
-
-  protected abstract Task<string> HandleAsync(
-    string deviceId,
-    string tenant,
-    DateTimeOffset timestamp,
-    T contentItem
-  );
-
   public string Handle(
     string deviceId,
     string tenant,
@@ -43,4 +29,18 @@ public abstract class IotPollHandler<T> : IIotPollHandler
   }
 
   public string ContentType => typeof(T).ContentTypeName();
+
+  protected abstract string Handle(
+    string deviceId,
+    string tenant,
+    DateTimeOffset timestamp,
+    T contentItem
+  );
+
+  protected abstract Task<string> HandleAsync(
+    string deviceId,
+    string tenant,
+    DateTimeOffset timestamp,
+    T contentItem
+  );
 }

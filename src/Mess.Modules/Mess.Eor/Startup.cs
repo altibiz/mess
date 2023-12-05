@@ -1,11 +1,14 @@
 using Mess.Chart.Abstractions.Extensions;
+using Mess.Cms.Extensions.Microsoft;
+using Mess.Eor.Abstractions;
+using Mess.Eor.Abstractions.Models;
+using Mess.Eor.Abstractions.Timeseries;
 using Mess.Eor.Chart;
 using Mess.Eor.Controllers;
 using Mess.Eor.Indexes;
 using Mess.Eor.Iot;
 using Mess.Iot.Abstractions.Extensions;
-using Mess.Eor.Abstractions.Models;
-using Mess.Cms.Extensions.Microsoft;
+using Mess.Timeseries.Abstractions.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,17 +16,21 @@ using Microsoft.Extensions.Options;
 using OrchardCore.Admin;
 using OrchardCore.ContentManagement;
 using OrchardCore.Data.Migration;
+using OrchardCore.Environment.Shell.Configuration;
 using OrchardCore.Modules;
 using OrchardCore.Mvc.Core.Utilities;
-using Mess.Timeseries.Abstractions.Extensions;
-using Mess.Eor.Abstractions.Timeseries;
-using OrchardCore.Environment.Shell.Configuration;
-using Mess.Eor.Abstractions;
 
 namespace Mess.Eor;
 
 public class Startup : StartupBase
 {
+  private readonly IShellConfiguration _shellConfiguration;
+
+  public Startup(IShellConfiguration shellConfiguration)
+  {
+    _shellConfiguration = shellConfiguration;
+  }
+
   public override void ConfigureServices(IServiceCollection services)
   {
     // Migrations
@@ -76,10 +83,10 @@ public class Startup : StartupBase
       .Value.AdminUrlPrefix;
 
     routes.MapAreaControllerRoute(
-      name: "Mess.Eor.EorIotDeviceAdminController.List",
-      areaName: "Mess.Eor",
-      pattern: adminUrlPrefix + "/Devices",
-      defaults: new
+      "Mess.Eor.EorIotDeviceAdminController.List",
+      "Mess.Eor",
+      adminUrlPrefix + "/Devices",
+      new
       {
         controller = typeof(EorIotDeviceAdminController).ControllerName(),
         action = nameof(EorIotDeviceAdminController.List)
@@ -87,10 +94,10 @@ public class Startup : StartupBase
     );
 
     routes.MapAreaControllerRoute(
-      name: "Mess.Eor.EorIotDeviceAdminController.Detail",
-      areaName: "Mess.Eor",
-      pattern: adminUrlPrefix + "/Devices/{contentItemId}",
-      defaults: new
+      "Mess.Eor.EorIotDeviceAdminController.Detail",
+      "Mess.Eor",
+      adminUrlPrefix + "/Devices/{contentItemId}",
+      new
       {
         controller = typeof(EorIotDeviceAdminController).ControllerName(),
         action = nameof(EorIotDeviceAdminController.Detail)
@@ -98,10 +105,10 @@ public class Startup : StartupBase
     );
 
     routes.MapAreaControllerRoute(
-      name: "Mess.Eor.EorIotDeviceController.List",
-      areaName: "Mess.Eor",
-      pattern: "/Devices",
-      defaults: new
+      "Mess.Eor.EorIotDeviceController.List",
+      "Mess.Eor",
+      "/Devices",
+      new
       {
         controller = typeof(EorIotDeviceController).ControllerName(),
         action = nameof(EorIotDeviceController.List)
@@ -109,10 +116,10 @@ public class Startup : StartupBase
     );
 
     routes.MapAreaControllerRoute(
-      name: "Mess.Eor.EorIotDeviceController.Detail",
-      areaName: "Mess.Eor",
-      pattern: "/Devices/{contentItemId}",
-      defaults: new
+      "Mess.Eor.EorIotDeviceController.Detail",
+      "Mess.Eor",
+      "/Devices/{contentItemId}",
+      new
       {
         controller = typeof(EorIotDeviceController).ControllerName(),
         action = nameof(EorIotDeviceController.Detail)
@@ -120,10 +127,10 @@ public class Startup : StartupBase
     );
 
     routes.MapAreaControllerRoute(
-      name: "Mess.Eor.EorIotDeviceDataController.Data",
-      areaName: "Mess.Eor",
-      pattern: "/Devices/{contentItemId}/Data",
-      defaults: new
+      "Mess.Eor.EorIotDeviceDataController.Data",
+      "Mess.Eor",
+      "/Devices/{contentItemId}/Data",
+      new
       {
         controller = typeof(EorIotDeviceDataController).ControllerName(),
         action = nameof(EorIotDeviceDataController.Index)
@@ -131,10 +138,10 @@ public class Startup : StartupBase
     );
 
     routes.MapAreaControllerRoute(
-      name: "Mess.Eor.EorIotDeviceControlsController.ToggleRunState",
-      areaName: "Mess.Eor",
-      pattern: "/Devices/{contentItemId}/ToggleRunState",
-      defaults: new
+      "Mess.Eor.EorIotDeviceControlsController.ToggleRunState",
+      "Mess.Eor",
+      "/Devices/{contentItemId}/ToggleRunState",
+      new
       {
         controller = typeof(EorIotDeviceControlsController).ControllerName(),
         action = nameof(EorIotDeviceControlsController.ToggleRunState)
@@ -142,10 +149,10 @@ public class Startup : StartupBase
     );
 
     routes.MapAreaControllerRoute(
-      name: "Mess.Eor.EorIotDeviceControlsController.Start",
-      areaName: "Mess.Eor",
-      pattern: "/Devices/{contentItemId}/Start",
-      defaults: new
+      "Mess.Eor.EorIotDeviceControlsController.Start",
+      "Mess.Eor",
+      "/Devices/{contentItemId}/Start",
+      new
       {
         controller = typeof(EorIotDeviceControlsController).ControllerName(),
         action = nameof(EorIotDeviceControlsController.Start)
@@ -153,10 +160,10 @@ public class Startup : StartupBase
     );
 
     routes.MapAreaControllerRoute(
-      name: "Mess.Eor.EorIotDeviceControlsController.Stop",
-      areaName: "Mess.Eor",
-      pattern: "/Devices/{contentItemId}/Stop",
-      defaults: new
+      "Mess.Eor.EorIotDeviceControlsController.Stop",
+      "Mess.Eor",
+      "/Devices/{contentItemId}/Stop",
+      new
       {
         controller = typeof(EorIotDeviceControlsController).ControllerName(),
         action = nameof(EorIotDeviceControlsController.Stop)
@@ -164,10 +171,10 @@ public class Startup : StartupBase
     );
 
     routes.MapAreaControllerRoute(
-      name: "Mess.Eor.EorIotDeviceControlsController.Reset",
-      areaName: "Mess.Eor",
-      pattern: "/Devices/{contentItemId}/Reset",
-      defaults: new
+      "Mess.Eor.EorIotDeviceControlsController.Reset",
+      "Mess.Eor",
+      "/Devices/{contentItemId}/Reset",
+      new
       {
         controller = typeof(EorIotDeviceControlsController).ControllerName(),
         action = nameof(EorIotDeviceControlsController.Reset)
@@ -175,26 +182,16 @@ public class Startup : StartupBase
     );
 
     routes.MapAreaControllerRoute(
-      name: "Mess.Eor.EorIotDeviceControlsController.SetMode",
-      areaName: "Mess.Eor",
-      pattern: "/Devices/{contentItemId}/SetMode",
-      defaults: new
+      "Mess.Eor.EorIotDeviceControlsController.SetMode",
+      "Mess.Eor",
+      "/Devices/{contentItemId}/SetMode",
+      new
       {
         controller = typeof(EorIotDeviceControlsController).ControllerName(),
         action = nameof(EorIotDeviceControlsController.SetMode)
       }
     );
 
-    app.UseEndpoints(endpoints =>
-    {
-      endpoints.Redirect("/", "/Devices");
-    });
+    app.UseEndpoints(endpoints => { endpoints.Redirect("/", "/Devices"); });
   }
-
-  public Startup(IShellConfiguration shellConfiguration)
-  {
-    _shellConfiguration = shellConfiguration;
-  }
-
-  private readonly IShellConfiguration _shellConfiguration;
 }

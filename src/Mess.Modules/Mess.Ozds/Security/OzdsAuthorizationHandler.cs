@@ -11,5 +11,6 @@ public class OzdsAuthorizationHandler
     AuthorizationHandlerContext context,
     PermissionRequirement requirement
   )
-  { }
+  {
+  }
 }

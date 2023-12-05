@@ -1,21 +1,31 @@
-using Mess.Ozds.Abstractions.Timeseries;
-using Mess.Ozds.ViewModels;
+using Mess.Cms;
 using Mess.Cms.Extensions.Microsoft;
-using Microsoft.AspNetCore.Authorization;
+using Mess.Ozds.Abstractions.Indexes;
+using Mess.Ozds.Abstractions.Models;
+using Mess.Ozds.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using OrchardCore.Admin;
+using OrchardCore.ContentFields.Indexing.SQL;
 using OrchardCore.ContentManagement;
 using YesSql;
-using Mess.Ozds.Abstractions.Models;
-using Mess.Ozds.Abstractions.Indexes;
-using OrchardCore.ContentFields.Indexing.SQL;
-using Mess.Cms;
 
 namespace Mess.Ozds.Controllers;
 
 [Admin]
 public class ClosedDistributionSystemAdminController : Controller
 {
+  private readonly IContentManager _contentManager;
+  private readonly ISession _session;
+
+  public ClosedDistributionSystemAdminController(
+    IContentManager contentManager,
+    ISession session
+  )
+  {
+    _contentManager = contentManager;
+    _session = session;
+  }
+
   public async Task<IActionResult> List()
   {
     var orchardCoreUser = await this.GetAuthenticatedOrchardCoreUserAsync();
@@ -27,17 +37,14 @@ public class ClosedDistributionSystemAdminController : Controller
 
     IEnumerable<ClosedDistributionSystemItem>? systems = null;
     if (orchardCoreUser.RoleNames.Contains("Administrator"))
-    {
       systems = await _session
         .Query<ContentItem, ClosedDistributionSystemIndex>()
         .ListContentAsync<ClosedDistributionSystemItem>();
-    }
     else if (
       orchardCoreUser.RoleNames.Contains(
         "DistributionSystemOperatorRepresentative"
       ) && legalEntityItem is not null
     )
-    {
       systems = await _session
         .Query<ContentItem, ClosedDistributionSystemIndex>()
         .Where(
@@ -46,11 +53,8 @@ public class ClosedDistributionSystemAdminController : Controller
             == legalEntityItem.ContentItemId
         )
         .ListContentAsync<ClosedDistributionSystemItem>();
-    }
     else
-    {
       return Forbid();
-    }
 
     return View(
       new ClosedDistributionSystemListViewModel
@@ -66,10 +70,7 @@ public class ClosedDistributionSystemAdminController : Controller
       await _contentManager.GetContentAsync<ClosedDistributionSystemItem>(
         contentItemId
       );
-    if (contentItem == null)
-    {
-      return NotFound();
-    }
+    if (contentItem == null) return NotFound();
 
     var index = await _session
       .QueryIndex<ClosedDistributionSystemIndex>()
@@ -86,38 +87,27 @@ public class ClosedDistributionSystemAdminController : Controller
       .FirstOrDefaultAsync();
 
     return !orchardCoreUser.RoleNames.Contains("Administrator")
-      && !(
-        orchardCoreUser.RoleNames.Contains(
-          "DistributionSystemOperatorRepresentative"
-        )
-        && legalEntityItem is not null
-        && index.DistributionSystemOperatorContentItemId
-          == legalEntityItem.ContentItemId
-      )
-      && !(
-        orchardCoreUser.RoleNames.Contains(
-          "ClosedDistributionSystemRepresentative"
-        )
-        && legalEntityItem is not null
-        && index is not null
-        && index.ClosedDistributionSystemContentItemId
-          == legalEntityItem.ContentItemId
-      )
+           && !(
+             orchardCoreUser.RoleNames.Contains(
+               "DistributionSystemOperatorRepresentative"
+             )
+             && legalEntityItem is not null
+             && index.DistributionSystemOperatorContentItemId
+             == legalEntityItem.ContentItemId
+           )
+           && !(
+             orchardCoreUser.RoleNames.Contains(
+               "ClosedDistributionSystemRepresentative"
+             )
+             && legalEntityItem is not null
+             && index is not null
+             && index.ClosedDistributionSystemContentItemId
+             == legalEntityItem.ContentItemId
+           )
       ? Forbid()
       : View(
-      new ClosedDistributionSystemDetailViewModel { ContentItem = contentItem }
-    );
+        new ClosedDistributionSystemDetailViewModel
+          { ContentItem = contentItem }
+      );
   }
-
-  public ClosedDistributionSystemAdminController(
-    IContentManager contentManager,
-    ISession session
-  )
-  {
-    _contentManager = contentManager;
-    _session = session;
-  }
-
-  private readonly IContentManager _contentManager;
-  private readonly ISession _session;
 }

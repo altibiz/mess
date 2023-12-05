@@ -1,21 +1,29 @@
 using System.Xml.Linq;
-using Mess.Iot.Abstractions.Services;
-using Mess.Enms.Abstractions.Timeseries;
-using OrchardCore.Environment.Shell.Scope;
 using Mess.Enms.Abstractions.Models;
+using Mess.Enms.Abstractions.Timeseries;
+using Mess.Iot.Abstractions.Services;
+using OrchardCore.Environment.Shell.Scope;
 
 namespace Mess.Enms.Iot;
 
 public class EgaugePushHandler
   : XmlIotPushHandler<EgaugeIotDeviceItem, EgaugeMeasurement>
 {
+  private readonly IEnmsTimeseriesClient _measurementClient;
+
+  public EgaugePushHandler(IEnmsTimeseriesClient measurementClient)
+  {
+    _measurementClient = measurementClient;
+  }
+
   protected override void Handle(
     string deviceId,
     string tenant,
     DateTimeOffset timestamp,
     EgaugeIotDeviceItem contentItem,
     EgaugeMeasurement request
-  ) =>
+  )
+  {
     _measurementClient.AddEgaugeMeasurement(
       request with
       {
@@ -24,6 +32,7 @@ public class EgaugePushHandler
         Timestamp = request.Timestamp
       }
     );
+  }
 
   protected override async Task HandleAsync(
     string deviceId,
@@ -31,7 +40,8 @@ public class EgaugePushHandler
     DateTimeOffset timestamp,
     EgaugeIotDeviceItem contentItem,
     EgaugeMeasurement request
-  ) =>
+  )
+  {
     await _measurementClient.AddEgaugeMeasurementAsync(
       request with
       {
@@ -40,6 +50,7 @@ public class EgaugePushHandler
         Timestamp = request.Timestamp
       }
     );
+  }
 
   protected override EgaugeMeasurement Parse(XDocument xml)
   {
@@ -63,14 +74,14 @@ public class EgaugePushHandler
           registerName
         );
       var value = (decimal)column;
-      result[registerName] = new(type, type.Unit(), value);
+      result[registerName] = new EgaugeRegister(type, type.Unit(), value);
     }
 
     var measurementRegisters = new EgaugeMeasurementRegisters(
-      Registers: result,
-      Tenant: ShellScope.Current.ShellContext.Settings.Name,
-      Source: "egauge",
-      Timestamp: timestamp
+      result,
+      ShellScope.Current.ShellContext.Settings.Name,
+      "egauge",
+      timestamp
     );
 
     var measurement = new EgaugeMeasurement(
@@ -83,11 +94,4 @@ public class EgaugePushHandler
 
     return measurement;
   }
-
-  public EgaugePushHandler(IEnmsTimeseriesClient measurementClient)
-  {
-    _measurementClient = measurementClient;
-  }
-
-  private readonly IEnmsTimeseriesClient _measurementClient;
 }

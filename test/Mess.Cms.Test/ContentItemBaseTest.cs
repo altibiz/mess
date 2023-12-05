@@ -9,7 +9,7 @@ public record class ContentItemBaseTest
   [Fact]
   public void OnePartTest()
   {
-    var item = new OrchardContentItem()
+    var item = new OrchardContentItem
     {
       ContentType = "OnePart"
     };
@@ -26,18 +26,10 @@ public record class ContentItemBaseTest
     Assert.Equal("TestValue", type.StringPart.Value.Value);
   }
 
-  private class OnePartItem : ContentItemBase
-  {
-    public Lazy<StringPart> StringPart { get; init; } = default!;
-
-    private OnePartItem(OrchardContentItem inner)
-      : base(inner) { }
-  }
-
   [Fact]
   public void TwoPartTest()
   {
-    var item = new OrchardContentItem()
+    var item = new OrchardContentItem
     {
       ContentType = "TwoPart"
     };
@@ -62,19 +54,10 @@ public record class ContentItemBaseTest
     Assert.Equal("SecondTestValue", type.SecondStringPart.Value.Value);
   }
 
-  private class TwoPartItem : ContentItemBase
-  {
-    public Lazy<StringPart> FirstStringPart { get; init; } = default!;
-    public Lazy<StringPart> SecondStringPart { get; init; } = default!;
-
-    private TwoPartItem(OrchardContentItem inner)
-      : base(inner) { }
-  }
-
   [Fact]
   public void ContainedTest()
   {
-    var item = new OrchardContentItem()
+    var item = new OrchardContentItem
     {
       ContentType = "Contaned"
     };
@@ -101,12 +84,35 @@ public record class ContentItemBaseTest
     Assert.Equal(10, type.ContainedPart.Value.Order);
   }
 
+  private class OnePartItem : ContentItemBase
+  {
+    private OnePartItem(OrchardContentItem inner)
+      : base(inner)
+    {
+    }
+
+    public Lazy<StringPart> StringPart { get; init; } = default!;
+  }
+
+  private class TwoPartItem : ContentItemBase
+  {
+    private TwoPartItem(OrchardContentItem inner)
+      : base(inner)
+    {
+    }
+
+    public Lazy<StringPart> FirstStringPart { get; init; } = default!;
+    public Lazy<StringPart> SecondStringPart { get; init; } = default!;
+  }
+
   private class ContainedItem : ContentItemBase
   {
-    public Lazy<StringPart> StringPart { get; init; } = default!;
-
     private ContainedItem(OrchardContentItem inner)
-      : base(inner) { }
+      : base(inner)
+    {
+    }
+
+    public Lazy<StringPart> StringPart { get; init; } = default!;
   }
 
   // TODO: make this work
@@ -130,10 +136,12 @@ public record class ContentItemBaseTest
 
   private class DerivedItem : ContentItemBase<DerivedItem>
   {
-    public Lazy<StringPart> StringPart { get; init; } = default!;
-
     public DerivedItem(OrchardContentItem inner)
-      : base(inner) { }
+      : base(inner)
+    {
+    }
+
+    public Lazy<StringPart> StringPart { get; init; } = default!;
   }
 
   private class StringPart : ContentPart

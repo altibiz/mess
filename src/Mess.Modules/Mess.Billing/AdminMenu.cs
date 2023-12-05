@@ -8,12 +8,17 @@ namespace Mess.Billing;
 
 public class AdminMenu : INavigationProvider
 {
+  public AdminMenu(IStringLocalizer<AdminMenu> localizer)
+  {
+    S = localizer;
+  }
+
+  private IStringLocalizer S { get; }
+
   public Task BuildNavigationAsync(string name, NavigationBuilder builder)
   {
     if (!string.Equals(name, "admin", StringComparison.OrdinalIgnoreCase))
-    {
       return Task.CompletedTask;
-    }
 
     builder.Add(
       S["Billing"],
@@ -56,11 +61,4 @@ public class AdminMenu : INavigationProvider
 
     return Task.CompletedTask;
   }
-
-  public AdminMenu(IStringLocalizer<AdminMenu> localizer)
-  {
-    S = localizer;
-  }
-
-  private IStringLocalizer S { get; set; }
 }

@@ -8,6 +8,11 @@ namespace Mess.Ozds.Abstractions.Models;
 
 public class DistributionSystemOperatorItem : ContentItemBase
 {
+  private DistributionSystemOperatorItem(ContentItem contentItem)
+    : base(contentItem)
+  {
+  }
+
   public Lazy<TitlePart> TitlePart { get; private set; } = default!;
 
   public Lazy<DistributionSystemOperatorPart> DistributionSystemOperatorPart
@@ -19,7 +24,4 @@ public class DistributionSystemOperatorItem : ContentItemBase
   public Lazy<LegalEntityPart> LegalEntityPart { get; private set; } = default!;
 
   public Lazy<ListPart> ListPart { get; private set; } = default!;
-
-  private DistributionSystemOperatorItem(ContentItem contentItem)
-    : base(contentItem) { }
 }

@@ -1,6 +1,6 @@
 using Mess.Eor.Abstractions.Models;
-using Mess.Iot.Abstractions.Services;
 using Mess.Eor.Abstractions.Timeseries;
+using Mess.Iot.Abstractions.Services;
 
 namespace Mess.Eor.Iot;
 
@@ -14,14 +14,14 @@ public class EorPollHandler
     EorIotDeviceItem contentItem
   )
   {
-    return new(
-      Mode: contentItem.EorIotDevicePart.Value.Controls.Mode,
-      Reset: contentItem.EorIotDevicePart.Value.Controls.ResetState
-        == EorResetState.ShouldReset,
-      Start: contentItem.EorIotDevicePart.Value.Controls.RunState
-        == EorRunState.Started,
-      Stop: contentItem.EorIotDevicePart.Value.Controls.RunState
-        == EorRunState.Stopped
+    return new EorPollResponse(
+      contentItem.EorIotDevicePart.Value.Controls.Mode,
+      contentItem.EorIotDevicePart.Value.Controls.ResetState
+      == EorResetState.ShouldReset,
+      contentItem.EorIotDevicePart.Value.Controls.RunState
+      == EorRunState.Started,
+      contentItem.EorIotDevicePart.Value.Controls.RunState
+      == EorRunState.Stopped
     );
   }
 
@@ -32,14 +32,14 @@ public class EorPollHandler
     EorIotDeviceItem contentItem
   )
   {
-    return new(
-      Mode: contentItem.EorIotDevicePart.Value.Controls.Mode,
-      Reset: contentItem.EorIotDevicePart.Value.Controls.ResetState
-        == EorResetState.ShouldReset,
-      Start: contentItem.EorIotDevicePart.Value.Controls.RunState
-        == EorRunState.Started,
-      Stop: contentItem.EorIotDevicePart.Value.Controls.RunState
-        == EorRunState.Stopped
+    return new EorPollResponse(
+      contentItem.EorIotDevicePart.Value.Controls.Mode,
+      contentItem.EorIotDevicePart.Value.Controls.ResetState
+      == EorResetState.ShouldReset,
+      contentItem.EorIotDevicePart.Value.Controls.RunState
+      == EorRunState.Started,
+      contentItem.EorIotDevicePart.Value.Controls.RunState
+      == EorRunState.Stopped
     );
   }
 }

@@ -14,13 +14,13 @@ public static class IServiceCollectionExtensions
   public static void AddE2eFixture(this IServiceCollection services)
   {
     services.AddSingleton<E2eTestServer>(
-      services => new("http://localhost:5000")
+      services => new E2eTestServer("http://localhost:5000")
     );
 
     services.AddScoped<IE2eFixture, E2eFixture>(services =>
     {
       var e2eTestServer = services.GetRequiredService<E2eTestServer>();
-      return new("http://localhost:5000", e2eTestServer);
+      return new E2eFixture("http://localhost:5000", e2eTestServer);
     });
   }
 
@@ -30,7 +30,7 @@ public static class IServiceCollectionExtensions
   )
   {
     services.AddScoped<ISnapshotFixture, SnapshotFixture>(
-      services => new(services, makeParameterHash)
+      services => new SnapshotFixture(services, makeParameterHash)
     );
   }
 

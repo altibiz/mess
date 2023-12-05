@@ -1,7 +1,6 @@
-using System.Diagnostics;
 using System.Reflection;
-using Mess.Relational.Abstractions.Migrations;
 using Mess.Prelude.Extensions.Microsoft;
+using Mess.Relational.Abstractions.Migrations;
 using Mess.Timeseries.Abstractions.Context;
 using Mess.Timeseries.Abstractions.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +12,21 @@ namespace Mess.Timeseries;
 
 public class TimeseriesDbMigrator : IRelationalDbMigrator
 {
+  private readonly ILogger _logger;
+  private readonly IServiceProvider _serviceProvider;
+  private readonly ShellSettings _shellSettings;
+
+  public TimeseriesDbMigrator(
+    ILogger<TimeseriesDbMigrator> logger,
+    IServiceProvider serviceProvider,
+    ShellSettings shellSettings
+  )
+  {
+    _logger = logger;
+    _serviceProvider = serviceProvider;
+    _shellSettings = shellSettings;
+  }
+
   public async Task MigrateAsync()
   {
     var contexts =
@@ -31,10 +45,7 @@ public class TimeseriesDbMigrator : IRelationalDbMigrator
       foreach (var entityType in entityTypes)
       {
         var tableName = entityType.GetTableName();
-        if (tableName == null)
-        {
-          continue;
-        }
+        if (tableName == null) continue;
 
         foreach (var property in entityType.GetProperties())
         {
@@ -44,9 +55,7 @@ public class TimeseriesDbMigrator : IRelationalDbMigrator
             )
             is null
           )
-          {
             continue;
-          }
 
           var columnName = property.GetColumnName();
           await CreateHypertableAsync(context, tableName, columnName);
@@ -80,19 +89,4 @@ public class TimeseriesDbMigrator : IRelationalDbMigrator
       // NOTE: already a hypertable
     }
   }
-
-  public TimeseriesDbMigrator(
-    ILogger<TimeseriesDbMigrator> logger,
-    IServiceProvider serviceProvider,
-    ShellSettings shellSettings
-  )
-  {
-    _logger = logger;
-    _serviceProvider = serviceProvider;
-    _shellSettings = shellSettings;
-  }
-
-  private readonly ILogger _logger;
-  private readonly ShellSettings _shellSettings;
-  private readonly IServiceProvider _serviceProvider;
 }

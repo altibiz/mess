@@ -4,7 +4,8 @@ using ManifestConstants = Mess.Cms.ManifestConstants;
 [assembly: Module(
   Id = "Mess.Blazor",
   Name = "Blazor",
-  Description = "The Blazor module adds support for rendering Blazor templates.",
+  Description =
+    "The Blazor module adds support for rendering Blazor templates.",
   Author = ManifestConstants.Author,
   Website = ManifestConstants.Website,
   Version = ManifestConstants.Version,

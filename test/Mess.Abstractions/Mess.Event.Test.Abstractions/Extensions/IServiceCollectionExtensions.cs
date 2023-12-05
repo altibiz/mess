@@ -14,7 +14,7 @@ public static class IServiceCollectionExtensions
       var testId = services.GetTestId();
 
       return DocumentStore.For(
-        (options) =>
+        options =>
         {
           options.MultiTenantedDatabases(databases =>
           {

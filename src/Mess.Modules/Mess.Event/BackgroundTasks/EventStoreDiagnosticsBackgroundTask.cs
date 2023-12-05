@@ -19,13 +19,13 @@ public class EventStoreDiagnosticsBackgroundTask : IBackgroundTask
       ILogger<EventStoreDiagnosticsBackgroundTask>
     >();
 
-    var allProgress = await store.Advanced.AllProjectionProgress(token: cancellationToken);
+    var allProgress =
+      await store.Advanced.AllProjectionProgress(token: cancellationToken);
     foreach (var state in allProgress)
-    {
       logger.LogInformation("{} is at {}", state.ShardName, state.Sequence);
-    }
 
-    var stats = await store.Advanced.FetchEventStoreStatistics(token: cancellationToken);
+    var stats =
+      await store.Advanced.FetchEventStoreStatistics(token: cancellationToken);
     logger.LogInformation(
       "The event store highest sequence is {}",
       stats.EventSequenceNumber

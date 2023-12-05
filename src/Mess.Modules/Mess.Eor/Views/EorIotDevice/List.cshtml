@@ -1,6 +1,5 @@
 @using OrchardCore.ContentManagement.Display
 @using OrchardCore.DisplayManagement.ModelBinding
-
 @model EorIotDeviceListViewModel
 
 @inject IContentItemDisplayManager ContentItemDisplayManager
@@ -10,43 +9,43 @@
   <h3 class="section-header">@T["Devices"]</h3>
   <table>
     <thead>
-      <th scope="col">@T["Id"]</th>
-      <th scope="col">@T["Mode"]</th>
-      <th scope="col">@T["Voltage"]</th>
-      <th scope="col">@T["Current"]</th>
+    <th scope="col">@T["Id"]</th>
+    <th scope="col">@T["Mode"]</th>
+    <th scope="col">@T["Voltage"]</th>
+    <th scope="col">@T["Current"]</th>
     </thead>
     <tbody>
-      @foreach (var (item, summary) in Model.EorIotDevices)
-      {
-        <tr>
-          <th scope="row">
-            <a
-                asp-route-area="Mess.Eor"
-                asp-controller="EorIotDevice"
-                asp-action="Detail"
-                asp-route-contentItemId="@item.ContentItemId">
-              <span>
-                @item.TitlePart.Value.Title
-              </span>
-            </a>
-          </th>
-          <td>
+    @foreach (var (item, summary) in Model.EorIotDevices)
+    {
+      <tr>
+        <th scope="row">
+          <a
+            asp-route-area="Mess.Eor"
+            asp-controller="EorIotDevice"
+            asp-action="Detail"
+            asp-route-contentItemId="@item.ContentItemId">
             <span>
-              @summary?.Status?.Mode
+              @item.TitlePart.Value.Title
             </span>
-          </td>
-          <td>
-            <span>
-              @summary?.LastMeasurement?.Voltage
-            </span>
-          </td>
-          <td>
-            <span>
-              @summary?.LastMeasurement?.Current
-            </span>
-          </td>
-        </tr>
-      }
+          </a>
+        </th>
+        <td>
+          <span>
+            @summary?.Status?.Mode
+          </span>
+        </td>
+        <td>
+          <span>
+            @summary?.LastMeasurement?.Voltage
+          </span>
+        </td>
+        <td>
+          <span>
+            @summary?.LastMeasurement?.Current
+          </span>
+        </td>
+      </tr>
+    }
     </tbody>
   </table>
 </section>

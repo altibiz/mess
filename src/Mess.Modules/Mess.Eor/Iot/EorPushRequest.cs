@@ -11,15 +11,17 @@ public record EorPushRequest(
   bool CoolingFans
 )
 {
-  public EorMeasurement ToMeasurement(string deviceId, string tenant) =>
-    new(
-      Tenant: tenant,
-      DeviceId: deviceId,
-      Timestamp: Timestamp,
+  public EorMeasurement ToMeasurement(string deviceId, string tenant)
+  {
+    return new EorMeasurement(
+      tenant,
+      deviceId,
+      Timestamp,
       Current: Current,
       Voltage: Voltage,
       Temperature: Temperature,
       HeatsinkFans: HeatsinkFans,
       CoolingFans: CoolingFans
     );
+  }
 }

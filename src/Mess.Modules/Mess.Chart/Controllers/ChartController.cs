@@ -1,109 +1,20 @@
-using Mess.Chart.Abstractions.Services;
 using Mess.Chart.Abstractions.Models;
-using Microsoft.AspNetCore.Mvc;
-using OrchardCore.ContentManagement;
-using Microsoft.Extensions.DependencyInjection;
+using Mess.Chart.Abstractions.Services;
 using Mess.Chart.Providers;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using OrchardCore.ContentManagement;
 using OrchardCore.Contents;
 
 namespace Mess.Chart.Controllers;
 
 public class ChartController : Controller
 {
-  public async Task<IActionResult> Index(string contentItemId)
-  {
-    var metadataContentItem = await _contentManager.GetAsync(contentItemId);
-    if (metadataContentItem is null)
-    {
-      return NotFound();
-    }
+  private readonly IAuthorizationService _authorizationService;
 
-    if (
-      !await _authorizationService.AuthorizeAsync(
-        User,
-        CommonPermissions.ViewContent,
-        metadataContentItem
-      )
-    )
-    {
-      return Forbid();
-    }
-
-    var metadataPart = metadataContentItem.As<ChartPart>();
-    if (metadataPart is null)
-    {
-      return NotFound();
-    }
-
-    var dataProvider = _serviceProvider
-      .GetServices<IChartFactory>()
-      .FirstOrDefault(
-        dataProvider =>
-          dataProvider.ContentType == metadataPart.ContentItem.ContentType
-      );
-    if (dataProvider is null)
-    {
-      return StatusCode(500, "Chart data provider not found");
-    }
-
-    var chartContentItem = await _contentManager.GetAsync(
-      metadataPart.ChartContentItemId,
-      VersionOptions.Latest
-    );
-    if (chartContentItem is null)
-    {
-      return StatusCode(500, "Chart not found");
-    }
-
-    var chart = await dataProvider.CreateChartAsync(
-      metadataContentItem,
-      chartContentItem
-    );
-
-    return chart is null ? StatusCode(500, "Chart creation failed") : Json(chart);
-  }
-
-  public async Task<IActionResult> Preview(string contentItemId)
-  {
-    var chartContentItem = await _contentManager.GetAsync(
-      contentItemId,
-      VersionOptions.Latest
-    );
-    if (chartContentItem is null)
-    {
-      return NotFound();
-    }
-
-    if (
-      !await _authorizationService.AuthorizeAsync(
-        User,
-        CommonPermissions.PreviewContent,
-        chartContentItem
-      )
-    )
-    {
-      return Forbid();
-    }
-
-    var dataProvider = _serviceProvider
-      .GetServices<IChartFactory>()
-      .FirstOrDefault(
-        dataProvider =>
-          dataProvider.ContentType == PreviewChartFactory.ChartContentType
-      );
-    if (dataProvider is null)
-    {
-      return StatusCode(500, "Preview chart data provider not found");
-    }
-
-    var chart = await dataProvider.CreateChartAsync(
-      new ContentItem(),
-      chartContentItem
-    );
-
-    return chart is null ? StatusCode(500, "Chart creation failed") : Json(chart);
-  }
+  private readonly IContentManager _contentManager;
+  private readonly IServiceProvider _serviceProvider;
 
   public ChartController(
     IContentManager contentManager,
@@ -116,7 +27,81 @@ public class ChartController : Controller
     _authorizationService = authorizationService;
   }
 
-  private readonly IContentManager _contentManager;
-  private readonly IServiceProvider _serviceProvider;
-  private readonly IAuthorizationService _authorizationService;
+  public async Task<IActionResult> Index(string contentItemId)
+  {
+    var metadataContentItem = await _contentManager.GetAsync(contentItemId);
+    if (metadataContentItem is null) return NotFound();
+
+    if (
+      !await _authorizationService.AuthorizeAsync(
+        User,
+        CommonPermissions.ViewContent,
+        metadataContentItem
+      )
+    )
+      return Forbid();
+
+    var metadataPart = metadataContentItem.As<ChartPart>();
+    if (metadataPart is null) return NotFound();
+
+    var dataProvider = _serviceProvider
+      .GetServices<IChartFactory>()
+      .FirstOrDefault(
+        dataProvider =>
+          dataProvider.ContentType == metadataPart.ContentItem.ContentType
+      );
+    if (dataProvider is null)
+      return StatusCode(500, "Chart data provider not found");
+
+    var chartContentItem = await _contentManager.GetAsync(
+      metadataPart.ChartContentItemId,
+      VersionOptions.Latest
+    );
+    if (chartContentItem is null) return StatusCode(500, "Chart not found");
+
+    var chart = await dataProvider.CreateChartAsync(
+      metadataContentItem,
+      chartContentItem
+    );
+
+    return chart is null
+      ? StatusCode(500, "Chart creation failed")
+      : Json(chart);
+  }
+
+  public async Task<IActionResult> Preview(string contentItemId)
+  {
+    var chartContentItem = await _contentManager.GetAsync(
+      contentItemId,
+      VersionOptions.Latest
+    );
+    if (chartContentItem is null) return NotFound();
+
+    if (
+      !await _authorizationService.AuthorizeAsync(
+        User,
+        CommonPermissions.PreviewContent,
+        chartContentItem
+      )
+    )
+      return Forbid();
+
+    var dataProvider = _serviceProvider
+      .GetServices<IChartFactory>()
+      .FirstOrDefault(
+        dataProvider =>
+          dataProvider.ContentType == PreviewChartFactory.ChartContentType
+      );
+    if (dataProvider is null)
+      return StatusCode(500, "Preview chart data provider not found");
+
+    var chart = await dataProvider.CreateChartAsync(
+      new ContentItem(),
+      chartContentItem
+    );
+
+    return chart is null
+      ? StatusCode(500, "Chart creation failed")
+      : Json(chart);
+  }
 }

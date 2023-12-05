@@ -1,5 +1,5 @@
-using Mess.Eor.Abstractions.Timeseries;
 using Mess.Eor.Abstractions.Models;
+using Mess.Eor.Abstractions.Timeseries;
 
 namespace Mess.Eor.Models;
 

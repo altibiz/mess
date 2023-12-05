@@ -5,6 +5,8 @@ namespace Mess.Chart;
 
 public class Resources : IConfigureOptions<ResourceManagementOptions>
 {
+  private static readonly ResourceManifest _manifest;
+
   static Resources()
   {
     _manifest = new ResourceManifest();
@@ -22,6 +24,4 @@ public class Resources : IConfigureOptions<ResourceManagementOptions>
   {
     options.ResourceManifests.Add(_manifest);
   }
-
-  private static readonly ResourceManifest _manifest;
 }

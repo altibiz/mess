@@ -1,5 +1,5 @@
-using OrchardCore.Logging;
 using Mess.Cms.Extensions.Newtonsoft;
+using OrchardCore.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseNLogHost();
@@ -14,7 +14,7 @@ builder.Services
         options =>
           options.SerializerSettings
             .AddMessNewtonsoftJsonSettings(
-              pretty: builder.Environment.IsDevelopment()
+              builder.Environment.IsDevelopment()
             )
             .AddMessNewtonsoftJsonConverters()
       );

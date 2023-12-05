@@ -1,16 +1,16 @@
-using Mess.Eor.Abstractions.Timeseries;
-using Mess.Eor.Abstractions.Indexes;
-using Mess.Eor.Extensions;
-using Mess.Eor.ViewModels;
 using Mess.Cms;
 using Mess.Cms.Extensions.Microsoft;
+using Mess.Eor.Abstractions.Indexes;
+using Mess.Eor.Abstractions.Models;
+using Mess.Eor.Abstractions.Timeseries;
+using Mess.Eor.Extensions;
+using Mess.Eor.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OrchardCore.Admin;
 using OrchardCore.ContentManagement;
 using OrchardCore.Contents;
 using YesSql;
-using Mess.Eor.Abstractions.Models;
 
 namespace Mess.Eor.Controllers;
 
@@ -18,6 +18,25 @@ namespace Mess.Eor.Controllers;
 [Authorize]
 public class EorIotDeviceAdminController : Controller
 {
+  private readonly IAuthorizationService _authorizationService;
+
+  private readonly IContentManager _contentManager;
+  private readonly IEorTimeseriesClient _measurementClient;
+  private readonly ISession _session;
+
+  public EorIotDeviceAdminController(
+    IAuthorizationService authorizationService,
+    IContentManager contentManager,
+    ISession session,
+    IEorTimeseriesClient measurementClient
+  )
+  {
+    _contentManager = contentManager;
+    _authorizationService = authorizationService;
+    _session = session;
+    _measurementClient = measurementClient;
+  }
+
   public async Task<IActionResult> List()
   {
     if (
@@ -27,9 +46,7 @@ public class EorIotDeviceAdminController : Controller
         (object)"EorIotDevice"
       )
     )
-    {
       return Forbid();
-    }
 
     var orchardCoreUser = await this.GetAuthenticatedOrchardCoreUserAsync();
     var contentItems = await _session
@@ -56,16 +73,16 @@ public class EorIotDeviceAdminController : Controller
         EorIotDevices = eorIotDevices
           .Select(
             eorIotDevice =>
-              (
-                eorIotDevice,
-                eorIotDeviceSummaries.FirstOrDefault(
-                  summary =>
-                    summary.DeviceId
-                    == eorIotDevice.IotDevicePart.Value.DeviceId.Text
-                )
+            (
+              eorIotDevice,
+              eorIotDeviceSummaries.FirstOrDefault(
+                summary =>
+                  summary.DeviceId
+                  == eorIotDevice.IotDevicePart.Value.DeviceId.Text
               )
+            )
           )
-          .ToList(),
+          .ToList()
       }
     );
   }
@@ -73,10 +90,7 @@ public class EorIotDeviceAdminController : Controller
   public async Task<IActionResult> Detail(string contentItemId)
   {
     var contentItem = await _contentManager.GetAsync(contentItemId);
-    if (contentItem == null)
-    {
-      return NotFound();
-    }
+    if (contentItem == null) return NotFound();
 
     var eorIotDevice = contentItem.AsContent<EorIotDeviceItem>();
 
@@ -88,9 +102,7 @@ public class EorIotDeviceAdminController : Controller
         eorIotDevice
       )
     )
-    {
       return Forbid();
-    }
 
     var eorIotDeviceSummary =
       await _measurementClient.GetEorIotDeviceSummaryAsync(
@@ -100,29 +112,11 @@ public class EorIotDeviceAdminController : Controller
     return eorIotDeviceSummary == null
       ? NotFound()
       : View(
-      new EorIotDeviceDetailViewModel
-      {
-        EorIotDeviceItem = eorIotDevice,
-        EorSummary = eorIotDeviceSummary
-      }
-    );
+        new EorIotDeviceDetailViewModel
+        {
+          EorIotDeviceItem = eorIotDevice,
+          EorSummary = eorIotDeviceSummary
+        }
+      );
   }
-
-  public EorIotDeviceAdminController(
-    IAuthorizationService authorizationService,
-    IContentManager contentManager,
-    ISession session,
-    IEorTimeseriesClient measurementClient
-  )
-  {
-    _contentManager = contentManager;
-    _authorizationService = authorizationService;
-    _session = session;
-    _measurementClient = measurementClient;
-  }
-
-  private readonly IContentManager _contentManager;
-  private readonly IAuthorizationService _authorizationService;
-  private readonly ISession _session;
-  private readonly IEorTimeseriesClient _measurementClient;
 }

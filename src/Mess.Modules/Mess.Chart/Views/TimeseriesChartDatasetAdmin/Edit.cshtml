@@ -1,14 +1,12 @@
-@using OrchardCore.ContentManagement
 @using OrchardCore.ContentManagement.Metadata
-@using OrchardCore.Mvc.Utilities
-
+@using OrchardCore.ContentManagement
 @inject IContentDefinitionManager ContentDefinitionManager
 
 @{
   ContentItem contentItem = Model.ContentItem;
   var typeDisplayName =
     ContentDefinitionManager.GetTypeDefinition(contentItem.ContentType)?.DisplayName ??
-      contentItem.ContentType.CamelFriendly();
+    contentItem.ContentType.CamelFriendly();
   var returnUrl = Context.Request.Query["ReturnUrl"];
 }
 
@@ -18,34 +16,34 @@
   </h1>
 </zone>
 
-<form 
-    asp-action="Edit"
-    asp-route-returnUrl="@returnUrl"
-    method="post"
-    enctype="multipart/form-data"
-    class="no-multisubmit">
+<form
+  asp-action="Edit"
+  asp-route-returnUrl="@returnUrl"
+  method="post"
+  enctype="multipart/form-data"
+  class="no-multisubmit">
 
   @Html.ValidationSummary()
 
   @await DisplayAsync(Model)
 
-  <input 
-      type="hidden"
-      name="ContentItemId"
-      value="@Model.ContentItemId" />
+  <input
+    type="hidden"
+    name="ContentItemId"
+    value="@Model.ContentItemId"/>
 
-  <input 
-      type="hidden"
-      name="ChartDatasetContentItemId"
-      value="@Model.ChartDatasetContentItemId" />
+  <input
+    type="hidden"
+    name="ChartDatasetContentItemId"
+    value="@Model.ChartDatasetContentItemId"/>
 
-  <input 
-      type="hidden"
-      name="DatasetContentItemId"
-      value="@Model.DatasetContentItemId" />
+  <input
+    type="hidden"
+    name="DatasetContentItemId"
+    value="@Model.DatasetContentItemId"/>
 
-  <input 
-      type="hidden"
-      name="DataProviderId"
-      value="@Model.DataProviderId" />
+  <input
+    type="hidden"
+    name="DataProviderId"
+    value="@Model.DataProviderId"/>
 </form>

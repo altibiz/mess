@@ -15,7 +15,7 @@
 <script asp-name="mess-chart"></script>
 <script>
   window.mess.chart.useChart({
-    requestUrlPrefix: "@this.GetRequestUrlPrefix()",
+    requestUrlPrefix: "@(this.GetRequestUrlPrefix())",
     contentItemId: "@contentItemId",
     isPreview: @isPreview.ToString().ToLower(),
     canvasId: "@canvasId",

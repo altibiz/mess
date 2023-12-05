@@ -1,22 +1,41 @@
+using Mess.Cms;
+using Mess.Cms.Extensions.Microsoft;
 using Mess.Eor.Abstractions;
 using Mess.Eor.Abstractions.Indexes;
-using Mess.Cms.Extensions.Microsoft;
+using Mess.Eor.Abstractions.Models;
+using Mess.Eor.Abstractions.Timeseries;
+using Mess.Eor.Extensions;
+using Mess.Eor.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OrchardCore.ContentManagement;
-using Mess.Cms;
-using YesSql;
-using Mess.Eor.ViewModels;
-using Mess.Eor.Abstractions.Timeseries;
-using Mess.Eor.Extensions;
 using OrchardCore.Contents;
-using Mess.Eor.Abstractions.Models;
+using YesSql;
 
 namespace Mess.Eor.Controllers;
 
 [Authorize]
 public class EorIotDeviceController : Controller
 {
+  private readonly IAuthorizationService _authorizationService;
+
+  private readonly IContentManager _contentManager;
+  private readonly IEorTimeseriesQuery _measurementQuery;
+  private readonly ISession _session;
+
+  public EorIotDeviceController(
+    IAuthorizationService authorizationService,
+    IContentManager contentManager,
+    ISession session,
+    IEorTimeseriesQuery measurementQuery
+  )
+  {
+    _contentManager = contentManager;
+    _authorizationService = authorizationService;
+    _session = session;
+    _measurementQuery = measurementQuery;
+  }
+
   public async Task<IActionResult> List()
   {
     var canViewOwned = await _authorizationService.AuthorizeAsync(
@@ -29,10 +48,7 @@ public class EorIotDeviceController : Controller
       CommonPermissions.ViewOwnContent,
       (object)"EorIotDevice"
     );
-    if (!(canViewOwned || canViewOwn))
-    {
-      return Forbid();
-    }
+    if (!(canViewOwned || canViewOwn)) return Forbid();
 
     var orchardCoreUser = await this.GetAuthenticatedOrchardCoreUserAsync();
     var contentItems = await _session
@@ -63,16 +79,16 @@ public class EorIotDeviceController : Controller
         EorIotDevices = eorIotDevices
           .Select(
             eorIotDevice =>
-              (
-                eorIotDevice,
-                eorIotDeviceSummaries.FirstOrDefault(
-                  summary =>
-                    summary.DeviceId
-                    == eorIotDevice.IotDevicePart.Value.DeviceId.Text
-                )
+            (
+              eorIotDevice,
+              eorIotDeviceSummaries.FirstOrDefault(
+                summary =>
+                  summary.DeviceId
+                  == eorIotDevice.IotDevicePart.Value.DeviceId.Text
               )
+            )
           )
-          .ToList(),
+          .ToList()
       }
     );
   }
@@ -80,10 +96,7 @@ public class EorIotDeviceController : Controller
   public async Task<IActionResult> Detail(string contentItemId)
   {
     var contentItem = await _contentManager.GetAsync(contentItemId);
-    if (contentItem == null)
-    {
-      return NotFound();
-    }
+    if (contentItem == null) return NotFound();
 
     var eorIotDevice = contentItem.AsContent<EorIotDeviceItem>();
 
@@ -95,9 +108,7 @@ public class EorIotDeviceController : Controller
         eorIotDevice
       )
     )
-    {
       return Forbid();
-    }
 
     var eorIotDeviceSummary =
       await _measurementQuery.GetEorIotDeviceSummaryAsync(
@@ -107,29 +118,11 @@ public class EorIotDeviceController : Controller
     return eorIotDeviceSummary == null
       ? NotFound()
       : View(
-      new EorIotDeviceDetailViewModel
-      {
-        EorIotDeviceItem = eorIotDevice,
-        EorSummary = eorIotDeviceSummary
-      }
-    );
+        new EorIotDeviceDetailViewModel
+        {
+          EorIotDeviceItem = eorIotDevice,
+          EorSummary = eorIotDeviceSummary
+        }
+      );
   }
-
-  public EorIotDeviceController(
-    IAuthorizationService authorizationService,
-    IContentManager contentManager,
-    ISession session,
-    IEorTimeseriesQuery measurementQuery
-  )
-  {
-    _contentManager = contentManager;
-    _authorizationService = authorizationService;
-    _session = session;
-    _measurementQuery = measurementQuery;
-  }
-
-  private readonly IContentManager _contentManager;
-  private readonly IAuthorizationService _authorizationService;
-  private readonly ISession _session;
-  private readonly IEorTimeseriesQuery _measurementQuery;
 }

@@ -5,21 +5,18 @@ namespace Mess.Relational;
 
 public class RelationalDbMigrationModularTenantEvents : ModularTenantEvents
 {
-  public override async Task ActivatingAsync()
-  {
-    foreach (var relationalDbMigrator in _relationalDbMigrators)
-    {
-      await relationalDbMigrator.MigrateAsync();
-    }
-  }
+  private readonly List<IRelationalDbMigrator> _relationalDbMigrators;
 
   public RelationalDbMigrationModularTenantEvents(
     IEnumerable<IRelationalDbMigrator> relationalDbMigrators
   )
-    : base()
   {
     _relationalDbMigrators = relationalDbMigrators.ToList();
   }
 
-  private readonly List<IRelationalDbMigrator> _relationalDbMigrators;
+  public override async Task ActivatingAsync()
+  {
+    foreach (var relationalDbMigrator in _relationalDbMigrators)
+      await relationalDbMigrator.MigrateAsync();
+  }
 }

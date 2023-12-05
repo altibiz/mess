@@ -1,12 +1,11 @@
 using Mess.Cms;
 using Mess.Ozds.Abstractions.Indexes;
 using Mess.Ozds.Abstractions.Models;
-using Mess.Cms.Extensions.Microsoft;
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.ContentManagement;
+using OrchardCore.Data;
 using OrchardCore.Lists.Models;
 using YesSql.Indexes;
-using OrchardCore.Data;
 
 namespace Mess.Ozds.Indexes;
 
@@ -14,6 +13,13 @@ public class DistributionSystemUnitIndexProvider
   : IndexProvider<ContentItem>,
     IScopedIndexProvider
 {
+  private readonly IServiceProvider _serviceProvider;
+
+  public DistributionSystemUnitIndexProvider(IServiceProvider serviceProvider)
+  {
+    _serviceProvider = serviceProvider;
+  }
+
   public override void Describe(DescribeContext<ContentItem> context)
   {
     context
@@ -66,11 +72,4 @@ public class DistributionSystemUnitIndexProvider
         };
       });
   }
-
-  public DistributionSystemUnitIndexProvider(IServiceProvider serviceProvider)
-  {
-    _serviceProvider = serviceProvider;
-  }
-
-  private readonly IServiceProvider _serviceProvider;
 }

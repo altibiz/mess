@@ -1,4 +1,5 @@
 using Mess.Eor.Abstractions.Indexes;
+using Mess.Fields.Abstractions.Settings;
 using Microsoft.AspNetCore.Identity;
 using OrchardCore.ContentFields.Settings;
 using OrchardCore.ContentManagement.Metadata;
@@ -8,12 +9,23 @@ using OrchardCore.Security;
 using OrchardCore.Security.Permissions;
 using OrchardCore.Title.Models;
 using YesSql.Sql;
-using Mess.Fields.Abstractions.Settings;
 
 namespace Mess.Eor;
 
 public class Migrations : DataMigration
 {
+  private readonly IContentDefinitionManager _contentDefinitionManager;
+  private readonly RoleManager<IRole> _roleManager;
+
+  public Migrations(
+    IContentDefinitionManager contentDefinitionManager,
+    RoleManager<IRole> roleManager
+  )
+  {
+    _contentDefinitionManager = contentDefinitionManager;
+    _roleManager = roleManager;
+  }
+
   public async Task<int> CreateAsync()
   {
     _contentDefinitionManager.AlterPartDefinition(
@@ -145,7 +157,7 @@ public class Migrations : DataMigration
                 .WithDisplayName("API key")
                 .WithDescription("API key.")
                 .WithSettings<ApiKeyFieldSettings>(
-                  new()
+                  new ApiKeyFieldSettings
                   {
                     Hint = "API key that will be used to authorize the device."
                   }
@@ -171,7 +183,7 @@ public class Migrations : DataMigration
                 )
                 .WithPosition("1")
                 .WithSettings<TitlePartSettings>(
-                  new()
+                  new TitlePartSettings
                   {
                     RenderTitle = true,
                     Options = TitlePartOptions.GeneratedHidden,
@@ -225,7 +237,7 @@ public class Migrations : DataMigration
         NormalizedRoleName = "EorIotDeviceAdmin",
         RoleName = "EOR measurement device administrator",
         RoleDescription = "Administrator of an EOR measurement devices.",
-        RoleClaims = new()
+        RoleClaims = new List<RoleClaim>
         {
           new RoleClaim
           {
@@ -271,7 +283,7 @@ public class Migrations : DataMigration
           {
             ClaimType = Permission.ClaimType,
             ClaimValue = "DeleteOwn_EorIotDevice"
-          },
+          }
         }
       }
     );
@@ -282,7 +294,7 @@ public class Migrations : DataMigration
         NormalizedRoleName = "EorIotDeviceOwner",
         RoleName = "EOR measurement device owner",
         RoleDescription = "Owner of an EOR measurement devices.",
-        RoleClaims = new()
+        RoleClaims = new List<RoleClaim>
         {
           new RoleClaim
           {
@@ -300,16 +312,4 @@ public class Migrations : DataMigration
 
     return 1;
   }
-
-  public Migrations(
-    IContentDefinitionManager contentDefinitionManager,
-    RoleManager<IRole> roleManager
-  )
-  {
-    _contentDefinitionManager = contentDefinitionManager;
-    _roleManager = roleManager;
-  }
-
-  private readonly IContentDefinitionManager _contentDefinitionManager;
-  private readonly RoleManager<IRole> _roleManager;
 }

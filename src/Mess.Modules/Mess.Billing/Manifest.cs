@@ -4,7 +4,8 @@ using ManifestConstants = Mess.Cms.ManifestConstants;
 [assembly: Module(
   Id = "Mess.Billing",
   Name = "Billing",
-  Description = "The Billing module adds content definitions and a background job to create bills every month.",
+  Description =
+    "The Billing module adds content definitions and a background job to create bills every month.",
   Author = ManifestConstants.Author,
   Website = ManifestConstants.Website,
   Version = ManifestConstants.Version,

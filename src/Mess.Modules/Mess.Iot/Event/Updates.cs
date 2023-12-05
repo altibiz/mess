@@ -1,3 +1,3 @@
 namespace Mess.Iot.Event;
 
-public record class Updates();
+public record class Updates;

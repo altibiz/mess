@@ -7,10 +7,10 @@ public interface IChartFactory
 {
   public string ContentType { get; }
 
+  public IEnumerable<string> TimeseriesChartDatasetProperties { get; }
+
   public Task<ChartDescriptor?> CreateChartAsync(
     ContentItem metadata,
     ContentItem chart
   );
-
-  public IEnumerable<string> TimeseriesChartDatasetProperties { get; }
 }

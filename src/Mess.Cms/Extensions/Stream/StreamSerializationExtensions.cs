@@ -1,6 +1,5 @@
-using Newtonsoft.Json;
-using Mess.Cms.Json;
 using Mess.Cms.Extensions.Newtonsoft;
+using Newtonsoft.Json;
 
 namespace Mess.Cms.Extensions.Streams;
 
@@ -12,8 +11,7 @@ public static class StreamSerializationExtensions
   )
   {
     var serializer = JsonSerializer.Create(
-      new JsonSerializerSettings { }
-        .AddMessNewtonsoftJsonSettings(pretty)
+      new JsonSerializerSettings().AddMessNewtonsoftJsonSettings(pretty)
         .AddMessNewtonsoftJsonConverters()
     );
 
@@ -30,8 +28,7 @@ public static class StreamSerializationExtensions
   public static T? FromNewtonsoftJsonStream<T>(this Stream @this)
   {
     var serializer = JsonSerializer.Create(
-      new JsonSerializerSettings { }
-        .AddMessNewtonsoftJsonSettings()
+      new JsonSerializerSettings().AddMessNewtonsoftJsonSettings()
         .AddMessNewtonsoftJsonConverters()
     );
 
@@ -45,8 +42,7 @@ public static class StreamSerializationExtensions
   public static object? FromNewtonsoftJsonStream(this Stream @this, Type type)
   {
     var serializer = JsonSerializer.Create(
-      new JsonSerializerSettings { }
-        .AddMessNewtonsoftJsonSettings()
+      new JsonSerializerSettings().AddMessNewtonsoftJsonSettings()
         .AddMessNewtonsoftJsonConverters()
     );
 

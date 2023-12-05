@@ -11,7 +11,7 @@ public class OzdsPaymentIndexer : IPaymentIndexer
   public bool IsApplicable(ContentItem contentItem)
   {
     return contentItem.Has<OzdsInvoicePart>()
-      || contentItem.Has<OzdsReceiptPart>();
+           || contentItem.Has<OzdsReceiptPart>();
   }
 
   public PaymentIndex IndexPayment(ContentItem contentItem)
@@ -21,7 +21,6 @@ public class OzdsPaymentIndexer : IPaymentIndexer
     var ozdsInvoicePart = contentItem.As<OzdsInvoicePart>();
     var invoicePart = contentItem.As<InvoicePart>();
     if (ozdsInvoicePart is not null && invoicePart is not null)
-    {
       return new PaymentIndex
       {
         ContentItemId = contentItem.ContentItemId,
@@ -35,9 +34,8 @@ public class OzdsPaymentIndexer : IPaymentIndexer
           .ContentItemId,
         RecipientContentItemId = ozdsInvoicePart
           .DistributionSystemUnit
-          .ContentItemId,
+          .ContentItemId
       };
-    }
 
     var ozdsReceiptPart = contentItem.As<OzdsReceiptPart>();
     var receiptPart = contentItem.As<ReceiptPart>();
@@ -55,11 +53,11 @@ public class OzdsPaymentIndexer : IPaymentIndexer
           .ContentItemId,
         RecipientContentItemId = ozdsReceiptPart
           .DistributionSystemUnit
-          .ContentItemId,
+          .ContentItemId
       }
       : throw new InvalidOperationException(
-      $"Payment with content item id '{contentItem.ContentItemId}' not found."
-    );
+        $"Payment with content item id '{contentItem.ContentItemId}' not found."
+      );
   }
 
   public async Task<PaymentIndex> IndexPaymentAsync(ContentItem contentItem)

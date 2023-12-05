@@ -20,7 +20,7 @@ public class IotDeviceIndexProvider : IndexProvider<ContentItem>
         {
           ContentItemId = contentItem.ContentItemId,
           DeviceId = measurementDevicePart.DeviceId.Text,
-          IsMessenger = measurementDevicePart.IsMessenger,
+          IsMessenger = measurementDevicePart.IsMessenger
         };
       });
   }

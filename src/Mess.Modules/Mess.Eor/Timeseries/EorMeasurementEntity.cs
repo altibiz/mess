@@ -6,24 +6,22 @@ namespace Mess.Eor.Iot;
 
 public class EorMeasurementEntity : HypertableEntity
 {
-  [Column(TypeName = "float4")]
-  public float Voltage { get; set; } = default!;
+  [Column(TypeName = "float4")] public float Voltage { get; set; }
 
-  [Column(TypeName = "float4")]
-  public float Current { get; set; } = default!;
+  [Column(TypeName = "float4")] public float Current { get; set; }
 
-  [Column(TypeName = "float4")]
-  public float Temperature { get; set; } = default!;
+  [Column(TypeName = "float4")] public float Temperature { get; set; }
 
-  public bool CoolingFans { get; set; } = default!;
+  public bool CoolingFans { get; set; }
 
-  public bool HatsinkFans { get; set; } = default!;
+  public bool HatsinkFans { get; set; }
 }
 
 public static class EorMeasurementEntityExtensions
 {
-  public static EorMeasurementEntity ToEntity(this EorMeasurement model) =>
-    new()
+  public static EorMeasurementEntity ToEntity(this EorMeasurement model)
+  {
+    return new EorMeasurementEntity
     {
       Tenant = model.Tenant,
       Timestamp = model.Timestamp,
@@ -34,16 +32,19 @@ public static class EorMeasurementEntityExtensions
       CoolingFans = model.CoolingFans,
       HatsinkFans = model.HeatsinkFans
     };
+  }
 
-  public static EorMeasurement ToModel(this EorMeasurementEntity entity) =>
-    new(
-      Tenant: entity.Tenant,
-      DeviceId: entity.Source,
-      Timestamp: entity.Timestamp,
-      Voltage: entity.Voltage,
-      Current: entity.Current,
-      Temperature: entity.Temperature,
-      CoolingFans: entity.CoolingFans,
-      HeatsinkFans: entity.HatsinkFans
+  public static EorMeasurement ToModel(this EorMeasurementEntity entity)
+  {
+    return new EorMeasurement(
+      entity.Tenant,
+      entity.Source,
+      entity.Timestamp,
+      entity.Voltage,
+      entity.Current,
+      entity.Temperature,
+      entity.CoolingFans,
+      entity.HatsinkFans
     );
+  }
 }

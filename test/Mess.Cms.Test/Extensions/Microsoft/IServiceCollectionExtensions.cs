@@ -9,7 +9,8 @@ public static class IServiceCollectionExtensions
 {
   public static void AddOrchardCoreShellSettings(
     this IServiceCollection services
-  ) =>
+  )
+  {
     services.AddTransient(services =>
     {
       var testId = services.GetTestId();
@@ -38,9 +39,10 @@ public static class IServiceCollectionExtensions
         )
       )
       {
-        Name = testId,
+        Name = testId
       };
     });
+  }
 
   public static void AddOrchardSnapshotFixture(this IServiceCollection services)
   {

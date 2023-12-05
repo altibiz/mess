@@ -1,8 +1,11 @@
+@using OrchardCore.ContentManagement
+@using OrchardCore.ContentManagement.Display
+@using OrchardCore.DisplayManagement.ModelBinding
 @model TimeseriesChartPartEditViewModel
 
-@inject OrchardCore.ContentManagement.IContentManager ContentManager
-@inject OrchardCore.ContentManagement.Display.IContentItemDisplayManager ContentItemDisplayManager
-@inject OrchardCore.DisplayManagement.ModelBinding.IUpdateModelAccessor ModelUpdaterAccessor
+@inject IContentManager ContentManager
+@inject IContentItemDisplayManager ContentItemDisplayManager
+@inject IUpdateModelAccessor ModelUpdaterAccessor
 
 <div class="mb-3 row">
   <div class="col-sm-6">
@@ -24,7 +27,7 @@
 
 <div class="mb-3 d-flex flex-column justify-content-between">
   <h5>@T["Datasets"]</h5>
-  
+
   @if (Model.Part.Datasets is not null && Model.Part.Datasets.Count > 0)
   {
     <div class="container">
@@ -37,8 +40,8 @@
           ModelUpdaterAccessor.ModelUpdater
         );
         <div class="mb-3 row">
-          <div 
-              class="
+          <div
+            class="
                 d-flex
                 flex-column
                 justify-content-between
@@ -54,12 +57,13 @@
       }
     </div>
   }
-  else {
+  else
+  {
     <span class="hint">
       @T["No datasets found."]
     </span>
   }
-  
+
   <div class="float-end">
     @{
       var contentItemId = Model.Part.ContentItem.ContentItemId;
@@ -67,12 +71,12 @@
     }
 
     <a
-        asp-route-area="Mess.Chart"
-        asp-controller="TimeseriesChartDatasetAdmin"
-        asp-action="Create"
-        asp-route-contentItemId="@contentItemId"
-        asp-route-chartContentItemId="@chartContentItemId"
-        class="btn btn-success btn-sm">
+      asp-route-area="Mess.Chart"
+      asp-controller="TimeseriesChartDatasetAdmin"
+      asp-action="Create"
+      asp-route-contentItemId="@contentItemId"
+      asp-route-chartContentItemId="@chartContentItemId"
+      class="btn btn-success btn-sm">
       @T["Create dataset"]
     </a>
   </div>

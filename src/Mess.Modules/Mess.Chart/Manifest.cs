@@ -4,7 +4,8 @@ using ManifestConstants = Mess.Cms.ManifestConstants;
 [assembly: Module(
   Id = "Mess.Chart",
   Name = "Chart",
-  Description = "The Chart module enables the creation and display of charts using Chart.js.",
+  Description =
+    "The Chart module enables the creation and display of charts using Chart.js.",
   Author = ManifestConstants.Author,
   Website = ManifestConstants.Website,
   Version = ManifestConstants.Version,

@@ -14,8 +14,9 @@ public class Events : IEvents
   }
 
   public IReadOnlyList<T> OfType<T>()
-    where T : IEvent =>
-    _streams
+    where T : IEvent
+  {
+    return _streams
       .SelectMany(stream => stream.Events)
       .Where(@event => @event.EventType == typeof(T))
       .OrderBy(@event => @event.Sequence)
@@ -23,4 +24,5 @@ public class Events : IEvents
       .Cast<T>()
       .Where(@event => @event is not null)
       .ToList();
+  }
 }

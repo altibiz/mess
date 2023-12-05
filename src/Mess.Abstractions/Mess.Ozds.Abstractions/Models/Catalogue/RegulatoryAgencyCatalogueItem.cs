@@ -6,6 +6,11 @@ namespace Mess.Ozds.Abstractions.Models;
 
 public class RegulatoryAgencyCatalogueItem : ContentItemBase
 {
+  private RegulatoryAgencyCatalogueItem(ContentItem contentItem)
+    : base(contentItem)
+  {
+  }
+
   public Lazy<TitlePart> TitlePart { get; private set; } = null!;
 
   public Lazy<RegulatoryAgencyCataloguePart> RegulatoryAgencyCataloguePart
@@ -13,7 +18,4 @@ public class RegulatoryAgencyCatalogueItem : ContentItemBase
     get;
     private set;
   } = null!;
-
-  private RegulatoryAgencyCatalogueItem(ContentItem contentItem)
-    : base(contentItem) { }
 }

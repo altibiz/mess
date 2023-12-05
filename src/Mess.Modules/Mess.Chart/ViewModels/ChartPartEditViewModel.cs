@@ -1,14 +1,13 @@
-using OrchardCore.ContentManagement.Metadata.Models;
+using Mess.Chart.Abstractions.Models;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Mess.Chart.Abstractions.Models;
+using OrchardCore.ContentManagement.Metadata.Models;
 
 namespace Mess.Chart.ViewModels;
 
 public class ChartPartEditViewModel
 {
-  [ValidateNever]
-  public ChartPart Part { get; set; } = default!;
+  [ValidateNever] public ChartPart Part { get; set; } = default!;
 
   [ValidateNever]
   public ContentTypePartDefinition Definition { get; set; } = default!;

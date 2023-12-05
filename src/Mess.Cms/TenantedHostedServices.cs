@@ -5,6 +5,13 @@ namespace Mess.Cms;
 public class HostedServiceModularTenantEvents<T> : ModularTenantEvents
   where T : IHostedService
 {
+  private readonly T _hostedService;
+
+  public HostedServiceModularTenantEvents(T hostedService)
+  {
+    _hostedService = hostedService;
+  }
+
   public override async Task ActivatedAsync()
   {
     await _hostedService.StartAsync(default);
@@ -14,11 +21,4 @@ public class HostedServiceModularTenantEvents<T> : ModularTenantEvents
   {
     await _hostedService.StopAsync(default);
   }
-
-  public HostedServiceModularTenantEvents(T hostedService)
-  {
-    _hostedService = hostedService;
-  }
-
-  private readonly T _hostedService;
 }

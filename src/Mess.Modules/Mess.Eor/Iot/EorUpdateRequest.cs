@@ -39,15 +39,16 @@ public record EorUpdateRequest(
   string ProcessFaultsArray15
 )
 {
-  public EorStatus ToStatus(string tenant, string deviceId) =>
-    new(
-      Tenant: tenant,
-      DeviceId: deviceId,
-      Stamp: Stamp,
-      Timestamp: Timestamp,
-      Mode: Mode,
-      ProcessFault: ProcessFaults,
-      ProcessFaults: new[]
+  public EorStatus ToStatus(string tenant, string deviceId)
+  {
+    return new EorStatus(
+      tenant,
+      deviceId,
+      Stamp,
+      Timestamp,
+      Mode,
+      ProcessFaults,
+      new[]
       {
         ProcessFaultsArray0,
         ProcessFaultsArray1,
@@ -66,32 +67,33 @@ public record EorUpdateRequest(
         ProcessFaultsArray14,
         ProcessFaultsArray15
       },
-      CommunicationFault: CommunicationFaults,
-      RunState: Start && !Stop
+      CommunicationFaults,
+      Start && !Stop
         ? EorRunState.Started
         : Stop && !Start
           ? EorRunState.Stopped
           : EorRunState.Error,
-      ResetState: Reset
+      Reset
         ? EorResetState.ShouldReset
         : EorResetState.ShouldntReset,
-      DoorState: DoorState ? EorDoorState.Open : EorDoorState.Closed,
-      MainCircuitBreakerState: MainCircuitBreakerState
+      DoorState ? EorDoorState.Open : EorDoorState.Closed,
+      MainCircuitBreakerState
         ? EorMainCircuitBreakerState.On
         : EorMainCircuitBreakerState.Off,
-      TransformerContractorState: TransformerContractorState
+      TransformerContractorState
         ? EorTransformerContractorState.On
         : EorTransformerContractorState.Off,
-      FirstDiodeBridgeState: FirstDiodeBridgeState
+      FirstDiodeBridgeState
         ? EorDiodeBridgeState.Ok
         : EorDiodeBridgeState.Error,
-      SecondDiodeBridgeState: SecondDiodeBridgeState
+      SecondDiodeBridgeState
         ? EorDiodeBridgeState.Ok
         : EorDiodeBridgeState.Error,
-      Current: Current,
-      Voltage: Voltage,
-      Temperature: Temperature,
-      HeatsinkFans: HeatsinkFans,
-      CoolingFans: CoolingFans
+      Current,
+      Voltage,
+      Temperature,
+      HeatsinkFans,
+      CoolingFans
     );
+  }
 }

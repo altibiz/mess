@@ -32,22 +32,21 @@ public class EnumJsonConverterFactory : JsonConverterFactory
     {
       if (reader.TokenType == JsonTokenType.String)
       {
-        string enumString = reader.GetString()!;
+        var enumString = reader.GetString()!;
         return string.IsNullOrEmpty(enumString)
           ? default!
-          : int.TryParse(enumString, out int number)
-          ? (T)Enum.ToObject(typeToConvert, number)
-          : (T)Enum.Parse(typeToConvert, enumString, true);
+          : int.TryParse(enumString, out var number)
+            ? (T)Enum.ToObject(typeToConvert, number)
+            : (T)Enum.Parse(typeToConvert, enumString, true);
       }
-      else if (reader.TokenType == JsonTokenType.Number)
+
+      if (reader.TokenType == JsonTokenType.Number)
       {
-        int enumInt = reader.GetInt32();
+        var enumInt = reader.GetInt32();
         return (T)Enum.ToObject(typeToConvert, enumInt);
       }
-      else
-      {
-        throw new JsonException("Failed parsing enum");
-      }
+
+      throw new JsonException("Failed parsing enum");
     }
 
     public override void Write(

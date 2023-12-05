@@ -17,7 +17,7 @@ public static class IQueryExtensions
     return expression is not MemberExpression memberExpression
       ? throw new ArgumentException("Expression must be a member expression")
       : query.Where(
-      $"{memberExpression.Member.Name} IN ({string.Join(",", values.Select(value => $"'{value}'"))})"
-    );
+        $"{memberExpression.Member.Name} IN ({string.Join(",", values.Select(value => $"'{value}'"))})"
+      );
   }
 }

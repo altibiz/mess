@@ -7,10 +7,7 @@ public static class DictionaryGetOrDefaultExtensions
     TIn? key
   )
   {
-    if (key is null)
-    {
-      return default;
-    }
+    if (key is null) return default;
 
     try
     {
@@ -28,10 +25,7 @@ public static class DictionaryGetOrDefaultExtensions
   )
     where TOut : struct
   {
-    if (key is null)
-    {
-      return default(TOut);
-    }
+    if (key is null) return default(TOut);
 
     try
     {

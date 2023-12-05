@@ -20,13 +20,9 @@ public static class IServiceCollectionExtensions
     where TIndexProvider : class, IIndexProvider
   {
     if (typeof(IScopedIndexProvider).IsAssignableFrom(typeof(TIndexProvider)))
-    {
       services.AddScoped(typeof(IScopedIndexProvider), typeof(TIndexProvider));
-    }
     else
-    {
       services.AddSingleton(typeof(IIndexProvider), typeof(TIndexProvider));
-    }
     return services;
   }
 
@@ -60,7 +56,8 @@ public static class IServiceCollectionExtensions
     return services;
   }
 
-  public static IServiceCollection AddHostedServiceModularTenantEvents<THostedService>(
+  public static IServiceCollection AddHostedServiceModularTenantEvents<
+    THostedService>(
     this IServiceCollection services
   )
     where THostedService : class, IHostedService
@@ -89,11 +86,12 @@ public static class IServiceCollectionExtensions
     return services;
   }
 
-  public static IServiceCollection AddContentTypePartDefinitionDisplayDriver<TContentTypePartDefinitionDisplayDriver>(
+  public static IServiceCollection AddContentTypePartDefinitionDisplayDriver<
+    TContentTypePartDefinitionDisplayDriver>(
     this IServiceCollection services
   )
     where TContentTypePartDefinitionDisplayDriver : class,
-      IContentTypePartDefinitionDisplayDriver
+    IContentTypePartDefinitionDisplayDriver
   {
     services.AddScoped<
       IContentTypePartDefinitionDisplayDriver,
@@ -102,11 +100,12 @@ public static class IServiceCollectionExtensions
     return services;
   }
 
-  public static IServiceCollection AddContentPartFieldDefinitionDisplayDriver<TContentPartFieldDefinitionDisplayDriver>(
+  public static IServiceCollection AddContentPartFieldDefinitionDisplayDriver<
+    TContentPartFieldDefinitionDisplayDriver>(
     this IServiceCollection services
   )
     where TContentPartFieldDefinitionDisplayDriver : class,
-      IContentPartFieldDefinitionDisplayDriver
+    IContentPartFieldDefinitionDisplayDriver
   {
     services.AddScoped<
       IContentPartFieldDefinitionDisplayDriver,
@@ -124,7 +123,8 @@ public static class IServiceCollectionExtensions
     return services;
   }
 
-  public static IServiceCollection AddAuthorizationHandler<TAuthorizationHandler>(
+  public static IServiceCollection AddAuthorizationHandler<
+    TAuthorizationHandler>(
     this IServiceCollection services
   )
     where TAuthorizationHandler : class, IAuthorizationHandler

@@ -8,12 +8,10 @@ public static class StringHashExtensions
 {
   public static string GetSha256Hash(this string @this)
   {
-    string hash = string.Empty;
-    byte[] crypto = SHA256.HashData(Encoding.UTF8.GetBytes(@this));
-    foreach (byte @byte in crypto)
-    {
+    var hash = string.Empty;
+    var crypto = SHA256.HashData(Encoding.UTF8.GetBytes(@this));
+    foreach (var @byte in crypto)
       hash += @byte.ToString("x2", CultureInfo.InvariantCulture);
-    }
     return hash;
   }
 }

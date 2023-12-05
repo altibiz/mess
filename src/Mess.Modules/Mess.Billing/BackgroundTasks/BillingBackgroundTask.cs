@@ -1,10 +1,11 @@
-using Mess.Billing.Abstractions.Services;
 using Mess.Billing.Abstractions.Indexes;
 using Mess.Billing.Abstractions.Models;
+using Mess.Billing.Abstractions.Services;
 using Mess.Prelude.Extensions.Timestamps;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OrchardCore.BackgroundTasks;
+using OrchardCore.ContentFields.Fields;
 using OrchardCore.ContentManagement;
 using YesSql;
 
@@ -18,7 +19,7 @@ public class BillingBackgroundTask : IBackgroundTask
     CancellationToken cancellationToken
   )
   {
-    (DateTimeOffset nowLastMonthStart, DateTimeOffset nowLastMonthEnd) =
+    (var nowLastMonthStart, var nowLastMonthEnd) =
       DateTimeOffset.UtcNow.AddMonths(-1).GetMonthRange();
 
     var session = serviceProvider.GetRequiredService<ISession>();
@@ -52,8 +53,8 @@ public class BillingBackgroundTask : IBackgroundTask
         );
         invoiceItem.Alter<InvoicePart>(invoicePart =>
         {
-          invoicePart.Receipt = new();
-          invoicePart.Date = new()
+          invoicePart.Receipt = new ContentPickerField();
+          invoicePart.Date = new DateField
           {
             Value = DateTime.UtcNow
           };

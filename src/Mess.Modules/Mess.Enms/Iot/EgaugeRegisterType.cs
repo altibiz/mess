@@ -25,8 +25,9 @@ public enum EgaugeRegisterType
 
 public static class EgaugeRegisterTypeExtensions
 {
-  public static EgaugeRegisterUnit Unit(this EgaugeRegisterType type) =>
-    type switch
+  public static EgaugeRegisterUnit Unit(this EgaugeRegisterType type)
+  {
+    return type switch
     {
       EgaugeRegisterType.Irradiance => EgaugeRegisterUnit.WattsPerSquareMeter,
       EgaugeRegisterType.Frequency => EgaugeRegisterUnit.Hertz,
@@ -49,6 +50,7 @@ public static class EgaugeRegisterTypeExtensions
       EgaugeRegisterType.Charge => EgaugeRegisterUnit.AmpereHours,
       var _ => default
     };
+  }
 }
 
 public static class EgaugeRegisterTypeString
@@ -75,8 +77,9 @@ public static class EgaugeRegisterTypeString
 
   public static EgaugeRegisterType? ToEgaugeRegisterType(
     this string egaugeRegisterTypeString
-  ) =>
-    egaugeRegisterTypeString switch
+  )
+  {
+    return egaugeRegisterTypeString switch
     {
       Irradiance => EgaugeRegisterType.Irradiance,
       Frequency => EgaugeRegisterType.Frequency,
@@ -99,4 +102,5 @@ public static class EgaugeRegisterTypeString
       Charge => EgaugeRegisterType.Charge,
       var _ => default
     };
+  }
 }

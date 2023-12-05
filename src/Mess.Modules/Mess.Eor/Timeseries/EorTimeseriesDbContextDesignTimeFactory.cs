@@ -4,4 +4,5 @@ namespace Mess.Eor.Iot;
 
 public class EorTimeseriesDbContextDesignTimeFactory
   : TimeseriesDbContextDesignTimeFactory<EorTimeseriesDbContext>
-{ }
+{
+}

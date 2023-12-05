@@ -1,8 +1,7 @@
-using Microsoft.Extensions.DependencyInjection;
 using Marten;
+using Mess.Cms.Extensions.OrchardCore;
 using Mess.Event.Abstractions.Session;
 using OrchardCore.Environment.Shell;
-using Mess.Cms.Extensions.OrchardCore;
 
 namespace Mess.Event.Session;
 
@@ -11,23 +10,11 @@ public sealed class EventStoreQuery
     IDisposable,
     IAsyncDisposable
 {
-  public IQuerySession Value => _value
-      ?? throw new InvalidOperationException("Query has already been disposed");
+  private IQuerySession? _value;
 
   public EventStoreQuery(IDocumentStore store, ShellSettings shellSettings)
   {
     _value = store.QuerySession(shellSettings.GetDatabaseTablePrefix());
-  }
-
-  private IQuerySession? _value;
-
-  public void Dispose()
-  {
-    if (_value is not null)
-    {
-      _value.Dispose();
-      _value = null;
-    }
   }
 
   public async ValueTask DisposeAsync()
@@ -38,4 +25,17 @@ public sealed class EventStoreQuery
       _value = null;
     }
   }
+
+  public void Dispose()
+  {
+    if (_value is not null)
+    {
+      _value.Dispose();
+      _value = null;
+    }
+  }
+
+  public IQuerySession Value => _value
+                                ?? throw new InvalidOperationException(
+                                  "Query has already been disposed");
 }

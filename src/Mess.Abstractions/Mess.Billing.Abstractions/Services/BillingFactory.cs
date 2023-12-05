@@ -6,18 +6,6 @@ namespace Mess.Billing.Abstractions.Services;
 public abstract class BillingFactory<T> : IBillingFactory
   where T : ContentItemBase
 {
-  public abstract ContentItem CreateInvoice(
-    T contentItem,
-    DateTimeOffset fromDate,
-    DateTimeOffset toDate
-  );
-
-  public abstract Task<ContentItem> CreateInvoiceAsync(
-    T contentItem,
-    DateTimeOffset fromDate,
-    DateTimeOffset toDate
-  );
-
   public abstract ContentItem CreateReceipt(
     ContentItem contentItem,
     ContentItem invoiceContentItem
@@ -54,4 +42,16 @@ public abstract class BillingFactory<T> : IBillingFactory
   {
     return contentItem.ContentType == typeof(T).ContentTypeName();
   }
+
+  public abstract ContentItem CreateInvoice(
+    T contentItem,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  );
+
+  public abstract Task<ContentItem> CreateInvoiceAsync(
+    T contentItem,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  );
 }

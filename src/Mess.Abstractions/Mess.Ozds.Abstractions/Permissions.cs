@@ -27,7 +27,7 @@ public class Permissions : IPermissionProvider
         ListIotDevices,
         ListDistributionSystemOperators,
         ListClosedDistributionSystems,
-        ListDistributionSystemUnits,
+        ListDistributionSystemUnits
       }.AsEnumerable()
     );
   }
@@ -44,9 +44,9 @@ public class Permissions : IPermissionProvider
           ListIotDevices,
           ListDistributionSystemOperators,
           ListClosedDistributionSystems,
-          ListDistributionSystemUnits,
+          ListDistributionSystemUnits
         }
-      },
+      }
     };
   }
 }

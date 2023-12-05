@@ -1,14 +1,14 @@
+using Mess.Chart.Abstractions.Models;
+using Mess.Chart.Abstractions.Services;
+using Mess.Chart.ViewModels;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
 using OrchardCore.ContentManagement.Display.Models;
+using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.DisplayManagement.ModelBinding;
 using OrchardCore.DisplayManagement.Views;
-using Mess.Chart.Abstractions.Models;
-using Mess.Chart.ViewModels;
-using OrchardCore.ContentManagement.Metadata;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.DependencyInjection;
-using Mess.Chart.Abstractions.Services;
 using OrchardCore.Mvc.ModelBinding;
 
 namespace Mess.Chart.Drivers;
@@ -16,6 +16,22 @@ namespace Mess.Chart.Drivers;
 public class TimeseriesChartDatasetPartDisplayDriver
   : ContentPartDisplayDriver<TimeseriesChartDatasetPart>
 {
+  private readonly IContentDefinitionManager _contentDefinitionManager;
+  private readonly IServiceProvider _serviceProvider;
+
+  private readonly IStringLocalizer S;
+
+  public TimeseriesChartDatasetPartDisplayDriver(
+    IServiceProvider serviceProvider,
+    IStringLocalizer<TimeseriesChartDatasetPartDisplayDriver> localizer,
+    IContentDefinitionManager contentDefinitionManager
+  )
+  {
+    S = localizer;
+    _contentDefinitionManager = contentDefinitionManager;
+    _serviceProvider = serviceProvider;
+  }
+
   public override IDisplayResult Display(
     TimeseriesChartDatasetPart part,
     BuildPartDisplayContext context
@@ -40,11 +56,12 @@ public class TimeseriesChartDatasetPartDisplayDriver
   {
     string contentType = part.ContentItem.Content.ChartContentType;
     var chartProvider = _serviceProvider
-      .GetServices<IChartFactory>()
-      .FirstOrDefault(provider => provider.ContentType == contentType) ??
-      throw new NotImplementedException(
-        "No chart provider implemented for this content type."
-      );
+                          .GetServices<IChartFactory>()
+                          .FirstOrDefault(provider =>
+                            provider.ContentType == contentType) ??
+                        throw new NotImplementedException(
+                          "No chart provider implemented for this content type."
+                        );
 
     return Initialize<TimeseriesChartDatasetPartEditViewModel>(
       GetEditorShapeType(context),
@@ -72,11 +89,12 @@ public class TimeseriesChartDatasetPartDisplayDriver
   {
     string contentType = part.ContentItem.Content.ChartContentType;
     var chartProvider = _serviceProvider
-      .GetServices<IChartFactory>()
-      .FirstOrDefault(provider => provider.ContentType == contentType) ??
-      throw new NotImplementedException(
-        "No chart provider implemented for this content type."
-      );
+                          .GetServices<IChartFactory>()
+                          .FirstOrDefault(provider =>
+                            provider.ContentType == contentType) ??
+                        throw new NotImplementedException(
+                          "No chart provider implemented for this content type."
+                        );
 
     var viewModel = new TimeseriesChartDatasetPartEditViewModel();
 
@@ -93,32 +111,15 @@ public class TimeseriesChartDatasetPartDisplayDriver
           viewModel.Property
         )
       )
-      {
         updater.ModelState.AddModelError(
           Prefix,
           nameof(viewModel.Property),
           S["Invalid value for {0}", context.TypePartDefinition.Name]
         );
-      }
 
       part.Property = viewModel.Property;
     }
 
     return Edit(part, context);
   }
-
-  public TimeseriesChartDatasetPartDisplayDriver(
-    IServiceProvider serviceProvider,
-    IStringLocalizer<TimeseriesChartDatasetPartDisplayDriver> localizer,
-    IContentDefinitionManager contentDefinitionManager
-  )
-  {
-    S = localizer;
-    _contentDefinitionManager = contentDefinitionManager;
-    _serviceProvider = serviceProvider;
-  }
-
-  private readonly IStringLocalizer S;
-  private readonly IContentDefinitionManager _contentDefinitionManager;
-  private readonly IServiceProvider _serviceProvider;
 }

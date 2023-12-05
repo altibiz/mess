@@ -16,6 +16,7 @@ public class PaymentHandler : ContentHandlerBase
     {
       var _ = contentItem.As<ReceiptPart>();
     }
+
     if (contentItem.Has<InvoicePart>())
     {
       var _ = contentItem.As<InvoicePart>();

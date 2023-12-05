@@ -1,3 +1,3 @@
 namespace Mess.Ozds.Event;
 
-public record class PidgeonMeasurements();
+public record class PidgeonMeasurements;

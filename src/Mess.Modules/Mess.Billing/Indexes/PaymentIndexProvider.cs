@@ -1,7 +1,6 @@
 using Mess.Billing.Abstractions.Indexes;
 using Mess.Billing.Abstractions.Models;
 using Mess.Billing.Abstractions.Services;
-using Mess.Cms.Extensions.Microsoft;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OrchardCore.ContentManagement;
@@ -14,33 +13,9 @@ public class PaymentIndexProvider
   : IndexProvider<ContentItem>,
     IScopedIndexProvider
 {
-  public override void Describe(DescribeContext<ContentItem> context) =>
-    context
-      .For<PaymentIndex>()
-      .When(
-        contentItem =>
-          contentItem.Has<InvoicePart>() || contentItem.Has<ReceiptPart>()
-      )
-      .Map(async contentItem =>
-      {
-        var indexer = _serviceProvider
-          .GetServices<IPaymentIndexer>()
-.FirstOrDefault(indexer => indexer.IsApplicable(contentItem));
-        if (indexer is null)
-        {
-          _logger.LogError(
-            "No payment indexer found for content item {} of type {}",
-            contentItem.ContentItemId,
-            contentItem.ContentType
-          );
-          return Array.Empty<PaymentIndex>();
-        }
+  private readonly ILogger _logger;
 
-        return new PaymentIndex[]
-        {
-          await indexer.IndexPaymentAsync(contentItem)
-        };
-      });
+  private readonly IServiceProvider _serviceProvider;
 
   public PaymentIndexProvider(
     IServiceProvider serviceProvider,
@@ -51,7 +26,33 @@ public class PaymentIndexProvider
     _logger = logger;
   }
 
-  private readonly IServiceProvider _serviceProvider;
+  public override void Describe(DescribeContext<ContentItem> context)
+  {
+    context
+      .For<PaymentIndex>()
+      .When(
+        contentItem =>
+          contentItem.Has<InvoicePart>() || contentItem.Has<ReceiptPart>()
+      )
+      .Map(async contentItem =>
+      {
+        var indexer = _serviceProvider
+          .GetServices<IPaymentIndexer>()
+          .FirstOrDefault(indexer => indexer.IsApplicable(contentItem));
+        if (indexer is null)
+        {
+          _logger.LogError(
+            "No payment indexer found for content item {} of type {}",
+            contentItem.ContentItemId,
+            contentItem.ContentType
+          );
+          return Array.Empty<PaymentIndex>();
+        }
 
-  private readonly ILogger _logger;
+        return new[]
+        {
+          await indexer.IndexPaymentAsync(contentItem)
+        };
+      });
+  }
 }

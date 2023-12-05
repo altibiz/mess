@@ -4,7 +4,6 @@ using OrchardCore.ContentFields.Settings;
 using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.ContentManagement.Metadata.Settings;
 using OrchardCore.Data.Migration;
-using OrchardCore.Recipes.Services;
 using OrchardCore.Security;
 using YesSql.Sql;
 
@@ -12,6 +11,18 @@ namespace Mess.Billing;
 
 public class Migrations : DataMigration
 {
+  private readonly IContentDefinitionManager _contentDefinitionManager;
+  private readonly RoleManager<IRole> _roleManager;
+
+  public Migrations(
+    IContentDefinitionManager contentDefinitionManager,
+    RoleManager<IRole> roleManager
+  )
+  {
+    _contentDefinitionManager = contentDefinitionManager;
+    _roleManager = roleManager;
+  }
+
   public async Task<int> CreateAsync()
   {
     await _roleManager.CreateAsync(
@@ -19,7 +30,7 @@ public class Migrations : DataMigration
       {
         NormalizedRoleName = "LegalEntityRepresentative",
         RoleName = "Legal entity representative",
-        RoleDescription = "A legal entity representative.",
+        RoleDescription = "A legal entity representative."
       }
     );
 
@@ -284,16 +295,4 @@ public class Migrations : DataMigration
 
     return 1;
   }
-
-  public Migrations(
-    IContentDefinitionManager contentDefinitionManager,
-    RoleManager<IRole> roleManager
-  )
-  {
-    _contentDefinitionManager = contentDefinitionManager;
-    _roleManager = roleManager;
-  }
-
-  private readonly IContentDefinitionManager _contentDefinitionManager;
-  private readonly RoleManager<IRole> _roleManager;
 }

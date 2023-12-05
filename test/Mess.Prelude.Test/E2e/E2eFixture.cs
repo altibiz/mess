@@ -4,8 +4,6 @@ namespace Mess.Prelude.Test.E2e;
 
 internal class E2eFixture : IE2eFixture, IAsyncDisposable, IDisposable
 {
-  public IPage Page { get; } = default!;
-
   public E2eFixture(string baseUrl, E2eTestServer testServer)
   {
     TestServer = testServer;
@@ -15,32 +13,11 @@ internal class E2eFixture : IE2eFixture, IAsyncDisposable, IDisposable
 
     Playwright = Microsoft.Playwright.Playwright.CreateAsync().Result;
     Browser = Playwright.Chromium
-      .LaunchAsync(new BrowserTypeLaunchOptions { Headless = IsCi, })
+      .LaunchAsync(new BrowserTypeLaunchOptions { Headless = IsCi })
       .Result;
     Page = Browser
       .NewPageAsync(new BrowserNewPageOptions { BaseURL = BaseUrl })
       .Result;
-  }
-
-  async ValueTask IAsyncDisposable.DisposeAsync()
-  {
-    if (Browser is not null)
-    {
-      await Browser.DisposeAsync();
-    }
-
-    Playwright?.Dispose();
-
-    ExecutionLock.Release();
-  }
-
-  void IDisposable.Dispose()
-  {
-    Browser?.DisposeAsync().AsTask().RunSynchronously();
-
-    Playwright?.Dispose();
-
-    ExecutionLock.Release();
   }
 
   private static SemaphoreSlim ExecutionLock { get; } = new(0, 1);
@@ -56,4 +33,24 @@ internal class E2eFixture : IE2eFixture, IAsyncDisposable, IDisposable
 #pragma warning disable IDE0052
   private E2eTestServer TestServer { get; } = default!;
 #pragma warning restore IDE0052
+
+  async ValueTask IAsyncDisposable.DisposeAsync()
+  {
+    if (Browser is not null) await Browser.DisposeAsync();
+
+    Playwright?.Dispose();
+
+    ExecutionLock.Release();
+  }
+
+  void IDisposable.Dispose()
+  {
+    Browser?.DisposeAsync().AsTask().RunSynchronously();
+
+    Playwright?.Dispose();
+
+    ExecutionLock.Release();
+  }
+
+  public IPage Page { get; } = default!;
 }

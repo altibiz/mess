@@ -16,7 +16,8 @@ public class TimeSpanJsonConverter : JsonConverter<TimeSpan>
     JsonSerializer serializer
   )
   {
-    var timespanFormatted = $"{value.ToString(TimeSpanFormatString, CultureInfo.InvariantCulture)}";
+    var timespanFormatted =
+      $"{value.ToString(TimeSpanFormatString, CultureInfo.InvariantCulture)}";
     writer.WriteValue(timespanFormatted);
   }
 

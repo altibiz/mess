@@ -24,7 +24,7 @@ public static class IEndpointRouteBuilderExtensions
     string to
   )
   {
-    return Redirect(endpoints, new Redirective(from, to, Permanent: true));
+    return Redirect(endpoints, new Redirective(from, to, true));
   }
 
   public static IEndpointRouteBuilder RedirectAdmin(
@@ -95,13 +95,13 @@ public static class IEndpointRouteBuilderExtensions
     var type = typeof(T);
     var module =
       (type.Namespace
-      ?? throw new InvalidOperationException(
-        $"Type '{typeof(T).Name}' is not in a namespace"
-      )).RegexRemove(@"\.Controllers$");
+       ?? throw new InvalidOperationException(
+         $"Type '{typeof(T).Name}' is not in a namespace"
+       )).RegexRemove(@"\.Controllers$");
     var controller = type.ControllerName();
 
     endpoints.MapAreaControllerRoute(
-      name: $"{module}.{controller}.{action}",
+      $"{module}.{controller}.{action}",
       pattern: pattern,
       areaName: module,
       defaults: new { controller, action }
