@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.Modules;
-using Mess.OrchardCore.Extensions.Microsoft;
+using Mess.Cms.Extensions.Microsoft;
 
 namespace Mess.Forttech;
 

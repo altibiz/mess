@@ -1,7 +1,7 @@
-using Mess.OrchardCore;
+using Mess.Cms;
 using Mess.Ozds.Abstractions.Indexes;
 using Mess.Ozds.Abstractions.Models;
-using Mess.OrchardCore.Extensions.Microsoft;
+using Mess.Cms.Extensions.Microsoft;
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.ContentManagement;
 using OrchardCore.Lists.Models;

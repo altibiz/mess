@@ -1,7 +1,7 @@
 using Mess.Eor.Abstractions.Timeseries;
 using Mess.Eor.Abstractions.Models;
 using Mess.Iot.Abstractions.Services;
-using Mess.OrchardCore;
+using Mess.Cms;
 using OrchardCore.ContentManagement;
 
 namespace Mess.Eor.Iot;

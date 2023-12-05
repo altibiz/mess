@@ -1,8 +1,8 @@
 using Mess.Iot.Abstractions.Models;
 using Mess.Ozds.Abstractions.Indexes;
 using Mess.Ozds.Abstractions.Models;
-using Mess.OrchardCore.Extensions.Microsoft;
-using Mess.OrchardCore;
+using Mess.Cms.Extensions.Microsoft;
+using Mess.Cms;
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.ContentManagement;
 using YesSql.Indexes;

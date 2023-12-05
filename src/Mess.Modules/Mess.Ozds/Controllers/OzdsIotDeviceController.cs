@@ -1,5 +1,5 @@
 using Mess.Ozds.Abstractions.Indexes;
-using Mess.OrchardCore.Extensions.Microsoft;
+using Mess.Cms.Extensions.Microsoft;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OrchardCore.ContentManagement;

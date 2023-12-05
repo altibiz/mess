@@ -1,5 +1,5 @@
 using Mess.Chart.Abstractions.Models;
-using Mess.OrchardCore;
+using Mess.Cms;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Localization;

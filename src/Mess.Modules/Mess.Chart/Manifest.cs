@@ -1,5 +1,5 @@
 using OrchardCore.Modules.Manifest;
-using ManifestConstants = Mess.OrchardCore.ManifestConstants;
+using ManifestConstants = Mess.Cms.ManifestConstants;
 
 [assembly: Module(
   Id = "Mess.Chart",

@@ -2,7 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Marten;
 using Mess.Event.Abstractions.Session;
 using OrchardCore.Environment.Shell;
-using Mess.OrchardCore.Extensions.OrchardCore;
+using Mess.Cms.Extensions.OrchardCore;
 
 namespace Mess.Event.Session;
 

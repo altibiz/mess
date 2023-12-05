@@ -1,5 +1,5 @@
 using OrchardCore.Logging;
-using Mess.OrchardCore.Extensions.Newtonsoft;
+using Mess.Cms.Extensions.Newtonsoft;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseNLogHost();

@@ -1,10 +1,10 @@
 using Mess.Ozds.Abstractions.Timeseries;
 using Mess.Ozds.ViewModels;
-using Mess.OrchardCore.Extensions.Microsoft;
+using Mess.Cms.Extensions.Microsoft;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OrchardCore.ContentManagement;
-using Mess.OrchardCore;
+using Mess.Cms;
 using YesSql;
 using Mess.Ozds.Abstractions.Models;
 using OrchardCore.ContentManagement.Records;

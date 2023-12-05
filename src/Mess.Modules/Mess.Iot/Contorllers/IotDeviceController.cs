@@ -6,7 +6,7 @@ using Mess.Event.Abstractions.Client;
 using Mess.Iot.Event;
 using Mess.Iot.Abstractions.Services;
 using Mess.Iot.Filters;
-using Mess.OrchardCore.Extensions.OrchardCore;
+using Mess.Cms.Extensions.OrchardCore;
 using Mess.Iot.Abstractions.Caches;
 
 namespace Mess.Iot.Controllers;

@@ -10,7 +10,7 @@ using Mess.Iot.Indexes;
 using Mess.Iot.Abstractions.Caches;
 using Mess.Iot.Caches;
 using Mess.Iot.Abstractions;
-using Mess.OrchardCore.Extensions.Microsoft;
+using Mess.Cms.Extensions.Microsoft;
 using Microsoft.Extensions.Options;
 using OrchardCore.Admin;
 

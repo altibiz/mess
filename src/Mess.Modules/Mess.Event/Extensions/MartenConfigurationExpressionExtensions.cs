@@ -1,7 +1,7 @@
 using Marten.Events.Daemon;
 using Marten.Events.Daemon.Resiliency;
 using Mess.Event.BackgroundTasks;
-using Mess.OrchardCore.Extensions.Microsoft;
+using Mess.Cms.Extensions.Microsoft;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using static Marten.MartenServiceCollectionExtensions;

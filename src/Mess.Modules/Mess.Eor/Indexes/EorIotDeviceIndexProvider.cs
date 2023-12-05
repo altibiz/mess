@@ -1,6 +1,6 @@
 using Mess.Eor.Abstractions.Indexes;
 using Mess.Eor.Abstractions.Models;
-using Mess.OrchardCore;
+using Mess.Cms;
 using OrchardCore.ContentManagement;
 using YesSql.Indexes;
 

@@ -3,7 +3,7 @@ using Mess.Chart.Abstractions.Models;
 using Mess.Chart.Abstractions.Services;
 using Mess.Fields.Abstractions;
 using OrchardCore.ContentManagement;
-using Mess.OrchardCore;
+using Mess.Cms;
 
 namespace Mess.Chart.Providers;
 

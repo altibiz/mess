@@ -4,7 +4,7 @@ using Mess.Billing.Controllers;
 using Mess.Billing.Handlers;
 using Mess.Billing.Indexes;
 using Mess.Billing.Drivers;
-using Mess.OrchardCore.Extensions.Microsoft;
+using Mess.Cms.Extensions.Microsoft;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;

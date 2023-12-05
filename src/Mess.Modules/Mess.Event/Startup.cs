@@ -7,7 +7,7 @@ using Marten.Events.Projections;
 using Mess.Event.Projections;
 using Mess.Event.Abstractions.Session;
 using Mess.Event.Session;
-using Mess.OrchardCore.Extensions.OrchardCore;
+using Mess.Cms.Extensions.OrchardCore;
 using OrchardCore.Environment.Shell;
 using Mess.Prelude.Extensions.Microsoft;
 using Mess.Event.Abstractions.Services;

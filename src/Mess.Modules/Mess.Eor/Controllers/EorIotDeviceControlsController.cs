@@ -1,8 +1,8 @@
 using Mess.Eor.Abstractions.Timeseries;
 using Mess.Eor.Abstractions.Models;
 using Mess.Eor.Extensions;
-using Mess.OrchardCore;
-using Mess.OrchardCore.Extensions.Microsoft;
+using Mess.Cms;
+using Mess.Cms.Extensions.Microsoft;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OrchardCore.ContentManagement;

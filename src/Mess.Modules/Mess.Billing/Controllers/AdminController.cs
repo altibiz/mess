@@ -3,7 +3,7 @@ using Mess.Billing.Abstractions.Services;
 using Mess.Billing.Abstractions.Indexes;
 using Mess.Billing.Abstractions.Models;
 using Mess.Billing.ViewModels;
-using Mess.OrchardCore.Extensions.OrchardCore;
+using Mess.Cms.Extensions.OrchardCore;
 using Mess.Prelude.Extensions.Timestamps;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

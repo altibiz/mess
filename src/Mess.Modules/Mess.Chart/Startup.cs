@@ -13,7 +13,7 @@ using OrchardCore.Admin;
 using Mess.Chart.Providers;
 using Mess.Chart.Indexes;
 using Mess.Chart.Abstractions.Extensions;
-using Mess.OrchardCore.Extensions.Microsoft;
+using Mess.Cms.Extensions.Microsoft;
 
 namespace Mess.Chart;
 

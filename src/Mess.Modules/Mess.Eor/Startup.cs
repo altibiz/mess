@@ -5,7 +5,7 @@ using Mess.Eor.Indexes;
 using Mess.Eor.Iot;
 using Mess.Iot.Abstractions.Extensions;
 using Mess.Eor.Abstractions.Models;
-using Mess.OrchardCore.Extensions.Microsoft;
+using Mess.Cms.Extensions.Microsoft;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
