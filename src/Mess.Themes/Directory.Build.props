@@ -23,7 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../../../src/Mess.Prelude/Mess.Prelude.csproj" />
-    <ProjectReference Include="../../../src/Mess.OrchardCore/Mess.OrchardCore.csproj" />
+    <ProjectReference Include="../../../src/Mess.Cms/Mess.Cms.csproj" />
     <ProjectReference Include="../../../src/Mess.Abstractions/*/*.csproj" />
   </ItemGroup>
 

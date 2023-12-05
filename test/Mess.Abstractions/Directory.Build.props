@@ -4,12 +4,12 @@
 
   <ItemGroup>
     <ProjectReference Include="../../../src/Mess.Prelude/Mess.Prelude.csproj" />
-    <ProjectReference Include="../../../src/Mess.OrchardCore/Mess.OrchardCore.csproj" />
+    <ProjectReference Include="../../../src/Mess.Cms/Mess.Cms.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="../../../test/Mess.Prelude.Test/Mess.Prelude.Test.csproj" />
-    <ProjectReference Include="../../../test/Mess.OrchardCore.Test/Mess.OrchardCore.Test.csproj" />
+    <ProjectReference Include="../../../test/Mess.Cms.Test/Mess.Cms.Test.csproj" />
   </ItemGroup>
 
 </Project>

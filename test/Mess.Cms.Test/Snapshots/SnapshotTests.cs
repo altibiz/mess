@@ -1,6 +1,6 @@
 using OrchardCore.ContentManagement;
 
-namespace Mess.OrchardCore.Test.Snapshots;
+namespace Mess.Cms.Test.Snapshots;
 
 public record SnapshotTests(ISnapshotFixture SnapshotFixture)
 {
