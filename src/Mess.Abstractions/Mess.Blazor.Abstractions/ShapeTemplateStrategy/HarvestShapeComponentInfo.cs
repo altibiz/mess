@@ -1,6 +1,4 @@
-using System.Reflection.Metadata;
-
-namespace Mess.Blazor.Abstractions.ShapeTemplateStrategy;
+ShapeTemplateStrategy;
 
 public class HarvestShapeComponentInfo
 {

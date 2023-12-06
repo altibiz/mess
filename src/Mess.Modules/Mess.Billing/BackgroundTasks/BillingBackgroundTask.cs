@@ -19,7 +19,7 @@ public class BillingBackgroundTask : IBackgroundTask
     CancellationToken cancellationToken
   )
   {
-    (var nowLastMonthStart, var nowLastMonthEnd) =
+    var (nowLastMonthStart, nowLastMonthEnd) =
       DateTimeOffset.UtcNow.AddMonths(-1).GetMonthRange();
 
     var session = serviceProvider.GetRequiredService<ISession>();

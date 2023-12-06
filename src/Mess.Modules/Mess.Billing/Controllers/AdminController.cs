@@ -148,7 +148,7 @@ public class AdminController : Controller
                            $"No receipt factory for {billingItem.ContentType}"
                          );
 
-    (var nowLastMonthStart, var nowLastMonthEnd) =
+    var (nowLastMonthStart, nowLastMonthEnd) =
       DateTimeOffset.UtcNow.GetMonthRange();
     var invoiceItem = await billingFactory.CreateInvoiceAsync(
       billingItem,

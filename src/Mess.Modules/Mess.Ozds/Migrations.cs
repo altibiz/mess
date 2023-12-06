@@ -225,7 +225,7 @@ internal static partial class CreateAsyncMigrations
                 .OfType("ContentPickerField")
                 .WithDisplayName("Yellow operator catalogue")
                 .WithDescription("Yellow operator catalogue.")
-                .WithSettings<ContentPickerFieldSettings>(
+                .WithSettings(
                   new ContentPickerFieldSettings
                   {
                     DisplayedContentTypes = new[] { "OperatorCatalogue" },
@@ -1068,7 +1068,7 @@ internal static partial class CreateAsyncMigrations
                 .OfType("NumericField")
                 .WithDisplayName("Measurement device fee")
                 .WithDescription("Measurement device fee.")
-                .WithSettings<NumericFieldSettings>(
+                .WithSettings(
                   new NumericFieldSettings { Hint = "Measurement device fee." }
                 )
           )

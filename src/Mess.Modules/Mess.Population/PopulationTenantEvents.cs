@@ -6,7 +6,6 @@ using OrchardCore.Environment.Shell.Models;
 using OrchardCore.Environment.Shell.Scope;
 using OrchardCore.Modules;
 using YesSql;
-using Environment = OrchardCore.Environment;
 
 namespace Mess.Population;
 

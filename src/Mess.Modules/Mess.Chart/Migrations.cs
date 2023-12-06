@@ -87,7 +87,7 @@ public class Migrations : DataMigration
                 .OfType("ColourField")
                 .WithDisplayName("Color")
                 .WithDescription("The color for the line of the dataset.")
-                .WithSettings<ColourFieldSettings>(
+                .WithSettings(
                   new ColourFieldSettings
                   {
                     Hint = "The color for the line of the dataset.",
@@ -171,7 +171,7 @@ public class Migrations : DataMigration
             builder =>
               builder
                 .WithDisplayName("Charts")
-                .WithSettings<FlowPartSettings>(
+                .WithSettings(
                   new FlowPartSettings
                     { ContainedContentTypes = new[] { "TimeseriesChart" } }
                 )

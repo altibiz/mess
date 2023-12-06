@@ -350,8 +350,8 @@ src/Mess.Web/Internal/Generated/
 # Nix
 .direnv
 
-# Netcoredbg 
+# Netcoredbg
 .netcoredbg_hist
 
 # JetBrains ReSharper
-.resharper_out
+.jb

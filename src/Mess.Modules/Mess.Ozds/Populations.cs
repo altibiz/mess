@@ -35,16 +35,15 @@ public class Populations : IPopulation
         _serviceProvider
       );
 
-    (
-      var whiteHighVoltageOperatorCatalogueContentItemId,
-      var whiteMediumVoltageOperatorCatalogueContentItemId,
-      var blueOperatorCatalogueContentItemId,
-      var whiteLowVoltageOperatorCatalogueContentItemId,
-      var redOperatorCatalogueContentItemId,
-      var yellowOperatorCatalogueContentItemId
-    ) = await CreateAsyncMigrations.PopulateOperatorCatalogues(
-      _serviceProvider
-    );
+    var (whiteHighVoltageOperatorCatalogueContentItemId,
+        whiteMediumVoltageOperatorCatalogueContentItemId,
+        blueOperatorCatalogueContentItemId,
+        whiteLowVoltageOperatorCatalogueContentItemId,
+        redOperatorCatalogueContentItemId, yellowOperatorCatalogueContentItemId
+        ) =
+      await CreateAsyncMigrations.PopulateOperatorCatalogues(
+        _serviceProvider
+      );
 
     var (_, operatorContentItemId) =
       await CreateAsyncMigrations.PopulateOperator(

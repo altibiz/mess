@@ -32,10 +32,7 @@ public abstract class ApiKeyIotAuthorizationHandler<T>
       context.HttpContext.RequestServices
         .GetRequiredService<IApiKeyFieldService>();
     var authorized = apiKeyFieldService.Authorize(apiKeyField, apiKey);
-    if (!authorized)
-    {
-      context.Result = new UnauthorizedResult();
-    }
+    if (!authorized) context.Result = new UnauthorizedResult();
   }
 
   protected override async Task AuthorizeAsync(
@@ -66,9 +63,6 @@ public abstract class ApiKeyIotAuthorizationHandler<T>
       apiKeyField,
       apiKey
     );
-    if (!authorized)
-    {
-      context.Result = new UnauthorizedResult();
-    }
+    if (!authorized) context.Result = new UnauthorizedResult();
   }
 }

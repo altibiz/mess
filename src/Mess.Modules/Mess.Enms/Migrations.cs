@@ -45,7 +45,7 @@ public class Migrations : DataMigration
                   "Title displaying the identifier of the Egauge measurement device."
                 )
                 .WithPosition("1")
-                .WithSettings<TitlePartSettings>(
+                .WithSettings(
                   new TitlePartSettings
                   {
                     RenderTitle = true,

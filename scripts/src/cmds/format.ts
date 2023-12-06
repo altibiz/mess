@@ -8,9 +8,11 @@ export default cmd({
 
   await task(
     "Formatted with resharper",
-    `dotnet jb cleanupcode ${root("Mess.sln")} --no-build -o=${root(
-      ".resharper_out",
-    )}}`,
+    `dotnet jb cleanupcode ${root("Mess.sln")}` +
+      " --no-build" +
+      " --verbosity=ERROR" +
+      ` --caches-home=${root(".jb/cache")}` +
+      ` -o=${root(".jb/jb.log")}}`,
   );
 
   await task(

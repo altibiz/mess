@@ -156,7 +156,7 @@ public class Migrations : DataMigration
                 .OfType("ApiKeyField")
                 .WithDisplayName("API key")
                 .WithDescription("API key.")
-                .WithSettings<ApiKeyFieldSettings>(
+                .WithSettings(
                   new ApiKeyFieldSettings
                   {
                     Hint = "API key that will be used to authorize the device."
@@ -182,7 +182,7 @@ public class Migrations : DataMigration
                   "Title displaying the identifier of the Eor measurement device."
                 )
                 .WithPosition("1")
-                .WithSettings<TitlePartSettings>(
+                .WithSettings(
                   new TitlePartSettings
                   {
                     RenderTitle = true,
@@ -239,47 +239,47 @@ public class Migrations : DataMigration
         RoleDescription = "Administrator of an EOR measurement devices.",
         RoleClaims = new List<RoleClaim>
         {
-          new RoleClaim
+          new()
           {
             ClaimType = Permission.ClaimType,
             ClaimValue = "AccessAdminPanel"
           },
-          new RoleClaim
+          new()
           {
             ClaimType = Permission.ClaimType,
             ClaimValue = "View Users"
           },
-          new RoleClaim
+          new()
           {
             ClaimType = Permission.ClaimType,
             ClaimValue = "ManageUsersInRole_EOR measurement device owner"
           },
-          new RoleClaim
+          new()
           {
             ClaimType = Permission.ClaimType,
             ClaimValue = "AssignRole_EOR measurement device owner"
           },
-          new RoleClaim
+          new()
           {
             ClaimType = Permission.ClaimType,
             ClaimValue = "ViewOwn_EorIotDevice"
           },
-          new RoleClaim
+          new()
           {
             ClaimType = Permission.ClaimType,
             ClaimValue = "ControlOwn_EorIotDevice"
           },
-          new RoleClaim
+          new()
           {
             ClaimType = Permission.ClaimType,
             ClaimValue = "PublishOwn_EorIotDevice"
           },
-          new RoleClaim
+          new()
           {
             ClaimType = Permission.ClaimType,
             ClaimValue = "EditOwn_EorIotDevice"
           },
-          new RoleClaim
+          new()
           {
             ClaimType = Permission.ClaimType,
             ClaimValue = "DeleteOwn_EorIotDevice"
@@ -296,12 +296,12 @@ public class Migrations : DataMigration
         RoleDescription = "Owner of an EOR measurement devices.",
         RoleClaims = new List<RoleClaim>
         {
-          new RoleClaim
+          new()
           {
             ClaimType = Permission.ClaimType,
             ClaimValue = "ViewOwned_EorIotDevice"
           },
-          new RoleClaim
+          new()
           {
             ClaimType = Permission.ClaimType,
             ClaimValue = "ControlOwned_EorIotDevice"
