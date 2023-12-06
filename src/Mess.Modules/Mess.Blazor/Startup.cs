@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using MudBlazor.Services;
+using OrchardCore.DisplayManagement.Descriptors.ShapeTemplateStrategy;
 using OrchardCore.Modules;
 
 namespace Mess.Blazor;
@@ -14,6 +15,8 @@ public class Startup : StartupBase
     services.AddServerSideBlazor();
 
     services.AddScoped<ResourceMiddleware>();
+
+    services.AddScoped<IShapeTemplateViewEngine, BlazorShapeTemplateViewEngine>();
 
     services.AddMudServices();
   }
