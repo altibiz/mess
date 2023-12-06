@@ -7,5 +7,6 @@ public interface IShapeTemplateComponentEngine
 {
   IEnumerable<Type> TemplateBaseClasses { get; }
 
-  Task<IHtmlContent> RenderAsync(Type componentType, DisplayContext displayContext);
+  Task<IHtmlContent> RenderAsync(Type componentType,
+    DisplayContext displayContext);
 }
