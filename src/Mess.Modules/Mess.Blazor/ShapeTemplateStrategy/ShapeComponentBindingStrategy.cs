@@ -13,8 +13,10 @@ using OrchardCore.DisplayManagement.Descriptors.ShapeTemplateStrategy;
 using OrchardCore.DisplayManagement.Descriptors;
 using OrchardCore.DisplayManagement;
 using Mess.Blazor.Abstractions;
+using Mess.Prelude.Extensions.Enumerables;
+using Mess.Blazor.Abstractions.ShapeTemplateStrategy;
 
-namespace Mess.Blazor;
+namespace Mess.Blazor.ShapeTemplateStrategy;
 
 public class ShapeComponentBindingStrategy : IShapeTableHarvester
 {
@@ -50,7 +52,7 @@ public class ShapeComponentBindingStrategy : IShapeTableHarvester
     }
 
     var harvesterInfos = _harvesters
-        .Select(harvester => new { harvester, subNamespaces = harvester.SubNamespaces() })
+        .Select(harvester => new { harvester, subNamespaces = harvester.SubNamespaces(), baseClasses = harvester.BaseClasses() })
         .ToList();
 
     var enabledFeatures = _shellFeaturesManager.GetEnabledFeaturesAsync().GetAwaiter().GetResult();
@@ -91,10 +93,13 @@ public class ShapeComponentBindingStrategy : IShapeTableHarvester
                 .Any())!;
             var types = extensionAssembly
               .ExportedTypes
-              .Where(type =>
+              .Select(type =>
                 extensionAssembly.FullName is not null &&
                 type.Namespace is not null &&
-                type.Namespace == $"{extensionAssembly.FullName}.{subNamespace}");
+                type.Namespace == $"{extensionAssembly.FullName}.{subNamespace}" &&
+                harvesterInfo.baseClasses.Contains(type.BaseType)
+                  ? type : null)
+              .WhereNotNull();
 
             return new { harvesterInfo.harvester, subNamespace, types };
         }))
@@ -105,28 +110,28 @@ public class ShapeComponentBindingStrategy : IShapeTableHarvester
             _logger.LogInformation("Done discovering candidate component types");
         }
 
-        var fileContexts = pathContexts.SelectMany(pathContext => _shapeTemplateComponentEngines.SelectMany(ve =>
+        var fileContexts = pathContexts.SelectMany(namespaceContext => _shapeTemplateComponentEngines.SelectMany(ve =>
         {
-            return pathContext.types.Select(
+            return namespaceContext.types.Select(
                 type => new
                 {
                     type,
-                    relativeTypePath = filePath,
-                    pathContext
+                    relativeTypePath = $"{namespaceContext.subNamespace}.${type.Name}",
+                    namespaceContext
                 });
         }));
 
-        var shapeContexts = fileContexts.SelectMany(fileContext =>
+        var shapeContexts = fileContexts.SelectMany(typeContext =>
         {
-            var harvestShapeInfo = new HarvestShapeInfo
+            var harvestShapeInfo = new HarvestShapeComponentInfo
             {
-                SubPath = fileContext.pathContext.subPath,
-                FileName = fileContext.fileName,
-                RelativePath = fileContext.relativePath,
-                Extension = Path.GetExtension(fileContext.relativePath)
+              SubNamespace = typeContext.namespaceContext.subNamespace,
+              Type = typeContext.type,
+              RelativeTypePath = typeContext.relativeTypePath,
+              BaseClass = typeContext.type.BaseType!,
             };
-            var harvestShapeHits = fileContext.pathContext.harvester.HarvestShape(harvestShapeInfo);
-            return harvestShapeHits.Select(harvestShapeHit => new { harvestShapeInfo, harvestShapeHit, fileContext });
+            var harvestShapeHits = typeContext.namespaceContext.harvester.HarvestShape(harvestShapeInfo);
+            return harvestShapeHits.Select(harvestShapeHit => new { harvestShapeInfo, harvestShapeHit, typeContext });
         });
 
         return shapeContexts.Select(shapeContext => new { extensionDescriptor, shapeContext }).ToList();
@@ -141,25 +146,33 @@ public class ShapeComponentBindingStrategy : IShapeTableHarvester
 
         if (_logger.IsEnabled(LogLevel.Debug))
         {
-            _logger.LogDebug("Binding '{TemplatePath}' as shape '{ShapeType}' for feature '{FeatureName}'",
-                hit.shapeContext.harvestShapeInfo.RelativePath,
-                iter.shapeContext.harvestShapeHit.ShapeType,
-                feature.Id);
+            _logger.LogDebug(
+              "Binding '{RelativeTypePath}' as shape '{ShapeType}' for feature '{FeatureName}'",
+              hit.shapeContext.harvestShapeInfo.RelativeTypePath,
+              iter.shapeContext.harvestShapeHit.ShapeType,
+              feature.Id
+            );
         }
 
-        var viewEngineType = _viewEnginesByBaseClass[iter.shapeContext.harvestShapeInfo.Extension].GetType();
+        var viewEngineType = _viewEnginesByBaseClass[
+          iter.shapeContext.harvestShapeInfo.BaseClass
+        ].GetType();
 
         builder.Describe(iter.shapeContext.harvestShapeHit.ShapeType)
-            .From(feature)
-            .BoundAs(
-                hit.shapeContext.harvestShapeInfo.RelativePath, displayContext =>
-                {
-                    var viewEngine = displayContext.ServiceProvider
-                        .GetServices<IShapeTemplateViewEngine>()
-                        .FirstOrDefault(e => e.GetType() == viewEngineType);
+          .From(feature)
+          .BoundAs(
+              hit.shapeContext.harvestShapeInfo.RelativeTypePath,
+              displayContext =>
+              {
+                var viewEngine = displayContext.ServiceProvider
+                  .GetServices<IShapeTemplateComponentEngine>()
+                  .FirstOrDefault(e => e.GetType() == viewEngineType)!;
 
-                    return viewEngine.RenderAsync(hit.shapeContext.harvestShapeInfo.RelativePath, displayContext);
-                });
+                return viewEngine.RenderAsync(
+                  hit.shapeContext.harvestShapeInfo.Type,
+                  displayContext
+                );
+              });
     }
 
     if (_logger.IsEnabled(LogLevel.Information))

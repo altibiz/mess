@@ -1,14 +1,19 @@
 using OrchardCore.DisplayManagement.Descriptors.ShapeTemplateStrategy;
+using Microsoft.AspNetCore.Components;
+using Mess.Blazor.Abstractions.ShapeTemplateStrategy;
 
-using Mess.Blazor.Abstractions;
+namespace Mess.Blazor.ShapeTemplateStrategy;
 
-namespace Mess.Blazor;
-
-public class BasicShapeTemplateHarvester : IShapeComponentHarvester
+public class BasicShapeComponentHarvester : IShapeComponentHarvester
 {
     public IEnumerable<string> SubNamespaces()
     {
-        return new[] { "Components", "Components.Items", "Components.Parts", "Components.Fields", "Components.Elements" };
+      return new[] { "Components", "Components.Items", "Components.Parts", "Components.Fields", "Components.Elements" };
+    }
+
+    public IEnumerable<Type> BaseClasses()
+    {
+      return new[] { typeof(ComponentBase) };
     }
 
     public IEnumerable<HarvestShapeHit> HarvestShape(HarvestShapeComponentInfo info)
@@ -38,14 +43,14 @@ public class BasicShapeTemplateHarvester : IShapeComponentHarvester
         var leader = "";
         if (subNamespace.StartsWith("Components.", StringComparison.Ordinal) && subNamespace != "Components.Items")
         {
-            leader = String.Concat(subNamespace.AsSpan("Components.".Length), "_");
+            leader = string.Concat(subNamespace.AsSpan("Components.".Length), "_");
         }
 
         // canonical shape type names must not have - or . to be compatible
         // with display and shape api calls)))
         var shapeType = leader + typeName.Replace("--", "__").Replace("-", "__").Replace('.', '_');
 
-        if (String.IsNullOrEmpty(displayType))
+        if (string.IsNullOrEmpty(displayType))
         {
             return shapeType.ToLowerInvariant();
         }

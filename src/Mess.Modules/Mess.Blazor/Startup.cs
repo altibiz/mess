@@ -2,9 +2,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
-using MudBlazor.Services;
+using OrchardCore.DisplayManagement.Descriptors;
 using OrchardCore.DisplayManagement.Descriptors.ShapeTemplateStrategy;
 using OrchardCore.Modules;
+using MudBlazor.Services;
+using Mess.Blazor.Abstractions;
+using Mess.Blazor.Abstractions.ShapeTemplateStrategy;
+using Mess.Blazor.ShapeTemplateStrategy;
 
 namespace Mess.Blazor;
 
@@ -16,7 +20,9 @@ public class Startup : StartupBase
 
     services.AddScoped<ResourceMiddleware>();
 
-    services.AddScoped<IShapeTemplateViewEngine, BlazorShapeTemplateViewEngine>();
+    services.AddScoped<IShapeComponentHarvester, BasicShapeComponentHarvester>();
+    services.AddScoped<IShapeTemplateComponentEngine, BlazorShapeTemplateComponentEngine>();
+    services.AddScoped<IShapeTableProvider, ShapeComponentBindingStrategy>();
 
     services.AddMudServices();
   }

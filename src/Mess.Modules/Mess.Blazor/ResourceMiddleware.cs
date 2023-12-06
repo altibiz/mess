@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Http;
 using OrchardCore.Environment.Shell;
 using OrchardCore.ResourceManagement;
 
+// TODO: extract mudblazor into its own feature
+
 namespace Mess.Blazor;
 
 public class ResourceMiddleware
