@@ -9,6 +9,9 @@
 </div>
 
 @code {
+  [Parameter]
+  public object? Model { get; set; }
+
   private int Index = -1;
 
   public List<ChartSeries> Series = new()

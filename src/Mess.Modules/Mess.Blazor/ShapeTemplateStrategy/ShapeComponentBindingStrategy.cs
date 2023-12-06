@@ -79,15 +79,20 @@ public class ShapeComponentBindingStrategy : IShapeTableHarvester
               .FirstOrDefault(assembly => assembly
                 .GetCustomAttributes(false)
                 .Where(attribute =>
-                  attribute == extensionDescriptor.Manifest.ModuleInfo)
-                .Any())!;
+                  attribute is OrchardCore.Modules.Manifest.ModuleAttribute moduleAttribute &&
+                  moduleAttribute.Id == extensionDescriptor.Manifest.ModuleInfo.Id)
+                .Any());
+            if (extensionAssembly is null) {
+              return null;
+            }
+
             var types = extensionAssembly
               .ExportedTypes
+              .Where(type => type.Name != "_Imports")
               .Select(type =>
-                extensionAssembly.FullName is not null &&
                 type.Namespace is not null &&
                 type.Namespace ==
-                $"{extensionAssembly.FullName}.{subNamespace}" &&
+                $"{extensionDescriptor.Manifest.ModuleInfo.Id}.{subNamespace}" &&
                 harvesterInfo.baseClasses.Contains(type.BaseType)
                   ? type
                   : null)
@@ -95,6 +100,7 @@ public class ShapeComponentBindingStrategy : IShapeTableHarvester
 
             return new { harvesterInfo.harvester, subNamespace, types };
           }))
+        .WhereNotNull()
         .ToList();
 
       if (_logger.IsEnabled(LogLevel.Information))
@@ -108,7 +114,7 @@ public class ShapeComponentBindingStrategy : IShapeTableHarvester
             {
               type,
               relativeTypePath =
-                $"{namespaceContext.subNamespace}.${type.Name}",
+                $"{namespaceContext.subNamespace}.{type.Name}",
               namespaceContext
             });
         }));

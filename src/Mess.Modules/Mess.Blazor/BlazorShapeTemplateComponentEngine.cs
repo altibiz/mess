@@ -56,7 +56,11 @@ public class BlazorShapeTemplateComponentEngine : IShapeTemplateComponentEngine
     var htmlHelper = MakeHtmlHelper(viewContext, viewData);
 
     return await htmlHelper.RenderComponentAsync(componentType,
-      RenderMode.ServerPrerendered, displayContext.Value);
+      RenderMode.ServerPrerendered,
+      new { Model = new { } }
+      // TODO: fix this breaking socket
+      // new { Model = displayContext.Value }
+    );
   }
 
   private async Task<ViewContext> MakeViewContextAsync(
