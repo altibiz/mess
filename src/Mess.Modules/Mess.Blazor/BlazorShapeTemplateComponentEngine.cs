@@ -1,5 +1,5 @@
 using Mess.Blazor.Abstractions;
-using Microsoft.AspNetCore.Components;
+using Mess.Blazor.Abstractions.Components;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.DisplayManagement;
 using OrchardCore.DisplayManagement.Implementation;
+using ComponentBase = Microsoft.AspNetCore.Components.ComponentBase;
 using RouteData = Microsoft.AspNetCore.Routing.RouteData;
 
 namespace Mess.Blazor;
@@ -20,14 +21,15 @@ namespace Mess.Blazor;
 
 public class BlazorShapeTemplateComponentEngine : IShapeTemplateComponentEngine
 {
+  private static readonly List<Type> _templateBaseClasses = new(new[]
+  {
+    typeof(ComponentBase),
+    typeof(Abstractions.Components.ComponentBase),
+    typeof(ComponentBase<>)
+  });
+
   private readonly IHttpContextAccessor _httpContextAccessor;
   private readonly ITempDataProvider _tempDataProvider;
-
-  private static readonly List<Type> _templateBaseClasses = new(new[] {
-    typeof(Microsoft.AspNetCore.Components.ComponentBase),
-    typeof(Mess.Blazor.Abstractions.Components.ComponentBase),
-    typeof(Mess.Blazor.Abstractions.Components.ComponentBase<>),
-  });
 
   private readonly ViewContextAccessor _viewContextAccessor;
 

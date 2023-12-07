@@ -1,6 +1,7 @@
+using Mess.Blazor.Abstractions.Components;
 using Mess.Blazor.Abstractions.ShapeTemplateStrategy;
-using Microsoft.AspNetCore.Components;
 using OrchardCore.DisplayManagement.Descriptors.ShapeTemplateStrategy;
+using ComponentBase = Microsoft.AspNetCore.Components.ComponentBase;
 
 namespace Mess.Blazor.ShapeTemplateStrategy;
 
@@ -15,11 +16,15 @@ public class BasicShapeComponentHarvester : IShapeComponentHarvester
     };
   }
 
-  public IEnumerable<Type> BaseClasses() => new[] {
-    typeof(Microsoft.AspNetCore.Components.ComponentBase),
-    typeof(Mess.Blazor.Abstractions.Components.ComponentBase),
-    typeof(Mess.Blazor.Abstractions.Components.ComponentBase<>),
-  };
+  public IEnumerable<Type> BaseClasses()
+  {
+    return new[]
+    {
+      typeof(ComponentBase),
+      typeof(Abstractions.Components.ComponentBase),
+      typeof(ComponentBase<>)
+    };
+  }
 
   public IEnumerable<HarvestShapeHit> HarvestShape(
     HarvestShapeComponentInfo info)

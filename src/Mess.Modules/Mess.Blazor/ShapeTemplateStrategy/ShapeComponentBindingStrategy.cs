@@ -8,6 +8,7 @@ using OrchardCore.DisplayManagement.Descriptors;
 using OrchardCore.Environment.Extensions;
 using OrchardCore.Environment.Extensions.Features;
 using OrchardCore.Environment.Shell;
+using OrchardCore.Modules.Manifest;
 
 namespace Mess.Blazor.ShapeTemplateStrategy;
 
@@ -79,12 +80,11 @@ public class ShapeComponentBindingStrategy : IShapeTableHarvester
               .FirstOrDefault(assembly => assembly
                 .GetCustomAttributes(false)
                 .Where(attribute =>
-                  attribute is OrchardCore.Modules.Manifest.ModuleAttribute moduleAttribute &&
-                  moduleAttribute.Id == extensionDescriptor.Manifest.ModuleInfo.Id)
+                  attribute is ModuleAttribute moduleAttribute &&
+                  moduleAttribute.Id ==
+                  extensionDescriptor.Manifest.ModuleInfo.Id)
                 .Any());
-            if (extensionAssembly is null) {
-              return null;
-            }
+            if (extensionAssembly is null) return null;
 
             var types = extensionAssembly
               .ExportedTypes
@@ -97,7 +97,7 @@ public class ShapeComponentBindingStrategy : IShapeTableHarvester
                   baseClass =>
                     baseClass == type.BaseType ||
                     (type.BaseType?.IsGenericType is true &&
-                    baseClass == type.BaseType?.GetGenericTypeDefinition()))
+                     baseClass == type.BaseType?.GetGenericTypeDefinition()))
                   ? type
                   : null)
               .WhereNotNull();
