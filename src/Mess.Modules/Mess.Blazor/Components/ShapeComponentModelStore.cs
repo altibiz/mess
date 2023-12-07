@@ -9,10 +9,11 @@ namespace Mess.Blazor.Components;
 
 public class ShapeComponentModelStore : IShapeComponentModelStore
 {
-  private readonly ConcurrentDictionary<Guid, object?> _renderStorage = new();
-
-  private readonly ConcurrentDictionary<string, ConcurrentDictionary<Guid, object?>>
+  private readonly
+    ConcurrentDictionary<string, ConcurrentDictionary<Guid, object?>>
     _circuitStorage = new();
+
+  private readonly ConcurrentDictionary<Guid, object?> _renderStorage = new();
 
   public void Add(Guid renderId, object? model)
   {
@@ -39,7 +40,8 @@ public class ShapeComponentModelStore : IShapeComponentModelStore
 
       _circuitStorage.AddOrUpdate(
         circuitId,
-        circuitId => {
+        circuitId =>
+        {
           var storage = new ConcurrentDictionary<Guid, object?>();
           storage.AddOrUpdate(
             renderId,
@@ -48,7 +50,8 @@ public class ShapeComponentModelStore : IShapeComponentModelStore
           );
           return storage;
         },
-        (circuitId, storage) => {
+        (circuitId, storage) =>
+        {
           storage.AddOrUpdate(
             renderId,
             _ => model,
