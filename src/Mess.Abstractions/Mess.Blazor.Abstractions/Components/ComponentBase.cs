@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -23,23 +24,20 @@ public partial class
   private IShapeFactory? _shapeFactory;
   private ISite? _site;
 
-  private IViewLocalizer? _t;
+  // private IViewLocalizer? _t;
 
   private IZoneHolding? _themeLayout;
 
 
-  private ViewContext? _viewContext;
+  /// <summary>
+  ///   Gets the <see cref="TModel" /> instance.
+  /// </summary>
+  [Parameter]
+  public TModel Model { get; set; } = default!;
 
   public HttpContext HttpContext => httpContextAccessor.HttpContext ??
                                     throw new InvalidOperationException(
                                       "HttpContext is null");
-
-  /// <summary>
-  ///   Gets the <see cref="TModel" /> instance.
-  /// </summary>
-  public TModel Model => ViewContext.ViewData.Model as TModel ??
-                         throw new InvalidOperationException(
-                           "Model is of invalid type");
 
   /// <summary>
   ///   Gets the <see cref="ISite" /> instance.
@@ -49,10 +47,6 @@ public partial class
 
   public IOrchardDisplayHelper Orchard => _orchardHelper ??=
     new OrchardDisplayHelper(HttpContext, DisplayHelper);
-
-  public ViewContext ViewContext => _viewContext ??=
-    HttpContext.RequestServices.GetRequiredService<ViewContextAccessor>()
-      .ViewContext;
 
   private IDisplayHelper DisplayHelper => _displayHelper ??=
     HttpContext.RequestServices.GetRequiredService<IDisplayHelper>();
@@ -118,19 +112,20 @@ public partial class
   /// <summary>
   ///   The <see cref="IViewLocalizer" /> instance for the current view.
   /// </summary>
-  public IViewLocalizer T
-  {
-    get
-    {
-      if (_t == null)
-      {
-        _t = HttpContext.RequestServices.GetRequiredService<IViewLocalizer>();
-        ((IViewContextAware)_t).Contextualize(ViewContext);
-      }
+  // TODO: fix
+  // public IViewLocalizer T
+  // {
+  //   get
+  //   {
+  //     if (_t == null)
+  //     {
+  //       _t = HttpContext.RequestServices.GetRequiredService<IViewLocalizer>();
+  //       ((IViewContextAware)_t).Contextualize(ViewContext);
+  //     }
 
-      return _t;
-    }
-  }
+  //     return _t;
+  //   }
+  // }
 
   /// <summary>
   ///   Returns the full escaped path of the current request.

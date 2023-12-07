@@ -1,3 +1,12 @@
+@using OrchardCore.DisplayManagement
+@using MudBlazor
+
 @typeparam TModel
 
+@inject ViewContextAccessor viewContextAccessor
 @inject IHttpContextAccessor httpContextAccessor
+
+<MudThemeProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+

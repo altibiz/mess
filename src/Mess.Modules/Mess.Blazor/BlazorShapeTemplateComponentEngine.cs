@@ -62,7 +62,7 @@ public class BlazorShapeTemplateComponentEngine : IShapeTemplateComponentEngine
 
     return await htmlHelper.RenderComponentAsync(componentType,
       RenderMode.ServerPrerendered,
-      new { }
+      new { Model = displayContext.Value }
     );
   }
 
