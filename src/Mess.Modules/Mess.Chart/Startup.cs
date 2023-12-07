@@ -3,7 +3,7 @@ using Mess.Chart.Abstractions.Models;
 using Mess.Chart.Controllers;
 using Mess.Chart.Drivers;
 using Mess.Chart.Indexes;
-using Mess.Chart.Providers;
+using Mess.Chart.Factories;
 using Mess.Cms.Extensions.Microsoft;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;

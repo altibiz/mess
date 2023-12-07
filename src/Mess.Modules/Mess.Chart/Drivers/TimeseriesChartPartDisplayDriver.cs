@@ -1,6 +1,6 @@
 using Mess.Chart.Abstractions.Models;
 using Mess.Chart.Abstractions.Services;
-using Mess.Chart.Providers;
+using Mess.Chart.Factories;
 using Mess.Chart.ViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.DependencyInjection;

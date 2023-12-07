@@ -1,4 +1,5 @@
 import { MaybePromise } from "../types/promise";
+import * as modbus from "./modbus";
 
 export type Serve = () => MaybePromise<void>;
 
@@ -13,7 +14,7 @@ type Server = {
 };
 
 export const importServers = async (): Promise<Record<string, Server>> => ({
-  http: await import("./modbus"),
+  modbus,
 });
 
 export default Server;

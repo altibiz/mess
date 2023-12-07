@@ -1,10 +1,10 @@
+import args from "./args";
 import { importMessengers } from "./messengers/index";
 import { importPushers } from "./pushers/index";
 import { importTemplates } from "./templates/index";
-import args from "./args";
 
-type Interval = NodeJS.Timer;
-type Timeout = NodeJS.Timer;
+type Interval = NodeJS.Timeout;
+type Timeout = NodeJS.Timeout;
 
 type IntervalRef = { interval?: Interval };
 type TimeoutRef = { timeout?: Timeout };

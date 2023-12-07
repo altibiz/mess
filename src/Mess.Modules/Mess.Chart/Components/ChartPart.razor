@@ -7,7 +7,9 @@
 @inherits ShapeComponentBase<ChartPartViewModel>
 @inject IContentManager contentManager
 
-@if (ChartDescriptor is TimeseriesChartDescriptor timeseriesChartDescriptor)
+@if (ChartDescriptor is TimeseriesChartDescriptor timeseriesChartDescriptor &&
+  timeseriesChartDescriptor.Datasets.Count > 0 &&
+  timeseriesChartDescriptor.Datasets.All(dataset => dataset.Datapoints.Count > 0))
 {
   var series = timeseriesChartDescriptor.Datasets
     .Select(dataset => new ChartSeries() {
@@ -19,14 +21,12 @@
     ?.Datapoints.Select(datapoint => datapoint.X.ToString())
     .ToArray() ?? Array.Empty<string>();
 
-  <div>
-    <MudChart
-      ChartType="ChartType.Line"
-      ChartSeries="@series"
-      XAxisLabels="@xAxisLabels"
-      Width="100%"
-      Height="350px" />
-  </div>
+  <MudChart
+    ChartType="ChartType.Line"
+    ChartSeries="@series"
+    XAxisLabels="@xAxisLabels"
+    Width="100%"
+    Height="350px" />
 }
 
 @code {
@@ -44,7 +44,7 @@
       .GetServices<IChartFactory>()
       .FirstOrDefault(
         chartFactory =>
-          chartFactory.ContentType == chartContentItem.ContentType
+          chartFactory.ContentType == metadataContentItem.ContentType
       )!;
     ChartDescriptor =  await chartFactory.CreateChartAsync(
       metadataContentItem,
@@ -52,4 +52,3 @@
     )!;
   }
 }
-((double)

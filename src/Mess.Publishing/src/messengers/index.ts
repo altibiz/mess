@@ -1,4 +1,9 @@
 import { MaybePromise } from "../types/promise";
+import * as abb from "./abb";
+import * as egauge from "./egauge";
+import * as eor from "./eor";
+import * as pidgeon from "./pidgeon";
+import * as schneider from "./schneider";
 
 export type Message = {
   metadata: Record<string, unknown>;
@@ -15,11 +20,11 @@ type Messenger = {
 export const importMessengers = async (): Promise<
   Record<string, Messenger>
 > => ({
-  eor: await import("./eor"),
-  egauge: await import("./egauge"),
-  pidgeon: await import("./pidgeon"),
-  abb: await import("./abb"),
-  schneider: await import("./schneider"),
+  eor,
+  egauge,
+  pidgeon,
+  abb,
+  schneider,
 });
 
 export default Messenger;

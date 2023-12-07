@@ -1,10 +1,25 @@
 {
-  "extends": "@tsconfig/node20/tsconfig.json",
+  // "extends": "@tsconfig/node20/tsconfig.json",
+  // "compilerOptions": {
+  //   "allowJs": true,
+  //   "checkJs": false,
+  //   "outDir": "./dist",
+  // },
+
   "compilerOptions": {
+    "lib": ["es2023"],
+    "module": "Node16",
+    "target": "es2022",
+
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "Node16",
+
     "allowJs": true,
     "checkJs": false,
-    "outDir": "./dist",
-    "moduleResolution": "Node"
+    "outDir": "./dist"
   },
   "include": ["./src/**/*"],
   "ts-node": {

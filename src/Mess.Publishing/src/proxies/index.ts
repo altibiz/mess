@@ -1,3 +1,5 @@
+import * as modbus from "./modbus";
+
 export type Run = () => Promise<void> | void;
 
 export type Setup = () => Promise<void> | void;
@@ -11,7 +13,7 @@ type Proxy = {
 };
 
 export const importProxies = async (): Promise<Record<string, Proxy>> => ({
-  modbus: await import("./modbus"),
+  modbus,
 });
 
 export default Proxy;
