@@ -2,16 +2,17 @@ using System.Collections.Concurrent;
 using Mess.Blazor.Abstractions.Components;
 using Mess.Prelude.Extensions.Dictionaries;
 
-namespace Mess.Blazor.Components;
+// TODO: keepalive for storage so its not a memory leak in case of failure
+// TODO: optimize
 
-// TODO: check if renderStorage is a memory leak
+namespace Mess.Blazor.Components;
 
 public class ShapeComponentModelStore : IShapeComponentModelStore
 {
-  private readonly ConcurrentDictionary<string, object?>
-    _circuitStorage = new();
-
   private readonly ConcurrentDictionary<Guid, object?> _renderStorage = new();
+
+  private readonly ConcurrentDictionary<string, ConcurrentDictionary<Guid, object?>>
+    _circuitStorage = new();
 
   public void Add(Guid renderId, object? model)
   {
@@ -28,7 +29,9 @@ public class ShapeComponentModelStore : IShapeComponentModelStore
   {
     if (circuitId is null) return _renderStorage.GetOrDefault(renderId);
 
-    var model = _circuitStorage.GetOrDefault(circuitId);
+    var model = _circuitStorage
+      .GetOrDefault(circuitId)
+      ?.GetOrDefault(renderId);
     if (model is null && circuitId is not null)
     {
       _renderStorage.Remove(renderId, out model);
@@ -36,8 +39,23 @@ public class ShapeComponentModelStore : IShapeComponentModelStore
 
       _circuitStorage.AddOrUpdate(
         circuitId,
-        _ => model,
-        (_, _) => model
+        circuitId => {
+          var storage = new ConcurrentDictionary<Guid, object?>();
+          storage.AddOrUpdate(
+            renderId,
+            _ => model,
+            (_, _) => model
+          );
+          return storage;
+        },
+        (circuitId, storage) => {
+          storage.AddOrUpdate(
+            renderId,
+            _ => model,
+            (_, _) => model
+          );
+          return storage;
+        }
       );
     }
 

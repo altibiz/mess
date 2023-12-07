@@ -55,7 +55,7 @@ public class BlazorShapeTemplateComponentEngine : IShapeTemplateComponentEngine
     }
 
     var renderId = Guid.NewGuid();
-    _shapeComponentModelStore.Add(renderId, viewContext.ViewData.Model);
+    _shapeComponentModelStore.Add(renderId, displayContext.Value);
 
     var viewData = new ViewDataDictionary(viewContext.ViewData);
     viewData.TemplateInfo.HtmlFieldPrefix = displayContext.HtmlFieldPrefix;
