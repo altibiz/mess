@@ -5,7 +5,7 @@ using Mess.Cms;
 using Mess.Fields.Abstractions;
 using OrchardCore.ContentManagement;
 
-namespace Mess.Chart.Providers;
+namespace Mess.Chart.Factories;
 
 public class PreviewChartFactory : IChartFactory
 {

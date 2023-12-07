@@ -16,7 +16,10 @@ public partial class
   where TModel : class
 {
   private IDisplayHelper? _displayHelper;
+
   private HttpContext? _httpContext;
+
+  private IServiceProvider? _serviceProvider;
 
   private TModel? _model;
 
@@ -46,6 +49,9 @@ public partial class
     httpContextAccessor.HttpContext ??
     throw new InvalidOperationException(
       "HttpContext is null");
+
+  public IServiceProvider ServiceProvider => _serviceProvider ??=
+    HttpContext.RequestServices;
 
   /// <summary>
   ///   Gets the <see cref="ISite" /> instance.
