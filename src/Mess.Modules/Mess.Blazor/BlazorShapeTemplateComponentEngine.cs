@@ -55,6 +55,10 @@ public class BlazorShapeTemplateComponentEngine : IShapeTemplateComponentEngine
       var actionContext = await GetActionContextAsync();
       viewContext = await MakeViewContextAsync(actionContext, displayContext);
     }
+    var viewContextId = Guid.NewGuid();
+    viewContext.HttpContext.RequestServices
+      .GetRequiredService<IViewContextStore>()
+      .Add(viewContextId, viewContext);
 
     var viewData = new ViewDataDictionary(viewContext.ViewData);
     viewData.TemplateInfo.HtmlFieldPrefix = displayContext.HtmlFieldPrefix;
@@ -62,7 +66,7 @@ public class BlazorShapeTemplateComponentEngine : IShapeTemplateComponentEngine
 
     return await htmlHelper.RenderComponentAsync(componentType,
       RenderMode.ServerPrerendered,
-      new { Model = displayContext.Value }
+      new { ViewContextId = viewContextId }
     );
   }
 
@@ -94,17 +98,21 @@ public class BlazorShapeTemplateComponentEngine : IShapeTemplateComponentEngine
   private static IHtmlHelper MakeHtmlHelper(ViewContext viewContext,
     ViewDataDictionary viewData)
   {
-    var newHelper = viewContext.HttpContext.RequestServices
+    var htmlHelper = viewContext.HttpContext.RequestServices
       .GetRequiredService<IHtmlHelper>();
 
-    if (newHelper is IViewContextAware contextable)
+    if (htmlHelper is IViewContextAware contextable)
     {
-      var newViewContext = new ViewContext(viewContext, viewContext.View,
-        viewData, viewContext.Writer);
+      var newViewContext = new ViewContext(
+        viewContext,
+        viewContext.View,
+        viewData,
+        viewContext.Writer
+      );
       contextable.Contextualize(newViewContext);
     }
 
-    return newHelper;
+    return htmlHelper;
   }
 
   private async Task<ActionContext> GetActionContextAsync()

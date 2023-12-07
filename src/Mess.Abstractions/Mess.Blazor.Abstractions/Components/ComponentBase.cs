@@ -13,31 +13,46 @@ using OrchardCore.Settings;
 namespace Mess.Blazor.Abstractions.Components;
 
 public partial class
-  ComponentBase<TModel> : Microsoft.AspNetCore.Components.ComponentBase
+  ComponentBase<TModel> : Microsoft.AspNetCore.Components.ComponentBase, IDisposable
   where TModel : class
 {
+  private HttpContext? _httpContext;
+
+  private ViewContext? _viewContext;
+
+  private TModel? _model;
+
   private IDisplayHelper? _displayHelper;
+
   private IOrchardDisplayHelper? _orchardHelper;
 
   private IPageTitleBuilder? _pageTitleBuilder;
 
   private IShapeFactory? _shapeFactory;
+
   private ISite? _site;
 
-  // private IViewLocalizer? _t;
+  private IViewLocalizer? _t;
 
   private IZoneHolding? _themeLayout;
 
+  [Parameter]
+  public Guid ViewContextId { get; set; } = default!;
+
+  public ViewContext ViewContext => _viewContext ??= HttpContext.RequestServices.GetRequiredService<IViewContextStore>().Get(ViewContextId) ??
+                                    throw new InvalidOperationException(
+                                      "ViewContext is null");
+
+  public HttpContext HttpContext => _httpContext ??= httpContextAccessor.HttpContext ??
+                                    throw new InvalidOperationException(
+                                      "HttpContext is null");
 
   /// <summary>
   ///   Gets the <see cref="TModel" /> instance.
   /// </summary>
-  [Parameter]
-  public TModel Model { get; set; } = default!;
-
-  public HttpContext HttpContext => httpContextAccessor.HttpContext ??
-                                    throw new InvalidOperationException(
-                                      "HttpContext is null");
+  public TModel Model => _model ??= ViewContext.ViewData.Model as TModel ??
+                         throw new InvalidOperationException(
+                           "Model type is invalid");
 
   /// <summary>
   ///   Gets the <see cref="ISite" /> instance.
@@ -112,20 +127,19 @@ public partial class
   /// <summary>
   ///   The <see cref="IViewLocalizer" /> instance for the current view.
   /// </summary>
-  // TODO: fix
-  // public IViewLocalizer T
-  // {
-  //   get
-  //   {
-  //     if (_t == null)
-  //     {
-  //       _t = HttpContext.RequestServices.GetRequiredService<IViewLocalizer>();
-  //       ((IViewContextAware)_t).Contextualize(ViewContext);
-  //     }
+  public IViewLocalizer T
+  {
+    get
+    {
+      if (_t == null)
+      {
+        _t = HttpContext.RequestServices.GetRequiredService<IViewLocalizer>();
+        ((IViewContextAware)_t).Contextualize(ViewContext);
+      }
 
-  //     return _t;
-  //   }
-  // }
+      return _t;
+    }
+  }
 
   /// <summary>
   ///   Returns the full escaped path of the current request.
@@ -313,6 +327,15 @@ public partial class
 
     return text;
   }
+
+#pragma warning disable CA1816
+  void IDisposable.Dispose()
+  {
+    HttpContext.RequestServices
+      .GetRequiredService<IViewContextStore>()
+      .Remove(ViewContextId);
+  }
+#pragma warning restore CA1816
 }
 
 public class ComponentBase : ComponentBase<dynamic>

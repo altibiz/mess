@@ -1,13 +1,16 @@
 using Mess.Blazor.Abstractions;
+using Mess.Blazor.Abstractions.Components;
 using Mess.Blazor.Abstractions.ShapeTemplateStrategy;
 using Mess.Blazor.ShapeTemplateStrategy;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
-using MudBlazor.Services;
 using OrchardCore.DisplayManagement.Descriptors;
 using OrchardCore.Modules;
+using MudBlazor.Services;
+using Mess.Blazor.Components;
 
 namespace Mess.Blazor;
 
@@ -27,6 +30,8 @@ public class Startup : StartupBase
     services.AddScoped<IShapeTableProvider, ShapeComponentBindingStrategy>();
 
     services.AddMudServices();
+
+    services.AddSingleton<IViewContextStore, ViewContextStore>();
   }
 
   public override void Configure(
@@ -45,5 +50,8 @@ public class Startup : StartupBase
     app.UseMiddleware<ResourceMiddleware>();
 
     routes.MapBlazorHub();
+
+    // TODO: remove?
+    routes.MapFallbackToAreaPage("/_Host", "Mess.Blazor");
   }
 }
