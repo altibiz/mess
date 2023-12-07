@@ -12,6 +12,7 @@ using OrchardCore.Modules;
 using MudBlazor.Services;
 using Mess.Blazor.Components;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Server.Circuits;
 
 namespace Mess.Blazor;
 
@@ -32,7 +33,14 @@ public class Startup : StartupBase
 
     services.AddMudServices();
 
-    services.AddSingleton<IShapeComponentModelStore, ComponentModelStore>();
+    services.AddSingleton<IShapeComponentModelStore, ShapeComponentModelStore>();
+
+    services.AddScoped<CircuitHandler, ShapeComponentCircuitHandler>();
+
+    services.AddScoped<ShapeComponentCircuitAccessor>();
+    services.AddScoped<IShapeComponentCircuitAccessor>(
+      services => services
+        .GetRequiredService<ShapeComponentCircuitAccessor>());
   }
 
   public override void Configure(

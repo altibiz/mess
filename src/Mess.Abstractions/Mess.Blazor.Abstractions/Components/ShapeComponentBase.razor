@@ -1,8 +1,11 @@
 @using OrchardCore.DisplayManagement
 @using MudBlazor
 
+@namespace Mess.Blazor.Abstractions.Components
+
 @typeparam TModel
 
+@inject IShapeComponentCircuitAccessor shapeComponentCircuitAccessor
 @inject IHttpContextAccessor httpContextAccessor
 @inject IShapeComponentModelStore modelStore
 

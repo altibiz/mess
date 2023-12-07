@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Html;
 using OrchardCore.DisplayManagement.Implementation;
 
-namespace Mess.Blazor.Abstractions;
+namespace Mess.Blazor.Abstractions.Components;
 
 public interface IShapeTemplateComponentEngine
 {

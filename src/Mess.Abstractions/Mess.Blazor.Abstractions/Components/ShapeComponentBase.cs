@@ -13,7 +13,7 @@ using OrchardCore.Settings;
 namespace Mess.Blazor.Abstractions.Components;
 
 public partial class
-  ShapeComponentBase<TModel> : ComponentBase, IDisposable
+  ShapeComponentBase<TModel> : ComponentBase
   where TModel : class
 {
   private HttpContext? _httpContext;
@@ -35,14 +35,15 @@ public partial class
   private IZoneHolding? _themeLayout;
 
   [Parameter]
-  public Guid ModelId { get; set; } = default!;
+  public Guid RenderId { get; set; } = default!;
 
   /// <summary>
   ///   Gets the <see cref="TModel" /> instance.
   /// </summary>
-  public TModel Model => _model ??= modelStore.Get(ModelId) as TModel ??
-                         throw new InvalidOperationException(
-                           "Model type is invalid");
+  public TModel Model => _model ??= modelStore.Get(
+      RenderId,
+      shapeComponentCircuitAccessor.Circuit?.Id
+  ) as TModel ?? throw new InvalidOperationException("Model is invalid");
 
   public HttpContext HttpContext => _httpContext ??= httpContextAccessor.HttpContext ??
                                     throw new InvalidOperationException(
@@ -312,13 +313,6 @@ public partial class
 
     return text;
   }
-
-#pragma warning disable CA1816
-  void IDisposable.Dispose()
-  {
-    modelStore.Remove(ModelId);
-  }
-#pragma warning restore CA1816
 }
 
 public class ShapeComponentBase : ShapeComponentBase<dynamic>

@@ -4,9 +4,9 @@ namespace Mess.Blazor.Abstractions.Components;
 
 public interface IShapeComponentModelStore
 {
-  void Add(Guid id, object? model);
+  void Add(Guid renderId, object? model);
 
-  object? Get(Guid id);
+  object? Get(Guid renderId, string? circuitId);
 
-  object? Remove(Guid id);
+  object? Remove(string circuitId);
 }

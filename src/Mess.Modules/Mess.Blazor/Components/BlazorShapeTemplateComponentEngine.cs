@@ -13,7 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.DisplayManagement;
 using OrchardCore.DisplayManagement.Implementation;
 
-namespace Mess.Blazor;
+namespace Mess.Blazor.Components;
 
 // TODO: null handling
 
@@ -55,8 +55,8 @@ public class BlazorShapeTemplateComponentEngine : IShapeTemplateComponentEngine
       viewContext = await MakeViewContextAsync(actionContext, displayContext);
     }
 
-    var modelId = Guid.NewGuid();
-    _shapeComponentModelStore.Add(modelId, viewContext.ViewData.Model);
+    var renderId = Guid.NewGuid();
+    _shapeComponentModelStore.Add(renderId, viewContext.ViewData.Model);
 
     var viewData = new ViewDataDictionary(viewContext.ViewData);
     viewData.TemplateInfo.HtmlFieldPrefix = displayContext.HtmlFieldPrefix;
@@ -64,7 +64,7 @@ public class BlazorShapeTemplateComponentEngine : IShapeTemplateComponentEngine
 
     return await htmlHelper.RenderComponentAsync(componentType,
       RenderMode.ServerPrerendered,
-      new { ModelId = modelId }
+      new { RenderId = renderId }
     );
   }
 
