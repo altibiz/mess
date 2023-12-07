@@ -93,7 +93,11 @@ public class ShapeComponentBindingStrategy : IShapeTableHarvester
                 type.Namespace is not null &&
                 type.Namespace ==
                 $"{extensionDescriptor.Manifest.ModuleInfo.Id}.{subNamespace}" &&
-                harvesterInfo.baseClasses.Contains(type.BaseType)
+                harvesterInfo.baseClasses.Any(
+                  baseClass =>
+                    baseClass == type.BaseType ||
+                    (type.BaseType?.IsGenericType is true &&
+                    baseClass == type.BaseType?.GetGenericTypeDefinition()))
                   ? type
                   : null)
               .WhereNotNull();
@@ -126,7 +130,9 @@ public class ShapeComponentBindingStrategy : IShapeTableHarvester
           SubNamespace = typeContext.namespaceContext.subNamespace,
           Type = typeContext.type,
           RelativeTypePath = typeContext.relativeTypePath,
-          BaseClass = typeContext.type.BaseType!
+          BaseClass = typeContext.type.BaseType is { IsGenericType: true }
+            ? typeContext.type.BaseType.GetGenericTypeDefinition()
+            : typeContext.type.BaseType!
         };
         var harvestShapeHits =
           typeContext.namespaceContext.harvester.HarvestShape(harvestShapeInfo);

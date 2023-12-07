@@ -23,8 +23,11 @@ public class BlazorShapeTemplateComponentEngine : IShapeTemplateComponentEngine
   private readonly IHttpContextAccessor _httpContextAccessor;
   private readonly ITempDataProvider _tempDataProvider;
 
-  private readonly List<Type> _templateBaseClasses =
-    new(new[] { typeof(ComponentBase) });
+  private static readonly List<Type> _templateBaseClasses = new(new[] {
+    typeof(Microsoft.AspNetCore.Components.ComponentBase),
+    typeof(Mess.Blazor.Abstractions.Components.ComponentBase),
+    typeof(Mess.Blazor.Abstractions.Components.ComponentBase<>),
+  });
 
   private readonly ViewContextAccessor _viewContextAccessor;
 
@@ -57,12 +60,11 @@ public class BlazorShapeTemplateComponentEngine : IShapeTemplateComponentEngine
 
     return await htmlHelper.RenderComponentAsync(componentType,
       RenderMode.ServerPrerendered,
-      new { Model = new { } }
-      // TODO: fix this breaking socket
-      // new { Model = displayContext.Value }
+      new { }
     );
   }
 
+  // TODO: this should render to string actually like in razor implementation
   private async Task<ViewContext> MakeViewContextAsync(
     ActionContext actionContext, DisplayContext displayContext)
   {

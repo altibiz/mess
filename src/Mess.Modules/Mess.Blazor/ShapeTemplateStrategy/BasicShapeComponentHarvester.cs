@@ -15,10 +15,11 @@ public class BasicShapeComponentHarvester : IShapeComponentHarvester
     };
   }
 
-  public IEnumerable<Type> BaseClasses()
-  {
-    return new[] { typeof(ComponentBase) };
-  }
+  public IEnumerable<Type> BaseClasses() => new[] {
+    typeof(Microsoft.AspNetCore.Components.ComponentBase),
+    typeof(Mess.Blazor.Abstractions.Components.ComponentBase),
+    typeof(Mess.Blazor.Abstractions.Components.ComponentBase<>),
+  };
 
   public IEnumerable<HarvestShapeHit> HarvestShape(
     HarvestShapeComponentInfo info)

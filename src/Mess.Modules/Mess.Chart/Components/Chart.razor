@@ -1,3 +1,5 @@
+@inherits Mess.Blazor.Abstractions.Components.ComponentBase<ChartPartViewModel>
+
 <MudThemeProvider/>
 <MudDialogProvider/>
 <MudSnackbarProvider/>
@@ -6,12 +8,10 @@
   <MudChart ChartType="ChartType.Line" ChartSeries="@Series" @bind-SelectedIndex="Index" XAxisLabels="@XAxisLabels" Width="100%" Height="350px"></MudChart>
   <MudButton @onclick="RandomizeData">Randomize Data</MudButton>
   <MudText Typo="Typo.h6">Selected portion of the chart: @Index</MudText>
+  @Mess.Prelude.Extensions.Objects.ObjectSerializationExtensions.ToJson(Model)
 </div>
 
 @code {
-  [Parameter]
-  public object? Model { get; set; }
-
   private int Index = -1;
 
   public List<ChartSeries> Series = new()

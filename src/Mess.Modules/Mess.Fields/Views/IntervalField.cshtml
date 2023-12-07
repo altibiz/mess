@@ -6,7 +6,7 @@
   var name = (Model.PartFieldDefinition.PartDefinition.Name + "-" + Model.PartFieldDefinition.Name).HtmlClassify();
 }
 
-<div class="field field-type-apikeyfield field-name-@name">
+<div class="field field-type-intervalfield field-name-@name">
   @Model.Field.Value.Count
   @T[Model.Field.Value.Unit.ToHumanString()]
 </div>
