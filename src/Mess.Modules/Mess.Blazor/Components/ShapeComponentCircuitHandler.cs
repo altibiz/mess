@@ -1,7 +1,5 @@
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components.Server.Circuits;
 using Mess.Blazor.Abstractions.Components;
+using Microsoft.AspNetCore.Components.Server.Circuits;
 
 namespace Mess.Blazor.Components;
 
@@ -19,14 +17,16 @@ public class ShapeComponentCircuitHandler : CircuitHandler
     _shapeComponentModelStore = shapeComponentModelStore;
   }
 
-  public override async Task OnCircuitClosedAsync(Circuit circuit, CancellationToken cancellationToken)
+  public override async Task OnCircuitClosedAsync(Circuit circuit,
+    CancellationToken cancellationToken)
   {
     await base.OnCircuitClosedAsync(circuit, cancellationToken);
 
     _shapeComponentModelStore.Remove(circuit.Id);
   }
 
-  public override async Task OnCircuitOpenedAsync(Circuit circuit, CancellationToken cancellationToken)
+  public override async Task OnCircuitOpenedAsync(Circuit circuit,
+    CancellationToken cancellationToken)
   {
     await base.OnCircuitOpenedAsync(circuit, cancellationToken);
 

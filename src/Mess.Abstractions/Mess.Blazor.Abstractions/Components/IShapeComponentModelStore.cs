@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Mvc.Rendering;
-
 namespace Mess.Blazor.Abstractions.Components;
 
 public interface IShapeComponentModelStore

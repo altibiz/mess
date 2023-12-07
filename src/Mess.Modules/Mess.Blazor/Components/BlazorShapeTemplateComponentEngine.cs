@@ -1,4 +1,3 @@
-using Mess.Blazor.Abstractions;
 using Mess.Blazor.Abstractions.Components;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
@@ -26,9 +25,9 @@ public class BlazorShapeTemplateComponentEngine : IShapeTemplateComponentEngine
   });
 
   private readonly IHttpContextAccessor _httpContextAccessor;
+  private readonly IShapeComponentModelStore _shapeComponentModelStore;
   private readonly ITempDataProvider _tempDataProvider;
   private readonly ViewContextAccessor _viewContextAccessor;
-  private readonly IShapeComponentModelStore _shapeComponentModelStore;
 
   public BlazorShapeTemplateComponentEngine(
     IHttpContextAccessor httpContextAccessor,

@@ -1,7 +1,6 @@
 using Mess.Blazor.Abstractions.Components;
 using Mess.Blazor.Abstractions.ShapeTemplateStrategy;
 using OrchardCore.DisplayManagement.Descriptors.ShapeTemplateStrategy;
-using ComponentBase = Microsoft.AspNetCore.Components.ComponentBase;
 
 namespace Mess.Blazor.ShapeTemplateStrategy;
 

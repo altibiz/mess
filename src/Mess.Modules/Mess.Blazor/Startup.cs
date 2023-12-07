@@ -1,18 +1,15 @@
-using Mess.Blazor.Abstractions;
 using Mess.Blazor.Abstractions.Components;
 using Mess.Blazor.Abstractions.ShapeTemplateStrategy;
+using Mess.Blazor.Components;
 using Mess.Blazor.ShapeTemplateStrategy;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Components.Server.Circuits;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
+using MudBlazor.Services;
 using OrchardCore.DisplayManagement.Descriptors;
 using OrchardCore.Modules;
-using MudBlazor.Services;
-using Mess.Blazor.Components;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Server.Circuits;
 
 namespace Mess.Blazor;
 
@@ -33,7 +30,8 @@ public class Startup : StartupBase
 
     services.AddMudServices();
 
-    services.AddSingleton<IShapeComponentModelStore, ShapeComponentModelStore>();
+    services
+      .AddSingleton<IShapeComponentModelStore, ShapeComponentModelStore>();
 
     services.AddScoped<CircuitHandler, ShapeComponentCircuitHandler>();
 

@@ -1,10 +1,11 @@
+@using Mess.Prelude.Extensions.Objects
 @inherits ShapeComponentBase
 
 <div>
   <MudChart ChartType="ChartType.Line" ChartSeries="@Series" @bind-SelectedIndex="Index" XAxisLabels="@XAxisLabels" Width="100%" Height="350px"></MudChart>
   <MudButton @onclick="RandomizeData">Randomize Data</MudButton>
   <MudText Typo="Typo.h6">Selected portion of the chart: @Index</MudText>
-  @Mess.Prelude.Extensions.Objects.ObjectSerializationExtensions.ToJson(Model)
+  @ObjectSerializationExtensions.ToJson(Model)
 </div>
 
 @code {
@@ -36,4 +37,5 @@
     Series = new_series;
     StateHasChanged();
   }
+
 }

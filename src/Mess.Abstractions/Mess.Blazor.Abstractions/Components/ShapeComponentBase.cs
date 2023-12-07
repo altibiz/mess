@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using OrchardCore.DisplayManagement;
 using OrchardCore.DisplayManagement.Html;
 using OrchardCore.DisplayManagement.Razor;
@@ -16,11 +15,10 @@ public partial class
   ShapeComponentBase<TModel> : ComponentBase
   where TModel : class
 {
+  private IDisplayHelper? _displayHelper;
   private HttpContext? _httpContext;
 
   private TModel? _model;
-
-  private IDisplayHelper? _displayHelper;
 
   private IOrchardDisplayHelper? _orchardHelper;
 
@@ -34,20 +32,20 @@ public partial class
 
   private IZoneHolding? _themeLayout;
 
-  [Parameter]
-  public Guid RenderId { get; set; } = default!;
+  [Parameter] public Guid RenderId { get; set; }
 
   /// <summary>
   ///   Gets the <see cref="TModel" /> instance.
   /// </summary>
   public TModel Model => _model ??= modelStore.Get(
-      RenderId,
-      shapeComponentCircuitAccessor.Circuit?.Id
+    RenderId,
+    shapeComponentCircuitAccessor.Circuit?.Id
   ) as TModel ?? throw new InvalidOperationException("Model is invalid");
 
-  public HttpContext HttpContext => _httpContext ??= httpContextAccessor.HttpContext ??
-                                    throw new InvalidOperationException(
-                                      "HttpContext is null");
+  public HttpContext HttpContext => _httpContext ??=
+    httpContextAccessor.HttpContext ??
+    throw new InvalidOperationException(
+      "HttpContext is null");
 
   /// <summary>
   ///   Gets the <see cref="ISite" /> instance.
