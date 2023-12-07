@@ -13,12 +13,10 @@ using OrchardCore.Settings;
 namespace Mess.Blazor.Abstractions.Components;
 
 public partial class
-  ComponentBase<TModel> : Microsoft.AspNetCore.Components.ComponentBase, IDisposable
+  ShapeComponentBase<TModel> : ComponentBase, IDisposable
   where TModel : class
 {
   private HttpContext? _httpContext;
-
-  private ViewContext? _viewContext;
 
   private TModel? _model;
 
@@ -37,22 +35,18 @@ public partial class
   private IZoneHolding? _themeLayout;
 
   [Parameter]
-  public Guid ViewContextId { get; set; } = default!;
-
-  public ViewContext ViewContext => _viewContext ??= viewContextStore.Get(ViewContextId) ??
-                                    throw new InvalidOperationException(
-                                      "ViewContext is null");
-
-  public HttpContext HttpContext => _httpContext ??= httpContextAccessor.HttpContext ??
-                                    throw new InvalidOperationException(
-                                      "HttpContext is null");
+  public Guid ModelId { get; set; } = default!;
 
   /// <summary>
   ///   Gets the <see cref="TModel" /> instance.
   /// </summary>
-  public TModel Model => _model ??= ViewContext.ViewData.Model as TModel ??
+  public TModel Model => _model ??= modelStore.Get(ModelId) as TModel ??
                          throw new InvalidOperationException(
                            "Model type is invalid");
+
+  public HttpContext HttpContext => _httpContext ??= httpContextAccessor.HttpContext ??
+                                    throw new InvalidOperationException(
+                                      "HttpContext is null");
 
   /// <summary>
   ///   Gets the <see cref="ISite" /> instance.
@@ -61,7 +55,7 @@ public partial class
     _site ??= HttpContext.Features.Get<RazorViewFeature>()?.Site;
 
   public IOrchardDisplayHelper Orchard => _orchardHelper ??=
-    new OrchardDisplayHelper(HttpContext, DisplayHelper);
+    new ShapeComponentOrchardDisplayHelper(HttpContext, DisplayHelper);
 
   private IDisplayHelper DisplayHelper => _displayHelper ??=
     HttpContext.RequestServices.GetRequiredService<IDisplayHelper>();
@@ -124,22 +118,13 @@ public partial class
   public IPageTitleBuilder Title => _pageTitleBuilder ??=
     HttpContext.RequestServices.GetRequiredService<IPageTitleBuilder>();
 
+  // TODO: fix
+  // ((IViewContextAware)_t).Contextualize(ViewContext);
   /// <summary>
   ///   The <see cref="IViewLocalizer" /> instance for the current view.
   /// </summary>
-  public IViewLocalizer T
-  {
-    get
-    {
-      if (_t == null)
-      {
-        _t = HttpContext.RequestServices.GetRequiredService<IViewLocalizer>();
-        ((IViewContextAware)_t).Contextualize(ViewContext);
-      }
-
-      return _t;
-    }
-  }
+  public IViewLocalizer T => _t ??=
+    HttpContext.RequestServices.GetRequiredService<IViewLocalizer>();
 
   /// <summary>
   ///   Returns the full escaped path of the current request.
@@ -331,13 +316,11 @@ public partial class
 #pragma warning disable CA1816
   void IDisposable.Dispose()
   {
-    HttpContext.RequestServices
-      .GetRequiredService<IViewContextStore>()
-      .Remove(ViewContextId);
+    modelStore.Remove(ModelId);
   }
 #pragma warning restore CA1816
 }
 
-public class ComponentBase : ComponentBase<dynamic>
+public class ShapeComponentBase : ShapeComponentBase<dynamic>
 {
 }

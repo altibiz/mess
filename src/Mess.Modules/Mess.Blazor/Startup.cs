@@ -11,6 +11,7 @@ using OrchardCore.DisplayManagement.Descriptors;
 using OrchardCore.Modules;
 using MudBlazor.Services;
 using Mess.Blazor.Components;
+using Microsoft.AspNetCore.Components;
 
 namespace Mess.Blazor;
 
@@ -31,7 +32,7 @@ public class Startup : StartupBase
 
     services.AddMudServices();
 
-    services.AddSingleton<IViewContextStore, ViewContextStore>();
+    services.AddSingleton<IShapeComponentModelStore, ComponentModelStore>();
   }
 
   public override void Configure(

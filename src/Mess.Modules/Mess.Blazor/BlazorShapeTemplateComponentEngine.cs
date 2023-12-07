@@ -12,8 +12,6 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.DisplayManagement;
 using OrchardCore.DisplayManagement.Implementation;
-using ComponentBase = Microsoft.AspNetCore.Components.ComponentBase;
-using RouteData = Microsoft.AspNetCore.Routing.RouteData;
 
 namespace Mess.Blazor;
 
@@ -23,25 +21,26 @@ public class BlazorShapeTemplateComponentEngine : IShapeTemplateComponentEngine
 {
   private static readonly List<Type> _templateBaseClasses = new(new[]
   {
-    typeof(ComponentBase),
-    typeof(Abstractions.Components.ComponentBase),
-    typeof(ComponentBase<>)
+    typeof(ShapeComponentBase),
+    typeof(ShapeComponentBase<>)
   });
 
   private readonly IHttpContextAccessor _httpContextAccessor;
   private readonly ITempDataProvider _tempDataProvider;
-
   private readonly ViewContextAccessor _viewContextAccessor;
+  private readonly IShapeComponentModelStore _shapeComponentModelStore;
 
   public BlazorShapeTemplateComponentEngine(
     IHttpContextAccessor httpContextAccessor,
     ViewContextAccessor viewContextAccessor,
+    IShapeComponentModelStore shapeComponentModelStore,
     ITempDataProvider tempDataProvider
   )
   {
     _httpContextAccessor = httpContextAccessor;
     _viewContextAccessor = viewContextAccessor;
     _tempDataProvider = tempDataProvider;
+    _shapeComponentModelStore = shapeComponentModelStore;
   }
 
   public IEnumerable<Type> TemplateBaseClasses => _templateBaseClasses;
@@ -55,10 +54,9 @@ public class BlazorShapeTemplateComponentEngine : IShapeTemplateComponentEngine
       var actionContext = await GetActionContextAsync();
       viewContext = await MakeViewContextAsync(actionContext, displayContext);
     }
-    var viewContextId = Guid.NewGuid();
-    viewContext.HttpContext.RequestServices
-      .GetRequiredService<IViewContextStore>()
-      .Add(viewContextId, viewContext);
+
+    var modelId = Guid.NewGuid();
+    _shapeComponentModelStore.Add(modelId, viewContext.ViewData.Model);
 
     var viewData = new ViewDataDictionary(viewContext.ViewData);
     viewData.TemplateInfo.HtmlFieldPrefix = displayContext.HtmlFieldPrefix;
@@ -66,7 +64,7 @@ public class BlazorShapeTemplateComponentEngine : IShapeTemplateComponentEngine
 
     return await htmlHelper.RenderComponentAsync(componentType,
       RenderMode.ServerPrerendered,
-      new { ViewContextId = viewContextId }
+      new { ModelId = modelId }
     );
   }
 

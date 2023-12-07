@@ -1,3 +1,5 @@
+@inherits ShapeComponentBase
+
 <div>
   <MudChart ChartType="ChartType.Line" ChartSeries="@Series" @bind-SelectedIndex="Index" XAxisLabels="@XAxisLabels" Width="100%" Height="350px"></MudChart>
   <MudButton @onclick="RandomizeData">Randomize Data</MudButton>
@@ -34,5 +36,4 @@
     Series = new_series;
     StateHasChanged();
   }
-
 }

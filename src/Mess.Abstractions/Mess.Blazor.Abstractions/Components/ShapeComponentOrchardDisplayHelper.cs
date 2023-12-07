@@ -4,9 +4,9 @@ using OrchardCore.DisplayManagement.Razor;
 
 namespace Mess.Blazor.Abstractions.Components;
 
-internal class OrchardDisplayHelper : IOrchardDisplayHelper, IOrchardHelper
+internal class ShapeComponentOrchardDisplayHelper : IOrchardDisplayHelper, IOrchardHelper
 {
-  public OrchardDisplayHelper(HttpContext context, IDisplayHelper displayHelper)
+  public ShapeComponentOrchardDisplayHelper(HttpContext context, IDisplayHelper displayHelper)
   {
     HttpContext = context;
     DisplayHelper = displayHelper;
