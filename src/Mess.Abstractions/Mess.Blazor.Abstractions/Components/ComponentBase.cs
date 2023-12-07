@@ -39,7 +39,7 @@ public partial class
   [Parameter]
   public Guid ViewContextId { get; set; } = default!;
 
-  public ViewContext ViewContext => _viewContext ??= HttpContext.RequestServices.GetRequiredService<IViewContextStore>().Get(ViewContextId) ??
+  public ViewContext ViewContext => _viewContext ??= viewContextStore.Get(ViewContextId) ??
                                     throw new InvalidOperationException(
                                       "ViewContext is null");
 
