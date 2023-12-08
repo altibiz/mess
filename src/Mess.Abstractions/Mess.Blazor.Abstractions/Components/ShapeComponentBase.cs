@@ -19,13 +19,13 @@ public partial class
 
   private HttpContext? _httpContext;
 
-  private IServiceProvider? _serviceProvider;
-
   private TModel? _model;
 
   private IOrchardDisplayHelper? _orchardHelper;
 
   private IPageTitleBuilder? _pageTitleBuilder;
+
+  private IServiceProvider? _serviceProvider;
 
   private IShapeFactory? _shapeFactory;
 

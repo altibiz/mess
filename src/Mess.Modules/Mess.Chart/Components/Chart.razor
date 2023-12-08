@@ -1,15 +1,15 @@
-@using Mess.Prelude.Extensions.Objects
-@using Mess.Chart.Abstractions.Services
-@using Mess.Chart.Factories
-@using Mess.Chart.Abstractions.Descriptors
 @using OrchardCore.ContentManagement
 @using Microsoft.Extensions.DependencyInjection
+@using Mess.Chart.Abstractions.Descriptors
+@using Mess.Chart.Abstractions.Services
+@using Mess.Chart.Factories
 @inherits ShapeComponentBase
 
 @if (ChartDescriptor is TimeseriesChartDescriptor timeseriesChartDescriptor)
 {
   var series = timeseriesChartDescriptor.Datasets
-    .Select(dataset => new ChartSeries() {
+    .Select(dataset => new ChartSeries
+    {
       Name = dataset.Label,
       Data = dataset.Datapoints.Select(datapoint => (double)datapoint.Y).ToArray()
     })
@@ -24,7 +24,7 @@
       ChartSeries="@series"
       XAxisLabels="@xAxisLabels"
       Width="100%"
-      Height="350px" />
+      Height="350px"/>
   </div>
 }
 
@@ -34,17 +34,19 @@
   protected override async Task OnInitializedAsync()
   {
     ContentItem contentItem = Model.ContentItem;
-    var chartPart = contentItem.As<Mess.Chart.Abstractions.Models.ChartPart>();
+    var chartPart = contentItem.As<Abstractions.Models.ChartPart>();
     var chartFactory = ServiceProvider
       .GetServices<IChartFactory>()
       .FirstOrDefault(
         chartFactory =>
           chartFactory.ContentType == PreviewChartFactory.ChartContentType
       )!;
-    ChartDescriptor =  await chartFactory.CreateChartAsync(
+    ChartDescriptor = await chartFactory.CreateChartAsync(
       new ContentItem(),
       contentItem
     )!;
   }
+
 }
+
 ((double)
