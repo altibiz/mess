@@ -1,3 +1,8 @@
+using Mess.Cms.Extensions.Microsoft;
+using Mess.Iot.Abstractions.Models;
+using Mess.Ozds.Abstractions.Indexes;
+using Mess.Ozds.Abstractions.Models;
+using Mess.Ozds.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using OrchardCore.ContentFields.Indexing.SQL;
 using OrchardCore.ContentManagement;
@@ -5,17 +10,14 @@ using YesSql;
 
 namespace Mess.Ozds.Controllers;
 
-public class ClosedDistributionSystemRepresentativeController
+public class ClosedDistributionSystemRepresentativeController : Controller
 {
-  private readonly IContentManager _contentManager;
   private readonly ISession _session;
 
   public ClosedDistributionSystemRepresentativeController(
-    IContentManager contentManager,
     ISession session
   )
   {
-    _contentManager = contentManager;
     _session = session;
   }
 
@@ -28,5 +30,38 @@ public class ClosedDistributionSystemRepresentativeController
       .Where(index => index.ContentPart == "LegalEntityPart")
       .Where(index => index.SelectedUserId == orchardCoreUser.UserId)
       .FirstOrDefaultAsync();
+
+    IEnumerable<ContentItem>? devices = null;
+    if (
+      orchardCoreUser.RoleNames.Contains(
+        "ClosedDistributionSystemRepresentative"
+      )
+    )
+      devices = await _session
+        .Query<ContentItem, OzdsIotDeviceIndex>()
+        .Where(
+          index =>
+            index.ClosedDistributionSystemContentItemId
+            == legalEntityItem.ContentItemId
+        )
+        .ListAsync();
+    else
+      return Forbid();
+
+    return View(
+      new ClosedDistributionSystemRepresentativeDashboardViewModel
+      {
+        Devices = devices
+          .Select(
+            device =>
+            (
+              ContentItem: device,
+              OzdsIotDevicePart: device.As<OzdsIotDevicePart>(),
+              IotDevicePart: device.As<IotDevicePart>()
+            )
+          )
+          .ToList()
+      }
+    );
   }
 }
