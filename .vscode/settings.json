@@ -32,7 +32,7 @@
   "stylelint.packageManager": "yarn",
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "[csharp]": {
-    "editor.defaultFormatter": "csharpier.csharpier-vscode"
+    "editor.defaultFormatter": "ms-dotnettools.csharp"
   },
   "[markdown]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
