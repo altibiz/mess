@@ -15,6 +15,7 @@ using OrchardCore.DisplayManagement.Implementation;
 namespace Mess.Blazor.Components;
 
 // TODO: null handling
+// TODO: this whole thing is very hacky
 
 public class BlazorShapeTemplateComponentEngine : IShapeTemplateComponentEngine
 {
