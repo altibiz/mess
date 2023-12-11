@@ -14,9 +14,6 @@ using OrchardCore.DisplayManagement.Implementation;
 
 namespace Mess.Blazor.Components;
 
-// TODO: null handling
-// TODO: this whole thing is very hacky
-
 public class BlazorShapeTemplateComponentEngine : IShapeTemplateComponentEngine
 {
   private static readonly List<Type> _templateBaseClasses = new(new[]
@@ -26,18 +23,21 @@ public class BlazorShapeTemplateComponentEngine : IShapeTemplateComponentEngine
   });
 
   private readonly IHttpContextAccessor _httpContextAccessor;
+  private readonly IActionContextAccessor _actionContextAccessor;
+  private readonly ViewContextAccessor _viewContextAccessor;
   private readonly IShapeComponentModelStore _shapeComponentModelStore;
   private readonly ITempDataProvider _tempDataProvider;
-  private readonly ViewContextAccessor _viewContextAccessor;
 
   public BlazorShapeTemplateComponentEngine(
     IHttpContextAccessor httpContextAccessor,
+    IActionContextAccessor actionContextAccessor,
     ViewContextAccessor viewContextAccessor,
     IShapeComponentModelStore shapeComponentModelStore,
     ITempDataProvider tempDataProvider
   )
   {
     _httpContextAccessor = httpContextAccessor;
+    _actionContextAccessor = actionContextAccessor;
     _viewContextAccessor = viewContextAccessor;
     _tempDataProvider = tempDataProvider;
     _shapeComponentModelStore = shapeComponentModelStore;
@@ -53,7 +53,7 @@ public class BlazorShapeTemplateComponentEngine : IShapeTemplateComponentEngine
   )
   {
     var viewContext = _viewContextAccessor.ViewContext;
-    if (viewContext is not { HttpContext: not null })
+    if (viewContext is null)
     {
       var actionContext = await GetActionContextAsync();
       viewContext = await MakeViewContextAsync(actionContext, model, writer);
@@ -96,6 +96,7 @@ public class BlazorShapeTemplateComponentEngine : IShapeTemplateComponentEngine
     return viewContext;
   }
 
+
   private static IHtmlHelper MakeHtmlHelper(ViewContext viewContext,
     ViewDataDictionary viewData)
   {
@@ -119,10 +120,9 @@ public class BlazorShapeTemplateComponentEngine : IShapeTemplateComponentEngine
   private async Task<ActionContext> GetActionContextAsync()
   {
     var httpContext = _httpContextAccessor.HttpContext!;
-    var actionContext = httpContext.RequestServices
-      .GetService<IActionContextAccessor>()?.ActionContext!;
+    var actionContext = _actionContextAccessor.ActionContext;
 
-    if (actionContext != null) return actionContext;
+    if (actionContext is not null) return actionContext;
 
     var routeData = new RouteData();
     routeData.Routers.Add(new RouteCollection());

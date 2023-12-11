@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc.ViewEngines;
 
 namespace Mess.Blazor.Components;
 
+// TODO: take notes from RazorView
+
 public class ComponentView : IView
 {
   public string Path { get; } = "";

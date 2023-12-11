@@ -1,3 +1,4 @@
+using Mess.Blazor.Abstractions.Localization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Localization;
@@ -33,7 +34,7 @@ public partial class
 
   private ISite? _site;
 
-  private IViewLocalizer? _t;
+  private IComponentLocalizer? _t;
 
   private IZoneHolding? _themeLayout;
 
@@ -125,13 +126,22 @@ public partial class
   public IPageTitleBuilder Title => _pageTitleBuilder ??=
     HttpContext.RequestServices.GetRequiredService<IPageTitleBuilder>();
 
-  // TODO: fix
-  // ((IViewContextAware)_t).Contextualize(ViewContext);
   /// <summary>
-  ///   The <see cref="IViewLocalizer" /> instance for the current view.
+  ///   The <see cref="IComponentLocalizer" /> instance for the current component.
   /// </summary>
-  public IViewLocalizer T => _t ??=
-    HttpContext.RequestServices.GetRequiredService<IViewLocalizer>();
+  public IComponentLocalizer T
+  {
+    get
+    {
+      if (_t is null)
+      {
+        _t = HttpContext.RequestServices.GetRequiredService<IComponentLocalizer>();
+        (_t as IComponentAware)?.Contextualize(GetType());
+      }
+
+      return _t;
+    }
+  }
 
   /// <summary>
   ///   Returns the full escaped path of the current request.

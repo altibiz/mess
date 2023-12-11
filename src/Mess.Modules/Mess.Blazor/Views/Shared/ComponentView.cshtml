@@ -1,0 +1,14 @@
+@model ComponentViewModel
+
+@inject IShapeComponentModelStore shapeComponentModelStore
+
+@{
+  var renderId = Guid.NewGuid();
+  shapeComponentModelStore.Add(renderId, Model.Model);
+}
+
+@(await Html.RenderComponentAsync(
+  Model.ComponentType,
+  RenderMode.ServerPrerendered,
+  new { RenderId = renderId }
+))

@@ -1,9 +1,11 @@
 using Mess.Blazor.Abstractions.Components;
+using Mess.Blazor.Abstractions.Localization;
 using Mess.Blazor.Abstractions.ShapeTemplateStrategy;
 using Mess.Blazor.Components;
 using Mess.Blazor.ShapeTemplateStrategy;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.Server.Circuits;
+using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
@@ -39,6 +41,8 @@ public class Startup : StartupBase
     services.AddScoped<IShapeComponentCircuitAccessor>(
       services => services
         .GetRequiredService<ShapeComponentCircuitAccessor>());
+
+    services.AddScoped<IComponentLocalizer, ComponentLocalizer>();
   }
 
   public override void Configure(
