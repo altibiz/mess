@@ -1,7 +1,9 @@
+using Mess.Blazor.Abstractions.Controllers;
 using Mess.Cms.Extensions.Microsoft;
 using Mess.Iot.Abstractions.Models;
 using Mess.Ozds.Abstractions.Indexes;
 using Mess.Ozds.Abstractions.Models;
+using Mess.Ozds.Components.ClosedDistributionSystemRepresentative;
 using Mess.Ozds.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using OrchardCore.ContentFields.Indexing.SQL;
@@ -48,7 +50,8 @@ public class ClosedDistributionSystemRepresentativeController : Controller
     else
       return Forbid();
 
-    return View(
+    return await this.Component(
+      typeof(Dashboard),
       new ClosedDistributionSystemRepresentativeDashboardViewModel
       {
         Devices = devices

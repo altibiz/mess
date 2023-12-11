@@ -26,6 +26,7 @@ using ManifestConstants = Mess.Cms.ManifestConstants;
     "Mess.Iot",
     "Mess.Billing",
     "Mess.Chart",
-    "Mess.Fields"
+    "Mess.Fields",
+    "Mess.Blazor"
   }
 )]

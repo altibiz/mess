@@ -1,8 +1,0 @@
-@page
-@using Microsoft.AspNetCore.Http
-
-@inject IHttpContextAccessor _HttpContext
-
-@{
-  _HttpContext.HttpContext!.Response.Headers["Cache-Control"] = "no-store";
-}

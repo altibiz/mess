@@ -57,8 +57,5 @@ public class Startup : StartupBase
     app.UseMiddleware<ResourceMiddleware>();
 
     routes.MapBlazorHub();
-
-    // TODO: remove?
-    routes.MapFallbackToAreaPage("/_Host", "Mess.Blazor");
   }
 }

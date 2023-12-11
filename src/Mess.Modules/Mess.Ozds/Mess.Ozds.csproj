@@ -1,6 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <ItemGroup>
+    <PackageReference Include="MudBlazor" Version="$(MessMudblazorVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Ozds.Abstractions/Mess.Ozds.Abstractions.csproj" />
   </ItemGroup>
 
@@ -12,6 +16,7 @@
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Fields.Abstractions/Mess.Fields.Abstractions.csproj" />
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Billing.Abstractions/Mess.Billing.Abstractions.csproj" />
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Population.Abstractions/Mess.Population.Abstractions.csproj" />
+    <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Blazor.Abstractions/Mess.Blazor.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>
