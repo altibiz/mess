@@ -5,6 +5,8 @@ using OrchardCore.Users.Services;
 
 namespace Mess.Cms.Extensions.Microsoft;
 
+// TODO: no throwing
+
 public static class ControllerExtensions
 {
   public static async Task<User> GetAuthenticatedOrchardCoreUserAsync(

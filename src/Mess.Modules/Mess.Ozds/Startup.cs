@@ -170,6 +170,11 @@ public class Startup : StartupBase
       "/OzdsIotDevice/Detail/{contentItemId}"
     );
 
+    routes.MapAreaControllerRoute<ClosedDistributionSystemRepresentativeController>(
+      nameof(ClosedDistributionSystemRepresentativeController.Dashboard),
+      "/ClosedDistributionSystemRepresentative/Dashboard"
+    );
+
     app.UseEndpoints(endpoints =>
     {
       endpoints.Redirect("/", "/OzdsIotDevice/List");

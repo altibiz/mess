@@ -8,5 +8,7 @@ public interface IShapeTemplateComponentEngine
   IEnumerable<Type> TemplateBaseClasses { get; }
 
   Task<IHtmlContent> RenderAsync(Type componentType,
-    DisplayContext displayContext);
+    string htmlPrefix,
+    object? model,
+    TextWriter? writer);
 }

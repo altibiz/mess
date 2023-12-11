@@ -46,7 +46,8 @@ public class ShapeComponentBindingStrategy : IShapeTableHarvester
     var harvesterInfos = _harvesters
       .Select(harvester => new
       {
-        harvester, subNamespaces = harvester.SubNamespaces(),
+        harvester,
+        subNamespaces = harvester.SubNamespaces(),
         baseClasses = harvester.BaseClasses()
       })
       .ToList();
@@ -64,9 +65,9 @@ public class ShapeComponentBindingStrategy : IShapeTableHarvester
 
     if (!_viewEnginesByBaseClass.Any())
       foreach (var viewEngine in _shapeTemplateComponentEngines)
-      foreach (var baseClass in viewEngine.TemplateBaseClasses)
-        if (!_viewEnginesByBaseClass.ContainsKey(baseClass))
-          _viewEnginesByBaseClass[baseClass] = viewEngine;
+        foreach (var baseClass in viewEngine.TemplateBaseClasses)
+          if (!_viewEnginesByBaseClass.ContainsKey(baseClass))
+            _viewEnginesByBaseClass[baseClass] = viewEngine;
 
     var hits = activeExtensions.Select(extensionDescriptor =>
     {
@@ -178,7 +179,9 @@ public class ShapeComponentBindingStrategy : IShapeTableHarvester
 
             return viewEngine.RenderAsync(
               hit.shapeContext.harvestShapeInfo.Type,
-              displayContext
+              displayContext.HtmlFieldPrefix,
+              displayContext.Value,
+              null
             );
           });
     }

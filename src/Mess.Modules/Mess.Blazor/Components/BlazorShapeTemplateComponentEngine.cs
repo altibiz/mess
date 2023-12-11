@@ -44,21 +44,25 @@ public class BlazorShapeTemplateComponentEngine : IShapeTemplateComponentEngine
 
   public IEnumerable<Type> TemplateBaseClasses => _templateBaseClasses;
 
-  public async Task<IHtmlContent> RenderAsync(Type componentType,
-    DisplayContext displayContext)
+  public async Task<IHtmlContent> RenderAsync(
+    Type componentType,
+    string htmlPrefix,
+    object? model,
+    TextWriter? writer
+  )
   {
     var viewContext = _viewContextAccessor.ViewContext;
     if (viewContext is not { HttpContext: not null })
     {
       var actionContext = await GetActionContextAsync();
-      viewContext = await MakeViewContextAsync(actionContext, displayContext);
+      viewContext = await MakeViewContextAsync(actionContext, model, writer);
     }
 
     var renderId = Guid.NewGuid();
-    _shapeComponentModelStore.Add(renderId, displayContext.Value);
+    _shapeComponentModelStore.Add(renderId, model);
 
     var viewData = new ViewDataDictionary(viewContext.ViewData);
-    viewData.TemplateInfo.HtmlFieldPrefix = displayContext.HtmlFieldPrefix;
+    viewData.TemplateInfo.HtmlFieldPrefix = htmlPrefix;
     var htmlHelper = MakeHtmlHelper(viewContext, viewData);
 
     return await htmlHelper.RenderComponentAsync(componentType,
@@ -67,25 +71,24 @@ public class BlazorShapeTemplateComponentEngine : IShapeTemplateComponentEngine
     );
   }
 
-  // TODO: this should render to string actually like in razor implementation
   private async Task<ViewContext> MakeViewContextAsync(
-    ActionContext actionContext, DisplayContext displayContext)
+    ActionContext actionContext, object? model, TextWriter? writer)
   {
     var viewContext = new ViewContext(
       actionContext,
-      null!,
+      new ComponentView(),
       new ViewDataDictionary(
         new EmptyModelMetadataProvider(),
         new ModelStateDictionary()
       )
       {
-        Model = displayContext.Value
+        Model = model
       },
       new TempDataDictionary(
         actionContext.HttpContext,
         _tempDataProvider
       ),
-      null!,
+      writer!,
       new HtmlHelperOptions()
     );
 
