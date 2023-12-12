@@ -77,7 +77,7 @@ public class BlazorShapeTemplateComponentEngine : IShapeTemplateComponentEngine
   {
     var viewContext = new ViewContext(
       actionContext,
-      new ComponentView(),
+      null!,
       new ViewDataDictionary(
         new EmptyModelMetadataProvider(),
         new ModelStateDictionary()
