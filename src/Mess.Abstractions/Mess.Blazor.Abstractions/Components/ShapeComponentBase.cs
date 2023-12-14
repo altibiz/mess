@@ -1,3 +1,5 @@
+using System.Text.Encodings.Web;
+using Mess.Blazor.Abstractions.Extensions;
 using Mess.Blazor.Abstractions.Localization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Html;
@@ -155,25 +157,25 @@ public partial class
   ///   Renders a shape.
   /// </summary>
   /// <param name="shape">The shape.</param>
-  public Task<IHtmlContent> DisplayAsync(dynamic dynamic)
+  public async Task<MarkupString> DisplayAsync(dynamic dynamic)
   {
-    return dynamic switch
+    return (dynamic switch
     {
-      IShape shape => DisplayHelper.ShapeExecuteAsync(shape),
-      IHtmlContent htmlContent => Task.FromResult(htmlContent),
-      string str => Task.FromResult<IHtmlContent>(new HtmlContentString(str)),
+      IShape shape => await DisplayHelper.ShapeExecuteAsync(shape),
+      IHtmlContent htmlContent => htmlContent,
+      string str => new HtmlContentString(str),
       _ => throw new ArgumentException(
         "DisplayAsync requires an instance of IShape")
-    };
+    }).ToMarkupString();
   }
 
   /// <summary>
   ///   Renders a shape.
   /// </summary>
   /// <param name="shape">The shape.</param>
-  public Task<IHtmlContent> DisplayAsync(IShape shape)
+  public async Task<MarkupString> DisplayAsync(IShape shape)
   {
-    return DisplayHelper.ShapeExecuteAsync(shape);
+    return (await DisplayHelper.ShapeExecuteAsync(shape)).ToMarkupString();
   }
 
   /// <summary>
@@ -183,14 +185,14 @@ public partial class
   /// <param name="position">Optional. The position of the segment in the title.</param>
   /// <param name="separator">The html string that should separate all segments.</param>
   /// <returns>And <see cref="IHtmlContent" /> instance representing the full title.</returns>
-  public IHtmlContent RenderTitleSegments(
+  public MarkupString RenderTitleSegments(
     IHtmlContent segment,
     string position = "0",
     IHtmlContent? separator = null
   )
   {
     Title.AddSegment(segment, position);
-    return Title.GenerateTitle(separator);
+    return Title.GenerateTitle(separator).ToMarkupString();
   }
 
   /// <summary>
@@ -200,7 +202,7 @@ public partial class
   /// <param name="position">Optional. The position of the segment in the title.</param>
   /// <param name="separator">The html string that should separate all segments.</param>
   /// <returns>And <see cref="IHtmlContent" /> instance representing the full title.</returns>
-  public IHtmlContent RenderTitleSegments(
+  public MarkupString RenderTitleSegments(
     string segment,
     string position = "0",
     IHtmlContent? separator = null
@@ -212,7 +214,7 @@ public partial class
         position
       );
 
-    return Title.GenerateTitle(separator);
+    return Title.GenerateTitle(separator).ToMarkupString();
   }
 
   /// <summary>
@@ -241,11 +243,11 @@ public partial class
   ///   within a named zone.
   /// </summary>
   /// <returns>The HTML content to render.</returns>
-  public Task<IHtmlContent> RenderBodyAsync()
+  public async Task<MarkupString> RenderBodyAsync()
   {
     return ThemeLayout is null
-      ? Task.FromResult<IHtmlContent>(HtmlString.Empty)
-      : DisplayAsync(ThemeLayout.Zones["Content"]);
+      ? new MarkupString(string.Empty)
+      : await DisplayAsync(ThemeLayout.Zones["Content"]);
   }
 
   /// <summary>
@@ -266,7 +268,7 @@ public partial class
   ///   Renders a zone from the layout.
   /// </summary>
   /// <param name="name">The name of the zone to render.</param>
-  public IHtmlContent RenderSection(string name)
+  public MarkupString RenderSection(string name)
   {
     // We can replace the base implementation as it can't be called on a view that is not an actual MVC Layout.
 
@@ -280,7 +282,7 @@ public partial class
   /// </summary>
   /// <param name="name">The name of the zone to render.</param>
   /// <param name="required">Whether the zone is required or not.</param>
-  public IHtmlContent RenderSection(string name, bool required)
+  public MarkupString RenderSection(string name, bool required)
   {
     // We can replace the base implementation as it can't be called on a view that is not an actual MVC Layout.
 
@@ -295,7 +297,7 @@ public partial class
   ///   Renders a zone from the layout.
   /// </summary>
   /// <param name="name">The name of the zone to render.</param>
-  public Task<IHtmlContent> RenderSectionAsync(string name)
+  public Task<MarkupString> RenderSectionAsync(string name)
   {
     // We can replace the base implementation as it can't be called on a view that is not an actual MVC Layout.
 
@@ -309,7 +311,7 @@ public partial class
   /// </summary>
   /// <param name="name">The name of the zone to render.</param>
   /// <param name="required">Whether the zone is required or not.</param>
-  public Task<IHtmlContent> RenderSectionAsync(string name, bool required)
+  public Task<MarkupString> RenderSectionAsync(string name, bool required)
   {
     // We can replace the base implementation as it can't be called on a view that is not an actual MVC Layout.
 

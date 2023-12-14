@@ -1,0 +1,15 @@
+@using Microsoft.AspNetCore.Html
+
+<p>
+  hello from content!
+</p>
+
+@ContentHtml?.ToMarkupString()
+
+@code {
+  private IHtmlContent? ContentHtml { get; set; }
+
+  protected override async Task OnInitializedAsync() {
+    ContentHtml = await DisplayAsync(Model.Content);
+  }
+}

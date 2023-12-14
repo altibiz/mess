@@ -9,5 +9,6 @@ using OrchardCore.DisplayManagement.Manifest;
   Website = ManifestConstants.Website,
   Version = ManifestConstants.Version,
   Category = ManifestConstants.Category,
-  Tags = new string[] { ManifestConstants.MessTag }
+  Tags = new string[] { ManifestConstants.MessTag },
+  Dependencies = new[] { "Mess.Blazor" }
 )]

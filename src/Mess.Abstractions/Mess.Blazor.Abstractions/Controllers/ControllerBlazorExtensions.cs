@@ -24,8 +24,8 @@ public static class ControllerBlazorExtensions
     object? model
   )
   {
-    return controller.PartialView(
-      "ComponentView.cshtml",
+    return controller.View(
+      "/Areas/Mess.Blazor/Views/Shared/ComponentView.cshtml",
       new ComponentViewModel
       {
         ComponentType = componentType,

@@ -1,0 +1,64 @@
+@using Microsoft.AspNetCore.Html
+@using OrchardCore.ResourceManagement
+
+@inject IResourceManager resourceManager
+
+<MudThemeProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+
+<HeadContent>
+  <title>
+    @{
+      var siteName = Site?.SiteName;
+      if (siteName != null) {
+        @RenderTitleSegments(siteName, "before");
+      }
+    }
+  </title>
+
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  @HeadMeta
+
+  @resourceManager.RenderMeta()
+  @resourceManager.RenderHeadLink()
+  @resourceManager.RenderHeadScript()
+  @resourceManager.RenderStylesheet()
+</HeadContent>
+
+<main>
+  @if (IsSectionDefined("Messages"))
+  {
+    @Messages
+  }
+  @Body
+</main>
+
+<footer>
+  @Footer
+</footer>
+
+@resourceManager.RenderFootScript()
+
+@Body
+
+@code {
+  private MarkupString? HeadMeta { get; set; }
+
+  private MarkupString? Messages { get; set; }
+
+  private MarkupString? Body { get; set; }
+
+  private MarkupString? Footer { get; set; }
+
+  protected override async Task OnInitializedAsync() {
+    HeadMeta = await RenderSectionAsync("HeadMeta", false);
+
+    // Messages = await RenderSectionAsync("Messages", false);
+
+    // Body = await RenderBodyAsync();
+
+    // Footer= await RenderSectionAsync("Footer", false);
+  }
+}

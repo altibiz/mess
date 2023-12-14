@@ -5,10 +5,29 @@
 @{
   var renderId = Guid.NewGuid();
   shapeComponentModelStore.Add(renderId, Model.Model);
+
+  Layout = null;
 }
 
-@(await Html.RenderComponentAsync(
-  Model.ComponentType,
-  RenderMode.ServerPrerendered,
-  new { RenderId = renderId }
-))
+<!DOCTYPE html>
+<html lang="@Orchard.CultureName()">
+
+<head>
+  @(await Html.RenderComponentAsync(
+    typeof(Microsoft.AspNetCore.Components.Web.HeadOutlet),
+    RenderMode.ServerPrerendered,
+    new { }
+  ))
+</head>
+
+<body>
+  @(await DisplayAsync(await Factory.New.ComponentLayout()))
+
+  @(await Html.RenderComponentAsync(
+    Model.ComponentType,
+    RenderMode.ServerPrerendered,
+    new { RenderId = renderId }
+  ))
+</body>
+
+</html>
