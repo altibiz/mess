@@ -23,8 +23,6 @@
 <body>
   @{
     var layoutShape = await Factory.New.ComponentLayout();
-    layoutShape.ComponentType = Model.ComponentType;
-    layoutShape.RenderId = renderId;
   }
 
   @(await DisplayAsync(layoutShape))

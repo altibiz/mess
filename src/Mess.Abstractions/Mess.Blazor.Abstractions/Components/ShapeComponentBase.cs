@@ -13,6 +13,7 @@ using OrchardCore.DisplayManagement.Zones;
 using OrchardCore.Settings;
 
 // TODO: rename these to modelcomponentbase
+// TODO: markupstrings to renderfragments
 
 namespace Mess.Blazor.Abstractions.Components;
 
@@ -243,11 +244,14 @@ public partial class
   ///   within a named zone.
   /// </summary>
   /// <returns>The HTML content to render.</returns>
-  public async Task<MarkupString> RenderBodyAsync()
+  public async Task<RenderFragment> RenderBodyAsync()
   {
-    return ThemeLayout is null
-      ? new MarkupString(string.Empty)
-      : await DisplayAsync(ThemeLayout.Zones["Content"]);
+    return builder =>
+    {
+      builder.OpenComponent(0, ((Model as dynamic).ComponentType as Type)!);
+      builder.AddAttribute(0, "RenderId", (Model as dynamic).RenderId);
+      builder.CloseComponent();
+    };
   }
 
   /// <summary>

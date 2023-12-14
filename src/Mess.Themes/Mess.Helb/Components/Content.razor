@@ -4,12 +4,12 @@
   hello from content!
 </p>
 
-@ContentHtml?.ToMarkupString()
+@ContentMarkup
 
 @code {
-  private IHtmlContent? ContentHtml { get; set; }
+  private MarkupString? ContentMarkup { get; set; }
 
   protected override async Task OnInitializedAsync() {
-    ContentHtml = await DisplayAsync(Model.Content);
+    ContentMarkup = await DisplayAsync(Model.Content);
   }
 }

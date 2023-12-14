@@ -2,7 +2,9 @@ using Mess.Blazor.Abstractions.Components;
 using Mess.Blazor.Abstractions.Localization;
 using Mess.Blazor.Abstractions.ShapeTemplateStrategy;
 using Mess.Blazor.Components;
+using Mess.Blazor.Controllers;
 using Mess.Blazor.ShapeTemplateStrategy;
+using Mess.Cms.Extensions.Microsoft;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.Server.Circuits;
 using Microsoft.AspNetCore.Mvc.Localization;
@@ -43,6 +45,8 @@ public class Startup : StartupBase
         .GetRequiredService<ShapeComponentCircuitAccessor>());
 
     services.AddScoped<IComponentLocalizer, ComponentLocalizer>();
+
+    services.AddScoped<ComponentHelper>();
   }
 
   public override void Configure(
@@ -59,6 +63,11 @@ public class Startup : StartupBase
     });
 
     app.UseMiddleware<ResourceMiddleware>();
+
+    routes.MapAreaControllerRoute<AppController>(
+      nameof(AppController.Index),
+      "/App"
+    );
 
     routes.MapBlazorHub();
   }

@@ -10,6 +10,8 @@ using OrchardCore.Environment.Extensions.Features;
 using OrchardCore.Environment.Shell;
 using OrchardCore.Modules.Manifest;
 
+// TODO: adjust layout.razor to componentlayout shape
+
 namespace Mess.Blazor.ShapeTemplateStrategy;
 
 public class ShapeComponentBindingStrategy : IShapeTableHarvester

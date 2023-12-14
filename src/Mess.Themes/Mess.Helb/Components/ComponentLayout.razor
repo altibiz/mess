@@ -27,11 +27,14 @@
   @resourceManager.RenderStylesheet()
 </HeadContent>
 
-<main>
+<header>
   @if (IsSectionDefined("Messages"))
   {
     @Messages
   }
+</header>
+
+<main>
   @Body
 </main>
 
@@ -41,24 +44,33 @@
 
 @resourceManager.RenderFootScript()
 
-@Body
-
 @code {
   private MarkupString? HeadMeta { get; set; }
-
   private MarkupString? Messages { get; set; }
-
-  private MarkupString? Body { get; set; }
-
+  private RenderFragment? Body { get; set; }
   private MarkupString? Footer { get; set; }
 
   protected override async Task OnInitializedAsync() {
     HeadMeta = await RenderSectionAsync("HeadMeta", false);
-
-    // Messages = await RenderSectionAsync("Messages", false);
-
-    // Body = await RenderBodyAsync();
-
-    // Footer= await RenderSectionAsync("Footer", false);
+    Messages = await RenderSectionAsync("Messages", false);
+    Body = await RenderBodyAsync();
+    Footer = await RenderSectionAsync("Footer", false);
   }
 }
+
+@code {
+  public string Text { get; set; } = "????";
+
+  public string ButtonText { get; set; } = "Click Me";
+
+  public int ButtonClicked { get; set; }
+
+  void ButtonOnClick()
+  {
+    ButtonClicked += 1;
+    Text = $"Awesome x {ButtonClicked}";
+    ButtonText = "Click Me Again";
+  }
+
+}
+
