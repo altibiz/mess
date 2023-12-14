@@ -47,23 +47,21 @@ public class BlazorShapeTemplateComponentEngine : IShapeTemplateComponentEngine
 
   public async Task<IHtmlContent> RenderAsync(
     Type componentType,
-    string htmlPrefix,
-    object? model,
-    TextWriter? writer
+    DisplayContext displayContext
   )
   {
     var viewContext = _viewContextAccessor.ViewContext;
     if (viewContext is null)
     {
       var actionContext = await GetActionContextAsync();
-      viewContext = await MakeViewContextAsync(actionContext, model, writer);
+      viewContext = await MakeViewContextAsync(actionContext, displayContext.Value);
     }
 
     var renderId = Guid.NewGuid();
-    _shapeComponentModelStore.Add(renderId, model);
+    _shapeComponentModelStore.Add(renderId, displayContext.Value);
 
     var viewData = new ViewDataDictionary(viewContext.ViewData);
-    viewData.TemplateInfo.HtmlFieldPrefix = htmlPrefix;
+    viewData.TemplateInfo.HtmlFieldPrefix = displayContext.HtmlFieldPrefix;
     var htmlHelper = MakeHtmlHelper(viewContext, viewData);
 
     return await htmlHelper.RenderComponentAsync(componentType,
@@ -73,7 +71,7 @@ public class BlazorShapeTemplateComponentEngine : IShapeTemplateComponentEngine
   }
 
   private async Task<ViewContext> MakeViewContextAsync(
-    ActionContext actionContext, object? model, TextWriter? writer)
+    ActionContext actionContext, object? model)
   {
     var viewContext = new ViewContext(
       actionContext,
@@ -89,7 +87,7 @@ public class BlazorShapeTemplateComponentEngine : IShapeTemplateComponentEngine
         actionContext.HttpContext,
         _tempDataProvider
       ),
-      writer!,
+      null!,
       new HtmlHelperOptions()
     );
 

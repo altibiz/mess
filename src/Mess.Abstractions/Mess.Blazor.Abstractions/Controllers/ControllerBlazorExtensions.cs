@@ -1,5 +1,6 @@
 using System.Text.Encodings.Web;
 using Mess.Blazor.Abstractions.Components;
+using Mess.Blazor.Abstractions.ViewModels;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -23,15 +24,13 @@ public static class ControllerBlazorExtensions
     object? model
   )
   {
-    var httpContext = controller.HttpContext;
-
-    var shapeTemplateComponentEngine = httpContext.RequestServices.GetRequiredService<IShapeTemplateComponentEngine>();
-
-    using var writer = new StringWriter();
-    var htmlContent = await shapeTemplateComponentEngine.RenderAsync(componentType, "", model, writer);
-    htmlContent.WriteTo(writer, HtmlEncoder.Default);
-    var htmlString = writer.ToString();
-
-    return controller.Content(htmlString, "text/html");
+    return controller.PartialView(
+      "ComponentView.cshtml",
+      new ComponentViewModel
+      {
+        ComponentType = componentType,
+        Model = model
+      }
+    );
   }
 }

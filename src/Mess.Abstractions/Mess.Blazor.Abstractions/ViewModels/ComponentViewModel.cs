@@ -1,4 +1,4 @@
-namespace Mess.Blazor.ViewModels;
+namespace Mess.Blazor.Abstractions.ViewModels;
 
 public class ComponentViewModel
 {

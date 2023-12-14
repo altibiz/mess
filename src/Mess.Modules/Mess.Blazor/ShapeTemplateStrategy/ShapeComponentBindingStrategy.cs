@@ -179,9 +179,7 @@ public class ShapeComponentBindingStrategy : IShapeTableHarvester
 
             return viewEngine.RenderAsync(
               hit.shapeContext.harvestShapeInfo.Type,
-              displayContext.HtmlFieldPrefix,
-              displayContext.Value,
-              null
+              displayContext
             );
           });
     }
