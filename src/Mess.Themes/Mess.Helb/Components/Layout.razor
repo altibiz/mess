@@ -1,6 +1,8 @@
 @using Microsoft.AspNetCore.Html
 @using OrchardCore.ResourceManagement
 
+@* TODO: fix circuit not being able to initialize *@
+
 @inherits LayoutShapeComponentBase
 
 @inject IResourceManager resourceManager
@@ -10,23 +12,23 @@
 <MudSnackbarProvider/>
 
 <HeadContent>
-  <title>
-    @{
-      var siteName = Site?.SiteName;
-      if (siteName != null) {
+  @{
+    var siteName = Site?.SiteName;
+    if (siteName is not null) {
+      <title>
         @RenderTitleSegments(siteName, "before");
-      }
+      </title>
     }
-  </title>
+  }
 
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   @HeadMeta
 
-  @resourceManager.RenderMeta()
-  @resourceManager.RenderHeadLink()
-  @resourceManager.RenderHeadScript()
-  @resourceManager.RenderStylesheet()
+  @Meta
+  @HeadLink
+  @HeadScript
+  @Stylesheet
 </HeadContent>
 
 <header>
@@ -38,23 +40,45 @@
 
 <main>
   @Body
+
+  <MudText Typo="Typo.h6">MudBlazor is @Text</MudText>
+  <MudButton
+    Variant="Variant.Filled"
+    Color="Color.Primary"
+    OnClick="ButtonOnClick">
+    @ButtonText
+  </MudButton>
 </main>
 
 <footer>
   @Footer
 </footer>
 
-@resourceManager.RenderFootScript()
+@FootScript
 
 @code {
   private RenderFragment? HeadMeta { get; set; }
   private RenderFragment? Messages { get; set; }
   private RenderFragment? Footer { get; set; }
 
-  protected override async Task OnInitializedAsync() {
+  protected override async Task OnLayoutInitializedAsync() {
     HeadMeta = await RenderSectionAsync("HeadMeta", false);
     Messages = await RenderSectionAsync("Messages", false);
     Footer = await RenderSectionAsync("Footer", false);
-    Body ??= await RenderBodyAsync();
+  }
+}
+
+@code {
+  public string Text { get; set; } = "????";
+
+  public string ButtonText { get; set; } = "Click Me";
+
+  public int ButtonClicked { get; set; }
+
+  void ButtonOnClick()
+  {
+    ButtonClicked += 1;
+    Text = $"Awesome x {ButtonClicked}";
+    ButtonText = "Click Me Again";
   }
 }

@@ -26,17 +26,17 @@ public class BlazorShapeTemplateComponentEngine : IShapeTemplateComponentEngine
 
   private readonly ComponentHelper _componentHelper;
   private readonly ViewContextAccessor _viewContextAccessor;
-  private readonly IShapeComponentModelStore _shapeComponentModelStore;
+  private readonly IComponentCaptureStore _componentCaptureStore;
 
   public BlazorShapeTemplateComponentEngine(
     ComponentHelper componentHelper,
     ViewContextAccessor viewContextAccessor,
-    IShapeComponentModelStore shapeComponentModelStore
+    IComponentCaptureStore componentCaptureStore
   )
   {
     _componentHelper = componentHelper;
     _viewContextAccessor = viewContextAccessor;
-    _shapeComponentModelStore = shapeComponentModelStore;
+    _componentCaptureStore = componentCaptureStore;
   }
 
   public IEnumerable<Type> TemplateBaseClasses => _templateBaseClasses;
@@ -54,7 +54,12 @@ public class BlazorShapeTemplateComponentEngine : IShapeTemplateComponentEngine
     }
 
     var renderId = Guid.NewGuid();
-    _shapeComponentModelStore.Add(renderId, displayContext.Value);
+    _componentCaptureStore.Add(
+      renderId,
+      new ComponentCapture
+      {
+        Model = displayContext.Value
+      });
 
     var viewData = new ViewDataDictionary(viewContext.ViewData);
     viewData.TemplateInfo.HtmlFieldPrefix = displayContext.HtmlFieldPrefix;

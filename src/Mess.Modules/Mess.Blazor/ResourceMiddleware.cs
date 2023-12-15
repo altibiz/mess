@@ -5,6 +5,7 @@ using OrchardCore.Environment.Shell;
 using OrchardCore.ResourceManagement;
 
 // TODO: extract mudblazor into its own feature
+// TODO: fix double rendering in non-component layouts
 
 namespace Mess.Blazor;
 

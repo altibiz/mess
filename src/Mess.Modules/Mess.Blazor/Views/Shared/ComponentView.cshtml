@@ -1,10 +1,19 @@
 @model ComponentViewModel
 
-@inject IShapeComponentModelStore shapeComponentModelStore
+@inject IComponentCaptureStore componentCaptureStore
+@inject IResourceManager resourceManager
+@inject IRenderIdAccessor renderIdAccessor
 
 @{
   var renderId = Guid.NewGuid();
-  shapeComponentModelStore.Add(renderId, Model.Model);
+  componentCaptureStore.Add(
+    renderId,
+    new ComponentCapture
+    {
+      Model = Model.Model
+    }
+  );
+  renderIdAccessor.RenderId = renderId;
 
   Layout = null;
 }
@@ -25,6 +34,11 @@
     var layoutShape = await Factory.New.ComponentLayout();
     layoutShape.ComponentType = Model.ComponentType;
     layoutShape.RenderId = renderId;
+    layoutShape.Meta = resourceManager.RenderMeta();
+    layoutShape.HeadLink = resourceManager.RenderHeadLink();
+    layoutShape.HeadScript = resourceManager.RenderHeadScript();
+    layoutShape.Stylesheet = resourceManager.RenderStylesheet();
+    layoutShape.FootScript = resourceManager.RenderFootScript();
   }
 
   @(await DisplayAsync(layoutShape))

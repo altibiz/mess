@@ -1,5 +1,7 @@
 @using Mess.Blazor.Abstractions.Extensions
 
+@* TODO: fix links *@
+
 <Router
   AppAssembly="@this.GetAppAssembly()"
   AdditionalAssemblies="@this.GetExtensionAssemblies()">
@@ -10,6 +12,10 @@
   <NotFound>
     <LayoutView Layout="@this.GetLayoutType()">
       <p>Sorry, there's nothing at this address.</p>
+
+      <MudNavLink Href="/dashboard">
+        Dashboard
+      </MudNavLink>
     </LayoutView>
   </NotFound>
 </Router>

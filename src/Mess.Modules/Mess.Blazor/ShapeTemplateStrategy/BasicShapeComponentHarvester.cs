@@ -20,7 +20,8 @@ public class BasicShapeComponentHarvester : IShapeComponentHarvester
     return new[]
     {
       typeof(ShapeComponentBase),
-      typeof(ShapeComponentBase<>)
+      typeof(ShapeComponentBase<>),
+      typeof(LayoutShapeComponentBase)
     };
   }
 

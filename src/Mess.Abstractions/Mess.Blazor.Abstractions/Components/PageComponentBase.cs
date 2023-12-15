@@ -138,6 +138,21 @@ public partial class PageComponentBase : ComponentBase
     HttpContext.Request.QueryString;
 
   /// <summary>
+  ///   In a Razor layout page, renders the portion of a content page that is not
+  ///   within a named zone.
+  /// </summary>
+  /// <returns>The HTML content to render.</returns>
+  public Task<RenderFragment> RenderBodyAsync()
+  {
+    if (ThemeLayout is null)
+    {
+      return Task.FromResult<RenderFragment>(builder => { });
+    }
+
+    return DisplayAsync(ThemeLayout.Zones["Content"]);
+  }
+
+  /// <summary>
   ///   Renders a shape.
   /// </summary>
   /// <param name="shape">The shape.</param>
@@ -154,7 +169,7 @@ public partial class PageComponentBase : ComponentBase
 
     return builder =>
     {
-      builder.AddContent(0, content);
+      builder.AddMarkupContent(0, content.ToMarkupString().Value);
     };
   }
 
@@ -167,7 +182,7 @@ public partial class PageComponentBase : ComponentBase
     var content = await DisplayHelper.ShapeExecuteAsync(shape);
     return builder =>
     {
-      builder.AddContent(0, content);
+      builder.AddMarkupContent(0, content.ToMarkupString().Value);
     };
   }
 
@@ -188,7 +203,7 @@ public partial class PageComponentBase : ComponentBase
     var content = Title.GenerateTitle(separator);
     return builder =>
     {
-      builder.AddContent(0, content);
+      builder.AddMarkupContent(0, content.ToMarkupString().Value);
     };
   }
 
@@ -214,7 +229,7 @@ public partial class PageComponentBase : ComponentBase
     var content = Title.GenerateTitle(separator);
     return builder =>
     {
-      builder.AddContent(0, content);
+      builder.AddMarkupContent(0, content.ToMarkupString().Value);
     };
   }
 
@@ -238,22 +253,6 @@ public partial class PageComponentBase : ComponentBase
   {
     return shape.GetTagBuilder(tag);
   }
-
-  /// <summary>
-  ///   In a Razor layout page, renders the portion of a content page that is not
-  ///   within a named zone.
-  /// </summary>
-  /// <returns>The HTML content to render.</returns>
-  public Task<RenderFragment> RenderBodyAsync()
-  {
-    if (ThemeLayout is null)
-    {
-      return Task.FromResult<RenderFragment>(builder => { });
-    }
-
-    return DisplayAsync(ThemeLayout.Zones["Content"]);
-  }
-
 
   /// <summary>
   ///   Check if a zone is defined in the layout or it has items.

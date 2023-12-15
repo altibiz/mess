@@ -1,6 +1,8 @@
 @namespace Mess.Blazor.Abstractions.Components
 @typeparam TModel
 
-@inject IShapeComponentCircuitAccessor shapeComponentCircuitAccessor
 @inject IHttpContextAccessor httpContextAccessor
-@inject IShapeComponentModelStore modelStore
+
+@inject ICircuitAccessor circuitAccessor
+@inject IRenderIdAccessor renderIdAccessor
+@inject IComponentCaptureStore captureStore

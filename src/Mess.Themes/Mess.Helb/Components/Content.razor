@@ -1,11 +1,11 @@
 @using Microsoft.AspNetCore.Html
 
-@ContentMarkup
+@Body
 
 @code {
-  private RenderFragment? ContentMarkup { get; set; }
+  private RenderFragment? Body { get; set; }
 
   protected override async Task OnInitializedAsync() {
-    ContentMarkup = await DisplayAsync(Model.Content);
+    Body = await DisplayAsync(Model.Content);
   }
 }

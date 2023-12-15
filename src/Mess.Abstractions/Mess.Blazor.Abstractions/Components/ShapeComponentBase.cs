@@ -15,6 +15,10 @@ using OrchardCore.Settings;
 // TODO: base class for layout, shape, page
 // layout can be componentbase but u need to add renderfragment body parameter
 
+// TODO: fix site and themelayout being scoped and not working on subsequent renders
+// site should be serializeable and could be passed as a parameter
+// themelayout is not serializeable and should somehow go through the store
+
 namespace Mess.Blazor.Abstractions.Components;
 
 public partial class ShapeComponentBase<TModel> : ComponentBase
@@ -40,15 +44,29 @@ public partial class ShapeComponentBase<TModel> : ComponentBase
 
   private IZoneHolding? _themeLayout;
 
-  [Parameter] public Guid RenderId { get; set; }
+  [Parameter] public Guid? RenderId { get; set; }
 
   /// <summary>
   ///   Gets the <see cref="TModel" /> instance.
   /// </summary>
-  public TModel Model => _model ??= modelStore.Get(
-    RenderId,
-    shapeComponentCircuitAccessor.Circuit?.Id
-  ) as TModel ?? throw new InvalidOperationException("Model is invalid");
+  public TModel Model
+  {
+    get
+    {
+      var renderId = RenderId
+        ?? renderIdAccessor.RenderId
+        ?? throw new InvalidOperationException("RenderId is null");
+
+      var circuitId = circuitAccessor.Circuit?.Id;
+
+      var capture = captureStore.Get(renderId, circuitId);
+
+      var model = capture?.Model as TModel
+        ?? throw new InvalidOperationException("Model is invalid");
+
+      return _model ??= model;
+    }
+  }
 
   public HttpContext HttpContext => _httpContext ??=
     httpContextAccessor.HttpContext ??
@@ -154,6 +172,21 @@ public partial class ShapeComponentBase<TModel> : ComponentBase
     HttpContext.Request.QueryString;
 
   /// <summary>
+  ///   In a Razor layout page, renders the portion of a content page that is not
+  ///   within a named zone.
+  /// </summary>
+  /// <returns>The HTML content to render.</returns>
+  public Task<RenderFragment> RenderBodyAsync()
+  {
+    if (ThemeLayout is null)
+    {
+      return Task.FromResult<RenderFragment>(builder => { });
+    }
+
+    return DisplayAsync(ThemeLayout.Zones["Content"]);
+  }
+
+  /// <summary>
   ///   Renders a shape.
   /// </summary>
   /// <param name="shape">The shape.</param>
@@ -170,7 +203,7 @@ public partial class ShapeComponentBase<TModel> : ComponentBase
 
     return builder =>
     {
-      builder.AddContent(0, content);
+      builder.AddMarkupContent(0, content.ToMarkupString().Value);
     };
   }
 
@@ -183,7 +216,7 @@ public partial class ShapeComponentBase<TModel> : ComponentBase
     var content = await DisplayHelper.ShapeExecuteAsync(shape);
     return builder =>
     {
-      builder.AddContent(0, content);
+      builder.AddMarkupContent(0, content.ToMarkupString().Value);
     };
   }
 
@@ -204,7 +237,7 @@ public partial class ShapeComponentBase<TModel> : ComponentBase
     var content = Title.GenerateTitle(separator);
     return builder =>
     {
-      builder.AddContent(0, content);
+      builder.AddMarkupContent(0, content.ToMarkupString().Value);
     };
   }
 
@@ -230,7 +263,7 @@ public partial class ShapeComponentBase<TModel> : ComponentBase
     var content = Title.GenerateTitle(separator);
     return builder =>
     {
-      builder.AddContent(0, content);
+      builder.AddMarkupContent(0, content.ToMarkupString().Value);
     };
   }
 
@@ -254,22 +287,6 @@ public partial class ShapeComponentBase<TModel> : ComponentBase
   {
     return shape.GetTagBuilder(tag);
   }
-
-  /// <summary>
-  ///   In a Razor layout page, renders the portion of a content page that is not
-  ///   within a named zone.
-  /// </summary>
-  /// <returns>The HTML content to render.</returns>
-  public Task<RenderFragment> RenderBodyAsync()
-  {
-    if (ThemeLayout is null)
-    {
-      return Task.FromResult<RenderFragment>(builder => { });
-    }
-
-    return DisplayAsync(ThemeLayout.Zones["Content"]);
-  }
-
 
   /// <summary>
   ///   Check if a zone is defined in the layout or it has items.

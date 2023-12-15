@@ -78,26 +78,27 @@ public static class ShapeComponentBaseAppExtensions
       .DistinctBy(extension => extension.Id)
       .ToArray();
 
-    var extensionAssemblies =
-    activeExtensions.Select(extension =>
-    {
-      var assembly = AppDomain.CurrentDomain.GetAssemblies()
-           .FirstOrDefault(assembly => assembly
-             .GetCustomAttributes(false)
-             .Where(attribute =>
-               attribute is ModuleAttribute moduleAttribute &&
-               moduleAttribute.Id ==
-               extension.Manifest.ModuleInfo.Id)
-             .Any());
-
-      if (assembly is null)
+    var extensionAssemblies = activeExtensions
+      .Select(extension =>
       {
-        return null;
-      }
+        var assembly = AppDomain.CurrentDomain.GetAssemblies()
+            .FirstOrDefault(assembly => assembly
+              .GetCustomAttributes(false)
+              .Where(attribute =>
+                attribute is ModuleAttribute moduleAttribute &&
+                moduleAttribute.Id ==
+                extension.Manifest.ModuleInfo.Id)
+              .Any());
 
-      return new ExtensionAssemblyData(extension, assembly);
+        if (assembly is null)
+        {
+          return null;
+        }
 
-    }).WhereNotNull().ToArray();
+        return new ExtensionAssemblyData(extension, assembly);
+
+      })
+      .WhereNotNull();
 
     return extensionAssemblies;
   }

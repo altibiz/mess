@@ -40,15 +40,41 @@ public partial class LayoutShapeComponentBase
 
   private IZoneHolding? _themeLayout;
 
-  [Parameter] public Guid RenderId { get; set; }
+  [Parameter] public Guid? RenderId { get; set; }
 
   /// <summary>
   ///   Gets the <see cref="TModel" /> instance.
   /// </summary>
-  public LayoutViewModel Model => _model ??= modelStore.Get(
-    RenderId,
-    shapeComponentCircuitAccessor.Circuit?.Id
-  ) as LayoutViewModel ?? throw new InvalidOperationException("Model is invalid");
+  public LayoutViewModel Model
+  {
+    get
+    {
+      var renderId = RenderId
+        ?? renderIdAccessor.RenderId
+        ?? throw new InvalidOperationException("RenderId is null");
+
+      var circuitId = circuitAccessor.Circuit?.Id;
+
+      var capture = captureStore.Get(renderId, circuitId);
+
+      var model = capture?.Model as LayoutViewModel
+        ?? throw new InvalidOperationException("Model is invalid");
+
+
+      return _model ??= model;
+    }
+  }
+
+  public MarkupString? Meta => Model.Meta;
+
+  public MarkupString? HeadLink => Model.HeadLink;
+
+  public MarkupString? HeadScript => Model.HeadScript;
+
+  public MarkupString? Stylesheet => Model.Stylesheet;
+
+  public MarkupString? FootScript => Model.FootScript;
+
 
   public HttpContext HttpContext => _httpContext ??=
     httpContextAccessor.HttpContext ??
@@ -84,7 +110,7 @@ public partial class LayoutShapeComponentBase
   /// (await New.MyShape()).A(1).B("Some text")
   /// </code>
   /// </example>
-  public dynamic New => ShapeFactory;
+  public dynamic New => ShapeFactory.New;
 
   /// <summary>
   ///   Gets an <see cref="IShapeFactory" /> to create new shapes.
@@ -153,6 +179,46 @@ public partial class LayoutShapeComponentBase
     HttpContext.Request.Path +
     HttpContext.Request.QueryString;
 
+  protected sealed override void OnInitialized()
+  {
+    OnLayoutInitialized();
+  }
+
+  protected sealed async override Task OnInitializedAsync()
+  {
+    Body ??= await RenderBodyAsync();
+    await OnLayoutInitializedAsync();
+  }
+
+  protected virtual void OnLayoutInitialized()
+  {
+  }
+
+  protected virtual Task OnLayoutInitializedAsync()
+  {
+    return Task.CompletedTask;
+  }
+
+  /// <summary>
+  ///   In a Razor layout page, renders the portion of a content page that is not
+  ///   within a named zone.
+  /// </summary>
+  /// <returns>The HTML content to render.</returns>
+  public async Task<RenderFragment> RenderBodyAsync()
+  {
+    if (Model.ComponentType is null || Model.RenderId is null)
+    {
+      return builder => { };
+    }
+
+    return builder =>
+    {
+      builder.OpenComponent(0, Model.ComponentType);
+      builder.AddAttribute(0, "RenderId", Model.RenderId);
+      builder.CloseComponent();
+    };
+  }
+
   /// <summary>
   ///   Renders a shape.
   /// </summary>
@@ -170,7 +236,7 @@ public partial class LayoutShapeComponentBase
 
     return builder =>
     {
-      builder.AddContent(0, content);
+      builder.AddMarkupContent(0, content.ToMarkupString().Value);
     };
   }
 
@@ -183,7 +249,7 @@ public partial class LayoutShapeComponentBase
     var content = await DisplayHelper.ShapeExecuteAsync(shape);
     return builder =>
     {
-      builder.AddContent(0, content);
+      builder.AddMarkupContent(0, content.ToMarkupString().Value);
     };
   }
 
@@ -204,7 +270,7 @@ public partial class LayoutShapeComponentBase
     var content = Title.GenerateTitle(separator);
     return builder =>
     {
-      builder.AddContent(0, content);
+      builder.AddMarkupContent(0, content.ToMarkupString().Value);
     };
   }
 
@@ -230,7 +296,7 @@ public partial class LayoutShapeComponentBase
     var content = Title.GenerateTitle(separator);
     return builder =>
     {
-      builder.AddContent(0, content);
+      builder.AddMarkupContent(0, content.ToMarkupString().Value);
     };
   }
 
@@ -253,21 +319,6 @@ public partial class LayoutShapeComponentBase
   public TagBuilder Tag(IShape shape, string tag)
   {
     return shape.GetTagBuilder(tag);
-  }
-
-  /// <summary>
-  ///   In a Razor layout page, renders the portion of a content page that is not
-  ///   within a named zone.
-  /// </summary>
-  /// <returns>The HTML content to render.</returns>
-  public async Task<RenderFragment> RenderBodyAsync()
-  {
-    return builder =>
-    {
-      builder.OpenComponent(0, Model.ComponentType);
-      builder.AddAttribute(0, "RenderId", Model.RenderId);
-      builder.CloseComponent();
-    };
   }
 
   /// <summary>

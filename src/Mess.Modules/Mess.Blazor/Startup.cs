@@ -29,6 +29,8 @@ public class Startup : StartupBase
 
   public override void ConfigureServices(IServiceCollection services)
   {
+    services.AddScoped<ResourceMiddleware>();
+
     services.AddServerSideBlazor().AddCircuitOptions(options =>
     {
       if (_hostEnvironment.IsDevelopment())
@@ -37,7 +39,11 @@ public class Startup : StartupBase
       }
     });
 
-    services.AddScoped<ResourceMiddleware>();
+    services.AddScoped<ICircuitAccessor, CircuitAccessor>();
+    services.AddScoped<CircuitHandler, ComponentCaptureCircuitHandler>();
+    services.AddScoped<IRenderIdAccessor, RenderIdAccessor>();
+    services
+      .AddSingleton<IComponentCaptureStore, ComponentCaptureStore>();
 
     services
       .AddScoped<IShapeComponentHarvester, BasicShapeComponentHarvester>();
@@ -45,22 +51,10 @@ public class Startup : StartupBase
       .AddScoped<IShapeTemplateComponentEngine,
         BlazorShapeTemplateComponentEngine>();
     services.AddScoped<IShapeTableProvider, ShapeComponentBindingStrategy>();
+    services.AddScoped<ComponentHelper>();
 
     services.AddMudServices();
-
-    services
-      .AddSingleton<IShapeComponentModelStore, ShapeComponentModelStore>();
-
-    services.AddScoped<CircuitHandler, ShapeComponentCircuitHandler>();
-
-    services.AddScoped<ShapeComponentCircuitAccessor>();
-    services.AddScoped<IShapeComponentCircuitAccessor>(
-      services => services
-        .GetRequiredService<ShapeComponentCircuitAccessor>());
-
     services.AddScoped<IComponentLocalizer, ComponentLocalizer>();
-
-    services.AddScoped<ComponentHelper>();
   }
 
   public override void Configure(
@@ -82,6 +76,8 @@ public class Startup : StartupBase
       nameof(AppController.Index),
       "/App"
     );
+
+    routes.MapRazorPages();
 
     routes.MapBlazorHub();
   }
