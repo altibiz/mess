@@ -101,14 +101,4 @@ public static class ShapeComponentBaseAppExtensions
 
     return extensionAssemblies;
   }
-
-  private static IEnumerable<IExtensionInfo> Once(
-    IEnumerable<IFeatureInfo> features)
-  {
-    var once = new Dictionary<string, object?>();
-    return features
-      .Select(feature => feature.Extension)
-      .Where(extension => once.TryAdd(extension.Id, null))
-      .ToList();
-  }
 }
