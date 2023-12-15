@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Hosting;
 using MudBlazor.Services;
 using OrchardCore.DisplayManagement.Descriptors;
 using OrchardCore.Modules;
@@ -19,9 +20,22 @@ namespace Mess.Blazor;
 
 public class Startup : StartupBase
 {
+  private readonly IHostEnvironment _hostEnvironment;
+
+  public Startup(IHostEnvironment hostEnvironment)
+  {
+    _hostEnvironment = hostEnvironment;
+  }
+
   public override void ConfigureServices(IServiceCollection services)
   {
-    services.AddServerSideBlazor();
+    services.AddServerSideBlazor().AddCircuitOptions(options =>
+    {
+      if (_hostEnvironment.IsDevelopment())
+      {
+        options.DetailedErrors = true;
+      }
+    });
 
     services.AddScoped<ResourceMiddleware>();
 

@@ -58,9 +58,10 @@ public class ComponentHelper
     object? model
   )
   {
+    using var writer = new StringWriter();
     var viewContext = new ViewContext(
       actionContext,
-      null!,
+      new ComponentView(),
       new ViewDataDictionary(
         new EmptyModelMetadataProvider(),
         new ModelStateDictionary()
@@ -72,7 +73,7 @@ public class ComponentHelper
         actionContext.HttpContext,
       _tempDataProvider
       ),
-      null!,
+      writer,
       new HtmlHelperOptions()
     );
 

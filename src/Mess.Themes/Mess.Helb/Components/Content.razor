@@ -1,13 +1,9 @@
 @using Microsoft.AspNetCore.Html
 
-<p>
-  hello from content!
-</p>
-
 @ContentMarkup
 
 @code {
-  private MarkupString? ContentMarkup { get; set; }
+  private RenderFragment? ContentMarkup { get; set; }
 
   protected override async Task OnInitializedAsync() {
     ContentMarkup = await DisplayAsync(Model.Content);

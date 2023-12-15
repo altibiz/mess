@@ -1,6 +1,8 @@
 @using Microsoft.AspNetCore.Html
 @using OrchardCore.ResourceManagement
 
+@inherits LayoutShapeComponentBase
+
 @inject IResourceManager resourceManager
 
 <MudThemeProvider/>
@@ -45,15 +47,14 @@
 @resourceManager.RenderFootScript()
 
 @code {
-  private MarkupString? HeadMeta { get; set; }
-  private MarkupString? Messages { get; set; }
-  private RenderFragment? Body { get; set; }
-  private MarkupString? Footer { get; set; }
+  private RenderFragment? HeadMeta { get; set; }
+  private RenderFragment? Messages { get; set; }
+  private RenderFragment? Footer { get; set; }
 
   protected override async Task OnInitializedAsync() {
     HeadMeta = await RenderSectionAsync("HeadMeta", false);
     Messages = await RenderSectionAsync("Messages", false);
-    Body = await RenderBodyAsync();
     Footer = await RenderSectionAsync("Footer", false);
+    Body ??= await RenderBodyAsync();
   }
 }

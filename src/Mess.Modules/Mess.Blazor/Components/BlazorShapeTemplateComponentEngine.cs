@@ -20,7 +20,8 @@ public class BlazorShapeTemplateComponentEngine : IShapeTemplateComponentEngine
   private static readonly List<Type> _templateBaseClasses = new(new[]
   {
     typeof(ShapeComponentBase),
-    typeof(ShapeComponentBase<>)
+    typeof(ShapeComponentBase<>),
+    typeof(LayoutShapeComponentBase)
   });
 
   private readonly ComponentHelper _componentHelper;

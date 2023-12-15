@@ -1,6 +1,7 @@
 using System.Text.Encodings.Web;
 using Mess.Blazor.Abstractions.Extensions;
 using Mess.Blazor.Abstractions.Localization;
+using Mess.Blazor.Abstractions.ViewModels;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Localization;
@@ -17,14 +18,13 @@ using OrchardCore.Settings;
 
 namespace Mess.Blazor.Abstractions.Components;
 
-public partial class ShapeComponentBase<TModel> : ComponentBase
-  where TModel : class
+public partial class LayoutShapeComponentBase
 {
   private IDisplayHelper? _displayHelper;
 
   private HttpContext? _httpContext;
 
-  private TModel? _model;
+  private LayoutViewModel? _model;
 
   private IOrchardDisplayHelper? _orchardHelper;
 
@@ -45,10 +45,10 @@ public partial class ShapeComponentBase<TModel> : ComponentBase
   /// <summary>
   ///   Gets the <see cref="TModel" /> instance.
   /// </summary>
-  public TModel Model => _model ??= modelStore.Get(
+  public LayoutViewModel Model => _model ??= modelStore.Get(
     RenderId,
     shapeComponentCircuitAccessor.Circuit?.Id
-  ) as TModel ?? throw new InvalidOperationException("Model is invalid");
+  ) as LayoutViewModel ?? throw new InvalidOperationException("Model is invalid");
 
   public HttpContext HttpContext => _httpContext ??=
     httpContextAccessor.HttpContext ??
@@ -260,16 +260,15 @@ public partial class ShapeComponentBase<TModel> : ComponentBase
   ///   within a named zone.
   /// </summary>
   /// <returns>The HTML content to render.</returns>
-  public Task<RenderFragment> RenderBodyAsync()
+  public async Task<RenderFragment> RenderBodyAsync()
   {
-    if (ThemeLayout is null)
+    return builder =>
     {
-      return Task.FromResult<RenderFragment>(builder => { });
-    }
-
-    return DisplayAsync(ThemeLayout.Zones["Content"]);
+      builder.OpenComponent(0, Model.ComponentType);
+      builder.AddAttribute(0, "RenderId", Model.RenderId);
+      builder.CloseComponent();
+    };
   }
-
 
   /// <summary>
   ///   Check if a zone is defined in the layout or it has items.
@@ -352,8 +351,4 @@ public partial class ShapeComponentBase<TModel> : ComponentBase
 
     return text;
   }
-}
-
-public class ShapeComponentBase : ShapeComponentBase<dynamic>
-{
 }

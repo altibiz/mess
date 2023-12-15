@@ -51,6 +51,11 @@ public class BasicShapeComponentHarvester : IShapeComponentHarvester
   private static string Adjust(string subNamespace, string typeName,
     string? displayType)
   {
+    if (subNamespace == "Components" && typeName == "Layout")
+    {
+      return "ComponentLayout";
+    }
+
     var leader = "";
     if (subNamespace.StartsWith("Components.", StringComparison.Ordinal) &&
         subNamespace != "Components.Items")

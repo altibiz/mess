@@ -11,6 +11,6 @@ public class AppController : Controller
 {
   public async Task<IActionResult> Index()
   {
-    return View("/Areas/Mess.Blazor/Views/Shared/App.cshtml");
+    return View();
   }
 }

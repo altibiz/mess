@@ -19,12 +19,10 @@
 
 <body>
   @{
-    var layoutShape = await Factory.New.ComponentLayout();
-    layoutShape.ComponentType = typeof(AppBridge);
-    layoutShape.RenderId = "";
+    var appShape = await Factory.New.App();
   }
 
-  @(await DisplayAsync(layoutShape))
+  @(await DisplayAsync(appShape))
 </body>
 
 </html>
