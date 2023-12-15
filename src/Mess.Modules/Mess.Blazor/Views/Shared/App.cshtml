@@ -3,9 +3,6 @@
 @inject IShapeComponentModelStore shapeComponentModelStore
 
 @{
-  var renderId = Guid.NewGuid();
-  shapeComponentModelStore.Add(renderId, Model.Model);
-
   Layout = null;
 }
 
@@ -23,6 +20,8 @@
 <body>
   @{
     var layoutShape = await Factory.New.ComponentLayout();
+    layoutShape.ComponentType = typeof(AppBridge);
+    layoutShape.RenderId = "";
   }
 
   @(await DisplayAsync(layoutShape))

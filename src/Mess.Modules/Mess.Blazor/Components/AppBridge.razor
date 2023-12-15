@@ -1,0 +1,13 @@
+@inherits ShapeComponentBase
+
+@(App)
+
+@code {
+  private MarkupString? App { get; set; }
+
+  protected override async Task OnInitializedAsync() {
+    var appShape = await Factory.New.App();
+    var app = await DisplayAsync(appShape);
+    App = app;
+  }
+}
