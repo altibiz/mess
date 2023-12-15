@@ -3,7 +3,7 @@ using Mess.Blazor.Abstractions.Extensions;
 using Mess.Blazor.Components;
 using Microsoft.AspNetCore.Mvc;
 
-// TODO: app access permission
+// TODO: app access permission, app enable configuration
 
 namespace Mess.Blazor.Controllers;
 
