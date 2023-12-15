@@ -5,12 +5,11 @@ using Mess.Prelude.Extensions.Enumerables;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OrchardCore.DisplayManagement.Descriptors;
+using OrchardCore.DisplayManagement.Descriptors.ShapeTemplateStrategy;
 using OrchardCore.Environment.Extensions;
 using OrchardCore.Environment.Extensions.Features;
 using OrchardCore.Environment.Shell;
 using OrchardCore.Modules.Manifest;
-
-// TODO: adjust layout.razor to componentlayout shape
 
 namespace Mess.Blazor.ShapeTemplateStrategy;
 
@@ -40,30 +39,37 @@ public class ShapeComponentBindingStrategy : IShapeTableHarvester
     _logger = logger;
   }
 
+  private record class HarvesterData(
+    IShapeComponentHarvester Harvester,
+    string[] SubNamespaces,
+    Type[] BaseClasses
+  );
+
+  private record class HarvesterSubNamespaceData(
+    IShapeComponentHarvester Harvester,
+    string SubNamespace,
+    Type[] Types
+  );
+
+  private record class HarvesterTypeData(
+    IShapeComponentHarvester Harvester,
+    Type Type,
+    string RelativeTypePath,
+    string SubNamespace
+  );
+
+  private record class HarvesterShapeData(
+    IExtensionInfo Extension,
+    IShapeComponentHarvester Harvester,
+    HarvestShapeComponentInfo Component,
+    HarvestShapeHit Hit,
+    Type Type
+  );
+
   public void Discover(ShapeTableBuilder builder)
   {
     if (_logger.IsEnabled(LogLevel.Information))
       _logger.LogInformation("Start discovering shapes");
-
-    var harvesterInfos = _harvesters
-      .Select(harvester => new
-      {
-        harvester,
-        subNamespaces = harvester.SubNamespaces(),
-        baseClasses = harvester.BaseClasses()
-      })
-      .ToList();
-
-    var enabledFeatures = _shellFeaturesManager.GetEnabledFeaturesAsync()
-      .GetAwaiter().GetResult();
-    var enabledFeatureIds = enabledFeatures.Select(f => f.Id).ToArray();
-
-    // Excludes the extensions whose templates are already associated to an excluded feature that is still enabled.
-    var activeExtensions = Once(enabledFeatures)
-      .Where(e => !e.Features.Any(f =>
-        builder.ExcludedFeatureIds.Contains(f.Id) &&
-        enabledFeatureIds.Contains(f.Id)))
-      .ToArray();
 
     if (!_viewEnginesByBaseClass.Any())
       foreach (var viewEngine in _shapeTemplateComponentEngines)
@@ -71,130 +77,153 @@ public class ShapeComponentBindingStrategy : IShapeTableHarvester
           if (!_viewEnginesByBaseClass.ContainsKey(baseClass))
             _viewEnginesByBaseClass[baseClass] = viewEngine;
 
-    var hits = activeExtensions.Select(extensionDescriptor =>
-    {
-      if (_logger.IsEnabled(LogLevel.Information))
+    var harvesters = _harvesters
+      .Select(harvester => new HarvesterData(
+        harvester,
+        harvester.SubNamespaces().ToArray(),
+        harvester.BaseClasses().ToArray()
+      ))
+      .ToList();
+
+    var enabledFeatures = _shellFeaturesManager
+      .GetEnabledFeaturesAsync()
+      .GetAwaiter()
+      .GetResult();
+
+    var enabledFeatureIds = enabledFeatures
+      .Select(feature => feature.Id)
+      .ToArray();
+
+    var activeExtensions = enabledFeatures
+      .Select(feature => feature.Extension)
+      .DistinctBy(extension => extension.Id)
+      .Where(extension => !extension.Features
+        .Any(feature => builder.ExcludedFeatureIds
+          .Contains(feature.Id)))
+      .ToArray();
+
+    var shapes = activeExtensions
+      .SelectMany(extension =>
+      {
         _logger.LogInformation("Start discovering candidate component types");
 
-      var pathContexts = harvesterInfos.SelectMany(harvesterInfo =>
-          harvesterInfo.subNamespaces.Select(subNamespace =>
-          {
-            var extensionAssembly = AppDomain.CurrentDomain.GetAssemblies()
-              .FirstOrDefault(assembly => assembly
-                .GetCustomAttributes(false)
-                .Where(attribute =>
-                  attribute is ModuleAttribute moduleAttribute &&
-                  moduleAttribute.Id ==
-                  extensionDescriptor.Manifest.ModuleInfo.Id)
-                .Any());
-            if (extensionAssembly is null) return null;
+        var subnamespaces = harvesters
+          .SelectMany(harvester => harvester.SubNamespaces
+            .Select(subNamespace =>
+            {
+              var extensionAssembly = AppDomain.CurrentDomain.GetAssemblies()
+                .FirstOrDefault(assembly => assembly
+                  .GetCustomAttributes(false)
+                  .Where(attribute =>
+                    attribute is ModuleAttribute moduleAttribute &&
+                    moduleAttribute.Id ==
+                    extension.Manifest.ModuleInfo.Id)
+                  .Any());
+              if (extensionAssembly is null) return null;
 
-            var types = extensionAssembly
-              .ExportedTypes
-              .Where(type => type.Name != "_Imports")
-              .Select(type =>
-                type.Namespace is not null &&
-                type.Namespace ==
-                $"{extensionDescriptor.Manifest.ModuleInfo.Id}.{subNamespace}" &&
-                harvesterInfo.baseClasses.Any(
-                  baseClass =>
-                    baseClass == type.BaseType ||
-                    (type.BaseType?.IsGenericType is true &&
-                     baseClass == type.BaseType?.GetGenericTypeDefinition()))
-                  ? type
-                  : null)
-              .WhereNotNull();
+              var types = extensionAssembly
+                .ExportedTypes
+                .Where(type => type.Name != "_Imports")
+                .Select(type =>
+                  type.Namespace is not null &&
+                  type.Namespace ==
+                  $"{extension.Manifest.ModuleInfo.Id}.{subNamespace}" &&
+                  harvester.BaseClasses.Any(
+                    baseClass =>
+                      baseClass == type.BaseType ||
+                      (type.BaseType?.IsGenericType is true &&
+                      baseClass == type.BaseType?.GetGenericTypeDefinition()))
+                    ? type
+                    : null)
+                .WhereNotNull();
 
-            return new { harvesterInfo.harvester, subNamespace, types };
-          }))
-        .WhereNotNull()
-        .ToList();
+              return new HarvesterSubNamespaceData(
+                harvester.Harvester,
+                subNamespace,
+                types.ToArray()
+              );
+            }))
+          .WhereNotNull()
+          .ToList();
 
-      if (_logger.IsEnabled(LogLevel.Information))
         _logger.LogInformation("Done discovering candidate component types");
 
-      var fileContexts = pathContexts.SelectMany(namespaceContext =>
-        _shapeTemplateComponentEngines.SelectMany(ve =>
-        {
-          return namespaceContext.types.Select(
-            type => new
+        var types = subnamespaces
+          .SelectMany(subnamespace => _shapeTemplateComponentEngines
+            .SelectMany(engine =>
             {
-              type,
-              relativeTypePath =
-                $"{namespaceContext.subNamespace}.{type.Name}",
-              namespaceContext
-            });
-        }));
+              return subnamespace.Types.Select(type => new HarvesterTypeData(
+                subnamespace.Harvester,
+                type,
+                $"{subnamespace.SubNamespace}.{type.Name}",
+                subnamespace.SubNamespace
+              ));
+            }));
 
-      var shapeContexts = fileContexts.SelectMany(typeContext =>
-      {
-        var harvestShapeInfo = new HarvestShapeComponentInfo
-        {
-          SubNamespace = typeContext.namespaceContext.subNamespace,
-          Type = typeContext.type,
-          RelativeTypePath = typeContext.relativeTypePath,
-          BaseClass = typeContext.type.BaseType is { IsGenericType: true }
-            ? typeContext.type.BaseType.GetGenericTypeDefinition()
-            : typeContext.type.BaseType!
-        };
-        var harvestShapeHits =
-          typeContext.namespaceContext.harvester.HarvestShape(harvestShapeInfo);
-        return harvestShapeHits.Select(harvestShapeHit =>
-          new { harvestShapeInfo, harvestShapeHit, typeContext });
+        var shapes = types
+          .SelectMany(type =>
+          {
+            var component = new HarvestShapeComponentInfo
+            {
+              SubNamespace = type.SubNamespace,
+              Type = type.Type,
+              RelativeTypePath = type.RelativeTypePath,
+              BaseClass = type.Type.BaseType is { IsGenericType: true }
+                ? type.Type.BaseType.GetGenericTypeDefinition()
+                : type.Type.BaseType!
+            };
+
+            var harvestShapeHits =
+              type.Harvester.HarvestShape(component);
+
+            return harvestShapeHits
+              .Select(hit => new HarvesterShapeData(
+                extension,
+                type.Harvester,
+                component,
+                hit,
+                type.Type
+              ));
+          });
+
+        return shapes;
       });
 
-      return shapeContexts
-        .Select(shapeContext => new { extensionDescriptor, shapeContext })
-        .ToList();
-    }).SelectMany(hits2 => hits2);
-
-    foreach (var iter in hits)
+    foreach (var shape in shapes)
     {
-      var hit = iter;
-
-      // The template files of an active module need to be associated to one of its enabled feature.
       var feature =
-        hit.extensionDescriptor.Features.First(f =>
-          enabledFeatureIds.Contains(f.Id));
+        shape.Extension.Features.First(feature =>
+          enabledFeatureIds.Contains(feature.Id));
 
-      if (_logger.IsEnabled(LogLevel.Debug))
-        _logger.LogDebug(
-          "Binding '{RelativeTypePath}' as shape '{ShapeType}' for feature '{FeatureName}'",
-          hit.shapeContext.harvestShapeInfo.RelativeTypePath,
-          iter.shapeContext.harvestShapeHit.ShapeType,
-          feature.Id
-        );
+      _logger.LogDebug(
+        "Binding '{RelativeTypePath}' as shape '{ShapeType}' for feature '{FeatureName}'",
+        shape.Component.RelativeTypePath,
+        shape.Hit.ShapeType,
+        feature.Id
+      );
 
       var viewEngineType = _viewEnginesByBaseClass[
-        iter.shapeContext.harvestShapeInfo.BaseClass
+        shape.Component.BaseClass
       ].GetType();
 
-      builder.Describe(iter.shapeContext.harvestShapeHit.ShapeType)
+      builder.Describe(shape.Hit.ShapeType)
         .From(feature)
         .BoundAs(
-          hit.shapeContext.harvestShapeInfo.RelativeTypePath,
+          shape.Component.RelativeTypePath,
           displayContext =>
           {
             var viewEngine = displayContext.ServiceProvider
               .GetServices<IShapeTemplateComponentEngine>()
-              .FirstOrDefault(e => e.GetType() == viewEngineType)!;
+              .FirstOrDefault(engine =>
+                engine.GetType() == viewEngineType)!;
 
             return viewEngine.RenderAsync(
-              hit.shapeContext.harvestShapeInfo.Type,
+              shape.Component.Type,
               displayContext
             );
           });
     }
 
-    if (_logger.IsEnabled(LogLevel.Information))
-      _logger.LogInformation("Done discovering shapes");
-  }
-
-  private static IEnumerable<IExtensionInfo> Once(
-    IEnumerable<IFeatureInfo> featureDescriptors)
-  {
-    var once = new ConcurrentDictionary<string, object?>();
-    return featureDescriptors.Select(x => x.Extension)
-      .Where(ed => once.TryAdd(ed.Id, null)).ToList();
+    _logger.LogInformation("Done discovering shapes");
   }
 }

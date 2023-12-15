@@ -1,6 +1,0 @@
-@model OzdsIotDeviceListViewModel
-
-@foreach (var (item, ozdsIotDevicePart, devicePart) in Model.ContentItems)
-{
-  @await Orchard.DisplayAsync(item, "SummaryAdmin")
-}

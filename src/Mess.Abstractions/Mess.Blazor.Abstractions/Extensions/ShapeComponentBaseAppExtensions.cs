@@ -3,13 +3,14 @@ using System.Reflection;
 using Mess.Blazor.Abstractions.Components;
 using Mess.Prelude.Extensions.Enumerables;
 using Microsoft.AspNetCore.Components;
+using OrchardCore.DisplayManagement.Manifest;
 using OrchardCore.Environment.Extensions;
 using OrchardCore.Environment.Extensions.Features;
 using OrchardCore.Environment.Shell;
 using OrchardCore.Modules.Manifest;
 
 // TODO: optimize all this
-// TODO: find by base, namespace and name
+// TODO: find layout in the right theme - use theme manager?
 // TODO: remove disabled extensions like for shapes?
 
 namespace Mess.Blazor.Abstractions.Extensions;
@@ -34,9 +35,9 @@ public static class ShapeComponentBaseAppExtensions
     var data = component
       .GetExtensionTypeData()
       .FirstOrDefault(data =>
-        $"{data.Type.Namespace}.{data.Type.Name}" ==
-          $"{data.Extension.Manifest.ModuleInfo.Id}.Components.Layout"
-        && data.Type.BaseType == typeof(LayoutShapeComponentBase)
+        data.Extension.Manifest.ModuleInfo is ThemeAttribute &&
+        data.Type.Name == "Layout" &&
+        data.Type.BaseType == typeof(LayoutShapeComponentBase)
       ) ?? throw new InvalidOperationException("Couldn't find layout");
 
     return data.Type;
@@ -68,12 +69,13 @@ public static class ShapeComponentBaseAppExtensions
       .GetAwaiter()
       .GetResult();
 
-    var enabledFeatureIds = enabledFeatures.Select(f => f.Id).ToArray();
+    var enabledFeatureIds = enabledFeatures
+      .Select(feature => feature.Id)
+      .ToArray();
 
-    // Excludes the extensions whose templates are already associated to an excluded feature that is still enabled.
-    var activeExtensions = Once(enabledFeatures)
-      .Where(e => !e.Features.Any(f =>
-        enabledFeatureIds.Contains(f.Id)))
+    var activeExtensions = enabledFeatures
+      .Select(feature => feature.Extension)
+      .DistinctBy(extension => extension.Id)
       .ToArray();
 
     var extensionAssemblies =
@@ -101,10 +103,12 @@ public static class ShapeComponentBaseAppExtensions
   }
 
   private static IEnumerable<IExtensionInfo> Once(
-    IEnumerable<IFeatureInfo> featureDescriptors)
+    IEnumerable<IFeatureInfo> features)
   {
-    var once = new ConcurrentDictionary<string, object?>();
-    return featureDescriptors.Select(x => x.Extension)
-      .Where(ed => once.TryAdd(ed.Id, null)).ToList();
+    var once = new Dictionary<string, object?>();
+    return features
+      .Select(feature => feature.Extension)
+      .Where(extension => once.TryAdd(extension.Id, null))
+      .ToList();
   }
 }

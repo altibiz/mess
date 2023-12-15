@@ -134,47 +134,6 @@ public class Startup : StartupBase
       adminUrlPrefix + "/DistributionSystemOperator/Detail/{contentItemId}"
     );
 
-    routes.MapAreaControllerRoute<DistributionSystemUnitController>(
-      nameof(DistributionSystemUnitController.List),
-      "/DistributionSystemUnit/List"
-    );
-    routes.MapAreaControllerRoute<DistributionSystemUnitController>(
-      nameof(DistributionSystemUnitController.Detail),
-      "/DistributionSystemUnit/Detail/{contentItemId}"
-    );
-
-    routes.MapAreaControllerRoute<ClosedDistributionSystemController>(
-      nameof(ClosedDistributionSystemController.List),
-      "/ClosedDistributionSystem/List"
-    );
-    routes.MapAreaControllerRoute<ClosedDistributionSystemController>(
-      nameof(ClosedDistributionSystemController.Detail),
-      "/ClosedDistributionSystem/Detail/{contentItemId}"
-    );
-
-    routes.MapAreaControllerRoute<DistributionSystemOperatorController>(
-      nameof(DistributionSystemOperatorController.List),
-      "/DistributionSystemOperator/List"
-    );
-    routes.MapAreaControllerRoute<DistributionSystemOperatorController>(
-      nameof(DistributionSystemOperatorController.Detail),
-      "/DistributionSystemOperator/Detail/{contentItemId}"
-    );
-
-    routes.MapAreaControllerRoute<OzdsIotDeviceController>(
-      nameof(OzdsIotDeviceController.List),
-      "/OzdsIotDevice/List"
-    );
-    routes.MapAreaControllerRoute<OzdsIotDeviceController>(
-      nameof(OzdsIotDeviceController.Detail),
-      "/OzdsIotDevice/Detail/{contentItemId}"
-    );
-
-    routes.MapAreaControllerRoute<ClosedDistributionSystemRepresentativeController>(
-      nameof(ClosedDistributionSystemRepresentativeController.Dashboard),
-      "/ClosedDistributionSystemRepresentative/Dashboard"
-    );
-
     app.UseEndpoints(endpoints =>
     {
       endpoints.Redirect("/", "/OzdsIotDevice/List");

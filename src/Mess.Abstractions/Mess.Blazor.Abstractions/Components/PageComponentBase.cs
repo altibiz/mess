@@ -12,19 +12,13 @@ using OrchardCore.DisplayManagement.Title;
 using OrchardCore.DisplayManagement.Zones;
 using OrchardCore.Settings;
 
-// TODO: base class for layout, shape, page
-// layout can be componentbase but u need to add renderfragment body parameter
-
 namespace Mess.Blazor.Abstractions.Components;
 
-public partial class ShapeComponentBase<TModel> : ComponentBase
-  where TModel : class
+public partial class PageComponentBase : ComponentBase
 {
   private IDisplayHelper? _displayHelper;
 
   private HttpContext? _httpContext;
-
-  private TModel? _model;
 
   private IOrchardDisplayHelper? _orchardHelper;
 
@@ -39,16 +33,6 @@ public partial class ShapeComponentBase<TModel> : ComponentBase
   private IComponentLocalizer? _t;
 
   private IZoneHolding? _themeLayout;
-
-  [Parameter] public Guid RenderId { get; set; }
-
-  /// <summary>
-  ///   Gets the <see cref="TModel" /> instance.
-  /// </summary>
-  public TModel Model => _model ??= modelStore.Get(
-    RenderId,
-    shapeComponentCircuitAccessor.Circuit?.Id
-  ) as TModel ?? throw new InvalidOperationException("Model is invalid");
 
   public HttpContext HttpContext => _httpContext ??=
     httpContextAccessor.HttpContext ??
@@ -352,8 +336,4 @@ public partial class ShapeComponentBase<TModel> : ComponentBase
 
     return text;
   }
-}
-
-public class ShapeComponentBase : ShapeComponentBase<dynamic>
-{
 }
