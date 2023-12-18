@@ -343,7 +343,6 @@ vendor/
 artifacts/
 
 # Generated
-wwwroot/
 src/Mess.Web/Localization/
 src/Mess.Web/Internal/Generated/
 

@@ -30,12 +30,12 @@ public class ResourceMiddleware
       .AddAttribute("rel", "stylesheet")
     );
     resourceManager.RegisterLink(new LinkEntry()
-      .AddAttribute("href", "MudBlazor.min.css")
+      .AddAttribute("href", "~/MudBlazor/MudBlazor.min.css")
       .AddAttribute("rel", "stylesheet")
     );
     resourceManager.RegisterFootScript(
       new HtmlString(
-        "<script src=\"MudBlazor.min.js\"></script>"
+        "<script src=\"~/MudBlazor/MudBlazor.min.js\"></script>"
       )
     );
 
