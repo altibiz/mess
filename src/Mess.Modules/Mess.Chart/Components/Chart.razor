@@ -5,28 +5,7 @@
 @using Mess.Chart.Factories
 @inherits ShapeComponentBase
 
-@if (ChartDescriptor is TimeseriesChartDescriptor timeseriesChartDescriptor)
-{
-  var series = timeseriesChartDescriptor.Datasets
-    .Select(dataset => new ChartSeries
-    {
-      Name = dataset.Label,
-      Data = dataset.Datapoints.Select(datapoint => (double)datapoint.Y).ToArray()
-    })
-    .ToList();
-  var xAxisLabels = timeseriesChartDescriptor.Datasets.FirstOrDefault()
-    ?.Datapoints.Select(datapoint => datapoint.X.ToString())
-    .ToArray() ?? Array.Empty<string>();
-
-  <div>
-    <MudChart
-      ChartType="ChartType.Line"
-      ChartSeries="@series"
-      XAxisLabels="@xAxisLabels"
-      Width="100%"
-      Height="350px"/>
-  </div>
-}
+<Mess.Chart.Components.Charts.Chart ChartDescriptor="@ChartDescriptor" />
 
 @code {
   private ChartDescriptor? ChartDescriptor;

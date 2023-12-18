@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <ItemGroup>
-    <PackageReference Include="MudBlazor" Version="$(MessMudblazorVersion)" />
+    <PackageReference Include="MudBlazor" Version="$(MessMudBlazorVersion)" />
   </ItemGroup>
 
   <ItemGroup>

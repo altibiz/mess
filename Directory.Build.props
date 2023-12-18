@@ -12,7 +12,11 @@
     <MessOrchardVersion>1.7.2</MessOrchardVersion>
     <MessEtchVersion>1.6.0</MessEtchVersion>
     <MessNewtonsoftJsonVersion>13.0.3</MessNewtonsoftJsonVersion>
-    <MessMudblazorVersion>6.11.1</MessMudblazorVersion>
+
+    <!-- NOTE: these are connected -->
+    <MessMudBlazorVersion>6.11.1</MessMudBlazorVersion>
+    <MessMudBlazorThemeManagerVersion>1.0.8</MessMudBlazorThemeManagerVersion>
+    <MessBlazorApexChartsVersion>2.2.0</MessBlazorApexChartsVersion>
 
     <!-- NOTE: these are connected -->
     <MessNpgsqlVersion>7.0.4</MessNpgsqlVersion>

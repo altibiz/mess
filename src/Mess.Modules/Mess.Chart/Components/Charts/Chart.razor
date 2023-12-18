@@ -1,0 +1,11 @@
+@if (ChartDescriptor is TimeseriesChartDescriptor timeseriesChartDescriptor &&
+     timeseriesChartDescriptor.Datasets.Count > 0 &&
+     timeseriesChartDescriptor.Datasets.All(dataset => dataset.Datapoints.Count > 0))
+{
+  <TimeseriesChart TimeseriesChartDescriptor="@timeseriesChartDescriptor" />
+}
+
+@code {
+  [Parameter]
+  public ChartDescriptor ChartDescriptor { get; set; } = default!;
+}

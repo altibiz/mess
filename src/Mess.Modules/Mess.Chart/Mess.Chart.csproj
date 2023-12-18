@@ -3,7 +3,8 @@
   <ItemGroup>
     <PackageReference Include="OrchardCore.ContentFields" Version="$(MessOrchardVersion)" />
     <PackageReference Include="Etch.OrchardCore.Fields" Version="$(MessEtchVersion)" />
-    <PackageReference Include="MudBlazor" Version="$(MessMudblazorVersion)" />
+    <PackageReference Include="MudBlazor" Version="$(MessMudBlazorVersion)" />
+    <PackageReference Include="Blazor-ApexCharts" Version="$(MessBlazorApexChartsVersion)" />
   </ItemGroup>
 
   <ItemGroup>
