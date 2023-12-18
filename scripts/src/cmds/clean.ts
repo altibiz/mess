@@ -17,6 +17,7 @@ const exceptions = [
   "!secrets/",
   "!secrets/**",
   "!App_Data/",
+  "!.direnv",
 ]
   .map((exception) => `-e '${exception}'`)
   .join(" ");
