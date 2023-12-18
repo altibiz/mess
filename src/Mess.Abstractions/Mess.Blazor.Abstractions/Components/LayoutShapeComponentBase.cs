@@ -14,7 +14,6 @@ using OrchardCore.DisplayManagement.Zones;
 using OrchardCore.Settings;
 
 // TODO: rename these to modelcomponentbase
-// TODO: markupstrings to renderfragments
 
 namespace Mess.Blazor.Abstractions.Components;
 
@@ -236,7 +235,7 @@ public partial class LayoutShapeComponentBase
 
     return builder =>
     {
-      builder.AddMarkupContent(0, content.ToMarkupString().Value);
+      builder.AddContent(0, content.ToMarkupString());
     };
   }
 
@@ -249,7 +248,7 @@ public partial class LayoutShapeComponentBase
     var content = await DisplayHelper.ShapeExecuteAsync(shape);
     return builder =>
     {
-      builder.AddMarkupContent(0, content.ToMarkupString().Value);
+      builder.AddContent(0, content.ToMarkupString());
     };
   }
 
@@ -270,7 +269,7 @@ public partial class LayoutShapeComponentBase
     var content = Title.GenerateTitle(separator);
     return builder =>
     {
-      builder.AddMarkupContent(0, content.ToMarkupString().Value);
+      builder.AddContent(0, content.ToMarkupString());
     };
   }
 
@@ -296,7 +295,7 @@ public partial class LayoutShapeComponentBase
     var content = Title.GenerateTitle(separator);
     return builder =>
     {
-      builder.AddMarkupContent(0, content.ToMarkupString().Value);
+      builder.AddContent(0, content.ToMarkupString());
     };
   }
 

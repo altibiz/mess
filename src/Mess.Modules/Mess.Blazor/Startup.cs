@@ -77,8 +77,6 @@ public class Startup : StartupBase
       "/App"
     );
 
-    routes.MapRazorPages();
-
     routes.MapBlazorHub();
   }
 }

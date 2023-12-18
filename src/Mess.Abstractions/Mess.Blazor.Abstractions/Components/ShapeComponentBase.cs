@@ -203,7 +203,7 @@ public partial class ShapeComponentBase<TModel> : ComponentBase
 
     return builder =>
     {
-      builder.AddMarkupContent(0, content.ToMarkupString().Value);
+      builder.AddContent(0, content.ToMarkupString());
     };
   }
 
@@ -216,7 +216,7 @@ public partial class ShapeComponentBase<TModel> : ComponentBase
     var content = await DisplayHelper.ShapeExecuteAsync(shape);
     return builder =>
     {
-      builder.AddMarkupContent(0, content.ToMarkupString().Value);
+      builder.AddContent(0, content.ToMarkupString());
     };
   }
 
@@ -237,7 +237,7 @@ public partial class ShapeComponentBase<TModel> : ComponentBase
     var content = Title.GenerateTitle(separator);
     return builder =>
     {
-      builder.AddMarkupContent(0, content.ToMarkupString().Value);
+      builder.AddContent(0, content.ToMarkupString());
     };
   }
 
@@ -263,7 +263,7 @@ public partial class ShapeComponentBase<TModel> : ComponentBase
     var content = Title.GenerateTitle(separator);
     return builder =>
     {
-      builder.AddMarkupContent(0, content.ToMarkupString().Value);
+      builder.AddContent(0, content.ToMarkupString());
     };
   }
 

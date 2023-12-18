@@ -210,17 +210,19 @@ public class ShapeComponentBindingStrategy : IShapeTableHarvester
         .From(feature)
         .BoundAs(
           shape.Component.RelativeTypePath,
-          displayContext =>
+          async displayContext =>
           {
             var viewEngine = displayContext.ServiceProvider
               .GetServices<IShapeTemplateComponentEngine>()
               .FirstOrDefault(engine =>
                 engine.GetType() == viewEngineType)!;
 
-            return viewEngine.RenderAsync(
+            var content = await viewEngine.RenderAsync(
               shape.Component.Type,
               displayContext
             );
+
+            return content;
           });
     }
 

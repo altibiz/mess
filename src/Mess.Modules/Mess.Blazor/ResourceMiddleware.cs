@@ -24,20 +24,6 @@ public class ResourceMiddleware
     ShellSettings shellSettings
   )
   {
-    // TODO: check that this doesn't break anything else
-    resourceManager.RegisterHeadScript(
-      new HtmlString(
-        $"<base href='/{shellSettings.GetRequestUrlPrefix()}/' />"
-      )
-    );
-    resourceManager.RegisterFootScript(
-      new HtmlString(
-        "<script src='/"
-        + shellSettings.GetRequestUrlPrefix()
-        + "/_framework/blazor.server.js'></script>"
-      )
-    );
-
     resourceManager.RegisterLink(new LinkEntry()
       .AddAttribute("href",
         "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap")
@@ -50,6 +36,18 @@ public class ResourceMiddleware
     resourceManager.RegisterFootScript(
       new HtmlString(
         "<script src='/_content/MudBlazor/MudBlazor.min.js'></script>"
+      )
+    );
+
+    // TODO: check that this doesn't break anything else
+    resourceManager.RegisterHeadScript(
+      new HtmlString(
+        $"<base href='/{shellSettings.GetRequestUrlPrefix()}/' />"
+      )
+    );
+    resourceManager.RegisterFootScript(
+      new HtmlString(
+        "<script src='_framework/blazor.server.js'></script>"
       )
     );
 

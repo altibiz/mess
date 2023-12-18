@@ -28,7 +28,6 @@ public class ComponentCaptureStore : IComponentCaptureStore
         Capture = capture,
       });
     }
-
   }
 
   public ComponentCapture? Get(Guid renderId, string? circuitId)
