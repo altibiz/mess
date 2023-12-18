@@ -1,5 +1,7 @@
 @using Mess.Blazor.Abstractions.Extensions
 
+@inject NavigationManager NavigationManager
+
 <Router
   AppAssembly="@this.GetAppAssembly()"
   AdditionalAssemblies="@this.GetExtensionAssemblies()">
@@ -16,9 +18,15 @@
       CaptureId="@Model.CaptureId">
       <p>Sorry, there's nothing at this address.</p>
 
-      <NavLink Href="app/dashboard">
+      <MudButton OnClick="OnDashboardClick">
         Dashboard
-      </NavLink>
+      </MudButton>
     </CapturedLayoutView>
   </NotFound>
 </Router>
+
+@code {
+  private void OnDashboardClick() {
+    NavigationManager.NavigateTo("app/dashboard");
+  }
+}

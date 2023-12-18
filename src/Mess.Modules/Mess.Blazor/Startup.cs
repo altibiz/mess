@@ -76,7 +76,7 @@ public class Startup : StartupBase
 
     routes.MapAreaControllerRoute<AppController>(
       nameof(AppController.Index),
-      "/App"
+      "/App/{**catchall}"
     );
 
     routes.MapBlazorHub();
