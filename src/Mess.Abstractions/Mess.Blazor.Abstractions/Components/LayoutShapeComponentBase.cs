@@ -17,8 +17,17 @@ using OrchardCore.Settings;
 
 namespace Mess.Blazor.Abstractions.Components;
 
-public partial class LayoutShapeComponentBase
+public class LayoutShapeComponentBase : LayoutComponentBase
 {
+  [Inject]
+  private IHttpContextAccessor HttpContextAccessor { get; set; } = default!;
+
+  [Inject]
+  private ICircuitAccessor CircuitAccessor { get; set; } = default!;
+
+  [Inject]
+  private IComponentCaptureStore ComponentCaptureStore { get; set; } = default!;
+
   private IDisplayHelper? _displayHelper;
 
   private HttpContext? _httpContext;
@@ -39,7 +48,7 @@ public partial class LayoutShapeComponentBase
 
   private IZoneHolding? _themeLayout;
 
-  [Parameter] public Guid? RenderId { get; set; }
+  [Parameter] public Guid? CaptureId { get; set; }
 
   /// <summary>
   ///   Gets the <see cref="TModel" /> instance.
@@ -48,13 +57,12 @@ public partial class LayoutShapeComponentBase
   {
     get
     {
-      var renderId = RenderId
-        ?? renderIdAccessor.RenderId
-        ?? throw new InvalidOperationException("RenderId is null");
+      var captureId = CaptureId
+        ?? throw new InvalidOperationException("CaptureId is null");
 
-      var circuitId = circuitAccessor.Circuit?.Id;
+      var circuitId = CircuitAccessor.Circuit?.Id;
 
-      var capture = captureStore.Get(renderId, circuitId);
+      var capture = ComponentCaptureStore.Get(captureId, circuitId);
 
       var model = capture?.Model as LayoutViewModel
         ?? throw new InvalidOperationException("Model is invalid");
@@ -76,7 +84,7 @@ public partial class LayoutShapeComponentBase
 
 
   public HttpContext HttpContext => _httpContext ??=
-    httpContextAccessor.HttpContext ??
+    HttpContextAccessor.HttpContext ??
     throw new InvalidOperationException(
       "HttpContext is null");
 
@@ -205,7 +213,7 @@ public partial class LayoutShapeComponentBase
   /// <returns>The HTML content to render.</returns>
   public async Task<RenderFragment> RenderBodyAsync()
   {
-    if (Model.ComponentType is null || Model.RenderId is null)
+    if (Model.ComponentType is null || Model.CaptureId is null)
     {
       return builder => { };
     }
@@ -213,7 +221,7 @@ public partial class LayoutShapeComponentBase
     return builder =>
     {
       builder.OpenComponent(0, Model.ComponentType);
-      builder.AddAttribute(0, "RenderId", Model.RenderId);
+      builder.AddAttribute(0, "CaptureId", Model.CaptureId);
       builder.CloseComponent();
     };
   }

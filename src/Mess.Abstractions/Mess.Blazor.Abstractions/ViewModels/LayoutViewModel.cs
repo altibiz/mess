@@ -6,7 +6,7 @@ public class LayoutViewModel
 {
   public Type? ComponentType { get; set; } = default!;
 
-  public Guid? RenderId { get; set; } = default!;
+  public Guid? CaptureId { get; set; } = default!;
 
   public MarkupString? Meta { get; set; }
 

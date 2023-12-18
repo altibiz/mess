@@ -4,16 +4,21 @@
   AppAssembly="@this.GetAppAssembly()"
   AdditionalAssemblies="@this.GetExtensionAssemblies()">
   <Found Context="routeData">
-    <RouteView RouteData="@routeData" DefaultLayout="@this.GetLayoutType()" />
+    <CapturedRouteView
+      RouteData="@routeData"
+      DefaultLayout="@this.GetLayoutType()"
+      CaptureId="@Model.CaptureId" />
   </Found>
 
   <NotFound>
-    <LayoutView Layout="@this.GetLayoutType()">
+    <CapturedLayoutView
+      Layout="@this.GetLayoutType()"
+      CaptureId="@Model.CaptureId">
       <p>Sorry, there's nothing at this address.</p>
 
-      <MudNavLink Href="app/dashboard">
+      <NavLink Href="app/dashboard">
         Dashboard
-      </MudNavLink>
-    </LayoutView>
+      </NavLink>
+    </CapturedLayoutView>
   </NotFound>
 </Router>

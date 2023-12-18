@@ -35,19 +35,19 @@ public class ResourceMiddleware
     );
     resourceManager.RegisterFootScript(
       new HtmlString(
-        "<script src='/_content/MudBlazor/MudBlazor.min.js'></script>"
+        "<script src=\"/_content/MudBlazor/MudBlazor.min.js\"></script>"
       )
     );
 
     // TODO: check that this doesn't break anything else
     resourceManager.RegisterHeadScript(
       new HtmlString(
-        $"<base href='/{shellSettings.GetRequestUrlPrefix()}/' />"
+        $"<base href=\"/{shellSettings.GetRequestUrlPrefix()}/\" />"
       )
     );
     resourceManager.RegisterFootScript(
       new HtmlString(
-        "<script src='_framework/blazor.server.js'></script>"
+        "<script src=\"_framework/blazor.server.js\"></script>"
       )
     );
 

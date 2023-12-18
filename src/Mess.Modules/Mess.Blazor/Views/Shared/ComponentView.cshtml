@@ -2,18 +2,18 @@
 
 @inject IComponentCaptureStore componentCaptureStore
 @inject IResourceManager resourceManager
-@inject IRenderIdAccessor renderIdAccessor
+@inject ICaptureIdAccessor captureIdAccessor
 
 @{
-  var renderId = Guid.NewGuid();
+  var captureId = Guid.NewGuid();
   componentCaptureStore.Add(
-    renderId,
+    captureId,
     new ComponentCapture
     {
       Model = Model.Model
     }
   );
-  renderIdAccessor.RenderId = renderId;
+  captureIdAccessor.CaptureId = captureId;
 
   Layout = null;
 }
@@ -33,7 +33,7 @@
   @{
     var layoutShape = await Factory.New.ComponentLayout();
     layoutShape.ComponentType = Model.ComponentType;
-    layoutShape.RenderId = renderId;
+    layoutShape.CaptureId = captureId;
     layoutShape.Meta = resourceManager.RenderMeta();
     layoutShape.HeadLink = resourceManager.RenderHeadLink();
     layoutShape.HeadScript = resourceManager.RenderHeadScript();

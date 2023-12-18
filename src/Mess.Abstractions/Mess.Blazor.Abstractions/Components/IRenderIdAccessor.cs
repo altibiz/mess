@@ -1,6 +1,6 @@
 namespace Mess.Blazor.Abstractions.Components;
 
-public interface IRenderIdAccessor
+public interface ICaptureIdAccessor
 {
-  public Guid? RenderId { get; set; }
+  public Guid? CaptureId { get; set; }
 }

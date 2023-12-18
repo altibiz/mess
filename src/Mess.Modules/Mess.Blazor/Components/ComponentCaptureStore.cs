@@ -2,8 +2,6 @@ using System.Collections.Concurrent;
 using Mess.Blazor.Abstractions.Components;
 using Mess.Prelude.Extensions.Dictionaries;
 
-// TODO: keepalive for storage so its not a memory leak in case of failure
-
 namespace Mess.Blazor.Components;
 
 public class ComponentCaptureStore : IComponentCaptureStore
@@ -17,24 +15,24 @@ public class ComponentCaptureStore : IComponentCaptureStore
 
   private readonly Dictionary<Guid, ShapeComponentCircuitCapture> _captures = new();
 
-  public void Add(Guid renderId, ComponentCapture? capture)
+  public void Add(Guid captureId, ComponentCapture? capture)
   {
     if (capture is null) return;
 
     lock (_captures)
     {
-      _captures.Add(renderId, new ShapeComponentCircuitCapture
+      _captures.Add(captureId, new ShapeComponentCircuitCapture
       {
         Capture = capture,
       });
     }
   }
 
-  public ComponentCapture? Get(Guid renderId, string? circuitId)
+  public ComponentCapture? Get(Guid captureId, string? circuitId)
   {
     lock (_captures)
     {
-      var capture = _captures.GetOrDefault(renderId);
+      var capture = _captures.GetOrDefault(captureId);
 
       if (capture is not null)
       {
@@ -50,18 +48,18 @@ public class ComponentCaptureStore : IComponentCaptureStore
   {
     lock (_captures)
     {
-      var captureRenderIdsToRemove = new List<Guid>();
+      var captureCaptureIdsToRemove = new List<Guid>();
       foreach (var pair in _captures)
       {
         if (pair.Value.CircuitId == circuitId)
         {
-          captureRenderIdsToRemove.Add(pair.Key);
+          captureCaptureIdsToRemove.Add(pair.Key);
         }
       }
 
-      foreach (var renderId in captureRenderIdsToRemove)
+      foreach (var captureId in captureCaptureIdsToRemove)
       {
-        _captures.Remove(renderId);
+        _captures.Remove(captureId);
       }
     }
   }

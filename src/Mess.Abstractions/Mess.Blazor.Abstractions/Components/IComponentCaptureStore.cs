@@ -7,9 +7,9 @@ public class ComponentCapture
 
 public interface IComponentCaptureStore
 {
-  void Add(Guid renderId, ComponentCapture? capture);
+  void Add(Guid captureId, ComponentCapture? capture);
 
-  ComponentCapture? Get(Guid renderId, string? circuitId);
+  ComponentCapture? Get(Guid captureId, string? circuitId);
 
   void Remove(string circuitId);
 }

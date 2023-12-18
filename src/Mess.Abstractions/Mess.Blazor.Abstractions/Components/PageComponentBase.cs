@@ -14,8 +14,11 @@ using OrchardCore.Settings;
 
 namespace Mess.Blazor.Abstractions.Components;
 
-public partial class PageComponentBase : ComponentBase
+public class PageComponentBase : ComponentBase
 {
+  [Inject]
+  private IHttpContextAccessor HttpContextAccessor { get; set; } = default!;
+
   private IDisplayHelper? _displayHelper;
 
   private HttpContext? _httpContext;
@@ -35,7 +38,7 @@ public partial class PageComponentBase : ComponentBase
   private IZoneHolding? _themeLayout;
 
   public HttpContext HttpContext => _httpContext ??=
-    httpContextAccessor.HttpContext ??
+    HttpContextAccessor.HttpContext ??
     throw new InvalidOperationException(
       "HttpContext is null");
 

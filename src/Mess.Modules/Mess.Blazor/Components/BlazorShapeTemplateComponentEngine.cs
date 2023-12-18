@@ -53,9 +53,9 @@ public class BlazorShapeTemplateComponentEngine : IShapeTemplateComponentEngine
       viewContext = await _componentHelper.MakeViewContextAsync(actionContext, displayContext.Value);
     }
 
-    var renderId = Guid.NewGuid();
+    var captureId = Guid.NewGuid();
     _componentCaptureStore.Add(
-      renderId,
+      captureId,
       new ComponentCapture
       {
         Model = displayContext.Value
@@ -67,7 +67,7 @@ public class BlazorShapeTemplateComponentEngine : IShapeTemplateComponentEngine
 
     return await htmlHelper.RenderComponentAsync(componentType,
       RenderMode.ServerPrerendered,
-      new { RenderId = renderId }
+      new { CaptureId = captureId }
     );
   }
 }

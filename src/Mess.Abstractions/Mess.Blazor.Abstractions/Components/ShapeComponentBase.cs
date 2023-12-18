@@ -24,6 +24,15 @@ namespace Mess.Blazor.Abstractions.Components;
 public partial class ShapeComponentBase<TModel> : ComponentBase
   where TModel : class
 {
+  [Inject]
+  private IHttpContextAccessor HttpContextAccessor { get; set; } = default!;
+
+  [Inject]
+  private ICircuitAccessor CircuitAccessor { get; set; } = default!;
+
+  [Inject]
+  private IComponentCaptureStore ComponentCaptureStore { get; set; } = default!;
+
   private IDisplayHelper? _displayHelper;
 
   private HttpContext? _httpContext;
@@ -44,7 +53,7 @@ public partial class ShapeComponentBase<TModel> : ComponentBase
 
   private IZoneHolding? _themeLayout;
 
-  [Parameter] public Guid? RenderId { get; set; }
+  [Parameter] public Guid? CaptureId { get; set; }
 
   /// <summary>
   ///   Gets the <see cref="TModel" /> instance.
@@ -53,13 +62,12 @@ public partial class ShapeComponentBase<TModel> : ComponentBase
   {
     get
     {
-      var renderId = RenderId
-        ?? renderIdAccessor.RenderId
-        ?? throw new InvalidOperationException("RenderId is null");
+      var captureId = CaptureId
+        ?? throw new InvalidOperationException("CaptureId is null");
 
-      var circuitId = circuitAccessor.Circuit?.Id;
+      var circuitId = CircuitAccessor.Circuit?.Id;
 
-      var capture = captureStore.Get(renderId, circuitId);
+      var capture = ComponentCaptureStore.Get(captureId, circuitId);
 
       var model = capture?.Model as TModel
         ?? throw new InvalidOperationException("Model is invalid");
@@ -69,7 +77,7 @@ public partial class ShapeComponentBase<TModel> : ComponentBase
   }
 
   public HttpContext HttpContext => _httpContext ??=
-    httpContextAccessor.HttpContext ??
+    HttpContextAccessor.HttpContext ??
     throw new InvalidOperationException(
       "HttpContext is null");
 

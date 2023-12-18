@@ -39,9 +39,12 @@ public class Startup : StartupBase
       }
     });
 
-    services.AddScoped<ICircuitAccessor, CircuitAccessor>();
+    services.AddScoped<CircuitAccessor>();
+    services.AddScoped<ICircuitAccessor>(services => services
+      .GetRequiredService<CircuitAccessor>());
+
     services.AddScoped<CircuitHandler, ComponentCaptureCircuitHandler>();
-    services.AddScoped<IRenderIdAccessor, RenderIdAccessor>();
+    services.AddScoped<ICaptureIdAccessor, CaptureIdAccessor>();
     services
       .AddSingleton<IComponentCaptureStore, ComponentCaptureStore>();
 
