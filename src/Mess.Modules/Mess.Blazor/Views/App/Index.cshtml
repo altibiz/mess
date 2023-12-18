@@ -1,6 +1,5 @@
 @inject IComponentCaptureStore componentCaptureStore
 @inject IResourceManager resourceManager
-@inject ICaptureIdAccessor captureIdAccessor
 
 @{
   var captureId = Guid.NewGuid();
@@ -17,7 +16,6 @@
       }
     }
   );
-  captureIdAccessor.CaptureId = captureId;
 
   Layout = null;
 }

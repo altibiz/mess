@@ -44,7 +44,6 @@ public class Startup : StartupBase
       .GetRequiredService<CircuitAccessor>());
 
     services.AddScoped<CircuitHandler, ComponentCaptureCircuitHandler>();
-    services.AddScoped<ICaptureIdAccessor, CaptureIdAccessor>();
     services
       .AddSingleton<IComponentCaptureStore, ComponentCaptureStore>();
 
