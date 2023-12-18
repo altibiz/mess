@@ -30,16 +30,15 @@ public class ResourceMiddleware
       .AddAttribute("rel", "stylesheet")
     );
     resourceManager.RegisterLink(new LinkEntry()
-      .AddAttribute("href", "/_content/MudBlazor/MudBlazor.min.css")
+      .AddAttribute("href", "MudBlazor.min.css")
       .AddAttribute("rel", "stylesheet")
     );
     resourceManager.RegisterFootScript(
       new HtmlString(
-        "<script src=\"/_content/MudBlazor/MudBlazor.min.js\"></script>"
+        "<script src=\"MudBlazor.min.js\"></script>"
       )
     );
 
-    // TODO: check that this doesn't break anything else
     resourceManager.RegisterHeadScript(
       new HtmlString(
         $"<base href=\"/{shellSettings.GetRequestUrlPrefix()}/\" />"

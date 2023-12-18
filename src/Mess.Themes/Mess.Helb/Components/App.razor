@@ -17,16 +17,6 @@
       Layout="@this.GetLayoutType()"
       CaptureId="@Model.CaptureId">
       <p>Sorry, there's nothing at this address.</p>
-
-      <MudButton OnClick="OnDashboardClick">
-        Dashboard
-      </MudButton>
     </CapturedLayoutView>
   </NotFound>
 </Router>
-
-@code {
-  private void OnDashboardClick() {
-    NavigationManager.NavigateTo("app/dashboard");
-  }
-}
