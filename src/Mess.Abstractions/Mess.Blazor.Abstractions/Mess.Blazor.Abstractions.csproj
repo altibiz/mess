@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="MudBlazor" Version="$(MessMudBlazorVersion)" />
+    <PackageReference Include="Blazor-ApexCharts" Version="$(MessBlazorApexChartsVersion)" />
   </ItemGroup>
 
 </Project>

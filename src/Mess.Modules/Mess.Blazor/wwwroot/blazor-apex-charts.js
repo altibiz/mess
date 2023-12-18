@@ -1,12 +1,4 @@
-﻿import ApexCharts from './apexcharts.esm.js'
-
-// export function for Blazor to point to the window.blazor_apexchart. To be compatible with the most JS Interop calls the window will be return.
-export function get_apexcharts() {
-    window.ApexCharts = ApexCharts
-    return window;
-}
-
-window.blazor_apexchart = {
+﻿window.blazor_apexchart = {
 
     getYAxisLabel(value, index, w) {
 
@@ -395,8 +387,8 @@ window.blazor_apexchart = {
 
         //Always destroy chart if it exists
         this.destroyChart(options.chart.id);
-        
-        var chart = new ApexCharts(container, options);
+
+        chart = new ApexCharts(container, options);
         chart.render();
 
         if (options.debug == true) {

@@ -16,7 +16,7 @@
     <!-- NOTE: these are connected -->
     <MessMudBlazorVersion>6.11.1</MessMudBlazorVersion>
     <MessMudBlazorThemeManagerVersion>1.0.8</MessMudBlazorThemeManagerVersion>
-    <MessBlazorApexChartsVersion>2.2.0</MessBlazorApexChartsVersion>
+    <MessBlazorApexChartsVersion>1.3.0</MessBlazorApexChartsVersion>
 
     <!-- NOTE: these are connected -->
     <MessNpgsqlVersion>7.0.4</MessNpgsqlVersion>

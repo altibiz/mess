@@ -24,6 +24,7 @@ public class ResourceMiddleware
     ShellSettings shellSettings
   )
   {
+    // MudBlazor
     resourceManager.RegisterLink(new LinkEntry()
       .AddAttribute("href",
         "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap")
@@ -39,6 +40,23 @@ public class ResourceMiddleware
       )
     );
 
+    // Blazor-ApexCharts
+    resourceManager.RegisterLink(new LinkEntry()
+      .AddAttribute("href", "Mess.Blazor/apexcharts.css")
+      .AddAttribute("rel", "stylesheet")
+    );
+    resourceManager.RegisterFootScript(
+      new HtmlString(
+        "<script src=\"Mess.Blazor/apex-charts.min.js\"></script>"
+      )
+    );
+    resourceManager.RegisterFootScript(
+      new HtmlString(
+        "<script src=\"Mess.Blazor/blazor-apex-charts.js\"></script>"
+      )
+    );
+
+    // Blazor
     resourceManager.RegisterHeadScript(
       new HtmlString(
         $"<base href=\"/{shellSettings.GetRequestUrlPrefix()}/\" />"
