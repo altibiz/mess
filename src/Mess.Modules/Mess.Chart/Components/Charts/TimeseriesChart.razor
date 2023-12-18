@@ -1,17 +1,3 @@
-@{
-  var series = TimeseriesChartDescriptor.Datasets
-    .Select(dataset => new ChartSeries
-    {
-      Name = dataset.Label,
-      Data = dataset.Datapoints.Select(datapoint => (double)datapoint.Y).ToArray()
-    })
-    .ToList();
-
-  var xAxisLabels = TimeseriesChartDescriptor.Datasets.FirstOrDefault()
-    ?.Datapoints.Select(datapoint => datapoint.X.ToString())
-    .ToArray() ?? Array.Empty<string>();
-}
-
 <ApexChart
   TItem="TimeseriesChartDatapointDescriptor"
   XAxisType="XAxisType.Datetime">
@@ -22,6 +8,7 @@
       Name="dataset.Label"
       SeriesType="SeriesType.Line"
       XValue="e => e.X"
+      YValue="e => e.Y"
       OrderBy="e => e.X" />
   }
 </ApexChart>

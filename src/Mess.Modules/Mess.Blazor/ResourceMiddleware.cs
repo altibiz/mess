@@ -31,7 +31,7 @@ public class ResourceMiddleware
       .AddAttribute("rel", "stylesheet")
     );
     resourceManager.RegisterLink(new LinkEntry()
-      .AddAttribute("href", "Mess.Blazor/MudBlazor.min.css")
+      .AddAttribute("href", "~/Mess.Blazor/MudBlazor.min.css")
       .AddAttribute("rel", "stylesheet")
     );
     resourceManager.RegisterFootScript(
@@ -42,7 +42,7 @@ public class ResourceMiddleware
 
     // Blazor-ApexCharts
     resourceManager.RegisterLink(new LinkEntry()
-      .AddAttribute("href", "Mess.Blazor/apexcharts.css")
+      .AddAttribute("href", "~/Mess.Blazor/apexcharts.css")
       .AddAttribute("rel", "stylesheet")
     );
     resourceManager.RegisterFootScript(
