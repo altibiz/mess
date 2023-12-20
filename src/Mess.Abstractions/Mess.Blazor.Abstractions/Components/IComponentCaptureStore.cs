@@ -1,6 +1,6 @@
 namespace Mess.Blazor.Abstractions.Components;
 
-// TODO: get ISite, ViewContext, and other stuff in here
+// TODO: get ISite, ViewContext, ThemeLayout, and other stuff in here
 // TODO: mimic properties from RazorPageBase, RazorPage, RazorePage<T>, and
 // OrchardCore RazorPage
 

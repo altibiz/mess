@@ -8,17 +8,17 @@ namespace Mess.Blazor.Abstractions.Extensions;
 
 // TODO: no throwing
 
-public static class BlazorPageExtensions
+public static class AbstractComponentUserExtensions
 {
   public static async Task<User> GetAuthenticatedOrchardCoreUserAsync(
-    this PageComponentBase page
+    this AbstractComponent component
   )
   {
     var userService =
-      page.ServiceProvider.GetRequiredService<IUserService>();
+      component.ServiceProvider.GetRequiredService<IUserService>();
 
     var user = await userService.GetAuthenticatedOrchardCoreUserAsync(
-      page.HttpContext.User
+      component.HttpContext.User
     ) ?? throw new UnauthorizedAccessException();
 
     return user;

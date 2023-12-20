@@ -14,14 +14,14 @@ using OrchardCore.Modules.Manifest;
 
 namespace Mess.Blazor.Abstractions.Extensions;
 
-public static class ShapeComponentBaseAppExtensions
+public static class AbstractComponentAppExtensions
 {
-  public static Assembly GetAppAssembly(this ShapeComponentBase component)
+  public static Assembly GetAppAssembly(this AbstractComponent component)
   {
     return component.GetType().Assembly;
   }
 
-  public static Assembly[] GetExtensionAssemblies(this ShapeComponentBase component)
+  public static Assembly[] GetExtensionAssemblies(this AbstractComponent component)
   {
     return component
       .GetExtensionAssemblyDataCached()
@@ -29,7 +29,7 @@ public static class ShapeComponentBaseAppExtensions
       .ToArray();
   }
 
-  public static Type GetLayoutType(this ShapeComponentBase component)
+  public static Type GetLayoutType(this AbstractComponent component)
   {
     var data = component
       .GetExtensionTypeDataCached()
@@ -50,7 +50,7 @@ public static class ShapeComponentBaseAppExtensions
   );
 
   private static IEnumerable<ExtensionTypeData> GetExtensionTypeDataCached(
-    this ShapeComponentBase component)
+    this AbstractComponent component)
   {
     return _extensionTypeDataCache.GetOrAdd(
         component.GetType(),
@@ -58,7 +58,7 @@ public static class ShapeComponentBaseAppExtensions
       );
   }
 
-  private static IEnumerable<ExtensionTypeData> GetExtensionTypeData(this ShapeComponentBase component)
+  private static IEnumerable<ExtensionTypeData> GetExtensionTypeData(this AbstractComponent component)
   {
     return component.GetExtensionAssemblyData()
       .SelectMany(data => data.Assembly.GetTypes()
@@ -68,7 +68,7 @@ public static class ShapeComponentBaseAppExtensions
   private static readonly ConcurrentDictionary<Type, List<ExtensionAssemblyData>> _extensionAssemblyDataCache = new();
 
   private static IEnumerable<ExtensionAssemblyData> GetExtensionAssemblyDataCached(
-    this ShapeComponentBase component)
+    this AbstractComponent component)
   {
     return _extensionAssemblyDataCache.GetOrAdd(
         component.GetType(),
@@ -82,7 +82,7 @@ public static class ShapeComponentBaseAppExtensions
   );
 
   private static IEnumerable<ExtensionAssemblyData> GetExtensionAssemblyData(
-    this ShapeComponentBase component)
+    this AbstractComponent component)
   {
     var enabledFeatures = component.ServiceProvider
       .GetRequiredService<IShellFeaturesManager>()
