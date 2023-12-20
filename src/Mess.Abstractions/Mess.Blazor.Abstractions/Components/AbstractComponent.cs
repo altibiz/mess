@@ -12,6 +12,8 @@ using OrchardCore.DisplayManagement.Zones;
 using OrchardCore.Settings;
 using OrchardCore.Users.Models;
 
+// TODO: optimize user fetching - maybe cascading value?
+
 namespace Mess.Blazor.Abstractions.Components;
 
 public abstract class AbstractComponent : ComponentBase
