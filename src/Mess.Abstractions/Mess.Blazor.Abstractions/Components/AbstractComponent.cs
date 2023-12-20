@@ -152,7 +152,7 @@ public abstract class AbstractComponent : ComponentBase
 
       if (_user is null || _user.UserName != ClaimsPrincipal.Identity?.Name)
       {
-        Task.Run(() => FetchUser(this));
+        InvokeAsync(() => FetchUser(this));
         return null;
       }
 
