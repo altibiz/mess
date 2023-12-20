@@ -1,6 +1,8 @@
 @using Microsoft.AspNetCore.Html
 @using OrchardCore.ResourceManagement
 
+@* TODO: navigation provider *@
+
 @inherits LayoutShapeComponentBase
 
 @inject IResourceManager resourceManager
@@ -67,6 +69,9 @@
       <MudNavMenu>
       <MudNavLink Href="app" Match="NavLinkMatch.All" Icon="@Icons.Material.Outlined.Dashboard">Dashboard</MudNavLink>
       <MudNavLink Href="app/systems" Icon="@Icons.Material.Outlined.Hub">Systems</MudNavLink>
+      <MudNavLink Href="app/tenants" Icon="@Icons.Material.Outlined.Place">Tenants</MudNavLink>
+      <MudNavLink Href="app/meters" Icon="@Icons.Material.Outlined.ElectricMeter">Meters</MudNavLink>
+      <MudNavLink Href="app/billing" Icon="@Icons.Material.Outlined.AttachMoney">Billing</MudNavLink>
     </MudNavMenu>
     </MudDrawer>
     <MudMainContent>
@@ -92,7 +97,6 @@
 
 @code {
   public bool _drawerOpen = true;
-  public bool _themeManagerOpen = false;
 
   private RenderFragment? HeadMeta { get; set; }
   private RenderFragment? Messages { get; set; }
@@ -102,11 +106,8 @@
 
   private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
   {
-    new BreadcrumbItem("Personal", href: "#"),
-    new BreadcrumbItem("Dashboard", href: "#"),
+    new BreadcrumbItem("App", href: "app"),
   };
-
-  private string AlertAssignmentIcon { get; set; } = "<path d=\"M19,3A2,2 0 0,1 21,5V19A2,2 0 0,1 19,21H5A2,2 0 0,1 3,19V5A2,2 0 0,1 5,3H9.18C9.6,1.84 10.7,1 12,1C13.3,1 14.4,1.84 14.82,3H19M12,3A1,1 0 0,0 11,4A1,1 0 0,0 12,5A1,1 0 0,0 13,4A1,1 0 0,0 12,3M7,7V5H5V19H19V5H17V7H7M11,9H13V13.5H11V9M11,15H13V17H11V15Z\" />";
 
   protected override void OnLayoutInitialized()
   {
@@ -125,16 +126,5 @@
   void DrawerToggle()
   {
     _drawerOpen = !_drawerOpen;
-  }
-
-  void OpenThemeManager(bool value)
-  {
-    _themeManagerOpen = value;
-  }
-
-  void UpdateTheme(ThemeManagerTheme value)
-  {
-    _themeManager = value;
-    StateHasChanged();
   }
 }

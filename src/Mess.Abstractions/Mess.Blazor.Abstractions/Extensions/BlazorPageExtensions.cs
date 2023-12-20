@@ -1,23 +1,24 @@
+using Mess.Blazor.Abstractions.Components;
 using Mess.Cms.Extensions.OrchardCore;
 using Microsoft.AspNetCore.Mvc.Razor;
 using OrchardCore.Users.Models;
 using OrchardCore.Users.Services;
 
-namespace Mess.Cms.Extensions.Microsoft;
+namespace Mess.Blazor.Abstractions.Extensions;
 
 // TODO: no throwing
 
-public static class RazorPageExtensions
+public static class BlazorPageExtensions
 {
   public static async Task<User> GetAuthenticatedOrchardCoreUserAsync(
-    this RazorPage page
+    this PageComponentBase page
   )
   {
     var userService =
-      page.Context.RequestServices.GetRequiredService<IUserService>();
+      page.ServiceProvider.GetRequiredService<IUserService>();
 
     var user = await userService.GetAuthenticatedOrchardCoreUserAsync(
-      page.User
+      page.HttpContext.User
     ) ?? throw new UnauthorizedAccessException();
 
     return user;
