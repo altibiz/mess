@@ -37,6 +37,12 @@ public class Startup : StartupBase
       {
         options.DetailedErrors = true;
       }
+    }).AddHubOptions(options =>
+    {
+      if (_hostEnvironment.IsDevelopment())
+      {
+        options.EnableDetailedErrors = true;
+      }
     });
 
     services.AddScoped<CircuitAccessor>();

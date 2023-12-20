@@ -25,7 +25,7 @@ public static class ShapeComponentBaseAppExtensions
   public static Assembly[] GetExtensionAssemblies(this ShapeComponentBase component)
   {
     return component
-      .GetExtensionAssemblyData()
+      .GetExtensionAssemblyDataCached()
       .Select(data => data.Assembly)
       .ToArray();
   }
@@ -33,7 +33,7 @@ public static class ShapeComponentBaseAppExtensions
   public static Type GetLayoutType(this ShapeComponentBase component)
   {
     var data = component
-      .GetExtensionTypeData()
+      .GetExtensionTypeDataCached()
       .FirstOrDefault(data =>
         data.Extension.Manifest.ModuleInfo is ThemeAttribute &&
         data.Type.Name == "Layout" &&
@@ -43,16 +43,38 @@ public static class ShapeComponentBaseAppExtensions
     return data.Type;
   }
 
+  private static readonly ConcurrentDictionary<Type, List<ExtensionTypeData>> _extensionTypeDataCache = new();
+
   private record class ExtensionTypeData(
     IExtensionInfo Extension,
     Type Type
   );
+
+  private static IEnumerable<ExtensionTypeData> GetExtensionTypeDataCached(
+    this ShapeComponentBase component)
+  {
+    return _extensionTypeDataCache.GetOrAdd(
+        component.GetType(),
+        _ => component.GetExtensionTypeData().ToList()
+      );
+  }
 
   private static IEnumerable<ExtensionTypeData> GetExtensionTypeData(this ShapeComponentBase component)
   {
     return component.GetExtensionAssemblyData()
       .SelectMany(data => data.Assembly.GetTypes()
         .Select(type => new ExtensionTypeData(data.Extension, type)));
+  }
+
+  private static readonly ConcurrentDictionary<Type, List<ExtensionAssemblyData>> _extensionAssemblyDataCache = new();
+
+  private static IEnumerable<ExtensionAssemblyData> GetExtensionAssemblyDataCached(
+    this ShapeComponentBase component)
+  {
+    return _extensionAssemblyDataCache.GetOrAdd(
+        component.GetType(),
+        _ => component.GetExtensionAssemblyData().ToList()
+      );
   }
 
   private record class ExtensionAssemblyData(
