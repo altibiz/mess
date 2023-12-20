@@ -9,7 +9,6 @@ using OrchardCore.Environment.Extensions.Features;
 using OrchardCore.Environment.Shell;
 using OrchardCore.Modules.Manifest;
 
-// TODO: optimize all this
 // TODO: find layout in the right theme - use theme manager?
 // TODO: remove disabled extensions like for shapes?
 
