@@ -52,7 +52,8 @@ export default cmd({
     }>,
 })(async ({ push, update, tenant, debug, clean }) => {
   env("ASPNETCORE_ENVIRONMENT", "Development");
-  env("DOTNET_ENVIRONMENT", "true");
+  env("DOTNET_ENVIRONMENT", "Development");
+  env("DOTNET_WATCH_RESTART_ON_RUDE_EDIT", "true");
   env("ORCHARD_APP_DATA", root("App_Data"));
   env("NODE_OPTIONS", "--no-warnings");
   env("NODE_ENV", "development");

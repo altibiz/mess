@@ -39,67 +39,34 @@
 
   <MudLayout>
     <MudAppBar Elevation="4">
-      <MudHidden Breakpoint="Breakpoint.SmAndDown">
-        <MudIcon Icon="@Icons.Custom.Brands.MudBlazor" Size="Size.Large" />
-      </MudHidden>
       <MudHidden Breakpoint="Breakpoint.MdAndUp">
-        <MudIconButton Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudIconButton
+          Icon="@Icons.Material.Outlined.Menu"
+          Color="Color.Inherit"
+          Edge="Edge.Start"
+          OnClick="e => DrawerToggle()" />
       </MudHidden>
       <MudHidden Breakpoint="Breakpoint.Xs">
-        <MudText Typo="Typo.h6" Class="ml-4">Dashboard</MudText>
+        <MudText Typo="Typo.h6">Dashboard</MudText>
       </MudHidden>
       <MudHidden Breakpoint="Breakpoint.Xs" Invert="true">
-        <MudText Typo="Typo.subtitle2">Admin Dashboard</MudText>
+        <MudText Typo="Typo.subtitle2">Dashboard</MudText>
       </MudHidden>
       <MudSpacer />
-      <MudMenu Icon="@Icons.Material.Outlined.Translate" Color="Color.Inherit" AnchorOrigin="Origin.BottomCenter" Dense="true">
-        <MudMenuItem>English</MudMenuItem>
-        <MudMenuItem>Swedish</MudMenuItem>
-        <MudMenuItem>Old Norse</MudMenuItem>
-      </MudMenu>
-      <MudMenu Icon="@Icons.Material.Outlined.Widgets" Color="Color.Inherit" AnchorOrigin="Origin.BottomCenter" Dense="true">
-        <MudMenuItem Href="https://mudblazor.com/">MudBlazor</MudMenuItem>
-        <MudMenuItem Href="https://github.com/Garderoben/MudBlazor.Templates">Source Code</MudMenuItem>
-      </MudMenu>
       <MudMenu AnchorOrigin="Origin.CenterLeft" Dense="true" Class="mt-1 ml-4">
         <ActivatorContent>
-          <MudAvatar>
-            <MudImage Src="https://media-exp1.licdn.com/dms/image/C4D03AQGNO7uV7fRi7Q/profile-displayphoto-shrink_200_200/0/1531753989819?e=1614816000&v=beta&t=t2IEQlTyem3aFB1sQXFHrDGt0yMsNkPu7jDmMPoEbLg" />
-          </MudAvatar>
+          <MudIcon Icon="@Icons.Material.Filled.Person" />
         </ActivatorContent>
         <ChildContent>
-          @* <PersonCard Class="mt-n2" /> *@
-          <MudDivider Class="mb-2" />
-          <MudListItem Text="Account" Icon="@Icons.Material.Outlined.Person" Href="/personal/account" />
-          <MudListItem Text="Logout" Icon="@Icons.Material.Outlined.Login" Href="/pages/authentication/login" />
+          <MudListItem Text="Account" Icon="@Icons.Material.Outlined.Person" Href="app/account" />
+          <MudListItem Text="Logout" Icon="@Icons.Material.Outlined.Login" Href="login" />
         </ChildContent>
       </MudMenu>
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" Elevation="25" ClipMode="_themeManager.DrawerClipMode">
-        <MudNavMenu>
-        <MudText Typo="Typo.subtitle2" Color="Color.Inherit" Class="ml-4 my-3">Personal</MudText>
-        <MudNavLink Href="personal/dashboard" Match="NavLinkMatch.All" Icon="@Icons.Material.Outlined.Dashboard">Početna</MudNavLink>
-        <MudNavLink Href="personal/account" Icon="@Icons.Material.Outlined.Person">Klijenti</MudNavLink>
-
-        <MudText Typo="Typo.subtitle2" Color="Color.Inherit" Class="ml-4 my-3">App Examples</MudText>
-        <MudNavLink Href="application/email" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Outlined.Email">Računi</MudNavLink>
-        <MudNavLink Href="application/chat" Icon="@Icons.Material.Outlined.Forum">Brojila</MudNavLink>
-        <MudNavLink Href="application/todo" Icon="@Icons.Custom.Uncategorized.AlertSuccess" Disabled="true">Owneri</MudNavLink>
-        <MudNavLink Href="application/users" Icon="@Icons.Material.Outlined.PeopleAlt" Disabled="true">Postavke</MudNavLink>
-
-        <MudText Typo="Typo.subtitle2" Color="Color.Inherit" Class="ml-4 my-3">Pages</MudText>
-        <MudNavGroup Title="Authentication" Icon="@Icons.Material.Outlined.AssignmentInd" HideExpandIcon="true">
-            <MudNavLink Href="pages/authentication/login" Icon="@Icons.Material.Outlined.InsertDriveFile">Login</MudNavLink>
-            <MudNavLink Href="pages/authentication/register" Icon="@Icons.Material.Outlined.InsertDriveFile">Register</MudNavLink>
-            <MudNavLink Href="pages/authentication/forgot-password" Icon="@Icons.Material.Outlined.InsertDriveFile">Forgot Password</MudNavLink>
-            <MudNavLink Href="pages/authentication/reset-password" Icon="@Icons.Material.Outlined.InsertDriveFile">Reset Password</MudNavLink>
-        </MudNavGroup>
-        <MudNavGroup Title="Error" Icon="@AlertAssignmentIcon" HideExpandIcon="true">
-            <MudNavLink Href="pages/error/404" Icon="@Icons.Material.Outlined.InsertDriveFile">404</MudNavLink>
-        </MudNavGroup>
-        <MudNavGroup Title="Utility" Icon="@Icons.Material.Outlined.Assignment" HideExpandIcon="true">
-            <MudNavLink Href="pages/utility/faq" Icon="@Icons.Material.Outlined.InsertDriveFile">Faq</MudNavLink>
-        </MudNavGroup>
+      <MudNavMenu>
+      <MudNavLink Href="app" Match="NavLinkMatch.All" Icon="@Icons.Material.Outlined.Dashboard">Dashboard</MudNavLink>
+      <MudNavLink Href="app/systems" Icon="@Icons.Material.Outlined.Hub">Systems</MudNavLink>
     </MudNavMenu>
     </MudDrawer>
     <MudMainContent>
