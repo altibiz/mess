@@ -12,7 +12,7 @@ using OrchardCore.DisplayManagement.Zones;
 using OrchardCore.Settings;
 using OrchardCore.Users.Models;
 
-// TODO: optimize user fetching - maybe cascading value?
+// TODO: optimize user fetching - static async local
 
 namespace Mess.Blazor.Abstractions.Components;
 

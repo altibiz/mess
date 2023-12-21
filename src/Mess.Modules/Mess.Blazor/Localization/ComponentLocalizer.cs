@@ -1,6 +1,8 @@
 using System.Diagnostics;
 using System.Text;
+using Mess.Blazor.Abstractions.Extensions;
 using Mess.Blazor.Abstractions.Localization;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -30,7 +32,7 @@ public class ComponentLocalizer : IComponentLocalizer
     _localizerFactory = localizerFactory ?? throw new ArgumentNullException(nameof(localizerFactory));
   }
 
-  public virtual LocalizedHtmlString this[string key]
+  public virtual MarkupString this[string key]
   {
     get
     {
@@ -39,11 +41,11 @@ public class ComponentLocalizer : IComponentLocalizer
         throw new ArgumentNullException(nameof(key));
       }
 
-      return _localizer[key];
+      return _localizer[key].ToMarkupString();
     }
   }
 
-  public virtual LocalizedHtmlString this[string key, params object[] arguments]
+  public virtual MarkupString this[string key, params object[] arguments]
   {
     get
     {
@@ -52,16 +54,18 @@ public class ComponentLocalizer : IComponentLocalizer
         throw new ArgumentNullException(nameof(key));
       }
 
-      return _localizer[key, arguments];
+      return _localizer[key, arguments].ToMarkupString();
     }
   }
 
-  public LocalizedString GetString(string name) => _localizer.GetString(name);
+  public MarkupString GetString(string name) => new(_localizer.GetString(name));
 
-  public LocalizedString GetString(string name, params object[] values) => _localizer.GetString(name, values);
+  public MarkupString GetString(string name, params object[] values) => new(_localizer.GetString(name, values));
 
-  public IEnumerable<LocalizedString> GetAllStrings(bool includeParentCultures) =>
-      _localizer.GetAllStrings(includeParentCultures);
+  public IEnumerable<MarkupString> GetAllStrings(bool includeParentCultures) =>
+      _localizer
+        .GetAllStrings(includeParentCultures)
+        .Select(@string => new MarkupString(@string));
 
   public void Contextualize(Type componentType)
   {

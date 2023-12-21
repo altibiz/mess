@@ -1,0 +1,86 @@
+@using Mess.Ozds.Abstractions.Indexes
+@using Mess.Iot.Abstractions.Models
+@using Mess.Ozds.Abstractions.Models
+@using OrchardCore.Users.Models
+@using OrchardCore.ContentFields.Indexing.SQL
+@inject ISession _session
+
+<MudDataGrid
+  T="ContentItem"
+  MultiSelection="true"
+  Items="@_devices"
+  SortMode="SortMode.Multiple"
+  Filterable="true"
+  QuickFilter="@_quickFilter"
+  RowClick="@RowClicked">
+  <ToolBarContent>
+    <MudText Typo="Typo.h6">@T["Meters"]</MudText>
+    <MudSpacer />
+    <MudTextField
+      @bind-Value="_searchString"
+      Placeholder="Search"
+      Adornment="Adornment.Start"
+      Immediate="true"
+      AdornmentIcon="@Icons.Material.Filled.Search"
+      IconSize="Size.Medium"
+      Class="mt-0">
+    </MudTextField>
+  </ToolBarContent>
+  <Columns>
+    <PropertyColumn Property="x => x.ContentItemId" Title='@T["Id"].Value' Sortable="false" Filterable="false" />
+    <PropertyColumn Property="x => x.As<IotDevicePart>().DeviceId.Text" Title='@T["Name"].Value' />
+  </Columns>
+  <PagerContent>
+    <MudDataGridPager T="ContentItem" />
+  </PagerContent>
+</MudDataGrid>
+
+@code {
+  [Parameter]
+  public User AuthenticatedUser { get; set; } = default!;
+
+  private IEnumerable<ContentItem>? _devices;
+
+  private ClosedDistributionSystemItem? _closedDistributionSystem;
+
+  private string? _searchString;
+
+  private Func<ContentItem, bool> _quickFilter => x =>
+  {
+    if (string.IsNullOrWhiteSpace(_searchString))
+      return true;
+
+    if (x.As<IotDevicePart>().DeviceId.Text.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+      return true;
+
+    return false;
+  };
+
+  private string GetName(ContentItem device) {
+    return device.As<IotDevicePart>().DeviceId.Text;
+  }
+
+  private void RowClicked() {
+
+  }
+
+  protected override async Task OnInitializedAsync()
+  {
+    _closedDistributionSystem = (await _session
+      .Query<ContentItem, UserPickerFieldIndex>()
+      .Where(index => index.ContentPart == "LegalEntityPart")
+      .Where(index => index.SelectedUserId == AuthenticatedUser.UserId)
+      .FirstOrDefaultAsync())
+      .AsContent<ClosedDistributionSystemItem>();
+
+    if (_closedDistributionSystem is null) {
+      return;
+    }
+
+    _devices = await _session
+      .Query<ContentItem, OzdsIotDeviceIndex>()
+      .Where(index => index.ClosedDistributionSystemContentItemId == _closedDistributionSystem.ContentItemId)
+      .ListAsync();
+  }
+}
+
