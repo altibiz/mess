@@ -1,17 +1,36 @@
 @page "/app"
 
-@{
-  var isSystemRepresentative = User?.RoleNames.Contains("ClosedDistributionSystemRepresentative") is true;
-  var isOperatorRepresentative = User?.RoleNames.Contains("DistributionSystemOperatorRepresentative") is true;
-  var isUnitRepresentative = User?.RoleNames.Contains("DistributionSystemUnitRepresentative") is true;
-}
+@using Mess.Ozds.Abstractions.Indexes
+@using Mess.Iot.Abstractions.Models
+@using Mess.Ozds.Abstractions.Models
+@using OrchardCore.Users.Models
+@using OrchardCore.ContentFields.Indexing.SQL
 
-@if (isSystemRepresentative) {
+@inject ISession _session
+
+@if (_user?.RoleNames.Contains("ClosedDistributionSystemRepresentative") is true) {
   <SystemDashboard AuthenticatedUser="@User" />
 }
-@if (isOperatorRepresentative) {
+@if (_user?.RoleNames.Contains("DistributionSystemOperatorRepresentative") is true) {
   <OperatorDashboard AuthenticatedUser="@User" />
 }
-@if (isUnitRepresentative) {
+@if (_user?.RoleNames.Contains("DistributionSystemUnitRepresentative") is true) {
   <UnitDashboard AuthenticatedUser="@User" />
+}
+
+@code {
+  private User? _user;
+
+  private ContentItem? _legalEntity;
+
+  protected override async Task OnInitializedAsync()
+  {
+    _user = await this.GetAuthenticatedOrchardCoreUserAsync();
+
+    _legalEntity = await _session
+      .Query<ContentItem, UserPickerFieldIndex>()
+      .Where(index => index.ContentPart == "LegalEntityPart")
+      .Where(index => index.SelectedUserId == _user.UserId)
+      .FirstOrDefaultAsync();
+  }
 }

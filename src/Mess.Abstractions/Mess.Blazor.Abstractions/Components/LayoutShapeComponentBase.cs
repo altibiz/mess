@@ -13,8 +13,6 @@ using OrchardCore.DisplayManagement.Title;
 using OrchardCore.DisplayManagement.Zones;
 using OrchardCore.Settings;
 
-// TODO: rename these to modelcomponentbase
-
 namespace Mess.Blazor.Abstractions.Components;
 
 public class LayoutShapeComponentBase : AbstractComponent
