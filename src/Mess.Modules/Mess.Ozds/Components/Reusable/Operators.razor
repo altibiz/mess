@@ -34,7 +34,7 @@
       Sortable="false"
       Filterable="false" />
     <PropertyColumn
-      Property="x => GetName(x)"
+      Property="x => GetName(x!)"
       Title='@T["Name"].Value' />
   </Columns>
   <PagerContent>
@@ -61,7 +61,7 @@
     return false;
   };
 
-  private string GetName(ContentItem? _operator) {
+  private string GetName(ContentItem _operator) {
     return _operator.As<LegalEntityPart>().Name.Text;
   }
 

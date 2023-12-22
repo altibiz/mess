@@ -8,7 +8,7 @@
 <MudDataGrid
   T="ContentItem"
   MultiSelection="true"
-  Items="@_devices"
+  Items="@_meters"
   SortMode="SortMode.Multiple"
   Filterable="true"
   QuickFilter="@_quickFilter"
@@ -33,7 +33,7 @@
       Sortable="false"
       Filterable="false" />
     <PropertyColumn
-      Property="x => x.As<IotDevicePart>().DeviceId.Text"
+      Property="x => GetName(x!)"
       Title='@T["Name"].Value' />
   </Columns>
   <PagerContent>
@@ -45,7 +45,7 @@
   [Parameter]
   public Expression<Func<OzdsIotDeviceIndex, bool>>? Where { get; set; }
 
-  private IEnumerable<ContentItem>? _devices;
+  private IEnumerable<ContentItem>? _meters;
 
   private string? _searchString;
 
@@ -61,8 +61,8 @@
     return false;
   };
 
-  private string GetName(ContentItem device) {
-    return device.As<IotDevicePart>().DeviceId.Text;
+  private string GetName(ContentItem meter) {
+    return meter.As<IotDevicePart>().DeviceId.Text;
   }
 
   private void RowClicked() { }
@@ -75,7 +75,7 @@
         query = query.Where(Where);
       }
 
-      _devices = await query.ListAsync();
+      _meters = await query.ListAsync();
     });
   }
 }

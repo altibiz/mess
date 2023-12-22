@@ -1,5 +1,5 @@
 @using Mess.Ozds.Abstractions.Indexes
-@using Mess.Billing.Abstractions.Models
+@using Mess.Billing.Abstractions.Indexes
 @using Mess.Ozds.Abstractions.Models
 @using OrchardCore.Users.Models
 @using OrchardCore.ContentFields.Indexing.SQL
@@ -8,13 +8,13 @@
 <MudDataGrid
   T="ContentItem"
   MultiSelection="true"
-  Items="@_systems"
+  Items="@_bills"
   SortMode="SortMode.Multiple"
   Filterable="true"
   QuickFilter="@_quickFilter"
   RowClick="@RowClicked">
   <ToolBarContent>
-    <MudText Typo="Typo.h6">@T["Systems"]</MudText>
+    <MudText Typo="Typo.h6">@T["Meters"]</MudText>
     <MudSpacer />
     <MudTextField
       @bind-Value="_searchString"
@@ -43,9 +43,9 @@
 
 @code {
   [Parameter]
-  public Expression<Func<ClosedDistributionSystemIndex, bool>>? Where { get; set; }
+  public Expression<Func<PaymentIndex, bool>>? Where { get; set; }
 
-  private IEnumerable<ContentItem>? _systems;
+  private IEnumerable<ContentItem>? _bills;
 
   private string? _searchString;
 
@@ -60,8 +60,14 @@
     return false;
   };
 
-  private string GetName(ContentItem system) {
-    return system.As<LegalEntityPart>().Name.Text;
+  private string GetName(ContentItem bill) {
+    if (bill.As<OzdsInvoicePart>() is OzdsInvoicePart invoicePart) {
+    }
+
+    if (bill.As<OzdsReceiptPart>() is OzdsReceiptPart receiptPart) {
+    }
+
+    return "";
   }
 
   private void RowClicked() { }
@@ -69,12 +75,12 @@
   protected override async Task OnInitializedAsync()
   {
     await WithTransientSessionAsync(async session => {
-      var query = session.Query<ContentItem, ClosedDistributionSystemIndex>();
+      var query = session.Query<ContentItem, PaymentIndex>();
       if (Where is not null) {
         query = query.Where(Where);
       }
 
-      _systems = await query.ListAsync();
+      _bills = await query.ListAsync();
     });
   }
 }
