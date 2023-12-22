@@ -5,7 +5,6 @@
 @using OrchardCore.ContentFields.Indexing.SQL
 @using System.Linq.Expressions
 @using OrchardCore.ContentManagement.Records
-@inject ISession _session
 
 <MudDataGrid
   T="ContentItem"
@@ -16,7 +15,7 @@
   QuickFilter="@_quickFilter"
   RowClick="@RowClicked">
   <ToolBarContent>
-    <MudText Typo="Typo.h6">@T["Meters"]</MudText>
+    <MudText Typo="Typo.h6">@T["Operators"]</MudText>
     <MudSpacer />
     <MudTextField
       @bind-Value="_searchString"
@@ -70,14 +69,15 @@
 
   protected override async Task OnInitializedAsync()
   {
-    var query = _session
-      .Query<ContentItem, ContentItemIndex>()
-      .Where(index => index.ContentType == "DistributionSystemOperator");
-    if (Where is not null) {
-      query = query.Where(Where);
-    }
+    await WithTransientSessionAsync(async session => {
+      var query = session
+        .Query<ContentItem, ContentItemIndex>()
+        .Where(index => index.ContentType == "DistributionSystemOperator");
+      if (Where is not null) {
+        query = query.Where(Where);
+      }
 
-    _operators = await query.ListAsync();
+      _operators = await query.ListAsync();
+    });
   }
 }
-

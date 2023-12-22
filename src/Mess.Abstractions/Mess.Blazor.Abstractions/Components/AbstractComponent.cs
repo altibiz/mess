@@ -368,4 +368,18 @@ public abstract class AbstractComponent : ComponentBase
 
     return text;
   }
+
+  public void WithTransientSession(Action<YesSql.ISession> action)
+  {
+    var session = ServiceProvider.GetRequiredService<YesSql.ISession>();
+    using var transientSession = session.Store.CreateSession();
+    action(transientSession);
+  }
+
+  public async Task WithTransientSessionAsync(Func<YesSql.ISession, Task> action)
+  {
+    var session = ServiceProvider.GetRequiredService<YesSql.ISession>();
+    await using var transientSession = session.Store.CreateSession();
+    await action(transientSession);
+  }
 }
