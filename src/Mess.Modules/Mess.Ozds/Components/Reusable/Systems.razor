@@ -1,5 +1,5 @@
 @using Mess.Ozds.Abstractions.Indexes
-@using Mess.Iot.Abstractions.Models
+@using Mess.Billing.Abstractions.Models
 @using Mess.Ozds.Abstractions.Models
 @using OrchardCore.Users.Models
 @using OrchardCore.ContentFields.Indexing.SQL
@@ -9,7 +9,7 @@
 <MudDataGrid
   T="ContentItem"
   MultiSelection="true"
-  Items="@_devices"
+  Items="@_systems"
   SortMode="SortMode.Multiple"
   Filterable="true"
   QuickFilter="@_quickFilter"
@@ -34,7 +34,7 @@
       Sortable="false"
       Filterable="false" />
     <PropertyColumn
-      Property="x => x.As<IotDevicePart>().DeviceId.Text"
+      Property="x => GetName(x)"
       Title='@T["Name"].Value' />
   </Columns>
   <PagerContent>
@@ -44,9 +44,9 @@
 
 @code {
   [Parameter]
-  public Expression<Func<OzdsIotDeviceIndex, bool>>? Where { get; set; }
+  public Expression<Func<ClosedDistributionSystemIndex, bool>>? Where { get; set; }
 
-  private IEnumerable<ContentItem>? _devices;
+  private IEnumerable<ContentItem>? _systems;
 
   private string? _searchString;
 
@@ -55,27 +55,26 @@
     if (string.IsNullOrWhiteSpace(_searchString))
       return true;
 
-    if (x.As<IotDevicePart>().DeviceId.Text
-        .Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+    if (GetName(x).Contains(_searchString, StringComparison.OrdinalIgnoreCase))
       return true;
 
     return false;
   };
 
-  private string GetName(ContentItem device) {
-    return device.As<IotDevicePart>().DeviceId.Text;
+  private string GetName(ContentItem? system) {
+    return system.As<LegalEntityPart>().Name.Text;
   }
 
   private void RowClicked() { }
 
   protected override async Task OnInitializedAsync()
   {
-    var query = _session.Query<ContentItem, OzdsIotDeviceIndex>();
+    var query = _session.Query<ContentItem, ClosedDistributionSystemIndex>();
     if (Where is not null) {
       query = query.Where(Where);
     }
 
-    _devices = await query.ListAsync();
+    _systems = await query.ListAsync();
   }
 }
 
