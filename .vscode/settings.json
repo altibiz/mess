@@ -35,7 +35,8 @@
     "editor.defaultFormatter": "ms-dotnettools.csharp"
   },
   "[aspnetcorerazor]": {
-    "editor.defaultFormatter": "ms-dotnettools.csharp"
+    "editor.defaultFormatter": "ms-dotnettools.csharp",
+    "editor.formatOnSave": false
   },
   "[markdown]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
