@@ -62,9 +62,11 @@
 
   private string GetName(ContentItem bill) {
     if (bill.As<OzdsInvoicePart>() is OzdsInvoicePart invoicePart) {
+      return invoicePart.Data.From.ToString("MMMM");
     }
 
     if (bill.As<OzdsReceiptPart>() is OzdsReceiptPart receiptPart) {
+      return receiptPart.Data.From.ToString("MMMM");
     }
 
     return "";

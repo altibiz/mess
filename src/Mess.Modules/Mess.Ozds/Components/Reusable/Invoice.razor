@@ -1,0 +1,17 @@
+@using OrchardCore.ContentManagement
+
+@inject IContentManager _contentManager
+
+@code {
+  [Parameter]
+  public ContentItem? ContentItem { get; set; }
+
+  [Parameter]
+  public string? ContentItemId { get; set; }
+
+  protected override async Task OnInitializedAsync() {
+    if (ContentItem is null && ContentItemId is not null) {
+      ContentItem = await _contentManager.GetAsync(ContentItemId);
+    }
+  }
+}
