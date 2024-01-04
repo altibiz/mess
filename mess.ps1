@@ -115,9 +115,7 @@ function Get-Dotnet-Version {
 
 function Get-Node-Version {
   $version = Invoke-Expression "node --version" 2>&1
-  # TODO: once loaders get stabilized...
-  # return ($version -replace '^v(\d+)\..*', '$1')
-  return ($version -replace '^v', '')
+  return $version.TrimStart('v').Split('.')[0]
 }
 
 function Install-Dotnet {
