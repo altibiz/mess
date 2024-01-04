@@ -133,10 +133,5 @@ public class Startup : StartupBase
       nameof(DistributionSystemOperatorAdminController.Detail),
       adminUrlPrefix + "/DistributionSystemOperator/Detail/{contentItemId}"
     );
-
-    app.UseEndpoints(endpoints =>
-    {
-      endpoints.Redirect("/", "/OzdsIotDevice/List");
-    });
   }
 }

@@ -85,6 +85,11 @@ public class Startup : StartupBase
       "/App/{**catchall}"
     );
 
+    app.UseEndpoints(endpoints =>
+    {
+      endpoints.Redirect("/", "/app");
+    });
+
     routes.MapBlazorHub();
   }
 }
