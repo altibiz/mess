@@ -3,9 +3,8 @@
 @using Mess.Chart.Abstractions.Descriptors
 @using Mess.Chart.Abstractions.Services
 @using Mess.Chart.Factories
-@inherits ShapeComponentBase
 
-<Mess.Chart.Components.Charts.Chart ChartDescriptor="@ChartDescriptor" />
+<AnyChart ChartDescriptor="@ChartDescriptor" />
 
 @code {
   private ChartDescriptor? ChartDescriptor;

@@ -22,7 +22,7 @@
       Adornment="Adornment.Start"
       Immediate="true"
       AdornmentIcon="@Icons.Material.Filled.Search"
-      IconSize="Size.Medium"
+      IconSize="MudSize.Medium"
       Class="mt-0">
     </MudTextField>
   </ToolBarContent>
@@ -65,7 +65,10 @@
     return meter.As<IotDevicePart>().DeviceId.Text;
   }
 
-  private void RowClicked() { }
+  private void RowClicked(DataGridRowClickEventArgs<ContentItem> args)
+  {
+    Navigation.NavigateTo($"/app/meter/{args.Item.ContentItemId}");
+  }
 
   protected override async Task OnInitializedAsync()
   {

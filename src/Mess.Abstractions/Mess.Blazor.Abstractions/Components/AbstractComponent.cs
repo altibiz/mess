@@ -43,28 +43,36 @@ public abstract class AbstractComponent : ComponentBase
 
   private User? _user;
 
-  public HttpContext HttpContext => _httpContext ??=
+  private NavigationManager? _navigationManager;
+
+  protected HttpContext HttpContext => _httpContext ??=
     HttpContextAccessor.HttpContext ??
     throw new InvalidOperationException(
       "HttpContext is null");
 
-  public IServiceProvider ServiceProvider => _serviceProvider ??=
+  protected IServiceProvider ServiceProvider => _serviceProvider ??=
     HttpContext.RequestServices;
 
   /// <summary>
   ///   Gets the <see cref="ISite" /> instance.
   /// </summary>
-  public ISite? Site =>
+  protected ISite? Site =>
     _site ??= HttpContext.Features.Get<RazorViewFeature>()?.Site;
 
-  public IOrchardDisplayHelper Orchard => _orchardHelper ??=
+  protected IZoneHolding? ThemeLayout => _themeLayout ??=
+    HttpContext.Features.Get<RazorViewFeature>()?.ThemeLayout;
+
+  protected IDisplayHelper DisplayHelper => _displayHelper ??=
+    ServiceProvider.GetRequiredService<IDisplayHelper>();
+
+  protected IShapeFactory ShapeFactory => _shapeFactory ??=
+    ServiceProvider.GetRequiredService<IShapeFactory>();
+
+  protected NavigationManager Navigation => _navigationManager ??=
+    ServiceProvider.GetRequiredService<NavigationManager>();
+
+  protected IOrchardDisplayHelper Orchard => _orchardHelper ??=
     new ShapeComponentOrchardDisplayHelper(HttpContext, DisplayHelper);
-
-  private IDisplayHelper DisplayHelper => _displayHelper ??=
-    HttpContext.RequestServices.GetRequiredService<IDisplayHelper>();
-
-  private IShapeFactory ShapeFactory => _shapeFactory ??=
-    HttpContext.RequestServices.GetRequiredService<IShapeFactory>();
 
   /// <summary>
   ///   Gets a dynamic shape factory to create new shapes.
@@ -77,17 +85,14 @@ public abstract class AbstractComponent : ComponentBase
   /// (await New.MyShape()).A(1).B("Some text")
   /// </code>
   /// </example>
-  public dynamic New => ShapeFactory;
+  protected dynamic New => ShapeFactory.New;
 
   /// <summary>
   ///   Gets an <see cref="IShapeFactory" /> to create new shapes.
   /// </summary>
-  public IShapeFactory Factory => ShapeFactory;
+  protected IShapeFactory Factory => ShapeFactory;
 
-  public IZoneHolding? ThemeLayout => _themeLayout ??=
-    HttpContext.Features.Get<RazorViewFeature>()?.ThemeLayout;
-
-  public string ViewLayout
+  protected string ViewLayout
   {
     get
     {
@@ -118,19 +123,19 @@ public abstract class AbstractComponent : ComponentBase
     }
   }
 
-  public IPageTitleBuilder Title => _pageTitleBuilder ??=
+  protected IPageTitleBuilder Title => _pageTitleBuilder ??=
     HttpContext.RequestServices.GetRequiredService<IPageTitleBuilder>();
 
   /// <summary>
   ///   The <see cref="IComponentLocalizer" /> instance for the current component.
   /// </summary>
-  public IComponentLocalizer T
+  protected IComponentLocalizer T
   {
     get
     {
       if (_t is null)
       {
-        _t = HttpContext.RequestServices.GetRequiredService<IComponentLocalizer>();
+        _t = ServiceProvider.GetRequiredService<IComponentLocalizer>();
         (_t as IComponentAware)?.Contextualize(GetType());
       }
 
@@ -138,23 +143,22 @@ public abstract class AbstractComponent : ComponentBase
     }
   }
 
-  public ClaimsPrincipal ClaimsPrincipal => _claimsPrincipal
+  protected ClaimsPrincipal ClaimsPrincipal => _claimsPrincipal
     ??= HttpContext.User;
 
-  public User? User
+  protected User? User
   {
     get
     {
-      static async Task FetchUser(AbstractComponent component)
-      {
-        var user = await component.GetAuthenticatedOrchardCoreUserAsync();
-        component._user = user;
-        component.StateHasChanged();
-      }
-
       if (_user is null || _user.UserName != ClaimsPrincipal.Identity?.Name)
       {
-        InvokeAsync(() => FetchUser(this));
+        var component = this;
+        InvokeAsync(async () =>
+        {
+          var user = await component.GetAuthenticatedOrchardCoreUserAsync();
+          component._user = user;
+          component.StateHasChanged();
+        });
         return null;
       }
 
@@ -165,7 +169,7 @@ public abstract class AbstractComponent : ComponentBase
   /// <summary>
   ///   Returns the full escaped path of the current request.
   /// </summary>
-  public string FullRequestPath =>
+  protected string FullRequestPath =>
     HttpContext.Request.PathBase +
     HttpContext.Request.Path +
     HttpContext.Request.QueryString;
@@ -175,7 +179,7 @@ public abstract class AbstractComponent : ComponentBase
   ///   within a named zone.
   /// </summary>
   /// <returns>The HTML content to render.</returns>
-  public virtual Task<RenderFragment> RenderBodyAsync()
+  protected virtual Task<RenderFragment> RenderBodyAsync()
   {
     if (ThemeLayout is null)
     {
@@ -189,7 +193,7 @@ public abstract class AbstractComponent : ComponentBase
   ///   Renders a shape.
   /// </summary>
   /// <param name="shape">The shape.</param>
-  public async Task<RenderFragment> DisplayAsync(dynamic dynamic)
+  protected async Task<RenderFragment> DisplayAsync(dynamic dynamic)
   {
     var content = dynamic switch
     {
@@ -210,7 +214,7 @@ public abstract class AbstractComponent : ComponentBase
   ///   Renders a shape.
   /// </summary>
   /// <param name="shape">The shape.</param>
-  public async Task<RenderFragment> DisplayAsync(IShape shape)
+  protected async Task<RenderFragment> DisplayAsync(IShape shape)
   {
     var content = await DisplayHelper.ShapeExecuteAsync(shape);
     return builder =>
@@ -226,7 +230,7 @@ public abstract class AbstractComponent : ComponentBase
   /// <param name="position">Optional. The position of the segment in the title.</param>
   /// <param name="separator">The html string that should separate all segments.</param>
   /// <returns>And <see cref="IHtmlContent" /> instance representing the full title.</returns>
-  public RenderFragment RenderTitleSegments(
+  protected RenderFragment RenderTitleSegments(
     IHtmlContent segment,
     string position = "0",
     IHtmlContent? separator = null
@@ -247,7 +251,7 @@ public abstract class AbstractComponent : ComponentBase
   /// <param name="position">Optional. The position of the segment in the title.</param>
   /// <param name="separator">The html string that should separate all segments.</param>
   /// <returns>And <see cref="IHtmlContent" /> instance representing the full title.</returns>
-  public RenderFragment RenderTitleSegments(
+  protected RenderFragment RenderTitleSegments(
     string segment,
     string position = "0",
     IHtmlContent? separator = null
@@ -271,7 +275,7 @@ public abstract class AbstractComponent : ComponentBase
   /// </summary>
   /// <param name="shape">The shape.</param>
   /// <returns>A new <see cref="TagBuilder" />.</returns>
-  public TagBuilder Tag(IShape shape)
+  protected TagBuilder Tag(IShape shape)
   {
     return shape.GetTagBuilder();
   }
@@ -282,7 +286,7 @@ public abstract class AbstractComponent : ComponentBase
   /// <param name="shape">The shape.</param>
   /// <param name="tag">The tag name to use.</param>
   /// <returns>A new <see cref="TagBuilder" />.</returns>
-  public TagBuilder Tag(IShape shape, string tag)
+  protected TagBuilder Tag(IShape shape, string tag)
   {
     return shape.GetTagBuilder(tag);
   }
@@ -292,7 +296,7 @@ public abstract class AbstractComponent : ComponentBase
   /// </summary>
   /// <param name="name"></param>
   /// <returns></returns>
-  public bool IsSectionDefined(string name)
+  protected bool IsSectionDefined(string name)
   {
     // We can replace the base implementation as it can't be called on a view that is not an actual MVC Layout.
 
@@ -305,7 +309,7 @@ public abstract class AbstractComponent : ComponentBase
   ///   Renders a zone from the layout.
   /// </summary>
   /// <param name="name">The name of the zone to render.</param>
-  public RenderFragment RenderSection(string name)
+  protected RenderFragment RenderSection(string name)
   {
     // We can replace the base implementation as it can't be called on a view that is not an actual MVC Layout.
 
@@ -319,7 +323,7 @@ public abstract class AbstractComponent : ComponentBase
   /// </summary>
   /// <param name="name">The name of the zone to render.</param>
   /// <param name="required">Whether the zone is required or not.</param>
-  public RenderFragment RenderSection(string name, bool required)
+  protected RenderFragment RenderSection(string name, bool required)
   {
     // We can replace the base implementation as it can't be called on a view that is not an actual MVC Layout.
 
@@ -334,7 +338,7 @@ public abstract class AbstractComponent : ComponentBase
   ///   Renders a zone from the layout.
   /// </summary>
   /// <param name="name">The name of the zone to render.</param>
-  public Task<RenderFragment> RenderSectionAsync(string name)
+  protected Task<RenderFragment> RenderSectionAsync(string name)
   {
     // We can replace the base implementation as it can't be called on a view that is not an actual MVC Layout.
 
@@ -348,7 +352,7 @@ public abstract class AbstractComponent : ComponentBase
   /// </summary>
   /// <param name="name">The name of the zone to render.</param>
   /// <param name="required">Whether the zone is required or not.</param>
-  public Task<RenderFragment> RenderSectionAsync(string name, bool required)
+  protected Task<RenderFragment> RenderSectionAsync(string name, bool required)
   {
     // We can replace the base implementation as it can't be called on a view that is not an actual MVC Layout.
 
@@ -362,21 +366,21 @@ public abstract class AbstractComponent : ComponentBase
     return DisplayAsync(zone!);
   }
 
-  public object OrDefault(object text, object other)
+  protected object OrDefault(object text, object other)
   {
     if (text == null || Convert.ToString(text) == "") return other;
 
     return text;
   }
 
-  public void WithTransientSession(Action<YesSql.ISession> action)
+  protected void WithTransientSession(Action<YesSql.ISession> action)
   {
     var session = ServiceProvider.GetRequiredService<YesSql.ISession>();
     using var transientSession = session.Store.CreateSession();
     action(transientSession);
   }
 
-  public async Task WithTransientSessionAsync(Func<YesSql.ISession, Task> action)
+  protected async Task WithTransientSessionAsync(Func<YesSql.ISession, Task> action)
   {
     var session = ServiceProvider.GetRequiredService<YesSql.ISession>();
     await using var transientSession = session.Store.CreateSession();

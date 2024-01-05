@@ -32,7 +32,7 @@ public class LayoutShapeComponentBase : AbstractComponent
   /// <summary>
   ///   Gets the <see cref="TModel" /> instance.
   /// </summary>
-  public LayoutViewModel Model
+  protected LayoutViewModel Model
   {
     get
     {
@@ -51,15 +51,15 @@ public class LayoutShapeComponentBase : AbstractComponent
     }
   }
 
-  public MarkupString? Meta => Model.Meta;
+  protected MarkupString? Meta => Model.Meta;
 
-  public MarkupString? HeadLink => Model.HeadLink;
+  protected MarkupString? HeadLink => Model.HeadLink;
 
-  public MarkupString? HeadScript => Model.HeadScript;
+  protected MarkupString? HeadScript => Model.HeadScript;
 
-  public MarkupString? Stylesheet => Model.Stylesheet;
+  protected MarkupString? Stylesheet => Model.Stylesheet;
 
-  public MarkupString? FootScript => Model.FootScript;
+  protected MarkupString? FootScript => Model.FootScript;
 
   protected sealed override void OnInitialized()
   {
@@ -86,7 +86,7 @@ public class LayoutShapeComponentBase : AbstractComponent
   ///   within a named zone.
   /// </summary>
   /// <returns>The HTML content to render.</returns>
-  public override async Task<RenderFragment> RenderBodyAsync()
+  protected override async Task<RenderFragment> RenderBodyAsync()
   {
     if (Model.ComponentType is null || Model.CaptureId is null)
     {

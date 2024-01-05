@@ -10,8 +10,11 @@ public class BasicShapeComponentHarvester : IShapeComponentHarvester
   {
     return new[]
     {
-      "Components", "Components.Items", "Components.Parts", "Components.Fields",
-      "Components.Elements"
+      "Components.Shapes",
+      "Components.Shapes.Items",
+      "Components.Shapes.Parts",
+      "Components.Shapes.Fields",
+      "Components.Shapes.Elements"
     };
   }
 
@@ -52,15 +55,15 @@ public class BasicShapeComponentHarvester : IShapeComponentHarvester
   private static string Adjust(string subNamespace, string typeName,
     string? displayType)
   {
-    if (subNamespace == "Components" && typeName == "Layout")
+    if (subNamespace == "Components.Shapes" && typeName == "Layout")
     {
       return "ComponentLayout";
     }
 
     var leader = "";
-    if (subNamespace.StartsWith("Components.", StringComparison.Ordinal) &&
-        subNamespace != "Components.Items")
-      leader = string.Concat(subNamespace.AsSpan("Components.".Length), "_");
+    if (subNamespace.StartsWith("Components.Shapes.", StringComparison.Ordinal) &&
+        subNamespace != "Components.Shapes.Items")
+      leader = string.Concat(subNamespace.AsSpan("Components.Shapes.".Length), "_");
 
     // canonical shape type names must not have - or . to be compatible
     // with display and shape api calls)))

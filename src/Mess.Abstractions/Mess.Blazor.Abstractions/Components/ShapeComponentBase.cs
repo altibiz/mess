@@ -32,7 +32,7 @@ public partial class ShapeComponentBase<TModel> : AbstractComponent
   /// <summary>
   ///   Gets the <see cref="TModel" /> instance.
   /// </summary>
-  public TModel Model
+  protected TModel Model
   {
     get
     {

@@ -1,6 +1,11 @@
 @using OrchardCore.ContentManagement
+@using Mess.Iot.Abstractions.Models
 
 @inject IContentManager _contentManager
+
+<p>
+  @(ContentItem?.As<IotDevicePart>().DeviceId.Text)
+</p>
 
 @code {
   [Parameter]

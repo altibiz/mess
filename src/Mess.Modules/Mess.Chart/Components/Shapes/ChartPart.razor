@@ -5,7 +5,7 @@
 @inherits ShapeComponentBase<ChartPartViewModel>
 @inject IContentManager contentManager
 
-<Mess.Chart.Components.Charts.Chart ChartDescriptor="@ChartDescriptor" />
+<AnyChart ChartDescriptor="@ChartDescriptor" />
 
 @code {
   private ChartDescriptor? ChartDescriptor;
