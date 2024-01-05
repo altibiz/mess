@@ -20,7 +20,7 @@
     if (ContentItem is null && ContentItemId is not null) {
       var contentManager = _contentManager;
       var contentItemId = ContentItemId;
-      ContentItem = await contentManager.GetAsync(contentItemId);
+      var contentItem = await contentManager.GetAsync(contentItemId);
       Console.WriteLine("yass bitch");
     }
     }

@@ -4,6 +4,7 @@ using Mess.Blazor.Abstractions.Localization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using OrchardCore.ContentManagement;
 using OrchardCore.DisplayManagement;
 using OrchardCore.DisplayManagement.Html;
 using OrchardCore.DisplayManagement.Razor;
@@ -387,5 +388,19 @@ public abstract class AbstractComponent : ComponentBase
     var session = ServiceProvider.GetRequiredService<YesSql.ISession>();
     await using var transientSession = session.Store.CreateSession();
     await action(transientSession);
+  }
+
+  protected void WithTransientContentManager(Action<YesSql.ISession> action)
+  {
+    var session = ServiceProvider.GetRequiredService<IContentManager>();
+    using var transientContentManager = session.Store.CreateSession();
+    action(transientContentManager);
+  }
+
+  protected async Task WithTransientContentManagerAsync(Func<YesSql.ISession, Task> action)
+  {
+    var session = ServiceProvider.GetRequiredService<IContentManager>();
+    await using var transientContentManager = session.Store.CreateSession();
+    await action(transientContentManager);
   }
 }
