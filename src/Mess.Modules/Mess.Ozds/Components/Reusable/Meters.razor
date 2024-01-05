@@ -67,7 +67,7 @@
 
   private void RowClicked(DataGridRowClickEventArgs<ContentItem> args)
   {
-    Navigation.NavigateTo($"/app/meter/{args.Item.ContentItemId}");
+    Navigation.NavigateTo($"app/meter/{args.Item.ContentItemId}");
   }
 
   protected override async Task OnInitializedAsync()

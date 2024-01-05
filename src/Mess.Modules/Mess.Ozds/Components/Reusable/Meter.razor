@@ -15,8 +15,18 @@
   public string? ContentItemId { get; set; }
 
   protected override async Task OnInitializedAsync() {
+    try {
+
     if (ContentItem is null && ContentItemId is not null) {
-      ContentItem = await _contentManager.GetAsync(ContentItemId);
+      var contentManager = _contentManager;
+      var contentItemId = ContentItemId;
+      ContentItem = await contentManager.GetAsync(contentItemId);
+      Console.WriteLine("yass bitch");
+    }
+    }
+    catch (Exception e) {
+
+      Console.WriteLine(e);
     }
   }
 }

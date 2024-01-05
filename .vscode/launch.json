@@ -18,7 +18,8 @@
       },
       "logging": {
         "moduleLoad": false
-      }
+      },
+      "justMyCode": false
     }
   ]
 }

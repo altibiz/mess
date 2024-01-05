@@ -1,0 +1,8 @@
+@page "/app/meter/{contentItemId}"
+
+<Meter ContentItemId="@ContentItemId" />
+
+@code {
+  [Parameter]
+  public string? ContentItemId { get; set; }
+}
