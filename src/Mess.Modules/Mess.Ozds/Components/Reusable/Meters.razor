@@ -4,11 +4,14 @@
 @using OrchardCore.Users.Models
 @using OrchardCore.ContentFields.Indexing.SQL
 @using System.Linq.Expressions
+@using Mess.Ozds.Abstractions.Timeseries
+
+@inject IOzdsTimeseriesClient _timeseriesClient
 
 <MudDataGrid
-  T="ContentItem"
+  T="TestTabularData"
   MultiSelection="true"
-  Items="@_meters"
+  Items="@dataStruct"
   SortMode="SortMode.Multiple"
   Filterable="true"
   QuickFilter="@_quickFilter"
@@ -22,22 +25,25 @@
       Adornment="Adornment.Start"
       Immediate="true"
       AdornmentIcon="@Icons.Material.Filled.Search"
-      IconSize="Size.Medium"
+      IconSize="MudBlazor.Size.Medium"
       Class="mt-0">
     </MudTextField>
   </ToolBarContent>
   <Columns>
     <PropertyColumn
-      Property="x => x!.ContentItemId"
+      Property="x => x!.meter.ContentItemId"
       Title='@T["Id"].Value'
       Sortable="false"
       Filterable="false" />
     <PropertyColumn
-      Property="x => GetName(x!)"
+      Property="x => GetName(x.meter!)"
+      Title='@T["Name"].Value' />
+    <PropertyColumn
+      Property="x => x.abbActivePowerTotalLastWeel"
       Title='@T["Name"].Value' />
   </Columns>
   <PagerContent>
-    <MudDataGridPager T="ContentItem" />
+    <MudDataGridPager T="TestTabularData" />
   </PagerContent>
 </MudDataGrid>
 
@@ -45,16 +51,24 @@
   [Parameter]
   public Expression<Func<OzdsIotDeviceIndex, bool>>? Where { get; set; }
 
+  public record struct TestTabularData(ContentItem meter, decimal abbActivePowerTotalLastWeel);
+
+  private List<TestTabularData> dataStruct = new List<TestTabularData>();
+
   private IEnumerable<ContentItem>? _meters;
 
   private string? _searchString;
 
-  private Func<ContentItem, bool> _quickFilter => x =>
+  private IReadOnlyList<AbbMeasurement> _allMeasurments;
+
+  private decimal _abbActivePowerTotalLastWeel = 0;
+
+  private Func<TestTabularData, bool> _quickFilter => x =>
   {
     if (string.IsNullOrWhiteSpace(_searchString))
       return true;
 
-    if (x.As<IotDevicePart>().DeviceId.Text
+    if (x.meter.As<IotDevicePart>().DeviceId.Text
         .Contains(_searchString, StringComparison.OrdinalIgnoreCase))
       return true;
 
@@ -77,5 +91,14 @@
 
       _meters = await query.ListAsync();
     });
+      _allMeasurments = await _timeseriesClient.GetAbbMeasurementsAsync("abb", DateTimeOffset.UtcNow.AddDays(-7), DateTimeOffset.UtcNow);
+      foreach(var abbMeasurment in _allMeasurments){
+        _abbActivePowerTotalLastWeel += abbMeasurment.ActivePowerTotal_W ?? 0;
+      }
+      foreach(var meter in _meters){
+        dataStruct.Add(
+          new TestTabularData(meter, _abbActivePowerTotalLastWeel)
+        );
+      }
   }
 }

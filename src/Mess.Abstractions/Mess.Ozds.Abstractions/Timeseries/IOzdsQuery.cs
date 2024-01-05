@@ -16,6 +16,10 @@ public interface IOzdsTimeseriesQuery
     DateTimeOffset toDate
   );
 
+  public Task<(AbbMeasurement? First, AbbMeasurement? Last)> GetAbbLastMonthMeasurementsAsync(
+    string source
+  );
+
   public OzdsBillingData? GetAbbBillingData(
     string source,
     DateTimeOffset fromDate,

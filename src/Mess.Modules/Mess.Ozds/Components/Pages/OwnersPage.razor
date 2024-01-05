@@ -1,0 +1,84 @@
+@page "/app/owners"
+
+@using Mess.Ozds.Abstractions.Indexes
+@using Mess.Iot.Abstractions.Models
+@using Mess.Ozds.Abstractions.Models
+@using OrchardCore.Users.Models
+@using OrchardCore.ContentFields.Indexing.SQL
+@using System.Linq.Expressions
+@using Mess.Ozds.Abstractions.Timeseries
+@using Mess.Billing.Abstractions.Models
+@using OrchardCore.ContentManagement.Records
+@using OrchardCore.Users.Indexes
+
+@inject ISession _session
+@inject IContentManager _contentManager
+
+<MudDataGrid
+  T="User"
+  MultiSelection="true"
+  Items="@allOperatorUsers"
+  SortMode="SortMode.Multiple"
+  Filterable="true"
+  QuickFilter="@_quickFilter"
+  RowClick="@RowClicked">
+  <ToolBarContent>
+    <MudText Typo="Typo.h6">@T["Meters"]</MudText>
+    <MudSpacer />
+    <MudTextField
+      @bind-Value="_searchString"
+      Placeholder="Search"
+      Adornment="Adornment.Start"
+      Immediate="true"
+      AdornmentIcon="@Icons.Material.Filled.Search"
+      IconSize="MudBlazor.Size.Medium"
+      Class="mt-0">
+    </MudTextField>
+  </ToolBarContent>
+  <Columns>
+    <PropertyColumn
+      Property="x => x.UserId"
+      Title='@T["Id"].Value'
+      Sortable="false"
+      Filterable="false" />
+    <PropertyColumn
+      Property="x => x.Email"
+      Title='@T["Name"].Value' />
+  </Columns>
+  <PagerContent>
+    <MudDataGridPager T="User" />
+  </PagerContent>
+</MudDataGrid>
+
+@code {
+
+    private string? _searchString;
+    private IEnumerable<User>? allOperatorUsers;
+    private string OPERATOR_ROLE = "DistributionSystemOperator";
+    protected override async Task OnInitializedAsync()
+    {
+        await WithTransientSessionAsync(async session => {
+            var query = session
+              .Query<User, UserIndex>()
+              .Where(index => index.UserId == "OperatorId");
+        allOperatorUsers = await query.ListAsync();
+      });
+  }
+
+  private Func<User, bool> _quickFilter => x =>
+  {
+    if (string.IsNullOrWhiteSpace(_searchString))
+      return true;
+
+    if (x.Email.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+      return true;
+
+    return false;
+  };
+
+  private string GetEmail(ContentItem user) {
+    return user.As<LegalEntityPart>().Email.Text;
+  }
+
+  private void RowClicked() { }
+}

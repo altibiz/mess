@@ -1,0 +1,139 @@
+@page "/app/omm"
+
+@using Mess.Ozds.Abstractions.Indexes
+@using Mess.Iot.Abstractions.Models
+@using Mess.Ozds.Abstractions.Models
+@using OrchardCore.Users.Models
+@using OrchardCore.ContentFields.Indexing.SQL
+@using System.Linq.Expressions
+@using Mess.Ozds.Abstractions.Timeseries
+@using Mess.Billing.Abstractions.Models
+@using OrchardCore.ContentManagement.Records
+@using OrchardCore.Users.Indexes
+
+@inject IOzdsTimeseriesClient _timeseriesClient
+
+<MudDataGrid
+  T="TabularData"
+  MultiSelection="true"
+  Items="@_dataStruct"
+  SortMode="SortMode.Multiple"
+  Filterable="true"
+  QuickFilter="@_quickFilter"
+  RowClick="@RowClicked">
+  <ToolBarContent>
+    <MudText Typo="Typo.h6">@T["OMM"]</MudText>
+    <MudSpacer />
+    <MudTextField
+      @bind-Value="_searchString"
+      Placeholder="Search"
+      Adornment="Adornment.Start"
+      Immediate="true"
+      AdornmentIcon="@Icons.Material.Filled.Search"
+      IconSize="MudBlazor.Size.Medium"
+      Class="mt-0">
+    </MudTextField>
+  </ToolBarContent>
+  <Columns>
+    <PropertyColumn
+      Property="x => x.year"
+      Title='@T["Year"].Value'
+      Filterable="false" />
+    <PropertyColumn
+      Property="x => x.month"
+      Title='@T["Month"].Value' />
+    <PropertyColumn
+      Property="x => x.monthEndTotal.ActiveEnergyNetTotal_kWh"
+      Title='@T["Start Total"].Value'
+      Filterable="false" />
+    <PropertyColumn
+      Property="x => x.monthStartTotal.ActiveEnergyNetTotal_kWh"
+      Title='@T["End Total"].Value'
+      Filterable="false" />
+  </Columns>
+  <PagerContent>
+    <MudDataGridPager T="TabularData" />
+  </PagerContent>
+</MudDataGrid>
+
+<ApexChart TItem="AbbMeasurement"
+            Title="OMM last hour">
+
+    <ApexPointSeries TItem="AbbMeasurement"
+                      Items="@_lastHour"
+                      Name="Net Profit"
+                      SeriesType="SeriesType.Line"
+                      XValue="x => x.Timestamp.Ticks"
+                      YValue="x => x.ActiveEnergyNetTotal_kWh"
+                       />
+</ApexChart>
+
+@code {
+
+    [Parameter]
+    public string Source { get; set; }
+    private string? _searchString;
+    private List<TabularData> _dataStruct = new List<TabularData>();
+    public IReadOnlyList<AbbMeasurement> _lastHour;
+    public record struct TabularData(int year, int month, AbbMeasurement? monthStartTotal, AbbMeasurement? monthEndTotal);
+    private int _month = -1;
+    private int _year = -1;
+
+    @*private IEnumerable<int> _allMonths = Enumerable.Range(1,12);
+    private AbbMeasurement? _monthStartTotal;
+    private AbbMeasurement? _monthEndTotal; *@
+    protected override async Task OnInitializedAsync()
+    {
+      var startEnd = await _timeseriesClient.GetAbbLastMonthMeasurementsAsync("abb");
+      if(startEnd.First != null && startEnd.Last != null){
+        _month = startEnd.First.Timestamp.Month;
+        _year = startEnd.First.Timestamp.Year;
+        _dataStruct.Add(new TabularData(_year, _month, startEnd.First, startEnd.Last));
+      }
+      else{
+        _dataStruct.Add(new TabularData(0, 0, startEnd.First, startEnd.Last));
+      }
+      _lastHour = await _timeseriesClient.GetAbbMeasurementsAsync("abb", DateTimeOffset.UtcNow.AddHours(-10), DateTimeOffset.UtcNow);
+
+      @* bool mesurmentsExistInYear = true;
+      int yearOffset = 0;
+      while(mesurmentsExistInYear){
+        mesurmentsExistInYear = false;
+        _year = DateTimeOffset.UtcNow.AddYears(- yearOffset).Year;
+        foreach(var month in _allMonths){
+          var abbMeasurements = await _timeseriesClient.GetAbbMeasurementsAsync("abb", StartOfMonth(_year, month), EndOfMonth(_year, month));
+          if(abbMeasurements.Count > 0){
+          _monthStartTotal = abbMeasurements[0];
+          _monthEndTotal = abbMeasurements[abbMeasurements.Count() - 1];
+          _month = month;
+          _dataStruct.Add(new TabularData(_year, _month, _monthStartTotal, _monthEndTotal));
+          mesurmentsExistInYear = true;
+          }
+        }
+        yearOffset ++;
+      }*@
+    }
+  @* public  DateTimeOffset StartOfMonth(int year, int month)
+  {
+      return new DateTimeOffset(year, month, 1, 0, 0, 0, TimeSpan.Zero);
+  }
+  public  DateTimeOffset EndOfMonth(int year, int month)
+  {
+      return new DateTimeOffset(year, month, DateTime.DaysInMonth(year, month), 23, 59, 59, TimeSpan.Zero);
+  } *@
+
+  private Func<TabularData, bool> _quickFilter => x =>
+  {
+    if (string.IsNullOrWhiteSpace(_searchString))
+      return true;
+
+    if (x.month.ToString() == _searchString)
+      return true;
+
+    return false;
+  };
+
+  private void RowClicked() { }
+
+}
+

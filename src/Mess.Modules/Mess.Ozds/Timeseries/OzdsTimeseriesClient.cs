@@ -76,6 +76,35 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
     });
   }
 
+  public async Task<(AbbMeasurement? First, AbbMeasurement? Last)> GetAbbLastMonthMeasurementsAsync(
+    string source
+  )
+  {
+    return await _services.WithTimeseriesDbContextAsync<
+      OzdsTimeseriesDbContext,
+      (AbbMeasurement?, AbbMeasurement?)
+    >(async context =>
+    {
+      AbbMeasurement? first = null;
+      var query = context.AbbMeasurements
+        .Where(measurement => measurement.Source == source)
+        .OrderBy(measurement => measurement.Timestamp)
+        .Select(measurement => measurement.ToModel());
+      var last = await query
+        .FirstOrDefaultAsync();
+
+      if (last != null)
+        first = await context.AbbMeasurements
+          .Where(measurement => measurement.Source == source)
+          .Where(measurement => measurement.Timestamp.Month == last.Timestamp.Month)
+          .OrderByDescending(measurement => measurement.Timestamp)
+          .Select(measurement => measurement.ToModel())
+          .FirstOrDefaultAsync();
+
+      return (first, last);
+    });
+  }
+
   public OzdsBillingData? GetAbbBillingData(
     string source,
     DateTimeOffset fromDate,
