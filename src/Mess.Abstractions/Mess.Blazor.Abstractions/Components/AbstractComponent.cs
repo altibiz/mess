@@ -11,6 +11,7 @@ using OrchardCore.DisplayManagement.Title;
 using OrchardCore.DisplayManagement.Zones;
 using OrchardCore.Settings;
 using OrchardCore.Users.Models;
+using OrchardCore.Users.Services;
 
 // TODO: optimize user fetching - static async local
 
@@ -45,12 +46,12 @@ public abstract class AbstractComponent : ComponentBase
 
   private NavigationManager? _navigationManager;
 
-  protected HttpContext HttpContext => _httpContext ??=
+  public HttpContext HttpContext => _httpContext ??=
     HttpContextAccessor.HttpContext ??
     throw new InvalidOperationException(
       "HttpContext is null");
 
-  protected IServiceProvider ServiceProvider => _serviceProvider ??=
+  public IServiceProvider ServiceProvider => _serviceProvider ??=
     HttpContext.RequestServices;
 
   /// <summary>
