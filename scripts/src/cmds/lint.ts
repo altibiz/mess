@@ -25,7 +25,7 @@ export default cmd({
   }
 
   if (!formatOnly) {
-    await task("Linted workspaces", "yarn workspaces foreach -ip run lint");
+    await task("Linted workspaces", "yarn workspaces foreach -Aip run lint");
 
     await task(
       "Linted projects",
