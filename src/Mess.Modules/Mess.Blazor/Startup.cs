@@ -18,6 +18,8 @@ using OrchardCore.Modules;
 
 namespace Mess.Blazor;
 
+// FIXME: app redirection not working
+
 public class Startup : StartupBase
 {
   private readonly IHostEnvironment _hostEnvironment;
@@ -78,17 +80,17 @@ public class Startup : StartupBase
           .Assembly)
     });
 
+    // app.UseEndpoints(endpoints =>
+    // {
+    //   endpoints.Redirect("/", "/app");
+    // });
+
     app.UseMiddleware<ResourceMiddleware>();
 
     routes.MapAreaControllerRoute<AppController>(
       nameof(AppController.Index),
       "/App/{**catchall}"
     );
-
-    app.UseEndpoints(endpoints =>
-    {
-      endpoints.Redirect("/", "/app");
-    });
 
     routes.MapBlazorHub();
   }

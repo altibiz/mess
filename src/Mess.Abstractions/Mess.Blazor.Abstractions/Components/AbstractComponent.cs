@@ -22,6 +22,10 @@ public abstract class AbstractComponent : ComponentBase
   [Inject]
   private IHttpContextAccessor HttpContextAccessor { get; set; } = default!;
 
+  // NOTE: it has to be injected - otherwise it doesn't get initialized
+  [Inject]
+  private NavigationManager NavigationManager { get; set; } = default!;
+
   private IDisplayHelper? _displayHelper;
 
   private HttpContext? _httpContext;
@@ -43,8 +47,6 @@ public abstract class AbstractComponent : ComponentBase
   private ClaimsPrincipal? _claimsPrincipal;
 
   private User? _user;
-
-  private NavigationManager? _navigationManager;
 
   public HttpContext HttpContext => _httpContext ??=
     HttpContextAccessor.HttpContext ??
@@ -69,8 +71,7 @@ public abstract class AbstractComponent : ComponentBase
   protected IShapeFactory ShapeFactory => _shapeFactory ??=
     ServiceProvider.GetRequiredService<IShapeFactory>();
 
-  protected NavigationManager Navigation => _navigationManager ??=
-    ServiceProvider.GetRequiredService<NavigationManager>();
+  protected NavigationManager Navigation => NavigationManager;
 
   protected IOrchardDisplayHelper Orchard => _orchardHelper ??=
     new ShapeComponentOrchardDisplayHelper(HttpContext, DisplayHelper);
