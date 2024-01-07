@@ -5,14 +5,18 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OrchardCore.ContentManagement;
+using OrchardCore.ContentManagement.Handlers;
+using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.DisplayManagement;
 using OrchardCore.DisplayManagement.Html;
 using OrchardCore.DisplayManagement.Razor;
 using OrchardCore.DisplayManagement.Title;
 using OrchardCore.DisplayManagement.Zones;
+using OrchardCore.Modules;
 using OrchardCore.Settings;
 using OrchardCore.Users.Models;
 using OrchardCore.Users.Services;
+using YesSql;
 
 // TODO: optimize user fetching - static async local
 
@@ -378,29 +382,49 @@ public abstract class AbstractComponent : ComponentBase
 
   protected void WithTransientSession(Action<YesSql.ISession> action)
   {
-    var session = ServiceProvider.GetRequiredService<YesSql.ISession>();
-    using var transientSession = session.Store.CreateSession();
+    var store = ServiceProvider.GetRequiredService<IStore>();
+    using var transientSession = store.CreateSession();
     action(transientSession);
   }
 
   protected async Task WithTransientSessionAsync(Func<YesSql.ISession, Task> action)
   {
-    var session = ServiceProvider.GetRequiredService<YesSql.ISession>();
-    await using var transientSession = session.Store.CreateSession();
+    var store = ServiceProvider.GetRequiredService<IStore>();
+    await using var transientSession = store.CreateSession();
     await action(transientSession);
   }
 
   protected void WithTransientContentManager(Action<IContentManager> action)
   {
-    using var scope = ServiceProvider.CreateScope();
-    var transientContentManager = scope.ServiceProvider.GetRequiredService<IContentManager>();
+    var store = ServiceProvider.GetRequiredService<IStore>();
+    using var transientSession = store.CreateSession();
+    var transientContentManager =
+      new DefaultContentManager(
+        ServiceProvider.GetRequiredService<IContentDefinitionManager>(),
+        ServiceProvider.GetRequiredService<IContentManagerSession>(),
+        ServiceProvider.GetServices<IContentHandler>(),
+        transientSession,
+        ServiceProvider.GetRequiredService<IContentItemIdGenerator>(),
+        ServiceProvider.GetRequiredService<ILogger<DefaultContentManager>>(),
+        ServiceProvider.GetRequiredService<IClock>()
+      );
     action(transientContentManager);
   }
 
   protected async Task WithTransientContentManagerAsync(Func<IContentManager, Task> action)
   {
-    await using var scope = ServiceProvider.CreateAsyncScope();
-    var transientContentManager = scope.ServiceProvider.GetRequiredService<IContentManager>();
+    var store = ServiceProvider.GetRequiredService<IStore>();
+    await using var transientSession = store.CreateSession();
+    var transientContentManager =
+      new DefaultContentManager(
+        ServiceProvider.GetRequiredService<IContentDefinitionManager>(),
+        ServiceProvider.GetRequiredService<IContentManagerSession>(),
+        ServiceProvider.GetServices<IContentHandler>(),
+        transientSession,
+        ServiceProvider.GetRequiredService<IContentItemIdGenerator>(),
+        ServiceProvider.GetRequiredService<ILogger<DefaultContentManager>>(),
+        ServiceProvider.GetRequiredService<IClock>()
+      );
     await action(transientContentManager);
   }
 }
