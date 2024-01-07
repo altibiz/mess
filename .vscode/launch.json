@@ -10,7 +10,6 @@
       "preLaunchTask": "build",
       "cwd": "${workspaceFolder}/src/Mess.Web",
       "stopAtEntry": false,
-      "requireExactSource": false,
       "env": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "DOTNET_ENVIRONMENT": "Development",
@@ -19,6 +18,26 @@
       "logging": {
         "moduleLoad": false
       }
+    },
+    {
+      "name": "debug-external",
+      "type": "coreclr",
+      "request": "launch",
+      // TODO: make this not depend on the version?
+      "program": "${workspaceFolder}/src/Mess.Web/bin/Debug/net7.0/Mess.Web.dll",
+      "preLaunchTask": "build",
+      "cwd": "${workspaceFolder}/src/Mess.Web",
+      "stopAtEntry": false,
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "DOTNET_ENVIRONMENT": "Development",
+        "ORCHARD_APP_DATA": "${workspaceFolder}/App_Data"
+      },
+      "logging": {
+        "moduleLoad": false
+      },
+      "requireExactSource": false,
+      "justMyCode": false
     }
   ]
 }

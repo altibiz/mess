@@ -34,8 +34,6 @@
   "[csharp]": {
     "editor.defaultFormatter": "ms-dotnettools.csharp"
   },
-  "csharp.debug.justMyCode": false,
-  "csharp.debug.requireExactSource": false,
   "[aspnetcorerazor]": {
     "editor.defaultFormatter": "ms-dotnettools.csharp",
     "editor.formatOnSave": false
