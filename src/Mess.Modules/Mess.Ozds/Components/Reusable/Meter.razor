@@ -1,8 +1,6 @@
 @using OrchardCore.ContentManagement
 @using Mess.Iot.Abstractions.Models
 
-@inject IContentManager _contentManager
-
 <p>
   @(ContentItem?.As<IotDevicePart>().DeviceId.Text)
 </p>
@@ -15,18 +13,10 @@
   public string? ContentItemId { get; set; }
 
   protected override async Task OnInitializedAsync() {
-    try {
-
     if (ContentItem is null && ContentItemId is not null) {
-      var contentManager = _contentManager;
-      var contentItemId = ContentItemId;
-      var contentItem = await contentManager.GetAsync(contentItemId);
-      Console.WriteLine("yass bitch");
-    }
-    }
-    catch (Exception e) {
-
-      Console.WriteLine(e);
+      await WithTransientContentManagerAsync(async contentManager => {
+        ContentItem = await contentManager.GetAsync(ContentItemId);
+      });
     }
   }
 }

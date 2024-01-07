@@ -390,17 +390,17 @@ public abstract class AbstractComponent : ComponentBase
     await action(transientSession);
   }
 
-  protected void WithTransientContentManager(Action<YesSql.ISession> action)
+  protected void WithTransientContentManager(Action<IContentManager> action)
   {
-    var session = ServiceProvider.GetRequiredService<IContentManager>();
-    using var transientContentManager = session.Store.CreateSession();
+    using var scope = ServiceProvider.CreateScope();
+    var transientContentManager = scope.ServiceProvider.GetRequiredService<IContentManager>();
     action(transientContentManager);
   }
 
-  protected async Task WithTransientContentManagerAsync(Func<YesSql.ISession, Task> action)
+  protected async Task WithTransientContentManagerAsync(Func<IContentManager, Task> action)
   {
-    var session = ServiceProvider.GetRequiredService<IContentManager>();
-    await using var transientContentManager = session.Store.CreateSession();
+    await using var scope = ServiceProvider.CreateAsyncScope();
+    var transientContentManager = scope.ServiceProvider.GetRequiredService<IContentManager>();
     await action(transientContentManager);
   }
 }
