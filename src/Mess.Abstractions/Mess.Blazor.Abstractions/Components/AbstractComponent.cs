@@ -31,6 +31,9 @@ public abstract class AbstractComponent : ComponentBase
   [Inject]
   private NavigationManager NavigationManager { get; set; } = default!;
 
+  [Inject]
+  private ILogger<AbstractComponent> Logger { get; set; } = default!;
+
   private IDisplayHelper? _displayHelper;
 
   private HttpContext? _httpContext;
@@ -380,51 +383,43 @@ public abstract class AbstractComponent : ComponentBase
     return text;
   }
 
-  protected void WithTransientSession(Action<YesSql.ISession> action)
+  private static readonly SemaphoreSlim _sessionSemaphore = new(1);
+
+  protected void WithSessionLock(Action<IServiceProvider> action)
   {
-    var store = ServiceProvider.GetRequiredService<IStore>();
-    using var transientSession = store.CreateSession();
-    action(transientSession);
+    _sessionSemaphore.Wait();
+    try
+    {
+      action(ServiceProvider);
+      var session = ServiceProvider.GetRequiredService<YesSql.ISession>();
+      session.SaveChangesAsync().GetAwaiter().GetResult();
+    }
+    catch (Exception e)
+    {
+      Logger.LogError("Session lock action failed {}", e);
+    }
+    finally
+    {
+      _sessionSemaphore.Release();
+    }
   }
 
-  protected async Task WithTransientSessionAsync(Func<YesSql.ISession, Task> action)
+  protected async Task WithSessionLockAsync(Func<IServiceProvider, Task> action)
   {
-    var store = ServiceProvider.GetRequiredService<IStore>();
-    await using var transientSession = store.CreateSession();
-    await action(transientSession);
-  }
-
-  protected void WithTransientContentManager(Action<IContentManager> action)
-  {
-    var store = ServiceProvider.GetRequiredService<IStore>();
-    using var transientSession = store.CreateSession();
-    var transientContentManager =
-      new DefaultContentManager(
-        ServiceProvider.GetRequiredService<IContentDefinitionManager>(),
-        ServiceProvider.GetRequiredService<IContentManagerSession>(),
-        ServiceProvider.GetServices<IContentHandler>(),
-        transientSession,
-        ServiceProvider.GetRequiredService<IContentItemIdGenerator>(),
-        ServiceProvider.GetRequiredService<ILogger<DefaultContentManager>>(),
-        ServiceProvider.GetRequiredService<IClock>()
-      );
-    action(transientContentManager);
-  }
-
-  protected async Task WithTransientContentManagerAsync(Func<IContentManager, Task> action)
-  {
-    var store = ServiceProvider.GetRequiredService<IStore>();
-    await using var transientSession = store.CreateSession();
-    var transientContentManager =
-      new DefaultContentManager(
-        ServiceProvider.GetRequiredService<IContentDefinitionManager>(),
-        ServiceProvider.GetRequiredService<IContentManagerSession>(),
-        ServiceProvider.GetServices<IContentHandler>(),
-        transientSession,
-        ServiceProvider.GetRequiredService<IContentItemIdGenerator>(),
-        ServiceProvider.GetRequiredService<ILogger<DefaultContentManager>>(),
-        ServiceProvider.GetRequiredService<IClock>()
-      );
-    await action(transientContentManager);
+    await _sessionSemaphore.WaitAsync();
+    try
+    {
+      await action(ServiceProvider);
+      var session = ServiceProvider.GetRequiredService<YesSql.ISession>();
+      await session.SaveChangesAsync();
+    }
+    catch (Exception e)
+    {
+      Logger.LogError("Session lock action failed {}", e);
+    }
+    finally
+    {
+      _sessionSemaphore.Release();
+    }
   }
 }

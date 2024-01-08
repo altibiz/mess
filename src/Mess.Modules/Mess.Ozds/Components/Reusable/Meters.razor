@@ -72,7 +72,8 @@
 
   protected override async Task OnInitializedAsync()
   {
-    await WithTransientSessionAsync(async session => {
+    await WithSessionLockAsync(async services => {
+      var session = services.GetRequiredService<ISession>();
       var query = session.Query<ContentItem, OzdsIotDeviceIndex>();
       if (Where is not null) {
         query = query.Where(Where);
