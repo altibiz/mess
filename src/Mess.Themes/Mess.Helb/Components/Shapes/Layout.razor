@@ -77,7 +77,11 @@
     <MudMainContent>
       <MudHidden Breakpoint="Breakpoint.SmAndDown">
         <MudToolBar DisableGutters="true">
-          <MudIconButton Icon="@Icons.Material.Outlined.Menu" Color="MudColor.Inherit" OnClick="@((e) => DrawerToggle())" Class="ml-3" />
+          <MudIconButton
+            Icon="@Icons.Material.Outlined.Menu"
+            Color="MudColor.Inherit"
+            OnClick="e => DrawerToggle()"
+            Class="ml-3" />
           <MudBreadcrumbs Items="_items"></MudBreadcrumbs>
           <MudSpacer />
         </MudToolBar>

@@ -37,7 +37,11 @@
         "moduleLoad": false
       },
       "requireExactSource": false,
-      "justMyCode": false
+      "justMyCode": false,
+      "symbolOptions": {
+        "searchMicrosoftSymbolServer": true,
+        "searchNuGetOrgSymbolServer": true
+      }
     }
   ]
 }
