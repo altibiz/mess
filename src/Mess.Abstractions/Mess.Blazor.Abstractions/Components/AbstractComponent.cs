@@ -383,43 +383,13 @@ public abstract class AbstractComponent : ComponentBase
     return text;
   }
 
-  private static readonly SemaphoreSlim _sessionSemaphore = new(1);
-
   protected void WithSessionLock(Action<IServiceProvider> action)
   {
-    _sessionSemaphore.Wait();
-    try
-    {
-      action(ServiceProvider);
-      var session = ServiceProvider.GetRequiredService<YesSql.ISession>();
-      session.SaveChangesAsync().GetAwaiter().GetResult();
-    }
-    catch (Exception e)
-    {
-      Logger.LogError("Session lock action failed {}", e);
-    }
-    finally
-    {
-      _sessionSemaphore.Release();
-    }
+    action(ServiceProvider);
   }
 
   protected async Task WithSessionLockAsync(Func<IServiceProvider, Task> action)
   {
-    await _sessionSemaphore.WaitAsync();
-    try
-    {
-      await action(ServiceProvider);
-      var session = ServiceProvider.GetRequiredService<YesSql.ISession>();
-      await session.SaveChangesAsync();
-    }
-    catch (Exception e)
-    {
-      Logger.LogError("Session lock action failed {}", e);
-    }
-    finally
-    {
-      _sessionSemaphore.Release();
-    }
+    await action(ServiceProvider);
   }
 }

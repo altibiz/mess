@@ -15,6 +15,7 @@ using Microsoft.Extensions.Hosting;
 using MudBlazor.Services;
 using OrchardCore.DisplayManagement.Descriptors;
 using OrchardCore.Modules;
+using YesSql;
 
 namespace Mess.Blazor;
 
@@ -65,6 +66,11 @@ public class Startup : StartupBase
 
     services.AddMudServices();
     services.AddScoped<IComponentLocalizer, ComponentLocalizer>();
+
+    services.AddScoped<AsyncLocalSessionManager>();
+    services.AddTransient(services =>
+      services.GetRequiredService<AsyncLocalSessionManager>().Session
+    );
   }
 
   public override void Configure(
