@@ -72,14 +72,13 @@
 
   protected override async Task OnInitializedAsync()
   {
-    await WithSessionLockAsync(async services => {
-      var session = services.GetRequiredService<ISession>();
-      var query = session.Query<ContentItem, OzdsIotDeviceIndex>();
-      if (Where is not null) {
-        query = query.Where(Where);
-      }
+    var session = ServiceProvider.GetRequiredService<ISession>();
+    var query = session.Query<ContentItem, OzdsIotDeviceIndex>();
+    if (Where is not null) {
+      query = query.Where(Where);
+    }
 
-      _meters = await query.ListAsync();
-    });
+    _meters = await query.ListAsync();
+    Console.WriteLine("yass");
   }
 }

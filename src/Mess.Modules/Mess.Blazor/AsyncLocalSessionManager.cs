@@ -12,7 +12,16 @@ public class AsyncLocalSessionManager
 
   private readonly IScopedIndexProvider[] _scopedIndexProviders;
 
-  private readonly AsyncLocal<ISession> _session = new();
+  private class SessionStorage
+  {
+    public ISession Session { get; set; } = default!;
+
+    public int Id { get; } = Interlocked.Increment(ref _currentId);
+
+    private static int _currentId = 0;
+  }
+
+  private readonly AsyncLocal<SessionStorage> _sessionStorage = new();
 
   public AsyncLocalSessionManager(
     IStore store,
@@ -41,16 +50,19 @@ public class AsyncLocalSessionManager
   {
     get
     {
-      if (_session.Value is null)
+      if (_sessionStorage.Value is null)
       {
         var session = _store.CreateSession();
 
         session.RegisterIndexes(_scopedIndexProviders.ToArray());
 
-        _session.Value = session;
+        _sessionStorage.Value = new()
+        {
+          Session = session
+        };
       }
 
-      return _session.Value;
+      return _sessionStorage.Value.Session;
     }
   }
 }

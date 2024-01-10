@@ -77,14 +77,12 @@
 
   protected override async Task OnInitializedAsync()
   {
-    await WithSessionLockAsync(async services => {
-      var session = services.GetRequiredService<ISession>();
-      var query = session.Query<ContentItem, PaymentIndex>();
-      if (Where is not null) {
-        query = query.Where(Where);
-      }
+    var session = ServiceProvider.GetRequiredService<ISession>();
+    var query = session.Query<ContentItem, PaymentIndex>();
+    if (Where is not null) {
+      query = query.Where(Where);
+    }
 
-      _bills = await query.ListAsync();
-    });
+    _bills = await query.ListAsync();
   }
 }
