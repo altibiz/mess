@@ -5,6 +5,22 @@ using Microsoft.Extensions.Logging;
 using OrchardCore.ContentManagement;
 using YesSql;
 
+// NOTE: figure out how to hook up into blazor rendering
+// there is oninitialized async and that is ok but the execution has to wait
+// for all dispatches to finish - so that should somehow run after all the
+// oninitializedasync from all components finished
+// + differentiate that from event handling cuz sometimes multiple components
+// handle one event and can both do some db querying when that happend and we
+// should also "bundle" thos as well
+// these 2 things should cover 99% of cases of making transactions work properly
+// so solution is to read a bunch of aspnetcore code wee
+
+// NOTE: since we have a component base class we should more finely integrate
+// all this with them - like instead of oninitializedasync have some kind of
+// query building/reducing props/methods and call them in the oninitializedasync
+// also for all app components make this seamless with an app component base
+// class because that is also a special type of component
+
 namespace Mess.Blazor.Components;
 
 public class AppQueryExecutor : IAppQueryExecutor, IComponentQueryDispatcher
@@ -57,6 +73,8 @@ public class AppQueryExecutor : IAppQueryExecutor, IComponentQueryDispatcher
   public async Task ExecuteAsync()
   {
     List<(DispatchStorage Storage, object? response)> responses = new();
+
+    // TODO: init transactions and all that here
 
     while (_queue.TryDequeue(out var item))
     {
