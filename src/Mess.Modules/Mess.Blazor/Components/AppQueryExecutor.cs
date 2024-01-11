@@ -12,14 +12,17 @@ using YesSql;
 // + differentiate that from event handling cuz sometimes multiple components
 // handle one event and can both do some db querying when that happend and we
 // should also "bundle" thos as well
-// these 2 things should cover 99% of cases of making transactions work properly
-// so solution is to read a bunch of aspnetcore code wee
+// these 2 things should cover 99% of cases of making transactions work
+// properly so solution is to read a bunch of aspnetcore code wee
+
+// NOTE: we also have control of hooking into prerendering so we can also hook
+// into that
 
 // NOTE: since we have a component base class we should more finely integrate
 // all this with them - like instead of oninitializedasync have some kind of
-// query building/reducing props/methods and call them in the oninitializedasync
-// also for all app components make this seamless with an app component base
-// class because that is also a special type of component
+// query building/reducing props/methods and call them in the
+// oninitializedasync also for all app components make this seamless with an
+// app component base class because that is also a special type of component
 
 namespace Mess.Blazor.Components;
 
