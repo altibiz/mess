@@ -24,7 +24,8 @@ public class BasicShapeComponentHarvester : IShapeComponentHarvester
     {
       typeof(ShapeComponentBase),
       typeof(ShapeComponentBase<>),
-      typeof(LayoutShapeComponentBase)
+      typeof(LayoutShapeComponentBase),
+      typeof(AppShapeComponentBase)
     };
   }
 
