@@ -21,7 +21,8 @@ public class BlazorShapeTemplateComponentEngine : IShapeTemplateComponentEngine
   {
     typeof(ShapeComponentBase),
     typeof(ShapeComponentBase<>),
-    typeof(LayoutShapeComponentBase)
+    typeof(LayoutShapeComponentBase),
+    typeof(AppShapeComponentBase)
   });
 
   private readonly ComponentHelper _componentHelper;
