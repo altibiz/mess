@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Mess.Blazor.Abstractions.ViewModels;
 using Microsoft.AspNetCore.Components;
 
 namespace Mess.Blazor.Abstractions.Components;
