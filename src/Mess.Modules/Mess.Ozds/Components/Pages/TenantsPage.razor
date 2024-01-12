@@ -5,50 +5,114 @@
 @using Mess.Ozds.Abstractions.Models
 @using OrchardCore.Users.Models
 @using OrchardCore.ContentFields.Indexing.SQL
+@using System.Linq.Expressions
+@using Mess.Ozds.Abstractions.Timeseries
+@using Mess.Billing.Abstractions.Models
+@using OrchardCore.ContentManagement.Records
+@using OrchardCore.Users.Indexes
 
-@inject ISession _session
+@inject IOzdsTimeseriesClient _timeseriesClient
 
 @if (_user is null) {
   return;
 }
 
-@if (_user.RoleNames.Contains("Administrator")) {
-  <Meters />
-  <Units />
-  <Systems />
-  <Operators />
-}
-
-@if (_legalEntity is null) {
-  return;
-}
-
 @if (_user.RoleNames.Contains("DistributionSystemUnitRepresentative")) {
-  <Meters Where="x => x.DistributionSystemUnitContentItemId == _legalEntity.ContentItemId" />
-}
-@if (_user.RoleNames.Contains("ClosedDistributionSystemRepresentative")) {
-  <Meters Where="x => x.ClosedDistributionSystemContentItemId == _legalEntity.ContentItemId" />
-  <Units Where="x => x.ClosedDistributionSystemContentItemId == _legalEntity.ContentItemId" />
-}
-@if (_user.RoleNames.Contains("DistributionSystemOperatorRepresentative")) {
-  <Meters Where="x => x.DistributionSystemOperatorContentItemId == _legalEntity.ContentItemId" />
-  <Units Where="x => x.DistributionSystemOperatorContentItemId == _legalEntity.ContentItemId" />
-  <Systems Where="x => x.DistributionSystemOperatorContentItemId == _legalEntity.ContentItemId" />
+  <MudDataGrid
+  T="(string, decimal?)"
+  MultiSelection="true"
+  Items="@_lastTotalPerOMM"
+  SortMode="SortMode.Multiple"
+  Filterable="true"
+  QuickFilter="@_quickFilter"
+  RowClick="@RowClicked">
+  <ToolBarContent>
+    <MudText Typo="Typo.h6">@T["OMMs"]</MudText>
+    <MudSpacer />
+    <MudTextField
+      @bind-Value="_searchString"
+      Placeholder="Search"
+      Adornment="Adornment.Start"
+      Immediate="true"
+      AdornmentIcon="@Icons.Material.Filled.Search"
+      IconSize="MudBlazor.Size.Medium"
+      Class="mt-0">
+    </MudTextField>
+  </ToolBarContent>
+  <Columns>
+    <PropertyColumn
+      Property="x => x.Item1"
+      Title='@T["Source"].Value'
+      Sortable="false"
+      Filterable="false" />
+    <PropertyColumn
+      Property="x => x.Item2"
+      Title='@T["Last Import"].Value' />
+  </Columns>
+  <PagerContent>
+    <MudDataGridPager T="(string, decimal?)" />
+  </PagerContent>
+</MudDataGrid>
 }
 
 @code {
-  private User? _user;
 
-  private ContentItem? _legalEntity;
+    [Parameter]
+    public string TenantId { get; set; }
+    private string? _searchString;
+    private User? _user;
+    private ContentItem? _legalEntity;
+    private List<(string, decimal?)> _lastTotalPerOMM = new List<(string, decimal?)>();
+    protected override async Task OnInitializedAsync()
+    {
+      await WithTransientSessionAsync(async session => {
+            _user = await this.GetAuthenticatedOrchardCoreUserAsync();
 
-  protected override async Task OnInitializedAsync()
+            _legalEntity = await session
+                .Query<ContentItem, UserPickerFieldIndex>()
+                .Where(index => index.ContentPart == "LegalEntityPart")
+                .Where(index => index.SelectedUserId == _user.UserId)
+                .FirstOrDefaultAsync();
+            if (_user.RoleNames.Contains("DistributionSystemUnitRepresentative")) {
+                // We need something that links the logged in user with the Iot
+                // devices. Now all of them are just tied to the role itself
+                // using its ContentItemId.
+                var _unitOMMs = await session
+                    .Query<ContentItem, OzdsIotDeviceIndex>()
+                    .Where(x => x.DistributionSystemUnitContentItemId == "48ejw4dwzmgpjxy1pxasjxdr4c") // TenantId
+                    .ListAsync();
+                List<string> _abbSources = new List<string>();
+                List<string> _schneiderSources = new List<string>();
+                if(_unitOMMs.Count() > 0){
+                    foreach(var omm in _unitOMMs){
+                        if(omm.As<IotDevicePart>().DeviceId.Text.StartsWith("abb")){
+                            _abbSources.Add( omm.As<IotDevicePart>().DeviceId.Text);
+                            }
+                        else if (omm.As<IotDevicePart>().DeviceId.Text.StartsWith("schneider")){
+                            _schneiderSources.Add( omm.As<IotDevicePart>().DeviceId.Text);
+                            }
+                    }
+                    var lastAbbMeasurements = await _timeseriesClient.GetLastAbbMeasurementsBySourcesAsync(_abbSources);
+                    var lastSchneiderMeasurements = await _timeseriesClient.GetLastSchneiderMeasurementsBySourcesAsync(_schneiderSources);
+                    foreach(var abbMeasurement in lastAbbMeasurements){
+                        _lastTotalPerOMM.Add((abbMeasurement.DeviceId, abbMeasurement.ActiveEnergyImportTotal_kWh));
+                    }
+                    foreach(var schneiderMeasurements in lastSchneiderMeasurements){
+                        _lastTotalPerOMM.Add((schneiderMeasurements.DeviceId, schneiderMeasurements.ActiveEnergyImportTotal_Wh));
+                    }
+                }
+            }
+      });
+    }
+     private Func<(string, decimal?), bool> _quickFilter => x =>
   {
-    _user = await this.GetAuthenticatedOrchardCoreUserAsync();
+    if (string.IsNullOrWhiteSpace(_searchString))
+      return true;
 
-    _legalEntity = await _session
-      .Query<ContentItem, UserPickerFieldIndex>()
-      .Where(index => index.ContentPart == "LegalEntityPart")
-      .Where(index => index.SelectedUserId == _user.UserId)
-      .FirstOrDefaultAsync();
-  }
+    if (x.Item1.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+      return true;
+
+    return false;
+  };
+    private void RowClicked() { }
 }

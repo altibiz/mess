@@ -19,6 +19,12 @@ public interface IOzdsTimeseriesQuery
   public Task<(AbbMeasurement? First, AbbMeasurement? Last)> GetAbbLastMonthMeasurementsAsync(
     string source
   );
+  public Task<IReadOnlyList<AbbMeasurement>> GetLastAbbMeasurementsBySourcesAsync(
+    List<string> sources
+  );
+  public Task<IReadOnlyList<SchneiderMeasurement>> GetLastSchneiderMeasurementsBySourcesAsync(
+    List<string> sources
+  );
 
   public OzdsBillingData? GetAbbBillingData(
     string source,

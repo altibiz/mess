@@ -1,3 +1,4 @@
+using DocumentFormat.OpenXml.InkML;
 using Mess.Ozds.Abstractions.Billing;
 using Mess.Ozds.Abstractions.Timeseries;
 using Mess.Timeseries.Abstractions.Extensions;
@@ -102,6 +103,40 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
           .FirstOrDefaultAsync();
 
       return (first, last);
+    });
+  }
+
+  public async Task<IReadOnlyList<AbbMeasurement>> GetLastAbbMeasurementsBySourcesAsync(
+  List<string> sources
+)
+  {
+    return await _services.WithTimeseriesDbContextAsync<
+      OzdsTimeseriesDbContext,
+      IReadOnlyList<AbbMeasurement>
+    >(async context =>
+    {
+      return await context.AbbMeasurements
+        .Where(measurement => sources.Contains(measurement.Source))
+        .GroupBy(measurement => measurement.Source)
+        .Select(group => group.OrderByDescending(measurement => measurement.Timestamp).First().ToModel())
+        .ToListAsync();
+    });
+  }
+
+  public async Task<IReadOnlyList<SchneiderMeasurement>> GetLastSchneiderMeasurementsBySourcesAsync(
+List<string> sources
+)
+  {
+    return await _services.WithTimeseriesDbContextAsync<
+      OzdsTimeseriesDbContext,
+      IReadOnlyList<SchneiderMeasurement>
+    >(async context =>
+    {
+      return await context.SchneiderMeasurements
+        .Where(measurement => sources.Contains(measurement.Source))
+        .GroupBy(measurement => measurement.Source)
+        .Select(group => group.OrderByDescending(measurement => measurement.Timestamp).First().ToModel())
+        .ToListAsync();
     });
   }
 
