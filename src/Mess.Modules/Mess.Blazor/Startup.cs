@@ -71,6 +71,12 @@ public class Startup : StartupBase
     // services.AddTransient(services =>
     //   services.GetRequiredService<AsyncLocalSessionManager>().Session
     // );
+
+    services.AddScoped<AppQueryExecutor>();
+    services.AddScoped<IAppQueryExecutor>(services => services
+      .GetRequiredService<AppQueryExecutor>());
+    services.AddScoped<IComponentQueryDispatcher>(services => services
+      .GetRequiredService<AppQueryExecutor>());
   }
 
   public override void Configure(

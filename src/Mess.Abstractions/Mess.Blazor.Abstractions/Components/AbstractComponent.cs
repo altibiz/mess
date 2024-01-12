@@ -34,6 +34,9 @@ public abstract class AbstractComponent : ComponentBase
   [Inject]
   private ILogger<AbstractComponent> Logger { get; set; } = default!;
 
+  [Inject]
+  private IComponentQueryDispatcher QueryDispatcher { get; set; } = default!;
+
   private IDisplayHelper? _displayHelper;
 
   private HttpContext? _httpContext;
@@ -391,5 +394,35 @@ public abstract class AbstractComponent : ComponentBase
   protected async Task WithSessionLockAsync(Func<IServiceProvider, Task> action)
   {
     await action(ServiceProvider);
+  }
+
+  protected void DispatchAsync<T>(
+    Func<IServiceProvider, Task<T>> fetchAsync,
+    Action<T> reduce
+  ) where T : class
+  {
+    QueryDispatcher.DispatchAsync(
+      this,
+      fetchAsync,
+      (response) =>
+      {
+        reduce(response);
+        StateHasChanged();
+      });
+  }
+
+  protected void Dispatch<T>(
+    Func<IServiceProvider, T> fetch,
+    Action<T> reduce
+  ) where T : class
+  {
+    QueryDispatcher.Dispatch(
+      this,
+      fetch,
+      (response) =>
+      {
+        reduce(response);
+        StateHasChanged();
+      });
   }
 }

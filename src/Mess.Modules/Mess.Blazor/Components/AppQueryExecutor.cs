@@ -110,8 +110,6 @@ public class AppQueryExecutor : IAppQueryExecutor, IComponentQueryDispatcher
       try
       {
         item.Reduce(response);
-        // TODO: expose this method somehow
-        // item.Component.StateHasChanged();
       }
       catch (Exception e)
       {

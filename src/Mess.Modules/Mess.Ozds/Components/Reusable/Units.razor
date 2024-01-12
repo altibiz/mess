@@ -68,13 +68,19 @@
 
   protected override async Task OnInitializedAsync()
   {
-    var session = ServiceProvider.GetRequiredService<ISession>();
-    var query = session.Query<ContentItem, DistributionSystemUnitIndex>();
-    if (Where is not null) {
-      query = query.Where(Where);
-    }
+    DispatchAsync(
+      async services => {
+        var session = services.GetRequiredService<ISession>();
+        var query = session.Query<ContentItem, DistributionSystemUnitIndex>();
+        if (Where is not null) {
+          query = query.Where(Where);
+        }
 
-    _units = await query.ListAsync();
-    Console.WriteLine("yass");
+        return await query.ListAsync();
+      },
+      units => {
+        _units = units;
+      }
+    );
   }
 }

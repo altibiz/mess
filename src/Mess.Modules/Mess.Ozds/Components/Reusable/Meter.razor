@@ -23,11 +23,15 @@
 
   protected override async Task OnInitializedAsync() {
     if (ContentItem is null && ContentItemId is not null) {
-      await WithSessionLockAsync(async services => {
-        var contentManager = services.GetRequiredService<IContentManager>();
-        _contentItem = await contentManager.GetAsync(ContentItemId);
-        Console.WriteLine(_contentItem);
-      });
+      DispatchAsync(
+        async services => {
+          var contentManager = ServiceProvider.GetRequiredService<IContentManager>();
+          return await contentManager.GetAsync(ContentItemId);
+        },
+        contentItem => {
+          _contentItem = contentItem;
+        }
+      );
     }
   }
 }
