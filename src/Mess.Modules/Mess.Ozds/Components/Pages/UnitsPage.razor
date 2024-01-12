@@ -16,99 +16,15 @@
 }
 
 @if (_user.RoleNames.Contains("ClosedDistributionSystemRepresentative") || _user.RoleNames.Contains("DistributionSystemOperatorRepresentative")) {
-  <MudDataGrid
-  T="TabularData"
-  MultiSelection="true"
-  Items="@_dataStruct"
-  SortMode="SortMode.Multiple"
-  Filterable="true"
-  QuickFilter="@_quickFilter"
-  RowClick="@RowClicked">
-  <ToolBarContent>
-    <MudText Typo="Typo.h6">@T["System Units"]</MudText>
-    <MudSpacer />
-    <MudTextField
-      @bind-Value="_searchString"
-      Placeholder="Search"
-      Adornment="Adornment.Start"
-      Immediate="true"
-      AdornmentIcon="@Icons.Material.Filled.Search"
-      IconSize="MudBlazor.Size.Medium"
-      Class="mt-0">
-    </MudTextField>
-  </ToolBarContent>
-  <Columns>
-    <PropertyColumn
-      Property="x => x.system.DisplayText"
-      Title='@T["System"].Value'
-      Sortable="false"
-      Filterable="false" />
-    <PropertyColumn
-      Property="x => x.unit.DisplayText"
-      Title='@T["Locations"].Value' />
-  </Columns>
-  <PagerContent>
-    <MudDataGridPager T="TabularData" />
-  </PagerContent>
-</MudDataGrid>
+  <Units User="@_user" />
 }
 
 @code {
-    private string? _searchString;
     private User? _user;
-    private ContentItem? _legalEntity;
-    private IEnumerable<ContentItem>? _units;
-    public record struct TabularData(ContentItem system, ContentItem unit);
-    private List<TabularData> _dataStruct = new List<TabularData>();
-
-    private IEnumerable<ContentItem>? _systems;
     protected override async Task OnInitializedAsync()
     {
       await WithTransientSessionAsync(async session => {
             _user = await this.GetAuthenticatedOrchardCoreUserAsync();
-
-            _legalEntity = await session
-                .Query<ContentItem, UserPickerFieldIndex>()
-                .Where(index => index.ContentPart == "LegalEntityPart")
-                .Where(index => index.SelectedUserId == _user.UserId)
-                .FirstOrDefaultAsync();
-
-            if (_user.RoleNames.Contains("DistributionSystemOperatorRepresentative")) {
-                _systems = await session
-                  .Query<ContentItem, ClosedDistributionSystemIndex>()
-                  .Where(index => index.DistributionSystemOperatorContentItemId == _legalEntity.ContentItemId)
-                  .ListAsync();
-                _units = await session
-                  .Query<ContentItem, DistributionSystemUnitIndex>()
-                  .Where(index => index.DistributionSystemOperatorContentItemId == _legalEntity.ContentItemId)
-                  .ListAsync();
-            }
-            else if (_user.RoleNames.Contains("ClosedDistributionSystemRepresentative")){
-                _systems = await session
-                  .Query<ContentItem, ClosedDistributionSystemIndex>()
-                  .Where(index => index.ClosedDistributionSystemContentItemId == _legalEntity.ContentItemId)
-                  .ListAsync();
-                _units = await session
-                  .Query<ContentItem, DistributionSystemUnitIndex>()
-                  .Where(index => index.ClosedDistributionSystemContentItemId == _legalEntity.ContentItemId)
-                  .ListAsync();
-            }
       });
-      foreach(var system in _systems){
-        foreach(var unit in _units){
-          _dataStruct.Add(new TabularData(system, unit));
-        }
-      }
     }
-     private Func<TabularData, bool> _quickFilter => x =>
-  {
-    if (string.IsNullOrWhiteSpace(_searchString))
-      return true;
-
-    if (x.unit.DisplayText.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
-      return true;
-
-    return false;
-  };
-    private void RowClicked() { }
 }

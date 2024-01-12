@@ -1,0 +1,99 @@
+@using Mess.Ozds.Abstractions.Indexes
+@using Mess.Iot.Abstractions.Models
+@using Mess.Ozds.Abstractions.Models
+@using OrchardCore.Users.Models
+@using OrchardCore.ContentFields.Indexing.SQL
+@using System.Linq.Expressions
+@using Mess.Ozds.Abstractions.Timeseries
+@using Mess.Billing.Abstractions.Models
+@using OrchardCore.ContentManagement.Records
+@using OrchardCore.Users.Indexes
+
+@inject IOzdsTimeseriesClient _timeseriesClient
+
+  <MudDataGrid
+  T="(string, decimal?)"
+  MultiSelection="true"
+  Items="@_lastTotalPerOMM"
+  SortMode="SortMode.Multiple"
+  Filterable="true"
+  QuickFilter="@_quickFilter"
+  RowClick="@RowClicked">
+  <ToolBarContent>
+    <MudText Typo="Typo.h6">@T["OMMs"]</MudText>
+    <MudSpacer />
+    <MudTextField
+      @bind-Value="_searchString"
+      Placeholder="Search"
+      Adornment="Adornment.Start"
+      Immediate="true"
+      AdornmentIcon="@Icons.Material.Filled.Search"
+      IconSize="MudBlazor.Size.Medium"
+      Class="mt-0">
+    </MudTextField>
+  </ToolBarContent>
+  <Columns>
+    <PropertyColumn
+      Property="x => x.Item1"
+      Title='@T["Source"].Value'
+      Sortable="false"
+      Filterable="false" />
+    <PropertyColumn
+      Property="x => x.Item2"
+      Title='@T["Last Import"].Value' />
+  </Columns>
+  <PagerContent>
+    <MudDataGridPager T="(string, decimal?)" />
+  </PagerContent>
+</MudDataGrid>
+
+@code {
+
+    [Parameter]
+    public string TenantId { get; set; }
+    private string? _searchString;
+    private List<(string, decimal?)> _lastTotalPerOMM = new List<(string, decimal?)>();
+    protected override async Task OnInitializedAsync()
+    {
+      await WithTransientSessionAsync(async session => {
+      // We need something that links the logged in user with the Iot
+      // devices. Now all of them are just tied to the role itself
+      // using its ContentItemId.
+      var _unitOMMs = await session
+          .Query<ContentItem, OzdsIotDeviceIndex>()
+          .Where(x => x.DistributionSystemUnitContentItemId == TenantId) // 48ejw4dwzmgpjxy1pxasjxdr4c
+          .ListAsync();
+      List<string> _abbSources = new List<string>();
+      List<string> _schneiderSources = new List<string>();
+      if(_unitOMMs.Count() > 0){
+          foreach(var omm in _unitOMMs){
+              if(omm.As<IotDevicePart>().DeviceId.Text.StartsWith("abb")){
+                  _abbSources.Add( omm.As<IotDevicePart>().DeviceId.Text);
+                  }
+              else if (omm.As<IotDevicePart>().DeviceId.Text.StartsWith("schneider")){
+                  _schneiderSources.Add( omm.As<IotDevicePart>().DeviceId.Text);
+                  }
+          }
+          var lastAbbMeasurements = await _timeseriesClient.GetLastAbbMeasurementsBySourcesAsync(_abbSources);
+          var lastSchneiderMeasurements = await _timeseriesClient.GetLastSchneiderMeasurementsBySourcesAsync(_schneiderSources);
+          foreach(var abbMeasurement in lastAbbMeasurements){
+              _lastTotalPerOMM.Add((abbMeasurement.DeviceId, abbMeasurement.ActiveEnergyImportTotal_kWh));
+          }
+          foreach(var schneiderMeasurements in lastSchneiderMeasurements){
+              _lastTotalPerOMM.Add((schneiderMeasurements.DeviceId, schneiderMeasurements.ActiveEnergyImportTotal_Wh));
+          }
+        }
+      });
+    }
+     private Func<(string, decimal?), bool> _quickFilter => x =>
+  {
+    if (string.IsNullOrWhiteSpace(_searchString))
+      return true;
+
+    if (x.Item1.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+      return true;
+
+    return false;
+  };
+    private void RowClicked() { }
+}

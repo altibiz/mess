@@ -1,4 +1,4 @@
-@page "/app/tenants"
+@page "/app/sysusage"
 
 @using Mess.Ozds.Abstractions.Indexes
 @using Mess.Iot.Abstractions.Models
@@ -15,8 +15,8 @@
   return;
 }
 
-@if (_user.RoleNames.Contains("DistributionSystemUnitRepresentative")) {
-  <Tenants TenantId="40ycv10bh9b8q5qxe7trryhkdp"/>
+@if (_user.RoleNames.Contains("ClosedDistributionSystemRepresentative") || _user.RoleNames.Contains("DistributionSystemOperatorRepresentative")) {
+  <InternalSystemExpenditure LegalEntity="@_legalEntity"/>
 }
 
 @code {

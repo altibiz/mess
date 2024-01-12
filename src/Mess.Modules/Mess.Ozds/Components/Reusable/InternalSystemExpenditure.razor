@@ -1,0 +1,182 @@
+@using Mess.Ozds.Abstractions.Indexes
+@using Mess.Iot.Abstractions.Models
+@using Mess.Ozds.Abstractions.Models
+@using OrchardCore.Users.Models
+@using OrchardCore.ContentFields.Indexing.SQL
+@using System.Linq.Expressions
+@using Mess.Ozds.Abstractions.Timeseries
+@using Mess.Billing.Abstractions.Models
+@using OrchardCore.ContentManagement.Records
+@using OrchardCore.Users.Indexes
+
+@inject IOzdsTimeseriesClient _timeseriesClient
+
+  <MudDataGrid
+  T="TabularData"
+  MultiSelection="true"
+  Items="@_dataStruct"
+  SortMode="SortMode.Multiple"
+  Filterable="true"
+  QuickFilter="@_quickFilter"
+  RowClick="@RowClicked">
+  <ToolBarContent>
+    <MudText Typo="Typo.h6">@T["System Units"]</MudText>
+    <MudSpacer />
+    <MudTextField
+      @bind-Value="_searchString"
+      Placeholder="Search"
+      Adornment="Adornment.Start"
+      Immediate="true"
+      AdornmentIcon="@Icons.Material.Filled.Search"
+      IconSize="MudBlazor.Size.Medium"
+      Class="mt-0">
+    </MudTextField>
+  </ToolBarContent>
+  <Columns>
+    <PropertyColumn
+      Property="x => x.omm.DisplayText"
+      Title='@T["OMM"].Value'
+      Sortable="false"
+      Filterable="false" />
+    <PropertyColumn
+      Property="x => x.system.DisplayText"
+      Title='@T["System"].Value'
+      Sortable="false"
+      Filterable="false" />
+    <PropertyColumn
+      Property="x => x.unit.DisplayText"
+      Title='@T["Unit"].Value'
+      Sortable="false"
+      Filterable="false" />
+    <PropertyColumn
+      Property="x => x.lastMeasurement"
+      Title='@T["Last Import"].Value' />
+  </Columns>
+  <PagerContent>
+    <MudDataGridPager T="TabularData" />
+  </PagerContent>
+</MudDataGrid>
+
+@code {
+    [Parameter]
+    public ContentItem LegalEntity { get; set; }
+    private string? _searchString;
+    private List<TabularData> _dataStruct = new List<TabularData>();
+    private IEnumerable<ContentItem> _systems;
+    private IEnumerable<ContentItem> _units;
+    private IReadOnlyList<AbbMeasurement> _lastAbbMeasurements;
+    private IReadOnlyList<SchneiderMeasurement> _lastSchneiderMeasurements;
+    private IEnumerable<ContentItem> _ioTDevices;
+    private List<(string, decimal?)> _lastTotalPerOMM = new List<(string, decimal?)>();
+    public record struct TabularData(ContentItem omm, ContentItem system, ContentItem unit, decimal? lastMeasurement);
+    protected override async Task OnInitializedAsync()
+    {
+      await WithTransientSessionAsync(async session => {
+        if(LegalEntity.ContentType == "ClosedDistributionSystem"){
+          _ioTDevices = await session
+            .Query<ContentItem, OzdsIotDeviceIndex>()
+            .Where(index => index.ClosedDistributionSystemContentItemId == LegalEntity.ContentItemId)
+            .ListAsync();
+          _systems = await session
+            .Query<ContentItem, ClosedDistributionSystemIndex>()
+            .Where(index => index.ClosedDistributionSystemContentItemId == LegalEntity.ContentItemId)
+            .ListAsync();
+          _units = await session
+            .Query<ContentItem, DistributionSystemUnitIndex>()
+            .Where(index => index.ClosedDistributionSystemContentItemId == LegalEntity.ContentItemId)
+            .ListAsync();
+        }
+        else{
+          _ioTDevices = await session
+            .Query<ContentItem, OzdsIotDeviceIndex>()
+            .Where(index => index.DistributionSystemOperatorContentItemId == LegalEntity.ContentItemId)
+            .ListAsync();
+          _systems = await session
+            .Query<ContentItem, ClosedDistributionSystemIndex>()
+            .Where(index => index.DistributionSystemOperatorContentItemId == LegalEntity.ContentItemId)
+            .ListAsync();
+          _units = await session
+            .Query<ContentItem, DistributionSystemUnitIndex>()
+            .Where(index => index.DistributionSystemOperatorContentItemId == LegalEntity.ContentItemId)
+            .ListAsync();
+        }
+      });
+      List<string> _abbSources = new List<string>();
+      List<string> _schneiderSources = new List<string>();
+      if(_ioTDevices.Count() > 0){
+          foreach(var omm in _ioTDevices){
+              if(omm.As<IotDevicePart>().DeviceId.Text.StartsWith("abb")){
+                  _abbSources.Add(omm.As<IotDevicePart>().DeviceId.Text);
+                  }
+              else if (omm.As<IotDevicePart>().DeviceId.Text.StartsWith("schneider")){
+                  _schneiderSources.Add( omm.As<IotDevicePart>().DeviceId.Text);
+                  }
+          }
+          _lastAbbMeasurements = await _timeseriesClient.GetLastAbbMeasurementsBySourcesAsync(_abbSources);
+          _lastSchneiderMeasurements = await _timeseriesClient.GetLastSchneiderMeasurementsBySourcesAsync(_schneiderSources);
+          foreach(var abbMeasurement in _lastAbbMeasurements){
+              _lastTotalPerOMM.Add((abbMeasurement.DeviceId, abbMeasurement.ActiveEnergyImportTotal_kWh));
+          }
+          foreach(var schneiderMeasurements in _lastSchneiderMeasurements){
+              _lastTotalPerOMM.Add((schneiderMeasurements.DeviceId, schneiderMeasurements.ActiveEnergyImportTotal_Wh));
+          }
+        }
+      foreach(var system in _systems){
+        foreach(var unit in _units){
+          foreach(var omm in _ioTDevices){
+            decimal? lastMeasure = -1;
+            if(omm.As<IotDevicePart>().DeviceId.Text.StartsWith("abb")){
+              lastMeasure = _lastAbbMeasurements.FirstOrDefault(m => m.DeviceId == omm.As<IotDevicePart>().DeviceId.Text).ActiveEnergyImportTotal_kWh;
+              _dataStruct.Add(new TabularData(omm, system, unit, lastMeasure));
+            }
+            else if(omm.As<IotDevicePart>().DeviceId.Text.StartsWith("schneider")){
+              lastMeasure = _lastSchneiderMeasurements.FirstOrDefault(m => m.DeviceId == omm.As<IotDevicePart>().DeviceId.Text).ActiveEnergyImportTotal_Wh;
+              _dataStruct.Add(new TabularData(omm, system, unit, lastMeasure));
+            }
+          }
+        }
+      }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    }
+    private Func<TabularData, bool> _quickFilter => x =>
+  {
+    if (string.IsNullOrWhiteSpace(_searchString))
+      return true;
+
+    if (x.unit.DisplayText.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+      return true;
+
+    return false;
+  };
+    private void RowClicked() { }
+}
