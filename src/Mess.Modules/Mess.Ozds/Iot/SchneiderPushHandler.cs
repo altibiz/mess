@@ -2,16 +2,21 @@ using Mess.Iot.Abstractions.Services;
 using Mess.Ozds.Abstractions.Models;
 using Mess.Ozds.Abstractions.Timeseries;
 using OrchardCore.ContentManagement;
+using Mess.Cms;
 
 namespace Mess.Ozds.Iot;
 
 public class SchneiderPushHandler
   : JsonIotPushHandler<SchneiderIotDeviceItem, SchneiderPushRequest>
 {
+  private readonly IContentManager _contentManager;
   private readonly IOzdsTimeseriesClient _measurementClient;
 
-  public SchneiderPushHandler(IOzdsTimeseriesClient measurementClient)
+  public SchneiderPushHandler(
+    IOzdsTimeseriesClient measurementClient,
+    IContentManager contentManager)
   {
+    _contentManager = contentManager;
     _measurementClient = measurementClient;
   }
 
@@ -23,9 +28,17 @@ public class SchneiderPushHandler
     SchneiderPushRequest request
   )
   {
+    var newMeasurement = MakeMeasurement(deviceId, tenant, timestamp, contentItem, request);
     _measurementClient.AddSchneiderMeasurement(
-      MakeMeasurement(deviceId, tenant, timestamp, contentItem, request)
+      newMeasurement
     );
+    contentItem.Alter(
+      schneiderIotDevice => schneiderIotDevice.SchneiderIotDevicePart,
+      schneiderIotDevice =>
+      {
+        schneiderIotDevice.LatestImport = newMeasurement.ActiveEnergyImportTotal_Wh;
+      });
+    _contentManager.UpdateAsync(contentItem).RunSynchronously();
   }
 
   protected override async Task HandleAsync(
@@ -36,9 +49,17 @@ public class SchneiderPushHandler
     SchneiderPushRequest request
   )
   {
+    var newMeasurement = MakeMeasurement(deviceId, tenant, timestamp, contentItem, request);
     await _measurementClient.AddSchneiderMeasurementAsync(
-      MakeMeasurement(deviceId, tenant, timestamp, contentItem, request)
+      newMeasurement
     );
+    contentItem.Alter(
+      schneiderIotDevice => schneiderIotDevice.SchneiderIotDevicePart,
+      schneiderIotDevice =>
+      {
+        schneiderIotDevice.LatestImport = newMeasurement.ActiveEnergyImportTotal_Wh;
+      });
+    await _contentManager.UpdateAsync(contentItem);
   }
 
   private static SchneiderMeasurement MakeMeasurement(

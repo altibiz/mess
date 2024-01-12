@@ -2,16 +2,21 @@ using Mess.Iot.Abstractions.Services;
 using Mess.Ozds.Abstractions.Models;
 using Mess.Ozds.Abstractions.Timeseries;
 using OrchardCore.ContentManagement;
+using Mess.Cms;
 
 namespace Mess.Ozds.Iot;
 
 public class AbbPushHandler
   : JsonIotPushHandler<AbbIotDeviceItem, AbbPushRequest>
 {
+  private readonly IContentManager _contentManager;
   private readonly IOzdsTimeseriesClient _measurementClient;
 
-  public AbbPushHandler(IOzdsTimeseriesClient measurementClient)
+  public AbbPushHandler(
+    IOzdsTimeseriesClient measurementClient,
+    IContentManager contentManager)
   {
+    _contentManager = contentManager;
     _measurementClient = measurementClient;
   }
 
@@ -23,9 +28,15 @@ public class AbbPushHandler
     AbbPushRequest request
   )
   {
-    _measurementClient.AddAbbMeasurement(
-      MakeMeasurement(deviceId, tenant, timestamp, contentItem, request)
-    );
+    var newMeasurement = MakeMeasurement(deviceId, tenant, timestamp, contentItem, request);
+    _measurementClient.AddAbbMeasurement(newMeasurement);
+    contentItem.Alter(
+      abbIotDevice => abbIotDevice.AbbIotDevicePart,
+      abbIotDevicePart =>
+      {
+        abbIotDevicePart.LatestImport = newMeasurement.ActiveEnergyImportTotal_kWh;
+      });
+    _contentManager.UpdateAsync(contentItem).RunSynchronously();
   }
 
   protected override async Task HandleAsync(
@@ -36,9 +47,15 @@ public class AbbPushHandler
     AbbPushRequest request
   )
   {
-    await _measurementClient.AddAbbMeasurementAsync(
-      MakeMeasurement(deviceId, tenant, timestamp, contentItem, request)
-    );
+    var newMeasurement = MakeMeasurement(deviceId, tenant, timestamp, contentItem, request);
+    await _measurementClient.AddAbbMeasurementAsync(newMeasurement);
+    contentItem.Alter(
+      abbIotDevice => abbIotDevice.AbbIotDevicePart,
+      abbIotDevicePart =>
+      {
+        abbIotDevicePart.LatestImport = newMeasurement.ActiveEnergyImportTotal_kWh;
+      });
+    await _contentManager.UpdateAsync(contentItem);
   }
 
   private static AbbMeasurement MakeMeasurement(

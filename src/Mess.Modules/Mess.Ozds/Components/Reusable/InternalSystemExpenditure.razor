@@ -9,8 +9,6 @@
 @using OrchardCore.ContentManagement.Records
 @using OrchardCore.Users.Indexes
 
-@inject IOzdsTimeseriesClient _timeseriesClient
-
   <MudDataGrid
   T="TabularData"
   MultiSelection="true"
@@ -101,72 +99,16 @@
             .ListAsync();
         }
       });
-      List<string> _abbSources = new List<string>();
-      List<string> _schneiderSources = new List<string>();
-      if(_ioTDevices.Count() > 0){
-          foreach(var omm in _ioTDevices){
-              if(omm.As<IotDevicePart>().DeviceId.Text.StartsWith("abb")){
-                  _abbSources.Add(omm.As<IotDevicePart>().DeviceId.Text);
-                  }
-              else if (omm.As<IotDevicePart>().DeviceId.Text.StartsWith("schneider")){
-                  _schneiderSources.Add( omm.As<IotDevicePart>().DeviceId.Text);
-                  }
-          }
-          _lastAbbMeasurements = await _timeseriesClient.GetLastAbbMeasurementsBySourcesAsync(_abbSources);
-          _lastSchneiderMeasurements = await _timeseriesClient.GetLastSchneiderMeasurementsBySourcesAsync(_schneiderSources);
-          foreach(var abbMeasurement in _lastAbbMeasurements){
-              _lastTotalPerOMM.Add((abbMeasurement.DeviceId, abbMeasurement.ActiveEnergyImportTotal_kWh));
-          }
-          foreach(var schneiderMeasurements in _lastSchneiderMeasurements){
-              _lastTotalPerOMM.Add((schneiderMeasurements.DeviceId, schneiderMeasurements.ActiveEnergyImportTotal_Wh));
-          }
-        }
       foreach(var system in _systems){
         foreach(var unit in _units){
           foreach(var omm in _ioTDevices){
-            decimal? lastMeasure = -1;
-            if(omm.As<IotDevicePart>().DeviceId.Text.StartsWith("abb")){
-              lastMeasure = _lastAbbMeasurements.FirstOrDefault(m => m.DeviceId == omm.As<IotDevicePart>().DeviceId.Text).ActiveEnergyImportTotal_kWh;
-              _dataStruct.Add(new TabularData(omm, system, unit, lastMeasure));
-            }
-            else if(omm.As<IotDevicePart>().DeviceId.Text.StartsWith("schneider")){
-              lastMeasure = _lastSchneiderMeasurements.FirstOrDefault(m => m.DeviceId == omm.As<IotDevicePart>().DeviceId.Text).ActiveEnergyImportTotal_Wh;
-              _dataStruct.Add(new TabularData(omm, system, unit, lastMeasure));
-            }
+            if(omm.As<AbbIotDevicePart>() is var abbIotDevicePart && abbIotDevicePart is not null)
+              _dataStruct.Add(new TabularData(omm, system, unit, abbIotDevicePart.LatestImport));
+            else if(omm.As<SchneiderIotDevicePart>() is var schneiderIotDevicePart && schneiderIotDevicePart is not null)
+              _dataStruct.Add(new TabularData(omm, system, unit, schneiderIotDevicePart.LatestImport));
           }
         }
       }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
     private Func<TabularData, bool> _quickFilter => x =>
   {
