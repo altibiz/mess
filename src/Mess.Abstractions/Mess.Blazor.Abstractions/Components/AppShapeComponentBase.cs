@@ -15,14 +15,14 @@ public partial class AppShapeComponentBase : AbstractComponent
   [Inject]
   private IAppQueryExecutor AppQueryExecutor { get; set; } = default!;
 
-  private AppViewModel? _model;
+  private dynamic? _model;
 
   [Parameter] public Guid? CaptureId { get; set; }
 
   /// <summary>
   ///   Gets the <see cref="TModel" /> instance.
   /// </summary>
-  protected AppViewModel Model
+  protected dynamic Model
   {
     get
     {
@@ -33,12 +33,15 @@ public partial class AppShapeComponentBase : AbstractComponent
 
       var capture = ComponentCaptureStore.Get(captureId, circuitId);
 
-      var model = capture?.Model as AppViewModel
+      var model = capture?.Model as dynamic
         ?? throw new InvalidOperationException("App model is invalid");
 
       return _model ??= model;
     }
   }
+
+  protected Guid LayoutCaptureId => Model.CaptureId ?? CaptureId
+    ?? throw new InvalidOperationException("CaptureId is null");
 
   protected override void OnAfterRender(bool firstRender)
   {
@@ -47,11 +50,7 @@ public partial class AppShapeComponentBase : AbstractComponent
 
   protected override async Task OnAfterRenderAsync(bool firstRender)
   {
-    if (!firstRender)
-    {
-      await AppQueryExecutor.ExecuteAsync();
-    }
-
+    await AppQueryExecutor.ExecuteAsync();
     await OnAfterAppRenderAsync();
   }
 

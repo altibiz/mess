@@ -11,13 +11,13 @@
     <CapturedRouteView
       RouteData="@routeData"
       DefaultLayout="@this.GetLayoutType()"
-      CaptureId="@Model.CaptureId" />
+      CaptureId="@LayoutCaptureId" />
   </Found>
 
   <NotFound>
     <CapturedLayoutView
       Layout="@this.GetLayoutType()"
-      CaptureId="@Model.CaptureId">
+      CaptureId="@LayoutCaptureId">
       <p>Sorry, there's nothing at this address.</p>
     </CapturedLayoutView>
   </NotFound>

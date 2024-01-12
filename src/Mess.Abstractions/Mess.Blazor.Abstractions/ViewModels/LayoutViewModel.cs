@@ -2,8 +2,10 @@ using Microsoft.AspNetCore.Components;
 
 namespace Mess.Blazor.Abstractions.ViewModels;
 
-public class LayoutViewModel : AppViewModel
+public class LayoutViewModel
 {
+  public Guid? CaptureId { get; set; } = default!;
+
   public Type? ComponentType { get; set; } = default!;
 
   public MarkupString? Meta { get; set; }
