@@ -38,11 +38,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Components\**" />
+    <None Remove="./Components/**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Components\**" />
+    <Content Include="./Components/**" />
   </ItemGroup>
 
 </Project>

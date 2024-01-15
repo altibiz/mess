@@ -4,4 +4,8 @@
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Blazor.Abstractions/Mess.Blazor.Abstractions.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="./Client/Mess.Blazor.Client.csproj" />
+  </ItemGroup>
+
 </Project>
