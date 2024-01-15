@@ -7,6 +7,7 @@ using Mess.Blazor.ShapeTemplateStrategy;
 using Mess.Cms.Extensions.Microsoft;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.Server.Circuits;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +22,7 @@ namespace Mess.Blazor;
 
 // FIXME: app redirection not working
 
-public class Startup : StartupBase
+public class Startup : OrchardCore.Modules.StartupBase
 {
   private readonly IHostEnvironment _hostEnvironment;
 
@@ -89,6 +90,13 @@ public class Startup : StartupBase
     {
       FileProvider =
         new ManifestEmbeddedFileProvider(typeof(IServerSideBlazorBuilder)
+          .Assembly)
+    });
+
+    app.UseStaticFiles(new StaticFileOptions
+    {
+      FileProvider =
+        new ManifestEmbeddedFileProvider(typeof(WebAssemblyHostBuilder)
           .Assembly)
     });
 
