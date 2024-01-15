@@ -2,30 +2,33 @@
 @using Mess.Iot.Abstractions.Models
 
 <p>
-  @(_contentItem?.As<IotDevicePart>().DeviceId.Text)
+    @(_contentItem?.As<IotDevicePart>().DeviceId.Text)
 </p>
 
 @code {
-  private ContentItem? _contentItem;
+    private ContentItem? _contentItem;
 
-  [Parameter]
-  public ContentItem? ContentItem { get; set; }
+    [Parameter]
+    public ContentItem? ContentItem { get; set; }
 
-  [Parameter]
-  public string? ContentItemId { get; set; }
+    [Parameter]
+    public string? ContentItemId { get; set; }
 
-  protected override void OnParametersSet()
-  {
-    if (ContentItem is not null) {
-      _contentItem = ContentItem;
+    protected override void OnParametersSet()
+    {
+        if (ContentItem is not null)
+        {
+            _contentItem = ContentItem;
+        }
     }
-  }
 
-  protected override async Task OnInitializedAsync() {
-    if (ContentItem is null && ContentItemId is not null) {
-      var ci = await ScopedServices.GetRequiredService<IContentManager>()
-        .GetAsync(ContentItemId);
-      ContentItem = ci;
+    protected override async Task OnInitializedAsync()
+    {
+        if (ContentItem is null && ContentItemId is not null)
+        {
+            var cm = ScopedServices.GetRequiredService<IContentManager>();
+            var ci = await cm.GetAsync(new[] { ContentItemId });
+            ContentItem = ci.First();
+        }
     }
-  }
 }
