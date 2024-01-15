@@ -23,8 +23,9 @@
 
   protected override async Task OnInitializedAsync() {
     if (ContentItem is null && ContentItemId is not null) {
-      ContentItem = await ScopedServices.GetRequiredService<IContentManager>()
+      var ci = await ScopedServices.GetRequiredService<IContentManager>()
         .GetAsync(ContentItemId);
+      ContentItem = ci;
     }
   }
 }
