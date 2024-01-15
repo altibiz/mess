@@ -5,6 +5,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="$(MessBlazorWebAssemblyServer)" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="./Client/Mess.Blazor.Client.csproj" />
   </ItemGroup>
 

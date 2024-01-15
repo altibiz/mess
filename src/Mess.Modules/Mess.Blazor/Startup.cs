@@ -86,6 +86,11 @@ public class Startup : OrchardCore.Modules.StartupBase
     IServiceProvider serviceProvider
   )
   {
+    if (_hostEnvironment.IsDevelopment())
+    {
+      app.UseWebAssemblyDebugging();
+    }
+
     app.UseStaticFiles(new StaticFileOptions
     {
       FileProvider =
