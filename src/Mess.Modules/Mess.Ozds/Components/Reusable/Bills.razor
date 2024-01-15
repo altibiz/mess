@@ -77,7 +77,7 @@
 
   protected override async Task OnInitializedAsync()
   {
-    var query = ServiceProvider.GetRequiredService<ISession>()
+    var query = ScopedServices.GetRequiredService<ISession>()
       .Query<ContentItem, PaymentIndex>();
     if (Where is not null) {
       query = query.Where(Where);

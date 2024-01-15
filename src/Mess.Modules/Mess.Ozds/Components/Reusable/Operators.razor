@@ -69,7 +69,7 @@
 
   protected override async Task OnInitializedAsync()
   {
-    var query = ServiceProvider.GetRequiredService<ISession>()
+    var query = ScopedServices.GetRequiredService<ISession>()
       .Query<ContentItem, ContentItemIndex>()
       .Where(index => index.ContentType == "DistributionSystemOperator");
     if (Where is not null) {
