@@ -6,8 +6,6 @@
 @using OrchardCore.Users.Models
 @using OrchardCore.ContentFields.Indexing.SQL
 
-@inject ISession _session
-
 @if (_user is null) {
   return;
 }
@@ -45,7 +43,7 @@
   {
     _user = await this.GetAuthenticatedOrchardCoreUserAsync();
 
-    _legalEntity = await _session
+    _legalEntity = await ServiceProvider.GetRequiredService<ISession>()
       .Query<ContentItem, UserPickerFieldIndex>()
       .Where(index => index.ContentPart == "LegalEntityPart")
       .Where(index => index.SelectedUserId == _user.UserId)
