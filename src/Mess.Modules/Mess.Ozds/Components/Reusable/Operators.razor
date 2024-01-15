@@ -6,6 +6,8 @@
 @using System.Linq.Expressions
 @using OrchardCore.ContentManagement.Records
 
+@inject ISession _session
+
 <MudDataGrid
   T="ContentItem"
   MultiSelection="true"
@@ -69,16 +71,13 @@
 
   protected override async Task OnInitializedAsync()
   {
-    await WithSessionLockAsync(async services => {
-      var session = services.GetRequiredService<ISession>();
-      var query = session
-        .Query<ContentItem, ContentItemIndex>()
-        .Where(index => index.ContentType == "DistributionSystemOperator");
-      if (Where is not null) {
-        query = query.Where(Where);
-      }
+    var query = _session
+      .Query<ContentItem, ContentItemIndex>()
+      .Where(index => index.ContentType == "DistributionSystemOperator");
+    if (Where is not null) {
+      query = query.Where(Where);
+    }
 
-      _operators = await query.ListAsync();
-    });
+    _operators = await query.ListAsync();
   }
 }

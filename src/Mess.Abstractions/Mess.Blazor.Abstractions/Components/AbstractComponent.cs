@@ -22,7 +22,7 @@ using YesSql;
 
 namespace Mess.Blazor.Abstractions.Components;
 
-public abstract class AbstractComponent : ComponentBase
+public abstract class AbstractComponent : OwningComponentBase
 {
   [Inject]
   private IHttpContextAccessor HttpContextAccessor { get; set; } = default!;
