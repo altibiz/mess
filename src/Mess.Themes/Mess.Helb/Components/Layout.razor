@@ -4,6 +4,7 @@
 @* TODO: get pages and make breadcrumbs by crawling through assemblies *@
 
 @inherits LayoutShapeComponentBase
+@inject NavigationManager _navigationManager
 
 @inject IResourceManager resourceManager
 
@@ -38,7 +39,7 @@
   <MudThemeProvider Theme="_themeManager.Theme" />
   <MudDialogProvider />
   <MudSnackbarProvider />
-
+@if(_user is not null){
   <MudLayout>
     <MudAppBar Elevation="4">
       <MudHidden Breakpoint="Breakpoint.MdAndUp">
@@ -67,11 +68,11 @@
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" Elevation="25" ClipMode="_themeManager.DrawerClipMode">
       <MudNavMenu>
-      <MudNavLink Href="app" Match="NavLinkMatch.All" Icon="@Icons.Material.Outlined.Dashboard">Dashboard</MudNavLink>
-      <MudNavLink Href="app/systems" Icon="@Icons.Material.Outlined.Hub">Systems</MudNavLink>
-      <MudNavLink Href="app/tenants" Icon="@Icons.Material.Outlined.Place">Tenants</MudNavLink>
-      <MudNavLink Href="app/meters" Icon="@Icons.Material.Outlined.ElectricMeter">Meters</MudNavLink>
-      <MudNavLink Href="app/billing" Icon="@Icons.Material.Outlined.AttachMoney">Billing</MudNavLink>
+        @foreach(var site in _allowedSites){
+          if(_user.RoleNames.Any(element => site.roles.Contains(element))){
+            <MudNavLink Href="@site.url" Icon="@site.icon">@site.name</MudNavLink>
+          }
+        }
     </MudNavMenu>
     </MudDrawer>
     <MudMainContent>
@@ -87,6 +88,8 @@
       </MudContainer>
     </MudMainContent>
   </MudLayout>
+
+}
 </main>
 
 <footer>
@@ -96,13 +99,28 @@
 @FootScript
 
 @code {
-  public bool _drawerOpen = true;
+    public bool _drawerOpen = true;
 
-  private RenderFragment? HeadMeta { get; set; }
-  private RenderFragment? Messages { get; set; }
-  private RenderFragment? Footer { get; set; }
+    private RenderFragment? HeadMeta { get; set; }
+    private RenderFragment? Messages { get; set; }
+    private RenderFragment? Footer { get; set; }
 
-  private ThemeManagerTheme _themeManager = new ThemeManagerTheme();
+
+    private ThemeManagerTheme _themeManager = new ThemeManagerTheme();
+
+    private OrchardCore.Users.Models.User? _user;
+
+  // TODO: Make this not be hardcoaded
+  public string[] _roles = new string[] {"Administrator", "DistributionSystemOperatorRepresentative", "ClosedDistributionSystemRepresentative", "DistributionSystemUnitRepresentative"};
+  private List<(string url, string name, string icon, List<string> roles)> _allowedSites = new List<(string, string, string, List<string>)>{
+    ("/ozds/login", "Log in", Icons.Material.Outlined.Login,  new List<string>{"Administrator", "DistributionSystemOperatorRepresentative", "ClosedDistributionSystemRepresentative", "DistributionSystemUnitRepresentative"}),
+    ("/ozds/app/omm", "OMM", Icons.Material.Outlined.AddCircleOutline,  new List<string>{"Administrator", "DistributionSystemOperatorRepresentative", "ClosedDistributionSystemRepresentative", "DistributionSystemUnitRepresentative"}),
+    ("/ozds/app/units", "Units", Icons.Material.Outlined.AccountTree, new List<string>{"ClosedDistributionSystemRepresentative", "DistributionSystemOperatorRepresentative"}),
+    ("/ozds/app/tenants", "Tenants", Icons.Material.Outlined.AccountTree, new List<string>{"ClosedDistributionSystemRepresentative", "DistributionSystemUnitRepresentative"}),
+    ("/ozds/app/owners", "Owners", Icons.Material.Outlined.AccountTree, new List<string>{"DistributionSystemOperatorRepresentative"}),
+    ("/ozds/app/sysusage", "System Usage", Icons.Material.Outlined.AttachMoney, new List<string>{"DistributionSystemOperatorRepresentative", "ClosedDistributionSystemRepresentative"}),
+    ("/ozds/admin", "Admin", Icons.Material.Outlined.VerifiedUser, new List<string>{"Administrator"}),
+  };
 
   private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
   {
@@ -118,9 +136,27 @@
   }
 
   protected override async Task OnLayoutInitializedAsync() {
+    await WithTransientSessionAsync(async session => {
+    try{
+      _user = await this.GetAuthenticatedOrchardCoreUserAsync();
+    }
+    catch{
+      RedirectLogin();
+    }
+
+    });
     HeadMeta = await RenderSectionAsync("HeadMeta", false);
     Messages = await RenderSectionAsync("Messages", false);
     Footer = await RenderSectionAsync("Footer", false);
+  }
+
+
+  private void RedirectLogin()
+  {
+    try{
+      _navigationManager.NavigateTo("/ozds/login", forceLoad: true);
+    }
+    catch{}
   }
 
   void DrawerToggle()

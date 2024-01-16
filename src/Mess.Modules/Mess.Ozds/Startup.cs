@@ -136,7 +136,7 @@ public class Startup : StartupBase
 
     app.UseEndpoints(endpoints =>
     {
-      endpoints.Redirect("/", "/OzdsIotDevice/List");
+      endpoints.Redirect("/", "/app");
     });
   }
 }

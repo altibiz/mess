@@ -7,16 +7,14 @@
 @using OrchardCore.ContentFields.Indexing.SQL
 
 @inject ISession _session
+@inject NavigationManager _navigationManager
 
 @if (_user is null) {
   return;
 }
 
 @if (_user.RoleNames.Contains("Administrator")) {
-  <Meters />
-  <Units />
-  <Systems />
-  <Operators />
+  return;
 }
 
 @if (_legalEntity is null) {
@@ -28,11 +26,11 @@
 }
 @if (_user.RoleNames.Contains("ClosedDistributionSystemRepresentative")) {
   <Meters Where="x => x.ClosedDistributionSystemContentItemId == _legalEntity.ContentItemId" />
-  <Units Where="x => x.ClosedDistributionSystemContentItemId == _legalEntity.ContentItemId" />
+  <Units User="@_user"/>
 }
 @if (_user.RoleNames.Contains("DistributionSystemOperatorRepresentative")) {
   <Meters Where="x => x.DistributionSystemOperatorContentItemId == _legalEntity.ContentItemId" />
-  <Units Where="x => x.DistributionSystemOperatorContentItemId == _legalEntity.ContentItemId" />
+  <Units User="@_user"/>
   <Systems Where="x => x.DistributionSystemOperatorContentItemId == _legalEntity.ContentItemId" />
 }
 
@@ -51,4 +49,5 @@
       .Where(index => index.SelectedUserId == _user.UserId)
       .FirstOrDefaultAsync();
   }
+
 }

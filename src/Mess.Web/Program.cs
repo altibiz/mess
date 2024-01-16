@@ -22,5 +22,16 @@ builder.Services
   .AddSetupFeatures("OrchardCore.AutoSetup");
 
 var app = builder.Build();
+app.Use(async (context, next) =>
+{
+  if (context.Request.Path == "/")
+  {
+    context.Response.Redirect("/ozds", permanent: false); // You can set 'permanent' to true if it's a permanent redirection
+  }
+  else
+  {
+    await next();
+  }
+});
 app.UseOrchardCore();
 app.Run();
