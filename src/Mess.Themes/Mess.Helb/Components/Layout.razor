@@ -100,16 +100,11 @@
 
 @code {
     public bool _drawerOpen = true;
-
     private RenderFragment? HeadMeta { get; set; }
     private RenderFragment? Messages { get; set; }
     private RenderFragment? Footer { get; set; }
-
-
     private ThemeManagerTheme _themeManager = new ThemeManagerTheme();
-
     private OrchardCore.Users.Models.User? _user;
-
   // TODO: Make this not be hardcoaded
   public string[] _roles = new string[] {"Administrator", "DistributionSystemOperatorRepresentative", "ClosedDistributionSystemRepresentative", "DistributionSystemUnitRepresentative"};
   private List<(string url, string name, string icon, List<string> roles)> _allowedSites = new List<(string, string, string, List<string>)>{
@@ -149,7 +144,6 @@
     Messages = await RenderSectionAsync("Messages", false);
     Footer = await RenderSectionAsync("Footer", false);
   }
-
 
   private void RedirectLogin()
   {
