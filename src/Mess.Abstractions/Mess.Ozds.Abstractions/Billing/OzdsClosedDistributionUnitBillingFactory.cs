@@ -20,7 +20,7 @@ public class OzdsClosedDistributionUnitBillingFactory : IBillingFactory
 
   private readonly List<IOzdsIotDeviceBillingFactory> _iotDeviceBillingFactories;
 
-  protected OzdsClosedDistributionUnitBillingFactory(
+  public OzdsClosedDistributionUnitBillingFactory(
     IContentManager contentManager,
     ISession session,
     IEnumerable<IOzdsIotDeviceBillingFactory> iotDeviceBillingFactories
@@ -82,6 +82,11 @@ public class OzdsClosedDistributionUnitBillingFactory : IBillingFactory
     var calculations = new List<OzdsCalculationData>();
     foreach (var iotDevice in iotDevices)
     {
+      if (iotDevice.As<IotDevicePart>()?.IsMessenger is true)
+      {
+        continue;
+      }
+
       var iotDeviceBillingFactory = _iotDeviceBillingFactories
         .FirstOrDefault(iotDeviceBillingFactory => iotDeviceBillingFactory.IsApplicable(iotDevice))
           ?? throw new InvalidOperationException($"Billing factory not found for {iotDevice}");
