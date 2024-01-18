@@ -1,7 +1,7 @@
 using Mess.Ozds.Abstractions.Models;
 using OrchardCore.ContentManagement;
 
-namespace Mess.Ozds.Abstractions.Billing;
+namespace Mess.Ozds.Abstractions.Services;
 
 public interface IOzdsIotDeviceBillingFactory
 {

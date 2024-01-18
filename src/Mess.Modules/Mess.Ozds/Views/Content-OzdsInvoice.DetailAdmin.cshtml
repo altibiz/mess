@@ -2,15 +2,11 @@
 @inherits ContentItemRazorPage<OzdsInvoiceItem>
 
 @{
-  var unitItem = ContentItem.OzdsInvoicePart.Value.DistributionSystemUnit.AsContent<DistributionSystemUnitItem>();
-  var systemItem = ContentItem.OzdsInvoicePart.Value.ClosedDistributionSystem.AsContent<ClosedDistributionSystemItem>();
-  var operatorItem = ContentItem.OzdsInvoicePart.Value.DistributionSystemOperator.AsContent<DistributionSystemOperatorItem>();
+  var unitItem = ContentItem.OzdsInvoicePart.Value.Data.DistributionSystemUnit.AsContent<DistributionSystemUnitItem>();
+  var systemItem = ContentItem.OzdsInvoicePart.Value.Data.ClosedDistributionSystem.AsContent<ClosedDistributionSystemItem>();
+  var operatorItem = ContentItem.OzdsInvoicePart.Value.Data.DistributionSystemOperator.AsContent<DistributionSystemOperatorItem>();
+  var regulatoryAgencyCatalogue = ContentItem.OzdsInvoicePart.Value.Data.RegulatoryAgencyCatalogue.AsContent<RegulatoryAgencyCatalogueItem>();
   var data = ContentItem.OzdsInvoicePart.Value.Data;
-  var calculation = ContentItem.OzdsCalculationPart.Value.Data;
-  var regulatoryAgencyCatalogue = ContentItem.OzdsCalculationPart.Value.RegulatoryAgencyCatalogue.AsContent<RegulatoryAgencyCatalogueItem>();
-  var usageCatalogue = ContentItem.OzdsCalculationPart.Value.UsageCatalogue.AsContent<OperatorCatalogueItem>();
-  var supplyCatalogue = ContentItem.OzdsCalculationPart.Value.SupplyCatalogue.AsContent<OperatorCatalogueItem>();
-  var deviceItem = ContentItem.OzdsCalculationPart.Value.IotDevice;
 }
 
 <div class="d-flex flex-column align-items-end">
@@ -21,6 +17,7 @@
     @T["FOR ELECTRICAL ENERGY PERIOD:"]
     @T["FROM"]
     @data.From.DateTime.ToShortDateString()
+
     @T["TO"]
     @data.To.DateTime.ToShortDateString()
   </h5>
@@ -30,7 +27,6 @@
   <div class="d-flex flex-row justify-content-between">
     <span>
       @unitItem.LegalEntityPart.Value.Name.Text
-      @(deviceItem.As<IotDevicePart>().DeviceId.Text)
     </span>
     <span>
       @T["Date issued"]: @ContentItem.InvoicePart.Value.Date.Value!.Value.ToShortDateString()
@@ -51,248 +47,254 @@
   </span>
 </div>
 
-<table class="table">
-<thead>
-<tr>
-  <th scope="col" class="text-center">@T["INDEX"]</th>
-  <th scope="col" class="text-center">@T["ARTICLE/SERVICE TITLE"]</th>
-  <th scope="col" class="text-center">@T["MEASURING UNIT"]</th>
-  <th scope="col" class="text-center">@T["AMOUNT"]</th>
-  <th scope="col" class="text-center">@T["PRICE"]</th>
-  <th scope="col" class="text-center">@T["TOTAL"]</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-  <th scope="row"></th>
-  <td colspan="5">
-    @T["Tariff model"] -
-    @usageCatalogue.OperatorCataloguePart.Value.Model.Text
-    (@usageCatalogue.OperatorCataloguePart.Value.Voltage.Text)
-  </td>
-</tr>
+@foreach(var calculation in ContentItem.OzdsCalculationPart.Value.Calculations) {
+  var usageCatalogue = calculation.UsageCatalogue.AsContent<OperatorCatalogueItem>();
+  var supplyCatalogue = calculation.SupplyCatalogue.AsContent<OperatorCatalogueItem>();
+  var deviceItem = calculation.IotDevice;
 
-<tr>
-  <th scope="row">1.)</th>
-  <th colspan="5">
-    @T["Usage fee"]
-  </th>
-</tr>
-
-@if (calculation.UsageExpenditure.HighEnergyItem is not null)
-{
+  <table class="table">
+  <thead>
   <tr>
-    <th scope="row">
-      &nbsp;1.1.)
-    </th>
-    <th>
-      @T["Usage during high energy price period"]
-    </th>
-    <th class="text-center">
-      @T["kWh"]
-    </th>
-    <th class="text-center">
-      @calculation.UsageExpenditure.HighEnergyItem.Amount
-    </th>
-    <th class="text-end">
-      @calculation.UsageExpenditure.HighEnergyItem.UnitPrice
-    </th>
-    <th class="text-end">
-      @calculation.UsageExpenditure.HighEnergyItem.Total
+    <th scope="col" class="text-center">@T["INDEX"]</th>
+    <th scope="col" class="text-center">@T["ARTICLE/SERVICE TITLE"]</th>
+    <th scope="col" class="text-center">@T["MEASURING UNIT"]</th>
+    <th scope="col" class="text-center">@T["AMOUNT"]</th>
+    <th scope="col" class="text-center">@T["PRICE"]</th>
+    <th scope="col" class="text-center">@T["TOTAL"]</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <th scope="row"></th>
+    <td colspan="5">
+      @T["Tariff model"] -
+      @usageCatalogue.OperatorCataloguePart.Value.Model.Text
+      (@usageCatalogue.OperatorCataloguePart.Value.Voltage.Text)
+    </td>
+  </tr>
+
+  <tr>
+    <th scope="row">1.)</th>
+    <th colspan="5">
+      @T["Usage fee"]
     </th>
   </tr>
-}
 
-@if (calculation.UsageExpenditure.LowEnergyItem is not null)
-{
+  @if (calculation.UsageExpenditure.HighEnergyItem is not null)
+  {
+    <tr>
+      <th scope="row">
+        &nbsp;1.1.)
+      </th>
+      <th>
+        @T["Usage during high energy price period"]
+      </th>
+      <th class="text-center">
+        @T["kWh"]
+      </th>
+      <th class="text-center">
+        @calculation.UsageExpenditure.HighEnergyItem.Amount
+      </th>
+      <th class="text-end">
+        @calculation.UsageExpenditure.HighEnergyItem.UnitPrice
+      </th>
+      <th class="text-end">
+        @calculation.UsageExpenditure.HighEnergyItem.Total
+      </th>
+    </tr>
+  }
+
+  @if (calculation.UsageExpenditure.LowEnergyItem is not null)
+  {
+    <tr>
+      <th scope="row">
+        &nbsp;1.1.)
+      </th>
+      <th>
+        @T["Usage during low energy price period"]
+      </th>
+      <th class="text-center">
+        @T["kWh"]
+      </th>
+      <th class="text-center">
+        @calculation.UsageExpenditure.LowEnergyItem.Amount
+      </th>
+      <th class="text-end">
+        @calculation.UsageExpenditure.LowEnergyItem.UnitPrice
+      </th>
+      <th class="text-end">
+        @calculation.UsageExpenditure.LowEnergyItem.Total
+      </th>
+    </tr>
+  }
+
+  @if (calculation.UsageExpenditure.MaxPowerItem is not null)
+  {
+    <tr>
+      <th scope="row">
+        &nbsp;1.1.)
+      </th>
+      <th>
+        @T["Max Power"]
+      </th>
+      <th class="text-center">
+        @T["kW"]
+      </th>
+      <th class="text-center">
+        @calculation.UsageExpenditure.MaxPowerItem.Amount
+      </th>
+      <th class="text-end">
+        @calculation.UsageExpenditure.MaxPowerItem.UnitPrice
+      </th>
+      <th class="text-end">
+        @calculation.UsageExpenditure.MaxPowerItem.Total
+      </th>
+    </tr>
+  }
+
+  @if (calculation.UsageExpenditure.IotDeviceFee is not null)
+  {
+    <tr>
+      <th scope="row">
+        &nbsp;1.1.)
+      </th>
+      <th>
+        @T["Device fee"]
+      </th>
+      <th class="text-center">
+        @T["month"]
+      </th>
+      <th class="text-center">
+        @calculation.UsageExpenditure.IotDeviceFee.Amount
+      </th>
+      <th class="text-end">
+        @calculation.UsageExpenditure.IotDeviceFee.UnitPrice
+      </th>
+      <th class="text-end">
+        @calculation.UsageExpenditure.IotDeviceFee.Total
+      </th>
+    </tr>
+  }
+
   <tr>
-    <th scope="row">
-      &nbsp;1.1.)
+    <th colspan="2" class="text-end">
+      @T["Usage fee"] - @T["SUBTOTAL"]
     </th>
-    <th>
-      @T["Usage during low energy price period"]
-    </th>
-    <th class="text-center">
-      @T["kWh"]
-    </th>
-    <th class="text-center">
-      @calculation.UsageExpenditure.LowEnergyItem.Amount
-    </th>
-    <th class="text-end">
-      @calculation.UsageExpenditure.LowEnergyItem.UnitPrice
-    </th>
-    <th class="text-end">
-      @calculation.UsageExpenditure.LowEnergyItem.Total
+    <th colspan="4" class="text-end">
+      @calculation.UsageExpenditure.Total
     </th>
   </tr>
-}
 
-@if (calculation.UsageExpenditure.MaxPowerItem is not null)
-{
   <tr>
-    <th scope="row">
-      &nbsp;1.1.)
-    </th>
-    <th>
-      @T["Max Power"]
-    </th>
-    <th class="text-center">
-      @T["kW"]
-    </th>
-    <th class="text-center">
-      @calculation.UsageExpenditure.MaxPowerItem.Amount
-    </th>
-    <th class="text-end">
-      @calculation.UsageExpenditure.MaxPowerItem.UnitPrice
-    </th>
-    <th class="text-end">
-      @calculation.UsageExpenditure.MaxPowerItem.Total
+    <th scope="row">2.)</th>
+    <th colspan="5">
+      @T["Supply fee"]
     </th>
   </tr>
-}
 
-@if (calculation.UsageExpenditure.IotDeviceFee is not null)
-{
+  @if (calculation.SupplyExpenditure.HighEnergyItem is not null)
+  {
+    <tr>
+      <th scope="row">
+        &nbsp;2.1.)
+      </th>
+      <th>
+        @T["Supply during high energy price period"]
+      </th>
+      <th class="text-center">
+        @T["kWh"]
+      </th>
+      <th class="text-center">
+        @calculation.SupplyExpenditure.HighEnergyItem.Amount
+      </th>
+      <th class="text-end">
+        @calculation.SupplyExpenditure.HighEnergyItem.UnitPrice
+      </th>
+      <th class="text-end">
+        @calculation.SupplyExpenditure.HighEnergyItem.Total
+      </th>
+    </tr>
+  }
+
+  @if (calculation.SupplyExpenditure.LowEnergyItem is not null)
+  {
+    <tr>
+      <th scope="row">
+        &nbsp;2.2.)
+      </th>
+      <th>
+        @T["Supply during low energy price period"]
+      </th>
+      <th class="text-center">
+        @T["kWh"]
+      </th>
+      <th class="text-center">
+        @calculation.SupplyExpenditure.LowEnergyItem.Amount
+      </th>
+      <th class="text-end">
+        @calculation.SupplyExpenditure.LowEnergyItem.UnitPrice
+      </th>
+      <th class="text-end">
+        @calculation.SupplyExpenditure.LowEnergyItem.Total
+      </th>
+    </tr>
+  }
+
   <tr>
-    <th scope="row">
-      &nbsp;1.1.)
+    <th colspan="2" class="text-end">
+      @T["Supply fee"] - @T["SUBTOTAL"]
     </th>
-    <th>
-      @T["Device fee"]
-    </th>
-    <th class="text-center">
-      @T["month"]
-    </th>
-    <th class="text-center">
-      @calculation.UsageExpenditure.IotDeviceFee.Amount
-    </th>
-    <th class="text-end">
-      @calculation.UsageExpenditure.IotDeviceFee.UnitPrice
-    </th>
-    <th class="text-end">
-      @calculation.UsageExpenditure.IotDeviceFee.Total
+    <th colspan="4" class="text-end">
+      @calculation.SupplyExpenditure.Total
     </th>
   </tr>
+
+  @if (data.RenewableEnergyFee is not null)
+  {
+    <tr>
+      <th scope="row">3.)</th>
+      <th>
+        @T["Renewable energy fee"]
+      </th>
+      <th class="text-center">
+        @T["kWh"]
+      </th>
+      <th class="text-center">
+        @data.RenewableEnergyFee.Amount
+      </th>
+      <th class="text-end">
+        @data.RenewableEnergyFee.UnitPrice
+      </th>
+      <th class="text-end">
+        @data.RenewableEnergyFee.Total
+      </th>
+    </tr>
+  }
+
+  @if (data.BusinessUsageFee is not null)
+  {
+    <tr>
+      <th scope="row">4.)</th>
+      <th>
+        @T["Business usage fee"]
+      </th>
+      <th class="text-center">
+        @T["kWh"]
+      </th>
+      <th class="text-center">
+        @data.BusinessUsageFee.Amount
+      </th>
+      <th class="text-end">
+        @data.BusinessUsageFee.UnitPrice
+      </th>
+      <th class="text-end">
+        @data.BusinessUsageFee.Total
+      </th>
+    </tr>
+  }
+  </tbody>
+  </table>
 }
-
-<tr>
-  <th colspan="2" class="text-end">
-    @T["Usage fee"] - @T["SUBTOTAL"]
-  </th>
-  <th colspan="4" class="text-end">
-    @calculation.UsageExpenditure.Total
-  </th>
-</tr>
-
-<tr>
-  <th scope="row">2.)</th>
-  <th colspan="5">
-    @T["Supply fee"]
-  </th>
-</tr>
-
-@if (calculation.SupplyExpenditure.HighEnergyItem is not null)
-{
-  <tr>
-    <th scope="row">
-      &nbsp;2.1.)
-    </th>
-    <th>
-      @T["Supply during high energy price period"]
-    </th>
-    <th class="text-center">
-      @T["kWh"]
-    </th>
-    <th class="text-center">
-      @calculation.SupplyExpenditure.HighEnergyItem.Amount
-    </th>
-    <th class="text-end">
-      @calculation.SupplyExpenditure.HighEnergyItem.UnitPrice
-    </th>
-    <th class="text-end">
-      @calculation.SupplyExpenditure.HighEnergyItem.Total
-    </th>
-  </tr>
-}
-
-@if (calculation.SupplyExpenditure.LowEnergyItem is not null)
-{
-  <tr>
-    <th scope="row">
-      &nbsp;2.2.)
-    </th>
-    <th>
-      @T["Supply during low energy price period"]
-    </th>
-    <th class="text-center">
-      @T["kWh"]
-    </th>
-    <th class="text-center">
-      @calculation.SupplyExpenditure.LowEnergyItem.Amount
-    </th>
-    <th class="text-end">
-      @calculation.SupplyExpenditure.LowEnergyItem.UnitPrice
-    </th>
-    <th class="text-end">
-      @calculation.SupplyExpenditure.LowEnergyItem.Total
-    </th>
-  </tr>
-}
-
-<tr>
-  <th colspan="2" class="text-end">
-    @T["Supply fee"] - @T["SUBTOTAL"]
-  </th>
-  <th colspan="4" class="text-end">
-    @calculation.SupplyExpenditure.Total
-  </th>
-</tr>
-
-@if (data.RenewableEnergyFee is not null)
-{
-  <tr>
-    <th scope="row">3.)</th>
-    <th>
-      @T["Renewable energy fee"]
-    </th>
-    <th class="text-center">
-      @T["kWh"]
-    </th>
-    <th class="text-center">
-      @data.RenewableEnergyFee.Amount
-    </th>
-    <th class="text-end">
-      @data.RenewableEnergyFee.UnitPrice
-    </th>
-    <th class="text-end">
-      @data.RenewableEnergyFee.Total
-    </th>
-  </tr>
-}
-
-@if (data.BusinessUsageFee is not null)
-{
-  <tr>
-    <th scope="row">4.)</th>
-    <th>
-      @T["Business usage fee"]
-    </th>
-    <th class="text-center">
-      @T["kWh"]
-    </th>
-    <th class="text-center">
-      @data.BusinessUsageFee.Amount
-    </th>
-    <th class="text-end">
-      @data.BusinessUsageFee.UnitPrice
-    </th>
-    <th class="text-end">
-      @data.BusinessUsageFee.Total
-    </th>
-  </tr>
-}
-</tbody>
-</table>
 
 <div class="d-flex flex-row justify-content-end">
   <div class="d-flex flex-column align-items-end">

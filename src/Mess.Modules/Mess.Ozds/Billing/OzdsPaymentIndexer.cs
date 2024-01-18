@@ -22,14 +22,19 @@ public class OzdsPaymentIndexer : IPaymentIndexer
       {
         ContentItemId = contentItem.ContentItemId,
         ContentType = contentItem.ContentType,
-        BillingContentItemId = ozdsInvoicePart.DistributionSystemUnit.ContentItemId,
+        BillingContentItemId = ozdsInvoicePart
+          .Data
+          .DistributionSystemUnit
+          .ContentItemId,
         InvoiceContentItemId = contentItem.ContentItemId,
         ReceiptContentItemId =
           invoicePart.Receipt.ContentItemIds.FirstOrDefault(),
         IssuerContentItemId = ozdsInvoicePart
+          .Data
           .DistributionSystemOperator
           .ContentItemId,
         RecipientContentItemId = ozdsInvoicePart
+          .Data
           .DistributionSystemUnit
           .ContentItemId
       };
@@ -42,13 +47,18 @@ public class OzdsPaymentIndexer : IPaymentIndexer
       {
         ContentItemId = contentItem.ContentItemId,
         ContentType = contentItem.ContentType,
-        BillingContentItemId = ozdsReceiptPart.DistributionSystemUnit.ContentItemId,
+        BillingContentItemId = ozdsReceiptPart
+          .Data
+          .DistributionSystemUnit
+          .ContentItemId,
         InvoiceContentItemId = receiptPart.Invoice.ContentItemIds.First(),
         ReceiptContentItemId = contentItem.ContentItemId,
         IssuerContentItemId = ozdsReceiptPart
+          .Data
           .DistributionSystemOperator
           .ContentItemId,
         RecipientContentItemId = ozdsReceiptPart
+          .Data
           .DistributionSystemUnit
           .ContentItemId
       }

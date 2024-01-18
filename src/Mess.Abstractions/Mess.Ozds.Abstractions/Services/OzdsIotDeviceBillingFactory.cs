@@ -1,15 +1,14 @@
 using Mess.Billing.Abstractions.Services;
 using Mess.Cms;
 using Mess.Iot.Abstractions.Models;
+using Mess.Ozds.Abstractions.Billing;
 using Mess.Ozds.Abstractions.Indexes;
 using Mess.Ozds.Abstractions.Models;
 using OrchardCore.ContentManagement;
 using YesSql;
 using ISession = YesSql.ISession;
 
-namespace Mess.Ozds.Abstractions.Billing;
-
-// TODO: shorten the hell out of this thing
+namespace Mess.Ozds.Abstractions.Services;
 
 public abstract class OzdsIotDeviceBillingFactory<T> : IOzdsIotDeviceBillingFactory
   where T : ContentItemBase

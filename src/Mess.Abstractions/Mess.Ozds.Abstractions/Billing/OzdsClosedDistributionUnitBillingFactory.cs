@@ -3,6 +3,7 @@ using Mess.Cms;
 using Mess.Iot.Abstractions.Models;
 using Mess.Ozds.Abstractions.Indexes;
 using Mess.Ozds.Abstractions.Models;
+using Mess.Ozds.Abstractions.Services;
 using OrchardCore.ContentManagement;
 using YesSql;
 using ISession = YesSql.ISession;
@@ -11,9 +12,9 @@ namespace Mess.Ozds.Abstractions.Billing;
 
 // TODO: shorten the hell out of this thing
 
-public abstract class OzdsClosedDistributionUnitBillingFactory : IBillingFactory
+public class OzdsClosedDistributionUnitBillingFactory : IBillingFactory
 {
-  private readonly IContentManager _contnetManager;
+  private readonly IContentManager _contentManager;
 
   private readonly ISession _session;
 
@@ -25,7 +26,7 @@ public abstract class OzdsClosedDistributionUnitBillingFactory : IBillingFactory
     IEnumerable<IOzdsIotDeviceBillingFactory> iotDeviceBillingFactories
   )
   {
-    _contnetManager = contentManager;
+    _contentManager = contentManager;
     _session = session;
     _iotDeviceBillingFactories = iotDeviceBillingFactories.ToList();
   }
@@ -55,15 +56,15 @@ public abstract class OzdsClosedDistributionUnitBillingFactory : IBillingFactory
   {
     var unit = contentItem
       .AsContent<DistributionSystemUnitItem>();
-    var system = await _contnetManager
+    var system = await _contentManager
       .GetContentAsync<ClosedDistributionSystemItem>(unit.ContainedPart.Value.ListContentItemId)
         ?? throw new InvalidOperationException($"Closed distribution system {unit.ContainedPart.Value.ListContentItemId} not found");
-    var @operator = await _contnetManager
+    var @operator = await _contentManager
       .GetContentAsync<DistributionSystemOperatorItem>(system.ContainedPart.Value.ListContentItemId)
         ?? throw new InvalidOperationException($"Distribution system operator {system.ContainedPart.Value.ListContentItemId} not found");
 
     var regulatoryAgencyCatalogueItem =
-      _contnetManager
+      _contentManager
         .GetContentAsync<RegulatoryAgencyCatalogueItem>(
           @operator.DistributionSystemOperatorPart.Value
             .RegulatoryAgencyCatalogue.ContentItemIds.First()
@@ -100,13 +101,16 @@ public abstract class OzdsClosedDistributionUnitBillingFactory : IBillingFactory
     }
 
     var invoiceData = await CreateInvoiceDataAsync(
-      calculations,
       regulatoryAgencyCatalogueItem,
+      @operator,
+      system,
+      unit,
+      calculations,
       fromDate,
       toDate
     );
 
-    var invoice = await _contnetManager
+    var invoice = await _contentManager
       .NewContentAsync<OzdsInvoiceItem>();
     invoice.Alter(
       invoiceContentItem => invoiceContentItem.OzdsCalculationPart,
@@ -119,9 +123,6 @@ public abstract class OzdsClosedDistributionUnitBillingFactory : IBillingFactory
       invoiceContentItem => invoiceContentItem.OzdsInvoicePart,
       ozdsInvoicePart =>
       {
-        ozdsInvoicePart.DistributionSystemOperator = @operator;
-        ozdsInvoicePart.ClosedDistributionSystem = system;
-        ozdsInvoicePart.DistributionSystemUnit = unit;
         ozdsInvoicePart.Data = invoiceData;
       }
     );
@@ -149,15 +150,15 @@ public abstract class OzdsClosedDistributionUnitBillingFactory : IBillingFactory
 
     var unit = contentItem
       .AsContent<DistributionSystemUnitItem>();
-    var system = await _contnetManager
+    var system = await _contentManager
       .GetContentAsync<ClosedDistributionSystemItem>(unit.ContainedPart.Value.ListContentItemId)
         ?? throw new InvalidOperationException($"Closed distribution system {unit.ContainedPart.Value.ListContentItemId} not found");
-    var @operator = await _contnetManager
+    var @operator = await _contentManager
       .GetContentAsync<DistributionSystemOperatorItem>(system.ContainedPart.Value.ListContentItemId)
         ?? throw new InvalidOperationException($"Distribution system operator {system.ContainedPart.Value.ListContentItemId} not found");
 
     var regulatoryAgencyCatalogueItem =
-      _contnetManager
+      _contentManager
         .GetContentAsync<RegulatoryAgencyCatalogueItem>(
           @operator.DistributionSystemOperatorPart.Value
             .RegulatoryAgencyCatalogue.ContentItemIds.First()
@@ -171,7 +172,7 @@ public abstract class OzdsClosedDistributionUnitBillingFactory : IBillingFactory
       invoice.OzdsInvoicePart.Value.Data
     );
 
-    var receipt = await _contnetManager
+    var receipt = await _contentManager
       .NewContentAsync<OzdsReceiptItem>();
     receipt.Alter(
       invoiceContentItem => invoiceContentItem.OzdsCalculationPart,
@@ -184,9 +185,6 @@ public abstract class OzdsClosedDistributionUnitBillingFactory : IBillingFactory
       invoiceContentItem => invoiceContentItem.OzdsReceiptPart,
       ozdsReceiptPart =>
       {
-        ozdsReceiptPart.DistributionSystemOperator = @operator;
-        ozdsReceiptPart.ClosedDistributionSystem = system;
-        ozdsReceiptPart.DistributionSystemUnit = unit;
         ozdsReceiptPart.Data = receiptData;
       }
     );
@@ -195,8 +193,11 @@ public abstract class OzdsClosedDistributionUnitBillingFactory : IBillingFactory
   }
 
   private static OzdsInvoiceData CreateInvoiceData(
-    List<OzdsCalculationData> calculations,
     RegulatoryAgencyCatalogueItem regulatoryAgencyCatalogueItem,
+    ContentItem distributionSystemOperator,
+    ContentItem closedDistributionSystem,
+    ContentItem distributionSystemUnit,
+    List<OzdsCalculationData> calculations,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   )
@@ -261,6 +262,10 @@ public abstract class OzdsClosedDistributionUnitBillingFactory : IBillingFactory
     var totalWithTax = total + tax;
 
     return new OzdsInvoiceData(
+      regulatoryAgencyCatalogueItem,
+      distributionSystemOperator,
+      closedDistributionSystem,
+      distributionSystemUnit,
       fromDate,
       toDate,
       usageFee,
@@ -275,21 +280,29 @@ public abstract class OzdsClosedDistributionUnitBillingFactory : IBillingFactory
   }
 
   private static async Task<OzdsInvoiceData> CreateInvoiceDataAsync(
-    List<OzdsCalculationData> calculations,
     RegulatoryAgencyCatalogueItem regulatoryAgencyCatalogueItem,
+    ContentItem distributionSystemOperator,
+    ContentItem closedDistributionSystem,
+    ContentItem distributionSystemUnit,
+    List<OzdsCalculationData> calculations,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   )
   {
     return CreateInvoiceData(
-      calculations,
       regulatoryAgencyCatalogueItem,
+      distributionSystemOperator,
+      closedDistributionSystem,
+      distributionSystemUnit,
+      calculations,
       fromDate,
       toDate
     );
   }
 
-  private static OzdsReceiptData CreateReceiptData(OzdsInvoiceData invoiceData)
+  private static OzdsReceiptData CreateReceiptData(
+    OzdsInvoiceData invoiceData
+  )
   {
     var renewableEnergyFee =
       invoiceData.RenewableEnergyFee == null
@@ -310,6 +323,10 @@ public abstract class OzdsClosedDistributionUnitBillingFactory : IBillingFactory
         );
 
     return new OzdsReceiptData(
+      invoiceData.RegulatoryAgencyCatalogue,
+      invoiceData.DistributionSystemOperator,
+      invoiceData.ClosedDistributionSystem,
+      invoiceData.DistributionSystemUnit,
       invoiceData.From,
       invoiceData.To,
       invoiceData.UsageFee,

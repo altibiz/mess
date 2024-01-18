@@ -2,6 +2,8 @@ using Mess.Billing.Abstractions.Extensions;
 using Mess.Chart.Abstractions.Extensions;
 using Mess.Cms.Extensions.Microsoft;
 using Mess.Iot.Abstractions.Extensions;
+using Mess.Ozds.Abstractions.Billing;
+using Mess.Ozds.Abstractions.Extensions;
 using Mess.Ozds.Abstractions.Models;
 using Mess.Ozds.Abstractions.Timeseries;
 using Mess.Ozds.Billing;
@@ -74,8 +76,9 @@ public class Startup : StartupBase
     // Billing
     services.AddBillingIndexer<OzdsBillingIndexer>();
     services.AddPaymentIndexer<OzdsPaymentIndexer>();
-    services.AddBillingFactory<AbbBillingFactory>();
-    services.AddBillingFactory<SchneiderBillingFactory>();
+    services.AddBillingFactory<OzdsClosedDistributionUnitBillingFactory>();
+    services.AddOzdsIotDeviceBillingFactory<SchneiderBillingFactory>();
+    services.AddOzdsIotDeviceBillingFactory<AbbBillingFactory>();
 
     // Iot
     services.AddIotPushHandler<PidgeonPushHandler>();

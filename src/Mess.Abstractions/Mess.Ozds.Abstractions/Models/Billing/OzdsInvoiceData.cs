@@ -1,6 +1,12 @@
+using OrchardCore.ContentManagement;
+
 namespace Mess.Ozds.Abstractions.Models;
 
 public record OzdsInvoiceData(
+  ContentItem RegulatoryAgencyCatalogue,
+  ContentItem DistributionSystemOperator,
+  ContentItem ClosedDistributionSystem,
+  ContentItem DistributionSystemUnit,
   DateTimeOffset From,
   DateTimeOffset To,
   decimal UsageFee,
