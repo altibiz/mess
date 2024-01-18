@@ -423,6 +423,7 @@ internal static partial class CreateAsyncMigrations
       measurementDevicePart =>
       {
         measurementDevicePart.DeviceId = new TextField { Text = "pidgeon" };
+        measurementDevicePart.IsMessenger = true;
       }
     );
     pidgeonIotDevice.Alter(
