@@ -8,14 +8,20 @@ public interface IOzdsIotDeviceBillingFactory
   public bool IsApplicable(ContentItem iotDeviceItem);
 
   OzdsCalculationData CreateCalculation(
-    ContentItem distributionSystemUnitItem,
+    DistributionSystemUnitItem distributionSystemUnitItem,
+    ClosedDistributionSystemItem closedDistributionSystemItem,
+    DistributionSystemOperatorItem distributionSystemOperatorItem,
+    RegulatoryAgencyCatalogueItem regulatoryAgencyCatalogueItem,
     ContentItem iotDeviceItem,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
 
   Task<OzdsCalculationData> CreateCalculationAsync(
-    ContentItem distributionSystemUnitItem,
+    DistributionSystemUnitItem distributionSystemUnitItem,
+    ClosedDistributionSystemItem closedDistributionSystemItem,
+    DistributionSystemOperatorItem distributionSystemOperatorItem,
+    RegulatoryAgencyCatalogueItem regulatoryAgencyCatalogueItem,
     ContentItem iotDeviceItem,
     DateTimeOffset fromDate,
     DateTimeOffset toDate

@@ -6,16 +6,15 @@ using YesSql;
 
 namespace Mess.Ozds.Billing;
 
-public class AbbBillingFactory : OzdsClosedDistributionUnitBillingFactory<AbbIotDeviceItem>
+public class AbbBillingFactory : OzdsIotDeviceBillingFactory<AbbIotDeviceItem>
 {
   private readonly IOzdsTimeseriesQuery _query;
 
   public AbbBillingFactory(
     IContentManager contentManager,
-    ISession session,
     IOzdsTimeseriesQuery query
   )
-    : base(contentManager, session)
+    : base(contentManager)
   {
     _query = query;
   }

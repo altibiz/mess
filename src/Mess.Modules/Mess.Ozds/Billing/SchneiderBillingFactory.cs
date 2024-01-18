@@ -7,16 +7,15 @@ using YesSql;
 namespace Mess.Ozds.Billing;
 
 public class SchneiderBillingFactory
-  : OzdsClosedDistributionUnitBillingFactory<SchneiderIotDeviceItem>
+  : OzdsIotDeviceBillingFactory<SchneiderIotDeviceItem>
 {
   private readonly IOzdsTimeseriesQuery _query;
 
   public SchneiderBillingFactory(
     IContentManager contentManager,
-    ISession session,
     IOzdsTimeseriesQuery query
   )
-    : base(contentManager, session)
+    : base(contentManager)
   {
     _query = query;
   }
