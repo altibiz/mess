@@ -1,6 +1,6 @@
 namespace Mess.Ozds.Abstractions.Billing;
 
-public record OzdsBillingData(
+public record OzdsIotDeviceBillingData(
   decimal StartEnergyTotal_kWh,
   decimal EndEnergyTotal_kWh,
   decimal StartHighTariffEnergy_kWh,

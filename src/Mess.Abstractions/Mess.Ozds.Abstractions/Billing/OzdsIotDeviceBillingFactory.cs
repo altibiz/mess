@@ -11,14 +11,14 @@ namespace Mess.Ozds.Abstractions.Billing;
 
 // TODO: shorten the hell out of this thing
 
-public abstract class OzdsBillingFactory<T> : IBillingFactory
+public abstract class OzdsClosedDistributionUnitBillingFactory<T> : IBillingFactory
   where T : ContentItemBase
 {
   private readonly IContentManager _contnetManager;
 
   private readonly ISession _session;
 
-  protected OzdsBillingFactory(IContentManager contentManager, ISession session)
+  protected OzdsClosedDistributionUnitBillingFactory(IContentManager contentManager, ISession session)
   {
     _contnetManager = contentManager;
     _session = session;
@@ -458,13 +458,13 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
     return contentItem.ContentType == typeof(T).ContentTypeName();
   }
 
-  protected abstract OzdsBillingData? FetchBillingData(
+  protected abstract OzdsIotDeviceBillingData? FetchBillingData(
     T measurementDeviceItem,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
 
-  protected abstract Task<OzdsBillingData?> FetchBillingDataAsync(
+  protected abstract Task<OzdsIotDeviceBillingData?> FetchBillingDataAsync(
     T measurementDeviceItem,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
@@ -473,7 +473,7 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
   private static OzdsCalculationData CreateCalculationData(
     DateTimeOffset fromDate,
     DateTimeOffset toDate,
-    OzdsBillingData billingData,
+    OzdsIotDeviceBillingData billingData,
     OperatorCatalogueItem usageCatalogueItem,
     OperatorCatalogueItem supplyCatalogueItem
   )
@@ -496,7 +496,7 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
   }
 
   private static OzdsExpenditureData CreateExpenditureData(
-    OzdsBillingData billingData,
+    OzdsIotDeviceBillingData billingData,
     OperatorCatalogueItem catalogueItem
   )
   {
@@ -596,7 +596,7 @@ public abstract class OzdsBillingFactory<T> : IBillingFactory
   private static async Task<OzdsCalculationData> CreateCalculationDataAsync(
     DateTimeOffset from,
     DateTimeOffset to,
-    OzdsBillingData billingData,
+    OzdsIotDeviceBillingData billingData,
     OperatorCatalogueItem usageCatalogueItem,
     OperatorCatalogueItem supplyCatalogueItem
   )

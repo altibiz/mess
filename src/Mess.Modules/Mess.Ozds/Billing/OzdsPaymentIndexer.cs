@@ -10,14 +10,11 @@ public class OzdsPaymentIndexer : IPaymentIndexer
 {
   public bool IsApplicable(ContentItem contentItem)
   {
-    return contentItem.Has<OzdsInvoicePart>()
-           || contentItem.Has<OzdsReceiptPart>();
+    return contentItem.Has<OzdsInvoicePart>() || contentItem.Has<OzdsReceiptPart>();
   }
 
   public PaymentIndex IndexPayment(ContentItem contentItem)
   {
-    var ozdsCalculationPart = contentItem.As<OzdsCalculationPart>();
-
     var ozdsInvoicePart = contentItem.As<OzdsInvoicePart>();
     var invoicePart = contentItem.As<InvoicePart>();
     if (ozdsInvoicePart is not null && invoicePart is not null)
@@ -25,7 +22,7 @@ public class OzdsPaymentIndexer : IPaymentIndexer
       {
         ContentItemId = contentItem.ContentItemId,
         ContentType = contentItem.ContentType,
-        BillingContentItemId = ozdsCalculationPart.IotDevice.ContentItemId,
+        BillingContentItemId = ozdsInvoicePart.DistributionSystemUnit.ContentItemId,
         InvoiceContentItemId = contentItem.ContentItemId,
         ReceiptContentItemId =
           invoicePart.Receipt.ContentItemIds.FirstOrDefault(),
@@ -45,7 +42,7 @@ public class OzdsPaymentIndexer : IPaymentIndexer
       {
         ContentItemId = contentItem.ContentItemId,
         ContentType = contentItem.ContentType,
-        BillingContentItemId = ozdsCalculationPart.IotDevice.ContentItemId,
+        BillingContentItemId = ozdsReceiptPart.DistributionSystemUnit.ContentItemId,
         InvoiceContentItemId = receiptPart.Invoice.ContentItemIds.First(),
         ReceiptContentItemId = contentItem.ContentItemId,
         IssuerContentItemId = ozdsReceiptPart

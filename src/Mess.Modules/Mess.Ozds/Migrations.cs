@@ -23,15 +23,6 @@ public class Migrations : DataMigration
     _serviceProvider = serviceProvider;
   }
 
-  public async Task<int> UpdateFrom1()
-  {
-    await CreateAsyncMigrations.MigrateSchneider(
-      _serviceProvider
-    );
-
-    return 2;
-  }
-
   public async Task<int> CreateAsync()
   {
     await CreateAsyncMigrations.MigrateRegulatoryAgencyCatalogue(
@@ -52,6 +43,7 @@ public class Migrations : DataMigration
 
     await CreateAsyncMigrations.MigratePidgeon(_serviceProvider);
     await CreateAsyncMigrations.MigrateAbb(_serviceProvider);
+    await CreateAsyncMigrations.MigrateSchneider(_serviceProvider);
 
     return 1;
   }
@@ -619,6 +611,12 @@ internal static partial class CreateAsyncMigrations
                   }
                 )
           )
+          .WithPart(
+            "BillingPart",
+            part =>
+              part.WithDisplayName("Billing")
+                .WithDescription("Billing information.")
+          )
     );
 
     schemaBuilder.CreateMapIndexTable<DistributionSystemUnitIndex>(
@@ -795,12 +793,6 @@ internal static partial class CreateAsyncMigrations
                   "Chart displaying the Abb measurement device data."
                 )
           )
-          .WithPart(
-            "BillingPart",
-            part =>
-              part.WithDisplayName("Billing")
-                .WithDescription("Billing information.")
-          )
     );
   }
 
@@ -872,12 +864,6 @@ internal static partial class CreateAsyncMigrations
                 .WithDescription(
                   "Chart displaying the Schneider measurement device data."
                 )
-          )
-          .WithPart(
-            "BillingPart",
-            part =>
-              part.WithDisplayName("Billing")
-                .WithDescription("Billing information.")
           )
     );
   }

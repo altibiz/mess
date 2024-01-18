@@ -26,13 +26,13 @@ public interface IOzdsTimeseriesQuery
     List<string> sources
   );
 
-  public OzdsBillingData? GetAbbBillingData(
+  public OzdsIotDeviceBillingData? GetAbbBillingData(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
 
-  public Task<OzdsBillingData?> GetAbbBillingDataAsync(
+  public Task<OzdsIotDeviceBillingData?> GetAbbBillingDataAsync(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
@@ -52,13 +52,13 @@ public interface IOzdsTimeseriesQuery
     DateTimeOffset toDate
   );
 
-  public OzdsBillingData? GetSchneiderBillingData(
+  public OzdsIotDeviceBillingData? GetSchneiderBillingData(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
 
-  public Task<OzdsBillingData?> GetSchneiderBillingDataAsync(
+  public Task<OzdsIotDeviceBillingData?> GetSchneiderBillingDataAsync(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate

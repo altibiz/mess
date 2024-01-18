@@ -140,7 +140,7 @@ List<string> sources
     });
   }
 
-  public OzdsBillingData? GetAbbBillingData(
+  public OzdsIotDeviceBillingData? GetAbbBillingData(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
@@ -148,7 +148,7 @@ List<string> sources
   {
     return _services.WithTimeseriesDbContext<
       OzdsTimeseriesDbContext,
-      OzdsBillingData?
+      OzdsIotDeviceBillingData?
     >(context =>
     {
       var firstQuery = context.AbbMeasurements
@@ -201,7 +201,7 @@ List<string> sources
 
       return first is null || last is null || peak is null
         ? null
-        : new OzdsBillingData(
+        : new OzdsIotDeviceBillingData(
           (decimal)first.ActiveEnergyImportTotal_kWh!,
           (decimal)last.ActiveEnergyExportTotal_kWh!,
           (decimal)
@@ -214,7 +214,7 @@ List<string> sources
     });
   }
 
-  public async Task<OzdsBillingData?> GetAbbBillingDataAsync(
+  public async Task<OzdsIotDeviceBillingData?> GetAbbBillingDataAsync(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
@@ -222,7 +222,7 @@ List<string> sources
   {
     return await _services.WithTimeseriesDbContextAsync<
       OzdsTimeseriesDbContext,
-      OzdsBillingData?
+      OzdsIotDeviceBillingData?
     >(async context =>
     {
       var firstQuery = context.AbbMeasurements
@@ -275,7 +275,7 @@ List<string> sources
 
       return first is null || last is null || peak is null
         ? null
-        : new OzdsBillingData(
+        : new OzdsIotDeviceBillingData(
           (decimal)first.ActiveEnergyImportTotal_kWh!,
           (decimal)last.ActiveEnergyExportTotal_kWh!,
           (decimal)
@@ -351,7 +351,7 @@ List<string> sources
     });
   }
 
-  public OzdsBillingData? GetSchneiderBillingData(
+  public OzdsIotDeviceBillingData? GetSchneiderBillingData(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
@@ -359,7 +359,7 @@ List<string> sources
   {
     return _services.WithTimeseriesDbContext<
       OzdsTimeseriesDbContext,
-      OzdsBillingData?
+      OzdsIotDeviceBillingData?
     >(context =>
     {
       var firstQuery = context.AbbMeasurements
@@ -412,7 +412,7 @@ List<string> sources
 
       return first is null || last is null || peak is null
         ? null
-        : new OzdsBillingData(
+        : new OzdsIotDeviceBillingData(
           (decimal)first.ActiveEnergyImportTotal_kWh!,
           (decimal)last.ActiveEnergyExportTotal_kWh!,
           (decimal)
@@ -425,7 +425,7 @@ List<string> sources
     });
   }
 
-  public async Task<OzdsBillingData?> GetSchneiderBillingDataAsync(
+  public async Task<OzdsIotDeviceBillingData?> GetSchneiderBillingDataAsync(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
@@ -433,7 +433,7 @@ List<string> sources
   {
     return await _services.WithTimeseriesDbContextAsync<
       OzdsTimeseriesDbContext,
-      OzdsBillingData?
+      OzdsIotDeviceBillingData?
     >(async context =>
     {
       var firstQuery = context.SchneiderMeasurements
@@ -486,7 +486,7 @@ List<string> sources
 
       return first is null || last is null || peak is null
         ? null
-        : new OzdsBillingData(
+        : new OzdsIotDeviceBillingData(
           (decimal)first.ActiveEnergyImportTotal_Wh!,
           (decimal)last.ActiveEnergyExportTotal_Wh!,
           (decimal)

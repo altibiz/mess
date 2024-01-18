@@ -1,6 +1,12 @@
+using OrchardCore.ContentManagement;
+
 namespace Mess.Ozds.Abstractions.Models;
 
 public record OzdsCalculationData(
+  ContentItem IotDevice,
+  ContentItem RegulatoryAgencyCatalogue,
+  ContentItem UsageCatalogue,
+  ContentItem SupplyCatalogue,
   DateTimeOffset From,
   DateTimeOffset To,
   OzdsExpenditureData UsageExpenditure,

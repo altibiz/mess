@@ -6,7 +6,7 @@ using YesSql;
 
 namespace Mess.Ozds.Billing;
 
-public class AbbBillingFactory : OzdsBillingFactory<AbbIotDeviceItem>
+public class AbbBillingFactory : OzdsClosedDistributionUnitBillingFactory<AbbIotDeviceItem>
 {
   private readonly IOzdsTimeseriesQuery _query;
 
@@ -20,7 +20,7 @@ public class AbbBillingFactory : OzdsBillingFactory<AbbIotDeviceItem>
     _query = query;
   }
 
-  protected override OzdsBillingData? FetchBillingData(
+  protected override OzdsIotDeviceBillingData? FetchBillingData(
     AbbIotDeviceItem measurementDeviceItem,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
@@ -33,7 +33,7 @@ public class AbbBillingFactory : OzdsBillingFactory<AbbIotDeviceItem>
     );
   }
 
-  protected override async Task<OzdsBillingData?> FetchBillingDataAsync(
+  protected override async Task<OzdsIotDeviceBillingData?> FetchBillingDataAsync(
     AbbIotDeviceItem measurementDeviceItem,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
