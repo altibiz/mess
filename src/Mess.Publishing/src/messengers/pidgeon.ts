@@ -31,7 +31,7 @@ export const push: Create = async (template) => {
             return {
               deviceId,
               timestamp: DateTime.utc().toISO(),
-              data: payload,
+              data: JSON.parse(payload),
             };
           }),
         )
