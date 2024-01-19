@@ -48,8 +48,8 @@
 @code {
     [Parameter]
     public ContentItem LegalEntity { get; set; } = default!;
-    private IEnumerable<ContentItem>? _units = Enumerable.Empty<ContentItem>();
-    private IEnumerable<ContentItem>? _unitsOMMs = Enumerable.Empty<ContentItem>();
+    private IEnumerable<ContentItem> _units = Enumerable.Empty<ContentItem>();
+    private IEnumerable<ContentItem> _unitsOMMs = Enumerable.Empty<ContentItem>();
     private string? _searchString;
     private List<(string, decimal?)> _lastTotalPerOMM = new List<(string, decimal?)>();
     protected override async Task OnInitializedAsync()

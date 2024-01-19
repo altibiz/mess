@@ -46,7 +46,7 @@
 </MudDataGrid>
 @code {
     [Parameter]
-    public User? User { get; set; }
+    public User User { get; set; } = default!;
     private string? _searchString;
     private ContentItem? _legalEntity;
     private IEnumerable<ContentItem>? _units;
@@ -84,11 +84,12 @@
                   .ListAsync();
             }
       });
-      foreach(var system in _systems){
-        foreach(var unit in _units){
-          _dataStruct.Add(new TabularData(system, unit));
+      if(_systems is not null && _units is not null)
+        foreach(var system in _systems){
+          foreach(var unit in _units){
+            _dataStruct.Add(new TabularData(system, unit));
+          }
         }
-      }
     }
      private Func<TabularData, bool> _quickFilter => x =>
   {

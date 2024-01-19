@@ -47,7 +47,7 @@
 
 @code {
     [Parameter]
-    public ContentItem? LegalEntity { get; set; }
+    public ContentItem LegalEntity { get; set; } = default!;
     private string? _searchString;
     private IEnumerable<ContentItem>? _systems;
     public record struct TabularData(ContentItem system, ContentItem systemOwner);

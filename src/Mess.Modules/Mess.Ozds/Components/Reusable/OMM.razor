@@ -54,32 +54,64 @@
   </PagerContent>
 </MudDataGrid>
 
-@if (_lastHour is not null) {
-  <ApexChart TItem="AbbMeasurement"
-              Title="OMM last hour">
 
-      <ApexPointSeries TItem="AbbMeasurement"
-                        Items="@_lastHour"
-                        Name="Net Profit"
-                        SeriesType="SeriesType.Line"
-                        XValue="x => x.Timestamp.Ticks"
-                        YValue="x => x.ActiveEnergyNetTotal_kWh"
-                        />
-  </ApexChart>
-}
+
+
+
+<MudGrid Class="my-3">
+    <MudItem xs="6">
+        <MudPaper Class="d-flex align-center justify-center mud-width-full py-8 px-8" Height="500px">
+    <MudContainer MaxWidth="MaxWidth.Small">
+            <ApexChart TItem="Order"
+            Title="Order Gross Value"
+            Options="options">
+              <ApexPointSeries TItem="Order"
+                Items="orders"
+                Name="Gross Value"
+                SeriesType="SeriesType.Donut"
+                XValue="@(e => e.lable)"
+                YValue="@(e => e.value)"
+                OrderBy="@(e => e.X)"
+              />
+            </ApexChart>
+    </MudContainer>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="6">
+        <MudPaper Class="d-flex align-center justify-center mud-width-full py-8 px-8" Height="500px">
+    <MudContainer MaxWidth="MaxWidth.Small">
+            <ApexChart TItem="AbbMeasurement"
+            Title="OMM last hour">
+              <ApexPointSeries TItem="AbbMeasurement"
+                Items="@_lastHour"
+                Name="Net Profit"
+                SeriesType="SeriesType.Line"
+                XValue="x => x.Timestamp.Ticks"
+                YValue="x => x.ActiveEnergyNetTotal_kWh"
+              />
+            </ApexChart>
+    </MudContainer>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
 
 @code {
 
     [Parameter]
     public string Source { get; set; } = default!;
+    private List<Order> orders = new List<Order>();
+    private ApexChartOptions<Order> options = new();
     private string? _searchString;
     private List<TabularData> _dataStruct = new List<TabularData>();
-    private IReadOnlyList<AbbMeasurement>? _lastHour;
+    public IReadOnlyList<AbbMeasurement>? _lastHour;
     public record struct TabularData(int year, int month, AbbMeasurement monthStartTotal, AbbMeasurement monthEndTotal);
     private int _month = -1;
     private int _year = -1;
     protected override async Task OnInitializedAsync()
     {
+      orders.Add(new Order(7));
+      int _endAngle = (int)(-89 + 179 * (orders[0].value / orders[0].valueMax));
+      options.PlotOptions = new PlotOptions { Pie = new PlotOptionsPie { StartAngle = -90, EndAngle = _endAngle} };
       var startEnd = await _timeseriesClient.GetAbbLastMonthMeasurementsAsync(Source);
       if(startEnd.First != null && startEnd.Last != null){
         _month = startEnd.First.Timestamp.Month;
@@ -102,4 +134,15 @@
 
   private void RowClicked() { }
 
+  private class Order {
+    public string lable = "Max power";
+    public decimal value = 10;
+    public decimal valueMin = 20;
+    public decimal valueMax = 20;
+
+    public Order(int val){
+      value = val;
+      valueMin = valueMin - val;
+    }
+  }
 }
