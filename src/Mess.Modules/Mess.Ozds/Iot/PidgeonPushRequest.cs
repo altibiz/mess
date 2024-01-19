@@ -8,5 +8,5 @@ public record PidgeonPushRequest(
 public record PidgeonPushRequestMeasurement(
   string DeviceId,
   DateTimeOffset Timestamp,
-  string Data
+  dynamic Data
 );

@@ -1,3 +1,4 @@
+using Mess.Cms.Extensions.Objects;
 using Mess.Event.Abstractions.Client;
 using Mess.Iot.Abstractions.Caches;
 using Mess.Iot.Abstractions.Services;
@@ -172,7 +173,7 @@ public class PidgeonPushHandler
             tenant,
             measurement.Timestamp,
             measurementContentItem,
-            measurement.Data
+            ObjectSerializationExtensions.ToNewtonsoftJson(measurement.Data)
           );
         }
         catch (Exception exception)
