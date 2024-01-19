@@ -9,6 +9,9 @@
 @using OrchardCore.ContentManagement.Records
 @using OrchardCore.Users.Indexes
 
+@inject IContentManager _contentManager;
+@inject IServiceProvider _serviceProvider;
+
   <MudDataGrid
   T="TabularData"
   MultiSelection="true"
@@ -39,6 +42,15 @@
     <PropertyColumn
       Property="x => x.unit.DisplayText"
       Title='@T["Locations"].Value' />
+    <TemplateColumn CellClass="d-flex justify-end">
+          <CellTemplate>
+              <MudStack Row>
+                  <form method="post" action="@($"https://localhost:5001/ozds/Admin/IssueInvoice/{context.Item.unit.ContentItemId}")">
+                      <button type="submit">Issue Invoice</button>
+                  </form>
+              </MudStack>
+          </CellTemplate>
+      </TemplateColumn>
   </Columns>
   <PagerContent>
     <MudDataGridPager T="TabularData" />
@@ -56,7 +68,7 @@
     private IEnumerable<ContentItem>? _systems;
     protected override async Task OnInitializedAsync()
     {
-      await WithTransientSessionAsync(async session => {
+        await WithTransientSessionAsync(async session => {
             _legalEntity = await session
                 .Query<ContentItem, UserPickerFieldIndex>()
                 .Where(index => index.ContentPart == "LegalEntityPart")
@@ -83,23 +95,23 @@
                   .Where(index => index.ClosedDistributionSystemContentItemId == _legalEntity.ContentItemId)
                   .ListAsync();
             }
-      });
-      if(_systems is not null && _units is not null)
-        foreach(var system in _systems){
-          foreach(var unit in _units){
-            _dataStruct.Add(new TabularData(system, unit));
-          }
-        }
+        });
+        if(_systems is not null && _units is not null)
+            foreach(var system in _systems){
+                foreach(var unit in _units){
+                    _dataStruct.Add(new TabularData(system, unit));
+                }
+            }
     }
-     private Func<TabularData, bool> _quickFilter => x =>
+    private Func<TabularData, bool> _quickFilter => x =>
   {
-    if (string.IsNullOrWhiteSpace(_searchString))
-      return true;
+     if (string.IsNullOrWhiteSpace(_searchString))
+         return true;
 
-    if (x.unit.DisplayText.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
-      return true;
+     if (x.unit.DisplayText.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+         return true;
 
-    return false;
+     return false;
   };
     private void RowClicked() { }
 }
