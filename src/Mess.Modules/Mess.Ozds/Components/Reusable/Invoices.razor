@@ -10,6 +10,8 @@
 @using OrchardCore.Users.Indexes
 @using Mess.Billing.Abstractions.Indexes
 
+@inject NavigationManager NavigationManager
+
   <MudDataGrid
   T="ContentItem"
   MultiSelection="true"
@@ -81,5 +83,7 @@
     return false;
   };
 
-  private void RowClicked() { }
+  private void RowClicked(DataGridRowClickEventArgs<ContentItem> args) {
+      NavigationManager.NavigateTo($"app/invoice/{args.Item.ContentItemId}");
+     }
 }
