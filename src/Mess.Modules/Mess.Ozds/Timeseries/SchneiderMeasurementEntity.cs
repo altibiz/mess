@@ -6,49 +6,24 @@ namespace Mess.Ozds.Timeseries;
 
 public class SchneiderMeasurementEntity : HypertableEntity
 {
-  [Column(TypeName = "float4")] public float? VoltageL1_V { get; set; }
-
-  [Column(TypeName = "float4")] public float? VoltageL2_V { get; set; }
-
-  [Column(TypeName = "float4")] public float? VoltageL3_V { get; set; }
-
-  [Column(TypeName = "float4")] public float? VoltageAvg_V { get; set; }
-
-  [Column(TypeName = "float4")] public float? CurrentL1_A { get; set; }
-
-  [Column(TypeName = "float4")] public float? CurrentL2_A { get; set; }
-
-  [Column(TypeName = "float4")] public float? CurrentL3_A { get; set; }
-
-  [Column(TypeName = "float4")] public float? CurrentAvg_A { get; set; }
-
-  [Column(TypeName = "float4")] public float? ActivePowerL1_kW { get; set; }
-
-  [Column(TypeName = "float4")] public float? ActivePowerL2_kW { get; set; }
-
-  [Column(TypeName = "float4")] public float? ActivePowerL3_kW { get; set; }
-
-  [Column(TypeName = "float4")] public float? ActivePowerTotal_kW { get; set; }
-
-  [Column(TypeName = "float4")]
-  public float? ReactivePowerTotal_kVAR { get; set; }
-
-  [Column(TypeName = "float4")]
-  public float? ApparentPowerTotal_kVA { get; set; }
-
-  [Column(TypeName = "float4")] public float? PowerFactorTotal { get; set; }
-
-  [Column(TypeName = "int8")]
-  public long? ActiveEnergyImportTotal_Wh { get; set; }
-
-  [Column(TypeName = "int8")]
-  public long? ActiveEnergyExportTotal_Wh { get; set; }
-
-  [Column(TypeName = "int8")]
-  public long? ActiveEnergyImportRateA_Wh { get; set; }
-
-  [Column(TypeName = "int8")]
-  public long? ActiveEnergyImportRateB_Wh { get; set; }
+  [Column(TypeName = "double precision")] public decimal VoltageL1_V { get; set; } = default;
+  [Column(TypeName = "double precision")] public decimal VoltageL2_V { get; set; } = default;
+  [Column(TypeName = "double precision")] public decimal VoltageL3_V { get; set; } = default;
+  [Column(TypeName = "double precision")] public decimal CurrentL1_A { get; set; } = default;
+  [Column(TypeName = "double precision")] public decimal CurrentL2_A { get; set; } = default;
+  [Column(TypeName = "double precision")] public decimal CurrentL3_A { get; set; } = default;
+  [Column(TypeName = "double precision")] public decimal ActivePowerL1_W { get; set; } = default;
+  [Column(TypeName = "double precision")] public decimal ActivePowerL2_W { get; set; } = default;
+  [Column(TypeName = "double precision")] public decimal ActivePowerL3_W { get; set; } = default;
+  [Column(TypeName = "double precision")] public decimal ReactivePowerTotal_VAR { get; set; } = default;
+  [Column(TypeName = "double precision")] public decimal ApparentPowerTotal_VA { get; set; } = default;
+  [Column(TypeName = "double precision")] public decimal ActiveEnergyImportL1_Wh { get; set; } = default;
+  [Column(TypeName = "double precision")] public decimal ActiveEnergyImportL2_Wh { get; set; } = default;
+  [Column(TypeName = "double precision")] public decimal ActiveEnergyImportL3_Wh { get; set; } = default;
+  [Column(TypeName = "double precision")] public decimal ActiveEnergyImportTotal_Wh { get; set; } = default;
+  [Column(TypeName = "double precision")] public decimal ActiveEnergyExportTotal_Wh { get; set; } = default;
+  [Column(TypeName = "double precision")] public decimal ReactiveEnergyImportTotal_VARh { get; set; } = default;
+  [Column(TypeName = "double precision")] public decimal ReactiveEnergyExportTotal_VARh { get; set; } = default;
 }
 
 // TODO: safer conversions
@@ -64,25 +39,24 @@ public static class SchneiderMeasurementEntityExtensions
       Tenant = model.Tenant,
       Timestamp = model.Timestamp,
       Source = model.DeviceId,
-      VoltageL1_V = (float?)model.VoltageL1_V,
-      VoltageL2_V = (float?)model.VoltageL2_V,
-      VoltageL3_V = (float?)model.VoltageL3_V,
-      VoltageAvg_V = (float?)model.VoltageAvg_V,
-      CurrentL1_A = (float?)model.CurrentL1_A,
-      CurrentL2_A = (float?)model.CurrentL2_A,
-      CurrentL3_A = (float?)model.CurrentL3_A,
-      CurrentAvg_A = (float?)model.CurrentAvg_A,
-      ActivePowerL1_kW = (float?)model.ActivePowerL1_kW,
-      ActivePowerL2_kW = (float?)model.ActivePowerL2_kW,
-      ActivePowerL3_kW = (float?)model.ActivePowerL3_kW,
-      ActivePowerTotal_kW = (float?)model.ActivePowerTotal_kW,
-      ReactivePowerTotal_kVAR = (float?)model.ReactivePowerTotal_kVAR,
-      ApparentPowerTotal_kVA = (float?)model.ApparentPowerTotal_kVA,
-      PowerFactorTotal = (float?)model.PowerFactorTotal,
-      ActiveEnergyImportTotal_Wh = (long?)model.ActiveEnergyImportTotal_Wh,
-      ActiveEnergyExportTotal_Wh = (long?)model.ActiveEnergyExportTotal_Wh,
-      ActiveEnergyImportRateA_Wh = (long?)model.ActiveEnergyImportRateA_Wh,
-      ActiveEnergyImportRateB_Wh = (long?)model.ActiveEnergyImportRateB_Wh
+      VoltageL1_V = model.VoltageL1_V,
+      VoltageL2_V = model.VoltageL2_V,
+      VoltageL3_V = model.VoltageL3_V,
+      CurrentL1_A = model.CurrentL1_A,
+      CurrentL2_A = model.CurrentL2_A,
+      CurrentL3_A = model.CurrentL3_A,
+      ActivePowerL1_W = model.ActivePowerL1_W,
+      ActivePowerL2_W = model.ActivePowerL2_W,
+      ActivePowerL3_W = model.ActivePowerL3_W,
+      ReactivePowerTotal_VAR = model.ReactivePowerTotal_VAR,
+      ApparentPowerTotal_VA = model.ApparentPowerTotal_VA,
+      ActiveEnergyImportL1_Wh = model.ActiveEnergyImportL1_Wh,
+      ActiveEnergyImportL2_Wh = model.ActiveEnergyImportL2_Wh,
+      ActiveEnergyImportL3_Wh = model.ActiveEnergyImportL3_Wh,
+      ActiveEnergyImportTotal_Wh = model.ActiveEnergyImportTotal_Wh,
+      ActiveEnergyExportTotal_Wh = model.ActiveEnergyExportTotal_Wh,
+      ReactiveEnergyImportTotal_VARh = model.ReactiveEnergyImportTotal_VARh,
+      ReactiveEnergyExportTotal_VARh = model.ReactiveEnergyExportTotal_VARh
     };
   }
 
@@ -94,25 +68,24 @@ public static class SchneiderMeasurementEntityExtensions
       entity.Tenant,
       entity.Source,
       entity.Timestamp,
-      (decimal?)entity.VoltageL1_V,
-      (decimal?)entity.VoltageL2_V,
-      (decimal?)entity.VoltageL3_V,
-      (decimal?)entity.VoltageAvg_V,
-      (decimal?)entity.CurrentL1_A,
-      (decimal?)entity.CurrentL2_A,
-      (decimal?)entity.CurrentL3_A,
-      (decimal?)entity.CurrentAvg_A,
-      (decimal?)entity.ActivePowerL1_kW,
-      (decimal?)entity.ActivePowerL2_kW,
-      (decimal?)entity.ActivePowerL3_kW,
-      (decimal?)entity.ActivePowerTotal_kW,
-      (decimal?)entity.ReactivePowerTotal_kVAR,
-      (decimal?)entity.ApparentPowerTotal_kVA,
-      (decimal?)entity.PowerFactorTotal,
+      entity.VoltageL1_V,
+      entity.VoltageL2_V,
+      entity.VoltageL3_V,
+      entity.CurrentL1_A,
+      entity.CurrentL2_A,
+      entity.CurrentL3_A,
+      entity.ActivePowerL1_W,
+      entity.ActivePowerL2_W,
+      entity.ActivePowerL3_W,
+      entity.ReactivePowerTotal_VAR,
+      entity.ApparentPowerTotal_VA,
+      entity.ActiveEnergyImportL1_Wh,
+      entity.ActiveEnergyImportL2_Wh,
+      entity.ActiveEnergyImportL3_Wh,
       entity.ActiveEnergyImportTotal_Wh,
       entity.ActiveEnergyExportTotal_Wh,
-      entity.ActiveEnergyImportRateA_Wh,
-      entity.ActiveEnergyImportRateB_Wh
+      entity.ReactiveEnergyImportTotal_VARh,
+      entity.ReactiveEnergyExportTotal_VARh
     );
   }
 }
