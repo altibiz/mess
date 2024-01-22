@@ -23,21 +23,15 @@ export default cmd({
         /^[A-Za-z.]+$/,
         "Project name must be a valid C# namespace",
       ),
-    })
-      .positional("name", {
-        type: "string",
-        description: "The name of the migration",
-        demandOption: true,
-        coerce: coerceRegex(
-          /^[A-Za-z]+$/,
-          "Migration name must be a valid C# identifier",
-        ),
-      })
-      .option("format", {
-        type: "boolean",
-        description: "Format the migration with csharpier",
-        default: true,
-      }),
+    }).positional("name", {
+      type: "string",
+      description: "The name of the migration",
+      demandOption: true,
+      coerce: coerceRegex(
+        /^[A-Za-z]+$/,
+        "Migration name must be a valid C# identifier",
+      ),
+    }),
 })(async ({ project, name, format }) => {
   let isInitial = false;
   if (!(await exists(`src/Mess.Modules/${project}/Timeseries/Migrations`))) {
@@ -66,14 +60,5 @@ export default cmd({
     );
     await rmrf(`src/Mess.Modules/${project}/Mess`);
     log.info("Moved initial migration snapshot");
-  }
-
-  if (format) {
-    await task(
-      "Formatted with csharpier",
-      `dotnet csharpier ${root(
-        `src/Mess.Modules/${project}/Timeseries/Migrations`,
-      )}`,
-    );
   }
 });

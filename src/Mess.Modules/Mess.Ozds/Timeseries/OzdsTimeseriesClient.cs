@@ -181,7 +181,7 @@ List<string> sources
     });
   }
 
-  public OzdsIotDeviceBillingData? GetAbbBillingData(
+  public OzdsIotDeviceBillingData GetAbbBillingData(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
@@ -189,19 +189,13 @@ List<string> sources
   {
     return _services.WithTimeseriesDbContext<
       OzdsTimeseriesDbContext,
-      OzdsIotDeviceBillingData?
+      OzdsIotDeviceBillingData
     >(context =>
     {
       var firstQuery = context.AbbMeasurements
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp > fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
-        .Where(
-          measurement =>
-            measurement.ActiveEnergyImportTotal_kWh != null
-            && measurement.ActiveEnergyImportTariff1_kWh != null
-            && measurement.ActiveEnergyImportTariff2_kWh != null
-        )
         .OrderBy(measurement => measurement.Timestamp)
         .DeferredFirstOrDefault();
 
@@ -209,12 +203,6 @@ List<string> sources
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp > fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
-        .Where(
-          measurement =>
-            measurement.ActiveEnergyImportTotal_kWh != null
-            && measurement.ActiveEnergyExportTariff1_kWh != null
-            && measurement.ActiveEnergyImportTariff2_kWh != null
-        )
         .OrderBy(measurement => measurement.Timestamp)
         .DeferredLastOrDefault();
 
@@ -222,14 +210,15 @@ List<string> sources
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp > fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
-        .Where(measurement => measurement.ActivePowerTotal_W != null)
         .GroupBy(measurement => measurement.Milliseconds / (1000 * 60 * 15))
         .Select(
           group =>
             new
             {
               ActivePowerTotal_W = group.Average(
-                measurement => measurement.ActivePowerTotal_W!.Value
+                measurement => measurement.ActivePowerL1_W
+                  + measurement.ActivePowerL2_W
+                  + measurement.ActivePowerL3_W
               )
             }
         )
@@ -241,21 +230,16 @@ List<string> sources
       var peak = peakQuery.FutureValue().Value;
 
       return first is null || last is null || peak is null
-        ? null
+        ? new OzdsIotDeviceBillingData(0, 0, 0)
         : new OzdsIotDeviceBillingData(
-          (decimal)first.ActiveEnergyImportTotal_kWh!,
-          (decimal)last.ActiveEnergyExportTotal_kWh!,
-          (decimal)
-          first.ActiveEnergyImportTariff1_kWh!,
-          (decimal)last.ActiveEnergyImportTariff1_kWh!,
-          (decimal)first.ActiveEnergyImportTariff2_kWh!,
-          (decimal)last.ActiveEnergyImportTariff2_kWh!,
-          (decimal)peak.ActivePowerTotal_W! / 1000
+          first!.ActiveEnergyImportTotal_Wh / 1000,
+          last!.ActiveEnergyExportTotal_Wh / 1000,
+          peak!.ActivePowerTotal_W / 1000
         );
     });
   }
 
-  public async Task<OzdsIotDeviceBillingData?> GetAbbBillingDataAsync(
+  public async Task<OzdsIotDeviceBillingData> GetAbbBillingDataAsync(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
@@ -263,19 +247,13 @@ List<string> sources
   {
     return await _services.WithTimeseriesDbContextAsync<
       OzdsTimeseriesDbContext,
-      OzdsIotDeviceBillingData?
+      OzdsIotDeviceBillingData
     >(async context =>
     {
       var firstQuery = context.AbbMeasurements
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp > fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
-        .Where(
-          measurement =>
-            measurement.ActiveEnergyImportTotal_kWh != null
-            && measurement.ActiveEnergyImportTariff1_kWh != null
-            && measurement.ActiveEnergyImportTariff2_kWh != null
-        )
         .OrderBy(measurement => measurement.Timestamp)
         .DeferredFirstOrDefault();
 
@@ -283,12 +261,6 @@ List<string> sources
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp > fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
-        .Where(
-          measurement =>
-            measurement.ActiveEnergyImportTotal_kWh != null
-            && measurement.ActiveEnergyExportTariff1_kWh != null
-            && measurement.ActiveEnergyImportTariff2_kWh != null
-        )
         .OrderBy(measurement => measurement.Timestamp)
         .DeferredLastOrDefault();
 
@@ -296,14 +268,15 @@ List<string> sources
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp > fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
-        .Where(measurement => measurement.ActivePowerTotal_W != null)
         .GroupBy(measurement => measurement.Milliseconds / (1000 * 60 * 15))
         .Select(
           group =>
             new
             {
               ActivePowerTotal_W = group.Average(
-                measurement => measurement.ActivePowerTotal_W!.Value
+                measurement => measurement.ActivePowerL1_W
+                  + measurement.ActivePowerL2_W
+                  + measurement.ActivePowerL3_W
               )
             }
         )
@@ -315,16 +288,11 @@ List<string> sources
       var peak = await peakQuery.FutureValue().ValueAsync();
 
       return first is null || last is null || peak is null
-        ? null
+        ? new OzdsIotDeviceBillingData(0, 0, 0)
         : new OzdsIotDeviceBillingData(
-          (decimal)first.ActiveEnergyImportTotal_kWh!,
-          (decimal)last.ActiveEnergyExportTotal_kWh!,
-          (decimal)
-          first.ActiveEnergyImportTariff1_kWh!,
-          (decimal)last.ActiveEnergyImportTariff1_kWh!,
-          (decimal)first.ActiveEnergyImportTariff2_kWh!,
-          (decimal)last.ActiveEnergyImportTariff2_kWh!,
-          (decimal)peak.ActivePowerTotal_W! / 1000
+          first!.ActiveEnergyImportTotal_Wh / 1000,
+          last!.ActiveEnergyExportTotal_Wh / 1000,
+          peak!.ActivePowerTotal_W / 1000
         );
     });
   }
@@ -392,7 +360,7 @@ List<string> sources
     });
   }
 
-  public OzdsIotDeviceBillingData? GetSchneiderBillingData(
+  public OzdsIotDeviceBillingData GetSchneiderBillingData(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
@@ -400,47 +368,36 @@ List<string> sources
   {
     return _services.WithTimeseriesDbContext<
       OzdsTimeseriesDbContext,
-      OzdsIotDeviceBillingData?
+      OzdsIotDeviceBillingData
     >(context =>
     {
-      var firstQuery = context.AbbMeasurements
+      var firstQuery = context.SchneiderMeasurements
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp > fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
-        .Where(
-          measurement =>
-            measurement.ActiveEnergyImportTotal_kWh != null
-            && measurement.ActiveEnergyImportTariff1_kWh != null
-            && measurement.ActiveEnergyImportTariff2_kWh != null
-        )
         .OrderBy(measurement => measurement.Timestamp)
         .DeferredFirstOrDefault();
 
-      var lastQuery = context.AbbMeasurements
+      var lastQuery = context.SchneiderMeasurements
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp > fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
-        .Where(
-          measurement =>
-            measurement.ActiveEnergyImportTotal_kWh != null
-            && measurement.ActiveEnergyExportTariff1_kWh != null
-            && measurement.ActiveEnergyImportTariff2_kWh != null
-        )
         .OrderBy(measurement => measurement.Timestamp)
         .DeferredLastOrDefault();
 
-      var peakQuery = context.AbbMeasurements
+      var peakQuery = context.SchneiderMeasurements
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp > fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
-        .Where(measurement => measurement.ActivePowerTotal_W != null)
         .GroupBy(measurement => measurement.Milliseconds / (1000 * 60 * 15))
         .Select(
           group =>
             new
             {
               ActivePowerTotal_W = group.Average(
-                measurement => measurement.ActivePowerTotal_W!.Value
+                measurement => measurement.ActivePowerL1_W
+                  + measurement.ActivePowerL2_W
+                  + measurement.ActivePowerL3_W
               )
             }
         )
@@ -452,21 +409,16 @@ List<string> sources
       var peak = peakQuery.FutureValue().Value;
 
       return first is null || last is null || peak is null
-        ? null
+        ? new OzdsIotDeviceBillingData(0, 0, 0)
         : new OzdsIotDeviceBillingData(
-          (decimal)first.ActiveEnergyImportTotal_kWh!,
-          (decimal)last.ActiveEnergyExportTotal_kWh!,
-          (decimal)
-          first.ActiveEnergyImportTariff1_kWh!,
-          (decimal)last.ActiveEnergyImportTariff1_kWh!,
-          (decimal)first.ActiveEnergyImportTariff2_kWh!,
-          (decimal)last.ActiveEnergyImportTariff2_kWh!,
-          (decimal)peak.ActivePowerTotal_W! / 1000
+          first!.ActiveEnergyImportTotal_Wh / 1000,
+          last!.ActiveEnergyExportTotal_Wh / 1000,
+          peak!.ActivePowerTotal_W / 1000
         );
     });
   }
 
-  public async Task<OzdsIotDeviceBillingData?> GetSchneiderBillingDataAsync(
+  public async Task<OzdsIotDeviceBillingData> GetSchneiderBillingDataAsync(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
@@ -474,19 +426,13 @@ List<string> sources
   {
     return await _services.WithTimeseriesDbContextAsync<
       OzdsTimeseriesDbContext,
-      OzdsIotDeviceBillingData?
+      OzdsIotDeviceBillingData
     >(async context =>
     {
       var firstQuery = context.SchneiderMeasurements
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp > fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
-        .Where(
-          measurement =>
-            measurement.ActiveEnergyImportTotal_Wh != null
-            && measurement.ActiveEnergyImportRateA_Wh != null
-            && measurement.ActiveEnergyImportRateB_Wh != null
-        )
         .OrderBy(measurement => measurement.Timestamp)
         .DeferredFirstOrDefault();
 
@@ -494,12 +440,6 @@ List<string> sources
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp > fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
-        .Where(
-          measurement =>
-            measurement.ActiveEnergyImportTotal_Wh != null
-            && measurement.ActiveEnergyImportRateA_Wh != null
-            && measurement.ActiveEnergyImportRateB_Wh != null
-        )
         .OrderBy(measurement => measurement.Timestamp)
         .DeferredLastOrDefault();
 
@@ -507,14 +447,15 @@ List<string> sources
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp > fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
-        .Where(measurement => measurement.ActivePowerTotal_kW != null)
         .GroupBy(measurement => measurement.Milliseconds / (1000 * 60))
         .Select(
           group =>
             new
             {
               ActivePowerTotal_kW = group.Average(
-                measurement => measurement.ActivePowerTotal_kW!.Value
+                measurement => measurement.ActivePowerL1_W
+                  + measurement.ActivePowerL2_W
+                  + measurement.ActivePowerL3_W
               )
             }
         )
@@ -526,16 +467,11 @@ List<string> sources
       var peak = await peakQuery.FutureValue().ValueAsync();
 
       return first is null || last is null || peak is null
-        ? null
+        ? new OzdsIotDeviceBillingData(0, 0, 0)
         : new OzdsIotDeviceBillingData(
-          (decimal)first.ActiveEnergyImportTotal_Wh!,
-          (decimal)last.ActiveEnergyExportTotal_Wh!,
-          (decimal)
-          first.ActiveEnergyImportRateA_Wh!,
-          (decimal)last.ActiveEnergyImportRateA_Wh!,
-          (decimal)first.ActiveEnergyImportRateB_Wh!,
-          (decimal)last.ActiveEnergyImportRateB_Wh!,
-          (decimal)peak.ActivePowerTotal_kW! / 1000
+          first!.ActiveEnergyImportTotal_Wh / 1000,
+          last!.ActiveEnergyExportTotal_Wh / 1000,
+          peak!.ActivePowerTotal_kW / 1000
         );
     });
   }
