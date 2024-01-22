@@ -9,6 +9,8 @@
 @using OrchardCore.ContentManagement.Records
 @using OrchardCore.Users.Indexes
 
+@inject NavigationManager NavigationManager
+
   <MudDataGrid
   T="TabularData"
   MultiSelection="true"
@@ -121,5 +123,7 @@
 
     return false;
   };
-    private void RowClicked() { }
+    private void RowClicked(DataGridRowClickEventArgs<TabularData> args) {
+      NavigationManager.NavigateTo($"app/omm/{args.Item.omm.DisplayText}");
+     }
 }

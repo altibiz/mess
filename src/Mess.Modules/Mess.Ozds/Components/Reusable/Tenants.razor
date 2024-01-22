@@ -9,6 +9,8 @@
 @using OrchardCore.ContentManagement.Records
 @using OrchardCore.Users.Indexes
 
+@inject NavigationManager NavigationManager
+
   <MudDataGrid
   T="(string, decimal?)"
   MultiSelection="true"
@@ -55,9 +57,6 @@
     protected override async Task OnInitializedAsync()
     {
       await WithTransientSessionAsync(async session => {
-      // We need something that links the logged in user with the Iot
-      // devices. Now all of them are just tied to the role itself
-      // using its ContentItemId.
       if(LegalEntity.ContentType == "DistributionSystemUnit"){
         _units = _units.Append(LegalEntity);
         _unitsOMMs = await session
@@ -99,5 +98,7 @@
 
     return false;
   };
-    private void RowClicked() { }
+    private void RowClicked(DataGridRowClickEventArgs<(string, decimal?)> args) {
+      NavigationManager.NavigateTo($"app/omm/{args.Item.Item1}");
+     }
 }

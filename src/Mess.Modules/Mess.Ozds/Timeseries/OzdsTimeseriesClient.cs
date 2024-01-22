@@ -77,13 +77,13 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
     });
   }
 
-  public async Task<(AbbMeasurement? First, AbbMeasurement? Last)> GetAbbLastMonthMeasurementsAsync(
+  public async Task<(decimal? First, decimal? Last, DateTimeOffset FirstDate)> GetAbbLastMonthMeasurementsAsync(
     string source
   )
   {
     return await _services.WithTimeseriesDbContextAsync<
       OzdsTimeseriesDbContext,
-      (AbbMeasurement?, AbbMeasurement?)
+      (decimal?, decimal?, DateTimeOffset)
     >(async context =>
     {
       AbbMeasurement? first = null;
@@ -95,14 +95,55 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
         .FirstOrDefaultAsync();
 
       if (last != null)
+      {
         first = await context.AbbMeasurements
           .Where(measurement => measurement.Source == source)
           .Where(measurement => measurement.Timestamp.Month == last.Timestamp.Month)
           .OrderByDescending(measurement => measurement.Timestamp)
           .Select(measurement => measurement.ToModel())
           .FirstOrDefaultAsync();
+        if (first == null)
+          return (0, last.ActiveEnergyNetTotal_kWh, DateTime.UtcNow);
+      }
+      else
+        return (0, 0, DateTime.UtcNow);
 
-      return (first, last);
+      return (first.ActiveEnergyNetTotal_kWh, last.ActiveEnergyNetTotal_kWh, first.Timestamp);
+    });
+  }
+
+  public async Task<(decimal? First, decimal? Last, DateTimeOffset FirstDate)> GetSchneiderLastMonthMeasurementsAsync(
+      string source
+    )
+  {
+    return await _services.WithTimeseriesDbContextAsync<
+      OzdsTimeseriesDbContext,
+      (decimal?, decimal?, DateTimeOffset)
+    >(async context =>
+    {
+      SchneiderMeasurement? first = null;
+      var query = context.SchneiderMeasurements
+        .Where(measurement => measurement.Source == source)
+        .OrderBy(measurement => measurement.Timestamp)
+        .Select(measurement => measurement.ToModel());
+      var last = await query
+        .FirstOrDefaultAsync();
+
+      if (last != null)
+      {
+        first = await context.SchneiderMeasurements
+          .Where(measurement => measurement.Source == source)
+          .Where(measurement => measurement.Timestamp.Month == last.Timestamp.Month)
+          .OrderByDescending(measurement => measurement.Timestamp)
+          .Select(measurement => measurement.ToModel())
+          .FirstOrDefaultAsync();
+        if (first == null)
+          return (0, last.ActivePowerTotal_kW, DateTime.UtcNow);
+      }
+      else
+        return (0, 0, DateTime.UtcNow);
+
+      return (first.ActivePowerTotal_kW, last.ActivePowerTotal_kW, first.Timestamp);
     });
   }
 

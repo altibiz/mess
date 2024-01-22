@@ -20,7 +20,7 @@
   QuickFilter="@_quickFilter"
   RowClick="@RowClicked">
   <ToolBarContent>
-    <MudText Typo="Typo.h6">@T["OMM"]</MudText>
+    <MudText Typo="Typo.h6">@Source</MudText>
     <MudSpacer />
     <MudTextField
       @bind-Value="_searchString"
@@ -41,11 +41,11 @@
       Property="x => x.month"
       Title='@T["Month"].Value' />
     <PropertyColumn
-      Property="x => x.monthEndTotal.ActiveEnergyNetTotal_kWh"
+      Property="x => x.monthEndTotal"
       Title='@T["Start Total"].Value'
       Filterable="false" />
     <PropertyColumn
-      Property="x => x.monthStartTotal.ActiveEnergyNetTotal_kWh"
+      Property="x => x.monthStartTotal"
       Title='@T["End Total"].Value'
       Filterable="false" />
   </Columns>
@@ -63,16 +63,15 @@
         <MudPaper Class="d-flex align-center justify-center mud-width-full py-8 px-8" Height="500px">
     <MudContainer MaxWidth="MaxWidth.Small">
             <ApexChart TItem="Order"
-            Title="Order Gross Value"
-            Options="options">
-              <ApexPointSeries TItem="Order"
-                Items="orders"
-                Name="Gross Value"
-                SeriesType="SeriesType.Donut"
-                XValue="@(e => e.lable)"
-                YValue="@(e => e.value)"
-                OrderBy="@(e => e.X)"
-              />
+                      Title="@Source"
+                      Options="options">
+                <ApexPointSeries TItem="Order"
+                                Items="orders"
+                                SeriesType=SeriesType.RadialBar
+                                Name="Gross Value"
+                                XValue="@(e => e.value)"
+                                YAggregate="@(e => e.First().percent)"
+                                OrderByDescending="e=>e.X" />
             </ApexChart>
     </MudContainer>
         </MudPaper>
@@ -80,14 +79,14 @@
     <MudItem xs="6">
         <MudPaper Class="d-flex align-center justify-center mud-width-full py-8 px-8" Height="500px">
     <MudContainer MaxWidth="MaxWidth.Small">
-            <ApexChart TItem="AbbMeasurement"
-            Title="OMM last hour">
-              <ApexPointSeries TItem="AbbMeasurement"
+            <ApexChart TItem="ChartData"
+            Title="@Source">
+              <ApexPointSeries TItem="ChartData"
                 Items="@_lastHour"
                 Name="Net Profit"
                 SeriesType="SeriesType.Line"
-                XValue="x => x.Timestamp.Ticks"
-                YValue="x => x.ActiveEnergyNetTotal_kWh"
+                XValue="x => x.date"
+                YValue="x => x.measurement"
               />
             </ApexChart>
     </MudContainer>
@@ -103,22 +102,34 @@
     private ApexChartOptions<Order> options = new();
     private string? _searchString;
     private List<TabularData> _dataStruct = new List<TabularData>();
-    public IReadOnlyList<AbbMeasurement>? _lastHour;
-    public record struct TabularData(int year, int month, AbbMeasurement monthStartTotal, AbbMeasurement monthEndTotal);
+    public IEnumerable<ChartData>? _lastHour;
+    private (decimal? First, decimal? Last, DateTimeOffset FirstDate) _startEnd;
+    public record ChartData(decimal? measurement, DateTimeOffset date);
+    public record struct TabularData(int year, int month, decimal? monthStartTotal, decimal? monthEndTotal);
     private int _month = -1;
     private int _year = -1;
     protected override async Task OnInitializedAsync()
     {
       orders.Add(new Order(7));
-      int _endAngle = (int)(-89 + 179 * (orders[0].value / orders[0].valueMax));
-      options.PlotOptions = new PlotOptions { Pie = new PlotOptionsPie { StartAngle = -90, EndAngle = _endAngle} };
-      var startEnd = await _timeseriesClient.GetAbbLastMonthMeasurementsAsync(Source);
-      if(startEnd.First != null && startEnd.Last != null){
-        _month = startEnd.First.Timestamp.Month;
-        _year = startEnd.First.Timestamp.Year;
-        _dataStruct.Add(new TabularData(_year, _month, startEnd.First, startEnd.Last));
+      options.PlotOptions = new PlotOptions { RadialBar = new PlotOptionsRadialBar { StartAngle = -90, EndAngle = 90 } };
+      if(Source.StartsWith("abb"))
+        _startEnd = await _timeseriesClient.GetAbbLastMonthMeasurementsAsync(Source);
+      else
+        _startEnd = await _timeseriesClient.GetSchneiderLastMonthMeasurementsAsync(Source);
+
+      if(_startEnd.First != null && _startEnd.Last != null){
+        _month = _startEnd.FirstDate.Month;
+        _year = _startEnd.FirstDate.Year;
+        _dataStruct.Add(new TabularData(_year, _month, _startEnd.First, _startEnd.Last));
       }
-      _lastHour = await _timeseriesClient.GetAbbMeasurementsAsync(Source, DateTimeOffset.UtcNow.AddHours(-10), DateTimeOffset.UtcNow);
+      if(Source.StartsWith("abb")){
+        var a = await _timeseriesClient.GetAbbMeasurementsAsync(Source, DateTimeOffset.UtcNow.AddHours(-10), DateTimeOffset.UtcNow);
+        _lastHour = a.Select(x => new ChartData(x.ActiveEnergyNetTotal_kWh, x.Timestamp));
+      }
+      else{
+        var a = await _timeseriesClient.GetSchneiderMeasurementsAsync(Source, DateTimeOffset.UtcNow.AddHours(-10), DateTimeOffset.UtcNow);
+        _lastHour = a.Select(x => new ChartData(x.ActivePowerTotal_kW, x.Timestamp));
+      }
     }
 
   private Func<TabularData, bool> _quickFilter => x =>
@@ -135,14 +146,13 @@
   private void RowClicked() { }
 
   private class Order {
-    public string lable = "Max power";
     public decimal value = 10;
-    public decimal valueMin = 20;
     public decimal valueMax = 20;
+    public decimal percent = 50;
 
     public Order(int val){
       value = val;
-      valueMin = valueMin - val;
+      percent = (value / valueMax) * 100;
     }
   }
 }
