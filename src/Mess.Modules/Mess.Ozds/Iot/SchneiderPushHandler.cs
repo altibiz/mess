@@ -33,10 +33,10 @@ public class SchneiderPushHandler
       newMeasurement
     );
     contentItem.Alter(
-      schneiderIotDevice => schneiderIotDevice.SchneiderIotDevicePart,
-      schneiderIotDevice =>
+      schneiderIotDevice => schneiderIotDevice.OzdsIotDevicePart,
+      part =>
       {
-        schneiderIotDevice.LatestImport = newMeasurement.ActiveEnergyImportTotal_Wh;
+        part.LatestImport = newMeasurement.ActiveEnergyImportTotal_Wh;
       });
     _contentManager.UpdateAsync(contentItem).RunSynchronously();
   }
@@ -54,10 +54,10 @@ public class SchneiderPushHandler
       newMeasurement
     );
     contentItem.Alter(
-      schneiderIotDevice => schneiderIotDevice.SchneiderIotDevicePart,
-      schneiderIotDevice =>
+      schneiderIotDevice => schneiderIotDevice.OzdsIotDevicePart,
+      part =>
       {
-        schneiderIotDevice.LatestImport = newMeasurement.ActiveEnergyImportTotal_Wh;
+        part.LatestImport = newMeasurement.ActiveEnergyImportTotal_Wh;
       });
     await _contentManager.UpdateAsync(contentItem);
   }

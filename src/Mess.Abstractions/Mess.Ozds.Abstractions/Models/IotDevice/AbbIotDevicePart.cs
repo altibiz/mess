@@ -5,5 +5,4 @@ namespace Mess.Ozds.Abstractions.Models;
 
 public class AbbIotDevicePart : ContentPart
 {
-  public decimal? LatestImport { get; set; } = default!;
 }

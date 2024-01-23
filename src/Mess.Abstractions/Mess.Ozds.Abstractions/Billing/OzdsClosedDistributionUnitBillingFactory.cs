@@ -132,6 +132,15 @@ public class OzdsClosedDistributionUnitBillingFactory : IBillingFactory
       }
     );
 
+    unit.Alter(
+      unit => unit.DistributionSystemUnitPart,
+      part =>
+      {
+        part.Consumption += invoice.OzdsInvoicePart.Value.Data.TotalWithTax;
+      }
+    );
+    await _contentManager.UpdateAsync(unit);
+
     return invoice;
   }
 
@@ -193,6 +202,15 @@ public class OzdsClosedDistributionUnitBillingFactory : IBillingFactory
         ozdsReceiptPart.Data = receiptData;
       }
     );
+
+    unit.Alter(
+      unit => unit.DistributionSystemUnitPart,
+      part =>
+      {
+        part.Consumption += invoice.OzdsInvoicePart.Value.Data.TotalWithTax;
+      }
+    );
+    await _contentManager.UpdateAsync(unit);
 
     return receipt;
   }

@@ -11,7 +11,7 @@
 
 @inject NavigationManager NavigationManager
 
-  <MudDataGrid
+<MudDataGrid
   T="TabularData"
   MultiSelection="true"
   Items="@_dataStruct"
@@ -105,10 +105,7 @@
         foreach(var system in _systems){
           foreach(var unit in _units){
             foreach(var omm in _ioTDevices){
-              if(omm.As<AbbIotDevicePart>() is var abbIotDevicePart && abbIotDevicePart is not null)
-                _dataStruct.Add(new TabularData(omm, system, unit, abbIotDevicePart.LatestImport));
-              else if(omm.As<SchneiderIotDevicePart>() is var schneiderIotDevicePart && schneiderIotDevicePart is not null)
-                _dataStruct.Add(new TabularData(omm, system, unit, schneiderIotDevicePart.LatestImport));
+              _dataStruct.Add(new TabularData(omm, system, unit, omm.As<OzdsIotDevicePart>().LatestImport));
             }
           }
         }

@@ -31,10 +31,10 @@ public class AbbPushHandler
     var newMeasurement = MakeMeasurement(deviceId, tenant, timestamp, contentItem, request);
     _measurementClient.AddAbbMeasurement(newMeasurement);
     contentItem.Alter(
-      abbIotDevice => abbIotDevice.AbbIotDevicePart,
-      abbIotDevicePart =>
+      abbIotDevice => abbIotDevice.OzdsIotDevicePart,
+      part =>
       {
-        abbIotDevicePart.LatestImport = newMeasurement.ActiveEnergyImportTotal_Wh;
+        part.LatestImport = newMeasurement.ActiveEnergyImportTotal_Wh;
       });
     _contentManager.UpdateAsync(contentItem).RunSynchronously();
   }
@@ -50,7 +50,7 @@ public class AbbPushHandler
     var newMeasurement = MakeMeasurement(deviceId, tenant, timestamp, contentItem, request);
     await _measurementClient.AddAbbMeasurementAsync(newMeasurement);
     contentItem.Alter(
-      abbIotDevice => abbIotDevice.AbbIotDevicePart,
+      abbIotDevice => abbIotDevice.OzdsIotDevicePart,
       abbIotDevicePart =>
       {
         abbIotDevicePart.LatestImport = newMeasurement.ActiveEnergyImportTotal_Wh;
