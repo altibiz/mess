@@ -4,12 +4,11 @@ using OrchardCore.ContentManagement;
 
 namespace Mess.Ozds.ViewModels;
 
-public class Closed Distribution System RepresentativeDashboardViewModel
+public class ClosedDistributionSystemRepresentativeDashboardViewModel
 {
   public List<(
     ContentItem ContentItem,
     OzdsIotDevicePart OzdsIotDevicePart,
     IotDevicePart IotDevicePart
-    )> Devices
-{ get; set; } = default!;
+    )> Devices { get; set; } = default!;
 }
