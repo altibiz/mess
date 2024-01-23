@@ -124,11 +124,11 @@
       }
       if(Source.StartsWith("abb")){
         var a = await _timeseriesClient.GetAbbMeasurementsAsync(Source, DateTimeOffset.UtcNow.AddHours(-10), DateTimeOffset.UtcNow);
-        _lastHour = a.Select(x => new ChartData(x.ActivePowerL1_W, x.Timestamp));
+        _lastHour = a.Select(x => new ChartData(x.ActivePowerL1_W / 1000, x.Timestamp));
       }
       else{
         var a = await _timeseriesClient.GetSchneiderMeasurementsAsync(Source, DateTimeOffset.UtcNow.AddHours(-10), DateTimeOffset.UtcNow);
-        _lastHour = a.Select(x => new ChartData(x.ActivePowerL1_W, x.Timestamp));
+        _lastHour = a.Select(x => new ChartData(x.ActivePowerL1_W / 1000, x.Timestamp));
       }
     }
 
