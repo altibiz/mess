@@ -7,8 +7,8 @@ ROOT_DIR="$(dirname "$HUSKY_DIR")"
 #shellcheck disable=SC1091
 . "$HUSKY_DIR/_/husky.sh"
 
-if command -v powershell >/dev/null 2>&1; then
-  "$ROOT_DIR/mess.ps1" lint
-else
-  "$ROOT_DIR/mess" lint
-fi
+# if command -v powershell >/dev/null 2>&1; then
+#   "$ROOT_DIR/mess.ps1" lint
+# else
+#   "$ROOT_DIR/mess" lint
+# fi

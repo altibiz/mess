@@ -8,17 +8,20 @@
 @using Mess.Billing.Abstractions.Models
 @using OrchardCore.ContentManagement.Records
 @using OrchardCore.Users.Indexes
+@using Mess.Billing.Abstractions.Indexes
+
+@inject NavigationManager NavigationManager
 
   <MudDataGrid
   T="ContentItem"
   MultiSelection="true"
-  Items="@_systems"
+  Items="@_invoices"
   SortMode="SortMode.Multiple"
   Filterable="true"
   QuickFilter="@_quickFilter"
   RowClick="@RowClicked">
   <ToolBarContent>
-    <MudText Typo="Typo.h6">@T["Owners"]</MudText>
+    <MudText Typo="Typo.h6">@T["Invoices"]</MudText>
     <MudSpacer />
     <MudTextField
       @bind-Value="_searchString"
@@ -32,13 +35,22 @@
   </ToolBarContent>
   <Columns>
     <PropertyColumn
-      Property="x => x.DisplayText"
-      Title='@T["System"].Value'
+      Property="x => x.As<OzdsInvoicePart>().Data.DistributionSystemOperator.DisplayText"
+      Title='@T["Issuer"].Value'
       Sortable="false"
       Filterable="false" />
     <PropertyColumn
-      Property="x => x.As<LegalEntityPart>().Representatives.UserIds[0]"
-      Title='@T["Owner(s)"].Value' />
+      Property="x => x.As<OzdsInvoicePart>().Data.DistributionSystemUnit.DisplayText"
+      Title='@T["Recipient"].Value' />
+    <PropertyColumn
+      Property="x => x.As<OzdsInvoicePart>().Data.From.Date.ToShortDateString()"
+      Title='@T["From"].Value' />
+    <PropertyColumn
+      Property="x => x.As<OzdsInvoicePart>().Data.To.Date.ToShortDateString()"
+      Title='@T["To"].Value' />
+    <PropertyColumn
+      Property="x => x.As<OzdsInvoicePart>().Data.Total"
+      Title='@T["Total"].Value' />
   </Columns>
   <PagerContent>
     <MudDataGridPager T="ContentItem" />
@@ -49,15 +61,13 @@
     [Parameter]
     public ContentItem LegalEntity { get; set; } = default!;
     private string? _searchString;
-    private IEnumerable<ContentItem>? _systems;
-    public record struct TabularData(ContentItem system, ContentItem systemOwner);
-    private List<TabularData> _dataStruct = new List<TabularData>();
+    private IEnumerable<ContentItem>? _invoices;
     protected override async Task OnInitializedAsync()
     {
-      await WithTransientSessionAsync(async session => {
-        _systems = await session
-          .Query<ContentItem, ClosedDistributionSystemIndex>()
-          .Where(index => index.DistributionSystemOperatorContentItemId == LegalEntity.ContentItemId)
+        await WithTransientSessionAsync(async session => {
+            _invoices = await session
+              .Query<ContentItem, PaymentIndex>()
+              .Where(index => index.IssuerContentItemId == LegalEntity.ContentItemId || index.RecipientContentItemId == LegalEntity.ContentItemId)
           .ListAsync();
       });
   }
@@ -67,15 +77,13 @@
     if (string.IsNullOrWhiteSpace(_searchString))
       return true;
 
-    if (x.DisplayText.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+    if (x.As<OzdsInvoicePart>().Data.DistributionSystemUnit.DisplayText.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
       return true;
 
     return false;
   };
 
-  private string GetEmail(ContentItem user) {
-    return user.As<LegalEntityPart>().Email.Text;
-  }
-
-  private void RowClicked() { }
+  private void RowClicked(DataGridRowClickEventArgs<ContentItem> args) {
+      NavigationManager.NavigateTo($"app/invoice/{args.Item.ContentItemId}");
+     }
 }

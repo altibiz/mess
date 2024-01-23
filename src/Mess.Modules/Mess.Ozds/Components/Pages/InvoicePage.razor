@@ -1,0 +1,448 @@
+@page "/app/invoice/{invoiceId}"
+
+@using Mess.Ozds.Abstractions.Indexes
+@using Mess.Iot.Abstractions.Models
+@using Mess.Ozds.Abstractions.Models
+@using OrchardCore.Users.Models
+@using OrchardCore.ContentFields.Indexing.SQL
+@using System.Linq.Expressions
+@using Mess.Ozds.Abstractions.Timeseries
+@using Mess.Billing.Abstractions.Models
+@using OrchardCore.ContentManagement.Records
+@using OrchardCore.Users.Indexes
+@using Mess.Billing.Abstractions.Indexes
+
+@if (_user is null) {
+  return;
+}
+else{
+
+<MudStack>
+      <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.End">
+        <MudItem Class="">
+          @T["INVOICE"] @_invoiceItem.ContentItemId
+        </MudItem>
+        <MudItem Class="">
+          @T["FOR ELECTRICAL ENERGY PERIOD:"]
+          @T["FROM"]
+          @data.From.DateTime.ToShortDateString()
+          @T["TO"]
+          @data.To.DateTime.ToShortDateString()
+        </MudItem>
+        <MudItem Class="">
+          @T["Date issued"]: @_invoiceItem.InvoicePart.Value.Date.Value!.Value.ToShortDateString()
+        </MudItem>
+      </MudStack>
+      <MudStack Justify="Justify.FlexEnd" AlignItems="AlignItems.Start">
+        <MudItem Class="">
+          @unitItem.LegalEntityPart.Value.Name.Text
+        </MudItem>
+        <MudItem Class="">
+          @systemItem.LegalEntityPart.Value.Name.Text
+        </MudItem>
+        <MudItem Class="">
+          @unitItem.LegalEntityPart.Value.Address.Text
+        </MudItem>
+        <MudItem Class="">
+          @unitItem.LegalEntityPart.Value.PostalCode.Text
+          @unitItem.LegalEntityPart.Value.City.Text
+        </MudItem>
+        <MudItem Class="">
+          @T["Social security nr."]: @unitItem.LegalEntityPart.Value.SocialSecurityNumber.Text
+        </MudItem>
+    </MudStack>
+
+    @foreach(var calculation in _invoiceItem.OzdsCalculationPart.Value.Calculations) {
+      <MudPaper Class="pa-3">
+        <MudGrid Spacing="1">
+
+          <MudItem xs="1">
+            <MudPaper Class="d-flex align-center justify-center mud-width-full py-1">
+              @T["INDEX"]</MudPaper>
+          </MudItem>
+          <MudItem xs="3">
+            <MudPaper Class="d-flex align-center justify-center mud-width-full py-1">
+              @T["ARTICLE/SERVICE TITLE"]</MudPaper>
+          </MudItem>
+          <MudItem xs="2">
+            <MudPaper Class="d-flex align-center justify-center mud-width-full py-1">
+              @T["MEASURING UNIT"]</MudPaper>
+          </MudItem>
+          <MudItem xs="2">
+            <MudPaper Class="d-flex align-center justify-center mud-width-full py-1">
+              @T["AMOUNT"]</MudPaper>
+          </MudItem>
+          <MudItem xs="2">
+            <MudPaper Class="d-flex align-center justify-center mud-width-full py-1">
+              @T["PRICE"]</MudPaper>
+          </MudItem>
+          <MudItem xs="2">
+            <MudPaper Class="d-flex align-center justify-center mud-width-full py-1">
+              @T["TOTAL"]</MudPaper>
+          </MudItem>
+
+          <MudItem xs="1">
+            <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+              1.)</MudContainer >
+          </MudItem>
+          <MudItem xs="3">
+            <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+              @T["Usage fee"]</MudContainer >
+          </MudItem>
+          <MudItem xs="2">
+            <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+
+            </MudContainer >
+          </MudItem>
+          <MudItem xs="2">
+            <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+
+            </MudContainer >
+          </MudItem>
+          <MudItem xs="2">
+            <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+
+            </MudContainer >
+          </MudItem>
+          <MudItem xs="2">
+            <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+
+            </MudContainer >
+          </MudItem>
+
+          @if (calculation.UsageExpenditure.HighEnergyItem is not null)
+          {
+            <MudItem xs="1">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                1.1.)</MudContainer >
+            </MudItem>
+            <MudItem xs="3">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                @T["Usage during high energy price period"]</MudContainer >
+            </MudItem>
+            <MudItem xs="2">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                @T["kWh"]</MudContainer >
+            </MudItem>
+            <MudItem xs="2">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                @calculation.UsageExpenditure.HighEnergyItem.Amount</MudContainer >
+            </MudItem>
+            <MudItem xs="2">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                @calculation.UsageExpenditure.HighEnergyItem.UnitPrice</MudContainer >
+            </MudItem>
+            <MudItem xs="2">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                @calculation.UsageExpenditure.HighEnergyItem.Total</MudContainer >
+            </MudItem>
+          }
+
+          @if (calculation.UsageExpenditure.LowEnergyItem is not null)
+          {
+            <MudItem xs="1">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                1.2.)</MudContainer >
+            </MudItem>
+            <MudItem xs="3">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                @T["Usage during low energy price period"]</MudContainer >
+            </MudItem>
+            <MudItem xs="2">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                @T["kWh"]</MudContainer >
+            </MudItem>
+            <MudItem xs="2">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                @calculation.UsageExpenditure.LowEnergyItem.Amount</MudContainer >
+            </MudItem>
+            <MudItem xs="2">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                @calculation.UsageExpenditure.LowEnergyItem.UnitPrice</MudContainer >
+            </MudItem>
+            <MudItem xs="2">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                @calculation.UsageExpenditure.LowEnergyItem.Total</MudContainer >
+            </MudItem>
+          }
+
+          @if (calculation.UsageExpenditure.MaxPowerItem is not null)
+          {
+            <MudItem xs="1">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                1.3.)</MudContainer >
+            </MudItem>
+            <MudItem xs="3">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                @T["Max Power"]</MudContainer >
+            </MudItem>
+            <MudItem xs="2">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                @T["kWh"]</MudContainer >
+            </MudItem>
+            <MudItem xs="2">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                @calculation.UsageExpenditure.MaxPowerItem.Amount</MudContainer >
+            </MudItem>
+            <MudItem xs="2">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                @calculation.UsageExpenditure.MaxPowerItem.UnitPrice</MudContainer >
+            </MudItem>
+            <MudItem xs="2">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                @calculation.UsageExpenditure.MaxPowerItem.Total</MudContainer >
+            </MudItem>
+          }
+
+          @if (calculation.UsageExpenditure.IotDeviceFee is not null)
+          {
+            <MudItem xs="1">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                1.1.)</MudContainer >
+            </MudItem>
+            <MudItem xs="3">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                @T["Device fee"]</MudContainer >
+            </MudItem>
+            <MudItem xs="2">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                @T["month"]</MudContainer >
+            </MudItem>
+            <MudItem xs="2">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                @calculation.UsageExpenditure.IotDeviceFee.Amount</MudContainer >
+            </MudItem>
+            <MudItem xs="2">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                @calculation.UsageExpenditure.IotDeviceFee.UnitPrice</MudContainer >
+            </MudItem>
+            <MudItem xs="2">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                @calculation.UsageExpenditure.IotDeviceFee.Total</MudContainer >
+            </MudItem>
+          }
+
+          <MudItem xs="10">
+            <MudPaper Class="d-flex align-center justify-center mud-width-full py-1">
+              @T["Usage fee"] - @T["SUBTOTAL"]</MudPaper>
+          </MudItem>
+          <MudItem xs="2">
+            <MudPaper Class="d-flex align-center justify-center mud-width-full py-1">
+              @calculation.UsageExpenditure.Total</MudPaper>
+          </MudItem>
+
+          <MudItem xs="1">
+            <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+              2.)</MudContainer >
+          </MudItem>
+          <MudItem xs="3">
+            <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+              @T["Supply fee"]</MudContainer >
+          </MudItem>
+          <MudItem xs="2">
+            <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+
+            </MudContainer >
+          </MudItem>
+          <MudItem xs="2">
+            <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+
+            </MudContainer >
+          </MudItem>
+          <MudItem xs="2">
+            <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+
+            </MudContainer >
+          </MudItem>
+          <MudItem xs="2">
+            <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+
+            </MudContainer >
+          </MudItem>
+
+          @if (calculation.SupplyExpenditure.HighEnergyItem is not null)
+          {
+            <MudItem xs="1">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                2.1.)</MudContainer >
+            </MudItem>
+            <MudItem xs="3">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                @T["Supply during high energy price period"]</MudContainer >
+            </MudItem>
+            <MudItem xs="2">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                @T["kWh"]</MudContainer >
+            </MudItem>
+            <MudItem xs="2">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                @calculation.SupplyExpenditure.HighEnergyItem.Amount</MudContainer >
+            </MudItem>
+            <MudItem xs="2">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                @calculation.SupplyExpenditure.HighEnergyItem.UnitPrice</MudContainer >
+            </MudItem>
+            <MudItem xs="2">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                @calculation.SupplyExpenditure.HighEnergyItem.Total</MudContainer >
+            </MudItem>
+          }
+
+          @if (calculation.SupplyExpenditure.LowEnergyItem is not null)
+          {
+            <MudItem xs="1">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                2.2.)</MudContainer >
+            </MudItem>
+            <MudItem xs="3">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                @T["Supply during low energy price period"]</MudContainer >
+            </MudItem>
+            <MudItem xs="2">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                @T["kWh"]</MudContainer >
+            </MudItem>
+            <MudItem xs="2">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                @calculation.SupplyExpenditure.LowEnergyItem.Amount</MudContainer >
+            </MudItem>
+            <MudItem xs="2">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                @calculation.SupplyExpenditure.LowEnergyItem.UnitPrice</MudContainer >
+            </MudItem>
+            <MudItem xs="2">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                @calculation.SupplyExpenditure.LowEnergyItem.Total</MudContainer >
+            </MudItem>
+          }
+
+          <MudItem xs="10">
+            <MudPaper Class="d-flex align-center justify-center mud-width-full py-1">
+              @T["Supply fee"] - @T["SUBTOTAL"]</MudPaper>
+          </MudItem>
+          <MudItem xs="2">
+            <MudPaper Class="d-flex align-center justify-center mud-width-full py-1">
+              @calculation.SupplyExpenditure.Total</MudPaper>
+          </MudItem>
+
+          @if (data.RenewableEnergyFee is not null)
+          {
+            <MudItem xs="1">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                3.)</MudContainer >
+            </MudItem>
+            <MudItem xs="3">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                @T["Renewable energy fee"]</MudContainer >
+            </MudItem>
+            <MudItem xs="2">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                @T["kWh"]</MudContainer >
+            </MudItem>
+            <MudItem xs="2">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                @data.RenewableEnergyFee.Amount</MudContainer >
+            </MudItem>
+            <MudItem xs="2">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                @data.RenewableEnergyFee.UnitPrice</MudContainer >
+            </MudItem>
+            <MudItem xs="2">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                @data.RenewableEnergyFee.Total</MudContainer >
+            </MudItem>
+          }
+
+          @if (data.BusinessUsageFee is not null)
+          {
+            <MudItem xs="1">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                4.)</MudContainer >
+            </MudItem>
+            <MudItem xs="3">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                @T["Business usage fee"]</MudContainer >
+            </MudItem>
+            <MudItem xs="2">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                @T["kWh"]</MudContainer >
+            </MudItem>
+            <MudItem xs="2">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                @data.BusinessUsageFee.Amount</MudContainer >
+            </MudItem>
+            <MudItem xs="2">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                @data.BusinessUsageFee.UnitPrice</MudContainer >
+            </MudItem>
+            <MudItem xs="2">
+              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+                @data.BusinessUsageFee.Total</MudContainer >
+            </MudItem>
+          }
+        </MudGrid>
+      </MudPaper>
+      }
+
+      <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.End">
+        <MudItem>
+          @T["TOTAL"]:
+          @data.Tax
+        </MudItem>
+        <MudItem Class="">
+          @T["TAX"] (@decimal.ToInt32(regulatoryAgencyCatalogue.RegulatoryAgencyCataloguePart.Value.TaxRate.Value!.Value * 100M)%):
+          @data.Tax
+        </MudItem>
+        <MudItem Class="">
+          @T["TOTAL WITH TAX"]:
+          @data.TotalWithTax
+        </MudItem>
+      </MudStack>
+      <MudStack Justify="Justify.FlexEnd" AlignItems="AlignItems.Start">
+        <MudItem Class="">
+          @(operatorItem.LegalEntityPart.Value.City.Text),
+          @_invoiceItem.InvoicePart.Value.Date.Value!.Value.ToShortDateString()
+        </MudItem>
+    </MudStack>
+</MudStack>
+}
+
+@code {
+    [Parameter]
+    public string InvoiceId { get; set; } = default!;
+    private User? _user;
+    private ContentItem? _legalEntity;
+    private OzdsInvoiceItem? _invoiceItem;
+    DistributionSystemUnitItem unitItem;
+    ClosedDistributionSystemItem systemItem;
+    DistributionSystemOperatorItem operatorItem;
+    RegulatoryAgencyCatalogueItem regulatoryAgencyCatalogue;
+    OzdsInvoiceData data;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await WithTransientSessionAsync(async session => {
+            _user = await this.GetAuthenticatedOrchardCoreUserAsync();
+
+            _legalEntity = await session
+              .Query<ContentItem, UserPickerFieldIndex>()
+              .Where(index => index.ContentPart == "LegalEntityPart")
+              .Where(index => index.SelectedUserId == _user.UserId)
+              .FirstOrDefaultAsync();
+
+            var contentInvoice = await session
+              .Query<ContentItem, PaymentIndex>()
+              .Where(index => index.ContentItemId == InvoiceId)
+              .FirstOrDefaultAsync();
+
+            _invoiceItem = contentInvoice.AsContent<OzdsInvoiceItem>();
+
+            unitItem = _invoiceItem.OzdsInvoicePart.Value.Data.DistributionSystemUnit.AsContent<DistributionSystemUnitItem>();
+            systemItem = _invoiceItem.OzdsInvoicePart.Value.Data.ClosedDistributionSystem.AsContent<ClosedDistributionSystemItem>();
+            operatorItem = _invoiceItem.OzdsInvoicePart.Value.Data.DistributionSystemOperator.AsContent<DistributionSystemOperatorItem>();
+            regulatoryAgencyCatalogue = _invoiceItem.OzdsInvoicePart.Value.Data.RegulatoryAgencyCatalogue.AsContent<RegulatoryAgencyCatalogueItem>();
+            data  = _invoiceItem.OzdsInvoicePart.Value.Data;
+
+        });
+  }
+}

@@ -22,22 +22,21 @@ public class SchneiderChartFactory : ChartFactory<SchneiderIotDeviceItem>
       nameof(SchneiderMeasurement.VoltageL1_V),
       nameof(SchneiderMeasurement.VoltageL2_V),
       nameof(SchneiderMeasurement.VoltageL3_V),
-      nameof(SchneiderMeasurement.VoltageAvg_V),
       nameof(SchneiderMeasurement.CurrentL1_A),
       nameof(SchneiderMeasurement.CurrentL2_A),
       nameof(SchneiderMeasurement.CurrentL3_A),
-      nameof(SchneiderMeasurement.CurrentAvg_A),
-      nameof(SchneiderMeasurement.ActivePowerL1_kW),
-      nameof(SchneiderMeasurement.ActivePowerL2_kW),
-      nameof(SchneiderMeasurement.ActivePowerL3_kW),
-      nameof(SchneiderMeasurement.ActivePowerTotal_kW),
-      nameof(SchneiderMeasurement.ReactivePowerTotal_kVAR),
-      nameof(SchneiderMeasurement.ApparentPowerTotal_kVA),
-      nameof(SchneiderMeasurement.PowerFactorTotal),
+      nameof(SchneiderMeasurement.ActivePowerL1_W),
+      nameof(SchneiderMeasurement.ActivePowerL2_W),
+      nameof(SchneiderMeasurement.ActivePowerL3_W),
+      nameof(SchneiderMeasurement.ReactivePowerTotal_VAR),
+      nameof(SchneiderMeasurement.ApparentPowerTotal_VA),
+      nameof(SchneiderMeasurement.ActiveEnergyImportL1_Wh),
+      nameof(SchneiderMeasurement.ActiveEnergyImportL2_Wh),
+      nameof(SchneiderMeasurement.ActiveEnergyImportL3_Wh),
       nameof(SchneiderMeasurement.ActiveEnergyImportTotal_Wh),
       nameof(SchneiderMeasurement.ActiveEnergyExportTotal_Wh),
-      nameof(SchneiderMeasurement.ActiveEnergyImportRateA_Wh),
-      nameof(SchneiderMeasurement.ActiveEnergyImportRateB_Wh)
+      nameof(SchneiderMeasurement.ReactiveEnergyImportTotal_VARh),
+      nameof(SchneiderMeasurement.ReactiveEnergyExportTotal_VARh)
     };
 
   protected override async Task<TimeseriesChartDescriptor?>

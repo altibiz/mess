@@ -1,8 +1,8 @@
+using Mess.Cms;
 using Mess.Iot.Abstractions.Services;
 using Mess.Ozds.Abstractions.Models;
 using Mess.Ozds.Abstractions.Timeseries;
 using OrchardCore.ContentManagement;
-using Mess.Cms;
 
 namespace Mess.Ozds.Iot;
 
@@ -77,22 +77,21 @@ public class SchneiderPushHandler
       request.VoltageL1_V,
       request.VoltageL2_V,
       request.VoltageL3_V,
-      request.VoltageAvg_V,
       request.CurrentL1_A,
       request.CurrentL2_A,
       request.CurrentL3_A,
-      request.CurrentAvg_A,
-      request.ActivePowerL1_kW,
-      request.ActivePowerL2_kW,
-      request.ActivePowerL3_kW,
-      request.ActivePowerTotal_kW,
-      request.ReactivePowerTotal_kVAR,
-      request.ApparentPowerTotal_kVA,
-      request.PowerFactorTotal,
+      request.ActivePowerL1_W,
+      request.ActivePowerL2_W,
+      request.ActivePowerL3_W,
+      request.ReactivePowerTotal_VAR,
+      request.ApparentPowerTotal_VA,
+      request.ActiveEnergyImportL1_Wh,
+      request.ActiveEnergyImportL2_Wh,
+      request.ActiveEnergyImportL3_Wh,
       request.ActiveEnergyImportTotal_Wh,
       request.ActiveEnergyExportTotal_Wh,
-      request.ActiveEnergyImportRateA_Wh,
-      request.ActiveEnergyImportRateB_Wh
+      request.ReactiveEnergyImportTotal_VARh,
+      request.ReactiveEnergyExportTotal_VARh
     );
   }
 }

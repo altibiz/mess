@@ -462,17 +462,45 @@ internal static partial class CreateAsyncMigrations
       serviceProvider.GetRequiredService<IApiKeyFieldService>();
     var session = serviceProvider.GetRequiredService<ISession>();
 
-    var abbPowerDataset =
+    var abbPowerL1Dataset =
       await contentManager.NewContentAsync<TimeseriesChartDatasetItem>();
-    abbPowerDataset.Alter(
+    abbPowerL1Dataset.Alter(
       eguagePowerDataset => eguagePowerDataset.TimeseriesChartDatasetPart,
       timeseriesChartDatasetPart =>
       {
         timeseriesChartDatasetPart.Color =
           new ColourField { Value = "#ff0000" };
-        timeseriesChartDatasetPart.Label = new TextField { Text = "Power" };
+        timeseriesChartDatasetPart.Label = new TextField { Text = "Power L1" };
         timeseriesChartDatasetPart.Property = nameof(
-          AbbMeasurement.ActivePowerTotal_W
+          AbbMeasurement.ActivePowerL1_W
+        );
+      }
+    );
+    var abbPowerL2Dataset =
+      await contentManager.NewContentAsync<TimeseriesChartDatasetItem>();
+    abbPowerL2Dataset.Alter(
+      eguagePowerDataset => eguagePowerDataset.TimeseriesChartDatasetPart,
+      timeseriesChartDatasetPart =>
+      {
+        timeseriesChartDatasetPart.Color =
+          new ColourField { Value = "#ff0000" };
+        timeseriesChartDatasetPart.Label = new TextField { Text = "Power L2" };
+        timeseriesChartDatasetPart.Property = nameof(
+          AbbMeasurement.ActivePowerL2_W
+        );
+      }
+    );
+    var abbPowerL3Dataset =
+      await contentManager.NewContentAsync<TimeseriesChartDatasetItem>();
+    abbPowerL3Dataset.Alter(
+      eguagePowerDataset => eguagePowerDataset.TimeseriesChartDatasetPart,
+      timeseriesChartDatasetPart =>
+      {
+        timeseriesChartDatasetPart.Color =
+          new ColourField { Value = "#ff0000" };
+        timeseriesChartDatasetPart.Label = new TextField { Text = "Power L3" };
+        timeseriesChartDatasetPart.Property = nameof(
+          AbbMeasurement.ActivePowerL3_W
         );
       }
     );
@@ -496,7 +524,7 @@ internal static partial class CreateAsyncMigrations
           Value = new Interval(IntervalUnit.Second, 10)
         };
         timeseriesChartPart.Datasets =
-          new List<ContentItem> { abbPowerDataset };
+          new List<ContentItem> { abbPowerL1Dataset, abbPowerL2Dataset, abbPowerL3Dataset };
       }
     );
     await contentManager.CreateAsync(abbChart, VersionOptions.Latest);
@@ -555,17 +583,45 @@ internal static partial class CreateAsyncMigrations
       serviceProvider.GetRequiredService<IApiKeyFieldService>();
     var session = serviceProvider.GetRequiredService<ISession>();
 
-    var schneiderPowerDataset =
+    var schneiderPowerL1Dataset =
       await contentManager.NewContentAsync<TimeseriesChartDatasetItem>();
-    schneiderPowerDataset.Alter(
+    schneiderPowerL1Dataset.Alter(
       eguagePowerDataset => eguagePowerDataset.TimeseriesChartDatasetPart,
       timeseriesChartDatasetPart =>
       {
         timeseriesChartDatasetPart.Color =
           new ColourField { Value = "#ff0000" };
-        timeseriesChartDatasetPart.Label = new TextField { Text = "Power" };
+        timeseriesChartDatasetPart.Label = new TextField { Text = "Power L1" };
         timeseriesChartDatasetPart.Property = nameof(
-          SchneiderMeasurement.ActivePowerTotal_kW
+          SchneiderMeasurement.ActivePowerL1_W
+        );
+      }
+    );
+    var schneiderPowerL2Dataset =
+      await contentManager.NewContentAsync<TimeseriesChartDatasetItem>();
+    schneiderPowerL2Dataset.Alter(
+      eguagePowerDataset => eguagePowerDataset.TimeseriesChartDatasetPart,
+      timeseriesChartDatasetPart =>
+      {
+        timeseriesChartDatasetPart.Color =
+          new ColourField { Value = "#ff0000" };
+        timeseriesChartDatasetPart.Label = new TextField { Text = "Power L2" };
+        timeseriesChartDatasetPart.Property = nameof(
+          SchneiderMeasurement.ActivePowerL2_W
+        );
+      }
+    );
+    var schneiderPowerL3Dataset =
+      await contentManager.NewContentAsync<TimeseriesChartDatasetItem>();
+    schneiderPowerL3Dataset.Alter(
+      eguagePowerDataset => eguagePowerDataset.TimeseriesChartDatasetPart,
+      timeseriesChartDatasetPart =>
+      {
+        timeseriesChartDatasetPart.Color =
+          new ColourField { Value = "#ff0000" };
+        timeseriesChartDatasetPart.Label = new TextField { Text = "Power L3" };
+        timeseriesChartDatasetPart.Property = nameof(
+          SchneiderMeasurement.ActivePowerL3_W
         );
       }
     );
@@ -590,7 +646,7 @@ internal static partial class CreateAsyncMigrations
           Value = new Interval(IntervalUnit.Second, 10)
         };
         timeseriesChartPart.Datasets = new List<ContentItem>
-          { schneiderPowerDataset };
+          { schneiderPowerL1Dataset, schneiderPowerL2Dataset, schneiderPowerL3Dataset };
       }
     );
     await contentManager.CreateAsync(schneiderChart, VersionOptions.Latest);

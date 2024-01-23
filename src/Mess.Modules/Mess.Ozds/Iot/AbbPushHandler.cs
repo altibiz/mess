@@ -1,8 +1,8 @@
+using Mess.Cms;
 using Mess.Iot.Abstractions.Services;
 using Mess.Ozds.Abstractions.Models;
 using Mess.Ozds.Abstractions.Timeseries;
 using OrchardCore.ContentManagement;
-using Mess.Cms;
 
 namespace Mess.Ozds.Iot;
 
@@ -34,7 +34,7 @@ public class AbbPushHandler
       abbIotDevice => abbIotDevice.AbbIotDevicePart,
       abbIotDevicePart =>
       {
-        abbIotDevicePart.LatestImport = newMeasurement.ActiveEnergyImportTotal_kWh;
+        abbIotDevicePart.LatestImport = newMeasurement.ActiveEnergyImportTotal_Wh;
       });
     _contentManager.UpdateAsync(contentItem).RunSynchronously();
   }
@@ -53,7 +53,7 @@ public class AbbPushHandler
       abbIotDevice => abbIotDevice.AbbIotDevicePart,
       abbIotDevicePart =>
       {
-        abbIotDevicePart.LatestImport = newMeasurement.ActiveEnergyImportTotal_kWh;
+        abbIotDevicePart.LatestImport = newMeasurement.ActiveEnergyImportTotal_Wh;
       });
     await _contentManager.UpdateAsync(contentItem);
   }
@@ -76,29 +76,28 @@ public class AbbPushHandler
       request.CurrentL1_A,
       request.CurrentL2_A,
       request.CurrentL3_A,
-      request.ActivePowerTotal_W,
       request.ActivePowerL1_W,
       request.ActivePowerL2_W,
       request.ActivePowerL3_W,
-      request.ReactivePowerTotal_VAR,
       request.ReactivePowerL1_VAR,
       request.ReactivePowerL2_VAR,
       request.ReactivePowerL3_VAR,
-      request.ApparentPowerTotal_VA,
-      request.ApparentPowerL1_VA,
-      request.ApparentPowerL2_VA,
-      request.ApparentPowerL3_VA,
-      request.PowerFactorTotal,
-      request.PowerFactorL1,
-      request.PowerFactorL2,
-      request.PowerFactorL3,
-      request.ActiveEnergyImportTotal_kWh,
-      request.ActiveEnergyExportTotal_kWh,
-      request.ActiveEnergyNetTotal_kWh,
-      request.ActiveEnergyImportTariff1_kWh,
-      request.ActiveEnergyImportTariff2_kWh,
-      request.ActiveEnergyExportTariff1_kWh,
-      request.ActiveEnergyExportTariff2_kWh
+      request.ActivePowerImportL1_Wh,
+      request.ActivePowerImportL2_Wh,
+      request.ActivePowerImportL3_Wh,
+      request.ActivePowerExportL1_Wh,
+      request.ActivePowerExportL2_Wh,
+      request.ActivePowerExportL3_Wh,
+      request.ReactivePowerImportL1_VARh,
+      request.ReactivePowerImportL2_VARh,
+      request.ReactivePowerImportL3_VARh,
+      request.ReactivePowerExportL1_VARh,
+      request.ReactivePowerExportL2_VARh,
+      request.ReactivePowerExportL3_VARh,
+      request.ActiveEnergyImportTotal_Wh,
+      request.ActiveEnergyExportTotal_Wh,
+      request.ReactiveEnergyImportTotal_VARh,
+      request.ReactiveEnergyExportTotal_VARh
     );
   }
 }

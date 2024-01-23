@@ -16,7 +16,10 @@ public interface IOzdsTimeseriesQuery
     DateTimeOffset toDate
   );
 
-  public Task<(AbbMeasurement? First, AbbMeasurement? Last)> GetAbbLastMonthMeasurementsAsync(
+  public Task<(decimal? First, decimal? Last, DateTimeOffset FirstDate)> GetAbbLastMonthMeasurementsAsync(
+    string source
+  );
+  public Task<(decimal? First, decimal? Last, DateTimeOffset FirstDate)> GetSchneiderLastMonthMeasurementsAsync(
     string source
   );
   public Task<IReadOnlyList<AbbMeasurement>> GetLastAbbMeasurementsBySourcesAsync(
@@ -26,13 +29,13 @@ public interface IOzdsTimeseriesQuery
     List<string> sources
   );
 
-  public OzdsIotDeviceBillingData? GetAbbBillingData(
+  public OzdsIotDeviceBillingData GetAbbBillingData(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
 
-  public Task<OzdsIotDeviceBillingData?> GetAbbBillingDataAsync(
+  public Task<OzdsIotDeviceBillingData> GetAbbBillingDataAsync(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
@@ -52,13 +55,13 @@ public interface IOzdsTimeseriesQuery
     DateTimeOffset toDate
   );
 
-  public OzdsIotDeviceBillingData? GetSchneiderBillingData(
+  public OzdsIotDeviceBillingData GetSchneiderBillingData(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
 
-  public Task<OzdsIotDeviceBillingData?> GetSchneiderBillingDataAsync(
+  public Task<OzdsIotDeviceBillingData> GetSchneiderBillingDataAsync(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate

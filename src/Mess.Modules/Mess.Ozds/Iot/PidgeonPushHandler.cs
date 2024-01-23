@@ -173,7 +173,7 @@ public class PidgeonPushHandler
             tenant,
             measurement.Timestamp,
             measurementContentItem,
-            ObjectSerializationExtensions.ToNewtonsoftJson(measurement.Data)
+            measurement.Data.ToString()
           );
         }
         catch (Exception exception)

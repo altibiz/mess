@@ -9,6 +9,8 @@
 @using OrchardCore.ContentManagement.Records
 @using OrchardCore.Users.Indexes
 
+@inject NavigationManager NavigationManager
+
   <MudDataGrid
   T="TabularData"
   MultiSelection="true"
@@ -57,14 +59,14 @@
 
 @code {
     [Parameter]
-    public ContentItem LegalEntity { get; set; }
+    public ContentItem LegalEntity { get; set; } = default!;
     private string? _searchString;
     private List<TabularData> _dataStruct = new List<TabularData>();
-    private IEnumerable<ContentItem> _systems;
-    private IEnumerable<ContentItem> _units;
-    private IReadOnlyList<AbbMeasurement> _lastAbbMeasurements;
-    private IReadOnlyList<SchneiderMeasurement> _lastSchneiderMeasurements;
-    private IEnumerable<ContentItem> _ioTDevices;
+    private IEnumerable<ContentItem>? _systems;
+    private IEnumerable<ContentItem>? _units;
+    private IReadOnlyList<AbbMeasurement>? _lastAbbMeasurements;
+    private IReadOnlyList<SchneiderMeasurement>? _lastSchneiderMeasurements;
+    private IEnumerable<ContentItem>? _ioTDevices;
     private List<(string, decimal?)> _lastTotalPerOMM = new List<(string, decimal?)>();
     public record struct TabularData(ContentItem omm, ContentItem system, ContentItem unit, decimal? lastMeasurement);
     protected override async Task OnInitializedAsync()
@@ -99,16 +101,17 @@
             .ListAsync();
         }
       });
-      foreach(var system in _systems){
-        foreach(var unit in _units){
-          foreach(var omm in _ioTDevices){
-            if(omm.As<AbbIotDevicePart>() is var abbIotDevicePart && abbIotDevicePart is not null)
-              _dataStruct.Add(new TabularData(omm, system, unit, abbIotDevicePart.LatestImport));
-            else if(omm.As<SchneiderIotDevicePart>() is var schneiderIotDevicePart && schneiderIotDevicePart is not null)
-              _dataStruct.Add(new TabularData(omm, system, unit, schneiderIotDevicePart.LatestImport));
+      if(_systems is not null && _units is not null && _ioTDevices is not null)
+        foreach(var system in _systems){
+          foreach(var unit in _units){
+            foreach(var omm in _ioTDevices){
+              if(omm.As<AbbIotDevicePart>() is var abbIotDevicePart && abbIotDevicePart is not null)
+                _dataStruct.Add(new TabularData(omm, system, unit, abbIotDevicePart.LatestImport));
+              else if(omm.As<SchneiderIotDevicePart>() is var schneiderIotDevicePart && schneiderIotDevicePart is not null)
+                _dataStruct.Add(new TabularData(omm, system, unit, schneiderIotDevicePart.LatestImport));
+            }
           }
         }
-      }
     }
     private Func<TabularData, bool> _quickFilter => x =>
   {
@@ -120,5 +123,7 @@
 
     return false;
   };
-    private void RowClicked() { }
+    private void RowClicked(DataGridRowClickEventArgs<TabularData> args) {
+      NavigationManager.NavigateTo($"app/omm/{args.Item.omm.DisplayText}");
+     }
 }

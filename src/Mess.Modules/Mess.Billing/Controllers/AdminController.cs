@@ -124,6 +124,7 @@ public class AdminController : Controller
   }
 
   [HttpPost]
+  [IgnoreAntiforgeryToken]
   public async Task<IActionResult> IssueInvoice(string contentItemId)
   {
     var billingItem = await _contentManager.GetAsync(contentItemId);

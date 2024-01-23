@@ -93,7 +93,9 @@
     });
       _allMeasurments = await _timeseriesClient.GetAbbMeasurementsAsync("abb", DateTimeOffset.UtcNow.AddDays(-7), DateTimeOffset.UtcNow);
       foreach(var abbMeasurment in _allMeasurments){
-        _abbActivePowerTotalLastWeel += abbMeasurment.ActivePowerTotal_W ?? 0;
+        _abbActivePowerTotalLastWeel += abbMeasurment.ActivePowerL1_W
+        + abbMeasurment.ActivePowerL2_W
+        + abbMeasurment.ActivePowerL3_W;
       }
       foreach(var meter in _meters){
         dataStruct.Add(

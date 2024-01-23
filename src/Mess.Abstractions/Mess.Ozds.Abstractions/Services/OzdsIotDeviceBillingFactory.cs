@@ -138,39 +138,6 @@ public abstract class OzdsIotDeviceBillingFactory<T> : IOzdsIotDeviceBillingFact
     OperatorCatalogueItem catalogueItem
   )
   {
-    var highTariffEnergyPrice =
-      catalogueItem.OperatorCataloguePart.Value.HighEnergyPrice.Value ?? 0.0M;
-    var highTariffEnergyAmount =
-      billingData.EndHighTariffEnergy_kWh
-      - billingData.StartHighTariffEnergy_kWh;
-    var highTariffEnergyTotal = highTariffEnergyAmount * highTariffEnergyPrice;
-    var highTariffEnergyItem =
-      highTariffEnergyPrice == 0.0M
-        ? null
-        : new OzdsExpenditureItemData(
-          billingData.StartHighTariffEnergy_kWh,
-          billingData.EndHighTariffEnergy_kWh,
-          highTariffEnergyAmount,
-          highTariffEnergyPrice,
-          highTariffEnergyTotal
-        );
-
-    var lowTariffEnergyPrice =
-      catalogueItem.OperatorCataloguePart.Value.LowEnergyPrice.Value ?? 0.0M;
-    var lowTariffEnergyAmount =
-      billingData.EndLowTariffEnergy_kWh - billingData.StartLowTariffEnergy_kWh;
-    var lowTariffEnergyTotal = lowTariffEnergyAmount * lowTariffEnergyPrice;
-    var lowTariffEnergyItem =
-      lowTariffEnergyPrice == 0.0M
-        ? null
-        : new OzdsExpenditureItemData(
-          billingData.StartLowTariffEnergy_kWh,
-          billingData.EndLowTariffEnergy_kWh,
-          lowTariffEnergyAmount,
-          lowTariffEnergyPrice,
-          lowTariffEnergyTotal
-        );
-
     var energyPrice =
       catalogueItem.OperatorCataloguePart.Value.EnergyPrice.Value ?? 0.0M;
     var energyAmount =
@@ -218,14 +185,12 @@ public abstract class OzdsIotDeviceBillingFactory<T> : IOzdsIotDeviceBillingFact
         );
 
     return new OzdsExpenditureData(
-      highTariffEnergyItem,
-      lowTariffEnergyItem,
+      null,
+      null,
       energyItem,
       maxPowerItem,
       iotDeviceFee,
-      (highTariffEnergyItem?.Total ?? 0.0M)
-      + (lowTariffEnergyItem?.Total ?? 0.0M)
-      + (energyItem?.Total ?? 0.0M)
+      +(energyItem?.Total ?? 0.0M)
       + (maxPowerItem?.Total ?? 0.0M)
       + (iotDeviceFee?.Total ?? 0.0M)
     );
