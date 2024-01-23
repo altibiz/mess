@@ -1,0 +1,73 @@
+@page "/app/account"
+@page "/app/account/{entityId}"
+
+@using Mess.Ozds.Abstractions.Indexes
+@using Mess.Iot.Abstractions.Models
+@using Mess.Ozds.Abstractions.Models
+@using OrchardCore.Users.Models
+@using OrchardCore.ContentFields.Indexing.SQL
+@using System.Linq.Expressions
+@using Mess.Ozds.Abstractions.Timeseries
+@using Mess.Billing.Abstractions.Models
+@using OrchardCore.ContentManagement.Records
+@using OrchardCore.Users.Indexes
+
+@if (_user is null && EntityId is null) {
+  return;
+}
+else if (_legalEntityPart != null && _user != null){
+  <MudStack>
+    <MudPaper Class="px-3 py-3">
+      @T["Korisničko ime"]: @_user.UserName
+    </MudPaper>
+    <MudPaper Class="px-3 py-3">
+      @T["User Email"]: @_user.Email
+    </MudPaper>
+    <MudPaper Class="px-3 py-3">
+      @T["Name"]: @_legalEntityPart.Name.Text
+    </MudPaper>
+    <MudPaper Class="px-3 py-3">
+      @T["Email"]: @_legalEntityPart.Email.Text
+    </MudPaper>
+    <MudPaper Class="px-3 py-3">
+      @T["City"]: @_legalEntityPart.PostalCode.Text @_legalEntityPart.City.Text
+    </MudPaper>
+    <MudPaper Class="px-3 py-3">
+      @T["Social Security Number"]: @_legalEntityPart.SocialSecurityNumber.Text
+    </MudPaper>
+  </MudStack>
+}
+
+@code {
+    [Parameter]
+    public string? EntityId {get; set;}
+    private User? _user;
+    private LegalEntityPart? _legalEntityPart;
+    private ContentItem? _legalEntity;
+
+    protected override async Task OnInitializedAsync()
+    {
+      await WithTransientSessionAsync(async session => {
+        if(EntityId == null){
+          _user = await this.GetAuthenticatedOrchardCoreUserAsync();
+
+          _legalEntity = await session
+            .Query<ContentItem, UserPickerFieldIndex>()
+            .Where(index => index.ContentPart == "LegalEntityPart")
+            .Where(index => index.SelectedUserId == _user.UserId)
+            .FirstOrDefaultAsync();
+
+          _legalEntityPart = _legalEntity.As<LegalEntityPart>();
+        }
+        else{
+          _legalEntity = await session
+            .Query<ContentItem, UserPickerFieldIndex>()
+            .Where(index => index.ContentPart == "LegalEntityPart")
+            .Where(index => index.ContentItemId == EntityId)
+            .FirstOrDefaultAsync();
+
+          _legalEntityPart = _legalEntity.As<LegalEntityPart>();
+        }
+      });
+  }
+}

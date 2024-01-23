@@ -9,6 +9,8 @@
 @using OrchardCore.ContentManagement.Records
 @using OrchardCore.Users.Indexes
 
+@inject NavigationManager NavigationManager;
+
   <MudDataGrid
   T="ContentItem"
   MultiSelection="true"
@@ -77,5 +79,7 @@
     return user.As<LegalEntityPart>().Email.Text;
   }
 
-  private void RowClicked() { }
+  private void RowClicked(DataGridRowClickEventArgs<ContentItem> args) {
+      NavigationManager.NavigateTo($"app/account/{args.Item.ContentItemId}");
+  }
 }

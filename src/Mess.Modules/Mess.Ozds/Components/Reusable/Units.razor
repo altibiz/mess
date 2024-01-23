@@ -11,6 +11,7 @@
 
 @inject IContentManager _contentManager;
 @inject IServiceProvider _serviceProvider;
+@inject NavigationManager NavigationManager;
 
   <MudDataGrid
   T="TabularData"
@@ -45,9 +46,11 @@
     <TemplateColumn CellClass="d-flex justify-end">
           <CellTemplate>
               <MudStack Row>
-                  <form method="post" action="@($"https://localhost:5001/ozds/Admin/IssueInvoice/{context.Item.unit.ContentItemId}")">
-                      <button type="submit">Issue Invoice</button>
-                  </form>
+                <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
+                    <form method="post" action="@($"https://localhost:5001/ozds/Admin/IssueInvoice/{context.Item.unit.ContentItemId}")">
+                        <button type="submit">Issue Invoice</button>
+                    </form>
+                </MudButton>
               </MudStack>
           </CellTemplate>
       </TemplateColumn>
@@ -113,5 +116,7 @@
 
      return false;
   };
-    private void RowClicked() { }
+  private void RowClicked(DataGridRowClickEventArgs<TabularData> args) {
+      NavigationManager.NavigateTo($"app/account/{args.Item.unit.ContentItemId}");
+  }
 }

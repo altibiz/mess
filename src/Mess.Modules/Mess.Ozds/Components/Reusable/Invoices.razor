@@ -33,7 +33,12 @@
       Class="mt-0">
     </MudTextField>
   </ToolBarContent>
-  <Columns>
+  <Columns >
+    <PropertyColumn
+      Property="x => x.ContentItemId"
+      Title='@T["Id"].Value'
+      Sortable="false"
+      Filterable="false" />
     <PropertyColumn
       Property="x => x.As<OzdsInvoicePart>().Data.DistributionSystemOperator.DisplayText"
       Title='@T["Issuer"].Value'

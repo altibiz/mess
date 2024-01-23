@@ -54,7 +54,7 @@ else{
 
     @foreach(var calculation in _invoiceItem.OzdsCalculationPart.Value.Calculations) {
       <MudPaper Class="pa-3">
-        <MudGrid Spacing="1">
+        <MudGrid Spacing="0">
 
           <MudItem xs="1">
             <MudPaper Class="d-flex align-center justify-center mud-width-full py-1">
@@ -81,12 +81,13 @@ else{
               @T["TOTAL"]</MudPaper>
           </MudItem>
 
+
           <MudItem xs="1">
-            <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+            <MudContainer  Class="d-flex align-center justify-start mud-width-full py-1">
               1.)</MudContainer >
           </MudItem>
           <MudItem xs="3">
-            <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+            <MudContainer  Class="d-flex align-center justify-start mud-width-full py-1">
               @T["Usage fee"]</MudContainer >
           </MudItem>
           <MudItem xs="2">
@@ -109,15 +110,18 @@ else{
 
             </MudContainer >
           </MudItem>
+          <MudItem xs="12">
+            <MudDivider />
+          </MudItem>
 
           @if (calculation.UsageExpenditure.HighEnergyItem is not null)
           {
             <MudItem xs="1">
-              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+              <MudContainer  Class="d-flex align-center justify-start mud-width-full py-1">
                 1.1.)</MudContainer >
             </MudItem>
             <MudItem xs="3">
-              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+              <MudContainer  Class="d-flex align-center justify-start mud-width-full py-1">
                 @T["Usage during high energy price period"]</MudContainer >
             </MudItem>
             <MudItem xs="2">
@@ -129,23 +133,26 @@ else{
                 @calculation.UsageExpenditure.HighEnergyItem.Amount</MudContainer >
             </MudItem>
             <MudItem xs="2">
-              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+              <MudContainer  Class="d-flex align-center justify-end mud-width-full py-1">
                 @calculation.UsageExpenditure.HighEnergyItem.UnitPrice</MudContainer >
             </MudItem>
             <MudItem xs="2">
-              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+              <MudContainer  Class="d-flex align-center justify-end mud-width-full py-1">
                 @calculation.UsageExpenditure.HighEnergyItem.Total</MudContainer >
             </MudItem>
+          <MudItem xs="12">
+            <MudDivider />
+          </MudItem>
           }
 
           @if (calculation.UsageExpenditure.LowEnergyItem is not null)
           {
             <MudItem xs="1">
-              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+              <MudContainer  Class="d-flex align-center justify-start mud-width-full py-1">
                 1.2.)</MudContainer >
             </MudItem>
             <MudItem xs="3">
-              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+              <MudContainer  Class="d-flex align-center justify-start mud-width-full py-1">
                 @T["Usage during low energy price period"]</MudContainer >
             </MudItem>
             <MudItem xs="2">
@@ -157,23 +164,26 @@ else{
                 @calculation.UsageExpenditure.LowEnergyItem.Amount</MudContainer >
             </MudItem>
             <MudItem xs="2">
-              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+              <MudContainer  Class="d-flex align-center justify-end mud-width-full py-1">
                 @calculation.UsageExpenditure.LowEnergyItem.UnitPrice</MudContainer >
             </MudItem>
             <MudItem xs="2">
-              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+              <MudContainer  Class="d-flex align-center justify-end mud-width-full py-1">
                 @calculation.UsageExpenditure.LowEnergyItem.Total</MudContainer >
             </MudItem>
+          <MudItem xs="12">
+            <MudDivider />
+          </MudItem>
           }
 
           @if (calculation.UsageExpenditure.MaxPowerItem is not null)
           {
             <MudItem xs="1">
-              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+              <MudContainer  Class="d-flex align-center justify-start mud-width-full py-1">
                 1.3.)</MudContainer >
             </MudItem>
             <MudItem xs="3">
-              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+              <MudContainer  Class="d-flex align-center justify-start mud-width-full py-1">
                 @T["Max Power"]</MudContainer >
             </MudItem>
             <MudItem xs="2">
@@ -185,23 +195,26 @@ else{
                 @calculation.UsageExpenditure.MaxPowerItem.Amount</MudContainer >
             </MudItem>
             <MudItem xs="2">
-              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+              <MudContainer  Class="d-flex align-center justify-end mud-width-full py-1">
                 @calculation.UsageExpenditure.MaxPowerItem.UnitPrice</MudContainer >
             </MudItem>
             <MudItem xs="2">
-              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+              <MudContainer  Class="d-flex align-center justify-end mud-width-full py-1">
                 @calculation.UsageExpenditure.MaxPowerItem.Total</MudContainer >
             </MudItem>
+          <MudItem xs="12">
+            <MudDivider />
+          </MudItem>
           }
 
           @if (calculation.UsageExpenditure.IotDeviceFee is not null)
           {
             <MudItem xs="1">
-              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+              <MudContainer  Class="d-flex align-center justify-start mud-width-full py-1">
                 1.1.)</MudContainer >
             </MudItem>
             <MudItem xs="3">
-              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+              <MudContainer  Class="d-flex align-center justify-start mud-width-full py-1">
                 @T["Device fee"]</MudContainer >
             </MudItem>
             <MudItem xs="2">
@@ -213,30 +226,36 @@ else{
                 @calculation.UsageExpenditure.IotDeviceFee.Amount</MudContainer >
             </MudItem>
             <MudItem xs="2">
-              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+              <MudContainer  Class="d-flex align-center justify-end mud-width-full py-1">
                 @calculation.UsageExpenditure.IotDeviceFee.UnitPrice</MudContainer >
             </MudItem>
             <MudItem xs="2">
-              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+              <MudContainer  Class="d-flex align-center justify-end mud-width-full py-1">
                 @calculation.UsageExpenditure.IotDeviceFee.Total</MudContainer >
             </MudItem>
+          <MudItem xs="12">
+            <MudDivider />
+          </MudItem>
           }
 
           <MudItem xs="10">
-            <MudPaper Class="d-flex align-center justify-center mud-width-full py-1">
-              @T["Usage fee"] - @T["SUBTOTAL"]</MudPaper>
+            <MudContainer Class="d-flex align-center justify-center mud-width-full py-1">
+              @T["Usage fee"] - @T["SUBTOTAL"]</MudContainer>
           </MudItem>
           <MudItem xs="2">
-            <MudPaper Class="d-flex align-center justify-center mud-width-full py-1">
-              @calculation.UsageExpenditure.Total</MudPaper>
+            <MudContainer Class="d-flex align-center justify-end mud-width-full py-1">
+              @calculation.UsageExpenditure.Total</MudContainer>
+          </MudItem>
+          <MudItem xs="12">
+            <MudDivider />
           </MudItem>
 
           <MudItem xs="1">
-            <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+            <MudContainer  Class="d-flex align-center justify-start mud-width-full py-1">
               2.)</MudContainer >
           </MudItem>
           <MudItem xs="3">
-            <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+            <MudContainer  Class="d-flex align-center justify-start mud-width-full py-1">
               @T["Supply fee"]</MudContainer >
           </MudItem>
           <MudItem xs="2">
@@ -259,15 +278,18 @@ else{
 
             </MudContainer >
           </MudItem>
+          <MudItem xs="12">
+            <MudDivider />
+          </MudItem>
 
           @if (calculation.SupplyExpenditure.HighEnergyItem is not null)
           {
             <MudItem xs="1">
-              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+              <MudContainer  Class="d-flex align-center justify-start mud-width-full py-1">
                 2.1.)</MudContainer >
             </MudItem>
             <MudItem xs="3">
-              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+              <MudContainer  Class="d-flex align-center justify-start mud-width-full py-1">
                 @T["Supply during high energy price period"]</MudContainer >
             </MudItem>
             <MudItem xs="2">
@@ -279,23 +301,26 @@ else{
                 @calculation.SupplyExpenditure.HighEnergyItem.Amount</MudContainer >
             </MudItem>
             <MudItem xs="2">
-              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+              <MudContainer  Class="d-flex align-center justify-end mud-width-full py-1">
                 @calculation.SupplyExpenditure.HighEnergyItem.UnitPrice</MudContainer >
             </MudItem>
             <MudItem xs="2">
-              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+              <MudContainer  Class="d-flex align-center justify-end mud-width-full py-1">
                 @calculation.SupplyExpenditure.HighEnergyItem.Total</MudContainer >
             </MudItem>
+          <MudItem xs="12">
+            <MudDivider />
+          </MudItem>
           }
 
           @if (calculation.SupplyExpenditure.LowEnergyItem is not null)
           {
             <MudItem xs="1">
-              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+              <MudContainer  Class="d-flex align-center justify-start mud-width-full py-1">
                 2.2.)</MudContainer >
             </MudItem>
             <MudItem xs="3">
-              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+              <MudContainer  Class="d-flex align-center justify-start mud-width-full py-1">
                 @T["Supply during low energy price period"]</MudContainer >
             </MudItem>
             <MudItem xs="2">
@@ -307,32 +332,38 @@ else{
                 @calculation.SupplyExpenditure.LowEnergyItem.Amount</MudContainer >
             </MudItem>
             <MudItem xs="2">
-              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+              <MudContainer  Class="d-flex align-center justify-end mud-width-full py-1">
                 @calculation.SupplyExpenditure.LowEnergyItem.UnitPrice</MudContainer >
             </MudItem>
             <MudItem xs="2">
-              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+              <MudContainer  Class="d-flex align-center justify-end mud-width-full py-1">
                 @calculation.SupplyExpenditure.LowEnergyItem.Total</MudContainer >
             </MudItem>
+          <MudItem xs="12">
+            <MudDivider />
+          </MudItem>
           }
 
           <MudItem xs="10">
-            <MudPaper Class="d-flex align-center justify-center mud-width-full py-1">
-              @T["Supply fee"] - @T["SUBTOTAL"]</MudPaper>
+            <MudContainer Class="d-flex align-center justify-center mud-width-full py-1">
+              @T["Supply fee"] - @T["SUBTOTAL"]</MudContainer>
           </MudItem>
           <MudItem xs="2">
-            <MudPaper Class="d-flex align-center justify-center mud-width-full py-1">
-              @calculation.SupplyExpenditure.Total</MudPaper>
+            <MudContainer Class="d-flex align-center justify-end mud-width-full py-1">
+              @calculation.SupplyExpenditure.Total</MudContainer>
+          </MudItem>
+          <MudItem xs="12">
+            <MudDivider />
           </MudItem>
 
           @if (data.RenewableEnergyFee is not null)
           {
             <MudItem xs="1">
-              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+              <MudContainer  Class="d-flex align-center justify-start mud-width-full py-1">
                 3.)</MudContainer >
             </MudItem>
             <MudItem xs="3">
-              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+              <MudContainer  Class="d-flex align-center justify-start mud-width-full py-1">
                 @T["Renewable energy fee"]</MudContainer >
             </MudItem>
             <MudItem xs="2">
@@ -344,23 +375,26 @@ else{
                 @data.RenewableEnergyFee.Amount</MudContainer >
             </MudItem>
             <MudItem xs="2">
-              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+              <MudContainer  Class="d-flex align-center justify-end mud-width-full py-1">
                 @data.RenewableEnergyFee.UnitPrice</MudContainer >
             </MudItem>
             <MudItem xs="2">
-              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+              <MudContainer  Class="d-flex align-center justify-end mud-width-full py-1">
                 @data.RenewableEnergyFee.Total</MudContainer >
             </MudItem>
+          <MudItem xs="12">
+            <MudDivider />
+          </MudItem>
           }
 
           @if (data.BusinessUsageFee is not null)
           {
             <MudItem xs="1">
-              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+              <MudContainer  Class="d-flex align-center justify-start mud-width-full py-1">
                 4.)</MudContainer >
             </MudItem>
             <MudItem xs="3">
-              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+              <MudContainer  Class="d-flex align-center justify-start mud-width-full py-1">
                 @T["Business usage fee"]</MudContainer >
             </MudItem>
             <MudItem xs="2">
@@ -372,11 +406,11 @@ else{
                 @data.BusinessUsageFee.Amount</MudContainer >
             </MudItem>
             <MudItem xs="2">
-              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+              <MudContainer  Class="d-flex align-center justify-end mud-width-full py-1">
                 @data.BusinessUsageFee.UnitPrice</MudContainer >
             </MudItem>
             <MudItem xs="2">
-              <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
+              <MudContainer  Class="d-flex align-center justify-end mud-width-full py-1">
                 @data.BusinessUsageFee.Total</MudContainer >
             </MudItem>
           }

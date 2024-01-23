@@ -163,15 +163,7 @@ public class AdminController : Controller
     });
     await _contentManager.CreateAsync(invoiceItem);
 
-    return RedirectToAction(
-      nameof(ContentAdminController.Display),
-      typeof(ContentAdminController).ControllerName(),
-      new
-      {
-        area = "OrchardCore.Contents",
-        contentItemId = invoiceItem.ContentItemId
-      }
-    );
+    return Redirect($"/ozds/app/invoice/{invoiceItem.ContentItemId}");
   }
 
   [HttpPost]

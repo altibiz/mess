@@ -58,10 +58,13 @@
       <MudSpacer />
       <MudMenu AnchorOrigin="Origin.CenterLeft" Dense="true" Class="mt-1 ml-4">
         <ActivatorContent>
+          <MudItem Class="mx-2">
+            @_user.UserName
+          </MudItem>
           <MudIcon Icon="@Icons.Material.Filled.Person" />
         </ActivatorContent>
         <ChildContent>
-          <MudListItem Text="Account" Icon="@Icons.Material.Outlined.Person" Href="app/account" />
+          <MudListItem Text="Account" Icon="@Icons.Material.Outlined.Person" Href="app/account" ForceLoad="true" />
           <MudListItem Text="Logout" Icon="@Icons.Material.Outlined.Login" Href="login" />
         </ChildContent>
       </MudMenu>
@@ -109,7 +112,6 @@
   public string[] _roles = new string[] {"Administrator", "DistributionSystemOperatorRepresentative", "ClosedDistributionSystemRepresentative", "DistributionSystemUnitRepresentative"};
   private List<(string url, string name, string icon, List<string> roles)> _allowedSites = new List<(string, string, string, List<string>)>{
     ("/ozds/login", "Log in", Icons.Material.Outlined.Login,  new List<string>{"Administrator", "DistributionSystemOperatorRepresentative", "ClosedDistributionSystemRepresentative", "DistributionSystemUnitRepresentative"}),
-    ("/ozds/app/omm", "OMM", Icons.Material.Outlined.AddCircleOutline,  new List<string>{"Administrator", "DistributionSystemOperatorRepresentative", "ClosedDistributionSystemRepresentative", "DistributionSystemUnitRepresentative"}),
     ("/ozds/app/units", "Units", Icons.Material.Outlined.AccountTree, new List<string>{"ClosedDistributionSystemRepresentative", "DistributionSystemOperatorRepresentative"}),
     ("/ozds/app/tenants", "Tenants", Icons.Material.Outlined.AccountTree, new List<string>{"ClosedDistributionSystemRepresentative", "DistributionSystemUnitRepresentative"}),
     ("/ozds/app/owners", "Owners", Icons.Material.Outlined.AccountTree, new List<string>{"DistributionSystemOperatorRepresentative"}),
