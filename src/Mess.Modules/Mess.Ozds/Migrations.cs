@@ -62,7 +62,7 @@ internal static partial class CreateAsyncMigrations
     await roleManager.CreateAsync(
       new Role
       {
-        NormalizedRoleName = "DistributionSystemOperatorRepresentative",
+        NormalizedRoleName = "Distribution System Operator Representative",
         RoleName = "Distribution System Operator Representative",
         RoleDescription =
           "Representative of closed distribution systems operator.",
@@ -296,7 +296,7 @@ internal static partial class CreateAsyncMigrations
     await roleManager.CreateAsync(
       new Role
       {
-        NormalizedRoleName = "ClosedDistributionSystemRepresentative",
+        NormalizedRoleName = "Closed Distribution System Representative",
         RoleName = "Closed Distribution System Representative",
         RoleDescription = "Representative of a closed distribution system.",
         RoleClaims = new List<RoleClaim>
@@ -532,7 +532,7 @@ internal static partial class CreateAsyncMigrations
     await roleManager.CreateAsync(
       new Role
       {
-        NormalizedRoleName = "DistributionSystemUnitRepresentative",
+        NormalizedRoleName = "Distribution System Unit Representative",
         RoleName = "Distribution System Unit Representative",
         RoleDescription = "Representative of a distribution system unit.",
         RoleClaims = new List<RoleClaim>

@@ -75,7 +75,7 @@
                 .Where(index => index.SelectedUserId == User.UserId)
                 .FirstOrDefaultAsync();
 
-            if (User.RoleNames.Contains("DistributionSystemOperatorRepresentative")) {
+            if (User.RoleNames.Contains("Distribution System Operator Representative")) {
                 _systems = await session
                   .Query<ContentItem, ClosedDistributionSystemIndex>()
                   .Where(index => index.DistributionSystemOperatorContentItemId == _legalEntity.ContentItemId)
@@ -85,7 +85,7 @@
                   .Where(index => index.DistributionSystemOperatorContentItemId == _legalEntity.ContentItemId)
                   .ListAsync();
             }
-            else if (User.RoleNames.Contains("ClosedDistributionSystemRepresentative")){
+            else if (User.RoleNames.Contains("Closed Distribution System Representative")){
                 _systems = await session
                   .Query<ContentItem, ClosedDistributionSystemIndex>()
                   .Where(index => index.ClosedDistributionSystemContentItemId == _legalEntity.ContentItemId)

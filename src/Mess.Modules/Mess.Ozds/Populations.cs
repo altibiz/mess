@@ -118,8 +118,8 @@ internal static partial class CreateAsyncMigrations
 
     var operatorUser = await userService.CreateDevUserAsync(
       "OperatorId",
-      "Operator", "DistributionSystemOperatorRepresentative",
-      "LegalEntityRepresentative");
+      "Operator", "Distribution System Operator Representative",
+      "Legall entity representative");
 
     var distributionSystemOperator =
       await contentManager.NewContentAsync<DistributionSystemOperatorItem>();
@@ -235,8 +235,8 @@ internal static partial class CreateAsyncMigrations
 
     var systemUser = await userService.CreateDevUserAsync(
       "SystemId",
-      "System", "ClosedDistributionSystemRepresentative",
-      "LegalEntityRepresentative");
+      "System", "Closed Distribution System Representative",
+      "Legal entity representative");
 
     var closedDistributionSystem =
       await contentManager.NewContentAsync<ClosedDistributionSystemItem>();
@@ -347,8 +347,8 @@ internal static partial class CreateAsyncMigrations
 
     var unitUser = await userService.CreateDevUserAsync(
       "UnitId",
-      "Unit", "DistributionSystemUnitRepresentative",
-      "LegalEntityRepresentative");
+      "Unit", "Distribution System Unit Representative",
+      "Legal entity representative");
 
     var distributionSystemUnit =
       await contentManager.NewContentAsync<DistributionSystemUnitItem>();

@@ -23,14 +23,14 @@
   return;
 }
 
-@if (_user.RoleNames.Contains("DistributionSystemUnitRepresentative")) {
+@if (_user.RoleNames.Contains("Distribution System Unit Representative")) {
   <Meters Where="x => x.DistributionSystemUnitContentItemId == _legalEntity.ContentItemId" />
 }
-@if (_user.RoleNames.Contains("ClosedDistributionSystemRepresentative")) {
+@if (_user.RoleNames.Contains("Closed Distribution System Representative")) {
   <Meters Where="x => x.ClosedDistributionSystemContentItemId == _legalEntity.ContentItemId" />
   <Units Where="x => x.ClosedDistributionSystemContentItemId == _legalEntity.ContentItemId" />
 }
-@if (_user.RoleNames.Contains("DistributionSystemOperatorRepresentative")) {
+@if (_user.RoleNames.Contains("Distribution System Operator Representative")) {
   <Meters Where="x => x.DistributionSystemOperatorContentItemId == _legalEntity.ContentItemId" />
   <Units Where="x => x.DistributionSystemOperatorContentItemId == _legalEntity.ContentItemId" />
   <Systems Where="x => x.DistributionSystemOperatorContentItemId == _legalEntity.ContentItemId" />
