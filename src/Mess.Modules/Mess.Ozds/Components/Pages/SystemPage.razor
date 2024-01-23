@@ -17,16 +17,16 @@
 else if (_legalEntityPart != null){
   <MudStack>
     <MudPaper Class="px-3 py-3">
-      @T["Name"]: @_legalEntityPart.Name.Text
+      @T["Ime"]: @_legalEntityPart.Name.Text
     </MudPaper>
     <MudPaper Class="px-3 py-3">
       @T["Email"]: @_legalEntityPart.Email.Text
     </MudPaper>
     <MudPaper Class="px-3 py-3">
-      @T["City"]: @_legalEntityPart.PostalCode.Text @_legalEntityPart.City.Text
+      @T["Grad"]: @_legalEntityPart.PostalCode.Text @_legalEntityPart.City.Text
     </MudPaper>
     <MudPaper Class="px-3 py-3">
-      @T["Social Security Number"]: @_legalEntityPart.SocialSecurityNumber.Text
+      @T["OIB"]: @_legalEntityPart.SocialSecurityNumber.Text
     </MudPaper>
   </MudStack>
 }

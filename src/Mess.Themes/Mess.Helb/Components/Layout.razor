@@ -111,12 +111,12 @@
   // TODO: Make this not be hardcoaded
   public string[] _roles = new string[] {"Administrator", "Distribution System Operator Representative", "Closed Distribution System Representative", "Distribution System Unit Representative"};
   private List<(string url, string name, string icon, List<string> roles)> _allowedSites = new List<(string, string, string, List<string>)>{
-    ("/ozds/login", "Log in", Icons.Material.Outlined.Login,  new List<string>{"Administrator", "Distribution System Operator Representative", "Closed Distribution System Representative", "Distribution System Unit Representative"}),
-    ("/ozds/app/units", "Units", Icons.Material.Outlined.AccountTree, new List<string>{"Closed Distribution System Representative", "Distribution System Operator Representative"}),
-    ("/ozds/app/tenants", "OMMs", Icons.Material.Outlined.AccountTree, new List<string>{"Closed Distribution System Representative", "Distribution System Unit Representative"}),
-    ("/ozds/app/owners", "Owners", Icons.Material.Outlined.AccountTree, new List<string>{"Distribution System Operator Representative"}),
-    ("/ozds/app/sysusage", "System Usage", Icons.Material.Outlined.AttachMoney, new List<string>{"Distribution System Operator Representative", "Closed Distribution System Representative"}),
-    ("/ozds/app/invoices", "Invoices", Icons.Material.Outlined.Receipt, new List<string>{"Distribution System Operator Representative", "Closed Distribution System Representative", "Distribution System Unit Representative"}),
+    ("/ozds/login", "Prijava", Icons.Material.Outlined.Login,  new List<string>{"Administrator", "Distribution System Operator Representative", "Closed Distribution System Representative", "Distribution System Unit Representative"}),
+    ("/ozds/app/units", "Zakupnici", Icons.Material.Outlined.AccountTree, new List<string>{"Closed Distribution System Representative", "Distribution System Operator Representative"}),
+    ("/ozds/app/tenants", "Mjerna mjesta", Icons.Material.Outlined.AccountTree, new List<string>{"Closed Distribution System Representative", "Distribution System Unit Representative"}),
+    ("/ozds/app/owners", "Podmreže", Icons.Material.Outlined.AccountTree, new List<string>{"Distribution System Operator Representative"}),
+    ("/ozds/app/sysusage", "Potrošnja Podmreža", Icons.Material.Outlined.AttachMoney, new List<string>{"Distribution System Operator Representative", "Closed Distribution System Representative"}),
+    ("/ozds/app/invoices", "Računi", Icons.Material.Outlined.Receipt, new List<string>{"Distribution System Operator Representative", "Closed Distribution System Representative", "Distribution System Unit Representative"}),
     ("/ozds/admin", "Admin", Icons.Material.Outlined.VerifiedUser, new List<string>{"Administrator"}),
   };
 

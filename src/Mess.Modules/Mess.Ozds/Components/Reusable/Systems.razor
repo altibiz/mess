@@ -14,7 +14,7 @@
   QuickFilter="@_quickFilter"
   RowClick="@RowClicked">
   <ToolBarContent>
-    <MudText Typo="Typo.h6">@T["Systems"]</MudText>
+    <MudText Typo="Typo.h6">@T["Podmreže"]</MudText>
     <MudSpacer />
     <MudTextField
       @bind-Value="_searchString"
@@ -34,7 +34,7 @@
       Filterable="false" />
     <PropertyColumn
       Property="x => GetName(x!)"
-      Title='@T["Name"].Value' />
+      Title='@T["Ime"].Value' />
   </Columns>
   <PagerContent>
     <MudDataGridPager T="ContentItem" />

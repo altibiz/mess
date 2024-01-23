@@ -17,7 +17,7 @@
   QuickFilter="@_quickFilter"
   RowClick="@RowClicked">
   <ToolBarContent>
-    <MudText Typo="Typo.h6">@T["Meters"]</MudText>
+    <MudText Typo="Typo.h6">@T["Mjerna mjesta"]</MudText>
     <MudSpacer />
     <MudTextField
       @bind-Value="_searchString"
@@ -37,10 +37,10 @@
       Filterable="false" />
     <PropertyColumn
       Property="x => GetName(x.meter!)"
-      Title='@T["Name"].Value' />
+      Title='@T["Ime"].Value' />
     <PropertyColumn
       Property="x => x.abbActivePowerTotalLastWeel"
-      Title='@T["Name"].Value' />
+      Title='@T["Ime"].Value' />
   </Columns>
   <PagerContent>
     <MudDataGridPager T="TestTabularData" />

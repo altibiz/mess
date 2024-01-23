@@ -21,7 +21,7 @@
   QuickFilter="@_quickFilter"
   RowClick="@RowClicked">
   <ToolBarContent>
-    <MudText Typo="Typo.h6">@T["Invoices"]</MudText>
+    <MudText Typo="Typo.h6">@T["Računi"]</MudText>
     <MudSpacer />
     <MudTextField
       @bind-Value="_searchString"
@@ -41,21 +41,21 @@
       Filterable="false" />
     <PropertyColumn
       Property="x => x.As<OzdsInvoicePart>().Data.DistributionSystemOperator.DisplayText"
-      Title='@T["Issuer"].Value'
+      Title='@T["Izdavatelj"].Value'
       Sortable="false"
       Filterable="false" />
     <PropertyColumn
       Property="x => x.As<OzdsInvoicePart>().Data.DistributionSystemUnit.DisplayText"
-      Title='@T["Recipient"].Value' />
+      Title='@T["Primatelj"].Value' />
     <PropertyColumn
       Property="x => x.As<OzdsInvoicePart>().Data.From.Date.ToShortDateString()"
-      Title='@T["From"].Value' />
+      Title='@T["Od"].Value' />
     <PropertyColumn
       Property="x => x.As<OzdsInvoicePart>().Data.To.Date.ToShortDateString()"
-      Title='@T["To"].Value' />
+      Title='@T["Do"].Value' />
     <PropertyColumn
       Property="x => x.As<OzdsInvoicePart>().Data.Total"
-      Title='@T["Total"].Value' />
+      Title='@T["Ukupno"].Value' />
   </Columns>
   <PagerContent>
     <MudDataGridPager T="ContentItem" />

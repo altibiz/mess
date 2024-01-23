@@ -13,6 +13,7 @@
 @inject IServiceProvider _serviceProvider;
 @inject NavigationManager NavigationManager;
 
+@* @if(User.RoleNames.Contains("Distribution System Operator Representative")){ *@
   <MudDataGrid
   T="TabularData"
   MultiSelection="true"
@@ -22,7 +23,7 @@
   QuickFilter="@_quickFilter"
   RowClick="@RowClicked">
   <ToolBarContent>
-    <MudText Typo="Typo.h6">@T["System Units"]</MudText>
+    <MudText Typo="Typo.h6">@T["Zakupnici"]</MudText>
     <MudSpacer />
     <MudTextField
       @bind-Value="_searchString"
@@ -37,28 +38,29 @@
   <Columns>
     <PropertyColumn
       Property="x => x.system.DisplayText"
-      Title='@T["System"].Value'
+      Title='@T["Podmreža"].Value'
       Sortable="false"
       Filterable="false" />
     <PropertyColumn
       Property="x => x.unit.DisplayText"
-      Title='@T["Locations"].Value' />
-    <TemplateColumn CellClass="d-flex justify-end">
-          <CellTemplate>
-              <MudStack Row>
-                <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
-                    <form method="post" action="@($"https://localhost:5001/ozds/Admin/IssueInvoice/{context.Item.unit.ContentItemId}")">
-                        <button type="submit">Issue Invoice</button>
-                    </form>
-                </MudButton>
-              </MudStack>
-          </CellTemplate>
-      </TemplateColumn>
+      Title='@T["Zakupnik"].Value' />
+        <TemplateColumn CellClass="d-flex justify-end">
+              <CellTemplate>
+                  <MudStack Row>
+                    <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
+                        <form method="post" action="@($"https://localhost:5001/ozds/Admin/IssueInvoice/{context.Item.unit.ContentItemId}")">
+                            <button type="submit">@T["Izdati Račun"].Value</button>
+                        </form>
+                    </MudButton>
+                  </MudStack>
+              </CellTemplate>
+          </TemplateColumn>
   </Columns>
   <PagerContent>
     <MudDataGridPager T="TabularData" />
   </PagerContent>
 </MudDataGrid>
+@* } *@
 @code {
     [Parameter]
     public User User { get; set; } = default!;

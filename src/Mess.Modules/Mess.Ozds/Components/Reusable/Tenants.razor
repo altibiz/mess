@@ -20,11 +20,11 @@
   QuickFilter="@_quickFilter"
   RowClick="@RowClicked">
   <ToolBarContent>
-    <MudText Typo="Typo.h6">@T["OMMs"]</MudText>
+    <MudText Typo="Typo.h6">@T["Mjerna mjesta"]</MudText>
     <MudSpacer />
     <MudTextField
       @bind-Value="_searchString"
-      Placeholder="Search"
+      Placeholder="@T["Pretraži"].Value"
       Adornment="Adornment.Start"
       Immediate="true"
       AdornmentIcon="@Icons.Material.Filled.Search"
@@ -35,12 +35,12 @@
   <Columns>
     <PropertyColumn
       Property="x => x.Item1"
-      Title='@T["Source"].Value'
+      Title='@T["Mjerni uređaj"].Value'
       Sortable="false"
       Filterable="false" />
     <PropertyColumn
       Property="x => x.Item2"
-      Title='@T["Last Import"].Value' />
+      Title='@T["Ukupna potrošnja"].Value' />
   </Columns>
   <PagerContent>
     <MudDataGridPager T="(string, decimal?)" />
