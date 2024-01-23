@@ -99,7 +99,7 @@ public class DistributionSystemUnitAdminController : Controller
     return !orchardCoreUser.RoleNames.Contains("Administrator")
            && !(
              orchardCoreUser.RoleNames.Contains(
-               "DistributionSystemOperatorRepresentative"
+               "Distribution System Operator Representative"
              )
              && legalEntityItem is not null
              && index is not null
@@ -108,7 +108,7 @@ public class DistributionSystemUnitAdminController : Controller
            )
            && !(
              orchardCoreUser.RoleNames.Contains(
-               "ClosedDistributionSystemRepresentative"
+               "Closed Distribution System Representative"
              )
              && legalEntityItem is not null
              && index is not null
@@ -117,7 +117,7 @@ public class DistributionSystemUnitAdminController : Controller
            )
            && !(
              orchardCoreUser.RoleNames.Contains(
-               "DistributionSystemUnitRepresentative"
+               "Distribution System Unit Representative"
              )
              && legalEntityItem is not null
              && index is not null

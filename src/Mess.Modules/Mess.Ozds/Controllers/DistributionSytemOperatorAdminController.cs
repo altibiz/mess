@@ -66,7 +66,7 @@ public class DistributionSystemOperatorAdminController : Controller
     return !orchardCoreUser.RoleNames.Contains("Administrator")
            && !(
              orchardCoreUser.RoleNames.Contains(
-               "DistributionSystemOperatorRepresentative"
+               "Distribution System Operator Representative"
              )
              && distributionSystemOperatorItem is not null
              && distributionSystemOperatorContentItemId

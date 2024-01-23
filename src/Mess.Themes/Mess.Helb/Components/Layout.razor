@@ -109,14 +109,15 @@
     private ThemeManagerTheme _themeManager = new ThemeManagerTheme();
     private OrchardCore.Users.Models.User? _user;
   // TODO: Make this not be hardcoaded
-  public string[] _roles = new string[] {"Administrator", "DistributionSystemOperatorRepresentative", "ClosedDistributionSystemRepresentative", "DistributionSystemUnitRepresentative"};
+  public string[] _roles = new string[] {"Administrator", "Distribution System Operator Representative", "Closed Distribution System Representative", "Distribution System Unit Representative"};
   private List<(string url, string name, string icon, List<string> roles)> _allowedSites = new List<(string, string, string, List<string>)>{
-    ("/ozds/login", "Log in", Icons.Material.Outlined.Login,  new List<string>{"Administrator", "DistributionSystemOperatorRepresentative", "ClosedDistributionSystemRepresentative", "DistributionSystemUnitRepresentative"}),
-    ("/ozds/app/units", "Units", Icons.Material.Outlined.AccountTree, new List<string>{"ClosedDistributionSystemRepresentative", "DistributionSystemOperatorRepresentative"}),
-    ("/ozds/app/tenants", "Tenants", Icons.Material.Outlined.AccountTree, new List<string>{"ClosedDistributionSystemRepresentative", "DistributionSystemUnitRepresentative"}),
-    ("/ozds/app/owners", "Owners", Icons.Material.Outlined.AccountTree, new List<string>{"DistributionSystemOperatorRepresentative"}),
-    ("/ozds/app/sysusage", "System Usage", Icons.Material.Outlined.AttachMoney, new List<string>{"DistributionSystemOperatorRepresentative", "ClosedDistributionSystemRepresentative"}),
-    ("/ozds/app/invoices", "Invoices", Icons.Material.Outlined.Receipt, new List<string>{"DistributionSystemOperatorRepresentative", "ClosedDistributionSystemRepresentative", "DistributionSystemUnitRepresentative"}),
+    ("/ozds/login", "Log in", Icons.Material.Outlined.Login,  new List<string>{"Administrator", "Distribution System Operator Representative", "Closed Distribution System Representative", "Distribution System Unit Representative"}),
+    ("/ozds/app/omm", "OMM", Icons.Material.Outlined.AddCircleOutline,  new List<string>{"Administrator", "Distribution System Operator Representative", "Closed Distribution System Representative", "Distribution System Unit Representative"}),
+    ("/ozds/app/units", "Units", Icons.Material.Outlined.AccountTree, new List<string>{"Closed Distribution System Representative", "Distribution System Operator Representative"}),
+    ("/ozds/app/tenants", "Tenants", Icons.Material.Outlined.AccountTree, new List<string>{"Closed Distribution System Representative", "Distribution System Unit Representative"}),
+    ("/ozds/app/owners", "Owners", Icons.Material.Outlined.AccountTree, new List<string>{"Distribution System Operator Representative"}),
+    ("/ozds/app/sysusage", "System Usage", Icons.Material.Outlined.AttachMoney, new List<string>{"Distribution System Operator Representative", "Closed Distribution System Representative"}),
+    ("/ozds/app/invoices", "Invoices", Icons.Material.Outlined.Receipt, new List<string>{"Distribution System Operator Representative", "Closed Distribution System Representative", "Distribution System Unit Representative"}),
     ("/ozds/admin", "Admin", Icons.Material.Outlined.VerifiedUser, new List<string>{"Administrator"}),
   };
 

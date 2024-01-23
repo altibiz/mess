@@ -62,7 +62,7 @@ internal static partial class CreateAsyncMigrations
     await roleManager.CreateAsync(
       new Role
       {
-        NormalizedRoleName = "DistributionSystemOperatorRepresentative",
+        NormalizedRoleName = "Distribution System Operator Representative",
         RoleName = "Distribution System Operator Representative",
         RoleDescription =
           "Representative of closed distribution systems operator.",
@@ -296,7 +296,7 @@ internal static partial class CreateAsyncMigrations
     await roleManager.CreateAsync(
       new Role
       {
-        NormalizedRoleName = "ClosedDistributionSystemRepresentative",
+        NormalizedRoleName = "Closed Distribution System Representative",
         RoleName = "Closed Distribution System Representative",
         RoleDescription = "Representative of a closed distribution system.",
         RoleClaims = new List<RoleClaim>
@@ -532,7 +532,7 @@ internal static partial class CreateAsyncMigrations
     await roleManager.CreateAsync(
       new Role
       {
-        NormalizedRoleName = "DistributionSystemUnitRepresentative",
+        NormalizedRoleName = "Distribution System Unit Representative",
         RoleName = "Distribution System Unit Representative",
         RoleDescription = "Representative of a distribution system unit.",
         RoleClaims = new List<RoleClaim>
@@ -894,7 +894,8 @@ internal static partial class CreateAsyncMigrations
                   {
                     Hint = "Renewable energy fee.",
                     Required = true,
-                    Minimum = 0.0M
+                    Minimum = 0.0M,
+                    Scale = 6
                   }
                 )
           )
@@ -910,7 +911,8 @@ internal static partial class CreateAsyncMigrations
                   {
                     Hint = "Business usage fee.",
                     Required = true,
-                    Minimum = 0.0M
+                    Minimum = 0.0M,
+                    Scale = 6
                   }
                 )
           )
@@ -926,7 +928,8 @@ internal static partial class CreateAsyncMigrations
                   {
                     Hint = "Tax rate.",
                     Required = true,
-                    Minimum = 0.0M
+                    Minimum = 0.0M,
+                    Scale = 6
                   }
                 )
           )
@@ -1011,7 +1014,13 @@ internal static partial class CreateAsyncMigrations
                 .WithDisplayName("Energy price")
                 .WithDescription("Energy price.")
                 .WithSettings(
-                  new NumericFieldSettings { Hint = "Energy price." }
+                  new NumericFieldSettings
+                  {
+                    Hint = "Energy price.",
+                    Required = true,
+                    Minimum = 0.0M,
+                    Scale = 6
+                  }
                 )
           )
           .WithField(
@@ -1022,7 +1031,13 @@ internal static partial class CreateAsyncMigrations
                 .WithDisplayName("High energy price")
                 .WithDescription("High energy price.")
                 .WithSettings(
-                  new NumericFieldSettings { Hint = "High energy price." }
+                  new NumericFieldSettings
+                  {
+                    Hint = "High energy price.",
+                    Required = true,
+                    Minimum = 0.0M,
+                    Scale = 6
+                  }
                 )
           )
           .WithField(
@@ -1033,7 +1048,13 @@ internal static partial class CreateAsyncMigrations
                 .WithDisplayName("Low energy price")
                 .WithDescription("Low energy price.")
                 .WithSettings(
-                  new NumericFieldSettings { Hint = "Low energy price." }
+                  new NumericFieldSettings
+                  {
+                    Hint = "Low energy price.",
+                    Required = true,
+                    Minimum = 0.0M,
+                    Scale = 6
+                  }
                 )
           )
           .WithField(
@@ -1044,7 +1065,13 @@ internal static partial class CreateAsyncMigrations
                 .WithDisplayName("Max power price")
                 .WithDescription("Max power price.")
                 .WithSettings(
-                  new NumericFieldSettings { Hint = "Max power price." }
+                  new NumericFieldSettings
+                  {
+                    Hint = "Max power price.",
+                    Required = true,
+                    Minimum = 0.0M,
+                    Scale = 6
+                  }
                 )
           )
           .WithField(
@@ -1055,7 +1082,13 @@ internal static partial class CreateAsyncMigrations
                 .WithDisplayName("Measurement device fee")
                 .WithDescription("Measurement device fee.")
                 .WithSettings(
-                  new NumericFieldSettings { Hint = "Measurement device fee." }
+                  new NumericFieldSettings
+                  {
+                    Hint = "Measurement device fee.",
+                    Required = true,
+                    Minimum = 0.0M,
+                    Scale = 6
+                  }
                 )
           )
     );

@@ -42,7 +42,7 @@ public class OzdsIotDeviceAdminController : Controller
         .ListAsync();
     else if (
       orchardCoreUser.RoleNames.Contains(
-        "DistributionSystemOperatorRepresentative"
+        "Distribution System Operator Representative"
       )
     )
       devices = await _session
@@ -55,7 +55,7 @@ public class OzdsIotDeviceAdminController : Controller
         .ListAsync();
     else if (
       orchardCoreUser.RoleNames.Contains(
-        "ClosedDistributionSystemRepresentative"
+        "Closed Distribution System Representative"
       )
     )
       devices = await _session
@@ -67,7 +67,7 @@ public class OzdsIotDeviceAdminController : Controller
         )
         .ListAsync();
     else if (
-      orchardCoreUser.RoleNames.Contains("DistributionSystemUnitRepresentative")
+      orchardCoreUser.RoleNames.Contains("Distribution System Unit Representative")
     )
       devices = await _session
         .Query<ContentItem, OzdsIotDeviceIndex>()
@@ -121,7 +121,7 @@ public class OzdsIotDeviceAdminController : Controller
     return !orchardCoreUser.RoleNames.Contains("Administrator")
            && !(
              orchardCoreUser.RoleNames.Contains(
-               "DistributionSystemOperatorRepresentative"
+               "Distribution System Operator Representative"
              )
              && index is not null
              && legalEntityItem is not null
@@ -130,7 +130,7 @@ public class OzdsIotDeviceAdminController : Controller
            )
            && !(
              orchardCoreUser.RoleNames.Contains(
-               "ClosedDistributionSystemRepresentative"
+               "Closed Distribution System Representative"
              )
              && index is not null
              && legalEntityItem is not null
@@ -139,7 +139,7 @@ public class OzdsIotDeviceAdminController : Controller
            )
            && !(
              orchardCoreUser.RoleNames.Contains(
-               "DistributionSystemUnitRepresentative"
+               "Distribution System Unit Representative"
              )
              && index is not null
              && legalEntityItem is not null

@@ -42,7 +42,7 @@ public class ClosedDistributionSystemAdminController : Controller
         .ListContentAsync<ClosedDistributionSystemItem>();
     else if (
       orchardCoreUser.RoleNames.Contains(
-        "DistributionSystemOperatorRepresentative"
+        "Distribution System Operator Representative"
       ) && legalEntityItem is not null
     )
       systems = await _session
@@ -89,7 +89,7 @@ public class ClosedDistributionSystemAdminController : Controller
     return !orchardCoreUser.RoleNames.Contains("Administrator")
            && !(
              orchardCoreUser.RoleNames.Contains(
-               "DistributionSystemOperatorRepresentative"
+               "Distribution System Operator Representative"
              )
              && legalEntityItem is not null
              && index.DistributionSystemOperatorContentItemId
@@ -97,7 +97,7 @@ public class ClosedDistributionSystemAdminController : Controller
            )
            && !(
              orchardCoreUser.RoleNames.Contains(
-               "ClosedDistributionSystemRepresentative"
+               "Closed Distribution System Representative"
              )
              && legalEntityItem is not null
              && index is not null
@@ -107,7 +107,7 @@ public class ClosedDistributionSystemAdminController : Controller
       ? Forbid()
       : View(
         new ClosedDistributionSystemDetailViewModel
-          { ContentItem = contentItem }
+        { ContentItem = contentItem }
       );
   }
 }

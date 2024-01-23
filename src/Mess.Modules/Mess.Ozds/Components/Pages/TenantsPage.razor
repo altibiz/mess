@@ -15,7 +15,7 @@
   return;
 }
 
-@if (_user.RoleNames.Contains("DistributionSystemUnitRepresentative") || _user.RoleNames.Contains("ClosedDistributionSystemRepresentative")) {
+@if (_user.RoleNames.Contains("Distribution System Unit Representative") || _user.RoleNames.Contains("Closed Distribution System Representative")) {
   <Tenants LegalEntity="@_legalEntity" />
 }
 

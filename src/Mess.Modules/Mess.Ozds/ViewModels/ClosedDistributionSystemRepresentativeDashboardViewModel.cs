@@ -10,6 +10,5 @@ public class ClosedDistributionSystemRepresentativeDashboardViewModel
     ContentItem ContentItem,
     OzdsIotDevicePart OzdsIotDevicePart,
     IotDevicePart IotDevicePart
-    )> Devices
-  { get; set; } = default!;
+    )> Devices { get; set; } = default!;
 }
