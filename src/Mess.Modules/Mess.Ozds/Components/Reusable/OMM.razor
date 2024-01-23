@@ -80,12 +80,14 @@
         <MudPaper Class="d-flex align-center justify-center mud-width-full py-8 px-8" Height="500px">
     <MudContainer MaxWidth="MaxWidth.Small">
             <ApexChart TItem="ChartData"
+               XAxisType="XAxisType.Datetime"
+               Options="graphOptions"
             Title="@Source">
               <ApexPointSeries TItem="ChartData"
                 Items="@_lastHour"
-                Name="Net Profit"
+                Name="Power"
                 SeriesType="SeriesType.Line"
-                XValue="x => x.date"
+                XValue='x => x.date'
                 YValue="x => x.measurement"
               />
             </ApexChart>
@@ -100,6 +102,7 @@
     public string Source { get; set; } = "abb";
     private List<Order> orders = new List<Order>();
     private ApexChartOptions<Order> options = new();
+    private ApexChartOptions<ChartData> graphOptions = new ApexCharts.ApexChartOptions<ChartData>();
     private string? _searchString;
     private List<TabularData> _dataStruct = new List<TabularData>();
     public IEnumerable<ChartData>? _lastHour;
@@ -110,7 +113,7 @@
     private int _year = -1;
     protected override async Task OnInitializedAsync()
     {
-      orders.Add(new Order(7));
+      graphOptions.Tooltip = new ApexCharts.Tooltip { X = new TooltipX { Format = @"dd\MMMM\yyyy hh:mm" } };
       options.PlotOptions = new PlotOptions { RadialBar = new PlotOptionsRadialBar { StartAngle = -90, EndAngle = 90 } };
       if(Source.StartsWith("abb"))
         _startEnd = await _timeseriesClient.GetAbbLastMonthMeasurementsAsync(Source);
@@ -124,12 +127,14 @@
       }
       if(Source.StartsWith("abb")){
         var a = await _timeseriesClient.GetAbbMeasurementsAsync(Source, DateTimeOffset.UtcNow.AddHours(-10), DateTimeOffset.UtcNow);
-        _lastHour = a.Select(x => new ChartData(x.ActivePowerL1_W / 1000, x.Timestamp));
+        _lastHour = a.Select(x => new ChartData(x.ActivePowerL1_W, x.Timestamp)).ToList();
       }
       else{
         var a = await _timeseriesClient.GetSchneiderMeasurementsAsync(Source, DateTimeOffset.UtcNow.AddHours(-10), DateTimeOffset.UtcNow);
-        _lastHour = a.Select(x => new ChartData(x.ActivePowerL1_W / 1000, x.Timestamp));
+        _lastHour = a.Select(x => new ChartData(x.ActivePowerL1_W, x.Timestamp)).ToList();
       }
+
+      orders.Add(new Order(_startEnd.First));
     }
 
   private Func<TabularData, bool> _quickFilter => x =>
@@ -146,11 +151,11 @@
   private void RowClicked() { }
 
   private class Order {
-    public decimal value = 10;
-    public decimal valueMax = 20;
-    public decimal percent = 50;
+    public decimal? value = 10;
+    public decimal? valueMax = 1000;
+    public decimal? percent = 50;
 
-    public Order(int val){
+    public Order(decimal? val){
       value = val;
       percent = (value / valueMax) * 100;
     }

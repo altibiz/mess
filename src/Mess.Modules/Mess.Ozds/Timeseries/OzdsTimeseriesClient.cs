@@ -103,12 +103,14 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
           .Select(measurement => measurement.ToModel())
           .FirstOrDefaultAsync();
         if (first == null)
-          return (0, last.ActiveEnergyImportTotal_Wh, DateTime.UtcNow);
+          return (0, last.ActivePowerL1_W, DateTime.UtcNow);
       }
       else
+      {
         return (0, 0, DateTime.UtcNow);
+      }
 
-      return (first.ActiveEnergyImportTotal_Wh, last.ActiveEnergyImportTotal_Wh, first.Timestamp);
+      return (first.ActivePowerL1_W, last.ActivePowerL1_W, first.Timestamp);
     });
   }
 
@@ -138,12 +140,12 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
           .Select(measurement => measurement.ToModel())
           .FirstOrDefaultAsync();
         if (first == null)
-          return (0, last.ActiveEnergyImportTotal_Wh, DateTime.UtcNow);
+          return (0, last.ActivePowerL1_W, DateTime.UtcNow);
       }
       else
         return (0, 0, DateTime.UtcNow);
 
-      return (first.ActiveEnergyImportTotal_Wh, last.ActiveEnergyImportTotal_Wh, first.Timestamp);
+      return (first.ActivePowerL1_W, last.ActivePowerL1_W, first.Timestamp);
     });
   }
 

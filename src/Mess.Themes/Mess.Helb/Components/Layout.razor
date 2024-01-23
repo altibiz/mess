@@ -50,7 +50,7 @@
           OnClick="e => DrawerToggle()" />
       </MudHidden>
       <MudHidden Breakpoint="Breakpoint.Xs">
-        <MudText Typo="Typo.h6">Dashboard</MudText>
+        <MudText Typo="Typo.h6">HELB</MudText>
       </MudHidden>
       <MudHidden Breakpoint="Breakpoint.Xs" Invert="true">
         <MudText Typo="Typo.subtitle2">Dashboard</MudText>
@@ -112,9 +112,8 @@
   public string[] _roles = new string[] {"Administrator", "Distribution System Operator Representative", "Closed Distribution System Representative", "Distribution System Unit Representative"};
   private List<(string url, string name, string icon, List<string> roles)> _allowedSites = new List<(string, string, string, List<string>)>{
     ("/ozds/login", "Log in", Icons.Material.Outlined.Login,  new List<string>{"Administrator", "Distribution System Operator Representative", "Closed Distribution System Representative", "Distribution System Unit Representative"}),
-    ("/ozds/app/omm", "OMM", Icons.Material.Outlined.AddCircleOutline,  new List<string>{"Administrator", "Distribution System Operator Representative", "Closed Distribution System Representative", "Distribution System Unit Representative"}),
     ("/ozds/app/units", "Units", Icons.Material.Outlined.AccountTree, new List<string>{"Closed Distribution System Representative", "Distribution System Operator Representative"}),
-    ("/ozds/app/tenants", "Tenants", Icons.Material.Outlined.AccountTree, new List<string>{"Closed Distribution System Representative", "Distribution System Unit Representative"}),
+    ("/ozds/app/tenants", "OMMs", Icons.Material.Outlined.AccountTree, new List<string>{"Closed Distribution System Representative", "Distribution System Unit Representative"}),
     ("/ozds/app/owners", "Owners", Icons.Material.Outlined.AccountTree, new List<string>{"Distribution System Operator Representative"}),
     ("/ozds/app/sysusage", "System Usage", Icons.Material.Outlined.AttachMoney, new List<string>{"Distribution System Operator Representative", "Closed Distribution System Representative"}),
     ("/ozds/app/invoices", "Invoices", Icons.Material.Outlined.Receipt, new List<string>{"Distribution System Operator Representative", "Closed Distribution System Representative", "Distribution System Unit Representative"}),
