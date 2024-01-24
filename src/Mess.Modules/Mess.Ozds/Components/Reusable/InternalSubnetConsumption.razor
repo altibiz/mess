@@ -20,7 +20,7 @@
   QuickFilter="@_quickFilter"
   RowClick="@RowClicked">
   <ToolBarContent>
-    <MudText Typo="Typo.h6">@T["Potrošnja Podmreže"].Value</MudText>
+    <MudText Typo="Typo.h6">@T["Mjerna mjesta"].Value</MudText>
     <MudSpacer />
     <MudTextField
       @bind-Value="_searchString"
@@ -76,6 +76,7 @@
           _ioTDevices = await session
             .Query<ContentItem, OzdsIotDeviceIndex>()
             .Where(index => index.ClosedDistributionSystemContentItemId == LegalEntity.ContentItemId)
+            .Where(index => !index.IsMessenger)
             .ListAsync();
           _systems = await session
             .Query<ContentItem, ClosedDistributionSystemIndex>()
@@ -90,6 +91,7 @@
           _ioTDevices = await session
             .Query<ContentItem, OzdsIotDeviceIndex>()
             .Where(index => index.DistributionSystemOperatorContentItemId == LegalEntity.ContentItemId)
+            .Where(index => !index.IsMessenger)
             .ListAsync();
           _systems = await session
             .Query<ContentItem, ClosedDistributionSystemIndex>()

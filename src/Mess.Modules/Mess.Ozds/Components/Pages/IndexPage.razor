@@ -22,16 +22,14 @@
 }
 
 @if (_user.RoleNames.Contains("Distribution System Unit Representative")) {
-  <Meters Where="x => x.DistributionSystemUnitContentItemId == _legalEntity.ContentItemId" />
+  <OMMs LegalEntity="@_legalEntity" />
 }
 @if (_user.RoleNames.Contains("Closed Distribution System Representative")) {
-  <Meters Where="x => x.ClosedDistributionSystemContentItemId == _legalEntity.ContentItemId" />
-  <Units User="@_user"/>
+  <OwnedSubnets LegalEntity="@_legalEntity" />
 }
 @if (_user.RoleNames.Contains("Distribution System Operator Representative")) {
-  <Meters Where="x => x.DistributionSystemOperatorContentItemId == _legalEntity.ContentItemId" />
-  <Units User="@_user"/>
-  <Systems Where="x => x.DistributionSystemOperatorContentItemId == _legalEntity.ContentItemId" />
+  <SubgridConsumption LegalEntity="@_legalEntity" />
+  <Invoices LegalEntity="@_legalEntity" />
 }
 
 @code {

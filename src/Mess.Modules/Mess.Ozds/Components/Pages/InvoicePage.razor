@@ -20,17 +20,17 @@ else{
 <MudStack>
       <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.End">
         <MudItem Class="">
-          @T["INVOICE"] @_invoiceItem.ContentItemId
+          @T["RAČUN"] @_invoiceItem.ContentItemId
         </MudItem>
         <MudItem Class="">
-          @T["FOR ELECTRICAL ENERGY PERIOD:"]
-          @T["FROM"]
+          @T["ZA PERIOD ELEKTRIČNE ENERGIJE:"]
+          @T["OD"]
           @data.From.DateTime.ToShortDateString()
-          @T["TO"]
+          @T["DO"]
           @data.To.DateTime.ToShortDateString()
         </MudItem>
         <MudItem Class="">
-          @T["Date issued"]: @_invoiceItem.InvoicePart.Value.Date.Value!.Value.ToShortDateString()
+          @T["Datum izdavanja"]: @_invoiceItem.InvoicePart.Value.Date.Value!.Value.ToShortDateString()
         </MudItem>
       </MudStack>
       <MudStack Justify="Justify.FlexEnd" AlignItems="AlignItems.Start">
@@ -48,7 +48,7 @@ else{
           @unitItem.LegalEntityPart.Value.City.Text
         </MudItem>
         <MudItem Class="">
-          @T["Social security nr."]: @unitItem.LegalEntityPart.Value.SocialSecurityNumber.Text
+          @T["OIB"]: @unitItem.LegalEntityPart.Value.SocialSecurityNumber.Text
         </MudItem>
     </MudStack>
 
@@ -62,23 +62,23 @@ else{
           </MudItem>
           <MudItem xs="3">
             <MudPaper Class="d-flex align-center justify-center mud-width-full py-1">
-              @T["ARTICLE/SERVICE TITLE"]</MudPaper>
+              @T["IME ARTIKLA/SEVISA"]</MudPaper>
           </MudItem>
           <MudItem xs="2">
             <MudPaper Class="d-flex align-center justify-center mud-width-full py-1">
-              @T["MEASURING UNIT"]</MudPaper>
+              @T["MJERNA JEDINICA"]</MudPaper>
           </MudItem>
           <MudItem xs="2">
             <MudPaper Class="d-flex align-center justify-center mud-width-full py-1">
-              @T["AMOUNT"]</MudPaper>
+              @T["KOLIČINA"]</MudPaper>
           </MudItem>
           <MudItem xs="2">
             <MudPaper Class="d-flex align-center justify-center mud-width-full py-1">
-              @T["PRICE"]</MudPaper>
+              @T["CIJENA"]</MudPaper>
           </MudItem>
           <MudItem xs="2">
             <MudPaper Class="d-flex align-center justify-center mud-width-full py-1">
-              @T["TOTAL"]</MudPaper>
+              @T["UKUPNO"]</MudPaper>
           </MudItem>
 
 
@@ -88,7 +88,7 @@ else{
           </MudItem>
           <MudItem xs="3">
             <MudContainer  Class="d-flex align-center justify-start mud-width-full py-1">
-              @T["Usage fee"]</MudContainer >
+              @T["Naknada korištenja"]</MudContainer >
           </MudItem>
           <MudItem xs="2">
             <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
@@ -122,7 +122,7 @@ else{
             </MudItem>
             <MudItem xs="3">
               <MudContainer  Class="d-flex align-center justify-start mud-width-full py-1">
-                @T["Usage during high energy price period"]</MudContainer >
+                @T["Korištenje tijekom razdoblja visokih cijena energije"]</MudContainer >
             </MudItem>
             <MudItem xs="2">
               <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
@@ -153,7 +153,7 @@ else{
             </MudItem>
             <MudItem xs="3">
               <MudContainer  Class="d-flex align-center justify-start mud-width-full py-1">
-                @T["Usage during low energy price period"]</MudContainer >
+                @T["Korištenje tijekom razdoblja niske cijene energije"]</MudContainer >
             </MudItem>
             <MudItem xs="2">
               <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
@@ -184,7 +184,7 @@ else{
             </MudItem>
             <MudItem xs="3">
               <MudContainer  Class="d-flex align-center justify-start mud-width-full py-1">
-                @T["Max Power"]</MudContainer >
+                @T["Maksimalna snaga"]</MudContainer >
             </MudItem>
             <MudItem xs="2">
               <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
@@ -215,11 +215,11 @@ else{
             </MudItem>
             <MudItem xs="3">
               <MudContainer  Class="d-flex align-center justify-start mud-width-full py-1">
-                @T["Device fee"]</MudContainer >
+                @T["Naknada uređaja"]</MudContainer >
             </MudItem>
             <MudItem xs="2">
               <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
-                @T["month"]</MudContainer >
+                @T["mijesec"]</MudContainer >
             </MudItem>
             <MudItem xs="2">
               <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
@@ -240,7 +240,7 @@ else{
 
           <MudItem xs="10">
             <MudContainer Class="d-flex align-center justify-center mud-width-full py-1">
-              @T["Usage fee"] - @T["SUBTOTAL"]</MudContainer>
+              @T["Naknada korištenja"] - @T["SUBTOTAL"]</MudContainer>
           </MudItem>
           <MudItem xs="2">
             <MudContainer Class="d-flex align-center justify-end mud-width-full py-1">
@@ -256,7 +256,7 @@ else{
           </MudItem>
           <MudItem xs="3">
             <MudContainer  Class="d-flex align-center justify-start mud-width-full py-1">
-              @T["Supply fee"]</MudContainer >
+              @T["Naknada opskrbe"]</MudContainer >
           </MudItem>
           <MudItem xs="2">
             <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
@@ -290,7 +290,7 @@ else{
             </MudItem>
             <MudItem xs="3">
               <MudContainer  Class="d-flex align-center justify-start mud-width-full py-1">
-                @T["Supply during high energy price period"]</MudContainer >
+                @T["Opskrba tijekom razdoblja visokih cijena energije"]</MudContainer >
             </MudItem>
             <MudItem xs="2">
               <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
@@ -321,7 +321,7 @@ else{
             </MudItem>
             <MudItem xs="3">
               <MudContainer  Class="d-flex align-center justify-start mud-width-full py-1">
-                @T["Supply during low energy price period"]</MudContainer >
+                @T["Opskrba tijekom razdoblja niskih cijena energije"]</MudContainer >
             </MudItem>
             <MudItem xs="2">
               <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
@@ -346,7 +346,7 @@ else{
 
           <MudItem xs="10">
             <MudContainer Class="d-flex align-center justify-center mud-width-full py-1">
-              @T["Supply fee"] - @T["SUBTOTAL"]</MudContainer>
+              @T["Naknada opskrbe"] - @T["SUBTOTAL"]</MudContainer>
           </MudItem>
           <MudItem xs="2">
             <MudContainer Class="d-flex align-center justify-end mud-width-full py-1">
@@ -364,7 +364,7 @@ else{
             </MudItem>
             <MudItem xs="3">
               <MudContainer  Class="d-flex align-center justify-start mud-width-full py-1">
-                @T["Renewable energy fee"]</MudContainer >
+                @T["Naknada za obnovljivu energiju"]</MudContainer >
             </MudItem>
             <MudItem xs="2">
               <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">
@@ -395,7 +395,7 @@ else{
             </MudItem>
             <MudItem xs="3">
               <MudContainer  Class="d-flex align-center justify-start mud-width-full py-1">
-                @T["Business usage fee"]</MudContainer >
+                @T["Naknada za poslovno korištenje"]</MudContainer >
             </MudItem>
             <MudItem xs="2">
               <MudContainer  Class="d-flex align-center justify-center mud-width-full py-1">

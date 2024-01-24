@@ -20,7 +20,7 @@
   QuickFilter="@_quickFilter"
   RowClick="@RowClicked">
   <ToolBarContent>
-    <MudText Typo="Typo.h6">@T["Vlasnici"]</MudText>
+    <MudText Typo="Typo.h6">@T["Tvoje Podmreže"]</MudText>
     <MudSpacer />
     <MudTextField
       @bind-Value="_searchString"
@@ -38,9 +38,6 @@
       Title='@T["Podmreža"].Value'
       Sortable="false"
       Filterable="false" />
-    <PropertyColumn
-      Property="x => x.As<LegalEntityPart>().Representatives.UserIds[0]"
-      Title='@T["Vlasnik Podmreže"].Value' />
   </Columns>
   <PagerContent>
     <MudDataGridPager T="ContentItem" />
@@ -59,7 +56,7 @@
       await WithTransientSessionAsync(async session => {
         _systems = await session
           .Query<ContentItem, ClosedDistributionSystemIndex>()
-          .Where(index => index.DistributionSystemOperatorContentItemId == LegalEntity.ContentItemId)
+          .Where(index => index.ClosedDistributionSystemContentItemId == LegalEntity.ContentItemId)
           .ListAsync();
       });
   }
@@ -80,6 +77,6 @@
   }
 
   private void RowClicked(DataGridRowClickEventArgs<ContentItem> args) {
-      NavigationManager.NavigateTo($"app/system/{args.Item.ContentItemId}");
+      NavigationManager.NavigateTo($"app/subnet/{args.Item.ContentItemId}");
   }
 }

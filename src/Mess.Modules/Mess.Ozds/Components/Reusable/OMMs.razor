@@ -1,0 +1,127 @@
+@using Mess.Ozds.Abstractions.Indexes
+@using Mess.Iot.Abstractions.Models
+@using Mess.Ozds.Abstractions.Models
+@using OrchardCore.Users.Models
+@using OrchardCore.ContentFields.Indexing.SQL
+@using System.Linq.Expressions
+@using Mess.Ozds.Abstractions.Timeseries
+@using Mess.Billing.Abstractions.Models
+@using OrchardCore.ContentManagement.Records
+@using OrchardCore.Users.Indexes
+
+@inject NavigationManager NavigationManager
+
+  <MudDataGrid
+  T="(string source, decimal? lastImport, decimal? consumption, int invoiceCount)"
+  MultiSelection="true"
+  Items="@_lastTotalPerOMM"
+  SortMode="SortMode.Multiple"
+  Filterable="true"
+  QuickFilter="@_quickFilter"
+  RowClick="@RowClicked">
+  <ToolBarContent>
+    <MudText Typo="Typo.h6">@T["Brojila"]</MudText>
+    <MudSpacer />
+    <MudTextField
+      @bind-Value="_searchString"
+      Placeholder="@T["Pretraži"].Value"
+      Adornment="Adornment.Start"
+      Immediate="true"
+      AdornmentIcon="@Icons.Material.Filled.Search"
+      IconSize="MudBlazor.Size.Medium"
+      Class="mt-0">
+    </MudTextField>
+  </ToolBarContent>
+  <Columns>
+    <PropertyColumn
+      Property="x => x.source"
+      Title='@T["Brojilo"].Value'
+      Sortable="false"
+      Filterable="false" />
+    <PropertyColumn
+      Property="x => x.lastImport"
+      Title='@T["Zadnji import"].Value'
+      Sortable="false"
+      Filterable="false" />
+    <PropertyColumn
+      Property="x => x.consumption"
+      Title='@T["Ukupna potrošnja"].Value'
+      Sortable="false"
+      Filterable="false" />
+    <PropertyColumn
+      Property="x => x.invoiceCount"
+      Title='@T["Broj računa"].Value'
+      Sortable="false"
+      Filterable="false" />
+  </Columns>
+  <PagerContent>
+    <MudDataGridPager T="(string source, decimal? lastImport, decimal? consumption, int invoiceCount)" />
+  </PagerContent>
+</MudDataGrid>
+
+@code {
+    [Parameter]
+    public ContentItem LegalEntity { get; set; } = default!;
+    private IEnumerable<ContentItem> _units = Enumerable.Empty<ContentItem>();
+    private List<(ContentItem omm, decimal? consumption, int invoiceCount)> _unitsOMMs = new List<(ContentItem omm, decimal? consumption, int invoiceCount)>();
+    private string? _searchString;
+    private List<(string source, decimal? lastImport, decimal? consumption, int invoiceCount)> _lastTotalPerOMM = new List<(string source, decimal? lastImport, decimal? consumption, int invoiceCount)>();
+    protected override async Task OnInitializedAsync()
+    {
+      await WithTransientSessionAsync(async session => {
+      if(LegalEntity.ContentType == "DistributionSystemUnit"){
+        _units = new List<ContentItem> {LegalEntity};
+        var omms = await session
+          .Query<ContentItem, OzdsIotDeviceIndex>()
+            .Where(index => !index.IsMessenger)
+          .Where(x => x.DistributionSystemUnitContentItemId == _units.First().ContentItemId)
+          .ListAsync();
+        var invoiceCount = await session.Query<ContentItem, Mess.Billing.Abstractions.Indexes.PaymentIndex>()
+          .Where(index => index.RecipientContentItemId == _units.First().ContentItemId)
+          .CountAsync();
+        var consumption = _units.First().As<DistributionSystemUnitPart>().Consumption;
+        foreach(var omm in omms){
+          _unitsOMMs.Add((omm, consumption, invoiceCount));
+        }
+      }
+      else{
+        _units = await session
+            .Query<ContentItem, DistributionSystemUnitIndex>()
+            .Where(x => x.ClosedDistributionSystemContentItemId == LegalEntity.ContentItemId)
+            .ListAsync();
+        var unitIds = _units.Select(unit => unit.ContentItemId).ToList();
+        //TODO: DO NOT USE FOREACH WHEN TALKING TO DB
+        foreach(var unit in unitIds){
+          var omms = await session
+          .Query<ContentItem, OzdsIotDeviceIndex>()
+            .Where(index => !index.IsMessenger)
+          .Where(x => x.DistributionSystemUnitContentItemId == unit)
+          .ListAsync();
+        var invoiceCount = await session.Query<ContentItem, Mess.Billing.Abstractions.Indexes.PaymentIndex>()
+          .Where(index => index.RecipientContentItemId == unit).CountAsync();
+        var consumption = _units.First().As<DistributionSystemUnitPart>().Consumption;
+        foreach(var omm in omms){
+          _unitsOMMs.Add((omm, consumption, invoiceCount));
+        }
+        }
+      }
+
+      foreach(var omm in _unitsOMMs){
+        _lastTotalPerOMM.Add(new (omm.omm.As<IotDevicePart>().DeviceId.Text, omm.omm.As<OzdsIotDevicePart>().LatestImport, omm.consumption, omm.invoiceCount));
+      }
+      });
+    }
+     private Func<(string source, decimal? lastImport, decimal? consumption, int invoiceCount), bool> _quickFilter => x =>
+  {
+    if (string.IsNullOrWhiteSpace(_searchString))
+      return true;
+
+    if (x.source.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+      return true;
+
+    return false;
+  };
+    private void RowClicked(DataGridRowClickEventArgs<(string source, decimal? lastImport, decimal? consumption, int invoiceCount)> args) {
+      NavigationManager.NavigateTo($"app/omm/{args.Item.source}");
+     }
+}

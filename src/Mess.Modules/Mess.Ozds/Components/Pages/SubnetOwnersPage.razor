@@ -16,7 +16,7 @@
 }
 
 @if (_user.RoleNames.Contains("Distribution System Operator Representative")) {
-  <Owners LegalEntity="@_legalEntity"/>
+  <SubnetOwners LegalEntity="@_legalEntity"/>
 }
 
 @code {

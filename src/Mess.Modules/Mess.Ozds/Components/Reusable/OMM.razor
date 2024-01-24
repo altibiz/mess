@@ -8,6 +8,7 @@
 @using Mess.Billing.Abstractions.Models
 @using OrchardCore.ContentManagement.Records
 @using OrchardCore.Users.Indexes
+@using System.Threading;
 
 @inject IOzdsTimeseriesClient _timeseriesClient
 
@@ -42,11 +43,15 @@
       Title='@T["Mjesec"].Value' />
     <PropertyColumn
       Property="x => x.monthEndTotal"
-      Title='@T["Start Total"].Value'
+      Title='@T["Poćetna potrošnja"].Value'
       Filterable="false" />
     <PropertyColumn
       Property="x => x.monthStartTotal"
-      Title='@T["End Total"].Value'
+      Title='@T["Zadnja potrošnja"].Value'
+      Filterable="false" />
+    <PropertyColumn
+      Property="x => x.monthStartTotal - x.monthEndTotal"
+      Title='@T["Ukupna potrošnja"].Value'
       Filterable="false" />
   </Columns>
   <PagerContent>
@@ -57,14 +62,15 @@
 
 
 
-@if(_lastHour != null){
+@if(_lastDay != null){
   <MudGrid Class="my-3">
       <MudItem xs="6">
           <MudPaper Class="d-flex align-center justify-center mud-width-full py-8 px-8" Height="500px">
       <MudContainer MaxWidth="MaxWidth.Small">
               <ApexChart TItem="Order"
                         Title="@Source"
-                        Options="options">
+                        Options="options"
+                        >
                   <ApexPointSeries TItem="Order"
                                   Items="orders"
                                   SeriesType=SeriesType.RadialBar
@@ -82,29 +88,41 @@
               <ApexChart TItem="ChartData"
                 XAxisType="XAxisType.Datetime"
                 Options="graphOptions"
+                @ref="chart"
               Title="@Source">
                 <ApexPointSeries TItem="ChartData"
-                  Items="@_lastHour"
+                  Items="@_graphValues"
                   Name="@T["L1 Potrošnja"].Value"
                   SeriesType="SeriesType.Line"
                   XValue='x => x.date'
                   YValue="x => x.L1"
                 />
                 <ApexPointSeries TItem="ChartData"
-                  Items="@_lastHour"
+                  Items="@_graphValues"
                   Name="@T["L2 Potrošnja"].Value"
                   SeriesType="SeriesType.Line"
                   XValue='x => x.date'
                   YValue="x => x.L2"
                 />
                 <ApexPointSeries TItem="ChartData"
-                  Items="@_lastHour"
+                  Items="@_graphValues"
                   Name="@T["L3 Potrošnja"].Value"
                   SeriesType="SeriesType.Line"
                   XValue='x => x.date'
                   YValue="x => x.L3"
                 />
               </ApexChart>
+      <MudMenu Label="@T["Odabir vremena"].Value" Dense="true">
+        <MudMenuItem OnClick="@(() => MenuItemClicked("Scale1"))">5 min</MudMenuItem>
+        <MudMenuItem OnClick="@(() => MenuItemClicked("Scale2"))">10 min</MudMenuItem>
+        <MudMenuItem OnClick="@(() => MenuItemClicked("Scale3"))">15 min</MudMenuItem>
+        <MudMenuItem OnClick="@(() => MenuItemClicked("Scale4"))">30 min</MudMenuItem>
+        <MudMenuItem OnClick="@(() => MenuItemClicked("Scale5"))">1 h</MudMenuItem>
+        <MudMenuItem OnClick="@(() => MenuItemClicked("Scale6"))">3 h</MudMenuItem>
+        <MudMenuItem OnClick="@(() => MenuItemClicked("Scale7"))">6 h</MudMenuItem>
+        <MudMenuItem OnClick="@(() => MenuItemClicked("Scale8"))">12 h</MudMenuItem>
+        <MudMenuItem OnClick="@(() => MenuItemClicked("Scale9"))">24 h</MudMenuItem>
+      </MudMenu>
       </MudContainer>
           </MudPaper>
       </MudItem>
@@ -120,12 +138,14 @@
     private ApexChartOptions<ChartData> graphOptions = new();
     private string? _searchString;
     private List<TabularData> _dataStruct = new List<TabularData>();
-    public IEnumerable<ChartData>? _lastHour;
+    public IEnumerable<ChartData>? _lastDay;
+    public IEnumerable<ChartData>? _graphValues;
     private (decimal? First, decimal? Last, DateTimeOffset FirstDate) _startEnd;
     public record ChartData(decimal? L1, decimal? L2, decimal? L3, DateTimeOffset date);
     public record struct TabularData(int year, int month, decimal? monthStartTotal, decimal? monthEndTotal);
     private int _month = -1;
     private int _year = -1;
+     private ApexChart<ChartData> chart;
     protected override async Task OnInitializedAsync()
     {
       graphOptions= new ApexChartOptions<ChartData>() {
@@ -151,15 +171,23 @@
         _dataStruct.Add(new TabularData(_year, _month, _startEnd.First, _startEnd.Last));
       }
       if(Source.StartsWith("abb")){
-        var a = await _timeseriesClient.GetAbbMeasurementsAsync(Source, DateTimeOffset.UtcNow.AddHours(-10), DateTimeOffset.UtcNow);
-        _lastHour = a.Select(x => new ChartData(x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.Timestamp)).ToList();
+        var a = await _timeseriesClient.GetAbbMeasurementsAsync(Source, DateTimeOffset.UtcNow.AddHours(-24), DateTimeOffset.UtcNow);
+        _lastDay = a.Select(x => new ChartData(x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.Timestamp)).ToList();
       }
       else{
-        var a = await _timeseriesClient.GetSchneiderMeasurementsAsync(Source, DateTimeOffset.UtcNow.AddHours(-10), DateTimeOffset.UtcNow);
-        _lastHour = a.Select(x => new ChartData(x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.Timestamp)).ToList();
+        var a = await _timeseriesClient.GetSchneiderMeasurementsAsync(Source, DateTimeOffset.UtcNow.AddHours(-24), DateTimeOffset.UtcNow);
+        _lastDay = a.Select(x => new ChartData(x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.Timestamp)).ToList();
       }
-
+      _graphValues = _lastDay.TakeLast(20);
       orders.Add(new Order(_startEnd.First));
+
+      var timer = new Timer(new TimerCallback(async _ =>
+        {
+            await InvokeAsync(async () =>
+            {
+              await GetValues();
+            });
+        }), null, 0, 10000);
     }
 
   private Func<TabularData, bool> _quickFilter => x =>
@@ -172,6 +200,55 @@
 
     return false;
   };
+
+  private async Task MenuItemClicked(string item)
+  {
+    switch(item)
+    {
+      case "Scale1":
+          _graphValues = _lastDay.Where(x => x.date > DateTime.UtcNow.AddMinutes(-5));
+          break;
+      case "Scale2":
+          _graphValues =_lastDay.Where(x => x.date > DateTime.UtcNow.AddMinutes(-10));;
+          break;
+      case "Scale3":
+          _graphValues =_lastDay.Where(x => x.date > DateTime.UtcNow.AddMinutes(-15));;
+          break;
+      case "Scale4":
+          _graphValues =_lastDay.Where(x => x.date > DateTime.UtcNow.AddMinutes(-30));;
+          break;
+      case "Scale5":
+          _graphValues =_lastDay.Where(x => x.date > DateTime.UtcNow.AddMinutes(-60));;
+          break;
+      case "Scale6":
+          _graphValues =_lastDay.Where(x => x.date > DateTime.UtcNow.AddHours(-3));;
+          break;
+      case "Scale7":
+          _graphValues =_lastDay.Where(x => x.date > DateTime.UtcNow.AddHours(-6));;
+          break;
+      case "Scale8":
+          _graphValues =_lastDay.Where(x => x.date > DateTime.UtcNow.AddHours(-12));;
+          break;
+      case "Scale9":
+          _graphValues =_lastDay.Where(x => x.date > DateTime.UtcNow.AddHours(-24));;
+          break;
+    }
+    await chart.UpdateSeriesAsync(true);
+  }
+
+  private async Task GetValues(){
+    if(Source.StartsWith("abb")){
+        var a = await _timeseriesClient.GetAbbMeasurementsAsync(Source, DateTimeOffset.UtcNow.AddHours(-24), DateTimeOffset.UtcNow);
+        _lastDay = a.Select(x => new ChartData(x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.Timestamp)).ToList();
+      }
+      else{
+        var a = await _timeseriesClient.GetSchneiderMeasurementsAsync(Source, DateTimeOffset.UtcNow.AddHours(-24), DateTimeOffset.UtcNow);
+        _lastDay = a.Select(x => new ChartData(x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.Timestamp)).ToList();
+      }
+    _graphValues = _lastDay.TakeLast(20);
+    Console.WriteLine("HIIII");
+    @* await chart.UpdateSeriesAsync(true); *@
+  }
 
   private void RowClicked() { }
 

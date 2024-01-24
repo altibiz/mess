@@ -1,4 +1,4 @@
-@page "/app/sysusage"
+@page "/app/subusage"
 
 @using Mess.Ozds.Abstractions.Indexes
 @using Mess.Iot.Abstractions.Models
@@ -16,7 +16,7 @@
 }
 
 @if (_user.RoleNames.Contains("Closed Distribution System Representative") || _user.RoleNames.Contains("Distribution System Operator Representative")) {
-  <InternalSystemExpenditure LegalEntity="@_legalEntity"/>
+  <InternalSubnetConsumption LegalEntity="@_legalEntity"/>
 }
 
 @code {

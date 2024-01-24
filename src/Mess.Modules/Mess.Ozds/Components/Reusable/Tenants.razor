@@ -9,22 +9,25 @@
 @using OrchardCore.ContentManagement.Records
 @using OrchardCore.Users.Indexes
 
-@inject NavigationManager NavigationManager
+@inject IContentManager _contentManager;
+@inject IServiceProvider _serviceProvider;
+@inject NavigationManager NavigationManager;
 
+@if(User.RoleNames.Contains("Distribution System Operator Representative")){
   <MudDataGrid
-  T="(string, decimal?)"
+  T="TabularData"
   MultiSelection="true"
-  Items="@_lastTotalPerOMM"
+  Items="@_dataStruct"
   SortMode="SortMode.Multiple"
   Filterable="true"
   QuickFilter="@_quickFilter"
   RowClick="@RowClicked">
   <ToolBarContent>
-    <MudText Typo="Typo.h6">@T["Mjerna mjesta"]</MudText>
+    <MudText Typo="Typo.h6">@T["Zakupnici"]</MudText>
     <MudSpacer />
     <MudTextField
       @bind-Value="_searchString"
-      Placeholder="@T["Pretraži"].Value"
+      Placeholder="Search"
       Adornment="Adornment.Start"
       Immediate="true"
       AdornmentIcon="@Icons.Material.Filled.Search"
@@ -34,71 +37,135 @@
   </ToolBarContent>
   <Columns>
     <PropertyColumn
-      Property="x => x.Item1"
-      Title='@T["Mjerni uređaj"].Value'
+      Property="x => x.system.DisplayText"
+      Title='@T["Podmreža"].Value'
       Sortable="false"
       Filterable="false" />
     <PropertyColumn
-      Property="x => x.Item2"
-      Title='@T["Ukupna potrošnja"].Value' />
+      Property="x => x.unit.DisplayText"
+      Title='@T["Zakupnik"].Value' />
+    <PropertyColumn
+      Property="x => x.unit.As<DistributionSystemUnitPart>().Consumption"
+      Title='@T["Potrošnja"].Value'
+      Sortable="false"
+      Filterable="false" />
+    <TemplateColumn CellClass="d-flex justify-end">
+          <CellTemplate>
+              <MudStack Row>
+                <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
+                    <form method="post" action="@($"https://localhost:5001/ozds/Admin/IssueInvoice/{context.Item.unit.ContentItemId}")">
+                        <button type="submit">@T["Izdati Račun"].Value</button>
+                    </form>
+                </MudButton>
+              </MudStack>
+          </CellTemplate>
+      </TemplateColumn>
   </Columns>
   <PagerContent>
-    <MudDataGridPager T="(string, decimal?)" />
+    <MudDataGridPager T="TabularData" />
   </PagerContent>
 </MudDataGrid>
-
+}
+else{
+  <MudDataGrid
+  T="TabularData"
+  MultiSelection="true"
+  Items="@_dataStruct"
+  SortMode="SortMode.Multiple"
+  Filterable="true"
+  QuickFilter="@_quickFilter"
+  RowClick="@RowClicked">
+  <ToolBarContent>
+    <MudText Typo="Typo.h6">@T["Zakupnici"]</MudText>
+    <MudSpacer />
+    <MudTextField
+      @bind-Value="_searchString"
+      Placeholder="Search"
+      Adornment="Adornment.Start"
+      Immediate="true"
+      AdornmentIcon="@Icons.Material.Filled.Search"
+      IconSize="MudBlazor.Size.Medium"
+      Class="mt-0">
+    </MudTextField>
+  </ToolBarContent>
+  <Columns>
+    <PropertyColumn
+      Property="x => x.system.DisplayText"
+      Title='@T["Podmreža"].Value'
+      Sortable="false"
+      Filterable="false" />
+    <PropertyColumn
+      Property="x => x.unit.DisplayText"
+      Title='@T["Zakupnik"].Value' />
+    <PropertyColumn
+      Property="x => x.unit.As<DistributionSystemUnitPart>().Consumption"
+      Title='@T["Potrošnja"].Value'
+      Sortable="false"
+      Filterable="false" />
+  </Columns>
+  <PagerContent>
+    <MudDataGridPager T="TabularData" />
+  </PagerContent>
+</MudDataGrid>
+}
 @code {
     [Parameter]
-    public ContentItem LegalEntity { get; set; } = default!;
-    private IEnumerable<ContentItem> _units = Enumerable.Empty<ContentItem>();
-    private IEnumerable<ContentItem> _unitsOMMs = Enumerable.Empty<ContentItem>();
+    public User User { get; set; } = default!;
     private string? _searchString;
-    private List<(string, decimal?)> _lastTotalPerOMM = new List<(string, decimal?)>();
+    private ContentItem? _legalEntity;
+    private IEnumerable<ContentItem>? _units;
+    public record struct TabularData(ContentItem system, ContentItem unit);
+    private List<TabularData> _dataStruct = new List<TabularData>();
+
+    private IEnumerable<ContentItem>? _systems;
     protected override async Task OnInitializedAsync()
     {
-      await WithTransientSessionAsync(async session => {
-      if(LegalEntity.ContentType == "DistributionSystemUnit"){
-        _units = _units.Append(LegalEntity);
-        _unitsOMMs = await session
-          .Query<ContentItem, OzdsIotDeviceIndex>()
-          .Where(x => x.DistributionSystemUnitContentItemId == _units.First().ContentItemId)
-          .ListAsync();
-      }
-      else{
-        _units = await session
-            .Query<ContentItem, DistributionSystemUnitIndex>()
-            .Where(x => x.ClosedDistributionSystemContentItemId == LegalEntity.ContentItemId)
-            .ListAsync();
-        var unitIds = _units.Select(unit => unit.ContentItemId).ToList();
-        //TODO: DO NOT USE FOREACH WHEN TALKING TO DB
-        foreach(var unit in unitIds){
-          var a = await session
-          .Query<ContentItem, OzdsIotDeviceIndex>()
-          .Where(x => x.DistributionSystemUnitContentItemId == unit)
-          .ListAsync();
-          _unitsOMMs = _unitsOMMs.Concat(a);
-        }
-      }
+        await WithTransientSessionAsync(async session => {
+            _legalEntity = await session
+                .Query<ContentItem, UserPickerFieldIndex>()
+                .Where(index => index.ContentPart == "LegalEntityPart")
+                .Where(index => index.SelectedUserId == User.UserId)
+                .FirstOrDefaultAsync();
 
-      foreach(var omm in _unitsOMMs){
-        if(omm.As<AbbIotDevicePart>() is var abbIotDevicePart && abbIotDevicePart is not null)
-          _lastTotalPerOMM.Add(new (omm.As<IotDevicePart>().DeviceId.Text, abbIotDevicePart.LatestImport));
-        else if(omm.As<SchneiderIotDevicePart>() is var schneiderIotDevicePart && schneiderIotDevicePart is not null)
-          _lastTotalPerOMM.Add(new (omm.As<IotDevicePart>().DeviceId.Text, schneiderIotDevicePart.LatestImport));
-      }
-      });
+            if (User.RoleNames.Contains("Distribution System Operator Representative")) {
+                _systems = await session
+                  .Query<ContentItem, ClosedDistributionSystemIndex>()
+                  .Where(index => index.DistributionSystemOperatorContentItemId == _legalEntity.ContentItemId)
+                  .ListAsync();
+                _units = await session
+                  .Query<ContentItem, DistributionSystemUnitIndex>()
+                  .Where(index => index.DistributionSystemOperatorContentItemId == _legalEntity.ContentItemId)
+                  .ListAsync();
+            }
+            else if (User.RoleNames.Contains("Closed Distribution System Representative")){
+                _systems = await session
+                  .Query<ContentItem, ClosedDistributionSystemIndex>()
+                  .Where(index => index.ClosedDistributionSystemContentItemId == _legalEntity.ContentItemId)
+                  .ListAsync();
+                _units = await session
+                  .Query<ContentItem, DistributionSystemUnitIndex>()
+                  .Where(index => index.ClosedDistributionSystemContentItemId == _legalEntity.ContentItemId)
+                  .ListAsync();
+            }
+        });
+        if(_systems is not null && _units is not null)
+            foreach(var system in _systems){
+                foreach(var unit in _units){
+                    _dataStruct.Add(new TabularData(system, unit));
+                }
+            }
     }
-     private Func<(string, decimal?), bool> _quickFilter => x =>
+    private Func<TabularData, bool> _quickFilter => x =>
   {
-    if (string.IsNullOrWhiteSpace(_searchString))
-      return true;
+     if (string.IsNullOrWhiteSpace(_searchString))
+         return true;
 
-    if (x.Item1.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
-      return true;
+     if (x.unit.DisplayText.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+         return true;
 
-    return false;
+     return false;
   };
-    private void RowClicked(DataGridRowClickEventArgs<(string, decimal?)> args) {
-      NavigationManager.NavigateTo($"app/omm/{args.Item.Item1}");
-     }
+  private void RowClicked(DataGridRowClickEventArgs<TabularData> args) {
+      NavigationManager.NavigateTo($"app/tenant/{args.Item.unit.ContentItemId}");
+  }
 }

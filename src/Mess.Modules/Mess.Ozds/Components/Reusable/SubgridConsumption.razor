@@ -1,0 +1,85 @@
+@using Mess.Ozds.Abstractions.Indexes
+@using Mess.Iot.Abstractions.Models
+@using Mess.Ozds.Abstractions.Models
+@using OrchardCore.Users.Models
+@using OrchardCore.ContentFields.Indexing.SQL
+@using System.Linq.Expressions
+@using Mess.Ozds.Abstractions.Timeseries
+@using Mess.Billing.Abstractions.Models
+@using OrchardCore.ContentManagement.Records
+@using OrchardCore.Users.Indexes
+
+@inject NavigationManager NavigationManager;
+
+  <MudDataGrid
+  T="ContentItem"
+  MultiSelection="true"
+  Items="@_systems"
+  SortMode="SortMode.Multiple"
+  Filterable="true"
+  QuickFilter="@_quickFilter"
+  RowClick="@RowClicked">
+  <ToolBarContent>
+    <MudText Typo="Typo.h6">@T["Vlasnici"]</MudText>
+    <MudSpacer />
+    <MudTextField
+      @bind-Value="_searchString"
+      Placeholder="@T["Pretraži"].Value"
+      Adornment="Adornment.Start"
+      Immediate="true"
+      AdornmentIcon="@Icons.Material.Filled.Search"
+      IconSize="MudBlazor.Size.Medium"
+      Class="mt-0">
+    </MudTextField>
+  </ToolBarContent>
+  <Columns>
+    <PropertyColumn
+      Property="x => x.DisplayText"
+      Title='@T["Podmreža"].Value'
+      Sortable="false"
+      Filterable="false" />
+    <PropertyColumn
+      Property="x => x.As<ClosedDistributionSystemPart>().Consumption"
+      Title='@T["Potrošnja"].Value' />
+  </Columns>
+  <PagerContent>
+    <MudDataGridPager T="ContentItem" />
+  </PagerContent>
+</MudDataGrid>
+
+@code {
+    [Parameter]
+    public ContentItem LegalEntity { get; set; } = default!;
+    private string? _searchString;
+    private IEnumerable<ContentItem>? _systems;
+    public record struct TabularData(ContentItem system, ContentItem systemOwner);
+    private List<TabularData> _dataStruct = new List<TabularData>();
+    protected override async Task OnInitializedAsync()
+    {
+      await WithTransientSessionAsync(async session => {
+        _systems = await session
+          .Query<ContentItem, ClosedDistributionSystemIndex>()
+          .Where(index => index.DistributionSystemOperatorContentItemId == LegalEntity.ContentItemId)
+          .ListAsync();
+      });
+  }
+
+  private Func<ContentItem, bool> _quickFilter => x =>
+  {
+    if (string.IsNullOrWhiteSpace(_searchString))
+      return true;
+
+    if (x.DisplayText.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+      return true;
+
+    return false;
+  };
+
+  private string GetEmail(ContentItem user) {
+    return user.As<LegalEntityPart>().Email.Text;
+  }
+
+  private void RowClicked(DataGridRowClickEventArgs<ContentItem> args) {
+      NavigationManager.NavigateTo($"app/subnet/{args.Item.ContentItemId}");
+  }
+}

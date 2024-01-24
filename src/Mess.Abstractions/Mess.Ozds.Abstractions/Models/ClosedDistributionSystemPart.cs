@@ -19,4 +19,6 @@ public class ClosedDistributionSystemPart : ContentPart
   public ContentPickerField RedOperatorCatalogue { get; set; } = default!;
 
   public ContentPickerField YellowOperatorCatalogue { get; set; } = default!;
+
+  public decimal Consumption { get; set; } = default!;
 }
