@@ -150,16 +150,16 @@
     private bool timerInitialized;
     protected override void OnAfterRender(bool firstRender)
     {
-        if (firstRender && !timerInitialized)
-        {
-            timerInitialized = true;
-            timer = new Timer(
-              new TimerCallback(async _ => await GetValues()),
-              null,
-              0,
-              10000
-            );
-        }
+        // if (firstRender && !timerInitialized)
+        // {
+        //     timerInitialized = true;
+        //     timer = new Timer(
+        //       new TimerCallback(async _ => await GetValues()),
+        //       null,
+        //       0,
+        //       10000
+        //     );
+        // }
     }
     protected override async Task OnInitializedAsync()
     {
