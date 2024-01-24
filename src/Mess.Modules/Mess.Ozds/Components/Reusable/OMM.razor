@@ -145,7 +145,22 @@
     public record struct TabularData(int year, int month, decimal? monthStartTotal, decimal? monthEndTotal);
     private int _month = -1;
     private int _year = -1;
-     private ApexChart<ChartData> chart;
+    private ApexChart<ChartData> chart = default!;
+    private Timer? timer;
+    private bool timerInitialized;
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender && !timerInitialized)
+        {
+            timerInitialized = true;
+            timer = new Timer(
+              new TimerCallback(async _ => await GetValues()),
+              null,
+              0,
+              10000
+            );
+        }
+    }
     protected override async Task OnInitializedAsync()
     {
       graphOptions= new ApexChartOptions<ChartData>() {
@@ -180,14 +195,6 @@
       }
       _graphValues = _lastDay.TakeLast(20);
       orders.Add(new Order(_startEnd.First));
-
-      var timer = new Timer(new TimerCallback(async _ =>
-        {
-            await InvokeAsync(async () =>
-            {
-              await GetValues();
-            });
-        }), null, 0, 10000);
     }
 
   private Func<TabularData, bool> _quickFilter => x =>
@@ -246,8 +253,7 @@
         _lastDay = a.Select(x => new ChartData(x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.Timestamp)).ToList();
       }
     _graphValues = _lastDay.TakeLast(20);
-    Console.WriteLine("HIIII");
-    @* await chart.UpdateSeriesAsync(true); *@
+    await chart.UpdateSeriesAsync(true);
   }
 
   private void RowClicked() { }
