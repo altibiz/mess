@@ -1,4 +1,5 @@
 using DocumentFormat.OpenXml.InkML;
+using FlexLabs.EntityFrameworkCore.Upsert;
 using Mess.Ozds.Abstractions.Billing;
 using Mess.Ozds.Abstractions.Timeseries;
 using Mess.Timeseries.Abstractions.Extensions;
@@ -20,8 +21,11 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
   {
     _services.WithTimeseriesDbContext<OzdsTimeseriesDbContext>(context =>
     {
-      context.AbbMeasurements.Add(model.ToEntity());
-      context.SaveChanges();
+      context.AbbMeasurements
+        .Upsert(model.ToEntity())
+        .On(v => new { v.Tenant, v.Source, v.Timestamp })
+        .NoUpdate()
+        .Run();
     });
   }
 
@@ -30,8 +34,11 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
     return _services.WithTimeseriesDbContextAsync<OzdsTimeseriesDbContext>(
       async context =>
       {
-        context.AbbMeasurements.Add(model.ToEntity());
-        await context.SaveChangesAsync();
+        await context.AbbMeasurements
+          .Upsert(model.ToEntity())
+          .On(v => new { v.Tenant, v.Source, v.Timestamp })
+          .NoUpdate()
+          .RunAsync();
       });
   }
 
@@ -303,8 +310,11 @@ List<string> sources
   {
     _services.WithTimeseriesDbContext<OzdsTimeseriesDbContext>(context =>
     {
-      context.SchneiderMeasurements.Add(model.ToEntity());
-      context.SaveChanges();
+      context.SchneiderMeasurements
+        .Upsert(model.ToEntity())
+        .On(v => new { v.Tenant, v.Source, v.Timestamp })
+        .NoUpdate()
+        .Run();
     });
   }
 
@@ -313,8 +323,11 @@ List<string> sources
     return _services.WithTimeseriesDbContextAsync<OzdsTimeseriesDbContext>(
       async context =>
       {
-        context.SchneiderMeasurements.Add(model.ToEntity());
-        await context.SaveChangesAsync();
+        await context.SchneiderMeasurements
+          .Upsert(model.ToEntity())
+          .On(v => new { v.Tenant, v.Source, v.Timestamp })
+          .NoUpdate()
+          .RunAsync();
       });
   }
 

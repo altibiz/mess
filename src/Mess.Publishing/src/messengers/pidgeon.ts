@@ -13,27 +13,33 @@ export const push: Create = async (template) => {
     templates = await importTemplates();
   }
 
+  const now = DateTime.utc();
+
   const data = {
-    timestamp: `"${DateTime.utc().toISO()}"`,
+    timestamp: `"${now.toISO()}"`,
     measurements: JSON.stringify(
       (
         await Promise.all(
-          Object.entries(allowedTemplates).map(async ([id, push]) => {
-            const template = templates?.[id]?.push;
-            if (!template) {
-              return null;
-            }
+          Object.entries(allowedTemplates).flatMap(([id, push]) =>
+            [...Array(1000 / Object.keys(allowedTemplates).length).keys()].map(
+              async (_) => {
+                const template = templates?.[id]?.push;
+                if (!template) {
+                  return null;
+                }
 
-            const {
-              metadata: { deviceId },
-              payload,
-            } = await push(template);
-            return {
-              deviceId,
-              timestamp: DateTime.utc().toISO(),
-              data: JSON.parse(payload),
-            };
-          }),
+                const {
+                  metadata: { deviceId },
+                  payload,
+                } = await push(template);
+                return {
+                  deviceId,
+                  timestamp: now.toISO(),
+                  data: JSON.parse(payload),
+                };
+              },
+            ),
+          ),
         )
       ).filter((measurement) => measurement),
       null,

@@ -8,6 +8,7 @@
     <PackageReference Include="OrchardCore.Abstractions" Version="$(MessOrchardVersion)" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="$(MessNpgsqlVersion)" />
     <PackageReference Include="Z.EntityFramework.Plus.EFCore" Version="7.22.3" />
+    <PackageReference Include="FlexLabs.EntityFrameworkCore.Upsert" Version="7.0.0" />
   </ItemGroup>
 
 </Project>

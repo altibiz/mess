@@ -1,3 +1,4 @@
+import { DateTime } from "luxon";
 import args from "./args";
 import { importMessengers } from "./messengers/index";
 import { importPushers } from "./pushers/index";
@@ -73,7 +74,10 @@ const run = async () => {
       try {
         const message = await messenger(template);
         const response = await pusher.push(message);
-        await pusher.log(response, console.log);
+        const start = DateTime.now();
+        await pusher.log(response, (...args) => {
+          console.log(...args, `took ${start.diffNow().toHuman()}`);
+        });
       } catch (err) {
         console.error(
           "Failed to push %s message via %s: %O",
@@ -110,7 +114,10 @@ const run = async () => {
       try {
         const message = await messenger(template);
         const response = await pusher.update(message);
-        await pusher.log(response, console.log);
+        const start = DateTime.now();
+        await pusher.log(response, (...args) => {
+          console.log(...args, `took ${start.diffNow().toHuman()}`);
+        });
       } catch (err) {
         console.error(
           "Failed to push %s message via %s: %O",
