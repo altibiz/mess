@@ -1,0 +1,207 @@
+@using Mess.Ozds.Abstractions.Indexes
+@using Mess.Iot.Abstractions.Models
+@using Mess.Ozds.Abstractions.Models
+@using OrchardCore.Users.Models
+@using OrchardCore.ContentFields.Indexing.SQL
+@using System.Linq.Expressions
+@using Mess.Ozds.Abstractions.Timeseries
+@using Mess.Billing.Abstractions.Models
+@using OrchardCore.ContentManagement.Records
+@using OrchardCore.Users.Indexes
+@using System.Threading;
+
+@inject IOzdsTimeseriesClient _timeseriesClient
+
+@if(_lastDay != null){
+  <MudGrid Class="my-3">
+      <MudItem xs="6">
+        <MudPaper Class="d-flex align-center justify-center mud-width-full py-8 px-8" Height="500px">
+          <MudContainer Class="d-flex flex-column" MaxWidth="MaxWidth.Small">
+            @if(_leftGraphValues is not null){
+              <ApexChart TItem="ChartDataL"
+                XAxisType="XAxisType.Datetime"
+                @ref="leftChart"
+              Title="@(_leftTitle)">
+                <ApexPointSeries TItem="ChartDataL"
+                  Items="@_leftGraphValues"
+                  Name="@T["L1 Potrošnja"].Value"
+                  SeriesType="SeriesType.Line"
+                  XValue='x => x.date'
+                  YValue="x => x.L1"
+                />
+                <ApexPointSeries TItem="ChartDataL"
+                  Items="@_leftGraphValues"
+                  Name="@T["L2 Potrošnja"].Value"
+                  SeriesType="SeriesType.Line"
+                  XValue='x => x.date'
+                  YValue="x => x.L2"
+                />
+                <ApexPointSeries TItem="ChartDataL"
+                  Items="@_leftGraphValues"
+                  Name="@T["L3 Potrošnja"].Value"
+                  SeriesType="SeriesType.Line"
+                  XValue='x => x.date'
+                  YValue="x => x.L3"
+                />
+              </ApexChart>
+              <MudMenu Label="@_leftTitle" Dense="true" Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
+                @foreach(var omm in _ioTDevices){
+                  <MudMenuItem OnClick="@(() => LeftMenuItemClicked(omm.DisplayText))">@omm.DisplayText</MudMenuItem>
+                }
+              </MudMenu>
+            }
+          </MudContainer>
+        </MudPaper>
+      </MudItem>
+      <MudItem xs="6">
+        <MudPaper Class="d-flex align-center justify-center mud-width-full py-8 px-8" Height="500px">
+          <MudContainer Class="d-flex flex-column" MaxWidth="MaxWidth.Small">
+            @if(_rightGraphValues is not null){
+              <ApexChart TItem="ChartData"
+                XAxisType="XAxisType.Datetime"
+                Options="graphOptions"
+                @ref ="rightChart"
+              Title="@(_rightTitle)">
+                <ApexPointSeries TItem="ChartData"
+                  Items="@_rightGraphValues"
+                  Name="@T["L1 Potrošnja"].Value"
+                  SeriesType="SeriesType.Line"
+                  XValue='x => x.date'
+                  YValue="x => x.L1"
+                />
+                <ApexPointSeries TItem="ChartData"
+                  Items="@_rightGraphValues"
+                  Name="@T["L2 Potrošnja"].Value"
+                  SeriesType="SeriesType.Line"
+                  XValue='x => x.date'
+                  YValue="x => x.L2"
+                />
+                <ApexPointSeries TItem="ChartData"
+                  Items="@_rightGraphValues"
+                  Name="@T["L3 Potrošnja"].Value"
+                  SeriesType="SeriesType.Line"
+                  XValue='x => x.date'
+                  YValue="x => x.L3"
+                />
+              </ApexChart>
+              <MudMenu Label="@_rightTitle" Dense="true" Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
+                @foreach(var omm in _ioTDevices){
+                  <MudMenuItem OnClick="@(() => RightMenuItemClicked(omm.DisplayText))">@omm.DisplayText</MudMenuItem>
+                }
+              </MudMenu>
+              }
+          </MudContainer>
+        </MudPaper>
+      </MudItem>
+  </MudGrid>
+}
+
+@code {
+    [Parameter]
+    public ContentItem LegalEntity { get; set; } = default!;
+    private ApexChartOptions<ChartData> graphOptions = new();
+    public List<IEnumerable<ChartData>> _lastDay = new List<IEnumerable<ChartData>>();
+    public IEnumerable<ChartDataL>? _leftGraphValues;
+    public IEnumerable<ChartData>? _rightGraphValues;
+    private string _leftTitle = "";
+    private string _rightTitle = "";
+    public record ChartData(decimal? L1, decimal? L2, decimal? L3, DateTimeOffset date, string source);
+    public record ChartDataL(decimal? L1, decimal? L2, decimal? L3, DateTimeOffset date, string source);
+    private ApexChart<ChartDataL> leftChart = default!;
+    private ApexChart<ChartData> rightChart = default!;
+    private IEnumerable<ContentItem> _ioTDevices;
+    protected override async Task OnInitializedAsync()
+    {
+      graphOptions= new ApexChartOptions<ChartData>() {
+        Grid = new Grid
+        {
+            BorderColor = "#e7e7e7",
+            Row = new GridRow
+            {
+                Colors = new List<string> { "#f3f3f3", "transparent" },
+                Opacity = 0.5d
+            }
+        }
+        };
+      graphOptions.Tooltip = new ApexCharts.Tooltip { X = new TooltipX { Format = @"hh : mm : ss" } };
+      await WithTransientSessionAsync(async session => {
+        if(LegalEntity.ContentType == "ClosedDistributionSystem"){
+          _ioTDevices = await session
+            .Query<ContentItem, OzdsIotDeviceIndex>()
+            .Where(index => index.ClosedDistributionSystemContentItemId == LegalEntity.ContentItemId)
+            .Where(index => !index.IsMessenger)
+            .ListAsync();
+        }
+        else if (LegalEntity.ContentType == "DistributionSystemOperator"){
+          _ioTDevices = await session
+            .Query<ContentItem, OzdsIotDeviceIndex>()
+            .Where(index => index.DistributionSystemOperatorContentItemId == LegalEntity.ContentItemId)
+            .Where(index => !index.IsMessenger)
+            .ListAsync();
+        }
+        else if (LegalEntity.ContentType == "DistributionSystemUnit"){
+          _ioTDevices = await session
+            .Query<ContentItem, OzdsIotDeviceIndex>()
+            .Where(index => index.DistributionSystemUnitContentItemId == LegalEntity.ContentItemId)
+            .Where(index => !index.IsMessenger)
+            .ListAsync();
+        }
+        if(_ioTDevices.Count() > 1){
+          var c = _ioTDevices.Select(x => x).Take(2);
+          foreach(var omm in c){
+            if(omm.DisplayText.StartsWith("abb")){
+              var a = await _timeseriesClient.GetAbbMeasurementsAsync(omm.DisplayText, DateTimeOffset.UtcNow.AddHours(-24), DateTimeOffset.UtcNow);
+              _lastDay.Add(a.Select(x => new ChartData(x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.Timestamp, x.DeviceId)).ToList());
+            }
+            else if(omm.DisplayText.StartsWith("schneider")){
+              var a = await _timeseriesClient.GetSchneiderMeasurementsAsync(omm.DisplayText, DateTimeOffset.UtcNow.AddHours(-24), DateTimeOffset.UtcNow);
+              _lastDay.Add(a.Select(x => new ChartData(x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.Timestamp, x.DeviceId)).ToList());
+            }
+          }
+        }
+        _leftGraphValues = _lastDay[0].Select(x => new ChartDataL(L1: x.L1, L2: x.L2, L3: x.L3, date:x.date, source:x.source)).ToList().TakeLast(20);
+        _leftTitle = _leftGraphValues.First().source;
+        _rightGraphValues = _lastDay[1].ToList().TakeLast(20);
+        _rightTitle = _rightGraphValues.First().source;
+      });
+    }
+
+  private async Task LeftMenuItemClicked(string source)
+  {
+    if(source.StartsWith("abb")){
+      var a = await _timeseriesClient.GetAbbMeasurementsAsync(source, DateTimeOffset.UtcNow.AddHours(-24), DateTimeOffset.UtcNow);
+      _leftGraphValues = a.Select(x => new ChartDataL(x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.Timestamp, x.DeviceId)).ToList().TakeLast(20);
+    }
+    else if(source.StartsWith("schneider")){
+      var a = await _timeseriesClient.GetSchneiderMeasurementsAsync(source, DateTimeOffset.UtcNow.AddHours(-24), DateTimeOffset.UtcNow);
+      _leftGraphValues = a.Select(x => new ChartDataL(x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.Timestamp, x.DeviceId)).ToList().TakeLast(20);
+    }
+    _leftTitle = _leftGraphValues.First().source;
+    Console.WriteLine(_leftGraphValues.Last().source);
+    await leftChart.UpdateSeriesAsync(true);
+  }
+  private async Task RightMenuItemClicked(string source)
+  {
+    if(source.StartsWith("abb")){
+      var a = await _timeseriesClient.GetAbbMeasurementsAsync(source, DateTimeOffset.UtcNow.AddHours(-24), DateTimeOffset.UtcNow);
+      _rightGraphValues = a.Select(x => new ChartData(x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.Timestamp, x.DeviceId)).ToList().TakeLast(20);
+    }
+    else if(source.StartsWith("schneider")){
+      var a = await _timeseriesClient.GetSchneiderMeasurementsAsync(source, DateTimeOffset.UtcNow.AddHours(-24), DateTimeOffset.UtcNow);
+      _rightGraphValues = a.Select(x => new ChartData(x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.Timestamp, x.DeviceId)).ToList().TakeLast(20);
+    }
+    _rightTitle = _rightGraphValues.First().source;
+    await rightChart.UpdateSeriesAsync(true);
+  }
+
+  private class Order {
+    public decimal? value = 10;
+    public decimal? valueMax = 1000;
+    public decimal? percent = 50;
+
+    public Order(decimal? val){
+      value = val;
+      percent = (value / valueMax) * 100;
+    }
+  }
+}
