@@ -17,10 +17,9 @@
   Items="@_lastTotalPerOMM"
   SortMode="SortMode.Multiple"
   Filterable="true"
-  QuickFilter="@_quickFilter"
-  RowClick="@RowClicked">
+  QuickFilter="@_quickFilter">
   <ToolBarContent>
-    <MudText Typo="Typo.h6">@T["Brojila"]</MudText>
+    <MudText Typo="Typo.h4">@T["Brojila"]</MudText>
     <MudSpacer />
     <MudTextField
       @bind-Value="_searchString"
@@ -33,26 +32,29 @@
     </MudTextField>
   </ToolBarContent>
   <Columns>
-    <PropertyColumn
-      Property="x => x.source"
-      Title='@T["Brojilo"].Value'
+    <TemplateColumn Title="@T["Brojilo"].Value"
       Sortable="false"
-      Filterable="false" />
+      Filterable="false">
+      <CellTemplate>
+          <MudStack Row>
+            <MudButton OnClick="() => InspectOMM(context.Item.source)" Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
+              @context.Item.source
+            </MudButton>
+          </MudStack>
+      </CellTemplate>
+    </TemplateColumn>
     <PropertyColumn
+      CellStyle="font-size: x-large;"
       Property="x => x.lastImport"
-      Title='@T["Zadnji import"].Value'
-      Sortable="false"
-      Filterable="false" />
+      Title='@T["Zadnji import"].Value'/>
     <PropertyColumn
+      CellStyle="font-size: x-large;"
       Property="x => x.consumption"
-      Title='@T["Ukupna potrošnja"].Value'
-      Sortable="false"
-      Filterable="false" />
+      Title='@T["Ukupna potrošnja"].Value'/>
     <PropertyColumn
+      CellStyle="font-size: large;"
       Property="x => x.invoiceCount"
-      Title='@T["Broj računa"].Value'
-      Sortable="false"
-      Filterable="false" />
+      Title='@T["Broj računa"].Value'/>
   </Columns>
   <PagerContent>
     <MudDataGridPager T="(string source, decimal? lastImport, decimal? consumption, int invoiceCount)" />
@@ -121,7 +123,7 @@
 
     return false;
   };
-    private void RowClicked(DataGridRowClickEventArgs<(string source, decimal? lastImport, decimal? consumption, int invoiceCount)> args) {
-      NavigationManager.NavigateTo($"app/omm/{args.Item.source}");
-     }
+  private void InspectOMM(string item) {
+      NavigationManager.NavigateTo($"app/omm/{item}");
+  }
 }

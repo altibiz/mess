@@ -17,10 +17,9 @@
   Items="@_dataStruct"
   SortMode="SortMode.Multiple"
   Filterable="true"
-  QuickFilter="@_quickFilter"
-  RowClick="@RowClicked">
+  QuickFilter="@_quickFilter">
   <ToolBarContent>
-    <MudText Typo="Typo.h6">@T["Mjerna mjesta"].Value</MudText>
+    <MudText Typo="Typo.h4">@T["Mjerna mjesta"].Value</MudText>
     <MudSpacer />
     <MudTextField
       @bind-Value="_searchString"
@@ -33,22 +32,41 @@
     </MudTextField>
   </ToolBarContent>
   <Columns>
-    <PropertyColumn
-      Property="x => x.omm.DisplayText"
-      Title='@T["Mjerno mjesto"].Value'
+   <TemplateColumn Title="@T["Mjerna mjesta"].Value"
       Sortable="false"
-      Filterable="false" />
-    <PropertyColumn
-      Property="x => x.system.DisplayText"
-      Title='@T["Podmreža"].Value'
+      Filterable="false">
+        <CellTemplate>
+            <MudStack Row>
+              <MudButton OnClick="() => InspectOMM(context.Item.omm)" Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
+                @context.Item.omm.DisplayText
+              </MudButton>
+            </MudStack>
+        </CellTemplate>
+    </TemplateColumn>
+    <TemplateColumn Title="@T["Podmreže"].Value"
       Sortable="false"
-      Filterable="false" />
-    <PropertyColumn
-      Property="x => x.unit.DisplayText"
-      Title='@T["Zakupnik"].Value'
+      Filterable="false">
+        <CellTemplate>
+            <MudStack Row>
+              <MudButton OnClick="() => InspectSubnet(context.Item.system)" Variant="Variant.Outlined" Color="MudBlazor.Color.Primary">
+                @context.Item.system.DisplayText
+              </MudButton>
+            </MudStack>
+        </CellTemplate>
+    </TemplateColumn>
+    <TemplateColumn Title="@T["Zakupnici"].Value"
       Sortable="false"
-      Filterable="false" />
+      Filterable="false">
+        <CellTemplate>
+            <MudStack Row>
+              <MudButton OnClick="() => InspectTenant(context.Item.unit)" Variant="Variant.Outlined" Color="MudBlazor.Color.Primary">
+                @context.Item.unit.DisplayText
+              </MudButton>
+            </MudStack>
+        </CellTemplate>
+    </TemplateColumn>
     <PropertyColumn
+      CellStyle="font-size: x-large;"
       Property="x => x.lastMeasurement"
       Title='@T["Ukupna potrošnja"].Value' />
   </Columns>
@@ -122,7 +140,13 @@
 
     return false;
   };
-    private void RowClicked(DataGridRowClickEventArgs<TabularData> args) {
-      NavigationManager.NavigateTo($"app/omm/{args.Item.omm.DisplayText}");
-     }
+  private void InspectTenant(ContentItem item) {
+      NavigationManager.NavigateTo($"app/tenant/{item.ContentItemId}");
+  }
+  private void InspectSubnet(ContentItem item) {
+      NavigationManager.NavigateTo($"app/subnet/{item.ContentItemId}");
+  }
+  private void InspectOMM(ContentItem item) {
+      NavigationManager.NavigateTo($"app/omm/{item.DisplayText}");
+  }
 }

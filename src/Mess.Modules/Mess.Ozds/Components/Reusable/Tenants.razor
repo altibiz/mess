@@ -20,8 +20,7 @@
   Items="@_dataStruct"
   SortMode="SortMode.Multiple"
   Filterable="true"
-  QuickFilter="@_quickFilter"
-  RowClick="@RowClicked">
+  QuickFilter="@_quickFilter">
   <ToolBarContent>
     <MudText Typo="Typo.h6">@T["Zakupnici"]</MudText>
     <MudSpacer />
@@ -36,15 +35,30 @@
     </MudTextField>
   </ToolBarContent>
   <Columns>
-    <PropertyColumn
-      Property="x => x.system.DisplayText"
-      Title='@T["Podmreža"].Value'
+    <TemplateColumn Title="@T["Podmreže"].Value"
       Sortable="false"
-      Filterable="false" />
+      Filterable="false">
+        <CellTemplate>
+            <MudStack Row>
+              <MudButton OnClick="() => InspectSubnet(context.Item.system)" Variant="Variant.Outlined" Color="MudBlazor.Color.Primary">
+                @context.Item.system.DisplayText
+              </MudButton>
+            </MudStack>
+        </CellTemplate>
+    </TemplateColumn>
+    <TemplateColumn Title="@T["Zakupnici"].Value"
+      Sortable="false"
+      Filterable="false">
+        <CellTemplate>
+            <MudStack Row>
+              <MudButton OnClick="() => InspectTenant(context.Item.unit)" Variant="Variant.Outlined" Color="MudBlazor.Color.Primary">
+                @context.Item.unit.DisplayText
+              </MudButton>
+            </MudStack>
+        </CellTemplate>
+    </TemplateColumn>
     <PropertyColumn
-      Property="x => x.unit.DisplayText"
-      Title='@T["Zakupnik"].Value' />
-    <PropertyColumn
+      CellStyle="font-size: x-large;"
       Property="x => x.unit.As<DistributionSystemUnitPart>().Consumption"
       Title='@T["Potrošnja"].Value'
       Sortable="false"
@@ -73,10 +87,9 @@ else{
   Items="@_dataStruct"
   SortMode="SortMode.Multiple"
   Filterable="true"
-  QuickFilter="@_quickFilter"
-  RowClick="@RowClicked">
+  QuickFilter="@_quickFilter">
   <ToolBarContent>
-    <MudText Typo="Typo.h6">@T["Zakupnici"]</MudText>
+    <MudText Typo="Typo.h4">@T["Zakupnici"]</MudText>
     <MudSpacer />
     <MudTextField
       @bind-Value="_searchString"
@@ -89,19 +102,32 @@ else{
     </MudTextField>
   </ToolBarContent>
   <Columns>
-    <PropertyColumn
-      Property="x => x.system.DisplayText"
-      Title='@T["Podmreža"].Value'
+    <TemplateColumn Title="@T["Podmreže"].Value"
       Sortable="false"
-      Filterable="false" />
+      Filterable="false">
+        <CellTemplate>
+            <MudStack Row>
+              <MudButton OnClick="() => InspectSubnet(context.Item.system)" Variant="Variant.Outlined" Color="MudBlazor.Color.Primary">
+                @context.Item.system.DisplayText
+              </MudButton>
+            </MudStack>
+        </CellTemplate>
+    </TemplateColumn>
+    <TemplateColumn Title="@T["Zakupnici"].Value"
+      Sortable="false"
+      Filterable="false">
+        <CellTemplate>
+            <MudStack Row>
+              <MudButton OnClick="() => InspectTenant(context.Item.unit)" Variant="Variant.Outlined" Color="MudBlazor.Color.Primary">
+                @context.Item.unit.DisplayText
+              </MudButton>
+            </MudStack>
+        </CellTemplate>
+    </TemplateColumn>
     <PropertyColumn
-      Property="x => x.unit.DisplayText"
-      Title='@T["Zakupnik"].Value' />
-    <PropertyColumn
+      CellStyle="font-size: x-large;"
       Property="x => x.unit.As<DistributionSystemUnitPart>().Consumption"
-      Title='@T["Potrošnja"].Value'
-      Sortable="false"
-      Filterable="false" />
+      Title='@T["Potrošnja"].Value'/>
   </Columns>
   <PagerContent>
     <MudDataGridPager T="TabularData" />
@@ -165,7 +191,10 @@ else{
 
      return false;
   };
-  private void RowClicked(DataGridRowClickEventArgs<TabularData> args) {
-      NavigationManager.NavigateTo($"app/tenant/{args.Item.unit.ContentItemId}");
+  private void InspectTenant(ContentItem item) {
+      NavigationManager.NavigateTo($"app/tenant/{item.ContentItemId}");
+  }
+  private void InspectSubnet(ContentItem item) {
+      NavigationManager.NavigateTo($"app/subnet/{item.ContentItemId}");
   }
 }

@@ -1,5 +1,4 @@
 @page "/app/account"
-@page "/app/account/{entityId}"
 
 @using Mess.Ozds.Abstractions.Indexes
 @using Mess.Iot.Abstractions.Models
@@ -12,35 +11,35 @@
 @using OrchardCore.ContentManagement.Records
 @using OrchardCore.Users.Indexes
 
-@if (_user is null && EntityId is null) {
+@if (_user is null) {
   return;
 }
 else if (_legalEntityPart != null && _user != null){
+  <MudContainer MaxWidth="MaxWidth.Small" Class="d-flex" Style="float: left;">
   <MudStack>
-    <MudPaper Class="px-3 py-3">
+    <MudPaper Class="pa-4">
       @T["Korisničko ime"]: @_user.UserName
     </MudPaper>
-    <MudPaper Class="px-3 py-3">
+    <MudPaper Class="pa-4">
       @T["Korisnički Email"]: @_user.Email
     </MudPaper>
-    <MudPaper Class="px-3 py-3">
+    <MudPaper Class="pa-4">
       @T["Ime"]: @_legalEntityPart.Name.Text
     </MudPaper>
-    <MudPaper Class="px-3 py-3">
+    <MudPaper Class="pa-4">
       @T["Email"]: @_legalEntityPart.Email.Text
     </MudPaper>
-    <MudPaper Class="px-3 py-3">
+    <MudPaper Class="pa-4">
       @T["Grad"]: @_legalEntityPart.PostalCode.Text @_legalEntityPart.City.Text
     </MudPaper>
-    <MudPaper Class="px-3 py-3">
+    <MudPaper Class="pa-4">
       @T["OIB"]: @_legalEntityPart.SocialSecurityNumber.Text
     </MudPaper>
   </MudStack>
+  </MudContainer>
 }
 
 @code {
-    [Parameter]
-    public string? EntityId {get; set;}
     private User? _user;
     private LegalEntityPart? _legalEntityPart;
     private ContentItem? _legalEntity;
@@ -48,26 +47,15 @@ else if (_legalEntityPart != null && _user != null){
     protected override async Task OnInitializedAsync()
     {
       await WithTransientSessionAsync(async session => {
-        if(EntityId == null){
-          _user = await this.GetAuthenticatedOrchardCoreUserAsync();
+        _user = await this.GetAuthenticatedOrchardCoreUserAsync();
 
-          _legalEntity = await session
-            .Query<ContentItem, UserPickerFieldIndex>()
-            .Where(index => index.ContentPart == "LegalEntityPart")
-            .Where(index => index.SelectedUserId == _user.UserId)
-            .FirstOrDefaultAsync();
+        _legalEntity = await session
+          .Query<ContentItem, UserPickerFieldIndex>()
+          .Where(index => index.ContentPart == "LegalEntityPart")
+          .Where(index => index.SelectedUserId == _user.UserId)
+          .FirstOrDefaultAsync();
 
-          _legalEntityPart = _legalEntity.As<LegalEntityPart>();
-        }
-        else{
-          _legalEntity = await session
-            .Query<ContentItem, UserPickerFieldIndex>()
-            .Where(index => index.ContentPart == "LegalEntityPart")
-            .Where(index => index.ContentItemId == EntityId)
-            .FirstOrDefaultAsync();
-
-          _legalEntityPart = _legalEntity.As<LegalEntityPart>();
-        }
+        _legalEntityPart = _legalEntity.As<LegalEntityPart>();
       });
   }
 }

@@ -17,10 +17,9 @@
   Items="@_systems"
   SortMode="SortMode.Multiple"
   Filterable="true"
-  QuickFilter="@_quickFilter"
-  RowClick="@RowClicked">
+  QuickFilter="@_quickFilter">
   <ToolBarContent>
-    <MudText Typo="Typo.h6">@T["Tvoje Podmreže"]</MudText>
+    <MudText Typo="Typo.h4">@T["Tvoje Podmreže"]</MudText>
     <MudSpacer />
     <MudTextField
       @bind-Value="_searchString"
@@ -33,11 +32,17 @@
     </MudTextField>
   </ToolBarContent>
   <Columns>
-    <PropertyColumn
-      Property="x => x.DisplayText"
-      Title='@T["Podmreža"].Value'
+    <TemplateColumn Title="@T["Podmreže"].Value"
       Sortable="false"
-      Filterable="false" />
+      Filterable="false">
+        <CellTemplate>
+            <MudStack Row>
+              <MudButton OnClick="() => InspectSubnet(context.Item)" Variant="Variant.Outlined" Color="MudBlazor.Color.Primary">
+                @context.Item.DisplayText
+              </MudButton>
+            </MudStack>
+        </CellTemplate>
+    </TemplateColumn>
   </Columns>
   <PagerContent>
     <MudDataGridPager T="ContentItem" />
@@ -75,8 +80,7 @@
   private string GetEmail(ContentItem user) {
     return user.As<LegalEntityPart>().Email.Text;
   }
-
-  private void RowClicked(DataGridRowClickEventArgs<ContentItem> args) {
-      NavigationManager.NavigateTo($"app/subnet/{args.Item.ContentItemId}");
+  private void InspectSubnet(ContentItem item) {
+      NavigationManager.NavigateTo($"app/subnet/{item.ContentItemId}");
   }
 }

@@ -16,12 +16,9 @@
   T="TabularData"
   MultiSelection="true"
   Items="@_dataStruct"
-  SortMode="SortMode.Multiple"
-  Filterable="true"
-  QuickFilter="@_quickFilter"
-  RowClick="@RowClicked">
+  SortMode="SortMode.Multiple">
   <ToolBarContent>
-    <MudText Typo="Typo.h6">@Source</MudText>
+    <MudText Typo="Typo.h4">@(T["Brojilo"].Value + ": " + Source)</MudText>
     <MudSpacer />
     <MudTextField
       @bind-Value="_searchString"
@@ -35,24 +32,28 @@
   </ToolBarContent>
   <Columns>
     <PropertyColumn
+      CellStyle="font-size: large;"
       Property="x => x.year"
-      Title='@T["Godina"].Value'
-      Filterable="false" />
+      Title='@T["Godina"].Value'/>
     <PropertyColumn
       Property="x => x.month"
       Title='@T["Mjesec"].Value' />
     <PropertyColumn
+      CellStyle="font-size: x-large;"
       Property="x => x.monthEndTotal"
       Title='@T["Poćetna potrošnja"].Value'
-      Filterable="false" />
+      Sortable="false"
+      Filterable="false"/>
     <PropertyColumn
+      CellStyle="font-size: x-large;"
       Property="x => x.monthStartTotal"
       Title='@T["Zadnja potrošnja"].Value'
-      Filterable="false" />
+      Sortable="false"
+      Filterable="false"/>
     <PropertyColumn
+      CellStyle="font-size: xx-large;"
       Property="x => x.monthStartTotal - x.monthEndTotal"
-      Title='@T["Ukupna potrošnja"].Value'
-      Filterable="false" />
+      Title='@T["Ukupna potrošnja"].Value'/>
   </Columns>
   <PagerContent>
     <MudDataGridPager T="TabularData" />
@@ -68,7 +69,7 @@
           <MudPaper Class="d-flex align-center justify-center mud-width-full py-8 px-8" Height="500px">
       <MudContainer MaxWidth="MaxWidth.Small">
               <ApexChart TItem="Order"
-                        Title="@Source"
+                        Title="@(T["Brojilo"].Value + ": " + Source)"
                         Options="options"
                         >
                   <ApexPointSeries TItem="Order"
@@ -84,12 +85,12 @@
       </MudItem>
       <MudItem xs="6">
           <MudPaper Class="d-flex align-center justify-center mud-width-full py-8 px-8" Height="500px">
-      <MudContainer MaxWidth="MaxWidth.Small">
+      <MudContainer Class="d-flex flex-column" MaxWidth="MaxWidth.Small">
               <ApexChart TItem="ChartData"
                 XAxisType="XAxisType.Datetime"
                 Options="graphOptions"
                 @ref="chart"
-              Title="@Source">
+              Title="@(T["Brojilo"].Value + ": " + Source)">
                 <ApexPointSeries TItem="ChartData"
                   Items="@_graphValues"
                   Name="@T["L1 Potrošnja"].Value"
@@ -112,7 +113,7 @@
                   YValue="x => x.L3"
                 />
               </ApexChart>
-      <MudMenu Label="@T["Odabir vremena"].Value" Dense="true">
+      <MudMenu Label="@T["Odabir vremena"].Value" Dense="true" Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
         <MudMenuItem OnClick="@(() => MenuItemClicked("Scale1"))">5 min</MudMenuItem>
         <MudMenuItem OnClick="@(() => MenuItemClicked("Scale2"))">10 min</MudMenuItem>
         <MudMenuItem OnClick="@(() => MenuItemClicked("Scale3"))">15 min</MudMenuItem>
@@ -174,6 +175,7 @@
             }
         }
         };
+        graphOptions.Tooltip = new ApexCharts.Tooltip { X = new TooltipX { Format = @"hh : mm : ss" } };
       options.PlotOptions = new PlotOptions { RadialBar = new PlotOptionsRadialBar { StartAngle = -90, EndAngle = 90 } };
       if(Source.StartsWith("abb"))
         _startEnd = await _timeseriesClient.GetAbbLastMonthMeasurementsAsync(Source);
@@ -196,17 +198,6 @@
       _graphValues = _lastDay.TakeLast(20);
       orders.Add(new Order(_startEnd.First));
     }
-
-  private Func<TabularData, bool> _quickFilter => x =>
-  {
-    if (string.IsNullOrWhiteSpace(_searchString))
-      return true;
-
-    if (x.month.ToString() == _searchString)
-      return true;
-
-    return false;
-  };
 
   private async Task MenuItemClicked(string item)
   {
@@ -255,8 +246,6 @@
     _graphValues = _lastDay.TakeLast(20);
     await chart.UpdateSeriesAsync(true);
   }
-
-  private void RowClicked() { }
 
   private class Order {
     public decimal? value = 10;

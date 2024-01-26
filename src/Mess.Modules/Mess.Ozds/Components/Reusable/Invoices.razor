@@ -18,10 +18,9 @@
   Items="@_invoices"
   SortMode="SortMode.Multiple"
   Filterable="true"
-  QuickFilter="@_quickFilter"
-  RowClick="@RowClicked">
+  QuickFilter="@_quickFilter">
   <ToolBarContent>
-    <MudText Typo="Typo.h6">@T["Računi"]</MudText>
+    <MudText Typo="Typo.h4">@T["Računi"]</MudText>
     <MudSpacer />
     <MudTextField
       @bind-Value="_searchString"
@@ -35,27 +34,43 @@
   </ToolBarContent>
   <Columns >
     <PropertyColumn
-      Property="x => x.ContentItemId"
-      Title='@T["Id"].Value'
+      CellStyle="font-size: large;"
+      Property="x => x.As<OzdsInvoicePart>().Data.DistributionSystemUnit.DisplayText"
+      Title='@T["Primatelj"].Value'
       Sortable="false"
       Filterable="false" />
     <PropertyColumn
+      CellStyle="font-size: large;"
       Property="x => x.As<OzdsInvoicePart>().Data.DistributionSystemOperator.DisplayText"
       Title='@T["Izdavatelj"].Value'
       Sortable="false"
       Filterable="false" />
     <PropertyColumn
-      Property="x => x.As<OzdsInvoicePart>().Data.DistributionSystemUnit.DisplayText"
-      Title='@T["Primatelj"].Value' />
+      CellStyle="font-size: x-large;"
+      Property="x => x.As<OzdsInvoicePart>().Data.TotalWithTax"
+      Title='@T["Ukupno"].Value'/>
     <PropertyColumn
+      CellStyle="font-size: large;"
       Property="x => x.As<OzdsInvoicePart>().Data.From.Date.ToShortDateString()"
       Title='@T["Od"].Value' />
     <PropertyColumn
+      CellStyle="font-size: large;"
       Property="x => x.As<OzdsInvoicePart>().Data.To.Date.ToShortDateString()"
       Title='@T["Do"].Value' />
     <PropertyColumn
-      Property="x => x.As<OzdsInvoicePart>().Data.TotalWithTax"
-      Title='@T["Ukupno"].Value' />
+      Property="x => x.ContentItemId"
+      Title='@T["Id"].Value'
+      Sortable="false"
+      Filterable="false" />
+    <TemplateColumn CellClass="d-flex justify-center" Sortable="false" Filterable="false">
+        <CellTemplate>
+            <MudStack Row>
+              <MudButton OnClick="() => InspectInvoice(context.Item)" Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
+                @T["Pregled računa"]
+              </MudButton>
+            </MudStack>
+        </CellTemplate>
+    </TemplateColumn>
   </Columns>
   <PagerContent>
     <MudDataGridPager T="ContentItem" />
@@ -87,8 +102,10 @@
 
     return false;
   };
-
-  private void RowClicked(DataGridRowClickEventArgs<ContentItem> args) {
-      NavigationManager.NavigateTo($"app/invoice/{args.Item.ContentItemId}");
-     }
+  private void InspectTenant(ContentItem item) {
+      NavigationManager.NavigateTo($"app/tenant/{item.As<OzdsInvoicePart>().Data.DistributionSystemUnit.ContentItemId}");
+  }
+  private void InspectInvoice(ContentItem item) {
+      NavigationManager.NavigateTo($"app/invoice/{item.ContentItemId}");
+  }
 }

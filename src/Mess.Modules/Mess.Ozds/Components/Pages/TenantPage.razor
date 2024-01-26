@@ -15,20 +15,22 @@
   return;
 }
 else if (_legalEntityPart != null){
-  <MudStack>
-    <MudPaper Class="px-3 py-3">
-      @T["Ime"]: @_legalEntityPart.Name.Text
-    </MudPaper>
-    <MudPaper Class="px-3 py-3">
-      @T["Email"]: @_legalEntityPart.Email.Text
-    </MudPaper>
-    <MudPaper Class="px-3 py-3">
-      @T["Grad"]: @_legalEntityPart.PostalCode.Text @_legalEntityPart.City.Text
-    </MudPaper>
-    <MudPaper Class="px-3 py-3">
-      @T["OIB"]: @_legalEntityPart.SocialSecurityNumber.Text
-    </MudPaper>
-  </MudStack>
+  <MudContainer MaxWidth="MaxWidth.Small" Class="d-flex" Style="float: left;">
+    <MudStack>
+      <MudPaper Class="pa-4">
+        @T["Ime"]: @_legalEntityPart.Name.Text
+      </MudPaper>
+      <MudPaper Class="pa-4">
+        @T["Email"]: @_legalEntityPart.Email.Text
+      </MudPaper>
+      <MudPaper Class="pa-4">
+        @T["Grad"]: @_legalEntityPart.PostalCode.Text @_legalEntityPart.City.Text
+      </MudPaper>
+      <MudPaper Class="pa-4">
+        @T["OIB"]: @_legalEntityPart.SocialSecurityNumber.Text
+      </MudPaper>
+    </MudStack>
+  </MudContainer>
 }
 
 @code {
