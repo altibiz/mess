@@ -15,8 +15,12 @@
   return;
 }
 
-@if (_user.RoleNames.Contains("Distribution System Unit Representative") || _user.RoleNames.Contains("Distribution System Operator Representative")) {
+@if (_user.RoleNames.Contains("Distribution System Operator Representative")) {
   <Invoices LegalEntity="@_legalEntity"/>
+}
+
+@if (_user.RoleNames.Contains("Distribution System Unit Representative")) {
+  <InvoicesMobile LegalEntity="@_legalEntity"/>
 }
 
 @code {

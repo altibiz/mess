@@ -100,6 +100,7 @@
     [Parameter]
     public ContentItem LegalEntity { get; set; } = default!;
     private ApexChartOptions<ChartData> graphOptions = new();
+    private ApexChartOptions<ChartDataL> graphLOptions = new();
     public List<IEnumerable<ChartData>> _lastDay = new List<IEnumerable<ChartData>>();
     public IEnumerable<ChartDataL>? _leftGraphValues;
     public IEnumerable<ChartData>? _rightGraphValues;
@@ -123,7 +124,18 @@
             }
         }
         };
-      graphOptions.Tooltip = new ApexCharts.Tooltip { X = new TooltipX { Format = @"hh : mm : ss" } };
+      graphLOptions= new ApexChartOptions<ChartDataL>() {
+        Grid = new Grid
+        {
+            BorderColor = "#e7e7e7",
+            Row = new GridRow
+            {
+                Colors = new List<string> { "#f3f3f3", "transparent" },
+                Opacity = 0.5d
+            }
+        }
+        };
+      graphLOptions.Tooltip = new ApexCharts.Tooltip { X = new TooltipX { Format = @"hh : mm : ss" } };
       await WithTransientSessionAsync(async session => {
         if(LegalEntity.ContentType == "ClosedDistributionSystem"){
           _ioTDevices = await session
@@ -178,6 +190,7 @@
     }
     _leftTitle = _leftGraphValues.First().source;
     Console.WriteLine(_leftGraphValues.Last().source);
+    StateHasChanged();
     await leftChart.UpdateSeriesAsync(true);
   }
   private async Task RightMenuItemClicked(string source)
@@ -191,6 +204,7 @@
       _rightGraphValues = a.Select(x => new ChartData(x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.Timestamp, x.DeviceId)).ToList().TakeLast(20);
     }
     _rightTitle = _rightGraphValues.First().source;
+    StateHasChanged();
     await rightChart.UpdateSeriesAsync(true);
   }
 
