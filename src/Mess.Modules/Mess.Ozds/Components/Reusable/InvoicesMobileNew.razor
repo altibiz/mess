@@ -14,11 +14,11 @@
 
 @if(_shownInvoices is not null && _shownInvoices.Count() > 0){
   <MudPaper>
+@* MOBILE *@
+          <MudHidden Breakpoint="Breakpoint.MdAndUp">
     <MudTextField Class="pa-3" ValueChanged="EventCallback.Factory.Create<string>(this, Filter)" Label="Pretraži" Variant="Variant.Text"></MudTextField>
     @foreach(ExpandThing dataStruct in _shownInvoices.Where(x => x.show == true).ToList()){
       <MudStack Spacing="0">
-@* MOBILE *@
-          <MudHidden Breakpoint="Breakpoint.MdAndUp">
             <MudGrid @onclick="() => OnExpandCollapseClick(dataStruct.invoice.ContentItemId)" Class="d-flex pa-2">
               <MudItem xs="6" Class="d-flex align-center justify-start" Style="font-size: small;">
                 @dataStruct.invoice.ContentItemId
@@ -32,22 +32,6 @@
                 @(dataStruct.invoice.As<OzdsInvoicePart>().Data.TotalWithTax) €
               </MudItem>
             </MudGrid>
-          </MudHidden>
-
-@* DESKTOP *@
-          <MudHidden Breakpoint="Breakpoint.SmAndDown">
-            <MudGrid @onclick="() => OnExpandCollapseClick(dataStruct.invoice.ContentItemId)" Class="d-flex pa-2">
-              <MudItem xs="6" Class="d-flex align-center justify-start cursor-pointer" Style="font-size: small;">
-                @dataStruct.invoice.ContentItemId
-              </MudItem>
-              <MudItem xs="3" Class="d-flex align-center justify-center cursor-pointer" Style="font-size: large; font-weight:bold;">
-                @(dataStruct.invoice.As<OzdsInvoicePart>().Data.TotalWithTax) €
-              </MudItem>
-              <MudItem xs="3" Class="d-flex align-center justify-end">
-                <MudIconButton OnClick="() => InspectInvoice(dataStruct.invoice)" Icon="@Icons.Material.Filled.Receipt" Variant="Variant.Filled" Color="MudBlazor.Color.Primary"/>
-              </MudItem>
-            </MudGrid>
-          </MudHidden>
 
         <MudCollapse Class="py-1" Expanded="_shownInvoices.Where(x => x.invoice.ContentItemId == dataStruct.invoice.ContentItemId).First().expand">
                 <MudStack>
@@ -68,6 +52,76 @@
       </MudStack>
     <MudDivider />
     }
+          </MudHidden>
+
+
+@* DESKTOP *@
+          <MudHidden Breakpoint="Breakpoint.SmAndDown">
+            <MudDataGrid
+  T="ContentItem"
+  MultiSelection="true"
+  Items="@_invoices"
+  SortMode="SortMode.Multiple"
+  Filterable="true"
+  QuickFilter="@_quickFilter">
+  <ToolBarContent>
+    <MudText Typo="Typo.h4">@T["Računi"]</MudText>
+    <MudSpacer />
+    <MudTextField
+      @bind-Value="_searchString"
+      Placeholder="Search"
+      Adornment="Adornment.Start"
+      Immediate="true"
+      AdornmentIcon="@Icons.Material.Filled.Search"
+      IconSize="MudBlazor.Size.Medium"
+      Class="mt-0">
+    </MudTextField>
+  </ToolBarContent>
+  <Columns >
+    <PropertyColumn
+      CellStyle="font-size: large;"
+      Property="x => x.As<OzdsInvoicePart>().Data.DistributionSystemUnit.DisplayText"
+      Title='@T["Primatelj"].Value'
+      Sortable="false"
+      Filterable="false" />
+    <PropertyColumn
+      CellStyle="font-size: large;"
+      Property="x => x.As<OzdsInvoicePart>().Data.DistributionSystemOperator.DisplayText"
+      Title='@T["Izdavatelj"].Value'
+      Sortable="false"
+      Filterable="false" />
+    <PropertyColumn
+      CellStyle="font-size: x-large;"
+      Property="x => x.As<OzdsInvoicePart>().Data.TotalWithTax"
+      Title='@T["Ukupno"].Value'/>
+    <PropertyColumn
+      CellStyle="font-size: large;"
+      Property="x => x.As<OzdsInvoicePart>().Data.From.Date.ToShortDateString()"
+      Title='@T["Od"].Value' />
+    <PropertyColumn
+      CellStyle="font-size: large;"
+      Property="x => x.As<OzdsInvoicePart>().Data.To.Date.ToShortDateString()"
+      Title='@T["Do"].Value' />
+    <PropertyColumn
+      Property="x => x.ContentItemId"
+      Title='@T["Id"].Value'
+      Sortable="false"
+      Filterable="false" />
+    <TemplateColumn CellClass="d-flex justify-center" Sortable="false" Filterable="false">
+        <CellTemplate>
+            <MudStack Row>
+              <MudButton OnClick="() => InspectInvoice(context.Item)" Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
+                @T["Pregled računa"]
+              </MudButton>
+            </MudStack>
+        </CellTemplate>
+    </TemplateColumn>
+  </Columns>
+  <PagerContent>
+    <MudDataGridPager T="ContentItem" />
+  </PagerContent>
+</MudDataGrid>
+          </MudHidden>
   </MudPaper>
 }
 

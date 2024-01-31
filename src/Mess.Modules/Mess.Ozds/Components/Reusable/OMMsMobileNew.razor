@@ -1,0 +1,196 @@
+@using Mess.Ozds.Abstractions.Indexes
+@using Mess.Iot.Abstractions.Models
+@using Mess.Ozds.Abstractions.Models
+@using OrchardCore.Users.Models
+@using OrchardCore.ContentFields.Indexing.SQL
+@using System.Linq.Expressions
+@using Mess.Ozds.Abstractions.Timeseries
+@using Mess.Billing.Abstractions.Models
+@using OrchardCore.ContentManagement.Records
+@using OrchardCore.Users.Indexes
+
+@inject NavigationManager NavigationManager
+<MudPaper>
+@* MOBILE *@
+  <MudHidden Breakpoint="Breakpoint.MdAndUp">
+    <MudTextField Class="pa-3" ValueChanged="EventCallback.Factory.Create<string>(this, Filter)" Label="Pretraži" Variant="Variant.Text"></MudTextField>
+    @foreach(ExpandThing dataStruct in _shownOMMs.Where(x => x.show == true).ToList()){
+      <MudStack Spacing="0">
+            <MudGrid @onclick="() => OnExpandCollapseClick(dataStruct.omm.source)" Class="d-flex pa-2">
+              <MudItem xs="6" Class="d-flex align-center justify-start" Style="font-size: large;">
+                @dataStruct.omm.source
+              </MudItem>
+              <MudItem xs="6" Class="d-flex align-center  justify-end">
+                <MudIconButton OnClick="() => InspectOMM(dataStruct.omm.source)" Icon="@Icons.Material.Filled.ElectricMeter" Variant="Variant.Filled" Color="MudBlazor.Color.Primary"/>
+              </MudItem>
+            </MudGrid>
+            <MudGrid @onclick="() => OnExpandCollapseClick(dataStruct.omm.source)" Class="d-flex pa-2">
+              <MudItem xs="6" Class="d-flex align-center justify-start" Style="font-size: large; font-weight:bold;">
+                @(dataStruct.omm.lastImport) kWh
+              </MudItem>
+            </MudGrid>
+
+        <MudCollapse Class="py-1" Expanded="_shownOMMs.Where(x => x.omm.source == dataStruct.omm.source).First().expand">
+                <MudStack>
+                  <MudContainer>
+                    @T["Ukupna potrošnja"].Value: @(dataStruct.omm.consumption) €
+                  </MudContainer>
+                  <MudContainer>
+                    @T["Broj računa"].Value: @(dataStruct.omm.invoiceCount)
+                  </MudContainer>
+                </MudStack>
+        </MudCollapse>
+      </MudStack>
+    <MudDivider />
+    }
+  </MudHidden>
+</MudPaper>
+
+
+@* DESKTOP *@
+          <MudHidden Breakpoint="Breakpoint.SmAndDown">
+  <MudDataGrid
+  T="(string source, decimal? lastImport, decimal? consumption, int invoiceCount)"
+  MultiSelection="true"
+  Items="@_lastTotalPerOMM"
+  SortMode="SortMode.Multiple"
+  Filterable="true"
+  QuickFilter="@_quickFilter">
+  <ToolBarContent>
+    <MudText Typo="Typo.h4">@T["Brojila"]</MudText>
+    <MudSpacer />
+    <MudTextField
+      @bind-Value="_searchString"
+      Placeholder="@T["Pretraži"].Value"
+      Adornment="Adornment.Start"
+      Immediate="true"
+      AdornmentIcon="@Icons.Material.Filled.Search"
+      IconSize="MudBlazor.Size.Medium"
+      Class="mt-0">
+    </MudTextField>
+  </ToolBarContent>
+  <Columns>
+    <TemplateColumn Title="@T["Brojilo"].Value"
+      Sortable="false"
+      Filterable="false">
+      <CellTemplate>
+          <MudStack Row>
+            <MudButton OnClick="() => InspectOMM(context.Item.source)" Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
+              @context.Item.source
+            </MudButton>
+          </MudStack>
+      </CellTemplate>
+    </TemplateColumn>
+    <PropertyColumn
+      CellStyle="font-size: x-large;"
+      Property="x => x.lastImport"
+      Title='@T["Zadnji import"].Value'/>
+    <PropertyColumn
+      CellStyle="font-size: x-large;"
+      Property="x => x.consumption"
+      Title='@T["Ukupna potrošnja"].Value'/>
+    <PropertyColumn
+      CellStyle="font-size: large;"
+      Property="x => x.invoiceCount"
+      Title='@T["Broj računa"].Value'/>
+  </Columns>
+  <PagerContent>
+    <MudDataGridPager T="(string source, decimal? lastImport, decimal? consumption, int invoiceCount)" />
+  </PagerContent>
+</MudDataGrid>
+          </MudHidden>
+
+@code {
+    [Parameter]
+    public ContentItem LegalEntity { get; set; } = default!;
+    public string TextValue { get; set; } = "";
+    private class ExpandThing {
+      public (string source, decimal? lastImport, decimal? consumption, int invoiceCount) omm;
+      public bool expand;
+      public bool show;
+    }
+    List<ExpandThing> _shownOMMs = new();
+    private IEnumerable<ContentItem> _units = Enumerable.Empty<ContentItem>();
+    private List<(ContentItem omm, decimal? consumption, int invoiceCount)> _unitsOMMs = new List<(ContentItem omm, decimal? consumption, int invoiceCount)>();
+    private string? _searchString;
+    private List<(string source, decimal? lastImport, decimal? consumption, int invoiceCount)> _lastTotalPerOMM = new List<(string source, decimal? lastImport, decimal? consumption, int invoiceCount)>();
+    protected override async Task OnInitializedAsync()
+    {
+      await WithTransientSessionAsync(async session => {
+      if(LegalEntity.ContentType == "DistributionSystemUnit"){
+        _units = new List<ContentItem> {LegalEntity};
+        var omms = await session
+          .Query<ContentItem, OzdsIotDeviceIndex>()
+            .Where(index => !index.IsMessenger)
+          .Where(x => x.DistributionSystemUnitContentItemId == _units.First().ContentItemId)
+          .ListAsync();
+        var invoiceCount = await session.Query<ContentItem, Mess.Billing.Abstractions.Indexes.PaymentIndex>()
+          .Where(index => index.RecipientContentItemId == _units.First().ContentItemId)
+          .CountAsync();
+        var consumption = _units.First().As<DistributionSystemUnitPart>().Consumption;
+        foreach(var omm in omms){
+          _unitsOMMs.Add((omm, consumption, invoiceCount));
+        }
+      }
+      else{
+        _units = await session
+            .Query<ContentItem, DistributionSystemUnitIndex>()
+            .Where(x => x.ClosedDistributionSystemContentItemId == LegalEntity.ContentItemId)
+            .ListAsync();
+        var unitIds = _units.Select(unit => unit.ContentItemId).ToList();
+        //TODO: DO NOT USE FOREACH WHEN TALKING TO DB
+        foreach(var unit in unitIds){
+          var omms = await session
+          .Query<ContentItem, OzdsIotDeviceIndex>()
+            .Where(index => !index.IsMessenger)
+          .Where(x => x.DistributionSystemUnitContentItemId == unit)
+          .ListAsync();
+        var invoiceCount = await session.Query<ContentItem, Mess.Billing.Abstractions.Indexes.PaymentIndex>()
+          .Where(index => index.RecipientContentItemId == unit).CountAsync();
+        var consumption = _units.First().As<DistributionSystemUnitPart>().Consumption;
+        foreach(var omm in omms){
+          _unitsOMMs.Add((omm, consumption, invoiceCount));
+        }
+        }
+      }
+
+      foreach(var omm in _unitsOMMs){
+        _lastTotalPerOMM.Add(new (omm.omm.As<IotDevicePart>().DeviceId.Text, omm.omm.As<OzdsIotDevicePart>().LatestImport, omm.consumption, omm.invoiceCount));
+        _shownOMMs.Add(new ExpandThing{omm = (source: omm.omm.As<IotDevicePart>().DeviceId.Text, lastImport: omm.omm.As<OzdsIotDevicePart>().LatestImport, consumption: omm.consumption, invoiceCount: omm.invoiceCount), show = true, expand = false});
+      }
+      });
+    }
+     private Func<(string source, decimal? lastImport, decimal? consumption, int invoiceCount), bool> _quickFilter => x =>
+  {
+    if (string.IsNullOrWhiteSpace(_searchString))
+      return true;
+
+    if (x.source.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+      return true;
+
+    return false;
+  };
+  private void InspectOMM(string item) {
+      NavigationManager.NavigateTo($"app/omm/{item}");
+  }
+private void OnExpandCollapseClick(string ommId) {
+      var a = _shownOMMs.Where(x => x.omm.source == ommId).FirstOrDefault();
+      a.expand = !a.expand;
+  }
+private Task Filter(string value) {
+  TextValue = value;
+  foreach (var inv in _shownOMMs)
+  {
+    if(value.Trim() != ""){
+      inv.show = false;
+    }
+  };
+  var a = _shownOMMs.Where(x => x.omm.source.Contains(value, StringComparison.InvariantCultureIgnoreCase)).ToList();
+  foreach (var inv in a)
+  {
+      inv.show = true;
+  };
+  StateHasChanged();
+  return Task.CompletedTask;
+}
+}

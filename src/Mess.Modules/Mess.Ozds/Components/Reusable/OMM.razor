@@ -66,10 +66,12 @@
 @if(_lastDay != null){
   <MudGrid Class="my-3">
       <MudItem xs="6">
-          <MudPaper Class="d-flex align-center justify-center mud-width-full py-8 px-8" Height="500px">
+          <MudPaper Class="d-flex align-center justify-start mud-width-full py-8 px-8 flex-column" Height="450px">
+            <MudItem Class="d-flex" Style="font-size: large; font-weight: bold;">
+              @(T["Zadnje mijerenje energije u kWh za brojilo"].Value + ": " + Source)
+            </MudItem>
       <MudContainer MaxWidth="MaxWidth.Small">
               <ApexChart TItem="Order"
-                        Title="@(T["Brojilo"].Value + ": " + Source)"
                         Options="options"
                         >
                   <ApexPointSeries TItem="Order"
@@ -84,13 +86,15 @@
           </MudPaper>
       </MudItem>
       <MudItem xs="6">
-          <MudPaper Class="d-flex align-center justify-center mud-width-full py-8 px-8" Height="500px">
+          <MudPaper Class="d-flex align-center justify-stat mud-width-full py-8 px-8 flex-column" Height="450px">
+            <MudItem Class="d-flex" Style="font-size: large; font-weight: bold;">
+              @(T["Snaga po fazi u kWh za brojilo"].Value + ": " + Source)
+            </MudItem>
       <MudContainer Class="d-flex flex-column" MaxWidth="MaxWidth.Small">
               <ApexChart TItem="ChartData"
                 XAxisType="XAxisType.Datetime"
                 Options="graphOptions"
-                @ref="chart"
-              Title="@(T["Brojilo"].Value + ": " + Source)">
+                @ref="chart">
                 <ApexPointSeries TItem="ChartData"
                   Items="@_graphValues"
                   Name="@T["L1 Potrošnja"].Value"

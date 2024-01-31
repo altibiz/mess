@@ -13,87 +13,185 @@
 @inject IOzdsTimeseriesClient _timeseriesClient
 
 @if(_lastDay != null){
-  <MudGrid Class="my-3">
-      <MudItem xs="6">
-        <MudPaper Class="d-flex align-center justify-center mud-width-full py-8 px-8" Height="500px">
-          <MudContainer Class="d-flex flex-column" MaxWidth="MaxWidth.Small">
-            @if(_leftGraphValues is not null){
-              <ApexChart TItem="ChartDataL"
-                XAxisType="XAxisType.Datetime"
-                @ref="leftChart"
-              Title="@(_leftTitle)">
-                <ApexPointSeries TItem="ChartDataL"
-                  Items="@_leftGraphValues"
-                  Name="@T["L1 Potrošnja"].Value"
-                  SeriesType="SeriesType.Line"
-                  XValue='x => x.date'
-                  YValue="x => x.L1"
-                />
-                <ApexPointSeries TItem="ChartDataL"
-                  Items="@_leftGraphValues"
-                  Name="@T["L2 Potrošnja"].Value"
-                  SeriesType="SeriesType.Line"
-                  XValue='x => x.date'
-                  YValue="x => x.L2"
-                />
-                <ApexPointSeries TItem="ChartDataL"
-                  Items="@_leftGraphValues"
-                  Name="@T["L3 Potrošnja"].Value"
-                  SeriesType="SeriesType.Line"
-                  XValue='x => x.date'
-                  YValue="x => x.L3"
-                />
-              </ApexChart>
-              <MudMenu Label="@_leftTitle" Dense="true" Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
-                @foreach(var omm in _ioTDevices){
-                  <MudMenuItem OnClick="@(() => LeftMenuItemClicked(omm.DisplayText))">@omm.DisplayText</MudMenuItem>
-                }
-              </MudMenu>
-            }
-          </MudContainer>
-        </MudPaper>
-      </MudItem>
-      <MudItem xs="6">
-        <MudPaper Class="d-flex align-center justify-center mud-width-full py-8 px-8" Height="500px">
-          <MudContainer Class="d-flex flex-column" MaxWidth="MaxWidth.Small">
-            @if(_rightGraphValues is not null){
-              <ApexChart TItem="ChartData"
-                XAxisType="XAxisType.Datetime"
-                Options="graphOptions"
-                @ref ="rightChart"
-              Title="@(_rightTitle)">
-                <ApexPointSeries TItem="ChartData"
-                  Items="@_rightGraphValues"
-                  Name="@T["L1 Potrošnja"].Value"
-                  SeriesType="SeriesType.Line"
-                  XValue='x => x.date'
-                  YValue="x => x.L1"
-                />
-                <ApexPointSeries TItem="ChartData"
-                  Items="@_rightGraphValues"
-                  Name="@T["L2 Potrošnja"].Value"
-                  SeriesType="SeriesType.Line"
-                  XValue='x => x.date'
-                  YValue="x => x.L2"
-                />
-                <ApexPointSeries TItem="ChartData"
-                  Items="@_rightGraphValues"
-                  Name="@T["L3 Potrošnja"].Value"
-                  SeriesType="SeriesType.Line"
-                  XValue='x => x.date'
-                  YValue="x => x.L3"
-                />
-              </ApexChart>
-              <MudMenu Label="@_rightTitle" Dense="true" Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
-                @foreach(var omm in _ioTDevices){
-                  <MudMenuItem OnClick="@(() => RightMenuItemClicked(omm.DisplayText))">@omm.DisplayText</MudMenuItem>
-                }
-              </MudMenu>
+@* MOBILE *@
+  <MudHidden Breakpoint="Breakpoint.MdAndUp">
+    <MudGrid Class="my-3 pa-1">
+        <MudItem xs="12" Class="pa-1">
+          <MudPaper Class="d-flex align-center justify-center mud-width-full pa-1" Height="260px">
+            <MudContainer Class="d-flex flex-column" MaxWidth="MaxWidth.Small">
+              @if(_leftGraphValues is not null){
+                <ApexChart TItem="ChartDataL"
+                  XAxisType="XAxisType.Datetime"
+                  Options="graphLOptionsMob"
+                  @ref="leftChart">
+                  <ApexPointSeries TItem="ChartDataL"
+                    Items="@_leftGraphValues"
+                    Name="@T["L1 Potrošnja"].Value"
+                    SeriesType="SeriesType.Line"
+                    XValue='x => x.date'
+                    YValue="x => x.L1"
+                  />
+                  <ApexPointSeries TItem="ChartDataL"
+                    Items="@_leftGraphValues"
+                    Name="@T["L2 Potrošnja"].Value"
+                    SeriesType="SeriesType.Line"
+                    XValue='x => x.date'
+                    YValue="x => x.L2"
+                  />
+                  <ApexPointSeries TItem="ChartDataL"
+                    Items="@_leftGraphValues"
+                    Name="@T["L3 Potrošnja"].Value"
+                    SeriesType="SeriesType.Line"
+                    XValue='x => x.date'
+                    YValue="x => x.L3"
+                  />
+                </ApexChart>
+                <MudMenu Label="@_leftTitle" Dense="true" Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
+                  @if(_ioTDevices is not null){
+                    @foreach(var omm in _ioTDevices){
+                      <MudMenuItem OnClick="@(() => LeftMenuItemClicked(omm.DisplayText))">@omm.DisplayText</MudMenuItem>
+                    }
+                  }
+                </MudMenu>
               }
-          </MudContainer>
-        </MudPaper>
-      </MudItem>
-  </MudGrid>
+            </MudContainer>
+          </MudPaper>
+        </MudItem>
+        <MudItem xs="12" Class="pa-1">
+          <MudPaper Class="d-flex align-center justify-center mud-width-full pa-1" Height="260px">
+            <MudContainer Class="d-flex flex-column" MaxWidth="MaxWidth.Small">
+              @if(_rightGraphValues is not null){
+                <ApexChart TItem="ChartData"
+                  XAxisType="XAxisType.Datetime"
+                  Options="graphOptionsMob"
+                  @ref ="rightChart">
+                  <ApexPointSeries TItem="ChartData"
+                    Items="@_rightGraphValues"
+                    Name="@T["L1 Potrošnja"].Value"
+                    SeriesType="SeriesType.Line"
+                    XValue='x => x.date'
+                    YValue="x => x.L1"
+                  />
+                  <ApexPointSeries TItem="ChartData"
+                    Items="@_rightGraphValues"
+                    Name="@T["L2 Potrošnja"].Value"
+                    SeriesType="SeriesType.Line"
+                    XValue='x => x.date'
+                    YValue="x => x.L2"
+                  />
+                  <ApexPointSeries TItem="ChartData"
+                    Items="@_rightGraphValues"
+                    Name="@T["L3 Potrošnja"].Value"
+                    SeriesType="SeriesType.Line"
+                    XValue='x => x.date'
+                    YValue="x => x.L3"
+                  />
+                </ApexChart>
+                <MudMenu Label="@_rightTitle" Dense="true" Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
+                  @if(_ioTDevices is not null){
+                    @foreach(var omm in _ioTDevices){
+                      <MudMenuItem OnClick="@(() => RightMenuItemClicked(omm.DisplayText))">@omm.DisplayText</MudMenuItem>
+                    }
+                  }
+                </MudMenu>
+                }
+            </MudContainer>
+          </MudPaper>
+        </MudItem>
+    </MudGrid>
+  </MudHidden>
+
+
+
+@* DESKTOP *@
+  <MudHidden Breakpoint="Breakpoint.SmAndDown">
+    <MudGrid Class="my-3">
+        <MudItem xs="6">
+          <MudPaper Class="d-flex align-center justify-center mud-width-full py-8 px-8" Height="500px">
+            <MudContainer Class="d-flex flex-column" MaxWidth="MaxWidth.Small">
+              @if(_leftGraphValues is not null){
+                <ApexChart TItem="ChartDataL"
+                  XAxisType="XAxisType.Datetime"
+                  Options="graphLOptions"
+                  @ref="leftChart"
+                Title="@(_leftTitle)">
+                  <ApexPointSeries TItem="ChartDataL"
+                    Items="@_leftGraphValues"
+                    Name="@T["L1 Potrošnja"].Value"
+                    SeriesType="SeriesType.Line"
+                    XValue='x => x.date'
+                    YValue="x => x.L1"
+                  />
+                  <ApexPointSeries TItem="ChartDataL"
+                    Items="@_leftGraphValues"
+                    Name="@T["L2 Potrošnja"].Value"
+                    SeriesType="SeriesType.Line"
+                    XValue='x => x.date'
+                    YValue="x => x.L2"
+                  />
+                  <ApexPointSeries TItem="ChartDataL"
+                    Items="@_leftGraphValues"
+                    Name="@T["L3 Potrošnja"].Value"
+                    SeriesType="SeriesType.Line"
+                    XValue='x => x.date'
+                    YValue="x => x.L3"
+                  />
+                </ApexChart>
+                <MudMenu Label="@_leftTitle" Dense="true" Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
+                  @if(_ioTDevices is not null){
+                    @foreach(var omm in _ioTDevices){
+                      <MudMenuItem OnClick="@(() => LeftMenuItemClicked(omm.DisplayText))">@omm.DisplayText</MudMenuItem>
+                    }
+                  }
+                </MudMenu>
+              }
+            </MudContainer>
+          </MudPaper>
+        </MudItem>
+        <MudItem xs="6">
+          <MudPaper Class="d-flex align-center justify-center mud-width-full py-8 px-8" Height="500px">
+            <MudContainer Class="d-flex flex-column" MaxWidth="MaxWidth.Small">
+              @if(_rightGraphValues is not null){
+                <ApexChart TItem="ChartData"
+                  XAxisType="XAxisType.Datetime"
+                  Options="graphOptions"
+                  @ref ="rightChart"
+                Title="@(_rightTitle)">
+                  <ApexPointSeries TItem="ChartData"
+                    Items="@_rightGraphValues"
+                    Name="@T["L1 Potrošnja"].Value"
+                    SeriesType="SeriesType.Line"
+                    XValue='x => x.date'
+                    YValue="x => x.L1"
+                  />
+                  <ApexPointSeries TItem="ChartData"
+                    Items="@_rightGraphValues"
+                    Name="@T["L2 Potrošnja"].Value"
+                    SeriesType="SeriesType.Line"
+                    XValue='x => x.date'
+                    YValue="x => x.L2"
+                  />
+                  <ApexPointSeries TItem="ChartData"
+                    Items="@_rightGraphValues"
+                    Name="@T["L3 Potrošnja"].Value"
+                    SeriesType="SeriesType.Line"
+                    XValue='x => x.date'
+                    YValue="x => x.L3"
+                  />
+                </ApexChart>
+                <MudMenu Label="@_rightTitle" Dense="true" Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
+                  @if(_ioTDevices is not null){
+                    @foreach(var omm in _ioTDevices){
+                      <MudMenuItem OnClick="@(() => RightMenuItemClicked(omm.DisplayText))">@omm.DisplayText</MudMenuItem>
+                    }
+                  }
+                </MudMenu>
+                }
+            </MudContainer>
+          </MudPaper>
+        </MudItem>
+    </MudGrid>
+  </MudHidden>
 }
 
 @code {
@@ -101,6 +199,8 @@
     public ContentItem LegalEntity { get; set; } = default!;
     private ApexChartOptions<ChartData> graphOptions = new();
     private ApexChartOptions<ChartDataL> graphLOptions = new();
+    private ApexChartOptions<ChartData> graphOptionsMob = new();
+    private ApexChartOptions<ChartDataL> graphLOptionsMob = new();
     public List<IEnumerable<ChartData>> _lastDay = new List<IEnumerable<ChartData>>();
     public IEnumerable<ChartDataL>? _leftGraphValues;
     public IEnumerable<ChartData>? _rightGraphValues;
@@ -110,9 +210,31 @@
     public record ChartDataL(decimal? L1, decimal? L2, decimal? L3, DateTimeOffset date, string source);
     private ApexChart<ChartDataL> leftChart = default!;
     private ApexChart<ChartData> rightChart = default!;
-    private IEnumerable<ContentItem> _ioTDevices;
+    private IEnumerable<ContentItem>? _ioTDevices;
     protected override async Task OnInitializedAsync()
     {
+      graphOptionsMob= new ApexChartOptions<ChartData>() {
+        Grid = new Grid
+        {
+            BorderColor = "#e7e7e7",
+            Row = new GridRow
+            {
+                Colors = new List<string> { "#f3f3f3", "transparent" },
+                Opacity = 0.5d
+            }
+        }
+        };
+      graphLOptionsMob= new ApexChartOptions<ChartDataL>() {
+        Grid = new Grid
+        {
+            BorderColor = "#e7e7e7",
+            Row = new GridRow
+            {
+                Colors = new List<string> { "#f3f3f3", "transparent" },
+                Opacity = 0.5d
+            }
+        }
+        };
       graphOptions= new ApexChartOptions<ChartData>() {
         Grid = new Grid
         {
@@ -136,6 +258,45 @@
         }
         };
       graphLOptions.Tooltip = new ApexCharts.Tooltip { X = new TooltipX { Format = @"hh : mm : ss" } };
+      graphOptions.Tooltip = new ApexCharts.Tooltip { X = new TooltipX { Format = @"hh : mm : ss" } };
+      graphLOptionsMob.Tooltip = new ApexCharts.Tooltip { X = new TooltipX { Format = @"hh : mm : ss" } };
+      graphOptionsMob.Tooltip = new ApexCharts.Tooltip { X = new TooltipX { Format = @"hh : mm : ss" } };
+      graphLOptionsMob.Yaxis = new List<YAxis>();
+      graphLOptionsMob.Xaxis = new XAxis();
+
+      graphLOptionsMob.Yaxis.Add(new YAxis
+            {
+                Show = false
+            });
+      graphLOptionsMob.Xaxis = new XAxis()
+            {
+              Labels = new XAxisLabels(){ Show = false }
+            };
+      graphLOptionsMob.Chart = new Chart
+            {
+                Toolbar = new ApexCharts.Toolbar
+                {
+                    Tools = new Tools { Zoomin = false, Zoomout = false, Download = false, Pan = false, Reset = false, Selection = false, Zoom = false, }
+                }
+            };
+      graphOptionsMob.Yaxis = new List<YAxis>();
+      graphOptionsMob.Xaxis = new XAxis();
+
+      graphOptionsMob.Yaxis.Add(new YAxis
+            {
+                Show = false
+            });
+      graphOptionsMob.Xaxis = new XAxis()
+            {
+              Labels = new XAxisLabels(){ Show = false }
+            };
+      graphOptionsMob.Chart = new Chart
+            {
+                Toolbar = new ApexCharts.Toolbar
+                {
+                    Tools = new Tools { Zoomin = false, Zoomout = false, Download = false, Pan = false, Reset = false, Selection = false, Zoom = false, }
+                }
+            };
       await WithTransientSessionAsync(async session => {
         if(LegalEntity.ContentType == "ClosedDistributionSystem"){
           _ioTDevices = await session
@@ -158,7 +319,7 @@
             .Where(index => !index.IsMessenger)
             .ListAsync();
         }
-        if(_ioTDevices.Count() > 1){
+        if(_ioTDevices is not null && _ioTDevices.Count() > 1){
           var c = _ioTDevices.Select(x => x).Take(2);
           foreach(var omm in c){
             if(omm.DisplayText.StartsWith("abb")){
@@ -172,9 +333,19 @@
           }
         }
         _leftGraphValues = _lastDay[0].Select(x => new ChartDataL(L1: x.L1, L2: x.L2, L3: x.L3, date:x.date, source:x.source)).ToList().TakeLast(20);
-        _leftTitle = _leftGraphValues.First().source;
+        if(_leftGraphValues.Count() > 0){
+          _leftTitle = _leftGraphValues.First().source;
+        }
+        else{
+          _leftTitle = "none";
+        }
         _rightGraphValues = _lastDay[1].ToList().TakeLast(20);
-        _rightTitle = _rightGraphValues.First().source;
+        if(_rightGraphValues.Count() > 0){
+          _rightTitle = _rightGraphValues.First().source;
+        }
+        else{
+          _rightTitle = "none";
+        }
       });
     }
 
@@ -188,8 +359,12 @@
       var a = await _timeseriesClient.GetSchneiderMeasurementsAsync(source, DateTimeOffset.UtcNow.AddHours(-24), DateTimeOffset.UtcNow);
       _leftGraphValues = a.Select(x => new ChartDataL(x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.Timestamp, x.DeviceId)).ToList().TakeLast(20);
     }
-    _leftTitle = _leftGraphValues.First().source;
-    Console.WriteLine(_leftGraphValues.Last().source);
+    if(_leftGraphValues is not null && _leftGraphValues.Count() > 0){
+      _leftTitle = _leftGraphValues.First().source;
+    }
+    else{
+      _leftTitle = "none";
+    }
     StateHasChanged();
     await leftChart.UpdateSeriesAsync(true);
   }
@@ -203,7 +378,12 @@
       var a = await _timeseriesClient.GetSchneiderMeasurementsAsync(source, DateTimeOffset.UtcNow.AddHours(-24), DateTimeOffset.UtcNow);
       _rightGraphValues = a.Select(x => new ChartData(x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.Timestamp, x.DeviceId)).ToList().TakeLast(20);
     }
-    _rightTitle = _rightGraphValues.First().source;
+    if(_rightGraphValues is not null && _rightGraphValues.Count() > 0){
+      _rightTitle = _rightGraphValues.First().source;
+    }
+    else{
+      _rightTitle = "none";
+    }
     StateHasChanged();
     await rightChart.UpdateSeriesAsync(true);
   }
