@@ -12,6 +12,122 @@
 
 @inject IOzdsTimeseriesClient _timeseriesClient
 
+
+@if(_lastDay != null){
+@* MOBILE *@
+  <MudHidden Breakpoint="Breakpoint.MdAndUp">
+    <MudGrid Class="my-3 pa-1">
+      <MudItem xs="12" Class="pa-1">
+            <MudPaper Class="d-flex align-center justify-stat mud-width-full pa-1 pb-3 flex-column">
+              <MudItem Class="d-flex justify-center align-center" Style="font-size: large; font-weight: bold;">
+                @(T["Snaga po fazi za"].Value + ": " + Source)
+              </MudItem>
+        <MudContainer Class="d-flex flex-column" MaxWidth="MaxWidth.Small">
+                <ApexChart TItem="ChartData"
+                  XAxisType="XAxisType.Datetime"
+                  Options="graphOptionsMobile"
+                  @ref="chart">
+                  <ApexPointSeries TItem="ChartData"
+                    Items="@_graphValues"
+                    Name="@T["L1 Potrošnja"].Value"
+                    SeriesType="SeriesType.Line"
+                    XValue='x => x.date'
+                    YValue="x => x.L1"
+                  />
+                  <ApexPointSeries TItem="ChartData"
+                    Items="@_graphValues"
+                    Name="@T["L2 Potrošnja"].Value"
+                    SeriesType="SeriesType.Line"
+                    XValue='x => x.date'
+                    YValue="x => x.L2"
+                  />
+                  <ApexPointSeries TItem="ChartData"
+                    Items="@_graphValues"
+                    Name="@T["L3 Potrošnja"].Value"
+                    SeriesType="SeriesType.Line"
+                    XValue='x => x.date'
+                    YValue="x => x.L3"
+                  />
+                </ApexChart>
+        <MudMenu Label="@T["Odabir vremena"].Value" Dense="true" Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
+          <MudMenuItem OnClick="@(() => MenuItemClicked("Scale1"))">5 min</MudMenuItem>
+          <MudMenuItem OnClick="@(() => MenuItemClicked("Scale2"))">10 min</MudMenuItem>
+          <MudMenuItem OnClick="@(() => MenuItemClicked("Scale3"))">15 min</MudMenuItem>
+          <MudMenuItem OnClick="@(() => MenuItemClicked("Scale4"))">30 min</MudMenuItem>
+          <MudMenuItem OnClick="@(() => MenuItemClicked("Scale5"))">1 h</MudMenuItem>
+          <MudMenuItem OnClick="@(() => MenuItemClicked("Scale6"))">3 h</MudMenuItem>
+          <MudMenuItem OnClick="@(() => MenuItemClicked("Scale7"))">6 h</MudMenuItem>
+          <MudMenuItem OnClick="@(() => MenuItemClicked("Scale8"))">12 h</MudMenuItem>
+          <MudMenuItem OnClick="@(() => MenuItemClicked("Scale9"))">24 h</MudMenuItem>
+        </MudMenu>
+        </MudContainer>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" Class="pa-1">
+            <MudPaper Class="d-flex align-center justify-start mud-width-full pa-1 flex-column">
+              <MudItem Class="d-flex justify-center align-center" Style="font-size: large; font-weight: bold;">
+                @(T["Potrošnja od"].Value + ": " + Source)
+              </MudItem>
+        <MudContainer MaxWidth="MaxWidth.Small">
+                <ApexChart TItem="Order"
+                          Options="options"
+                          >
+                    <ApexPointSeries TItem="Order"
+                                    Items="orders"
+                                    SeriesType=SeriesType.RadialBar
+                                    Name="@T["Potrošnja"].Value"
+                                    XValue="@(e => e.value)"
+                                    YAggregate="@(e => e.First().percent)"
+                                    OrderByDescending="e=>e.X" />
+                </ApexChart>
+        </MudContainer>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+
+    <MudPaper Class="pa-1">
+      <MudText Typo="Typo.h4" Class="d-flex justify-center">
+        @(T["Brojilo"].Value + ": " + Source)
+      </MudText>
+      <MudDivider />
+      @foreach(ExpandThing dataStruct in _shownOMMs.Where(x => x.show == true).ToList()){
+      <MudPaper Elevation="2" Class="ma-1">
+        <MudStack Spacing="0">
+          <MudGrid Class="d-flex pa-2">
+            <MudItem xs="5" Class="d-flex align-center justify-start" Style="font-weight: bold;">
+              @T["Godina"].Value: @dataStruct.data.year
+            </MudItem>
+            <MudItem xs="5" Class="d-flex align-center justify-start" Style="font-weight: bold;">
+              @T["Mjesec"].Value: @dataStruct.data.month
+            </MudItem>
+            <MudItem xs="2" Class="d-flex align-center justify-end">
+              <MudIconButton OnClick="() => OnExpandCollapseClick(dataStruct.data.year, dataStruct.data.month)" Icon="@(dataStruct.expand ? Icons.Material.Filled.KeyboardArrowUp : Icons.Material.Filled.KeyboardArrowDown)" Color="MudBlazor.Color.Default"/>
+            </MudItem>
+          </MudGrid>
+          <MudCollapse Class="py-1" Expanded="_shownOMMs.Where(x => x.data.year == dataStruct.data.year).Where(x => x.data.month == dataStruct.data.month).First().expand">
+            <MudStack>
+              <MudDivider DividerType="DividerType.Middle" Class="mt-2"/>
+              <MudContainer>
+                @T["Poćetna potrošnja"].Value: @(dataStruct.data.monthEndTotal) kWh
+              </MudContainer>
+              <MudContainer>
+                @T["Zadnja potrošnja"].Value: @(dataStruct.data.monthStartTotal) kWh
+              </MudContainer>
+              <MudContainer Style="font-size: large; font-weight:bold;">
+                @T["Ukupna potrošnja"].Value: @(dataStruct.data.monthStartTotal - dataStruct.data.monthEndTotal) kWh
+              </MudContainer>
+            </MudStack>
+          </MudCollapse>
+        </MudStack>
+      </MudPaper>
+      }
+    </MudPaper>
+  </MudHidden>
+
+
+
+@* DESKTOP *@
+  <MudHidden Breakpoint="Breakpoint.SmAndDown">
 <MudDataGrid
   T="TabularData"
   MultiSelection="true"
@@ -60,87 +176,86 @@
   </PagerContent>
 </MudDataGrid>
 
-
-
-
-@if(_lastDay != null){
-  <MudGrid Class="my-3">
-      <MudItem xs="6">
-          <MudPaper Class="d-flex align-center justify-start mud-width-full py-8 px-8 flex-column" Height="450px">
-            <MudItem Class="d-flex" Style="font-size: large; font-weight: bold;">
-              @(T["Zadnje mijerenje energije u kWh za brojilo"].Value + ": " + Source)
-            </MudItem>
-      <MudContainer MaxWidth="MaxWidth.Small">
-              <ApexChart TItem="Order"
-                        Options="options"
-                        >
-                  <ApexPointSeries TItem="Order"
-                                  Items="orders"
-                                  SeriesType=SeriesType.RadialBar
-                                  Name="@T["Potrošnja"].Value"
-                                  XValue="@(e => e.value)"
-                                  YAggregate="@(e => e.First().percent)"
-                                  OrderByDescending="e=>e.X" />
-              </ApexChart>
-      </MudContainer>
-          </MudPaper>
-      </MudItem>
-      <MudItem xs="6">
-          <MudPaper Class="d-flex align-center justify-stat mud-width-full py-8 px-8 flex-column" Height="450px">
-            <MudItem Class="d-flex" Style="font-size: large; font-weight: bold;">
-              @(T["Snaga po fazi u kWh za brojilo"].Value + ": " + Source)
-            </MudItem>
-      <MudContainer Class="d-flex flex-column" MaxWidth="MaxWidth.Small">
-              <ApexChart TItem="ChartData"
-                XAxisType="XAxisType.Datetime"
-                Options="graphOptions"
-                @ref="chart">
-                <ApexPointSeries TItem="ChartData"
-                  Items="@_graphValues"
-                  Name="@T["L1 Potrošnja"].Value"
-                  SeriesType="SeriesType.Line"
-                  XValue='x => x.date'
-                  YValue="x => x.L1"
-                />
-                <ApexPointSeries TItem="ChartData"
-                  Items="@_graphValues"
-                  Name="@T["L2 Potrošnja"].Value"
-                  SeriesType="SeriesType.Line"
-                  XValue='x => x.date'
-                  YValue="x => x.L2"
-                />
-                <ApexPointSeries TItem="ChartData"
-                  Items="@_graphValues"
-                  Name="@T["L3 Potrošnja"].Value"
-                  SeriesType="SeriesType.Line"
-                  XValue='x => x.date'
-                  YValue="x => x.L3"
-                />
-              </ApexChart>
-      <MudMenu Label="@T["Odabir vremena"].Value" Dense="true" Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
-        <MudMenuItem OnClick="@(() => MenuItemClicked("Scale1"))">5 min</MudMenuItem>
-        <MudMenuItem OnClick="@(() => MenuItemClicked("Scale2"))">10 min</MudMenuItem>
-        <MudMenuItem OnClick="@(() => MenuItemClicked("Scale3"))">15 min</MudMenuItem>
-        <MudMenuItem OnClick="@(() => MenuItemClicked("Scale4"))">30 min</MudMenuItem>
-        <MudMenuItem OnClick="@(() => MenuItemClicked("Scale5"))">1 h</MudMenuItem>
-        <MudMenuItem OnClick="@(() => MenuItemClicked("Scale6"))">3 h</MudMenuItem>
-        <MudMenuItem OnClick="@(() => MenuItemClicked("Scale7"))">6 h</MudMenuItem>
-        <MudMenuItem OnClick="@(() => MenuItemClicked("Scale8"))">12 h</MudMenuItem>
-        <MudMenuItem OnClick="@(() => MenuItemClicked("Scale9"))">24 h</MudMenuItem>
-      </MudMenu>
-      </MudContainer>
-          </MudPaper>
-      </MudItem>
-  </MudGrid>
+    <MudGrid Class="my-3">
+        <MudItem xs="6">
+            <MudPaper Class="d-flex align-center justify-start mud-width-full py-8 px-8 flex-column" Height="450px">
+              <MudItem Class="d-flex" Style="font-size: large; font-weight: bold;">
+                @(T["Potrošnja od"].Value + ": " + Source)
+              </MudItem>
+        <MudContainer MaxWidth="MaxWidth.Small">
+                <ApexChart TItem="Order"
+                          Options="options"
+                          >
+                    <ApexPointSeries TItem="Order"
+                                    Items="orders"
+                                    SeriesType=SeriesType.RadialBar
+                                    Name="@T["Potrošnja"].Value"
+                                    XValue="@(e => e.value)"
+                                    YAggregate="@(e => e.First().percent)"
+                                    OrderByDescending="e=>e.X" />
+                </ApexChart>
+        </MudContainer>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="6">
+            <MudPaper Class="d-flex align-center justify-stat mud-width-full py-8 px-8 flex-column" Height="450px">
+              <MudItem Class="d-flex" Style="font-size: large; font-weight: bold;">
+                @(T["Snaga po fazi za"].Value + ": " + Source)
+              </MudItem>
+        <MudContainer Class="d-flex flex-column" MaxWidth="MaxWidth.Small">
+                <ApexChart TItem="ChartData"
+                  XAxisType="XAxisType.Datetime"
+                  Options="graphOptions"
+                  @ref="chart">
+                  <ApexPointSeries TItem="ChartData"
+                    Items="@_graphValues"
+                    Name="@T["L1 Potrošnja"].Value"
+                    SeriesType="SeriesType.Line"
+                    XValue='x => x.date'
+                    YValue="x => x.L1"
+                  />
+                  <ApexPointSeries TItem="ChartData"
+                    Items="@_graphValues"
+                    Name="@T["L2 Potrošnja"].Value"
+                    SeriesType="SeriesType.Line"
+                    XValue='x => x.date'
+                    YValue="x => x.L2"
+                  />
+                  <ApexPointSeries TItem="ChartData"
+                    Items="@_graphValues"
+                    Name="@T["L3 Potrošnja"].Value"
+                    SeriesType="SeriesType.Line"
+                    XValue='x => x.date'
+                    YValue="x => x.L3"
+                  />
+                </ApexChart>
+        <MudMenu Label="@T["Odabir vremena"].Value" Dense="true" Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
+          <MudMenuItem OnClick="@(() => MenuItemClicked("Scale1"))">5 min</MudMenuItem>
+          <MudMenuItem OnClick="@(() => MenuItemClicked("Scale2"))">10 min</MudMenuItem>
+          <MudMenuItem OnClick="@(() => MenuItemClicked("Scale3"))">15 min</MudMenuItem>
+          <MudMenuItem OnClick="@(() => MenuItemClicked("Scale4"))">30 min</MudMenuItem>
+          <MudMenuItem OnClick="@(() => MenuItemClicked("Scale5"))">1 h</MudMenuItem>
+          <MudMenuItem OnClick="@(() => MenuItemClicked("Scale6"))">3 h</MudMenuItem>
+          <MudMenuItem OnClick="@(() => MenuItemClicked("Scale7"))">6 h</MudMenuItem>
+          <MudMenuItem OnClick="@(() => MenuItemClicked("Scale8"))">12 h</MudMenuItem>
+          <MudMenuItem OnClick="@(() => MenuItemClicked("Scale9"))">24 h</MudMenuItem>
+        </MudMenu>
+        </MudContainer>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+  </MudHidden>
 }
 
 @code {
 
     [Parameter]
     public string Source { get; set; } = "abb";
+    public string TextValue { get; set; } = "";
     private List<Order> orders = new List<Order>();
     private ApexChartOptions<Order> options = new();
     private ApexChartOptions<ChartData> graphOptions = new();
+    private ApexChartOptions<ChartData> graphOptionsMobile = new();
     private string? _searchString;
     private List<TabularData> _dataStruct = new List<TabularData>();
     public IEnumerable<ChartData>? _lastDay;
@@ -153,6 +268,22 @@
     private ApexChart<ChartData> chart = default!;
     private Timer? timer;
     private bool timerInitialized;
+  private class Order {
+    public decimal? value = 10;
+    public decimal? valueMax = 1000;
+    public decimal? percent = 50;
+
+    public Order(decimal? val){
+      value = val;
+      percent = (value / valueMax) * 100;
+    }
+  }
+    private class ExpandThing {
+      public TabularData data;
+      public bool expand;
+      public bool show;
+    }
+    List<ExpandThing> _shownOMMs = new();
     protected override void OnAfterRender(bool firstRender)
     {
         // if (firstRender && !timerInitialized)
@@ -179,7 +310,37 @@
             }
         }
         };
-        graphOptions.Tooltip = new ApexCharts.Tooltip { X = new TooltipX { Format = @"hh : mm : ss" } };
+      graphOptionsMobile= new () {
+      Grid = new Grid
+      {
+          BorderColor = "#e7e7e7",
+          Row = new GridRow
+          {
+              Colors = new List<string> { "#f3f3f3", "transparent" },
+              Opacity = 0.5d
+          }
+      }
+      };
+      graphOptions.Tooltip = new ApexCharts.Tooltip { X = new TooltipX { Format = @"hh : mm : ss" } };
+      graphOptionsMobile.Tooltip = new () { X = new TooltipX { Format = @"hh : mm : ss" } };
+      graphOptionsMobile.Yaxis = new List<YAxis>();
+      graphOptionsMobile.Xaxis = new XAxis();
+
+      graphOptionsMobile.Yaxis.Add(new YAxis
+            {
+                Show = false
+            });
+      graphOptionsMobile.Xaxis = new XAxis()
+            {
+              Labels = new XAxisLabels(){ Show = false }
+            };
+      graphOptionsMobile.Chart = new Chart
+            {
+                Toolbar = new ApexCharts.Toolbar
+                {
+                    Tools = new Tools { Zoomin = false, Zoomout = false, Download = false, Pan = false, Reset = false, Selection = false, Zoom = false, }
+                }
+            };
       options.PlotOptions = new PlotOptions { RadialBar = new PlotOptionsRadialBar { StartAngle = -90, EndAngle = 90 } };
       if(Source.StartsWith("abb"))
         _startEnd = await _timeseriesClient.GetAbbLastMonthMeasurementsAsync(Source);
@@ -190,6 +351,7 @@
         _month = _startEnd.FirstDate.Month;
         _year = _startEnd.FirstDate.Year;
         _dataStruct.Add(new TabularData(_year, _month, _startEnd.First, _startEnd.Last));
+        _shownOMMs.Add(new ExpandThing{data = new (_year, _month, _startEnd.First, _startEnd.Last), show = true, expand = false});
       }
       if(Source.StartsWith("abb")){
         var a = await _timeseriesClient.GetAbbMeasurementsAsync(Source, DateTimeOffset.UtcNow.AddHours(-24), DateTimeOffset.UtcNow);
@@ -250,15 +412,8 @@
     _graphValues = _lastDay.TakeLast(20);
     await chart.UpdateSeriesAsync(true);
   }
-
-  private class Order {
-    public decimal? value = 10;
-    public decimal? valueMax = 1000;
-    public decimal? percent = 50;
-
-    public Order(decimal? val){
-      value = val;
-      percent = (value / valueMax) * 100;
-    }
+  private void OnExpandCollapseClick(int year, int month) {
+      var a = _shownOMMs.Where(x => x.data.year == year).Where(x => x.data.month == month).FirstOrDefault();
+      a.expand = !a.expand;
   }
 }

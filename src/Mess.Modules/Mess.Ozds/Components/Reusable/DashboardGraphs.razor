@@ -17,7 +17,10 @@
   <MudHidden Breakpoint="Breakpoint.MdAndUp">
     <MudGrid Class="my-3 pa-1">
         <MudItem xs="12" Class="pa-1">
-          <MudPaper Class="d-flex align-center justify-center mud-width-full pa-1" Height="260px">
+          <MudPaper Class="d-flex align-center justify-stat mud-width-full pa-1 pb-3 flex-column">
+            <MudItem Class="d-flex justify-center align-center" Style="font-size: large; font-weight: bold;">
+              @(T["Snaga po fazi za"].Value + ": " + _leftTitle)
+            </MudItem>
             <MudContainer Class="d-flex flex-column" MaxWidth="MaxWidth.Small">
               @if(_leftGraphValues is not null){
                 <ApexChart TItem="ChartDataL"
@@ -58,7 +61,10 @@
           </MudPaper>
         </MudItem>
         <MudItem xs="12" Class="pa-1">
-          <MudPaper Class="d-flex align-center justify-center mud-width-full pa-1" Height="260px">
+          <MudPaper Class="d-flex align-center justify-stat mud-width-full pa-1 pb-3 flex-column">
+            <MudItem Class="d-flex justify-center align-center" Style="font-size: large; font-weight: bold;">
+              @(T["Snaga po fazi za"].Value + ": " + _rightTitle)
+            </MudItem>
             <MudContainer Class="d-flex flex-column" MaxWidth="MaxWidth.Small">
               @if(_rightGraphValues is not null){
                 <ApexChart TItem="ChartData"
@@ -107,14 +113,16 @@
   <MudHidden Breakpoint="Breakpoint.SmAndDown">
     <MudGrid Class="my-3">
         <MudItem xs="6">
-          <MudPaper Class="d-flex align-center justify-center mud-width-full py-8 px-8" Height="500px">
+          <MudPaper Class="d-flex align-center justify-center mud-width-full py-8 px-8 flex-column" Height="500px">
+            <MudItem Class="d-flex justify-center align-center" Style="font-size: large; font-weight: bold;">
+              @(T["Snaga po fazi za"].Value + ": " + _leftTitle)
+            </MudItem>
             <MudContainer Class="d-flex flex-column" MaxWidth="MaxWidth.Small">
               @if(_leftGraphValues is not null){
                 <ApexChart TItem="ChartDataL"
                   XAxisType="XAxisType.Datetime"
                   Options="graphLOptions"
-                  @ref="leftChart"
-                Title="@(_leftTitle)">
+                  @ref="leftChart">
                   <ApexPointSeries TItem="ChartDataL"
                     Items="@_leftGraphValues"
                     Name="@T["L1 Potrošnja"].Value"
@@ -149,14 +157,16 @@
           </MudPaper>
         </MudItem>
         <MudItem xs="6">
-          <MudPaper Class="d-flex align-center justify-center mud-width-full py-8 px-8" Height="500px">
+          <MudPaper Class="d-flex align-center justify-center mud-width-full py-8 px-8 flex-column" Height="500px">
+            <MudItem Class="d-flex justify-center align-center" Style="font-size: large; font-weight: bold;">
+              @(T["Snaga po fazi za"].Value + ": " + _rightTitle)
+            </MudItem>
             <MudContainer Class="d-flex flex-column" MaxWidth="MaxWidth.Small">
               @if(_rightGraphValues is not null){
                 <ApexChart TItem="ChartData"
                   XAxisType="XAxisType.Datetime"
                   Options="graphOptions"
-                  @ref ="rightChart"
-                Title="@(_rightTitle)">
+                  @ref ="rightChart">
                   <ApexPointSeries TItem="ChartData"
                     Items="@_rightGraphValues"
                     Name="@T["L1 Potrošnja"].Value"
@@ -386,16 +396,5 @@
     }
     StateHasChanged();
     await rightChart.UpdateSeriesAsync(true);
-  }
-
-  private class Order {
-    public decimal? value = 10;
-    public decimal? valueMax = 1000;
-    public decimal? percent = 50;
-
-    public Order(decimal? val){
-      value = val;
-      percent = (value / valueMax) * 100;
-    }
   }
 }

@@ -11,69 +11,116 @@
 
 @inject NavigationManager NavigationManager
 
-<MudDataGrid
-  T="TabularData"
-  MultiSelection="true"
-  Items="@_dataStruct"
-  SortMode="SortMode.Multiple"
-  Filterable="true"
-  QuickFilter="@_quickFilter">
-  <ToolBarContent>
-    <MudText Typo="Typo.h4">@T["Mjerna mjesta"].Value</MudText>
-    <MudSpacer />
-    <MudTextField
-      @bind-Value="_searchString"
-      Placeholder="@T["Pretraži"].Value"
-      Adornment="Adornment.Start"
-      Immediate="true"
-      AdornmentIcon="@Icons.Material.Filled.Search"
-      IconSize="MudBlazor.Size.Medium"
-      Class="mt-0">
-    </MudTextField>
-  </ToolBarContent>
-  <Columns>
-   <TemplateColumn Title="@T["Mjerna mjesta"].Value"
-      Sortable="false"
-      Filterable="false">
-        <CellTemplate>
-            <MudStack Row>
-              <MudButton OnClick="() => InspectOMM(context.Item.omm)" Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
-                @context.Item.omm.DisplayText
-              </MudButton>
+
+@* MOBILE *@
+  <MudHidden Breakpoint="Breakpoint.MdAndUp">
+    <MudPaper Class="pa-1">
+      <MudText Typo="Typo.h4" Class="d-flex justify-center">
+        @(T["Mjerna mjesta"].Value)
+      </MudText>
+      <MudTextField Class="pa-3" ValueChanged="EventCallback.Factory.Create<string>(this, Filter)" Label="Pretraži submreže" Variant="Variant.Text"></MudTextField>
+      @foreach(ExpandThing dataStruct in _shownOMMs.Where(x => x.show == true).ToList()){
+      <MudPaper Elevation="2" Class="ma-1">
+        <MudStack Spacing="0">
+          <MudGrid Class="d-flex pa-2">
+            <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large;">
+              @T["Mjerna mjesta"].Value: @dataStruct.data.omm.DisplayText
+            </MudItem>
+            <MudItem xs="2" Class="d-flex align-center justify-end">
+              <MudIconButton OnClick="() => InspectOMM(dataStruct.data.omm)" Icon="@Icons.Material.Filled.RemoveRedEye" Color="MudBlazor.Color.Primary"/>
+            </MudItem>
+            <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large; font-weight: bold;">
+              @T["Ukupna potrošnja"].Value: @dataStruct.data.lastMeasurement kWh
+            </MudItem>
+              <MudItem xs="2" Class="d-flex align-center justify-end">
+                <MudIconButton OnClick="() => OnExpandCollapseClick(dataStruct.data.omm.ContentItemId)" Icon="@(dataStruct.expand ? Icons.Material.Filled.KeyboardArrowUp : Icons.Material.Filled.KeyboardArrowDown)" Color="MudBlazor.Color.Default"/>
+              </MudItem>
+          </MudGrid>
+
+          <MudCollapse Class="py-2" Expanded="_shownOMMs.Where(x => x.data.omm.DisplayText == dataStruct.data.omm.DisplayText).First().expand">
+            <MudStack>
+              <MudDivider DividerType="DividerType.Middle" Class="mt-2"/>
+              <MudContainer>
+                @T["Podmreže"].Value: @(dataStruct.data.system.DisplayText)
+              </MudContainer>
+              <MudContainer>
+                @T["Zakupnici"].Value: @(dataStruct.data.unit.DisplayText)
+              </MudContainer>
             </MudStack>
-        </CellTemplate>
-    </TemplateColumn>
-    <TemplateColumn Title="@T["Podmreže"].Value"
-      Sortable="false"
-      Filterable="false">
-        <CellTemplate>
-            <MudStack Row>
-              <MudButton OnClick="() => InspectSubnet(context.Item.system)" Variant="Variant.Outlined" Color="MudBlazor.Color.Primary">
-                @context.Item.system.DisplayText
-              </MudButton>
-            </MudStack>
-        </CellTemplate>
-    </TemplateColumn>
-    <TemplateColumn Title="@T["Zakupnici"].Value"
-      Sortable="false"
-      Filterable="false">
-        <CellTemplate>
-            <MudStack Row>
-              <MudButton OnClick="() => InspectTenant(context.Item.unit)" Variant="Variant.Outlined" Color="MudBlazor.Color.Primary">
-                @context.Item.unit.DisplayText
-              </MudButton>
-            </MudStack>
-        </CellTemplate>
-    </TemplateColumn>
-    <PropertyColumn
-      CellStyle="font-size: x-large;"
-      Property="x => x.lastMeasurement"
-      Title='@T["Ukupna potrošnja"].Value' />
-  </Columns>
-  <PagerContent>
-    <MudDataGridPager T="TabularData" />
-  </PagerContent>
-</MudDataGrid>
+          </MudCollapse>
+        </MudStack>
+      </MudPaper>
+      }
+    </MudPaper>
+  </MudHidden>
+
+
+@* DESKTOP *@
+  <MudHidden Breakpoint="Breakpoint.SmAndDown">
+        <MudDataGrid
+      T="TabularData"
+      MultiSelection="true"
+      Items="@_dataStruct"
+      SortMode="SortMode.Multiple"
+      Filterable="true"
+      QuickFilter="@_quickFilter">
+      <ToolBarContent>
+        <MudText Typo="Typo.h4">@T["Mjerna mjesta"].Value</MudText>
+        <MudSpacer />
+        <MudTextField
+          @bind-Value="_searchString"
+          Placeholder="@T["Pretraži"].Value"
+          Adornment="Adornment.Start"
+          Immediate="true"
+          AdornmentIcon="@Icons.Material.Filled.Search"
+          IconSize="MudBlazor.Size.Medium"
+          Class="mt-0">
+        </MudTextField>
+      </ToolBarContent>
+      <Columns>
+      <TemplateColumn Title="@T["Mjerna mjesta"].Value"
+          Sortable="false"
+          Filterable="false">
+            <CellTemplate>
+                <MudStack Row>
+                  <MudButton OnClick="() => InspectOMM(context.Item.omm)" Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
+                    @context.Item.omm.DisplayText
+                  </MudButton>
+                </MudStack>
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title="@T["Podmreže"].Value"
+          Sortable="false"
+          Filterable="false">
+            <CellTemplate>
+                <MudStack Row>
+                  <MudButton OnClick="() => InspectSubnet(context.Item.system)" Variant="Variant.Outlined" Color="MudBlazor.Color.Primary">
+                    @context.Item.system.DisplayText
+                  </MudButton>
+                </MudStack>
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title="@T["Zakupnici"].Value"
+          Sortable="false"
+          Filterable="false">
+            <CellTemplate>
+                <MudStack Row>
+                  <MudButton OnClick="() => InspectTenant(context.Item.unit)" Variant="Variant.Outlined" Color="MudBlazor.Color.Primary">
+                    @context.Item.unit.DisplayText
+                  </MudButton>
+                </MudStack>
+            </CellTemplate>
+        </TemplateColumn>
+        <PropertyColumn
+          CellStyle="font-size: x-large;"
+          Property="x => x.lastMeasurement"
+          Title='@T["Ukupna potrošnja"].Value' />
+      </Columns>
+      <PagerContent>
+        <MudDataGridPager T="TabularData" />
+      </PagerContent>
+    </MudDataGrid>
+  </MudHidden>
 
 @code {
     [Parameter]
@@ -129,6 +176,9 @@
             }
           }
         }
+        foreach(var data in _dataStruct){
+          _shownOMMs.Add( new ExpandThing{data = data, show = true, expand = false});
+        }
     }
     private Func<TabularData, bool> _quickFilter => x =>
   {
@@ -148,5 +198,34 @@
   }
   private void InspectOMM(ContentItem item) {
       NavigationManager.NavigateTo($"app/omm/{item.DisplayText}");
+  }
+
+@* MOBILE *@
+  public string TextValue { get; set; } = "";
+  private class ExpandThing {
+    public TabularData data;
+    public bool expand;
+    public bool show;
+  }
+  List<ExpandThing> _shownOMMs = new();
+  private void OnExpandCollapseClick(string id) {
+    var a = _shownOMMs.Where(x => x.data.omm.ContentItemId == id).FirstOrDefault();
+    a.expand = !a.expand;
+  }
+  private Task Filter(string value) {
+    TextValue = value;
+    foreach (var inv in _shownOMMs)
+    {
+      if(value.Trim() != ""){
+        inv.show = false;
+      }
+    };
+    var a = _shownOMMs.Where(x => x.data.system.DisplayText.Contains(value, StringComparison.InvariantCultureIgnoreCase)).ToList();
+    foreach (var inv in a)
+    {
+        inv.show = true;
+    };
+    StateHasChanged();
+    return Task.CompletedTask;
   }
 }

@@ -81,7 +81,41 @@
 </MudDataGrid>
 }
 else{
-  <MudDataGrid
+
+@* MOBILE *@
+  <MudHidden Breakpoint="Breakpoint.MdAndUp">
+    <MudPaper Class="pa-1">
+      <MudText Typo="Typo.h4" Class="d-flex justify-center">
+        @(T["Zakupnici"].Value)
+      </MudText>
+      <MudTextField Class="pa-3" ValueChanged="EventCallback.Factory.Create<string>(this, Filter)" Label="Pretraži zakupnike" Variant="Variant.Text"></MudTextField>
+      @foreach(ExpandThing dataStruct in _shownTenants.Where(x => x.show == true).ToList()){
+      <MudPaper Elevation="2" Class="ma-1">
+        <MudStack Spacing="0">
+          <MudGrid Class="d-flex pa-2">
+            <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large;">
+              @T["Podmreža"].Value: @dataStruct.data.system.DisplayText
+            </MudItem>
+            <MudItem xs="2" Class="d-flex align-center justify-end">
+              <MudIconButton OnClick="() => InspectSubnet(dataStruct.data.system)" Icon="@Icons.Material.Filled.RemoveRedEye" Color="MudBlazor.Color.Primary"/>
+            </MudItem>
+            <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large; font-weight: bold;">
+              @T["Zakupnik"].Value: @dataStruct.data.unit.DisplayText
+            </MudItem>
+            <MudItem xs="2" Class="d-flex align-center justify-end">
+              <MudIconButton OnClick="() => InspectTenant(dataStruct.data.unit)" Icon="@Icons.Material.Filled.RemoveRedEye" Color="MudBlazor.Color.Primary"/>
+            </MudItem>
+          </MudGrid>
+        </MudStack>
+      </MudPaper>
+      }
+    </MudPaper>
+  </MudHidden>
+
+
+@* DESKTOP *@
+  <MudHidden Breakpoint="Breakpoint.SmAndDown">
+    <MudDataGrid
   T="TabularData"
   MultiSelection="true"
   Items="@_dataStruct"
@@ -125,15 +159,21 @@ else{
         </CellTemplate>
     </TemplateColumn>
     <PropertyColumn
-      CellStyle="font-size: x-large;"
-      Property="x => x.unit.As<DistributionSystemUnitPart>().Consumption"
-      Title='@T["Potrošnja"].Value'/>
+    CellStyle="font-size: x-large;"
+    Property="x => x.unit.As<DistributionSystemUnitPart>().Consumption"
+    Title='@T["Potrošnja"].Value'>
+          <CellTemplate>
+              @(context.Item.unit.As<DistributionSystemUnitPart>().Consumption + " kWh")
+          </CellTemplate>
+      </PropertyColumn>
   </Columns>
   <PagerContent>
     <MudDataGridPager T="TabularData" />
   </PagerContent>
 </MudDataGrid>
+  </MudHidden>
 }
+
 @code {
     [Parameter]
     public User User { get; set; } = default!;
@@ -180,6 +220,9 @@ else{
                     _dataStruct.Add(new TabularData(system, unit));
                 }
             }
+            foreach(var data in _dataStruct){
+              _shownTenants.Add( new ExpandThing{data = data, show = true, expand = false});
+            }
     }
     private Func<TabularData, bool> _quickFilter => x =>
   {
@@ -196,5 +239,34 @@ else{
   }
   private void InspectSubnet(ContentItem item) {
       NavigationManager.NavigateTo($"app/subnet/{item.ContentItemId}");
+  }
+
+@* MOBILE *@
+  public string TextValue { get; set; } = "";
+  private class ExpandThing {
+    public TabularData data;
+    public bool expand;
+    public bool show;
+  }
+  List<ExpandThing> _shownTenants = new();
+  private void OnExpandCollapseClick(string id) {
+    var a = _shownTenants.Where(x => x.data.unit.ContentItemId == id).FirstOrDefault();
+    a.expand = !a.expand;
+  }
+  private Task Filter(string value) {
+    TextValue = value;
+    foreach (var inv in _shownTenants)
+    {
+      if(value.Trim() != ""){
+        inv.show = false;
+      }
+    };
+    var a = _shownTenants.Where(x => x.data.unit.DisplayText.Contains(value, StringComparison.InvariantCultureIgnoreCase)).ToList();
+    foreach (var inv in a)
+    {
+        inv.show = true;
+    };
+    StateHasChanged();
+    return Task.CompletedTask;
   }
 }

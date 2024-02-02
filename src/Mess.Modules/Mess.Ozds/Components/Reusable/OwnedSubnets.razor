@@ -11,43 +11,74 @@
 
 @inject NavigationManager NavigationManager;
 
-  <MudDataGrid
-  T="ContentItem"
-  MultiSelection="true"
-  Items="@_systems"
-  SortMode="SortMode.Multiple"
-  Filterable="true"
-  QuickFilter="@_quickFilter">
-  <ToolBarContent>
-    <MudText Typo="Typo.h4">@T["Tvoje Podmreže"]</MudText>
-    <MudSpacer />
-    <MudTextField
-      @bind-Value="_searchString"
-      Placeholder="@T["Pretraži"].Value"
-      Adornment="Adornment.Start"
-      Immediate="true"
-      AdornmentIcon="@Icons.Material.Filled.Search"
-      IconSize="MudBlazor.Size.Medium"
-      Class="mt-0">
-    </MudTextField>
-  </ToolBarContent>
-  <Columns>
-    <TemplateColumn Title="@T["Podmreže"].Value"
-      Sortable="false"
-      Filterable="false">
-        <CellTemplate>
-            <MudStack Row>
-              <MudButton OnClick="() => InspectSubnet(context.Item)" Variant="Variant.Outlined" Color="MudBlazor.Color.Primary">
-                @context.Item.DisplayText
-              </MudButton>
-            </MudStack>
-        </CellTemplate>
-    </TemplateColumn>
-  </Columns>
-  <PagerContent>
-    <MudDataGridPager T="ContentItem" />
-  </PagerContent>
-</MudDataGrid>
+@* MOBILE *@
+  <MudHidden Breakpoint="Breakpoint.MdAndUp">
+    <MudPaper Class="pa-1">
+      <MudText Typo="Typo.h4" Class="d-flex justify-center">
+        @(T["Tvoje Podmreže"].Value)
+      </MudText>
+      <MudDivider />
+      @foreach(ExpandThing dataStruct in _shownSubnets.Where(x => x.show == true).ToList()){
+      <MudPaper Elevation="2" Class="ma-1">
+        <MudStack Spacing="0">
+          <MudGrid Class="d-flex pa-2">
+            <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large; font-weight: bold;">
+              @T["Podmreža"].Value: @dataStruct.data.DisplayText
+            </MudItem>
+                <MudItem xs="2" Class="d-flex align-center justify-end">
+                  <MudIconButton OnClick="() => InspectSubnet(dataStruct.data)" Icon="@Icons.Material.Filled.RemoveRedEye" Color="MudBlazor.Color.Primary"/>
+                </MudItem>
+          </MudGrid>
+        </MudStack>
+      </MudPaper>
+      }
+    </MudPaper>
+  </MudHidden>
+
+
+@* DESKTOP *@
+  <MudHidden Breakpoint="Breakpoint.SmAndDown">
+    <MudDataGrid
+      T="ContentItem"
+      MultiSelection="true"
+      Items="@_systems"
+      SortMode="SortMode.Multiple"
+      Filterable="true"
+      QuickFilter="@_quickFilter">
+      <ToolBarContent>
+        <MudText Typo="Typo.h4">@T["Tvoje Podmreže"]</MudText>
+        <MudSpacer />
+        <MudTextField
+          @bind-Value="_searchString"
+          Placeholder="@T["Pretraži"].Value"
+          Adornment="Adornment.Start"
+          Immediate="true"
+          AdornmentIcon="@Icons.Material.Filled.Search"
+          IconSize="MudBlazor.Size.Medium"
+          Class="mt-0">
+        </MudTextField>
+      </ToolBarContent>
+      <Columns>
+        <TemplateColumn Title="@T["Podmreže"].Value"
+          Sortable="false"
+          Filterable="false">
+            <CellTemplate>
+                <MudStack Row>
+                  <MudButton OnClick="() => InspectSubnet(context.Item)" Variant="Variant.Outlined" Color="MudBlazor.Color.Primary">
+                    @context.Item.DisplayText
+                  </MudButton>
+                </MudStack>
+            </CellTemplate>
+        </TemplateColumn>
+      </Columns>
+      <PagerContent>
+        <MudDataGridPager T="ContentItem" />
+      </PagerContent>
+    </MudDataGrid>
+  </MudHidden>
+
+
+
 
 @code {
     [Parameter]
@@ -64,6 +95,11 @@
           .Where(index => index.ClosedDistributionSystemContentItemId == LegalEntity.ContentItemId)
           .ListAsync();
       });
+      if(_systems is not null){
+        foreach(var sub in _systems){
+          _shownSubnets.Add( new ExpandThing{data = sub, show = true, expand = false});
+        }
+      }
   }
 
   private Func<ContentItem, bool> _quickFilter => x =>
@@ -82,5 +118,35 @@
   }
   private void InspectSubnet(ContentItem item) {
       NavigationManager.NavigateTo($"app/subnet/{item.ContentItemId}");
+  }
+
+
+@* MOBILE *@
+  public string TextValue { get; set; } = "";
+  private class ExpandThing {
+    public ContentItem data = default!;
+    public bool expand;
+    public bool show;
+  }
+  List<ExpandThing> _shownSubnets = new();
+  private void OnExpandCollapseClick(string id) {
+    var a = _shownSubnets.Where(x => x.data.ContentItemId == id).FirstOrDefault();
+    a.expand = !a.expand;
+  }
+  private Task Filter(string value) {
+    TextValue = value;
+    foreach (var inv in _shownSubnets)
+    {
+      if(value.Trim() != ""){
+        inv.show = false;
+      }
+    };
+    var a = _shownSubnets.Where(x => x.data.DisplayText.Contains(value, StringComparison.InvariantCultureIgnoreCase)).ToList();
+    foreach (var inv in a)
+    {
+        inv.show = true;
+    };
+    StateHasChanged();
+    return Task.CompletedTask;
   }
 }
