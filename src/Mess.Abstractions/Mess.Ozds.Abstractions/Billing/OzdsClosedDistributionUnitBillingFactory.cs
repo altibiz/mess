@@ -271,10 +271,7 @@ public class OzdsClosedDistributionUnitBillingFactory : IBillingFactory
           businessUsageFeeAmount * businessUsageFeePrice
         );
 
-    var total =
-      usageFee + supplyFee + renewableEnergyFeeItem?.Total
-      ?? 0.0M + businessUsageFeeItem?.Total
-      ?? 0.0M;
+    var total = usageFee + supplyFee;
     var taxRate =
       regulatoryAgencyCatalogueItem
         .RegulatoryAgencyCataloguePart
@@ -291,10 +288,10 @@ public class OzdsClosedDistributionUnitBillingFactory : IBillingFactory
       distributionSystemUnit,
       fromDate,
       toDate,
-      usageFee,
-      supplyFee,
       renewableEnergyFeeItem,
       businessUsageFeeItem,
+      usageFee,
+      supplyFee,
       total,
       taxRate,
       tax,

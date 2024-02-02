@@ -114,11 +114,13 @@ public abstract class OzdsIotDeviceBillingFactory<T> : IOzdsIotDeviceBillingFact
   {
     var usageExpenditure = CreateExpenditureData(
       billingData,
-      usageCatalogueItem
+      usageCatalogueItem,
+      null
     );
     var supplyExpenditure = CreateExpenditureData(
       billingData,
-      supplyCatalogueItem
+      supplyCatalogueItem,
+      regulatoryAgencyCatalogue
     );
 
     return new OzdsCalculationData(
@@ -135,7 +137,8 @@ public abstract class OzdsIotDeviceBillingFactory<T> : IOzdsIotDeviceBillingFact
 
   private static OzdsExpenditureData CreateExpenditureData(
     OzdsIotDeviceBillingData billingData,
-    OperatorCatalogueItem catalogueItem
+    OperatorCatalogueItem catalogueItem,
+    RegulatoryAgencyCatalogueItem? regulatoryAgencyCatalogueItem
   )
   {
     var energyPrice =
@@ -184,15 +187,51 @@ public abstract class OzdsIotDeviceBillingFactory<T> : IOzdsIotDeviceBillingFact
           iotDeviceFeeTotal
         );
 
+    var renewableEnergyFeePrice =
+      regulatoryAgencyCatalogueItem?.RegulatoryAgencyCataloguePart.Value.RenewableEnergyFee.Value ?? 0.0M;
+    var renewableEnergyFeeAmount =
+      billingData.EndEnergyTotal_kWh - billingData.StartEnergyTotal_kWh;
+    var renewableEnergyFeeTotal = renewableEnergyFeeAmount * renewableEnergyFeePrice;
+    var renewableEnergyFee =
+      renewableEnergyFeePrice == 0.0M
+        ? null
+        : new OzdsExpenditureItemData(
+          0.0M,
+          0.0M,
+          renewableEnergyFeeAmount,
+          renewableEnergyFeePrice,
+          renewableEnergyFeeTotal
+        );
+
+    var businessUsageFeePrice =
+      regulatoryAgencyCatalogueItem?.RegulatoryAgencyCataloguePart.Value.RenewableEnergyFee.Value ?? 0.0M;
+    var businessUsageFeeAmount =
+      billingData.EndEnergyTotal_kWh - billingData.StartEnergyTotal_kWh;
+    var businessUsageFeeTotal = businessUsageFeeAmount * businessUsageFeePrice;
+    var businessUsageFee =
+      businessUsageFeePrice == 0.0M
+        ? null
+        : new OzdsExpenditureItemData(
+          0.0M,
+          0.0M,
+          businessUsageFeeAmount,
+          businessUsageFeePrice,
+          businessUsageFeeTotal
+        );
+
     return new OzdsExpenditureData(
       null,
       null,
       energyItem,
       maxPowerItem,
       iotDeviceFee,
-      +(energyItem?.Total ?? 0.0M)
+      renewableEnergyFee,
+      businessUsageFee,
+      (energyItem?.Total ?? 0.0M)
       + (maxPowerItem?.Total ?? 0.0M)
       + (iotDeviceFee?.Total ?? 0.0M)
+      + (renewableEnergyFee?.Total ?? 0.0M)
+      + (businessUsageFee?.Total ?? 0.0M)
     );
   }
 }

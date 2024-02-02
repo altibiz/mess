@@ -1,0 +1,41 @@
+@page "/app/invoice-print/{invoiceId}"
+
+@layout PrintLayout
+
+@using Mess.Ozds.Abstractions.Indexes
+@using Mess.Iot.Abstractions.Models
+@using Mess.Ozds.Abstractions.Models
+@using OrchardCore.Users.Models
+@using OrchardCore.ContentFields.Indexing.SQL
+@using System.Linq.Expressions
+@using Mess.Ozds.Abstractions.Timeseries
+@using Mess.Billing.Abstractions.Models
+@using OrchardCore.ContentManagement.Records
+@using OrchardCore.Users.Indexes
+@using Mess.Billing.Abstractions.Indexes
+@using Mess.Ozds.Components.Reusable.Print
+
+@if (_invoiceItem is null) {
+  return;
+}
+
+<InvoicePrint Item="@_invoiceItem" />
+
+@code {
+  [Parameter]
+  public string InvoiceId { get; set; } = default!;
+  private OzdsInvoiceItem? _invoiceItem;
+
+  protected override async Task OnInitializedAsync()
+  {
+      await WithTransientSessionAsync(async session => {
+
+          var contentInvoice = await session
+            .Query<ContentItem, PaymentIndex>()
+            .Where(index => index.ContentItemId == InvoiceId)
+            .FirstOrDefaultAsync();
+
+          _invoiceItem = contentInvoice.AsContent<OzdsInvoiceItem>();
+      });
+}
+}

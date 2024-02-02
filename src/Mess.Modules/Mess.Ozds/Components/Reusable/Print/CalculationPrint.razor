@@ -1,0 +1,332 @@
+@using Mess.Ozds.Abstractions.Models
+@using Mess.Iot.Abstractions.Models
+
+<style>
+  table {
+    border-spacing: 0;
+    border-collapse: collapse;
+    border: 2px solid black;
+  }
+
+  th {
+    background-color: #DDDDDD;
+  }
+
+  th, td {
+    border: 1px solid black;
+    padding: 2px;
+  }
+</style>
+
+<div class="page">
+  <div class="page-header">
+    <img src="Mess.Ozds/print-first-header.png" />
+  </div>
+  <div class="page-content">
+    <p style="margin-top: 1.8rem; margin-bottom: 0.8rem;">
+      <strong><u>SPECIFIKACIJA POTROŠNJE NA OBRAČUNSKIM MJERNIM MJESTIMA</u></strong>
+    </p>
+    <p>
+      Naziv obračunskom mjernog mjesta (OMM): @(calculation.IotDevice.As<IotDevicePart>().DeviceId.Text)
+    </p>
+    <p>
+      Broj obračunskog mjernog mjesta (OMM): @(calculation.IotDevice.ContentItemId)
+    </p>
+    <p>
+      Tarifni model: @(usageCatalogue.TitlePart.Value.Title)
+    </p>
+    <p style="margin-top: 1.2rem; margin-bottom: 0.8rem; margin-left: 0.8rem;">
+      <strong>A) TROŠKOVI KORIŠTENJA MREŽE ZDS-a</strong>
+    </p>
+    <table style="width: 100%">
+      <colgroup>
+        <col style="width: 7%" />
+        <col style="width: 8%" />
+        <col style="width: 8%" />
+        <col style="width: 9%" />
+        <col style="width: 10%" />
+        <col style="width: 10%" />
+        <col style="width: 6%" />
+        <col style="width: 8%" />
+        <col style="width: 12%" />
+        <col style="width: 8%" />
+        <col style="width: 8%" />
+      </colgroup>
+      <thead>
+        <tr class="header">
+          <th>Broj brojila</th>
+          <th>Datum od</th>
+          <th>Datum do</th>
+          <th>Tarifna stavka</th>
+          <th>Stanje od</th>
+          <th>Stanje do</th>
+          <th>Status</th>
+          <th>Konstanta</th>
+          <th>Potrošak (kWh/kW/kVAr)</th>
+          <th>Jed.cijena (kn)</th>
+          <th>Iznos (kn)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="odd">
+          <td rowspan="6">
+            @(calculation.IotDevice.As<IotDevicePart>().DeviceId.Text)
+          </td>
+          <td rowspan="6">
+            @(Item.OzdsInvoicePart.Value.Data.From.ToString("dd. MM. yyyy."))
+          </td>
+          <td rowspan="6">
+            @(Item.OzdsInvoicePart.Value.Data.To.AddDays(-1).ToString("dd. MM. yyyy."))
+          </td>
+          <td><strong>RVT - R1</strong></td>
+          <td>00000000,00</td>
+          <td>00000000,00</td>
+          <td>O/P</td>
+          <td>0,0</td>
+          <td>000000</td>
+          <td>0,00</td>
+          <td>0,00</td>
+        </tr>
+        <tr class="even">
+          <td><strong>RNT - R2</strong></td>
+          <td>00000000,00</td>
+          <td>00000000,00</td>
+          <td>O/P</td>
+          <td>0,0</td>
+          <td>000000</td>
+          <td>0,00</td>
+          <td>0,00</td>
+        </tr>
+        <tr class="odd">
+          <td><strong>SVT - S1</strong></td>
+          <td>00000000,00</td>
+          <td>00000000,00</td>
+          <td>O/P</td>
+          <td>0,0</td>
+          <td>000000</td>
+          <td>0,00</td>
+          <td>0,00</td>
+        </tr>
+        <tr class="even">
+          <td><strong>JEN - J1</strong></td>
+          <td>00000000,00</td>
+          <td>00000000,00</td>
+          <td>O/P</td>
+          <td>0,0</td>
+          <td>000000</td>
+          <td>0,00</td>
+          <td>0,00</td>
+        </tr>
+        <tr class="odd">
+          <td><strong>JEN - J2</strong></td>
+          <td>00000000,00</td>
+          <td>00000000,00</td>
+          <td>O/P</td>
+          <td>0,0</td>
+          <td>000000</td>
+          <td>0,00</td>
+          <td>0,00</td>
+        </tr>
+        <tr class="even">
+          <td colspan="5"><strong>Naknada za mjernu uslugu - MU</strong></td>
+          <td>1</td>
+          <td>0,00</td>
+          <td>0,00</td>
+        </tr>
+        <tr class="odd">
+          <td colspan="6"><strong> </strong></td>
+          <td colspan="4">
+            <strong>Troškovi korištenja mreže ZDS-a - UKUPNO:</strong>
+          </td>
+          <td><strong>0,00</strong></td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="margin-top: 1.2rem; margin-bottom: 0.8rem; margin-left: 0.8rem;">
+      <strong>B) TROŠKOVI OPSKRBE ELEKTRIČNOM ENERGIJOM</strong>
+    </p>
+    <table>
+      <colgroup>
+        <col style="width: 7%" />
+        <col style="width: 8%" />
+        <col style="width: 8%" />
+        <col style="width: 9%" />
+        <col style="width: 10%" />
+        <col style="width: 10%" />
+        <col style="width: 5%" />
+        <col style="width: 8%" />
+        <col style="width: 12%" />
+        <col style="width: 9%" />
+        <col style="width: 8%" />
+      </colgroup>
+      <thead>
+        <tr class="header">
+          <th>Broj brojila</th>
+          <th>Datum od</th>
+          <th>Datum do</th>
+          <th>Tarifna stavka</th>
+          <th>Stanje od</th>
+          <th>Stanje do</th>
+          <th>Status</th>
+          <th>Konstanta</th>
+          <th>Potrošak (kWh)</th>
+          <th>Jed.cijena (kn)</th>
+          <th>Iznos (kn)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="odd">
+          <td rowspan="4">
+            @(calculation.IotDevice.As<IotDevicePart>().DeviceId.Text)
+          </td>
+          <td rowspan="4">
+            @(Item.OzdsInvoicePart.Value.Data.From.ToString("dd. MM. yyyy."))
+          </td>
+          <td rowspan="4">
+            @(Item.OzdsInvoicePart.Value.Data.To.AddDays(-1).ToString("dd. MM. yyyy."))
+          </td>
+          <td><strong>RVT</strong></td>
+          <td>00000000,00</td>
+          <td>00000000,00</td>
+          <td>O/P</td>
+          <td>0,0</td>
+          <td>000000</td>
+          <td>0,00</td>
+          <td>0,00</td>
+        </tr>
+        <tr class="even">
+          <td><strong>RNT</strong></td>
+          <td>00000000,00</td>
+          <td>00000000,00</td>
+          <td>O/P</td>
+          <td>0,0</td>
+          <td>000000</td>
+          <td>0,00</td>
+          <td>0,00</td>
+        </tr>
+        <tr class="odd">
+          <td><strong>OIEiK</strong></td>
+          <td>00000000,00</td>
+          <td>00000000,00</td>
+          <td>O/P</td>
+          <td>0,0</td>
+          <td>000000</td>
+          <td>0,00</td>
+          <td>0,00</td>
+        </tr>
+        <tr class="even">
+          <td><strong>TRP/TRNP</strong></td>
+          <td>00000000,00</td>
+          <td>00000000,00</td>
+          <td>O/P</td>
+          <td>0,0</td>
+          <td>000000</td>
+          <td>0,00</td>
+          <td>0,00</td>
+        </tr>
+        <tr class="odd">
+          <td colspan="5"><strong> </strong></td>
+          <td colspan="5">
+            <strong>Troškovi opskrbe električnom energijom - UKUPNO:</strong>
+          </td>
+          <td><strong>0,00</strong></td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="margin-top: 1.2rem; margin-bottom: 0.8rem;">
+      <u>Značenje kratica:</u>
+    </p>
+    <p><strong>JEN</strong> – prekomjerno preuzeta jalova energija</p>
+    <p><strong>MU</strong> – naknada za mjernu uslugu</p>
+    <p><strong>O</strong> - očitano</p>
+    <p>
+      <strong>OIEiK</strong> – naknada za obnovljive izvore energije i
+      visokoučinkovitu kogeneraciju
+    </p>
+    <p><strong>OMM</strong> – obračunsko mjerno mjesto</p>
+    <p><strong>P</strong> - procjena</p>
+    <p>
+      <strong>RNT</strong> <strong>–</strong> radna energija u doba u doba niže
+      dnevne tarife
+    </p>
+    <p><strong>RVT –</strong> radna energija u doba više dnevne tarife</p>
+    <p><strong>SVT</strong> – angažirana snaga u doba više dnevne tarife</p>
+    <p><strong>TRNP</strong> – trošarina za neposlovnu potrošnju</p>
+    <p><strong>TRP</strong> – trošarina za poslovnu potrošnju</p>
+  </div>
+  <div class="page-footer">
+    <img src="Mess.Ozds/print-footer.png" />
+  </div>
+</div>
+<div class="page-break"/>
+<div class="page">
+  <div class="page-header">
+    <img src="Mess.Ozds/print-header.png" />
+  </div>
+  <div class="page-content">
+    <p>
+      <u><strong>Napomena korisnicima ZDS-a</strong>:</u>
+    </p>
+    <p>Vaša pitanja, reklamacije te pisane prigovore možete dostaviti na:</p>
+    <blockquote>
+      <p>
+        Adresu:
+        <strong>HELB d.o.o., Industrijska ulica 1, Božjakovina, 10370 DUGO SELO</strong>
+        ili
+      </p>
+      <p>
+        E-mail: <a href="mailto:helb@helb.hr">helb@helb.hr</a>;
+        Telefon: <strong>385 1 2781 440</strong>
+      </p>
+    </blockquote>
+  </div>
+  <div class="page-footer">
+    <img src="Mess.Ozds/print-footer.png" />
+  </div>
+</div>
+
+
+
+@code {
+  [Parameter]
+  public OzdsInvoiceItem Item { get; set; } = default!;
+
+  [Parameter]
+  public string DeviceId { get; set; } = default!;
+
+  private OzdsInvoiceData data => Item.OzdsInvoicePart.Value.Data;
+
+  private DistributionSystemUnitItem unitItem => Item.OzdsInvoicePart.Value.Data.DistributionSystemUnit.AsContent<DistributionSystemUnitItem>();
+
+  private DistributionSystemOperatorItem operatorItem => Item.OzdsInvoicePart.Value.Data.DistributionSystemOperator.AsContent<DistributionSystemOperatorItem>();
+
+  private ClosedDistributionSystemItem systemItem => Item.OzdsInvoicePart.Value.Data.ClosedDistributionSystem.AsContent<ClosedDistributionSystemItem>();
+
+  private RegulatoryAgencyCatalogueItem regulatoryAgencyCatalogue => Item.OzdsInvoicePart.Value.Data.RegulatoryAgencyCatalogue.AsContent<RegulatoryAgencyCatalogueItem>();
+
+  private OzdsCalculationData? _calculation;
+
+  private OzdsCalculationData calculation => _calculation ??= Item.OzdsCalculationPart.Value.Calculations.FirstOrDefault(calculation => calculation.IotDevice.Content.IotDevicePart.DeviceId.Text == DeviceId) ?? throw new InvalidOperationException($"Device with {DeviceId} doesn't exist");
+
+  private OperatorCatalogueItem usageCatalogue => calculation.UsageCatalogue.AsContent<OperatorCatalogueItem>();
+
+  private OperatorCatalogueItem supplyCatalogue => calculation.SupplyCatalogue.AsContent<OperatorCatalogueItem>();
+
+  private int usageDateRowspan =>
+    (calculation.UsageExpenditure.HighEnergyItem is not null ? 1 : 0)
+    + (calculation.UsageExpenditure.LowEnergyItem is not null ? 1 : 0)
+    + (calculation.UsageExpenditure.EnergyItem is not null ? 1 : 0)
+    + (calculation.UsageExpenditure.MaxPowerItem is not null ? 1 : 0)
+    + (calculation.UsageExpenditure.IotDeviceFee is not null ? 1 : 0)
+    + (calculation.UsageExpenditure.RenewableEnergyFee is not null ? 1 : 0)
+    + (calculation.UsageExpenditure.BusinessUsageFee is not null ? 1 : 0);
+
+  private int supplyeDateRowspan =>
+    (calculation.SupplyExpenditure.HighEnergyItem is not null ? 1 : 0)
+    + (calculation.SupplyExpenditure.LowEnergyItem is not null ? 1 : 0)
+    + (calculation.SupplyExpenditure.EnergyItem is not null ? 1 : 0)
+    + (calculation.SupplyExpenditure.MaxPowerItem is not null ? 1 : 0)
+    + (calculation.SupplyExpenditure.IotDeviceFee is not null ? 1 : 0)
+    + (calculation.SupplyExpenditure.RenewableEnergyFee is not null ? 1 : 0)
+    + (calculation.SupplyExpenditure.BusinessUsageFee is not null ? 1 : 0);
+}

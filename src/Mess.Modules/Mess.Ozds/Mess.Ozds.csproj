@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <PackageReference Include="MudBlazor" Version="$(MessMudBlazorVersion)" />
+    <PackageReference Include="MudBlazor.ThemeManager" Version="$(MessMudBlazorThemeManagerVersion)" />
   </ItemGroup>
 
   <ItemGroup>

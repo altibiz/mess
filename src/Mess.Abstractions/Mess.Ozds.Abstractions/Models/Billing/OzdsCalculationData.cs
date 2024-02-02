@@ -19,6 +19,8 @@ public record OzdsExpenditureData(
   OzdsExpenditureItemData? EnergyItem,
   OzdsExpenditureItemData? MaxPowerItem,
   OzdsExpenditureItemData? IotDeviceFee,
+  OzdsExpenditureItemData? RenewableEnergyFee,
+  OzdsExpenditureItemData? BusinessUsageFee,
   decimal Total
 );
 
