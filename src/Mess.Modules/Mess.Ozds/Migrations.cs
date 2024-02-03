@@ -1058,6 +1058,57 @@ internal static partial class CreateAsyncMigrations
                 )
           )
           .WithField(
+            "ReactiveEnergyPrice",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("Reactive energy price")
+                .WithDescription("Reactive energy price.")
+                .WithSettings(
+                  new NumericFieldSettings
+                  {
+                    Hint = "Reactive energy price.",
+                    Required = true,
+                    Minimum = 0.0M,
+                    Scale = 6
+                  }
+                )
+          )
+          .WithField(
+            "HighReactiveEnergyPrice",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("High Reactive energy price")
+                .WithDescription("High Reactive energy price.")
+                .WithSettings(
+                  new NumericFieldSettings
+                  {
+                    Hint = "High Reactive energy price.",
+                    Required = true,
+                    Minimum = 0.0M,
+                    Scale = 6
+                  }
+                )
+          )
+          .WithField(
+            "LowReactiveEnergyPrice",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("Low Reactive energy price")
+                .WithDescription("Low Reactive energy price.")
+                .WithSettings(
+                  new NumericFieldSettings
+                  {
+                    Hint = "Low Reactive energy price.",
+                    Required = true,
+                    Minimum = 0.0M,
+                    Scale = 6
+                  }
+                )
+          )
+          .WithField(
             "MaxPowerPrice",
             fieldBuilder =>
               fieldBuilder

@@ -16,6 +16,12 @@ public class OperatorCataloguePart : ContentPart
 
   public NumericField EnergyPrice { get; set; } = new() { Value = 0.00M };
 
+  public NumericField HighReactiveEnergyPrice { get; set; } = new() { Value = 0.00M };
+
+  public NumericField LowReactiveEnergyPrice { get; set; } = new() { Value = 0.00M };
+
+  public NumericField ReactiveEnergyPrice { get; set; } = new() { Value = 0.00M };
+
   public NumericField MaxPowerPrice { get; set; } = new() { Value = 0.00M };
 
   public NumericField IotDeviceFee { get; set; } =

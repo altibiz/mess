@@ -69,64 +69,24 @@
       </thead>
       <tbody>
         <tr class="odd">
-          <td rowspan="6">
+          <td rowspan="@usageRowspan">
             @(calculation.IotDevice.As<IotDevicePart>().DeviceId.Text)
           </td>
-          <td rowspan="6">
+          <td rowspan="@usageRowspan">
             @(Item.OzdsInvoicePart.Value.Data.From.ToString("dd. MM. yyyy."))
           </td>
-          <td rowspan="6">
+          <td rowspan="@usageRowspan">
             @(Item.OzdsInvoicePart.Value.Data.To.AddDays(-1).ToString("dd. MM. yyyy."))
           </td>
-          <td><strong>RVT - R1</strong></td>
-          <td>00000000,00</td>
-          <td>00000000,00</td>
-          <td>O/P</td>
-          <td>0,0</td>
-          <td>000000</td>
-          <td>0,00</td>
-          <td>0,00</td>
+          @(usageItems.FirstOrDefault() is { } usageItem ? renderItem(usageItem) : "")
         </tr>
-        <tr class="even">
-          <td><strong>RNT - R2</strong></td>
-          <td>00000000,00</td>
-          <td>00000000,00</td>
-          <td>O/P</td>
-          <td>0,0</td>
-          <td>000000</td>
-          <td>0,00</td>
-          <td>0,00</td>
-        </tr>
-        <tr class="odd">
-          <td><strong>SVT - S1</strong></td>
-          <td>00000000,00</td>
-          <td>00000000,00</td>
-          <td>O/P</td>
-          <td>0,0</td>
-          <td>000000</td>
-          <td>0,00</td>
-          <td>0,00</td>
-        </tr>
-        <tr class="even">
-          <td><strong>JEN - J1</strong></td>
-          <td>00000000,00</td>
-          <td>00000000,00</td>
-          <td>O/P</td>
-          <td>0,0</td>
-          <td>000000</td>
-          <td>0,00</td>
-          <td>0,00</td>
-        </tr>
-        <tr class="odd">
-          <td><strong>JEN - J2</strong></td>
-          <td>00000000,00</td>
-          <td>00000000,00</td>
-          <td>O/P</td>
-          <td>0,0</td>
-          <td>000000</td>
-          <td>0,00</td>
-          <td>0,00</td>
-        </tr>
+        @if (usageItems.Length > 1) {
+          foreach (var item in usageItems[1..]) {
+            <tr>
+              @renderItem(item)
+            </tr>
+          }
+        }
         <tr class="even">
           <td colspan="5"><strong>Naknada za mjernu uslugu - MU</strong></td>
           <td>1</td>
@@ -134,11 +94,11 @@
           <td>0,00</td>
         </tr>
         <tr class="odd">
-          <td colspan="6"><strong> </strong></td>
+          <td colspan="6"><strong></strong></td>
           <td colspan="4">
             <strong>Troškovi korištenja mreže ZDS-a - UKUPNO:</strong>
           </td>
-          <td><strong>0,00</strong></td>
+          <td><strong>@calculation.UsageExpenditure.Total</strong></td>
         </tr>
       </tbody>
     </table>
@@ -176,60 +136,30 @@
       </thead>
       <tbody>
         <tr class="odd">
-          <td rowspan="4">
+          <td rowspan="@supplyRowspan">
             @(calculation.IotDevice.As<IotDevicePart>().DeviceId.Text)
           </td>
-          <td rowspan="4">
+          <td rowspan="@supplyRowspan">
             @(Item.OzdsInvoicePart.Value.Data.From.ToString("dd. MM. yyyy."))
           </td>
-          <td rowspan="4">
+          <td rowspan="@supplyRowspan">
             @(Item.OzdsInvoicePart.Value.Data.To.AddDays(-1).ToString("dd. MM. yyyy."))
           </td>
-          <td><strong>RVT</strong></td>
-          <td>00000000,00</td>
-          <td>00000000,00</td>
-          <td>O/P</td>
-          <td>0,0</td>
-          <td>000000</td>
-          <td>0,00</td>
-          <td>0,00</td>
+          @(supplyItems.FirstOrDefault() is { } supplyItem ? renderItem(supplyItem) : "")
         </tr>
-        <tr class="even">
-          <td><strong>RNT</strong></td>
-          <td>00000000,00</td>
-          <td>00000000,00</td>
-          <td>O/P</td>
-          <td>0,0</td>
-          <td>000000</td>
-          <td>0,00</td>
-          <td>0,00</td>
-        </tr>
-        <tr class="odd">
-          <td><strong>OIEiK</strong></td>
-          <td>00000000,00</td>
-          <td>00000000,00</td>
-          <td>O/P</td>
-          <td>0,0</td>
-          <td>000000</td>
-          <td>0,00</td>
-          <td>0,00</td>
-        </tr>
-        <tr class="even">
-          <td><strong>TRP/TRNP</strong></td>
-          <td>00000000,00</td>
-          <td>00000000,00</td>
-          <td>O/P</td>
-          <td>0,0</td>
-          <td>000000</td>
-          <td>0,00</td>
-          <td>0,00</td>
-        </tr>
+        @if (supplyItems.Length > 1) {
+          foreach (var item in supplyItems[1..]) {
+            <tr>
+              @renderItem(item)
+            </tr>
+          }
+        }
         <tr class="odd">
           <td colspan="5"><strong> </strong></td>
           <td colspan="5">
             <strong>Troškovi opskrbe električnom energijom - UKUPNO:</strong>
           </td>
-          <td><strong>0,00</strong></td>
+          <td><strong>@calculation.SupplyExpenditure.Total</strong></td>
         </tr>
       </tbody>
     </table>
@@ -312,21 +242,85 @@
 
   private OperatorCatalogueItem supplyCatalogue => calculation.SupplyCatalogue.AsContent<OperatorCatalogueItem>();
 
-  private int usageDateRowspan =>
-    (calculation.UsageExpenditure.HighEnergyItem is not null ? 1 : 0)
-    + (calculation.UsageExpenditure.LowEnergyItem is not null ? 1 : 0)
-    + (calculation.UsageExpenditure.EnergyItem is not null ? 1 : 0)
-    + (calculation.UsageExpenditure.MaxPowerItem is not null ? 1 : 0)
-    + (calculation.UsageExpenditure.IotDeviceFee is not null ? 1 : 0)
-    + (calculation.UsageExpenditure.RenewableEnergyFee is not null ? 1 : 0)
-    + (calculation.UsageExpenditure.BusinessUsageFee is not null ? 1 : 0);
+  private record ItemData(
+    string Name,
+    decimal ValueFrom,
+    decimal ValueTo,
+    string Status,
+    decimal Constant,
+    decimal Amount,
+    decimal Price,
+    decimal Total
+  );
 
-  private int supplyeDateRowspan =>
-    (calculation.SupplyExpenditure.HighEnergyItem is not null ? 1 : 0)
-    + (calculation.SupplyExpenditure.LowEnergyItem is not null ? 1 : 0)
-    + (calculation.SupplyExpenditure.EnergyItem is not null ? 1 : 0)
-    + (calculation.SupplyExpenditure.MaxPowerItem is not null ? 1 : 0)
-    + (calculation.SupplyExpenditure.IotDeviceFee is not null ? 1 : 0)
-    + (calculation.SupplyExpenditure.RenewableEnergyFee is not null ? 1 : 0)
-    + (calculation.SupplyExpenditure.BusinessUsageFee is not null ? 1 : 0);
+  private RenderFragment renderItem(ItemData item) =>
+    @<>
+      <td><strong>@item.Name</strong></td>
+      <td>@item.ValueFrom</td>
+      <td>@item.ValueTo</td>
+      <td>@item.Status</td>
+      <td>@item.Constant</td>
+      <td>@item.Amount</td>
+      <td>@item.Price</td>
+      <td>@item.Total</td>
+    </>;
+
+  private ItemData[]? _usageItems;
+
+  private ItemData[] usageItems => _usageItems ??=
+    (new[] {
+      ("RVT - R1", calculation.UsageExpenditure.HighEnergyItem),
+      ("RNT - R2", calculation.UsageExpenditure.LowEnergyItem),
+      ("SVT - S1", calculation.UsageExpenditure.MaxPowerItem),
+      ("JEN - J1", calculation.UsageExpenditure.HighReactiveEnergyItem),
+      ("JEN - J2", calculation.UsageExpenditure.LowReactiveEnergyItem)
+    })
+    .Select((i) => i switch {
+      (_, null) => null,
+      (var name, var item) =>
+        new ItemData(
+          Name: name,
+          ValueFrom: item.ValueFrom,
+          ValueTo: item.ValueTo,
+          Status: "O/P",
+          Constant: 0,
+          Amount: item.Amount,
+          Price: item.UnitPrice,
+          Total: item.Total
+        )
+    })
+    .Where(item => item is not null)
+    .Cast<ItemData>()
+    .ToArray();
+
+  private ItemData[]? _supplyItems;
+
+  private ItemData[] supplyItems => _supplyItems ??=
+    (new[] {
+      ("RVT", calculation.SupplyExpenditure.HighEnergyItem),
+      ("RNT", calculation.SupplyExpenditure.LowEnergyItem),
+      ("OIEIK", calculation.SupplyExpenditure.RenewableEnergyFee),
+      ("TRP/TRNP", calculation.SupplyExpenditure.BusinessUsageFee),
+    })
+    .Select((i) => i switch {
+      (_, null) => null,
+      (var name, var item) =>
+        new ItemData(
+          Name: name,
+          ValueFrom: item.ValueFrom,
+          ValueTo: item.ValueTo,
+          Status: "O/P",
+          Constant: 0,
+          Amount: item.Amount,
+          Price: item.UnitPrice,
+          Total: item.Total
+        )
+    })
+    .Where(item => item is not null)
+    .Cast<ItemData>()
+    .ToArray();
+
+  private int usageRowspan => usageItems.Length == 0 ? 0 : usageItems.Length;
+
+  private int supplyRowspan => supplyItems.Length == 0 ? 0 : supplyItems.Length;
 }

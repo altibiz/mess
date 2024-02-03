@@ -18,33 +18,17 @@ public class OzdsBillingIndexer : IBillingIndexer
 
   public bool IsApplicable(ContentItem contentItem)
   {
-    return contentItem.Has<OzdsIotDevicePart>();
+    return contentItem.ContentType == "DistributionSystemUnit";
   }
 
   public BillingIndex IndexBilling(ContentItem contentItem)
   {
-    var ozdsIotDevicePart = contentItem.As<OzdsIotDevicePart>();
-    var containedPart =
-      contentItem.As<ContainedPart>()
-      ?? throw new InvalidOperationException(
-        $"OZDS IoT device '{contentItem.ContentItemId}' does not have a '{nameof(ContainedPart)}'."
-      );
-
-    var distributionSystemUnitContentItemId = containedPart.ListContentItemId;
-
     var distributionSystemUnitItem =
-      _contentManager
-        .GetContentAsync<DistributionSystemUnitItem>(
-          distributionSystemUnitContentItemId
-        )
-        .Result
-      ?? throw new InvalidOperationException(
-        $"Distribution system unit with content item id '{distributionSystemUnitContentItemId}' not found."
-      );
+      contentItem.AsContent<DistributionSystemUnitItem>();
     var closedDistributionSystemContentItemId = (
       distributionSystemUnitItem.ContainedPart.Value
       ?? throw new InvalidOperationException(
-        $"Distribution system unit with content item id '{distributionSystemUnitContentItemId}' is not contained in a closed distribution system."
+        $"Distribution system unit with content item id '{distributionSystemUnitItem.ContentItemId}' is not contained in a closed distribution system."
       )
     ).ListContentItemId;
 
@@ -69,32 +53,18 @@ public class OzdsBillingIndexer : IBillingIndexer
       ContentItemId = contentItem.ContentItemId,
       ContentType = contentItem.ContentType,
       IssuerContentItemId = distributionSystemOperatorContentItemId,
-      RecipientContentItemId = distributionSystemUnitContentItemId
+      RecipientContentItemId = distributionSystemUnitItem.ContentItemId
     };
   }
 
   public async Task<BillingIndex> IndexBillingAsync(ContentItem contentItem)
   {
-    var ozdsIotDevicePart = contentItem.As<OzdsIotDevicePart>();
-    var containedPart =
-      contentItem.As<ContainedPart>()
-      ?? throw new InvalidOperationException(
-        $"OZDS IoT device '{contentItem.ContentItemId}' does not have a '{nameof(ContainedPart)}'."
-      );
-
-    var distributionSystemUnitContentItemId = containedPart.ListContentItemId;
-
     var distributionSystemUnitItem =
-      await _contentManager.GetContentAsync<DistributionSystemUnitItem>(
-        distributionSystemUnitContentItemId
-      )
-      ?? throw new InvalidOperationException(
-        $"Distribution system unit with content item id '{distributionSystemUnitContentItemId}' not found."
-      );
+      contentItem.AsContent<DistributionSystemUnitItem>();
     var closedDistributionSystemContentItemId = (
       distributionSystemUnitItem.ContainedPart.Value
       ?? throw new InvalidOperationException(
-        $"Distribution system unit with content item id '{distributionSystemUnitContentItemId}' is not contained in a closed distribution system."
+        $"Distribution system unit with content item id '{distributionSystemUnitItem.ContentItemId}' is not contained in a closed distribution system."
       )
     ).ListContentItemId;
 
@@ -125,7 +95,7 @@ public class OzdsBillingIndexer : IBillingIndexer
       ContentItemId = contentItem.ContentItemId,
       ContentType = contentItem.ContentType,
       IssuerContentItemId = distributionSystemOperatorContentItemId,
-      RecipientContentItemId = distributionSystemUnitContentItemId
+      RecipientContentItemId = distributionSystemUnitItem.ContentItemId
     };
   }
 }

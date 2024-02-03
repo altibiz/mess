@@ -238,13 +238,37 @@ List<string> sources
       var last = lastQuery.FutureValue().Value;
       var peak = peakQuery.FutureValue().Value;
 
-      return first is null || last is null || peak is null
-        ? new OzdsIotDeviceBillingData(0, 0, 0)
+      return first is { } && last is { } && peak is { }
+        ? new OzdsIotDeviceBillingData(
+          first.ActiveEnergyImportTotal_Wh / 1000,
+          last.ActiveEnergyExportTotal_Wh / 1000,
+          first.ActiveEnergyImportTotal_Wh / 1000,
+          last.ActiveEnergyExportTotal_Wh / 1000,
+          first.ActiveEnergyImportTotal_Wh / 1000,
+          last.ActiveEnergyExportTotal_Wh / 1000,
+          first.ReactiveEnergyImportTotal_VARh / 1000,
+          last.ReactiveEnergyImportTotal_VARh / 1000,
+          first.ReactiveEnergyImportTotal_VARh / 1000,
+          last.ReactiveEnergyImportTotal_VARh / 1000,
+          first.ReactiveEnergyImportTotal_VARh / 1000,
+          last.ReactiveEnergyImportTotal_VARh / 1000,
+          peak.ActivePowerTotal_W / 1000
+        )
         : new OzdsIotDeviceBillingData(
-          first!.ActiveEnergyImportTotal_Wh / 1000,
-          last!.ActiveEnergyExportTotal_Wh / 1000,
-          peak!.ActivePowerTotal_W / 1000
-        );
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          );
     });
   }
 
@@ -296,13 +320,37 @@ List<string> sources
       var last = await lastQuery.FutureValue().ValueAsync();
       var peak = await peakQuery.FutureValue().ValueAsync();
 
-      return first is null || last is null || peak is null
-        ? new OzdsIotDeviceBillingData(0, 0, 0)
+      return first is { } && last is { } && peak is { }
+        ? new OzdsIotDeviceBillingData(
+          first.ActiveEnergyImportTotal_Wh / 1000,
+          last.ActiveEnergyExportTotal_Wh / 1000,
+          first.ActiveEnergyImportTotal_Wh / 1000,
+          last.ActiveEnergyExportTotal_Wh / 1000,
+          first.ActiveEnergyImportTotal_Wh / 1000,
+          last.ActiveEnergyExportTotal_Wh / 1000,
+          first.ReactiveEnergyImportTotal_VARh / 1000,
+          last.ReactiveEnergyImportTotal_VARh / 1000,
+          first.ReactiveEnergyImportTotal_VARh / 1000,
+          last.ReactiveEnergyImportTotal_VARh / 1000,
+          first.ReactiveEnergyImportTotal_VARh / 1000,
+          last.ReactiveEnergyImportTotal_VARh / 1000,
+          peak.ActivePowerTotal_W / 1000
+        )
         : new OzdsIotDeviceBillingData(
-          first!.ActiveEnergyImportTotal_Wh / 1000,
-          last!.ActiveEnergyExportTotal_Wh / 1000,
-          peak!.ActivePowerTotal_W / 1000
-        );
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          );
     });
   }
 
@@ -423,13 +471,37 @@ List<string> sources
       var last = lastQuery.FutureValue().Value;
       var peak = peakQuery.FutureValue().Value;
 
-      return first is null || last is null || peak is null
-        ? new OzdsIotDeviceBillingData(0, 0, 0)
+      return first is { } && last is { } && peak is { }
+        ? new OzdsIotDeviceBillingData(
+          first.ActiveEnergyImportTotal_Wh / 1000,
+          last.ActiveEnergyExportTotal_Wh / 1000,
+          first.ActiveEnergyImportTotal_Wh / 1000,
+          last.ActiveEnergyExportTotal_Wh / 1000,
+          first.ActiveEnergyImportTotal_Wh / 1000,
+          last.ActiveEnergyExportTotal_Wh / 1000,
+          first.ReactiveEnergyImportTotal_VARh / 1000,
+          last.ReactiveEnergyImportTotal_VARh / 1000,
+          first.ReactiveEnergyImportTotal_VARh / 1000,
+          last.ReactiveEnergyImportTotal_VARh / 1000,
+          first.ReactiveEnergyImportTotal_VARh / 1000,
+          last.ReactiveEnergyImportTotal_VARh / 1000,
+          peak.ActivePowerTotal_W / 1000
+        )
         : new OzdsIotDeviceBillingData(
-          first!.ActiveEnergyImportTotal_Wh / 1000,
-          last!.ActiveEnergyExportTotal_Wh / 1000,
-          peak!.ActivePowerTotal_W / 1000
-        );
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          );
     });
   }
 
@@ -467,27 +539,51 @@ List<string> sources
           group =>
             new
             {
-              ActivePowerTotal_kW = group.Average(
+              ActivePowerTotal_W = group.Average(
                 measurement => measurement.ActivePowerL1_W
                   + measurement.ActivePowerL2_W
                   + measurement.ActivePowerL3_W
               )
             }
         )
-        .OrderByDescending(measurement => measurement.ActivePowerTotal_kW)
+        .OrderByDescending(measurement => measurement.ActivePowerTotal_W)
         .DeferredFirstOrDefault();
 
       var first = await firstQuery.FutureValue().ValueAsync();
       var last = await lastQuery.FutureValue().ValueAsync();
       var peak = await peakQuery.FutureValue().ValueAsync();
 
-      return first is null || last is null || peak is null
-        ? new OzdsIotDeviceBillingData(0, 0, 0)
+      return first is { } && last is { } && peak is { }
+        ? new OzdsIotDeviceBillingData(
+          first.ActiveEnergyImportTotal_Wh / 1000,
+          last.ActiveEnergyExportTotal_Wh / 1000,
+          first.ActiveEnergyImportTotal_Wh / 1000,
+          last.ActiveEnergyExportTotal_Wh / 1000,
+          first.ActiveEnergyImportTotal_Wh / 1000,
+          last.ActiveEnergyExportTotal_Wh / 1000,
+          first.ReactiveEnergyImportTotal_VARh / 1000,
+          last.ReactiveEnergyImportTotal_VARh / 1000,
+          first.ReactiveEnergyImportTotal_VARh / 1000,
+          last.ReactiveEnergyImportTotal_VARh / 1000,
+          first.ReactiveEnergyImportTotal_VARh / 1000,
+          last.ReactiveEnergyImportTotal_VARh / 1000,
+          peak.ActivePowerTotal_W / 1000
+        )
         : new OzdsIotDeviceBillingData(
-          first!.ActiveEnergyImportTotal_Wh / 1000,
-          last!.ActiveEnergyExportTotal_Wh / 1000,
-          peak!.ActivePowerTotal_kW / 1000
-        );
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          );
     });
   }
 }
