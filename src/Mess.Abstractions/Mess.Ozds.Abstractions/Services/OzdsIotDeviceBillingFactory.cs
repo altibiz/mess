@@ -143,15 +143,16 @@ public abstract class OzdsIotDeviceBillingFactory<T> : IOzdsIotDeviceBillingFact
   {
     var energyPrice =
       catalogueItem.OperatorCataloguePart.Value.EnergyPrice.Value ?? 0.0M;
-    var energyAmount =
-      billingData.EndEnergyTotal_kWh - billingData.StartEnergyTotal_kWh;
-    var energyTotal = energyAmount * energyPrice;
+    var energyStart = Math.Round(billingData.StartEnergyTotal_kWh, 2);
+    var energyEnd = Math.Round(billingData.EndEnergyTotal_kWh, 2);
+    var energyAmount = Math.Round(energyEnd - energyStart, 2);
+    var energyTotal = Math.Round(energyAmount * energyPrice, 2);
     var energyItem =
       energyPrice == 0.0M
         ? null
         : new OzdsExpenditureItemData(
-          billingData.StartEnergyTotal_kWh,
-          billingData.EndEnergyTotal_kWh,
+          energyStart,
+          energyEnd,
           energyAmount,
           energyPrice,
           energyTotal
@@ -159,15 +160,16 @@ public abstract class OzdsIotDeviceBillingFactory<T> : IOzdsIotDeviceBillingFact
 
     var highEnergyPrice =
       catalogueItem.OperatorCataloguePart.Value.HighEnergyPrice.Value ?? 0.0M;
-    var highEnergyAmount =
-      billingData.HighEndEnergyTotal_kWh - billingData.HighStartEnergyTotal_kWh;
-    var highEnergyTotal = highEnergyAmount * highEnergyPrice;
+    var highEnergyStart = Math.Round(billingData.HighStartEnergyTotal_kWh, 2);
+    var highEnergyEnd = Math.Round(billingData.HighEndEnergyTotal_kWh, 2);
+    var highEnergyAmount = Math.Round(highEnergyEnd - highEnergyStart, 2);
+    var highEnergyTotal = Math.Round(highEnergyAmount * highEnergyPrice, 2);
     var highEnergyItem =
       highEnergyPrice == 0.0M
         ? null
         : new OzdsExpenditureItemData(
-          billingData.HighStartEnergyTotal_kWh,
-          billingData.HighEndEnergyTotal_kWh,
+          highEnergyStart,
+          highEnergyEnd,
           highEnergyAmount,
           highEnergyPrice,
           highEnergyTotal
@@ -175,15 +177,16 @@ public abstract class OzdsIotDeviceBillingFactory<T> : IOzdsIotDeviceBillingFact
 
     var lowEnergyPrice =
       catalogueItem.OperatorCataloguePart.Value.LowEnergyPrice.Value ?? 0.0M;
-    var lowEnergyAmount =
-      billingData.LowEndEnergyTotal_kWh - billingData.LowStartEnergyTotal_kWh;
+    var lowEnergyStart = Math.Round(billingData.LowStartEnergyTotal_kWh, 2);
+    var lowEnergyEnd = Math.Round(billingData.LowEndEnergyTotal_kWh, 2);
+    var lowEnergyAmount = Math.Round(lowEnergyEnd - lowEnergyStart, 2);
     var lowEnergyTotal = lowEnergyAmount * lowEnergyPrice;
     var lowEnergyItem =
       lowEnergyPrice == 0.0M
         ? null
         : new OzdsExpenditureItemData(
-          billingData.LowStartEnergyTotal_kWh,
-          billingData.LowEndEnergyTotal_kWh,
+          lowEnergyStart,
+          lowEnergyEnd,
           lowEnergyAmount,
           lowEnergyPrice,
           lowEnergyTotal
@@ -191,15 +194,16 @@ public abstract class OzdsIotDeviceBillingFactory<T> : IOzdsIotDeviceBillingFact
 
     var reactiveEnergyPrice =
       catalogueItem.OperatorCataloguePart.Value.ReactiveEnergyPrice.Value ?? 0.0M;
-    var reactiveEnergyAmount =
-      billingData.EndReactiveEnergyTotal_kWh - billingData.StartReactiveEnergyTotal_kWh;
-    var reactiveEnergyTotal = reactiveEnergyAmount * reactiveEnergyPrice;
+    var reactiveEnergyStart = Math.Round(billingData.StartReactiveEnergyTotal_kWh, 2);
+    var reactiveEnergyEnd = Math.Round(billingData.EndReactiveEnergyTotal_kWh, 2);
+    var reactiveEnergyAmount = Math.Round(reactiveEnergyEnd - reactiveEnergyStart, 2);
+    var reactiveEnergyTotal = Math.Round(reactiveEnergyAmount * reactiveEnergyPrice, 2);
     var reactiveEnergyItem =
       reactiveEnergyPrice == 0.0M
         ? null
         : new OzdsExpenditureItemData(
-          billingData.StartReactiveEnergyTotal_kWh,
-          billingData.EndReactiveEnergyTotal_kWh,
+          reactiveEnergyStart,
+          reactiveEnergyEnd,
           reactiveEnergyAmount,
           reactiveEnergyPrice,
           reactiveEnergyTotal
@@ -207,15 +211,16 @@ public abstract class OzdsIotDeviceBillingFactory<T> : IOzdsIotDeviceBillingFact
 
     var highReactiveEnergyPrice =
       catalogueItem.OperatorCataloguePart.Value.HighReactiveEnergyPrice.Value ?? 0.0M;
-    var highReactiveEnergyAmount =
-      billingData.HighEndReactiveEnergyTotal_kWh - billingData.HighStartReactiveEnergyTotal_kWh;
-    var highReactiveEnergyTotal = highReactiveEnergyAmount * highReactiveEnergyPrice;
+    var highReactiveEnergyStart = Math.Round(billingData.HighStartReactiveEnergyTotal_kWh, 2);
+    var highReactiveEnergyEnd = Math.Round(billingData.HighEndReactiveEnergyTotal_kWh, 2);
+    var highReactiveEnergyAmount = Math.Round(highReactiveEnergyEnd - highReactiveEnergyStart, 2);
+    var highReactiveEnergyTotal = Math.Round(highReactiveEnergyAmount * highReactiveEnergyPrice, 2);
     var highReactiveEnergyItem =
       highReactiveEnergyPrice == 0.0M
         ? null
         : new OzdsExpenditureItemData(
-          billingData.HighStartReactiveEnergyTotal_kWh,
-          billingData.HighEndReactiveEnergyTotal_kWh,
+          highReactiveEnergyStart,
+          highReactiveEnergyEnd,
           highReactiveEnergyAmount,
           highReactiveEnergyPrice,
           highReactiveEnergyTotal
@@ -223,15 +228,16 @@ public abstract class OzdsIotDeviceBillingFactory<T> : IOzdsIotDeviceBillingFact
 
     var lowReactiveEnergyPrice =
       catalogueItem.OperatorCataloguePart.Value.LowReactiveEnergyPrice.Value ?? 0.0M;
-    var lowReactiveEnergyAmount =
-      billingData.LowEndReactiveEnergyTotal_kWh - billingData.LowStartReactiveEnergyTotal_kWh;
-    var lowReactiveEnergyTotal = lowReactiveEnergyAmount * lowReactiveEnergyPrice;
+    var lowReactiveEnergyStart = Math.Round(billingData.LowStartReactiveEnergyTotal_kWh, 2);
+    var lowReactiveEnergyEnd = Math.Round(billingData.LowEndReactiveEnergyTotal_kWh, 2);
+    var lowReactiveEnergyAmount = Math.Round(lowReactiveEnergyEnd - lowReactiveEnergyStart, 2);
+    var lowReactiveEnergyTotal = Math.Round(lowReactiveEnergyAmount * lowReactiveEnergyPrice, 2);
     var lowReactiveEnergyItem =
       lowReactiveEnergyPrice == 0.0M
         ? null
         : new OzdsExpenditureItemData(
-          billingData.LowStartReactiveEnergyTotal_kWh,
-          billingData.LowEndReactiveEnergyTotal_kWh,
+          lowReactiveEnergyStart,
+          lowReactiveEnergyEnd,
           lowReactiveEnergyAmount,
           lowReactiveEnergyPrice,
           lowReactiveEnergyTotal
@@ -276,15 +282,15 @@ public abstract class OzdsIotDeviceBillingFactory<T> : IOzdsIotDeviceBillingFact
       renewableEnergyFeePrice == 0.0M
         ? null
         : new OzdsExpenditureItemData(
-          0.0M,
-          0.0M,
+          billingData.StartEnergyTotal_kWh,
+          billingData.EndEnergyTotal_kWh,
           renewableEnergyFeeAmount,
           renewableEnergyFeePrice,
           renewableEnergyFeeTotal
         );
 
     var businessUsageFeePrice =
-      regulatoryAgencyCatalogueItem?.RegulatoryAgencyCataloguePart.Value.RenewableEnergyFee.Value ?? 0.0M;
+      regulatoryAgencyCatalogueItem?.RegulatoryAgencyCataloguePart.Value.BusinessUsageFee.Value ?? 0.0M;
     var businessUsageFeeAmount =
       billingData.EndEnergyTotal_kWh - billingData.StartEnergyTotal_kWh;
     var businessUsageFeeTotal = businessUsageFeeAmount * businessUsageFeePrice;
@@ -292,8 +298,8 @@ public abstract class OzdsIotDeviceBillingFactory<T> : IOzdsIotDeviceBillingFact
       businessUsageFeePrice == 0.0M
         ? null
         : new OzdsExpenditureItemData(
-          0.0M,
-          0.0M,
+          billingData.StartEnergyTotal_kWh,
+          billingData.EndEnergyTotal_kWh,
           businessUsageFeeAmount,
           businessUsageFeePrice,
           businessUsageFeeTotal
@@ -311,6 +317,11 @@ public abstract class OzdsIotDeviceBillingFactory<T> : IOzdsIotDeviceBillingFact
       renewableEnergyFee,
       businessUsageFee,
       (energyItem?.Total ?? 0.0M)
+      + (highEnergyItem?.Total ?? 0.0M)
+      + (lowEnergyItem?.Total ?? 0.0M)
+      + (reactiveEnergyItem?.Total ?? 0.0M)
+      + (highReactiveEnergyItem?.Total ?? 0.0M)
+      + (lowReactiveEnergyItem?.Total ?? 0.0M)
       + (maxPowerItem?.Total ?? 0.0M)
       + (iotDeviceFee?.Total ?? 0.0M)
       + (renewableEnergyFee?.Total ?? 0.0M)

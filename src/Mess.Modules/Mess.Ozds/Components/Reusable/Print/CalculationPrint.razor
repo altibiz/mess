@@ -78,7 +78,7 @@
           <td rowspan="@usageRowspan">
             @(Item.OzdsInvoicePart.Value.Data.To.AddDays(-1).ToString("dd. MM. yyyy."))
           </td>
-          @(usageItems.FirstOrDefault() is { } usageItem ? renderItem(usageItem) : "")
+          @(usageItems.FirstOrDefault() is { } usageItem ? renderItem(usageItem) : null)
         </tr>
         @if (usageItems.Length > 1) {
           foreach (var item in usageItems[1..]) {
@@ -145,7 +145,7 @@
           <td rowspan="@supplyRowspan">
             @(Item.OzdsInvoicePart.Value.Data.To.AddDays(-1).ToString("dd. MM. yyyy."))
           </td>
-          @(supplyItems.FirstOrDefault() is { } supplyItem ? renderItem(supplyItem) : "")
+          @(supplyItems.FirstOrDefault() is { } supplyItem ? renderItem(supplyItem) : null)
         </tr>
         @if (supplyItems.Length > 1) {
           foreach (var item in supplyItems[1..]) {
@@ -320,7 +320,7 @@
     .Cast<ItemData>()
     .ToArray();
 
-  private int usageRowspan => usageItems.Length == 0 ? 0 : usageItems.Length;
+  private int usageRowspan => usageItems.Length == 0 ? 1 : usageItems.Length + 1;
 
   private int supplyRowspan => supplyItems.Length == 0 ? 0 : supplyItems.Length;
 }
