@@ -112,6 +112,22 @@
       margin-bottom: calc(var(--page-margin-bottom) * -1);
       margin-inline: calc(var(--page-margin-inline) * -1);
     }
+
+    .on-print {
+    }
+    @@media screen {
+      .on-print {
+        display: none;
+      }
+    }
+
+    .on-screen {
+    }
+    @@media print {
+      .on-screen {
+        display: none;
+      }
+    }
   </style>
 </HeadContent>
 
@@ -120,6 +136,8 @@
 <div class="container">
   @Body
 </div>
+
+@FootScript
 
 @code {
   private ThemeManagerTheme _themeManager = new ThemeManagerTheme();
@@ -132,7 +150,7 @@
     // _themeManager.Theme = new HelbMudTheme();
     _themeManager.DrawerClipMode = DrawerClipMode.Always;
     _themeManager.FontFamily = "Roboto";
-    _themeManager.DefaultBorderRadius = 3;
+    _themeManager.DefaultBorderRadius = 2;
   }
 
   protected override async Task OnLayoutInitializedAsync() {

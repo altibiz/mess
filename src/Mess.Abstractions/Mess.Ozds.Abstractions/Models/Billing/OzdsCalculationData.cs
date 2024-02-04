@@ -10,7 +10,8 @@ public record OzdsCalculationData(
   DateTimeOffset From,
   DateTimeOffset To,
   OzdsExpenditureData UsageExpenditure,
-  OzdsExpenditureData SupplyExpenditure
+  OzdsExpenditureData SupplyExpenditure,
+  decimal Total
 );
 
 public record OzdsExpenditureData(

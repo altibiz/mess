@@ -26,6 +26,15 @@
     border: 1px solid black;
     padding: 2px;
   }
+
+  .info-table th {
+    font-weight: normal;
+  }
+
+  .info-table tr {
+    height: 1.2rem;
+    align-items: center;
+  }
 </style>
 
 <div class="page">
@@ -34,7 +43,7 @@
   </div>
   <div class="page-content">
     <p style="margin-top: 1.8rem; margin-bottom: 0.8rem; text-align: right;">
-      RAČUN BROJ. @(Item.ContentItemId)
+      RAČUN BR. @(Item.ContentItemId)
     </p>
     <table class="info-table" style="width: 100%;">
       <colgroup>
@@ -43,32 +52,32 @@
         <col style="width: 23%" />
       </colgroup>
       <thead>
-        <tr class="header">
-          <th>«PartnerProjekta»</th>
-          <th>datum isporuke:</th>
-          <th>«DatumISPORUKE»</th>
+        <tr>
+          <th style="text-align: start;"><strong>@(systemItem.TitlePart.Value.Title)</strong></th>
+          <th style="text-align: end;">DATUM ISPORUKE:</th>
+          <th style="text-align: start;">@(Item.InvoicePart.Value.Date.Value?.ToString("dd. MM. yyyy."))</th>
         </tr>
       </thead>
       <tbody>
-        <tr class="odd">
-          <td>«NaslovIliAdresaPartnera»</td>
-          <td>dospijeće:</td>
-          <td>«ValutaPlacanja»</td>
+        <tr>
+          <td>@(systemItem.TitlePart.Value.Title)</td>
+          <td style="text-align: end;">DOSPIJEĆE:</td>
+          <td>€ (euro)</td>
         </tr>
-        <tr class="even">
-          <td>«AdresaPartnera»</td>
-          <td>datum UGOVORA:</td>
-          <td>«DatumUGOVORA»</td>
+        <tr>
+          <td>@(systemItem.LegalEntityPart.Value.Address.Text)</td>
+          <td style="text-align: end;">DATUM UGOVORA:</td>
+          <td>@(Item.InvoicePart.Value.Date.Value?.ToString("dd. MM. yyyy."))</td>
         </tr>
-        <tr class="odd">
-          <td>«PostanskiBrojPartnera» «MjestoPartnera»</td>
-          <td>ugovor:</td>
-          <td>«BrojUGOVORA»</td>
+        <tr>
+          <td>@(systemItem.LegalEntityPart.Value.PostalCode.Text) @(systemItem.LegalEntityPart.Value.City.Text)</td>
+          <td style="text-align: end;">UGOVOR:</td>
+          <td>@(systemItem.ContentItemId)</td>
         </tr>
-        <tr class="even">
-          <td>oib: «OIBPartnera»</td>
-          <td>nosioc:</td>
-          <td>«SifraProjekta»</td>
+        <tr>
+          <td>OIB: @(systemItem.LegalEntityPart.Value.SocialSecurityNumber.Text)</td>
+          <td style="text-align: end;">NOSIOC:</td>
+          <td>@(systemItem.ContentItemId)</td>
         </tr>
       </tbody>
     </table>
@@ -84,168 +93,76 @@
     </p>
     <table class="calculation-table">
       <colgroup>
-        <col style="width: 6%" />
-        <col style="width: 52%" />
-        <col style="width: 8%" />
-        <col style="width: 9%" />
-        <col style="width: 10%" />
-        <col style="width: 12%" />
+        <col style="width: 10%;" />
+        <col style="width: 15%;" />
+        <col style="width: 20%;" />
+        <col style="width: 55%;" />
+        <col style="width: 10%;" />
       </colgroup>
       <thead>
-        <tr class="header">
-          <th>rbr</th>
-          <th>naziv artikla / usluge</th>
-          <th>jm</th>
-          <th>kol</th>
-          <th>cijena</th>
-          <th>ukupno</th>
+        <tr>
+          <th>RBR</th>
+          <th>OMM</th>
+          <th>TARIFNI MODEL</th>
+          <th>NAZIV ARTIKLA / USLUGE</th>
+          <th>UKUPNO</th>
         </tr>
+        @foreach (var calculation in Item.OzdsCalculationPart.Value.Calculations)
+        {
+          <tr>
+            <td style="text-align: center;">1.)</td>
+            <td>
+              <div class="on-screen">
+                <a href="app/calculation-print/@(Item.ContentItemId)/@(calculation.IotDevice.Content.IotDevicePart.DeviceId.Text)">
+                  @(calculation.IotDevice.Content.IotDevicePart.DeviceId.Text)
+                </a>
+              </div>
+              <div class="on-print">
+                @(calculation.IotDevice.Content.IotDevicePart.DeviceId.Text)
+              </div>
+            </td>
+            <td>@(calculation.UsageCatalogue.Content.OperatorCataloguePart.Model.Text) (@(calculation.UsageCatalogue.Content.OperatorCataloguePart.Voltage.Text))</td>
+            <td style="text-align: right;"></td>
+            <td style="text-align: right;"></td>
+          </tr>
+          <tr>
+            <td style="text-align: center;"><span style="margin-left: 1.2rem;">1.1.)</span></td>
+            <td></td>
+            <td></td>
+            <td style="text-align: center;">KORIŠTENJE MREŽE</td>
+            <td style="text-align: right;">@(calculation.UsageExpenditure.Total)</td>
+          </tr>
+          <tr>
+            <td style="text-align: center;"><span style="margin-left: 1.2rem;">1.2.)</span></td>
+            <td></td>
+            <td></td>
+            <td style="text-align: center;">OPSKRBA ELEKTRIČNOM ENERGIJOM</td>
+            <td style="text-align: right;">@(calculation.SupplyExpenditure.Total)</td>
+          </tr>
+        }
       </thead>
       <tbody>
-        <tr class="odd">
-          <td>«Rbr»</td>
-          <td>«NazivArtikla»</td>
-          <td>«JM»</td>
-          <td>«Kol»</td>
-          <td>«Cijena»</td>
-          <td>«Ukupno»</td>
-        </tr>
-        <tr class="even">
-          <td></td>
-          <td>Tarifni model <strong>– XXXX</strong></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr class="odd">
-          <td>1.)</td>
-          <td>Naknada za korištenje mreže ZDS-a</td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr class="even">
-          <td>1.1)</td>
-          <td>Korištenje mreže u doba više dnevne tarife</td>
-          <td>kWh</td>
-          <td>000</td>
-          <td>0,00000</td>
-          <td>0,00</td>
-        </tr>
-        <tr class="odd">
-          <td>1.2)</td>
-          <td>Korištenje mreže u doba niže dnevne tarife</td>
-          <td>kWh</td>
-          <td>000</td>
-          <td>0,00000</td>
-          <td>0,00</td>
-        </tr>
-        <tr class="even">
-          <td>1.3)</td>
-          <td>Angažirana snaga u doba više tarife</td>
-          <td>kW</td>
-          <td>000</td>
-          <td>0,00000</td>
-          <td>0,00</td>
-        </tr>
-        <tr class="odd">
-          <td>1.4)</td>
-          <td>Prekomjerno preuzeta jalova energija</td>
-          <td>kVAr</td>
-          <td>000</td>
-          <td>0,00000</td>
-          <td>0,00</td>
-        </tr>
-        <tr class="even">
-          <td>1.5)</td>
-          <td>Naknada za mjernu uslugu</td>
-          <td>mjesec</td>
-          <td>000</td>
-          <td>0,00000</td>
-          <td>0,00</td>
-        </tr>
-        <tr class="odd">
-          <td></td>
-          <td>Naknada za korištenje mreže - UKUPNO</td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td><strong>0,00</strong></td>
-        </tr>
-        <tr class="even">
-          <td>2.)</td>
-          <td>Naknada za opskrbu električnom energijom</td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr class="odd">
-          <td>2.1)</td>
-          <td>Opskrba električnom energijom u doba više dnevne tarife</td>
-          <td>kWh</td>
-          <td>000</td>
-          <td>0,00000</td>
-          <td>0,00</td>
-        </tr>
-        <tr class="even">
-          <td>2.2)</td>
-          <td>Opskrba električnom energijom u doba niže dnevne tarife</td>
-          <td>kWh</td>
-          <td>000</td>
-          <td>0,00000</td>
-          <td>0,00</td>
-        </tr>
-        <tr class="odd">
-          <td>2.3)</td>
-          <td>
-            Naknada za poticanje proizvodnje iz obnovljivih izvora energije i
-            kogeneracije
-          </td>
-          <td>kWh</td>
-          <td>000</td>
-          <td>0,00000</td>
-          <td>0,00</td>
-        </tr>
-        <tr class="even">
-          <td>2.4)</td>
-          <td>Trošarina za poslovnu/neposlovnu upotrebu</td>
-          <td>kWh</td>
-          <td>000</td>
-          <td>0,00000</td>
-          <td>0,00</td>
-        </tr>
-        <tr class="odd">
-          <td></td>
-          <td>Naknada za opskrbu – UKUPNO:</td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td><strong>0,00</strong></td>
-        </tr>
       </tbody>
     </table>
-    <table class="info-table" style="margin-top: 1.2rem; text-align: right;">
+    <table class="info-table" style="margin-top: 1.2rem; margin-left: auto; width: 75%;">
       <colgroup>
         <col style="width: 76%" />
         <col style="width: 23%" />
       </colgroup>
       <thead>
-        <tr class="header">
-          <th>ukupno ( Korištenje mreže + Opskrba električnom energijom):</th>
-          <th>«Sveukupno»</th>
+        <tr>
+          <th style="text-align: right;">UKUPNO:</th>
+          <th style="text-align: right;">@(Item.OzdsInvoicePart.Value.Data.Total)</th>
         </tr>
       </thead>
       <tbody>
-        <tr class="odd">
-          <td>pdv (13%):</td>
-          <td>«PDV»</td>
+        <tr>
+          <td style="text-align: right;">PDV (13%):</td>
+          <td style="text-align: right;">@(Item.OzdsInvoicePart.Value.Data.Tax)</td>
         </tr>
-        <tr class="even">
-          <td>SVEukupni iznos:</td>
-          <td>«UkupnoPDV»</td>
+        <tr>
+          <td style="text-align: right;"><strong>SVEUKUPNI IZNOS:</strong></td>
+          <td style="text-align: right;">@(Item.OzdsInvoicePart.Value.Data.TotalWithTax)</td>
         </tr>
       </tbody>
     </table>
@@ -254,8 +171,9 @@
       <p>«Napomena»</p>
     </div>
     <p style="margin-top: 0.8rem;">
-      Uplatu izvršiti na transakcijski račun, IBAN «BrojRacunaZaUplatu», poziv na
-      broj: «PozivNaBroj»
+      Uplatu izvršiti na transakcijski račun,
+      IBAN «BrojRacunaZaUplatu»,
+      poziv na broj: «PozivNaBroj»
     </p>
     <table class="info-table" style="margin-top: 0.8rem; width: 100%;">
       <colgroup>
@@ -263,27 +181,27 @@
         <col style="width: 28%" />
       </colgroup>
       <thead>
-        <tr class="header">
-          <th>Operater: «IzradioIme» «IzradioPrezime»</th>
+        <tr>
+          <th style="text-align: left;">Operater: @(operatorItem.LegalEntityPart.Value.Name.Text)</th>
           <th></th>
         </tr>
       </thead>
       <tbody>
-        <tr class="odd">
-          <td>Božjakovina, «DatumRacuna»</td>
+        <tr>
+          <td>Božjakovina, @(Item.InvoicePart.Value.Date.Value?.ToString("dd. MM. yyyy."))</td>
           <td></td>
         </tr>
-        <tr class="even">
+        <tr>
           <td></td>
           <td></td>
         </tr>
-        <tr class="odd">
+        <tr>
           <td></td>
-          <td>Direktor</td>
+          <td style="text-align: center;">Direktor</td>
         </tr>
-        <tr class="even">
+        <tr>
           <td></td>
-          <td>Stjepan Horvat</td>
+          <td style="text-align: center;">Stjepan Horvat</td>
         </tr>
       </tbody>
     </table>

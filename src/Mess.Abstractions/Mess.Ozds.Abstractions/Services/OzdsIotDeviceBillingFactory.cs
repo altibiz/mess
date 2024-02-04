@@ -131,7 +131,8 @@ public abstract class OzdsIotDeviceBillingFactory<T> : IOzdsIotDeviceBillingFact
       fromDate,
       toDate,
       usageExpenditure,
-      supplyExpenditure
+      supplyExpenditure,
+      Math.Round(supplyExpenditure.Total + usageExpenditure.Total, 2)
     );
   }
 
