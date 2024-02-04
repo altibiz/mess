@@ -1,0 +1,30 @@
+@page "/app/new-invoice/{invoiceId}"
+
+@using Mess.Ozds.Abstractions.Models
+@using Mess.Billing.Abstractions.Indexes
+
+@if (_invoiceItem is null) {
+  return;
+}
+
+<Invoice Item="@_invoiceItem" />
+
+@code{
+  [Parameter]
+  public string InvoiceId { get; set; } = default!;
+
+  private OzdsInvoiceItem? _invoiceItem;
+
+  protected override async Task OnInitializedAsync()
+  {
+    await WithTransientSessionAsync(async session =>
+    {
+      var contentInvoice = await session
+        .Query<ContentItem, PaymentIndex>()
+        .Where(index => index.ContentItemId == InvoiceId)
+        .FirstOrDefaultAsync();
+
+      _invoiceItem = contentInvoice.AsContent<OzdsInvoiceItem>();
+    });
+  }
+}
