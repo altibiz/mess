@@ -87,12 +87,14 @@
             </tr>
           }
         }
-        <tr class="even">
-          <td colspan="5"><strong>Naknada za mjernu uslugu - MU</strong></td>
-          <td>1</td>
-          <td>0,00</td>
-          <td>0,00</td>
-        </tr>
+        @if (calculation.UsageExpenditure.IotDeviceFee is { } iotDeviceFee) {
+          <tr class="even">
+            <td colspan="5"><strong>Naknada za mjernu uslugu - MU</strong></td>
+            <td>1</td>
+            <td>@(iotDeviceFee.UnitPrice)</td>
+            <td>@(iotDeviceFee.Total)</td>
+          </tr>
+        }
         <tr class="odd">
           <td colspan="6"><strong></strong></td>
           <td colspan="4">

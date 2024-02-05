@@ -113,11 +113,13 @@ public abstract class OzdsIotDeviceBillingFactory<T> : IOzdsIotDeviceBillingFact
   )
   {
     var usageExpenditure = CreateExpenditureData(
+      true,
       billingData,
       usageCatalogueItem,
       null
     );
     var supplyExpenditure = CreateExpenditureData(
+      false,
       billingData,
       supplyCatalogueItem,
       regulatoryAgencyCatalogue
@@ -137,6 +139,7 @@ public abstract class OzdsIotDeviceBillingFactory<T> : IOzdsIotDeviceBillingFact
   }
 
   private static OzdsExpenditureData CreateExpenditureData(
+    bool isUsage,
     OzdsIotDeviceBillingData billingData,
     OperatorCatalogueItem catalogueItem,
     RegulatoryAgencyCatalogueItem? regulatoryAgencyCatalogueItem
@@ -181,7 +184,7 @@ public abstract class OzdsIotDeviceBillingFactory<T> : IOzdsIotDeviceBillingFact
     var lowEnergyStart = Math.Round(billingData.LowStartEnergyTotal_kWh, 2);
     var lowEnergyEnd = Math.Round(billingData.LowEndEnergyTotal_kWh, 2);
     var lowEnergyAmount = Math.Round(lowEnergyEnd - lowEnergyStart, 2);
-    var lowEnergyTotal = lowEnergyAmount * lowEnergyPrice;
+    var lowEnergyTotal = Math.Round(lowEnergyAmount * lowEnergyPrice, 2);
     var lowEnergyItem =
       lowEnergyPrice == 0.0M
         ? null
@@ -246,8 +249,8 @@ public abstract class OzdsIotDeviceBillingFactory<T> : IOzdsIotDeviceBillingFact
 
     var maxPowerPrice =
       catalogueItem.OperatorCataloguePart.Value.MaxPowerPrice.Value ?? 0.0M;
-    var maxPowerAmount = billingData.PeakPowerTotal_kW;
-    var maxPowerTotal = maxPowerAmount * maxPowerPrice;
+    var maxPowerAmount = Math.Round(billingData.PeakPowerTotal_kW, 2);
+    var maxPowerTotal = Math.Round(maxPowerAmount * maxPowerPrice, 2);
     var maxPowerItem =
       maxPowerPrice == 0.0M
         ? null
@@ -259,10 +262,11 @@ public abstract class OzdsIotDeviceBillingFactory<T> : IOzdsIotDeviceBillingFact
           maxPowerTotal
         );
 
-    var iotDeviceFeePrice =
-      catalogueItem.OperatorCataloguePart.Value.IotDeviceFee.Value ?? 0.0M;
+    var iotDeviceFeePrice = isUsage
+      ? catalogueItem.OperatorCataloguePart.Value.IotDeviceFee.Value ?? 0.0M
+      : 0.0M;
     var iotDeviceFeeAmount = 1.0M;
-    var iotDeviceFeeTotal = iotDeviceFeeAmount * iotDeviceFeePrice;
+    var iotDeviceFeeTotal = Math.Round(iotDeviceFeeAmount * iotDeviceFeePrice, 2);
     var iotDeviceFee =
       iotDeviceFeePrice == 0.0M
         ? null
@@ -276,15 +280,16 @@ public abstract class OzdsIotDeviceBillingFactory<T> : IOzdsIotDeviceBillingFact
 
     var renewableEnergyFeePrice =
       regulatoryAgencyCatalogueItem?.RegulatoryAgencyCataloguePart.Value.RenewableEnergyFee.Value ?? 0.0M;
-    var renewableEnergyFeeAmount =
-      billingData.EndEnergyTotal_kWh - billingData.StartEnergyTotal_kWh;
-    var renewableEnergyFeeTotal = renewableEnergyFeeAmount * renewableEnergyFeePrice;
+    var renewableEnergyFeeStart = Math.Round(billingData.StartEnergyTotal_kWh, 2);
+    var renewableEnergyFeeEnd = Math.Round(billingData.EndEnergyTotal_kWh, 2);
+    var renewableEnergyFeeAmount = Math.Round(renewableEnergyFeeEnd - renewableEnergyFeeStart, 2);
+    var renewableEnergyFeeTotal = Math.Round(renewableEnergyFeeAmount * renewableEnergyFeePrice, 2);
     var renewableEnergyFee =
       renewableEnergyFeePrice == 0.0M
         ? null
         : new OzdsExpenditureItemData(
-          billingData.StartEnergyTotal_kWh,
-          billingData.EndEnergyTotal_kWh,
+          renewableEnergyFeeStart,
+          renewableEnergyFeeEnd,
           renewableEnergyFeeAmount,
           renewableEnergyFeePrice,
           renewableEnergyFeeTotal
@@ -292,15 +297,16 @@ public abstract class OzdsIotDeviceBillingFactory<T> : IOzdsIotDeviceBillingFact
 
     var businessUsageFeePrice =
       regulatoryAgencyCatalogueItem?.RegulatoryAgencyCataloguePart.Value.BusinessUsageFee.Value ?? 0.0M;
-    var businessUsageFeeAmount =
-      billingData.EndEnergyTotal_kWh - billingData.StartEnergyTotal_kWh;
-    var businessUsageFeeTotal = businessUsageFeeAmount * businessUsageFeePrice;
+    var businessUsageFeeStart = Math.Round(billingData.StartEnergyTotal_kWh, 2);
+    var businessUsageFeeEnd = Math.Round(billingData.EndEnergyTotal_kWh, 2);
+    var businessUsageFeeAmount = Math.Round(businessUsageFeeEnd - businessUsageFeeStart, 2);
+    var businessUsageFeeTotal = Math.Round(businessUsageFeeAmount * businessUsageFeePrice, 2);
     var businessUsageFee =
       businessUsageFeePrice == 0.0M
         ? null
         : new OzdsExpenditureItemData(
-          billingData.StartEnergyTotal_kWh,
-          billingData.EndEnergyTotal_kWh,
+          businessUsageFeeStart,
+          businessUsageFeeEnd,
           businessUsageFeeAmount,
           businessUsageFeePrice,
           businessUsageFeeTotal
