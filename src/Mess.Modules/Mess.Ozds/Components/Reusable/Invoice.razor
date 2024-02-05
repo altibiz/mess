@@ -1,72 +1,70 @@
 @using Mess.Ozds.Abstractions.Models
 
-<MudContainer MaxWidth="MaxWidth.Large">
-  <MudText Typo="Typo.body1">
-    ZA ELEKTRIČNU ENERGIJU ZA RAZDOBLJE:
-    OD @(data?.From.ToString("dd. MM. yyyy."))
-    DO @(data?.To.ToString("dd. MM. yyyy."))
-  </MudText>
+<MudText Typo="Typo.body1">
+  ZA ELEKTRIČNU ENERGIJU ZA RAZDOBLJE:
+  OD @(data?.From.ToString("dd. MM. yyyy."))
+  DO @(data?.To.ToString("dd. MM. yyyy."))
+</MudText>
 
-  <MudText>
-    @(data?.ClosedDistributionSystem.Content.TitlePart.Title)
-    @(data?.DistributionSystemUnit.Content.TitlePart.Title)
-  </MudText>
+<MudText>
+  @(data?.ClosedDistributionSystem.Content.TitlePart.Title)
+  @(data?.DistributionSystemUnit.Content.TitlePart.Title)
+</MudText>
 
-  <MudText Typo="Typo.h5">
-    Naknada za korištenje mreže ZDS-a
-  </MudText>
-  <MudPaper>
-    @foreach (var row in usageRows) {
-      <MudText Typo="Typo.body2">
-        @(row.Name)
-      </MudText>
-      <MudText Typo="Typo.body2">
-        @(row.Total)
-      </MudText>
-    }
-  </MudPaper>
-  <MudText Typo="Typo.subtitle1">
-    Naknada za korištenje mreže - UKUPNO
-    @(data?.UsageExpenditure.Total)
-  </MudText>
+<MudText Typo="Typo.h5">
+  Naknada za korištenje mreže ZDS-a
+</MudText>
+<MudPaper>
+  @foreach (var row in usageRows) {
+    <MudText Typo="Typo.body2">
+      @(row.Name)
+    </MudText>
+    <MudText Typo="Typo.body2">
+      @(row.Total)
+    </MudText>
+  }
+</MudPaper>
+<MudText Typo="Typo.subtitle1">
+  Naknada za korištenje mreže - UKUPNO
+  @(data?.UsageExpenditure.Total)
+</MudText>
 
-  <MudText Typo="Typo.h5">
-    Naknada za opskrbu električnom energijom
-  </MudText>
-  <MudPaper>
-    @foreach (var row in supplyRows) {
-      <MudText Typo="Typo.body2">
-        @(row.Name)
-      </MudText>
-      <MudText Typo="Typo.body2">
-        @(row.Total)
-      </MudText>
-    }
-  </MudPaper>
-  <MudText Typo="Typo.subtitle1">
-    Naknada za opskrbu – UKUPNO
-    @(data?.SupplyExpenditure.Total)
-  </MudText>
+<MudText Typo="Typo.h5">
+  Naknada za opskrbu električnom energijom
+</MudText>
+<MudPaper>
+  @foreach (var row in supplyRows) {
+    <MudText Typo="Typo.body2">
+      @(row.Name)
+    </MudText>
+    <MudText Typo="Typo.body2">
+      @(row.Total)
+    </MudText>
+  }
+</MudPaper>
+<MudText Typo="Typo.subtitle1">
+  Naknada za opskrbu – UKUPNO
+  @(data?.SupplyExpenditure.Total)
+</MudText>
 
-  <MudText Typo="Typo.body1">
-    UKUPNO (Korištenje mreže + Opskrba električnom energijom)
-    @(data?.Total)
-  </MudText>
+<MudText Typo="Typo.body1">
+  UKUPNO (Korištenje mreže + Opskrba električnom energijom)
+  @(data?.Total)
+</MudText>
 
-  <MudText Typo="Typo.body1">
-    PDV (@(data?.TaxRate * 100)%)
-    @(data?.Tax)
-  </MudText>
+<MudText Typo="Typo.body1">
+  PDV (@(data?.TaxRate * 100)%)
+  @(data?.Tax)
+</MudText>
 
-  <MudText Typo="Typo.body1">
-    SVEUKUPNI IZNOS
-    @(data?.TotalWithTax)
-  </MudText>
+<MudText Typo="Typo.body1">
+  SVEUKUPNI IZNOS
+  @(data?.TotalWithTax)
+</MudText>
 
-  <MudLink Href="@printHref">
-    PRINT
-  </MudLink>
-</MudContainer>
+<MudLink Href="@printHref">
+  PRINT
+</MudLink>
 
 
 @code {
