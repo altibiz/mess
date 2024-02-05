@@ -92,7 +92,7 @@
             <td colspan="5"><strong>Naknada za mjernu uslugu - MU</strong></td>
             <td>1</td>
             <td>@(iotDeviceFee.UnitPrice)</td>
-            <td>@(iotDeviceFee.Total)</td>
+            <td>@(iotDeviceFee.Total.ToString("F2"))</td>
           </tr>
         }
         <tr class="odd">
@@ -100,7 +100,7 @@
           <td colspan="4">
             <strong>Troškovi korištenja mreže ZDS-a - UKUPNO:</strong>
           </td>
-          <td><strong>@calculation.UsageExpenditure.Total</strong></td>
+          <td><strong>@calculation.UsageExpenditure.Total.ToString("F2")</strong></td>
         </tr>
       </tbody>
     </table>
@@ -161,7 +161,7 @@
           <td colspan="5">
             <strong>Troškovi opskrbe električnom energijom - UKUPNO:</strong>
           </td>
-          <td><strong>@calculation.SupplyExpenditure.Total</strong></td>
+          <td><strong>@calculation.SupplyExpenditure.Total.ToString("F2")</strong></td>
         </tr>
       </tbody>
     </table>

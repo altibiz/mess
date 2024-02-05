@@ -225,53 +225,69 @@ public class OzdsClosedDistributionUnitBillingFactory : IBillingFactory
     DateTimeOffset toDate
   )
   {
-    var usageFee = calculations.Sum(calculation => calculation.UsageExpenditure.Total);
-
-    var supplyFee = calculations.Sum(calculation => calculation.SupplyExpenditure.Total);
-
-    var renewableEnergyFeePrice =
-      regulatoryAgencyCatalogueItem
-        .RegulatoryAgencyCataloguePart
-        .Value
-        .RenewableEnergyFee
-        .Value ?? 0.0M;
-    var renewableEnergyFeeAmount = calculations.Sum(calculation =>
-      calculation.SupplyExpenditure.EnergyItem?.Amount
-      ?? 0.0M + calculation.SupplyExpenditure.LowEnergyItem?.Amount
-      ?? 0.0M + calculation.SupplyExpenditure.HighEnergyItem?.Amount
-      ?? 0.0M
+    var usageExpenditure = calculations
+      .Aggregate(
+        new OzdsInvoiceExpenditureData(
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ),
+        (expenditure, calculation) =>
+          new OzdsInvoiceExpenditureData(
+            expenditure.HighEnergyFee + calculation.UsageExpenditure.HighEnergyItem?.Total ?? 0.0M,
+            expenditure.LowEnergyFee + calculation.UsageExpenditure.LowEnergyItem?.Total ?? 0.0M,
+            expenditure.EnergyFee + calculation.UsageExpenditure.EnergyItem?.Total ?? 0.0M,
+            expenditure.HighReactiveEnergyFee + calculation.UsageExpenditure.HighReactiveEnergyItem?.Total ?? 0.0M,
+            expenditure.LowReactiveEnergyFee + calculation.UsageExpenditure.LowReactiveEnergyItem?.Total ?? 0.0M,
+            expenditure.ReactiveEnergyFee + calculation.UsageExpenditure.ReactiveEnergyItem?.Total ?? 0.0M,
+            expenditure.MaxPowerFee + calculation.UsageExpenditure.MaxPowerItem?.Total ?? 0.0M,
+            expenditure.IotDeviceFee + calculation.UsageExpenditure.IotDeviceFee?.Total ?? 0.0M,
+            expenditure.RenewableEnergyFee + calculation.UsageExpenditure.RenewableEnergyFee?.Total ?? 0.0M,
+            expenditure.BusinessUsageFee + calculation.UsageExpenditure.BusinessUsageFee?.Total ?? 0.0M,
+            expenditure.Total + calculation.UsageExpenditure.Total
+          )
     );
-    var renewableEnergyFeeItem =
-      renewableEnergyFeePrice == 0.0M
-        ? null
-        : new OzdsInvoiceFeeData(
-          renewableEnergyFeeAmount,
-          renewableEnergyFeePrice,
-          renewableEnergyFeeAmount * renewableEnergyFeePrice
-        );
-
-    var businessUsageFeePrice =
-      regulatoryAgencyCatalogueItem
-        .RegulatoryAgencyCataloguePart
-        .Value
-        .BusinessUsageFee
-        .Value ?? 0.0M;
-    var businessUsageFeeAmount = calculations.Sum(calculation =>
-      calculation.SupplyExpenditure.EnergyItem?.Amount
-      ?? 0.0M + calculation.SupplyExpenditure.LowEnergyItem?.Amount
-      ?? 0.0M + calculation.SupplyExpenditure.HighEnergyItem?.Amount
-      ?? 0.0M
+    var supplyExpenditure = calculations
+      .Aggregate(
+        new OzdsInvoiceExpenditureData(
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ),
+        (expenditure, calculation) =>
+          new OzdsInvoiceExpenditureData(
+            expenditure.HighEnergyFee + calculation.SupplyExpenditure.HighEnergyItem?.Total ?? 0.0M,
+            expenditure.LowEnergyFee + calculation.SupplyExpenditure.LowEnergyItem?.Total ?? 0.0M,
+            expenditure.EnergyFee + calculation.SupplyExpenditure.EnergyItem?.Total ?? 0.0M,
+            expenditure.HighReactiveEnergyFee + calculation.SupplyExpenditure.HighReactiveEnergyItem?.Total ?? 0.0M,
+            expenditure.LowReactiveEnergyFee + calculation.SupplyExpenditure.LowReactiveEnergyItem?.Total ?? 0.0M,
+            expenditure.ReactiveEnergyFee + calculation.SupplyExpenditure.ReactiveEnergyItem?.Total ?? 0.0M,
+            expenditure.MaxPowerFee + calculation.SupplyExpenditure.MaxPowerItem?.Total ?? 0.0M,
+            expenditure.IotDeviceFee + calculation.SupplyExpenditure.IotDeviceFee?.Total ?? 0.0M,
+            expenditure.RenewableEnergyFee + calculation.SupplyExpenditure.RenewableEnergyFee?.Total ?? 0.0M,
+            expenditure.BusinessUsageFee + calculation.SupplyExpenditure.BusinessUsageFee?.Total ?? 0.0M,
+            expenditure.Total + calculation.SupplyExpenditure.Total
+          )
     );
-    var businessUsageFeeItem =
-      businessUsageFeePrice == 0.0M
-        ? null
-        : new OzdsInvoiceFeeData(
-          businessUsageFeeAmount,
-          businessUsageFeePrice,
-          businessUsageFeeAmount * businessUsageFeePrice
-        );
 
-    var total = usageFee + supplyFee;
+
+    var total = usageExpenditure.Total + supplyExpenditure.Total;
     var taxRate =
       regulatoryAgencyCatalogueItem
         .RegulatoryAgencyCataloguePart
@@ -288,10 +304,8 @@ public class OzdsClosedDistributionUnitBillingFactory : IBillingFactory
       distributionSystemUnit,
       fromDate,
       toDate,
-      renewableEnergyFeeItem,
-      businessUsageFeeItem,
-      usageFee,
-      supplyFee,
+      usageExpenditure,
+      supplyExpenditure,
       total,
       taxRate,
       tax,
@@ -324,24 +338,6 @@ public class OzdsClosedDistributionUnitBillingFactory : IBillingFactory
     OzdsInvoiceData invoiceData
   )
   {
-    var renewableEnergyFee =
-      invoiceData.RenewableEnergyFee == null
-        ? null
-        : new OzdsReceiptFeeData(
-          invoiceData.RenewableEnergyFee.Amount,
-          invoiceData.RenewableEnergyFee.UnitPrice,
-          invoiceData.RenewableEnergyFee.Total
-        );
-
-    var businessUsageFee =
-      invoiceData.BusinessUsageFee == null
-        ? null
-        : new OzdsReceiptFeeData(
-          invoiceData.BusinessUsageFee.Amount,
-          invoiceData.BusinessUsageFee.UnitPrice,
-          invoiceData.BusinessUsageFee.Total
-        );
-
     return new OzdsReceiptData(
       invoiceData.RegulatoryAgencyCatalogue,
       invoiceData.DistributionSystemOperator,
@@ -349,10 +345,32 @@ public class OzdsClosedDistributionUnitBillingFactory : IBillingFactory
       invoiceData.DistributionSystemUnit,
       invoiceData.From,
       invoiceData.To,
-      invoiceData.UsageFee,
-      invoiceData.SupplyFee,
-      renewableEnergyFee,
-      businessUsageFee,
+      new OzdsReceiptExpenditureData(
+        invoiceData.UsageExpenditure.HighEnergyFee,
+        invoiceData.UsageExpenditure.LowEnergyFee,
+        invoiceData.UsageExpenditure.EnergyFee,
+        invoiceData.UsageExpenditure.HighReactiveEnergyFee,
+        invoiceData.UsageExpenditure.LowReactiveEnergyFee,
+        invoiceData.UsageExpenditure.ReactiveEnergyFee,
+        invoiceData.UsageExpenditure.MaxPowerFee,
+        invoiceData.UsageExpenditure.IotDeviceFee,
+        invoiceData.UsageExpenditure.RenewableEnergyFee,
+        invoiceData.UsageExpenditure.BusinessUsageFee,
+        invoiceData.UsageExpenditure.Total
+      ),
+      new OzdsReceiptExpenditureData(
+        invoiceData.SupplyExpenditure.HighEnergyFee,
+        invoiceData.SupplyExpenditure.LowEnergyFee,
+        invoiceData.SupplyExpenditure.EnergyFee,
+        invoiceData.SupplyExpenditure.HighReactiveEnergyFee,
+        invoiceData.SupplyExpenditure.LowReactiveEnergyFee,
+        invoiceData.SupplyExpenditure.ReactiveEnergyFee,
+        invoiceData.SupplyExpenditure.MaxPowerFee,
+        invoiceData.SupplyExpenditure.IotDeviceFee,
+        invoiceData.SupplyExpenditure.RenewableEnergyFee,
+        invoiceData.SupplyExpenditure.BusinessUsageFee,
+        invoiceData.SupplyExpenditure.Total
+      ),
       invoiceData.Total,
       invoiceData.TaxRate,
       invoiceData.Tax,

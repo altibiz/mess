@@ -9,18 +9,24 @@ public record OzdsReceiptData(
   ContentItem DistributionSystemUnit,
   DateTimeOffset From,
   DateTimeOffset To,
-  decimal UsageFee,
-  decimal SupplyFee,
-  OzdsReceiptFeeData? RenewableEnergyFee,
-  OzdsReceiptFeeData? BusinessUsageFee,
+  OzdsReceiptExpenditureData UsageExpenditure,
+  OzdsReceiptExpenditureData SupplyExpenditure,
   decimal Total,
   decimal TaxRate,
   decimal Tax,
   decimal TotalWithTax
 );
 
-public record OzdsReceiptFeeData(
-  decimal Amount,
-  decimal UnitPrice,
+public record OzdsReceiptExpenditureData(
+  decimal HighEnergyFee,
+  decimal LowEnergyFee,
+  decimal EnergyFee,
+  decimal HighReactiveEnergyFee,
+  decimal LowReactiveEnergyFee,
+  decimal ReactiveEnergyFee,
+  decimal MaxPowerFee,
+  decimal IotDeviceFee,
+  decimal RenewableEnergyFee,
+  decimal BusinessUsageFee,
   decimal Total
 );
