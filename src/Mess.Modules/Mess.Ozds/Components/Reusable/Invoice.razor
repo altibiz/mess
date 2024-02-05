@@ -1,22 +1,136 @@
 @using Mess.Ozds.Abstractions.Models
 
+<MudContainer MaxWidth="MaxWidth.Large">
+  <MudText Typo="Typo.body1">
+    ZA ELEKTRIČNU ENERGIJU ZA RAZDOBLJE:
+    OD @(data?.From.ToString("dd. MM. yyyy."))
+    DO @(data?.To.ToString("dd. MM. yyyy."))
+  </MudText>
+
+  <MudText>
+    @(data?.ClosedDistributionSystem.Content.TitlePart.Title)
+    @(data?.DistributionSystemUnit.Content.TitlePart.Title)
+  </MudText>
+
+  <MudText Typo="Typo.h5">
+    Naknada za korištenje mreže ZDS-a
+  </MudText>
+  <MudPaper>
+    @foreach (var row in usageRows) {
+      <MudText Typo="Typo.body2">
+        @(row.Name)
+      </MudText>
+      <MudText Typo="Typo.body2">
+        @(row.Total)
+      </MudText>
+    }
+  </MudPaper>
+  <MudText Typo="Typo.subtitle1">
+    Naknada za korištenje mreže - UKUPNO
+    @(data?.UsageExpenditure.Total)
+  </MudText>
+
+  <MudText Typo="Typo.h5">
+    Naknada za opskrbu električnom energijom
+  </MudText>
+  <MudPaper>
+    @foreach (var row in supplyRows) {
+      <MudText Typo="Typo.body2">
+        @(row.Name)
+      </MudText>
+      <MudText Typo="Typo.body2">
+        @(row.Total)
+      </MudText>
+    }
+  </MudPaper>
+  <MudText Typo="Typo.subtitle1">
+    Naknada za opskrbu – UKUPNO
+    @(data?.SupplyExpenditure.Total)
+  </MudText>
+
+  <MudText Typo="Typo.body1">
+    UKUPNO (Korištenje mreže + Opskrba električnom energijom)
+    @(data?.Total)
+  </MudText>
+
+  <MudText Typo="Typo.body1">
+    PDV (@(data?.TaxRate * 100)%)
+    @(data?.Tax)
+  </MudText>
+
+  <MudText Typo="Typo.body1">
+    SVEUKUPNI IZNOS
+    @(data?.TotalWithTax)
+  </MudText>
+
+  <MudLink Href="@printHref">
+    PRINT
+  </MudLink>
+</MudContainer>
+
 
 @code {
   [Parameter]
   public OzdsInvoiceItem Item { get; set; } = default!;
 
   private OzdsInvoiceItem _invoiceItem => Item;
-  DistributionSystemUnitItem unitItem;
-  ClosedDistributionSystemItem systemItem;
-  DistributionSystemOperatorItem operatorItem;
-  RegulatoryAgencyCatalogueItem regulatoryAgencyCatalogue;
-  OzdsInvoiceData data;
+
+  OzdsInvoiceData? data;
+
+  string printHref => $"app/invoice-print/{Item.ContentItemId}";
+
   protected override async Task OnInitializedAsync()
   {
-    unitItem = _invoiceItem.OzdsInvoicePart.Value.Data.DistributionSystemUnit.AsContent<DistributionSystemUnitItem>();
-    systemItem = _invoiceItem.OzdsInvoicePart.Value.Data.ClosedDistributionSystem.AsContent<ClosedDistributionSystemItem>();
-    operatorItem = _invoiceItem.OzdsInvoicePart.Value.Data.DistributionSystemOperator.AsContent<DistributionSystemOperatorItem>();
-    regulatoryAgencyCatalogue = _invoiceItem.OzdsInvoicePart.Value.Data.RegulatoryAgencyCatalogue.AsContent<RegulatoryAgencyCatalogueItem>();
     data  = _invoiceItem.OzdsInvoicePart.Value.Data;
   }
+
+  private record Row(string Name, decimal Total);
+
+  private Row[] usageRows => data is null
+    ? new Row[] { }
+    : new[]
+      {
+        new Row(
+          "Korištenje mreže u doba više dnevne tarife",
+          data.UsageExpenditure.HighEnergyFee
+        ),
+        new Row(
+          "Korištenje mreže u doba niže dnevne tarife",
+          data.UsageExpenditure.LowEnergyFee
+        ),
+        new Row(
+          "Angažirana snaga u doba više tarife",
+          data.UsageExpenditure.MaxPowerFee
+        ),
+        new Row(
+          "Prekomjerno preuzeta jalova energija",
+          data.UsageExpenditure.ReactiveEnergyFee
+        ),
+        new Row(
+          "Naknada za mjernu uslugu",
+          data.UsageExpenditure.IotDeviceFee
+        ),
+      };
+
+  private Row[] supplyRows => data is null
+    ? new Row[] { }
+    : new[]
+      {
+        new Row(
+          "Opskrba električnom energijom u doba više dnevne tarife",
+          data.SupplyExpenditure.HighEnergyFee
+        ),
+        new Row(
+          "Opskrba električnom energijom u doba niže dnevne tarife",
+          data.SupplyExpenditure.LowEnergyFee
+        ),
+        new Row(
+          "Naknada za poticanje proizvodnje iz obnovljivih izvora energije i kogeneracije",
+          data.SupplyExpenditure.RenewableEnergyFee
+        ),
+        new Row(
+          "Trošarina za poslovnu/neposlovnu upotrebu",
+          data.SupplyExpenditure.BusinessUsageFee
+        )
+      };
 }
