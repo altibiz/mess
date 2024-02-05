@@ -12,7 +12,6 @@
 
 @inject IOzdsTimeseriesClient _timeseriesClient
 
-
 @if(_lastDay != null){
 @* MOBILE *@
   <MudHidden Breakpoint="Breakpoint.MdAndUp">
@@ -337,10 +336,11 @@
                 }
             };
       options.PlotOptions = new PlotOptions { RadialBar = new PlotOptionsRadialBar { StartAngle = -90, EndAngle = 90 } };
-      if(Source.StartsWith("abb"))
-        _startEnd = await _timeseriesClient.GetAbbLastMonthMeasurementsAsync(Source);
-      else
-        _startEnd = await _timeseriesClient.GetSchneiderLastMonthMeasurementsAsync(Source);
+      _startEnd = new();
+      // if(Source.StartsWith("abb"))
+      //  _startEnd = await _timeseriesClient.GetAbbLastMonthMeasurementsAsync(Source);
+      // else
+      //   _startEnd = await _timeseriesClient.GetSchneiderLastMonthMeasurementsAsync(Source);
 
       if(_startEnd.First != null && _startEnd.Last != null){
         _month = _startEnd.FirstDate.Month;
