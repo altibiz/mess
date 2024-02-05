@@ -19,7 +19,7 @@ public class HelbMudTheme : MudTheme
 
     LayoutProperties = new LayoutProperties()
     {
-      DefaultBorderRadius = "3px"
+      DefaultBorderRadius = "4px"
     };
 
     Typography = new Typography()

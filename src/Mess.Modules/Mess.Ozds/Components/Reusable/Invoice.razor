@@ -1,71 +1,175 @@
 @using Mess.Ozds.Abstractions.Models
 
-<MudText Typo="Typo.body1">
-  ZA ELEKTRIČNU ENERGIJU ZA RAZDOBLJE:
-  OD @(data?.From.ToString("dd. MM. yyyy."))
-  DO @(data?.To.ToString("dd. MM. yyyy."))
-</MudText>
-
-<MudText>
-  @(data?.ClosedDistributionSystem.Content.TitlePart.Title)
-  @(data?.DistributionSystemUnit.Content.TitlePart.Title)
-</MudText>
-
 <MudText Typo="Typo.h5">
-  Naknada za korištenje mreže ZDS-a
+  RAČUN ZA @(data?.From.Month). MJESEC
 </MudText>
-<MudPaper>
-  @foreach (var row in usageRows) {
-    <MudText Typo="Typo.body2">
-      @(row.Name)
-    </MudText>
-    <MudText Typo="Typo.body2">
-      @(row.Total)
-    </MudText>
-  }
+
+<MudPaper class="mt-4 px-4 py-2">
+  <MudGrid Spacing="2">
+    <MudItem xs="12" sm="6">
+      <MudText Type="Typo.body2">
+        <strong>ZDS:</strong>
+      </MudText>
+    </MudItem>
+    <MudItem xs="12" sm="6">
+      <MudHidden Breakpoint="Breakpoint.Xs">
+        <MudText Type="Typo.body2" Align="MudAlign.Right">
+          @(data?.ClosedDistributionSystem.Content.TitlePart.Title)
+        </MudText>
+      </MudHidden>
+      <MudHidden Breakpoint="Breakpoint.SmAndUp">
+        <MudText Type="Typo.body2" Align="MudAlign.Left">
+          @(data?.ClosedDistributionSystem.Content.TitlePart.Title)
+        </MudText>
+      </MudHidden>
+    </MudItem>
+    <MudItem xs="12" sm="6">
+      <MudText Type="Typo.body2">
+        <strong>Korisnik:</strong>
+      </MudText>
+    </MudItem>
+    <MudItem xs="12" sm="6">
+      <MudHidden Breakpoint="Breakpoint.Xs">
+        <MudText Type="Typo.body2" Align="MudAlign.Right">
+          @(data?.DistributionSystemUnit.Content.TitlePart.Title)
+        </MudText>
+      </MudHidden>
+      <MudHidden Breakpoint="Breakpoint.SmAndUp">
+        <MudText Type="Typo.body2" Align="MudAlign.Left">
+          @(data?.DistributionSystemUnit.Content.TitlePart.Title)
+        </MudText>
+      </MudHidden>
+    </MudItem>
+  </MudGrid>
 </MudPaper>
-<MudText Typo="Typo.subtitle1">
-  Naknada za korištenje mreže - UKUPNO
-  @(data?.UsageExpenditure.Total)
+
+<MudText Typo="Typo.h5" class="mt-8">
+  Mrežarina
+</MudText>
+@foreach (var row in usageRows) {
+  <MudPaper class="mt-2 px-4 py-2">
+    <MudGrid Spacing="1">
+      <MudItem xs="12" sm="6">
+        <MudText Typo="Typo.body2">
+          @(row.Name)
+        </MudText>
+      </MudItem>
+      <MudItem xs="12" sm="6">
+        <MudHidden Breakpoint="Breakpoint.Xs">
+          <MudText Type="Typo.body2" Align="MudAlign.Right">
+            @(row.Total.ToString("F2"))
+          </MudText>
+        </MudHidden>
+        <MudHidden Breakpoint="Breakpoint.SmAndUp">
+          <MudText Type="Typo.body2" Align="MudAlign.Left">
+            @(row.Total.ToString("F2"))
+          </MudText>
+        </MudHidden>
+      </MudItem>
+    </MudGrid>
+  </MudPaper>
+}
+<MudText Typo="Typo.subtitle1" class="mt-2" Align="MudAlign.Right">
+  UKUPNO @(data?.UsageExpenditure.Total)
 </MudText>
 
-<MudText Typo="Typo.h5">
-  Naknada za opskrbu električnom energijom
+<MudText Typo="Typo.h5" class="mt-8">
+  Opskrba
 </MudText>
-<MudPaper>
-  @foreach (var row in supplyRows) {
-    <MudText Typo="Typo.body2">
-      @(row.Name)
-    </MudText>
-    <MudText Typo="Typo.body2">
-      @(row.Total)
-    </MudText>
-  }
+@foreach (var row in supplyRows) {
+  <MudPaper class="mt-2 px-4 py-2">
+    <MudGrid Spacing="1">
+      <MudItem xs="12" sm="6">
+        <MudText Typo="Typo.body2">
+          @(row.Name)
+        </MudText>
+      </MudItem>
+      <MudItem xs="12" sm="6">
+        <MudHidden Breakpoint="Breakpoint.Xs">
+          <MudText Type="Typo.body2" Align="MudAlign.Right">
+            @(row.Total.ToString("F2"))
+          </MudText>
+        </MudHidden>
+        <MudHidden Breakpoint="Breakpoint.SmAndUp">
+          <MudText Type="Typo.body2" Align="MudAlign.Left">
+            @(row.Total.ToString("F2"))
+          </MudText>
+        </MudHidden>
+      </MudItem>
+    </MudGrid>
+  </MudPaper>
+}
+<MudText Typo="Typo.subtitle1" class="mt-2" Align="MudAlign.Right">
+  UKUPNO @(data?.SupplyExpenditure.Total)
+</MudText>
+
+<MudPaper class="mt-8 px-4 py-2">
+  <MudGrid Spacing="1">
+    <MudItem xs="12" sm="9">
+      <MudText Typo="Typo.body1">
+        <strong>Ukupno</strong>
+      </MudText>
+    </MudItem>
+    <MudItem xs="12" sm="3">
+      <MudHidden Breakpoint="Breakpoint.Xs">
+        <MudText Type="Typo.body2" Align="MudAlign.Right">
+          @(data?.Total.ToString("F2"))
+        </MudText>
+      </MudHidden>
+      <MudHidden Breakpoint="Breakpoint.SmAndUp">
+        <MudText Type="Typo.body2" Align="MudAlign.Left">
+          @(data?.Total.ToString("F2"))
+        </MudText>
+      </MudHidden>
+    </MudItem>
+    <MudItem xs="12" sm="9">
+      <MudText Typo="Typo.body1">
+        <strong>PDV (@((data?.TaxRate * 100M)?.ToString("F2"))%)</strong>
+      </MudText>
+    </MudItem>
+    <MudItem xs="12" sm="3">
+      <MudHidden Breakpoint="Breakpoint.Xs">
+        <MudText Type="Typo.body2" Align="MudAlign.Right">
+          @(data?.Tax.ToString("F2"))
+        </MudText>
+      </MudHidden>
+      <MudHidden Breakpoint="Breakpoint.SmAndUp">
+        <MudText Type="Typo.body2" Align="MudAlign.Left">
+          @(data?.Tax.ToString("F2"))
+        </MudText>
+      </MudHidden>
+    </MudItem>
+    <MudItem xs="12" sm="9">
+      <MudText Typo="Typo.body1">
+        <strong>Sveukupno</strong>
+      </MudText>
+    </MudItem>
+    <MudItem xs="12" sm="3">
+      <MudHidden Breakpoint="Breakpoint.Xs">
+        <MudText Type="Typo.body2" Align="MudAlign.Right">
+          @(data?.TotalWithTax.ToString("F2"))
+        </MudText>
+      </MudHidden>
+      <MudHidden Breakpoint="Breakpoint.SmAndUp">
+        <MudText Type="Typo.body2" Align="MudAlign.Left">
+          @(data?.TotalWithTax.ToString("F2"))
+        </MudText>
+      </MudHidden>
+    </MudItem>
+  </MudGrid>
 </MudPaper>
-<MudText Typo="Typo.subtitle1">
-  Naknada za opskrbu – UKUPNO
-  @(data?.SupplyExpenditure.Total)
-</MudText>
 
-<MudText Typo="Typo.body1">
-  UKUPNO (Korištenje mreže + Opskrba električnom energijom)
-  @(data?.Total)
-</MudText>
+<MudHidden Breakpoint="Breakpoint.LgAndDown">
+  <MudText class="mt-8" Align="MudAlign.Right">
+    <MudLink class="ml-auto" Href="@printHref">
+      <MudButton Variant="Variant.Filled">
+        PRINT
+      </MudButton>
+    </MudLink>
+  </MudText>
+</MudHidden>
 
-<MudText Typo="Typo.body1">
-  PDV (@(data?.TaxRate * 100)%)
-  @(data?.Tax)
-</MudText>
-
-<MudText Typo="Typo.body1">
-  SVEUKUPNI IZNOS
-  @(data?.TotalWithTax)
-</MudText>
-
-<MudLink Href="@printHref">
-  PRINT
-</MudLink>
-
+<div class="mb-16" />
 
 @code {
   [Parameter]
