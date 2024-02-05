@@ -65,24 +65,23 @@
     .page:last-child {
       page-break-after: avoid;
     }
+    .page-break {
+      border-block: 2px solid black;
+      margin-inline: calc(var(--page-margin-inline) * -1);
+      text-align: center;
+    }
+    .page-break::after {
+      content: "PAGE BREAK";
+    }
     @@media print {
       .page-break {
         display: none;
       }
     }
-    @@media screen {
-      .page-break {
-        border-block: 2px solid black;
-        margin-inline: calc(var(--page-margin-inline) * -1);
-        text-align: center;
-      }
-      .page-break::after {
-        content: "PAGE BREAK";
-      }
-    }
 
     .page-content {
       position: relative;
+      padding-top: 1.8rem;
       height: calc(
         var(--page-height)
         - var(--page-margin-top)
@@ -95,7 +94,7 @@
       position: relative;
     }
     .page-header > img {
-      position: absolute;
+      position: floating;
       top: 0;
       border-bottom: 1px solid #DDDDDD;
       margin-top: calc(var(--page-margin-top) * -1);

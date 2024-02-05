@@ -1,284 +1,64 @@
 @using Mess.Ozds.Abstractions.Models
 
-<style>
-  .calculation-table {
-    border-spacing: 0;
-    border-collapse: collapse;
-    border: 2px solid black;
-  }
-
-  .calculation-table th {
-    background-color: #DDDDDD;
-  }
-
-  .calculation-table th, .calculation-table td {
-    border: 1px solid black;
-    padding: 2px;
-  }
-
-  .info-table {
-    border-spacing: 0;
-    border-collapse: collapse;
-    border: 2px solid black;
-  }
-
-  .info-table th, .info-table td {
-    border: 1px solid black;
-    padding: 2px;
-  }
-
-  .info-table th {
-    font-weight: normal;
-  }
-
-  .info-table tr {
-    height: 1.2rem;
-    align-items: center;
-  }
-</style>
-
 <div class="page">
   <div class="page-header">
     <img src="Mess.Ozds/print-first-header.png" />
   </div>
   <div class="page-content">
-    <p style="margin-top: 1.8rem; margin-bottom: 0.8rem; text-align: right;">
-      RAČUN BR. @(Item.ContentItemId)
-    </p>
-    <table class="info-table" style="width: 100%;">
-      <colgroup>
-        <col style="width: 57%" />
-        <col style="width: 19%" />
-        <col style="width: 23%" />
-      </colgroup>
-      <thead>
-        <tr>
-          <th style="text-align: start;"><strong>@(systemItem.TitlePart.Value.Title)</strong></th>
-          <th style="text-align: end;">DATUM ISPORUKE:</th>
-          <th style="text-align: start;">@(Item.InvoicePart.Value.Date.Value?.ToString("dd. MM. yyyy."))</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>@(systemItem.TitlePart.Value.Title)</td>
-          <td style="text-align: end;">DOSPIJEĆE:</td>
-          <td>€ (euro)</td>
-        </tr>
-        <tr>
-          <td>@(systemItem.LegalEntityPart.Value.Address.Text)</td>
-          <td style="text-align: end;">DATUM UGOVORA:</td>
-          <td>@(Item.InvoicePart.Value.Date.Value?.ToString("dd. MM. yyyy."))</td>
-        </tr>
-        <tr>
-          <td>@(systemItem.LegalEntityPart.Value.PostalCode.Text) @(systemItem.LegalEntityPart.Value.City.Text)</td>
-          <td style="text-align: end;">UGOVOR:</td>
-          <td>@(systemItem.ContentItemId)</td>
-        </tr>
-        <tr>
-          <td>OIB: @(systemItem.LegalEntityPart.Value.SocialSecurityNumber.Text)</td>
-          <td style="text-align: end;">NOSIOC:</td>
-          <td>@(systemItem.ContentItemId)</td>
-        </tr>
-      </tbody>
-    </table>
-    <p style="margin-top: 1.2rem; margin-bottom: 0.8rem; text-align: right;">
-      ZA ELEKTRIČNU ENERGIJU ZA RAZDOBLJE: OD
-      <strong>
-        @(Item.OzdsInvoicePart.Value.Data.From.ToString("dd. MM. yyyy."))
-      </strong>
-      DO
-      <strong>
-        @(Item.OzdsInvoicePart.Value.Data.To.AddDays(-1).ToString("dd. MM. yyyy."))
-      </strong>
-    </p>
-    <table class="calculation-table" style="width: 100%;">
-      <colgroup>
-        <col style="width: 10%;" />
-        <col style="width: 80%;" />
-        <col style="width: 10%;" />
-      </colgroup>
-      <thead>
-        <tr>
-          <th>RBR</th>
-          <th>NAZIV ARTIKLA / USLUGE</th>
-          <th>UKUPNO</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td style="text-align: center;">1.)</td>
-          <td>Naknada za korištenje mreže ZDS-a</td>
-          <td></td>
-        </tr>
-        @foreach (var row in usageRows) {
-          <tr>
-            <td style="text-align: center; padding-left: 1.2rem;">@(row.Number)</td>
-            <td>@(row.Name)</td>
-            <td style="text-align: end;">@(row.Total)</td>
-          </tr>
-        }
-        <tr>
-          <td></td>
-          <td style="text-align: end;">Naknada za korištenje mreže - UKUPNO</td>
-          <td style="text-align: end;"><strong>@(data.UsageExpenditure.Total)</strong></td>
-        </tr>
-        <tr>
-          <td style="text-align: center;">2.)</td>
-          <td>Naknada za opskrbu električnom energijom</td>
-          <td></td>
-        </tr>
-        @foreach (var row in supplyRows) {
-          <tr>
-            <td style="text-align: center; padding-left: 1.2rem;">@(row.Number)</td>
-            <td>@(row.Name)</td>
-            <td style="text-align: end;">@(row.Total)</td>
-          </tr>
-        }
-        <tr>
-          <td></td>
-          <td style="text-align: end;">Naknada za opskrbu – UKUPNO</td>
-          <td style="text-align: end;"><strong>@(data.SupplyExpenditure.Total)</strong></td>
-        </tr>
-      </tbody>
-    </table>
-    <table class="info-table" style="margin-top: 1.2rem; margin-left: auto; width: 75%;">
-      <colgroup>
-        <col style="width: 76%" />
-        <col style="width: 23%" />
-      </colgroup>
-      <thead>
-        <tr>
-          <th style="text-align: right;">UKUPNO:</th>
-          <th style="text-align: right;">@(Item.OzdsInvoicePart.Value.Data.Total)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td style="text-align: right;">PDV (13%):</td>
-          <td style="text-align: right;">@(Item.OzdsInvoicePart.Value.Data.Tax)</td>
-        </tr>
-        <tr>
-          <td style="text-align: right;"><strong>SVEUKUPNI IZNOS:</strong></td>
-          <td style="text-align: right;">@(Item.OzdsInvoicePart.Value.Data.TotalWithTax)</td>
-        </tr>
-      </tbody>
-    </table>
-    <div style="margin-top: 0.8rem;">
-      <p>Napomena</p>
-      <p>«Napomena»</p>
-    </div>
-    <p style="margin-top: 0.8rem;">
-      Uplatu izvršiti na transakcijski račun,
-      IBAN «BrojRacunaZaUplatu»,
-      poziv na broj: «PozivNaBroj»
-    </p>
-    <table class="info-table" style="margin-top: 0.8rem; width: 100%;">
-      <colgroup>
-        <col style="width: 71%" />
-        <col style="width: 28%" />
-      </colgroup>
-      <thead>
-        <tr>
-          <th style="text-align: left;">Operater: @(operatorItem.LegalEntityPart.Value.Name.Text)</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Božjakovina, @(Item.InvoicePart.Value.Date.Value?.ToString("dd. MM. yyyy."))</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td></td>
-          <td style="text-align: center;">Direktor</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td style="text-align: center;">Stjepan Horvat</td>
-        </tr>
-      </tbody>
-    </table>
+    <InvoicePrintContent Item="@Item" />
   </div>
   <div class="page-footer">
     <img src="Mess.Ozds/print-footer.png" />
   </div>
 </div>
 
+@foreach (string deviceId in Item.OzdsCalculationPart.Value.Calculations
+  .Select(calculation => calculation.IotDevice.Content.IotDevicePart.DeviceId.Text))
+{
+  <div class="page-break" />
+  <div class="page">
+    <div class="page-header">
+      <img src="Mess.Ozds/print-header.png" />
+    </div>
+    <div class="page-content">
+      <CalculationPrintContent Item="@Item" DeviceId="@deviceId" />
+    </div>
+    <div class="page-footer">
+      <img src="Mess.Ozds/print-footer.png" />
+    </div>
+  </div>
+}
+
+@if(Item.OzdsCalculationPart.Value.Calculations.Count > 0)
+{
+  <div class="page-break" />
+  <div class="page">
+    <div class="page-header">
+      <img src="Mess.Ozds/print-header.png" />
+    </div>
+    <div class="page-content">
+      <CalculationPrintAbbreviations />
+    </div>
+    <div class="page-footer">
+      <img src="Mess.Ozds/print-footer.png" />
+    </div>
+  </div>
+}
+
+<div class="page-break" />
+<div class="page">
+  <div class="page-header">
+    <img src="Mess.Ozds/print-header.png" />
+  </div>
+  <div class="page-content">
+    <CalculationPrintFooter />
+  </div>
+  <div class="page-footer">
+    <img src="Mess.Ozds/print-footer.png" />
+  </div>
+</div>
 
 @code {
   [Parameter]
   public OzdsInvoiceItem Item { get; set; } = default!;
-
-  private OzdsInvoiceData data => Item.OzdsInvoicePart.Value.Data;
-
-  private DistributionSystemUnitItem unitItem => Item.OzdsInvoicePart.Value.Data.DistributionSystemUnit.AsContent<DistributionSystemUnitItem>();
-
-  private DistributionSystemOperatorItem operatorItem => Item.OzdsInvoicePart.Value.Data.DistributionSystemOperator.AsContent<DistributionSystemOperatorItem>();
-
-  private ClosedDistributionSystemItem systemItem => Item.OzdsInvoicePart.Value.Data.ClosedDistributionSystem.AsContent<ClosedDistributionSystemItem>();
-
-  private RegulatoryAgencyCatalogueItem regulatoryAgencyCatalogue => Item.OzdsInvoicePart.Value.Data.RegulatoryAgencyCatalogue.AsContent<RegulatoryAgencyCatalogueItem>();
-
-  private record Row(string Number, string Name, decimal Total);
-
-  private Row[] usageRows => data is null
-    ? new Row[] { }
-    : new[]
-      {
-        new Row(
-          "1.1.)",
-          "Korištenje mreže u doba više dnevne tarife",
-          data.UsageExpenditure.HighEnergyFee
-        ),
-        new Row(
-          "1.2.)",
-          "Korištenje mreže u doba niže dnevne tarife",
-          data.UsageExpenditure.LowEnergyFee
-        ),
-        new Row(
-          "1.3.)",
-          "Angažirana snaga u doba više tarife",
-          data.UsageExpenditure.MaxPowerFee
-        ),
-        new Row(
-          "1.4.)",
-          "Prekomjerno preuzeta jalova energija",
-          data.UsageExpenditure.ReactiveEnergyFee
-        ),
-        new Row(
-          "1.5.)",
-          "Naknada za mjernu uslugu",
-          data.UsageExpenditure.IotDeviceFee
-        ),
-      };
-
-  private Row[] supplyRows => data is null
-    ? new Row[] { }
-    : new[]
-      {
-        new Row(
-          "2.1.)",
-          "Opskrba električnom energijom u doba više dnevne tarife",
-          data.SupplyExpenditure.HighEnergyFee
-        ),
-        new Row(
-          "2.2.)",
-          "Opskrba električnom energijom u doba niže dnevne tarife",
-          data.SupplyExpenditure.LowEnergyFee
-        ),
-        new Row(
-          "2.3.)",
-          "Naknada za poticanje proizvodnje iz obnovljivih izvora energije i kogeneracije",
-          data.SupplyExpenditure.RenewableEnergyFee
-        ),
-        new Row(
-          "2.4.)",
-          "Trošarina za poslovnu/neposlovnu upotrebu",
-          data.SupplyExpenditure.BusinessUsageFee
-        )
-      };
 }

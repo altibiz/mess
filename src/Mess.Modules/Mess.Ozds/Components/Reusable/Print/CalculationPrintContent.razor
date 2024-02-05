@@ -1,0 +1,271 @@
+@using Mess.Ozds.Abstractions.Models
+@using Mess.Iot.Abstractions.Models
+
+<style>
+  table {
+    border-spacing: 0;
+    border-collapse: collapse;
+    border: 2px solid black;
+  }
+
+  th {
+    background-color: #DDDDDD;
+  }
+
+  th, td {
+    border: 1px solid black;
+    padding: 2px;
+  }
+</style>
+
+<p>
+  <strong><u>SPECIFIKACIJA POTROŠNJE NA OBRAČUNSKIM MJERNIM MJESTIMA</u></strong>
+</p>
+<p style="margin-top: 0.8rem;">
+  Naziv obračunskom mjernog mjesta (OMM): @(calculation.IotDevice.As<IotDevicePart>().DeviceId.Text)
+</p>
+<p>
+  Broj obračunskog mjernog mjesta (OMM): @(calculation.IotDevice.ContentItemId)
+</p>
+<p>
+  Tarifni model: @(usageCatalogue.TitlePart.Value.Title)
+</p>
+<p style="margin-top: 1.2rem; margin-left: 0.8rem;">
+  <strong>A) TROŠKOVI KORIŠTENJA MREŽE ZDS-a</strong>
+</p>
+<table style="margin-top: 0.8rem; width: 100%">
+  <colgroup>
+    <col style="width: 7%" />
+    <col style="width: 8%" />
+    <col style="width: 8%" />
+    <col style="width: 9%" />
+    <col style="width: 10%" />
+    <col style="width: 10%" />
+    <col style="width: 6%" />
+    <col style="width: 8%" />
+    <col style="width: 12%" />
+    <col style="width: 8%" />
+    <col style="width: 8%" />
+  </colgroup>
+  <thead>
+    <tr class="header">
+      <th>Broj brojila</th>
+      <th>Datum od</th>
+      <th>Datum do</th>
+      <th>Tarifna stavka</th>
+      <th>Stanje od</th>
+      <th>Stanje do</th>
+      <th>Status</th>
+      <th>Konstanta</th>
+      <th>Potrošak (kWh/kW/kVAr)</th>
+      <th>Jed.cijena (kn)</th>
+      <th>Iznos (kn)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="odd">
+      <td rowspan="@usageRowspan">
+        @(calculation.IotDevice.As<IotDevicePart>().DeviceId.Text)
+      </td>
+      <td rowspan="@usageRowspan">
+        @(Item.OzdsInvoicePart.Value.Data.From.ToString("dd. MM. yyyy."))
+      </td>
+      <td rowspan="@usageRowspan">
+        @(Item.OzdsInvoicePart.Value.Data.To.AddDays(-1).ToString("dd. MM. yyyy."))
+      </td>
+      @(usageItems.FirstOrDefault() is { } usageItem ? renderItem(usageItem) : null)
+    </tr>
+    @if (usageItems.Length > 1) {
+      foreach (var item in usageItems[1..]) {
+        <tr>
+          @renderItem(item)
+        </tr>
+      }
+    }
+    @if (calculation.UsageExpenditure.IotDeviceFee is { } iotDeviceFee) {
+      <tr class="even">
+        <td colspan="5"><strong>Naknada za mjernu uslugu - MU</strong></td>
+        <td>1</td>
+        <td>@(iotDeviceFee.UnitPrice)</td>
+        <td>@(iotDeviceFee.Total.ToString("F2"))</td>
+      </tr>
+    }
+    <tr class="odd">
+      <td colspan="6"><strong></strong></td>
+      <td colspan="4">
+        <strong>Troškovi korištenja mreže ZDS-a - UKUPNO:</strong>
+      </td>
+      <td><strong>@calculation.UsageExpenditure.Total.ToString("F2")</strong></td>
+    </tr>
+  </tbody>
+</table>
+<p style="margin-top: 1.2rem; margin-left: 0.8rem;">
+  <strong>B) TROŠKOVI OPSKRBE ELEKTRIČNOM ENERGIJOM</strong>
+</p>
+<table style="margin-top: 0.8rem;">
+  <colgroup>
+    <col style="width: 7%" />
+    <col style="width: 8%" />
+    <col style="width: 8%" />
+    <col style="width: 9%" />
+    <col style="width: 10%" />
+    <col style="width: 10%" />
+    <col style="width: 5%" />
+    <col style="width: 8%" />
+    <col style="width: 12%" />
+    <col style="width: 9%" />
+    <col style="width: 8%" />
+  </colgroup>
+  <thead>
+    <tr class="header">
+      <th>Broj brojila</th>
+      <th>Datum od</th>
+      <th>Datum do</th>
+      <th>Tarifna stavka</th>
+      <th>Stanje od</th>
+      <th>Stanje do</th>
+      <th>Status</th>
+      <th>Konstanta</th>
+      <th>Potrošak (kWh)</th>
+      <th>Jed.cijena (kn)</th>
+      <th>Iznos (kn)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="odd">
+      <td rowspan="@supplyRowspan">
+        @(calculation.IotDevice.As<IotDevicePart>().DeviceId.Text)
+      </td>
+      <td rowspan="@supplyRowspan">
+        @(Item.OzdsInvoicePart.Value.Data.From.ToString("dd. MM. yyyy."))
+      </td>
+      <td rowspan="@supplyRowspan">
+        @(Item.OzdsInvoicePart.Value.Data.To.AddDays(-1).ToString("dd. MM. yyyy."))
+      </td>
+      @(supplyItems.FirstOrDefault() is { } supplyItem ? renderItem(supplyItem) : null)
+    </tr>
+    @if (supplyItems.Length > 1) {
+      foreach (var item in supplyItems[1..]) {
+        <tr>
+          @renderItem(item)
+        </tr>
+      }
+    }
+    <tr class="odd">
+      <td colspan="5"><strong> </strong></td>
+      <td colspan="5">
+        <strong>Troškovi opskrbe električnom energijom - UKUPNO:</strong>
+      </td>
+      <td><strong>@calculation.SupplyExpenditure.Total.ToString("F2")</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+
+@code {
+  [Parameter]
+  public OzdsInvoiceItem Item { get; set; } = default!;
+
+  [Parameter]
+  public string DeviceId { get; set; } = default!;
+
+  private OzdsInvoiceData data => Item.OzdsInvoicePart.Value.Data;
+
+  private DistributionSystemUnitItem unitItem => Item.OzdsInvoicePart.Value.Data.DistributionSystemUnit.AsContent<DistributionSystemUnitItem>();
+
+  private DistributionSystemOperatorItem operatorItem => Item.OzdsInvoicePart.Value.Data.DistributionSystemOperator.AsContent<DistributionSystemOperatorItem>();
+
+  private ClosedDistributionSystemItem systemItem => Item.OzdsInvoicePart.Value.Data.ClosedDistributionSystem.AsContent<ClosedDistributionSystemItem>();
+
+  private RegulatoryAgencyCatalogueItem regulatoryAgencyCatalogue => Item.OzdsInvoicePart.Value.Data.RegulatoryAgencyCatalogue.AsContent<RegulatoryAgencyCatalogueItem>();
+
+  private OzdsCalculationData? _calculation;
+
+  private OzdsCalculationData calculation => _calculation ??= Item.OzdsCalculationPart.Value.Calculations.FirstOrDefault(calculation => calculation.IotDevice.Content.IotDevicePart.DeviceId.Text == DeviceId) ?? throw new InvalidOperationException($"Device with {DeviceId} doesn't exist");
+
+  private OperatorCatalogueItem usageCatalogue => calculation.UsageCatalogue.AsContent<OperatorCatalogueItem>();
+
+  private OperatorCatalogueItem supplyCatalogue => calculation.SupplyCatalogue.AsContent<OperatorCatalogueItem>();
+
+  private record ItemData(
+    string Name,
+    decimal ValueFrom,
+    decimal ValueTo,
+    string Status,
+    decimal Constant,
+    decimal Amount,
+    decimal Price,
+    decimal Total
+  );
+
+  private RenderFragment renderItem(ItemData item) =>
+    @<Fragment>
+      <td><strong>@item.Name</strong></td>
+      <td>@item.ValueFrom</td>
+      <td>@item.ValueTo</td>
+      <td>@item.Status</td>
+      <td>@item.Constant</td>
+      <td>@item.Amount</td>
+      <td>@item.Price</td>
+      <td>@item.Total.ToString("F2")</td>
+    </Fragment>;
+
+  private ItemData[]? _usageItems;
+
+  private ItemData[] usageItems => _usageItems ??=
+    (new[] {
+      ("RVT - R1", calculation.UsageExpenditure.HighEnergyItem),
+      ("RNT - R2", calculation.UsageExpenditure.LowEnergyItem),
+      ("SVT - S1", calculation.UsageExpenditure.MaxPowerItem),
+      ("JEN - J1", calculation.UsageExpenditure.HighReactiveEnergyItem),
+      ("JEN - J2", calculation.UsageExpenditure.LowReactiveEnergyItem)
+    })
+    .Select((i) => i switch {
+      (_, null) => null,
+      (var name, var item) =>
+        new ItemData(
+          Name: name,
+          ValueFrom: item.ValueFrom,
+          ValueTo: item.ValueTo,
+          Status: "O/P",
+          Constant: 0,
+          Amount: item.Amount,
+          Price: item.UnitPrice,
+          Total: item.Total
+        )
+    })
+    .Where(item => item is not null)
+    .Cast<ItemData>()
+    .ToArray();
+
+  private ItemData[]? _supplyItems;
+
+  private ItemData[] supplyItems => _supplyItems ??=
+    (new[] {
+      ("RVT", calculation.SupplyExpenditure.HighEnergyItem),
+      ("RNT", calculation.SupplyExpenditure.LowEnergyItem),
+      ("OIEIK", calculation.SupplyExpenditure.RenewableEnergyFee),
+      ("TRP/TRNP", calculation.SupplyExpenditure.BusinessUsageFee),
+    })
+    .Select((i) => i switch {
+      (_, null) => null,
+      (var name, var item) =>
+        new ItemData(
+          Name: name,
+          ValueFrom: item.ValueFrom,
+          ValueTo: item.ValueTo,
+          Status: "O/P",
+          Constant: 0,
+          Amount: item.Amount,
+          Price: item.UnitPrice,
+          Total: item.Total
+        )
+    })
+    .Where(item => item is not null)
+    .Cast<ItemData>()
+    .ToArray();
+
+  private int usageRowspan => usageItems.Length == 0 ? 1 : usageItems.Length + 1;
+
+  private int supplyRowspan => supplyItems.Length == 0 ? 0 : supplyItems.Length;
+}
