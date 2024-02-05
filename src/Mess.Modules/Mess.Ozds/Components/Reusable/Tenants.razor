@@ -67,7 +67,7 @@
           <CellTemplate>
               <MudStack Row>
                 <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
-                    <form method="post" action="@($"https://localhost:5001/ozds/Admin/IssueInvoice/{context.Item.unit.ContentItemId}")">
+                    <form method="post" action="@($"admin/IssueInvoice/{context.Item.unit.ContentItemId}")">
                         <button type="submit">@T["Izdati Račun"].Value</button>
                     </form>
                 </MudButton>

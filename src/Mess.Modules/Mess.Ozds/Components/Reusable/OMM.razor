@@ -54,11 +54,6 @@
           <MudMenuItem OnClick="@(() => MenuItemClicked("Scale2"))">10 min</MudMenuItem>
           <MudMenuItem OnClick="@(() => MenuItemClicked("Scale3"))">15 min</MudMenuItem>
           <MudMenuItem OnClick="@(() => MenuItemClicked("Scale4"))">30 min</MudMenuItem>
-          <MudMenuItem OnClick="@(() => MenuItemClicked("Scale5"))">1 h</MudMenuItem>
-          <MudMenuItem OnClick="@(() => MenuItemClicked("Scale6"))">3 h</MudMenuItem>
-          <MudMenuItem OnClick="@(() => MenuItemClicked("Scale7"))">6 h</MudMenuItem>
-          <MudMenuItem OnClick="@(() => MenuItemClicked("Scale8"))">12 h</MudMenuItem>
-          <MudMenuItem OnClick="@(() => MenuItemClicked("Scale9"))">24 h</MudMenuItem>
         </MudMenu>
         </MudContainer>
             </MudPaper>
@@ -270,7 +265,7 @@
     private bool timerInitialized;
   private class Order {
     public decimal? value = 10;
-    public decimal? valueMax = 1000;
+    public decimal? valueMax = 100000;
     public decimal? percent = 50;
 
     public Order(decimal? val){
@@ -381,32 +376,17 @@
       case "Scale4":
           _graphValues =_lastDay.Where(x => x.date > DateTime.UtcNow.AddMinutes(-30));;
           break;
-      case "Scale5":
-          _graphValues =_lastDay.Where(x => x.date > DateTime.UtcNow.AddMinutes(-60));;
-          break;
-      case "Scale6":
-          _graphValues =_lastDay.Where(x => x.date > DateTime.UtcNow.AddHours(-3));;
-          break;
-      case "Scale7":
-          _graphValues =_lastDay.Where(x => x.date > DateTime.UtcNow.AddHours(-6));;
-          break;
-      case "Scale8":
-          _graphValues =_lastDay.Where(x => x.date > DateTime.UtcNow.AddHours(-12));;
-          break;
-      case "Scale9":
-          _graphValues =_lastDay.Where(x => x.date > DateTime.UtcNow.AddHours(-24));;
-          break;
     }
     await chart.UpdateSeriesAsync(true);
   }
 
   private async Task GetValues(){
     if(Source.StartsWith("abb")){
-        var a = await _timeseriesClient.GetAbbMeasurementsAsync(Source, DateTimeOffset.UtcNow.AddHours(-24), DateTimeOffset.UtcNow);
+        var a = await _timeseriesClient.GetAbbMeasurementsAsync(Source, DateTimeOffset.UtcNow.AddMinutes(-30), DateTimeOffset.UtcNow);
         _lastDay = a.Select(x => new ChartData(x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.Timestamp)).ToList();
       }
       else{
-        var a = await _timeseriesClient.GetSchneiderMeasurementsAsync(Source, DateTimeOffset.UtcNow.AddHours(-24), DateTimeOffset.UtcNow);
+        var a = await _timeseriesClient.GetSchneiderMeasurementsAsync(Source, DateTimeOffset.UtcNow.AddMinutes(-30), DateTimeOffset.UtcNow);
         _lastDay = a.Select(x => new ChartData(x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.Timestamp)).ToList();
       }
     _graphValues = _lastDay.TakeLast(20);
