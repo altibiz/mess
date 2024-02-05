@@ -254,7 +254,7 @@
   );
 
   private RenderFragment renderItem(ItemData item) =>
-    @<>
+    @<Fragment>
       <td><strong>@item.Name</strong></td>
       <td>@item.ValueFrom</td>
       <td>@item.ValueTo</td>
@@ -263,7 +263,7 @@
       <td>@item.Amount</td>
       <td>@item.Price</td>
       <td>@item.Total</td>
-    </>;
+    </Fragment>;
 
   private ItemData[]? _usageItems;
 
