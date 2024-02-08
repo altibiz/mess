@@ -3,7 +3,6 @@ using OrchardCore.ContentManagement;
 
 namespace Mess.Ozds.Abstractions.Models;
 
-// TODO: validation
 public class OperatorCataloguePart : ContentPart
 {
   public TextField Voltage { get; set; } = default!;
@@ -24,6 +23,5 @@ public class OperatorCataloguePart : ContentPart
 
   public NumericField MaxPowerPrice { get; set; } = new() { Value = 0.00M };
 
-  public NumericField IotDeviceFee { get; set; } =
-    new() { Value = 0.00M };
+  public NumericField IotDeviceFee { get; set; } = new() { Value = 0.00M };
 }

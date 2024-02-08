@@ -35,11 +35,10 @@ public class Populations : IPopulation
         _serviceProvider
       );
 
-    var (whiteHighVoltageOperatorCatalogueContentItemId,
-        whiteMediumVoltageOperatorCatalogueContentItemId,
-        blueOperatorCatalogueContentItemId,
+    var (whiteMediumVoltageOperatorCatalogueContentItemId,
+        blueLowVoltageOperatorCatalogueContentItemId,
         whiteLowVoltageOperatorCatalogueContentItemId,
-        redOperatorCatalogueContentItemId, yellowOperatorCatalogueContentItemId
+        redLowVoltageOperatorCatalogueContentItemId
         ) =
       await CreateAsyncMigrations.PopulateOperatorCatalogues(
         _serviceProvider
@@ -47,26 +46,13 @@ public class Populations : IPopulation
 
     var (_, operatorContentItemId) =
       await CreateAsyncMigrations.PopulateOperator(
-        _serviceProvider,
-        regulatoryAgencyCatalogueContentItemId,
-        whiteHighVoltageOperatorCatalogueContentItemId!,
-        whiteMediumVoltageOperatorCatalogueContentItemId!,
-        blueOperatorCatalogueContentItemId!,
-        whiteLowVoltageOperatorCatalogueContentItemId!,
-        redOperatorCatalogueContentItemId!,
-        yellowOperatorCatalogueContentItemId!
+        _serviceProvider
       );
 
     var (_, systemContentItemId) =
       await CreateAsyncMigrations.PopulateSystem(
         _serviceProvider,
-        operatorContentItemId!,
-        whiteHighVoltageOperatorCatalogueContentItemId!,
-        whiteMediumVoltageOperatorCatalogueContentItemId!,
-        blueOperatorCatalogueContentItemId!,
-        whiteLowVoltageOperatorCatalogueContentItemId!,
-        redOperatorCatalogueContentItemId!,
-        yellowOperatorCatalogueContentItemId!
+        operatorContentItemId!
       );
 
     var (_, unitContentItemId) =
@@ -83,15 +69,15 @@ public class Populations : IPopulation
     await CreateAsyncMigrations.PopulateAbb(
       _serviceProvider,
       unitContentItemId!,
-      whiteLowVoltageOperatorCatalogueContentItemId!,
-      whiteLowVoltageOperatorCatalogueContentItemId!
+      redLowVoltageOperatorCatalogueContentItemId!,
+      regulatoryAgencyCatalogueContentItemId!
     );
 
     await CreateAsyncMigrations.PopulateSchneider(
       _serviceProvider,
       unitContentItemId!,
-      whiteLowVoltageOperatorCatalogueContentItemId!,
-      whiteLowVoltageOperatorCatalogueContentItemId!
+      blueLowVoltageOperatorCatalogueContentItemId!,
+      regulatoryAgencyCatalogueContentItemId!
     );
   }
 }
@@ -102,14 +88,7 @@ internal static partial class CreateAsyncMigrations
     string? UserId,
     string? ContentItemId
     )> PopulateOperator(
-    IServiceProvider serviceProvider,
-    string regulatoryAgencyCatalogueContentItemId,
-    string whiteHighVoltageOperatorCatalogueContentItemId,
-    string whiteMediumVoltageOperatorCatalogueContentItemId,
-    string blueOperatorCatalogueContentItemId,
-    string whiteLowVoltageOperatorCatalogueContentItemId,
-    string redOperatorCatalogueContentItemId,
-    string yellowOperatorCatalogueContentItemId
+    IServiceProvider serviceProvider
   )
   {
     var contentManager = serviceProvider.GetRequiredService<IContentManager>();
@@ -147,63 +126,6 @@ internal static partial class CreateAsyncMigrations
         };
       }
     );
-    distributionSystemOperator.Alter(
-      distributionSystemOperator =>
-        distributionSystemOperator.DistributionSystemOperatorPart,
-      distributionSystemOperatorPart =>
-      {
-        distributionSystemOperatorPart.RegulatoryAgencyCatalogue =
-          new ContentPickerField
-          {
-            ContentItemIds = new[] { regulatoryAgencyCatalogueContentItemId }
-          };
-
-        distributionSystemOperatorPart.WhiteHighVoltageOperatorCatalogue =
-          new ContentPickerField
-          {
-            ContentItemIds = new[]
-            {
-              whiteHighVoltageOperatorCatalogueContentItemId
-            }
-          };
-
-        distributionSystemOperatorPart.WhiteMediumVoltageOperatorCatalogue =
-          new ContentPickerField
-          {
-            ContentItemIds = new[]
-            {
-              whiteMediumVoltageOperatorCatalogueContentItemId
-            }
-          };
-
-        distributionSystemOperatorPart.BlueOperatorCatalogue =
-          new ContentPickerField
-          {
-            ContentItemIds = new[] { blueOperatorCatalogueContentItemId }
-          };
-
-        distributionSystemOperatorPart.WhiteLowVoltageOperatorCatalogue =
-          new ContentPickerField
-          {
-            ContentItemIds = new[]
-            {
-              whiteLowVoltageOperatorCatalogueContentItemId
-            }
-          };
-
-        distributionSystemOperatorPart.RedOperatorCatalogue =
-          new ContentPickerField
-          {
-            ContentItemIds = new[] { redOperatorCatalogueContentItemId }
-          };
-
-        distributionSystemOperatorPart.YellowOperatorCatalogue =
-          new ContentPickerField
-          {
-            ContentItemIds = new[] { yellowOperatorCatalogueContentItemId }
-          };
-      }
-    );
 
     await contentManager.CreateAsync(
       distributionSystemOperator,
@@ -220,13 +142,7 @@ internal static partial class CreateAsyncMigrations
     string? ContentItemId
     )> PopulateSystem(
     IServiceProvider serviceProvider,
-    string operatorContentItemId,
-    string whiteHighVoltageOperatorCatalogueContentItemId,
-    string whiteMediumVoltageOperatorCatalogueContentItemId,
-    string blueOperatorCatalogueContentItemId,
-    string whiteLowVoltageOperatorCatalogueContentItemId,
-    string redOperatorCatalogueContentItemId,
-    string yellowOperatorCatalogueContentItemId
+    string operatorContentItemId
   )
   {
     var userService = serviceProvider.GetRequiredService<IUserService>();
@@ -269,57 +185,6 @@ internal static partial class CreateAsyncMigrations
       containedPart =>
       {
         containedPart.ListContentItemId = operatorContentItemId;
-      }
-    );
-    closedDistributionSystem.Alter(
-      closedDistributionSystem =>
-        closedDistributionSystem.ClosedDistributionSystemPart,
-      closedDistributionSystemPart =>
-      {
-        closedDistributionSystemPart.WhiteHighVoltageOperatorCatalogue =
-          new ContentPickerField
-          {
-            ContentItemIds = new[]
-            {
-              whiteHighVoltageOperatorCatalogueContentItemId
-            }
-          };
-
-        closedDistributionSystemPart.WhiteMediumVoltageOperatorCatalogue =
-          new ContentPickerField
-          {
-            ContentItemIds = new[]
-            {
-              whiteMediumVoltageOperatorCatalogueContentItemId
-            }
-          };
-
-        closedDistributionSystemPart.BlueOperatorCatalogue =
-          new ContentPickerField
-          {
-            ContentItemIds = new[] { blueOperatorCatalogueContentItemId }
-          };
-
-        closedDistributionSystemPart.WhiteLowVoltageOperatorCatalogue =
-          new ContentPickerField
-          {
-            ContentItemIds = new[]
-            {
-              whiteLowVoltageOperatorCatalogueContentItemId
-            }
-          };
-
-        closedDistributionSystemPart.RedOperatorCatalogue =
-          new ContentPickerField
-          {
-            ContentItemIds = new[] { redOperatorCatalogueContentItemId }
-          };
-
-        closedDistributionSystemPart.YellowOperatorCatalogue =
-          new ContentPickerField
-          {
-            ContentItemIds = new[] { yellowOperatorCatalogueContentItemId }
-          };
       }
     );
 
@@ -738,48 +603,14 @@ internal static partial class CreateAsyncMigrations
   }
 
   internal static async Task<(
-    string WhiteHighVoltageOperatorCatalogueContentItemId,
     string WhiteMediumVoltageOperatorCatalogueContentItemId,
     string BlueOperatorCatalogueContentItemId,
     string WhiteLowVoltageOperatorCatalogueContentItemId,
-    string RedOperatorCatalogueContentItemId,
-    string YellowOperatorCatalogueContentItemId
+    string RedOperatorCatalogueContentItemId
     )> PopulateOperatorCatalogues(IServiceProvider serviceProvider)
   {
     var contentManager = serviceProvider.GetRequiredService<IContentManager>();
     var session = serviceProvider.GetRequiredService<ISession>();
-
-    var whiteHighVoltageOperatorCatalogue =
-      await contentManager.NewContentAsync<OperatorCatalogueItem>();
-    whiteHighVoltageOperatorCatalogue.Alter(
-      operatorCatalogue => operatorCatalogue.TitlePart,
-      titlePart =>
-      {
-        titlePart.Title = "White high voltage operator catalogue";
-      }
-    );
-    whiteHighVoltageOperatorCatalogue.Inner.DisplayText =
-      "White high voltage operator catalogue";
-    whiteHighVoltageOperatorCatalogue.Alter(
-      operatorCatalogue => operatorCatalogue.OperatorCataloguePart,
-      operatorCataloguePart =>
-      {
-        operatorCataloguePart.Voltage = new TextField { Text = "High" };
-        operatorCataloguePart.Model = new TextField { Text = "White" };
-        operatorCataloguePart.HighEnergyPrice =
-          new NumericField { Value = 0.04M };
-        operatorCataloguePart.LowEnergyPrice =
-          new NumericField { Value = 0.02M };
-        operatorCataloguePart.MaxPowerPrice =
-          new NumericField { Value = 14.00M };
-        operatorCataloguePart.IotDeviceFee =
-          new NumericField { Value = 68.00M };
-      }
-    );
-    await contentManager.CreateAsync(
-      whiteHighVoltageOperatorCatalogue,
-      VersionOptions.Latest
-    );
 
     var whiteMediumVoltageOperatorCatalogue =
       await contentManager.NewContentAsync<OperatorCatalogueItem>();
@@ -787,25 +618,27 @@ internal static partial class CreateAsyncMigrations
       operatorCatalogue => operatorCatalogue.TitlePart,
       titlePart =>
       {
-        titlePart.Title = "White medium voltage operator catalogue";
+        titlePart.Title = "Bijeli SN";
       }
     );
     whiteMediumVoltageOperatorCatalogue.Inner.DisplayText =
-      "White medium voltage operator catalogue";
+      "Bijeli SN";
     whiteMediumVoltageOperatorCatalogue.Alter(
       operatorCatalogue => operatorCatalogue.OperatorCataloguePart,
       operatorCataloguePart =>
       {
-        operatorCataloguePart.Voltage = new TextField { Text = "Medium" };
-        operatorCataloguePart.Model = new TextField { Text = "White" };
+        operatorCataloguePart.Voltage = new TextField { Text = "Srednji" };
+        operatorCataloguePart.Model = new TextField { Text = "Bijeli" };
         operatorCataloguePart.HighEnergyPrice =
-          new NumericField { Value = 0.14M };
+          new NumericField { Value = 0.018581M };
         operatorCataloguePart.LowEnergyPrice =
-          new NumericField { Value = 0.07M };
+          new NumericField { Value = 0.009290M };
         operatorCataloguePart.MaxPowerPrice =
-          new NumericField { Value = 26.00M };
+          new NumericField { Value = 3.451M };
+        operatorCataloguePart.ReactiveEnergyPrice =
+          new NumericField { Value = 0.021236M };
         operatorCataloguePart.IotDeviceFee =
-          new NumericField { Value = 66.00M };
+          new NumericField { Value = 8.760M };
       }
     );
     await contentManager.CreateAsync(
@@ -813,26 +646,29 @@ internal static partial class CreateAsyncMigrations
       VersionOptions.Latest
     );
 
-    var blueOperatorCatalogue =
+    var blueLowVoltageOperatorCatalogue =
       await contentManager.NewContentAsync<OperatorCatalogueItem>();
-    blueOperatorCatalogue.Alter(
+    blueLowVoltageOperatorCatalogue.Alter(
       operatorCatalogue => operatorCatalogue.TitlePart,
-      titlePart => { titlePart.Title = "Blue operator catalogue"; }
+      titlePart => { titlePart.Title = "Plavi NN"; }
     );
-    blueOperatorCatalogue.Inner.DisplayText = "Blue operator catalogue";
-    blueOperatorCatalogue.Alter(
+    blueLowVoltageOperatorCatalogue.Inner.DisplayText = "Plavi NN";
+    blueLowVoltageOperatorCatalogue.Alter(
       operatorCatalogue => operatorCatalogue.OperatorCataloguePart,
       operatorCataloguePart =>
       {
         operatorCataloguePart.Voltage = new TextField { Text = "Low" };
         operatorCataloguePart.Model = new TextField { Text = "Blue" };
-        operatorCataloguePart.EnergyPrice = new NumericField { Value = 0.31M };
+        operatorCataloguePart.EnergyPrice =
+          new NumericField { Value = 0.041144M };
+        operatorCataloguePart.ReactiveEnergyPrice =
+          new NumericField { Value = 0.021236M };
         operatorCataloguePart.IotDeviceFee =
-          new NumericField { Value = 41.30M };
+          new NumericField { Value = 5.481M };
       }
     );
     await contentManager.CreateAsync(
-      blueOperatorCatalogue,
+      blueLowVoltageOperatorCatalogue,
       VersionOptions.Latest
     );
 
@@ -840,10 +676,10 @@ internal static partial class CreateAsyncMigrations
       await contentManager.NewContentAsync<OperatorCatalogueItem>();
     whiteLowVoltageOperatorCatalogue.Alter(
       operatorCatalogue => operatorCatalogue.TitlePart,
-      titlePart => { titlePart.Title = "White low voltage operator catalogue"; }
+      titlePart => { titlePart.Title = "Bijeli NN"; }
     );
     whiteLowVoltageOperatorCatalogue.Inner.DisplayText =
-      "White low voltage operator catalogue";
+      "Bijeli NN";
     whiteLowVoltageOperatorCatalogue.Alter(
       operatorCatalogue => operatorCatalogue.OperatorCataloguePart,
       operatorCataloguePart =>
@@ -851,11 +687,13 @@ internal static partial class CreateAsyncMigrations
         operatorCataloguePart.Voltage = new TextField { Text = "Low" };
         operatorCataloguePart.Model = new TextField { Text = "White" };
         operatorCataloguePart.HighEnergyPrice =
-          new NumericField { Value = 0.39M };
+          new NumericField { Value = 0.051762M };
         operatorCataloguePart.LowEnergyPrice =
-          new NumericField { Value = 0.17M };
+          new NumericField { Value = 0.022563M };
+        operatorCataloguePart.ReactiveEnergyPrice =
+          new NumericField() { Value = 0.021236M };
         operatorCataloguePart.IotDeviceFee =
-          new NumericField { Value = 41.30M };
+          new NumericField { Value = 5.481M };
       }
     );
     await contentManager.CreateAsync(
@@ -863,66 +701,43 @@ internal static partial class CreateAsyncMigrations
       VersionOptions.Latest
     );
 
-    var redOperatorCatalogue =
+    var redLowVoltageOperatorCatalogue =
       await contentManager.NewContentAsync<OperatorCatalogueItem>();
-    redOperatorCatalogue.Alter(
+    redLowVoltageOperatorCatalogue.Alter(
       operatorCatalogue => operatorCatalogue.TitlePart,
-      titlePart => { titlePart.Title = "Red operator catalogue"; }
+      titlePart => { titlePart.Title = "Crveni NN"; }
     );
-    redOperatorCatalogue.Inner.DisplayText = "Red operator catalogue";
-    redOperatorCatalogue.Alter(
+    redLowVoltageOperatorCatalogue.Inner.DisplayText = "Crveni NN";
+    redLowVoltageOperatorCatalogue.Alter(
       operatorCatalogue => operatorCatalogue.OperatorCataloguePart,
       operatorCataloguePart =>
       {
-        operatorCataloguePart.Voltage = new TextField { Text = "Low" };
-        operatorCataloguePart.Model = new TextField { Text = "Red" };
+        operatorCataloguePart.Voltage = new TextField { Text = "Niski" };
+        operatorCataloguePart.Model = new TextField { Text = "Crveni" };
         operatorCataloguePart.HighEnergyPrice =
-          new NumericField { Value = 0.22M };
+          new NumericField { Value = 0.029199M };
         operatorCataloguePart.LowEnergyPrice =
-          new NumericField { Value = 0.1M };
+          new NumericField { Value = 0.013272M };
         operatorCataloguePart.MaxPowerPrice =
-          new NumericField { Value = 39.00M };
+          new NumericField { Value = 5.176M };
+        operatorCataloguePart.ReactiveEnergyPrice =
+          new NumericField { Value = 0.021236M };
         operatorCataloguePart.IotDeviceFee =
-          new NumericField { Value = 41.30M };
+          new NumericField { Value = 5.481M };
       }
     );
     await contentManager.CreateAsync(
-      redOperatorCatalogue,
-      VersionOptions.Latest
-    );
-
-    var yellowOperatorCatalogue =
-      await contentManager.NewContentAsync<OperatorCatalogueItem>();
-    yellowOperatorCatalogue.Alter(
-      operatorCatalogue => operatorCatalogue.TitlePart,
-      titlePart => { titlePart.Title = "Yellow operator catalogue"; }
-    );
-    yellowOperatorCatalogue.Inner.DisplayText = "Yellow operator catalogue";
-    yellowOperatorCatalogue.Alter(
-      operatorCatalogue => operatorCatalogue.OperatorCataloguePart,
-      operatorCataloguePart =>
-      {
-        operatorCataloguePart.Voltage = new TextField { Text = "Low" };
-        operatorCataloguePart.Model = new TextField { Text = "Yellow" };
-        operatorCataloguePart.EnergyPrice = new NumericField { Value = 0.24M };
-        operatorCataloguePart.IotDeviceFee =
-          new NumericField { Value = 15.45M };
-      }
-    );
-    await contentManager.CreateAsync(
-      yellowOperatorCatalogue,
+      redLowVoltageOperatorCatalogue,
       VersionOptions.Latest
     );
 
     await session.SaveChangesAsync();
 
     return (
-      whiteHighVoltageOperatorCatalogue.ContentItemId,
       whiteMediumVoltageOperatorCatalogue.ContentItemId,
-      blueOperatorCatalogue.ContentItemId,
+      blueLowVoltageOperatorCatalogue.ContentItemId,
       whiteLowVoltageOperatorCatalogue.ContentItemId,
-      redOperatorCatalogue.ContentItemId,
-      yellowOperatorCatalogue.ContentItemId
+      redLowVoltageOperatorCatalogue.ContentItemId
     );
   }
 }
