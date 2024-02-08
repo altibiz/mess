@@ -241,11 +241,11 @@ List<string> sources
       return first is { } && last is { } && peak is { }
         ? new OzdsIotDeviceBillingData(
           first.ActiveEnergyImportTotal_Wh / 1000,
-          last.ActiveEnergyExportTotal_Wh / 1000,
+          last.ActiveEnergyImportTotal_Wh / 1000,
           first.ActiveEnergyImportTotal_Wh / 1000,
-          last.ActiveEnergyExportTotal_Wh / 1000,
+          last.ActiveEnergyImportTotal_Wh / 1000,
           first.ActiveEnergyImportTotal_Wh / 1000,
-          last.ActiveEnergyExportTotal_Wh / 1000,
+          last.ActiveEnergyImportTotal_Wh / 1000,
           first.ReactiveEnergyImportTotal_VARh / 1000,
           last.ReactiveEnergyImportTotal_VARh / 1000,
           first.ReactiveEnergyImportTotal_VARh / 1000,
@@ -323,11 +323,11 @@ List<string> sources
       return first is { } && last is { } && peak is { }
         ? new OzdsIotDeviceBillingData(
           first.ActiveEnergyImportTotal_Wh / 1000,
-          last.ActiveEnergyExportTotal_Wh / 1000,
+          last.ActiveEnergyImportTotal_Wh / 1000,
           first.ActiveEnergyImportTotal_Wh / 1000,
-          last.ActiveEnergyExportTotal_Wh / 1000,
+          last.ActiveEnergyImportTotal_Wh / 1000,
           first.ActiveEnergyImportTotal_Wh / 1000,
-          last.ActiveEnergyExportTotal_Wh / 1000,
+          last.ActiveEnergyImportTotal_Wh / 1000,
           first.ReactiveEnergyImportTotal_VARh / 1000,
           last.ReactiveEnergyImportTotal_VARh / 1000,
           first.ReactiveEnergyImportTotal_VARh / 1000,
@@ -474,11 +474,11 @@ List<string> sources
       return first is { } && last is { } && peak is { }
         ? new OzdsIotDeviceBillingData(
           first.ActiveEnergyImportTotal_Wh / 1000,
-          last.ActiveEnergyExportTotal_Wh / 1000,
+          last.ActiveEnergyImportTotal_Wh / 1000,
           first.ActiveEnergyImportTotal_Wh / 1000,
-          last.ActiveEnergyExportTotal_Wh / 1000,
+          last.ActiveEnergyImportTotal_Wh / 1000,
           first.ActiveEnergyImportTotal_Wh / 1000,
-          last.ActiveEnergyExportTotal_Wh / 1000,
+          last.ActiveEnergyImportTotal_Wh / 1000,
           first.ReactiveEnergyImportTotal_VARh / 1000,
           last.ReactiveEnergyImportTotal_VARh / 1000,
           first.ReactiveEnergyImportTotal_VARh / 1000,
@@ -556,11 +556,11 @@ List<string> sources
       return first is { } && last is { } && peak is { }
         ? new OzdsIotDeviceBillingData(
           first.ActiveEnergyImportTotal_Wh / 1000,
-          last.ActiveEnergyExportTotal_Wh / 1000,
+          last.ActiveEnergyImportTotal_Wh / 1000,
           first.ActiveEnergyImportTotal_Wh / 1000,
-          last.ActiveEnergyExportTotal_Wh / 1000,
+          last.ActiveEnergyImportTotal_Wh / 1000,
           first.ActiveEnergyImportTotal_Wh / 1000,
-          last.ActiveEnergyExportTotal_Wh / 1000,
+          last.ActiveEnergyImportTotal_Wh / 1000,
           first.ReactiveEnergyImportTotal_VARh / 1000,
           last.ReactiveEnergyImportTotal_VARh / 1000,
           first.ReactiveEnergyImportTotal_VARh / 1000,

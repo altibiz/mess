@@ -11,13 +11,28 @@ public abstract class RelationalDbContext : DbContext
 {
   private readonly ShellSettings _shellSettings;
 
+  private readonly IHostEnvironment _environment;
+
   public RelationalDbContext(
     DbContextOptions options,
-    ShellSettings shellSettings
+    IServiceProvider services
   )
     : base(options)
   {
-    _shellSettings = shellSettings;
+    _shellSettings = services.GetRequiredService<ShellSettings>();
+    _environment = services.GetRequiredService<IHostEnvironment>();
+  }
+
+  protected override void OnConfiguring(
+    DbContextOptionsBuilder optionsBuilder
+  )
+  {
+    if (_environment.IsDevelopment())
+    {
+      optionsBuilder.UseLoggerFactory(LoggerFactory.Create(builder => builder.AddDebug()));
+      optionsBuilder.EnableSensitiveDataLogging();
+      optionsBuilder.EnableDetailedErrors();
+    }
   }
 
   protected string DatabaseTablePrefix =>

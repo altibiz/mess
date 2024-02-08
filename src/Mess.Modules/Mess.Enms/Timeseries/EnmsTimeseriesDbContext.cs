@@ -8,9 +8,9 @@ public class EnmsTimeseriesDbContext : TimeseriesDbContext
 {
   public EnmsTimeseriesDbContext(
     DbContextOptions<EnmsTimeseriesDbContext> options,
-    ShellSettings shellSettings
+    IServiceProvider services
   )
-    : base(options, shellSettings)
+    : base(options, services)
   {
   }
 

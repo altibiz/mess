@@ -8,9 +8,9 @@ public class OzdsTimeseriesDbContext : TimeseriesDbContext
 {
   public OzdsTimeseriesDbContext(
     DbContextOptions<OzdsTimeseriesDbContext> options,
-    ShellSettings shellSettings
+    IServiceProvider services
   )
-    : base(options, shellSettings)
+    : base(options, services)
   {
   }
 

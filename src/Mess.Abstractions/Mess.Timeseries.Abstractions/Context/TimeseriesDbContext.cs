@@ -20,9 +20,9 @@ public abstract class TimeseriesDbContext : RelationalDbContext
 
   public TimeseriesDbContext(
     DbContextOptions options,
-    ShellSettings shellSettings
+    IServiceProvider services
   )
-    : base(options, shellSettings)
+    : base(options, services)
   {
   }
 
@@ -30,11 +30,15 @@ public abstract class TimeseriesDbContext : RelationalDbContext
     DbContextOptionsBuilder optionsBuilder
   )
   {
+    base.OnConfiguring(optionsBuilder);
+
     optionsBuilder.UseNpgsql(DatabaseConnectionString);
   }
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
+    base.OnModelCreating(modelBuilder);
+
     modelBuilder.HasPostgresExtension("timescaledb");
 
     CreateTenantedEntitiesWithBase(
@@ -74,15 +78,15 @@ public abstract class TimeseriesDbContext : RelationalDbContext
           type => type.IsClass && !type.IsAbstract && type.IsAssignableTo(@base)
         )
     )
-    foreach (var property in entityType.GetProperties())
-      if (property.PropertyType.IsEnum)
-      {
-        var enumType = property.PropertyType;
-        var genericMethod = HasPostgresEnumMethod.MakeGenericMethod(enumType);
-        genericMethod.Invoke(
-          null,
-          new object?[] { modelBuilder, null, null, null }
-        );
-      }
+      foreach (var property in entityType.GetProperties())
+        if (property.PropertyType.IsEnum)
+        {
+          var enumType = property.PropertyType;
+          var genericMethod = HasPostgresEnumMethod.MakeGenericMethod(enumType);
+          genericMethod.Invoke(
+            null,
+            new object?[] { modelBuilder, null, null, null }
+          );
+        }
   }
 }

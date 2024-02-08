@@ -8,9 +8,9 @@ public class EorTimeseriesDbContext : TimeseriesDbContext
 {
   public EorTimeseriesDbContext(
     DbContextOptions<EorTimeseriesDbContext> options,
-    ShellSettings shellSettings
+    IServiceProvider services
   )
-    : base(options, shellSettings)
+    : base(options, services)
   {
   }
 
