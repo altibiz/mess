@@ -38,6 +38,15 @@
                 usql pg://pidgeon:pidgeon@localhost/pidgeon?sslmode=disable "$@"
               '';
             };
+
+            psql = pkgs.writeShellApplication {
+              name = "psql";
+              runtimeInputs = [ pkgs.postgresql_14 ];
+              text = ''
+                export PGPASSWORD=mess
+                psql -h localhost -d mess -U mess "$@"
+              '';
+            };
           in
           [
             # Nix
@@ -60,6 +69,7 @@
 
             # Misc
             usql
+            psql
             just
             nodePackages.prettier
             nodePackages.yaml-language-server
