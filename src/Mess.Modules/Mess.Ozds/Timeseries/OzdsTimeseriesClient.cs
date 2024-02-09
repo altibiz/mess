@@ -30,11 +30,11 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
         from
           "{0}"
         where
-            "{1}" >= @fromDate
+            "{1}" >= {{0}}
           and
-            "{1}" < @toDate
+            "{1}" < {{1}}
           and
-            "{2}" = @source
+            "{2}" = {{2}}
           window bucket_windows as (
             partition by time_bucket('15 minutes', "{1}")
             order by "{1}"
@@ -256,9 +256,6 @@ List<string> sources
         .DeferredLastOrDefault()
         .FutureValue();
 
-      var peakSourceParameter = new NpgsqlParameter("@source", source);
-      var peakFromDateParameter = new NpgsqlParameter("@fromDate", fromDate);
-      var peakToDateParameter = new NpgsqlParameter("@toDate", toDate);
       var peakQuery =
        context.PeakPowerQuery
         .FromSqlRaw(
@@ -269,9 +266,9 @@ List<string> sources
               nameof(AbbMeasurementEntity.Source),
               nameof(AbbMeasurementEntity.ActiveEnergyImportTotal_Wh)
             ),
-            peakSourceParameter,
-            peakFromDateParameter,
-            peakToDateParameter
+            source,
+            fromDate,
+            toDate
         )
         .Future();
 
@@ -336,12 +333,9 @@ List<string> sources
         .DeferredLastOrDefault()
         .FutureValue();
 
-      var peakSourceParameter = new NpgsqlParameter("source", source);
-      var peakFromDateParameter = new NpgsqlParameter("fromDate", fromDate);
-      var peakToDateParameter = new NpgsqlParameter("toDate", toDate);
       var peakQuery =
        context.PeakPowerQuery
-        .FromSql(
+        .FromSqlRaw(
             string.Format(
               PeakPowerQueryTemplate,
               nameof(OzdsTimeseriesDbContext.AbbMeasurements),
@@ -349,9 +343,9 @@ List<string> sources
               nameof(AbbMeasurementEntity.Source),
               nameof(AbbMeasurementEntity.ActiveEnergyImportTotal_Wh)
             ),
-            peakSourceParameter,
-            peakFromDateParameter,
-            peakToDateParameter
+            source,
+            fromDate,
+            toDate
         )
         .Future();
 
@@ -485,9 +479,6 @@ List<string> sources
         .DeferredLastOrDefault()
         .FutureValue();
 
-      var peakSourceParameter = new NpgsqlParameter("source", source);
-      var peakFromDateParameter = new NpgsqlParameter("fromDate", fromDate);
-      var peakToDateParameter = new NpgsqlParameter("toDate", toDate);
       var peakQuery =
        context.PeakPowerQuery
         .FromSqlRaw(
@@ -498,11 +489,9 @@ List<string> sources
               nameof(SchneiderMeasurementEntity.Source),
               nameof(SchneiderMeasurementEntity.ActiveEnergyImportTotal_Wh)
             ),
-            new[] {
-              peakSourceParameter,
-              peakFromDateParameter,
-              peakToDateParameter
-            }
+            source,
+            fromDate,
+            toDate
         )
         .Future();
 
@@ -567,9 +556,6 @@ List<string> sources
         .DeferredLastOrDefault()
         .FutureValue();
 
-      var peakSourceParameter = new NpgsqlParameter("source", source);
-      var peakFromDateParameter = new NpgsqlParameter("fromDate", fromDate);
-      var peakToDateParameter = new NpgsqlParameter("toDate", toDate);
       var peakQuery =
        context.PeakPowerQuery
         .FromSqlRaw(
@@ -580,11 +566,9 @@ List<string> sources
               nameof(SchneiderMeasurementEntity.Source),
               nameof(SchneiderMeasurementEntity.ActiveEnergyImportTotal_Wh)
             ),
-            new[] {
-              peakSourceParameter,
-              peakFromDateParameter,
-              peakToDateParameter
-            }
+            source,
+            fromDate,
+            toDate
         )
         .Future();
 
