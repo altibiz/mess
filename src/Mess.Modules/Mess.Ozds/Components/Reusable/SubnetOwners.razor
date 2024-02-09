@@ -32,9 +32,9 @@
     </MudTextField>
   </ToolBarContent>
   <Columns>
-    <TemplateColumn Title="@T["Podmreže"].Value"
-      Sortable="false"
-      Filterable="false">
+    <TemplateColumn Title="@T["Lokacije"].Value" Sortable="false"
+
+       >
         <CellTemplate>
             <MudStack Row>
               <MudButton OnClick="() => InspectSubnet(context.Item)" Variant="Variant.Outlined" Color="MudBlazor.Color.Primary">
@@ -45,9 +45,9 @@
     </TemplateColumn>
     <PropertyColumn
       Property="x => x.As<LegalEntityPart>().Representatives.UserIds[0]"
-      Title='@T["Vlasnik Podmreže"].Value'
-      Sortable="false"
-      Filterable="false"/>
+      Title='@T["Vlasnik Lokacije"].Value' Sortable="false"
+
+       />
   </Columns>
   <PagerContent>
     <MudDataGridPager T="ContentItem" />

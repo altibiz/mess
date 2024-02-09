@@ -17,9 +17,10 @@
   Items="@_systems"
   SortMode="SortMode.Multiple"
   Filterable="true"
-  QuickFilter="@_quickFilter">
+  QuickFilter="@_quickFilter"
+  Class="mb-6">
   <ToolBarContent>
-    <MudText Typo="Typo.h4">@T["Vlasnici"]</MudText>
+    <MudText Typo="Typo.h4">@T["Potrošnja lokacija"]</MudText>
     <MudSpacer />
     <MudTextField
       @bind-Value="_searchString"
@@ -32,9 +33,9 @@
     </MudTextField>
   </ToolBarContent>
   <Columns>
-    <TemplateColumn Title="@T["Podmreže"].Value"
-      Sortable="false"
-      Filterable="false">
+    <TemplateColumn Title="@T["Lokacije"].Value" Sortable="false"
+
+       >
         <CellTemplate>
             <MudStack Row>
               <MudButton OnClick="() => InspectSubnet(context.Item)" Variant="Variant.Outlined" Color="MudBlazor.Color.Primary">

@@ -16,7 +16,7 @@
 }
 
 @if (_user.RoleNames.Contains("Distribution System Operator Representative")) {
-  <Invoices LegalEntity="@_legalEntity"/>
+  <InvoicesMobileNew LegalEntity="@_legalEntity"/>
 }
 
 @if (_user.RoleNames.Contains("Distribution System Unit Representative")) {

@@ -49,7 +49,6 @@
           Edge="Edge.Start"
           OnClick="e => DrawerToggle()" />
       </MudHidden>
-      <MudHidden Breakpoint="Breakpoint.Xs">
           <svg style="height: 30px" width="368" height="80" viewBox="0 0 368 80" fill="none" xmlns="http://www.w3.org/2000/svg">
           <g clip-path="url(#clip0_601_10)">
           <path d="M180.14 4.82001V74.39H159.95V47.88H135.63V74.39H115.44V4.82001H135.63V31.83H159.95V4.82001H180.14Z" fill="#FFDF0C"/>
@@ -64,11 +63,6 @@
           </clipPath>
           </defs>
           </svg>
-
-      </MudHidden>
-      <MudHidden Breakpoint="Breakpoint.Xs" Invert="true">
-        <MudText Typo="Typo.subtitle2">HELB</MudText>
-      </MudHidden>
       <MudSpacer />
       <MudMenu AnchorOrigin="Origin.CenterLeft" Dense="true" Class="mt-1 ml-4">
         <ActivatorContent>
@@ -115,6 +109,13 @@
 
 @FootScript
 
+@* <style>
+  td{
+    word-break: break-word;
+    min-width: 100px;
+  }
+</style> *@
+
 @code {
     public bool _drawerOpen = true;
     private RenderFragment? HeadMeta { get; set; }
@@ -125,11 +126,11 @@
   // TODO: Make this not be hardcoaded
   public string[] _roles = new string[] {"Administrator", "Distribution System Operator Representative", "Closed Distribution System Representative", "Distribution System Unit Representative"};
   private List<(string url, string name, string icon, List<string> roles)> _allowedSites = new List<(string, string, string, List<string>)>{
-    ("/ozds/app", "Naslovnica", Icons.Material.Outlined.Home,  new List<string>{"Administrator", "Distribution System Operator Representative", "Closed Distribution System Representative", "Distribution System Unit Representative"}),
-    ("/ozds/app/tenants", "Zakupnici", Icons.Material.Outlined.AccountTree, new List<string>{"Closed Distribution System Representative", "Distribution System Operator Representative"}),
+    ("/ozds/app/#", "Naslovnica", Icons.Material.Outlined.Home,  new List<string>{"Administrator", "Distribution System Operator Representative", "Closed Distribution System Representative", "Distribution System Unit Representative"}),
+    ("/ozds/app/tenants", "Korisnici lokacija", Icons.Material.Outlined.AccountTree, new List<string>{"Closed Distribution System Representative", "Distribution System Operator Representative"}),
     ("/ozds/app/invoices", "Računi", Icons.Material.Outlined.Receipt, new List<string>{"Distribution System Operator Representative", "Distribution System Unit Representative"}),
     ("/ozds/app/subusage", "Mjerna mjesta", Icons.Material.Outlined.AttachMoney, new List<string>{"Distribution System Operator Representative", "Closed Distribution System Representative","Closed Distribution System Representative"}),
-    ("/ozds/app/owners", "Vlasnici Podmreža", Icons.Material.Outlined.AccountTree, new List<string>{"Distribution System Operator Representative"}),
+    ("/ozds/app/owners", "Vlasnici Lokacija", Icons.Material.Outlined.AccountTree, new List<string>{"Distribution System Operator Representative"}),
     ("/ozds/admin", "Admin", Icons.Material.Outlined.VerifiedUser, new List<string>{"Administrator"}),
     ("/ozds/login", "Prijava", Icons.Material.Outlined.Login,  new List<string>{"Administrator", "Distribution System Operator Representative", "Closed Distribution System Representative", "Distribution System Unit Representative"}),
   };

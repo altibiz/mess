@@ -41,10 +41,10 @@
             <MudStack>
               <MudDivider DividerType="DividerType.Middle" Class="mt-2"/>
               <MudContainer>
-                @T["Podmreže"].Value: @(dataStruct.data.system.DisplayText)
+                @T["Lokacije"].Value: @(dataStruct.data.system.DisplayText)
               </MudContainer>
               <MudContainer>
-                @T["Zakupnici"].Value: @(dataStruct.data.unit.DisplayText)
+                @T["Korisnk lokacije"].Value: @(dataStruct.data.unit.DisplayText)
               </MudContainer>
             </MudStack>
           </MudCollapse>
@@ -78,9 +78,9 @@
         </MudTextField>
       </ToolBarContent>
       <Columns>
-      <TemplateColumn Title="@T["Mjerna mjesta"].Value"
-          Sortable="false"
-          Filterable="false">
+      <TemplateColumn Title="@T["Mjerna mjesta"].Value" Sortable="false"
+
+           >
             <CellTemplate>
                 <MudStack Row>
                   <MudButton OnClick="() => InspectOMM(context.Item.omm)" Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
@@ -89,9 +89,9 @@
                 </MudStack>
             </CellTemplate>
         </TemplateColumn>
-        <TemplateColumn Title="@T["Podmreže"].Value"
-          Sortable="false"
-          Filterable="false">
+        <TemplateColumn Title="@T["Lokacije"].Value" Sortable="false"
+
+           >
             <CellTemplate>
                 <MudStack Row>
                   <MudButton OnClick="() => InspectSubnet(context.Item.system)" Variant="Variant.Outlined" Color="MudBlazor.Color.Primary">
@@ -100,9 +100,9 @@
                 </MudStack>
             </CellTemplate>
         </TemplateColumn>
-        <TemplateColumn Title="@T["Zakupnici"].Value"
-          Sortable="false"
-          Filterable="false">
+        <TemplateColumn Title="@T["Korisnici lokacije"].Value" Sortable="false"
+
+           >
             <CellTemplate>
                 <MudStack Row>
                   <MudButton OnClick="() => InspectTenant(context.Item.unit)" Variant="Variant.Outlined" Color="MudBlazor.Color.Primary">

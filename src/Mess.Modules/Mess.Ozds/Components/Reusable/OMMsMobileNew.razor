@@ -10,9 +10,9 @@
 @using OrchardCore.Users.Indexes
 
 @inject NavigationManager NavigationManager
-<MudPaper Class="pa-1">
 @* MOBILE *@
   <MudHidden Breakpoint="Breakpoint.MdAndUp">
+    <MudPaper Class="pa-1">
       <MudText Typo="Typo.h4" Class="d-flex justify-center pa-1">
         @T["Brojila"]
       </MudText>
@@ -52,8 +52,8 @@
         </MudStack>
       </MudPaper>
     }
+    </MudPaper>
   </MudHidden>
-</MudPaper>
 
 
 @* DESKTOP *@
@@ -79,9 +79,9 @@
     </MudTextField>
   </ToolBarContent>
   <Columns>
-    <TemplateColumn Title="@T["Brojilo"].Value"
-      Sortable="false"
-      Filterable="false">
+    <TemplateColumn Title="@T["Brojilo"].Value" Sortable="false"
+
+       >
       <CellTemplate>
           <MudStack Row>
             <MudButton OnClick="() => InspectOMM(context.Item.source)" Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
