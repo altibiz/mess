@@ -29,7 +29,7 @@ public abstract class RelationalDbContext : DbContext
   {
     if (_environment.IsDevelopment())
     {
-      optionsBuilder.UseLoggerFactory(LoggerFactory.Create(builder => builder.AddDebug()));
+      optionsBuilder.UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()));
       optionsBuilder.EnableSensitiveDataLogging();
       optionsBuilder.EnableDetailedErrors();
     }
