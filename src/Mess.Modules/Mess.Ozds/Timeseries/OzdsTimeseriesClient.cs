@@ -5,6 +5,7 @@ using Mess.Prelude.Extensions.Objects;
 using Mess.Timeseries.Abstractions.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
+using NpgsqlTypes;
 using Z.EntityFramework.Plus;
 
 namespace Mess.Ozds.Timeseries;
@@ -335,12 +336,12 @@ List<string> sources
         .DeferredLastOrDefault()
         .FutureValue();
 
-      var peakSourceParameter = new NpgsqlParameter("@source", source.ToString());
-      var peakFromDateParameter = new NpgsqlParameter("@fromDate", fromDate.ToString());
-      var peakToDateParameter = new NpgsqlParameter("@toDate", toDate.ToString());
+      var peakSourceParameter = new NpgsqlParameter("source", source);
+      var peakFromDateParameter = new NpgsqlParameter("fromDate", fromDate);
+      var peakToDateParameter = new NpgsqlParameter("toDate", toDate);
       var peakQuery =
        context.PeakPowerQuery
-        .FromSqlRaw(
+        .FromSql(
             string.Format(
               PeakPowerQueryTemplate,
               nameof(OzdsTimeseriesDbContext.AbbMeasurements),
