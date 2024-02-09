@@ -213,12 +213,12 @@ public class OzdsClosedDistributionUnitBillingFactory : IBillingFactory
         ),
         (expenditure, calculation) =>
           new OzdsInvoiceUsageExpenditureData(
-            expenditure.HighEnergyFee + calculation.UsageExpenditure.HighEnergyItem?.Total ?? 0.0M,
-            expenditure.LowEnergyFee + calculation.UsageExpenditure.LowEnergyItem?.Total ?? 0.0M,
-            expenditure.EnergyFee + calculation.UsageExpenditure.EnergyItem?.Total ?? 0.0M,
-            expenditure.ReactiveEnergyFee + calculation.UsageExpenditure.ReactiveEnergyItem?.Total ?? 0.0M,
-            expenditure.MaxPowerFee + calculation.UsageExpenditure.MaxPowerItem?.Total ?? 0.0M,
-            expenditure.IotDeviceFee + calculation.UsageExpenditure.IotDeviceFee?.Total ?? 0.0M,
+            expenditure.HighEnergyFee + (calculation.UsageExpenditure.HighEnergyItem?.Total ?? 0.0M),
+            expenditure.LowEnergyFee + (calculation.UsageExpenditure.LowEnergyItem?.Total ?? 0.0M),
+            expenditure.EnergyFee + (calculation.UsageExpenditure.EnergyItem?.Total ?? 0.0M),
+            expenditure.ReactiveEnergyFee + (calculation.UsageExpenditure.ReactiveEnergyItem?.Total ?? 0.0M),
+            expenditure.MaxPowerFee + (calculation.UsageExpenditure.MaxPowerItem?.Total ?? 0.0M),
+            expenditure.IotDeviceFee + (calculation.UsageExpenditure.IotDeviceFee?.Total ?? 0.0M),
             expenditure.Total + calculation.UsageExpenditure.Total
           )
     );
@@ -233,10 +233,10 @@ public class OzdsClosedDistributionUnitBillingFactory : IBillingFactory
         ),
         (expenditure, calculation) =>
           new OzdsInvoiceSupplyExpenditureData(
-            expenditure.HighEnergyFee + calculation.SupplyExpenditure.HighEnergyItem?.Total ?? 0.0M,
-            expenditure.LowEnergyFee + calculation.SupplyExpenditure.LowEnergyItem?.Total ?? 0.0M,
-            expenditure.RenewableEnergyFee + calculation.SupplyExpenditure.RenewableEnergyFee?.Total ?? 0.0M,
-            expenditure.BusinessUsageFee + calculation.SupplyExpenditure.BusinessUsageFee?.Total ?? 0.0M,
+            expenditure.HighEnergyFee + (calculation.SupplyExpenditure.HighEnergyItem?.Total ?? 0.0M),
+            expenditure.LowEnergyFee + (calculation.SupplyExpenditure.LowEnergyItem?.Total ?? 0.0M),
+            expenditure.RenewableEnergyFee + (calculation.SupplyExpenditure.RenewableEnergyFee?.Total ?? 0.0M),
+            expenditure.BusinessUsageFee + (calculation.SupplyExpenditure.BusinessUsageFee?.Total ?? 0.0M),
             expenditure.Total + calculation.SupplyExpenditure.Total
           )
     );
