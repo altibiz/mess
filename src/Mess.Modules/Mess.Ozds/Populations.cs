@@ -579,16 +579,16 @@ internal static partial class CreateAsyncMigrations
         regulatoryAgencyCatalogue.RegulatoryAgencyCataloguePart,
       regulatoryAgencyCataloguePart =>
       {
-        regulatoryAgencyCataloguePart.BusinessUsageFee = new NumericField
-        {
-          Value = 0.00375M
-        };
-        regulatoryAgencyCataloguePart.RenewableEnergyFee = new NumericField
-        {
-          Value = 0.1050M
-        };
+        regulatoryAgencyCataloguePart.BusinessUsageFee =
+          new NumericField { Value = 0.0005M };
+        regulatoryAgencyCataloguePart.RenewableEnergyFee =
+          new NumericField { Value = 0.013936M };
         regulatoryAgencyCataloguePart.TaxRate =
           new NumericField { Value = 0.13M };
+        regulatoryAgencyCataloguePart.HighEnergyPrice =
+          new NumericField { Value = 0.1M };
+        regulatoryAgencyCataloguePart.LowEnergyPrice =
+          new NumericField { Value = 0.06M };
       }
     );
 

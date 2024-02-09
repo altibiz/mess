@@ -82,14 +82,14 @@
     }
     @if (calculation.UsageExpenditure.IotDeviceFee is { } iotDeviceFee) {
       <tr class="even">
-        <td colspan="5"><strong>Naknada za mjernu uslugu - MU</strong></td>
+        <td colspan="4"><strong>Naknada za mjernu uslugu - MU</strong></td>
         <td>1</td>
         <td>@(iotDeviceFee.UnitPrice)</td>
         <td>@(iotDeviceFee.Total.ToString("F2"))</td>
       </tr>
     }
     <tr class="odd">
-      <td colspan="6"><strong></strong></td>
+      <td colspan="5"></td>
       <td colspan="4">
         <strong>Troškovi korištenja mreže ZDS-a - UKUPNO:</strong>
       </td>
@@ -148,7 +148,7 @@
       }
     }
     <tr class="odd">
-      <td colspan="5"><strong> </strong></td>
+      <td colspan="4"></td>
       <td colspan="5">
         <strong>Troškovi opskrbe električnom energijom - UKUPNO:</strong>
       </td>
@@ -206,11 +206,11 @@
 
   private ItemData[] usageItems => _usageItems ??=
     (new[] {
+      ("MJT", calculation.UsageExpenditure.EnergyItem),
       ("MVT", calculation.UsageExpenditure.HighEnergyItem),
       ("MNT", calculation.UsageExpenditure.LowEnergyItem),
       ("SVT", calculation.UsageExpenditure.MaxPowerItem),
       ("JEN", calculation.UsageExpenditure.ReactiveEnergyItem),
-      ("MU", calculation.UsageExpenditure.IotDeviceFee)
     })
     .Select((i) => i switch {
       (_, null) => null,
@@ -235,8 +235,8 @@
     (new[] {
       ("RVT", calculation.SupplyExpenditure.HighEnergyItem),
       ("RNT", calculation.SupplyExpenditure.LowEnergyItem),
-      ("OIEIK", calculation.SupplyExpenditure.RenewableEnergyFee),
-      ("TRP/TRNP", calculation.SupplyExpenditure.BusinessUsageFee),
+      ("OIE", calculation.SupplyExpenditure.RenewableEnergyFee),
+      ("TRP", calculation.SupplyExpenditure.BusinessUsageFee),
     })
     .Select((i) => i switch {
       (_, null) => null,

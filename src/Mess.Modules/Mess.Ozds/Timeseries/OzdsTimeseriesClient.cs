@@ -30,11 +30,11 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
         from
           "{0}"
         where
-            "{1}" >= {{0}}
+            "{1}" >= {{1}}
           and
-            "{1}" < {{1}}
+            "{1}" < {{2}}
           and
-            "{2}" = {{2}}
+            "{2}" = {{0}}
           window bucket_windows as (
             partition by time_bucket('15 minutes', "{1}")
             order by "{1}"

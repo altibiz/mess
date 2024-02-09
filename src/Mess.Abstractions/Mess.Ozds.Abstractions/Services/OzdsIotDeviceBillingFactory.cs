@@ -210,8 +210,8 @@ public abstract class OzdsIotDeviceBillingFactory<T> : IOzdsIotDeviceBillingFact
       maxPowerPrice == 0.0M
         ? null
         : new OzdsExpenditureItemData(
-          0.0M,
-          0.0M,
+          null,
+          null,
           maxPowerAmount,
           maxPowerPrice,
           maxPowerTotal
@@ -225,8 +225,8 @@ public abstract class OzdsIotDeviceBillingFactory<T> : IOzdsIotDeviceBillingFact
       iotDeviceFeePrice == 0.0M
         ? null
         : new OzdsExpenditureItemData(
-          0.0M,
-          0.0M,
+          null,
+          null,
           iotDeviceFeeAmount,
           iotDeviceFeePrice,
           iotDeviceFeeTotal
