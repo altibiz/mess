@@ -1,17 +1,15 @@
 namespace Mess.Ozds.Abstractions.Billing;
 
 public record OzdsIotDeviceBillingData(
-  decimal HighStartEnergyTotal_kWh,
-  decimal HighEndEnergyTotal_kWh,
-  decimal LowStartEnergyTotal_kWh,
-  decimal LowEndEnergyTotal_kWh,
-  decimal StartEnergyTotal_kWh,
-  decimal EndEnergyTotal_kWh,
-  decimal HighStartReactiveEnergyTotal_kWh,
-  decimal HighEndReactiveEnergyTotal_kWh,
-  decimal LowStartReactiveEnergyTotal_kWh,
-  decimal LowEndReactiveEnergyTotal_kWh,
-  decimal StartReactiveEnergyTotal_kWh,
-  decimal EndReactiveEnergyTotal_kWh,
-  decimal PeakPowerTotal_kW
+  decimal HighStartEnergyImportTotal_kWh,
+  decimal HighEndEnergyImportTotal_kWh,
+  decimal LowStartEnergyImportTotal_kWh,
+  decimal LowEndEnergyImportTotal_kWh,
+  decimal StartEnergyImportTotal_kWh,
+  decimal EndEnergyImportTotal_kWh,
+  decimal StartReactiveEnergyImportTotal_kVARh,
+  decimal EndReactiveEnergyImportTotal_kVARh,
+  decimal StartReactiveEnergyExportTotal_kVARh,
+  decimal EndReactiveEnergyExportTotal_kVARh,
+  decimal PeakPower_kW
 );

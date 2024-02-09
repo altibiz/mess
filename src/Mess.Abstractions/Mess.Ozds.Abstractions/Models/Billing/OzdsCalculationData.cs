@@ -4,33 +4,36 @@ namespace Mess.Ozds.Abstractions.Models;
 
 public record OzdsCalculationData(
   ContentItem IotDevice,
-  ContentItem RegulatoryAgencyCatalogue,
   ContentItem UsageCatalogue,
   ContentItem SupplyCatalogue,
   DateTimeOffset From,
   DateTimeOffset To,
-  OzdsExpenditureData UsageExpenditure,
-  OzdsExpenditureData SupplyExpenditure,
+  OzdsUsageExpenditureData UsageExpenditure,
+  OzdsSupplyExpenditureData SupplyExpenditure,
   decimal Total
 );
 
-public record OzdsExpenditureData(
+public record OzdsUsageExpenditureData(
   OzdsExpenditureItemData? HighEnergyItem,
   OzdsExpenditureItemData? LowEnergyItem,
   OzdsExpenditureItemData? EnergyItem,
-  OzdsExpenditureItemData? HighReactiveEnergyItem,
-  OzdsExpenditureItemData? LowReactiveEnergyItem,
   OzdsExpenditureItemData? ReactiveEnergyItem,
   OzdsExpenditureItemData? MaxPowerItem,
   OzdsExpenditureItemData? IotDeviceFee,
+  decimal Total
+);
+
+public record OzdsSupplyExpenditureData(
+  OzdsExpenditureItemData? HighEnergyItem,
+  OzdsExpenditureItemData? LowEnergyItem,
   OzdsExpenditureItemData? RenewableEnergyFee,
   OzdsExpenditureItemData? BusinessUsageFee,
   decimal Total
 );
 
 public record OzdsExpenditureItemData(
-  decimal ValueFrom,
-  decimal ValueTo,
+  decimal? ValueFrom,
+  decimal? ValueTo,
   decimal Amount,
   decimal UnitPrice,
   decimal Total

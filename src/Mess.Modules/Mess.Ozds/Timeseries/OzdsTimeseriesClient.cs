@@ -222,16 +222,14 @@ List<string> sources
         .GroupBy(measurement => measurement.Milliseconds / (1000 * 60 * 15))
         .Select(
           group =>
-            new
-            {
-              ActivePowerTotal_W = group.Average(
-                measurement => measurement.ActivePowerL1_W
-                  + measurement.ActivePowerL2_W
-                  + measurement.ActivePowerL3_W
-              )
-            }
+          new
+          {
+            ActivePower_W = (group.Last().ActiveEnergyImportTotal_Wh
+              - group.First().ActiveEnergyImportTotal_Wh)
+              * 4M
+          }
         )
-        .OrderByDescending(measurement => measurement.ActivePowerTotal_W)
+        .OrderByDescending(measurement => measurement.ActivePower_W)
         .DeferredFirstOrDefault();
 
       var first = firstQuery.FutureValue().Value;
@@ -248,15 +246,11 @@ List<string> sources
           last.ActiveEnergyImportTotal_Wh / 1000,
           first.ReactiveEnergyImportTotal_VARh / 1000,
           last.ReactiveEnergyImportTotal_VARh / 1000,
-          first.ReactiveEnergyImportTotal_VARh / 1000,
-          last.ReactiveEnergyImportTotal_VARh / 1000,
-          first.ReactiveEnergyImportTotal_VARh / 1000,
-          last.ReactiveEnergyImportTotal_VARh / 1000,
-          peak.ActivePowerTotal_W / 1000
+          first.ReactiveEnergyExportTotal_VARh / 1000,
+          last.ReactiveEnergyExportTotal_VARh / 1000,
+          peak.ActivePower_W / 1000
         )
         : new OzdsIotDeviceBillingData(
-            0,
-            0,
             0,
             0,
             0,
@@ -304,16 +298,14 @@ List<string> sources
         .GroupBy(measurement => measurement.Milliseconds / (1000 * 60 * 15))
         .Select(
           group =>
-            new
-            {
-              ActivePowerTotal_W = group.Average(
-                measurement => measurement.ActivePowerL1_W
-                  + measurement.ActivePowerL2_W
-                  + measurement.ActivePowerL3_W
-              )
-            }
+          new
+          {
+            ActivePower_W = (group.Last().ActiveEnergyImportTotal_Wh
+              - group.First().ActiveEnergyImportTotal_Wh)
+              * 4M
+          }
         )
-        .OrderByDescending(measurement => measurement.ActivePowerTotal_W)
+        .OrderByDescending(measurement => measurement.ActivePower_W)
         .DeferredFirstOrDefault();
 
       var first = await firstQuery.FutureValue().ValueAsync();
@@ -330,15 +322,11 @@ List<string> sources
           last.ActiveEnergyImportTotal_Wh / 1000,
           first.ReactiveEnergyImportTotal_VARh / 1000,
           last.ReactiveEnergyImportTotal_VARh / 1000,
-          first.ReactiveEnergyImportTotal_VARh / 1000,
-          last.ReactiveEnergyImportTotal_VARh / 1000,
-          first.ReactiveEnergyImportTotal_VARh / 1000,
-          last.ReactiveEnergyImportTotal_VARh / 1000,
-          peak.ActivePowerTotal_W / 1000
+          first.ReactiveEnergyExportTotal_VARh / 1000,
+          last.ReactiveEnergyExportTotal_VARh / 1000,
+          peak.ActivePower_W / 1000
         )
         : new OzdsIotDeviceBillingData(
-            0,
-            0,
             0,
             0,
             0,
@@ -455,16 +443,14 @@ List<string> sources
         .GroupBy(measurement => measurement.Milliseconds / (1000 * 60 * 15))
         .Select(
           group =>
-            new
-            {
-              ActivePowerTotal_W = group.Average(
-                measurement => measurement.ActivePowerL1_W
-                  + measurement.ActivePowerL2_W
-                  + measurement.ActivePowerL3_W
-              )
-            }
+          new
+          {
+            ActivePower_W = (group.Last().ActiveEnergyImportTotal_Wh
+              - group.First().ActiveEnergyImportTotal_Wh)
+              * 4M
+          }
         )
-        .OrderByDescending(measurement => measurement.ActivePowerTotal_W)
+        .OrderByDescending(interval => interval.ActivePower_W)
         .DeferredFirstOrDefault();
 
       var first = firstQuery.FutureValue().Value;
@@ -481,15 +467,11 @@ List<string> sources
           last.ActiveEnergyImportTotal_Wh / 1000,
           first.ReactiveEnergyImportTotal_VARh / 1000,
           last.ReactiveEnergyImportTotal_VARh / 1000,
-          first.ReactiveEnergyImportTotal_VARh / 1000,
-          last.ReactiveEnergyImportTotal_VARh / 1000,
-          first.ReactiveEnergyImportTotal_VARh / 1000,
-          last.ReactiveEnergyImportTotal_VARh / 1000,
-          peak.ActivePowerTotal_W / 1000
+          first.ReactiveEnergyExportTotal_VARh / 1000,
+          last.ReactiveEnergyExportTotal_VARh / 1000,
+          peak.ActivePower_W / 1000
         )
         : new OzdsIotDeviceBillingData(
-            0,
-            0,
             0,
             0,
             0,
@@ -534,19 +516,17 @@ List<string> sources
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp > fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
-        .GroupBy(measurement => measurement.Milliseconds / (1000 * 60))
+        .GroupBy(measurement => measurement.Milliseconds / (1000 * 60 * 15))
         .Select(
           group =>
-            new
-            {
-              ActivePowerTotal_W = group.Average(
-                measurement => measurement.ActivePowerL1_W
-                  + measurement.ActivePowerL2_W
-                  + measurement.ActivePowerL3_W
-              )
-            }
+          new
+          {
+            ActivePower_W = (group.Last().ActiveEnergyImportTotal_Wh
+              - group.First().ActiveEnergyImportTotal_Wh)
+              * 4M
+          }
         )
-        .OrderByDescending(measurement => measurement.ActivePowerTotal_W)
+        .OrderByDescending(measurement => measurement.ActivePower_W)
         .DeferredFirstOrDefault();
 
       var first = await firstQuery.FutureValue().ValueAsync();
@@ -563,15 +543,11 @@ List<string> sources
           last.ActiveEnergyImportTotal_Wh / 1000,
           first.ReactiveEnergyImportTotal_VARh / 1000,
           last.ReactiveEnergyImportTotal_VARh / 1000,
-          first.ReactiveEnergyImportTotal_VARh / 1000,
-          last.ReactiveEnergyImportTotal_VARh / 1000,
-          first.ReactiveEnergyImportTotal_VARh / 1000,
-          last.ReactiveEnergyImportTotal_VARh / 1000,
-          peak.ActivePowerTotal_W / 1000
+          first.ReactiveEnergyExportTotal_VARh / 1000,
+          last.ReactiveEnergyExportTotal_VARh / 1000,
+          peak.ActivePower_W / 1000
         )
         : new OzdsIotDeviceBillingData(
-            0,
-            0,
             0,
             0,
             0,

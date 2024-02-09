@@ -211,8 +211,6 @@
 
   private ClosedDistributionSystemItem systemItem => Item.OzdsInvoicePart.Value.Data.ClosedDistributionSystem.AsContent<ClosedDistributionSystemItem>();
 
-  private RegulatoryAgencyCatalogueItem regulatoryAgencyCatalogue => Item.OzdsInvoicePart.Value.Data.RegulatoryAgencyCatalogue.AsContent<RegulatoryAgencyCatalogueItem>();
-
   private record Row(string Number, string Name, decimal Total);
 
   private Row[] usageRows => data is null

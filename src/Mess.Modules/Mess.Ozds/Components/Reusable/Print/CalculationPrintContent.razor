@@ -35,14 +35,13 @@
 </p>
 <table style="margin-top: 0.8rem; width: 100%">
   <colgroup>
-    <col style="width: 7%" />
+    <col style="width: 15%" />
     <col style="width: 8%" />
     <col style="width: 8%" />
     <col style="width: 9%" />
     <col style="width: 10%" />
     <col style="width: 10%" />
     <col style="width: 6%" />
-    <col style="width: 8%" />
     <col style="width: 12%" />
     <col style="width: 8%" />
     <col style="width: 8%" />
@@ -56,7 +55,6 @@
       <th>Stanje od</th>
       <th>Stanje do</th>
       <th>Status</th>
-      <th>Konstanta</th>
       <th>Potrošak (kWh/kW/kVAr)</th>
       <th>Jed.cijena (kn)</th>
       <th>Iznos (kn)</th>
@@ -104,14 +102,13 @@
 </p>
 <table style="margin-top: 0.8rem;">
   <colgroup>
-    <col style="width: 7%" />
+    <col style="width: 15%" />
     <col style="width: 8%" />
     <col style="width: 8%" />
     <col style="width: 9%" />
     <col style="width: 10%" />
     <col style="width: 10%" />
     <col style="width: 5%" />
-    <col style="width: 8%" />
     <col style="width: 12%" />
     <col style="width: 9%" />
     <col style="width: 8%" />
@@ -125,7 +122,6 @@
       <th>Stanje od</th>
       <th>Stanje do</th>
       <th>Status</th>
-      <th>Konstanta</th>
       <th>Potrošak (kWh)</th>
       <th>Jed.cijena (kn)</th>
       <th>Iznos (kn)</th>
@@ -177,8 +173,6 @@
 
   private ClosedDistributionSystemItem systemItem => Item.OzdsInvoicePart.Value.Data.ClosedDistributionSystem.AsContent<ClosedDistributionSystemItem>();
 
-  private RegulatoryAgencyCatalogueItem regulatoryAgencyCatalogue => Item.OzdsInvoicePart.Value.Data.RegulatoryAgencyCatalogue.AsContent<RegulatoryAgencyCatalogueItem>();
-
   private OzdsCalculationData? _calculation;
 
   private OzdsCalculationData calculation => _calculation ??= Item.OzdsCalculationPart.Value.Calculations.FirstOrDefault(calculation => calculation.IotDevice.Content.IotDevicePart.DeviceId.Text == DeviceId) ?? throw new InvalidOperationException($"Device with {DeviceId} doesn't exist");
@@ -189,10 +183,9 @@
 
   private record ItemData(
     string Name,
-    decimal ValueFrom,
-    decimal ValueTo,
+    decimal? ValueFrom,
+    decimal? ValueTo,
     string Status,
-    decimal Constant,
     decimal Amount,
     decimal Price,
     decimal Total
@@ -204,7 +197,6 @@
       <td>@item.ValueFrom</td>
       <td>@item.ValueTo</td>
       <td>@item.Status</td>
-      <td>@item.Constant</td>
       <td>@item.Amount</td>
       <td>@item.Price</td>
       <td>@item.Total.ToString("F2")</td>
@@ -214,11 +206,11 @@
 
   private ItemData[] usageItems => _usageItems ??=
     (new[] {
-      ("RVT - R1", calculation.UsageExpenditure.HighEnergyItem),
-      ("RNT - R2", calculation.UsageExpenditure.LowEnergyItem),
-      ("SVT - S1", calculation.UsageExpenditure.MaxPowerItem),
-      ("JEN - J1", calculation.UsageExpenditure.HighReactiveEnergyItem),
-      ("JEN - J2", calculation.UsageExpenditure.LowReactiveEnergyItem)
+      ("MVT", calculation.UsageExpenditure.HighEnergyItem),
+      ("MNT", calculation.UsageExpenditure.LowEnergyItem),
+      ("SVT", calculation.UsageExpenditure.MaxPowerItem),
+      ("JEN", calculation.UsageExpenditure.ReactiveEnergyItem),
+      ("MU", calculation.UsageExpenditure.IotDeviceFee)
     })
     .Select((i) => i switch {
       (_, null) => null,
@@ -227,8 +219,7 @@
           Name: name,
           ValueFrom: item.ValueFrom,
           ValueTo: item.ValueTo,
-          Status: "O/P",
-          Constant: 0,
+          Status: "O",
           Amount: item.Amount,
           Price: item.UnitPrice,
           Total: item.Total
@@ -254,8 +245,7 @@
           Name: name,
           ValueFrom: item.ValueFrom,
           ValueTo: item.ValueTo,
-          Status: "O/P",
-          Constant: 0,
+          Status: "O",
           Amount: item.Amount,
           Price: item.UnitPrice,
           Total: item.Total
