@@ -222,12 +222,20 @@ List<string> sources
         .GroupBy(measurement => measurement.Milliseconds / (1000 * 60 * 15))
         .Select(
           group =>
-          new
-          {
-            ActivePower_W = (group.Last().ActiveEnergyImportTotal_Wh
-              - group.First().ActiveEnergyImportTotal_Wh)
-              * 4M
-          }
+            new
+            {
+              ActivePower_W = (
+                  group
+                    .OrderBy(measurement => measurement.Timestamp)
+                    .Last()
+                    .ActiveEnergyImportTotal_Wh
+                  - group
+                    .OrderBy(measurement => measurement.Timestamp)
+                    .First()
+                    .ActiveEnergyImportTotal_Wh
+                )
+                * 4M
+            }
         )
         .OrderByDescending(measurement => measurement.ActivePower_W)
         .DeferredFirstOrDefault();
@@ -298,12 +306,20 @@ List<string> sources
         .GroupBy(measurement => measurement.Milliseconds / (1000 * 60 * 15))
         .Select(
           group =>
-          new
-          {
-            ActivePower_W = (group.Last().ActiveEnergyImportTotal_Wh
-              - group.First().ActiveEnergyImportTotal_Wh)
-              * 4M
-          }
+            new
+            {
+              ActivePower_W = (
+                  group
+                    .OrderBy(measurement => measurement.Timestamp)
+                    .Last()
+                    .ActiveEnergyImportTotal_Wh
+                  - group
+                    .OrderBy(measurement => measurement.Timestamp)
+                    .First()
+                    .ActiveEnergyImportTotal_Wh
+                )
+                * 4M
+            }
         )
         .OrderByDescending(measurement => measurement.ActivePower_W)
         .DeferredFirstOrDefault();
@@ -443,12 +459,20 @@ List<string> sources
         .GroupBy(measurement => measurement.Milliseconds / (1000 * 60 * 15))
         .Select(
           group =>
-          new
-          {
-            ActivePower_W = (group.Last().ActiveEnergyImportTotal_Wh
-              - group.First().ActiveEnergyImportTotal_Wh)
-              * 4M
-          }
+            new
+            {
+              ActivePower_W = (
+                  group
+                    .OrderBy(measurement => measurement.Timestamp)
+                    .Last()
+                    .ActiveEnergyImportTotal_Wh
+                  - group
+                    .OrderBy(measurement => measurement.Timestamp)
+                    .First()
+                    .ActiveEnergyImportTotal_Wh
+                )
+                * 4M
+            }
         )
         .OrderByDescending(interval => interval.ActivePower_W)
         .DeferredFirstOrDefault();
@@ -519,12 +543,20 @@ List<string> sources
         .GroupBy(measurement => measurement.Milliseconds / (1000 * 60 * 15))
         .Select(
           group =>
-          new
-          {
-            ActivePower_W = (group.Last().ActiveEnergyImportTotal_Wh
-              - group.First().ActiveEnergyImportTotal_Wh)
-              * 4M
-          }
+            new
+            {
+              ActivePower_W = (
+                  group
+                    .OrderBy(measurement => measurement.Timestamp)
+                    .Last()
+                    .ActiveEnergyImportTotal_Wh
+                  - group
+                    .OrderBy(measurement => measurement.Timestamp)
+                    .First()
+                    .ActiveEnergyImportTotal_Wh
+                )
+                * 4M
+            }
         )
         .OrderByDescending(measurement => measurement.ActivePower_W)
         .DeferredFirstOrDefault();
