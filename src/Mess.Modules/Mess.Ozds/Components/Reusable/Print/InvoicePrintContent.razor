@@ -109,13 +109,13 @@
       <tr>
         <td style="text-align: center; padding-left: 1.2rem;">@(row.Number)</td>
         <td>@(row.Name)</td>
-        <td style="text-align: end;">@(row.Total)</td>
+        <td style="text-align: end;">@(row.Total.ToString("F2"))</td>
       </tr>
     }
     <tr>
       <td></td>
       <td style="text-align: end;">Naknada za korištenje mreže - UKUPNO</td>
-      <td style="text-align: end;"><strong>@(data.UsageExpenditure.Total)</strong></td>
+      <td style="text-align: end;"><strong>@(data.UsageExpenditure.Total.ToString("F2"))</strong></td>
     </tr>
     <tr>
       <td style="text-align: center;">2.)</td>
@@ -126,13 +126,13 @@
       <tr>
         <td style="text-align: center; padding-left: 1.2rem;">@(row.Number)</td>
         <td>@(row.Name)</td>
-        <td style="text-align: end;">@(row.Total)</td>
+        <td style="text-align: end;">@(row.Total.ToString("F2"))</td>
       </tr>
     }
     <tr>
       <td></td>
       <td style="text-align: end;">Naknada za opskrbu – UKUPNO</td>
-      <td style="text-align: end;"><strong>@(data.SupplyExpenditure.Total)</strong></td>
+      <td style="text-align: end;"><strong>@(data.SupplyExpenditure.Total.ToString("F2"))</strong></td>
     </tr>
   </tbody>
 </table>
@@ -144,17 +144,17 @@
   <thead>
     <tr>
       <th style="text-align: right;">UKUPNO:</th>
-      <th style="text-align: right;">@(Item.OzdsInvoicePart.Value.Data.Total)</th>
+      <th style="text-align: right;">@(Item.OzdsInvoicePart.Value.Data.Total.ToString("F2"))</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td style="text-align: right;">PDV (13%):</td>
-      <td style="text-align: right;">@(Item.OzdsInvoicePart.Value.Data.Tax)</td>
+      <td style="text-align: right;">@(Item.OzdsInvoicePart.Value.Data.Tax.ToString("F2"))</td>
     </tr>
     <tr>
       <td style="text-align: right;"><strong>SVEUKUPNI IZNOS:</strong></td>
-      <td style="text-align: right;">@(Item.OzdsInvoicePart.Value.Data.TotalWithTax)</td>
+      <td style="text-align: right;">@(Item.OzdsInvoicePart.Value.Data.TotalWithTax.ToString("F2"))</td>
     </tr>
   </tbody>
 </table>
@@ -220,7 +220,7 @@
         new Row(
           "1.1.)",
           "Korištenje mreže u doba jedne dnevne tarife",
-          data.UsageExpenditure.HighEnergyFee
+          data.UsageExpenditure.EnergyFee
         ),
         new Row(
           "1.2.)",
