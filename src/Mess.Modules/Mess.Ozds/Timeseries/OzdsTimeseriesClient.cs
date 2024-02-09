@@ -17,6 +17,8 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
     _services = services;
   }
 
+  private record PeakPowerQueryResult(decimal ActivePower_W);
+
   public void AddAbbMeasurement(AbbMeasurement model)
   {
     _services.WithTimeseriesDbContext<OzdsTimeseriesDbContext>(context =>
@@ -222,20 +224,19 @@ List<string> sources
         .GroupBy(measurement => measurement.Milliseconds / (1000 * 60 * 15))
         .Select(
           group =>
-            new
-            {
-              ActivePower_W = (
-                  group
-                    .OrderBy(measurement => measurement.Timestamp)
-                    .Last()
-                    .ActiveEnergyImportTotal_Wh
-                  - group
-                    .OrderBy(measurement => measurement.Timestamp)
-                    .First()
-                    .ActiveEnergyImportTotal_Wh
-                )
-                * 4M
-            }
+            new PeakPowerQueryResult(
+              (
+                group
+                  .OrderBy(measurement => measurement.Timestamp)
+                  .Last()
+                  .ActiveEnergyImportTotal_Wh
+                - group
+                  .OrderBy(measurement => measurement.Timestamp)
+                  .First()
+                  .ActiveEnergyImportTotal_Wh
+              )
+              * 4M
+            )
         )
         .OrderByDescending(measurement => measurement.ActivePower_W)
         .DeferredFirstOrDefault();
@@ -306,9 +307,8 @@ List<string> sources
         .GroupBy(measurement => measurement.Milliseconds / (1000 * 60 * 15))
         .Select(
           group =>
-            new
-            {
-              ActivePower_W = (
+            new PeakPowerQueryResult(
+              (
                   group
                     .OrderBy(measurement => measurement.Timestamp)
                     .Last()
@@ -319,7 +319,7 @@ List<string> sources
                     .ActiveEnergyImportTotal_Wh
                 )
                 * 4M
-            }
+            )
         )
         .OrderByDescending(measurement => measurement.ActivePower_W)
         .DeferredFirstOrDefault();
@@ -459,20 +459,19 @@ List<string> sources
         .GroupBy(measurement => measurement.Milliseconds / (1000 * 60 * 15))
         .Select(
           group =>
-            new
-            {
-              ActivePower_W = (
-                  group
-                    .OrderBy(measurement => measurement.Timestamp)
-                    .Last()
-                    .ActiveEnergyImportTotal_Wh
-                  - group
-                    .OrderBy(measurement => measurement.Timestamp)
-                    .First()
-                    .ActiveEnergyImportTotal_Wh
-                )
-                * 4M
-            }
+            new PeakPowerQueryResult(
+              (
+                group
+                  .OrderBy(measurement => measurement.Timestamp)
+                  .Last()
+                  .ActiveEnergyImportTotal_Wh
+                - group
+                  .OrderBy(measurement => measurement.Timestamp)
+                  .First()
+                  .ActiveEnergyImportTotal_Wh
+              )
+              * 4M
+            )
         )
         .OrderByDescending(interval => interval.ActivePower_W)
         .DeferredFirstOrDefault();
@@ -543,20 +542,19 @@ List<string> sources
         .GroupBy(measurement => measurement.Milliseconds / (1000 * 60 * 15))
         .Select(
           group =>
-            new
-            {
-              ActivePower_W = (
-                  group
-                    .OrderBy(measurement => measurement.Timestamp)
-                    .Last()
-                    .ActiveEnergyImportTotal_Wh
-                  - group
-                    .OrderBy(measurement => measurement.Timestamp)
-                    .First()
-                    .ActiveEnergyImportTotal_Wh
-                )
-                * 4M
-            }
+            new PeakPowerQueryResult(
+              (
+                group
+                  .OrderBy(measurement => measurement.Timestamp)
+                  .Last()
+                  .ActiveEnergyImportTotal_Wh
+                - group
+                  .OrderBy(measurement => measurement.Timestamp)
+                  .First()
+                  .ActiveEnergyImportTotal_Wh
+              )
+              * 4M
+            )
         )
         .OrderByDescending(measurement => measurement.ActivePower_W)
         .DeferredFirstOrDefault();
