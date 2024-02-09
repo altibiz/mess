@@ -1,9 +1,10 @@
-using DocumentFormat.OpenXml.InkML;
 using FlexLabs.EntityFrameworkCore.Upsert;
 using Mess.Ozds.Abstractions.Billing;
 using Mess.Ozds.Abstractions.Timeseries;
+using Mess.Prelude.Extensions.Objects;
 using Mess.Timeseries.Abstractions.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using Z.EntityFramework.Plus;
 
 namespace Mess.Ozds.Timeseries;
@@ -17,7 +18,42 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
     _services = services;
   }
 
-  private record PeakPowerQueryResult(decimal ActivePower_W);
+  private const string PeakPowerQueryTemplate = """
+    with
+      buckets as (
+        select
+          time_bucket('15 minutes', "{1}") as interval,
+          "{3}",
+          first_value("{3}") over bucket_windows as first_value,
+          last_value("{3}") over bucket_windows as last_value
+        from
+          "{0}"
+        where
+            "{1}" >= @fromDate
+          and
+            "{1}" < @toDate
+          and
+            "{2}" = @source
+          window bucket_windows as (
+            partition by time_bucket('15 minutes', "{1}")
+            order by "{1}"
+            range between unbounded preceding and unbounded following
+          )
+      ),
+      calculation as (
+        select
+          (last_value - first_value) * 4 as power
+        from
+          buckets
+      )
+    select
+      power as "ActivePower_W"
+    from
+      calculation
+    order by
+      power desc
+    limit 1
+  """;
 
   public void AddAbbMeasurement(AbbMeasurement model)
   {
@@ -208,42 +244,39 @@ List<string> sources
         .Where(measurement => measurement.Timestamp > fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
         .OrderBy(measurement => measurement.Timestamp)
-        .DeferredFirstOrDefault();
+        .DeferredFirstOrDefault()
+        .FutureValue();
 
       var lastQuery = context.AbbMeasurements
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp > fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
         .OrderBy(measurement => measurement.Timestamp)
-        .DeferredLastOrDefault();
+        .DeferredLastOrDefault()
+        .FutureValue();
 
-      var peakQuery = context.AbbMeasurements
-        .Where(measurement => measurement.Source == source)
-        .Where(measurement => measurement.Timestamp > fromDate)
-        .Where(measurement => measurement.Timestamp < toDate)
-        .GroupBy(measurement => measurement.Milliseconds / (1000 * 60 * 15))
-        .Select(
-          group =>
-            new PeakPowerQueryResult(
-              (
-                group
-                  .OrderBy(measurement => measurement.Timestamp)
-                  .Last()
-                  .ActiveEnergyImportTotal_Wh
-                - group
-                  .OrderBy(measurement => measurement.Timestamp)
-                  .First()
-                  .ActiveEnergyImportTotal_Wh
-              )
-              * 4M
-            )
+      var peakSourceParameter = new NpgsqlParameter("@source", source);
+      var peakFromDateParameter = new NpgsqlParameter("@fromDate", fromDate);
+      var peakToDateParameter = new NpgsqlParameter("@toDate", toDate);
+      var peakQuery =
+       context.PeakPowerQuery
+        .FromSqlRaw(
+            string.Format(
+              PeakPowerQueryTemplate,
+              nameof(OzdsTimeseriesDbContext.AbbMeasurements),
+              nameof(AbbMeasurementEntity.Timestamp),
+              nameof(AbbMeasurementEntity.Source),
+              nameof(AbbMeasurementEntity.ActiveEnergyImportTotal_Wh)
+            ),
+            peakSourceParameter,
+            peakFromDateParameter,
+            peakToDateParameter
         )
-        .OrderByDescending(measurement => measurement.ActivePower_W)
-        .DeferredFirstOrDefault();
+        .Future();
 
-      var first = firstQuery.FutureValue().Value;
-      var last = lastQuery.FutureValue().Value;
-      var peak = peakQuery.FutureValue().Value;
+      var first = firstQuery.Value;
+      var last = lastQuery.Value;
+      var peak = peakQuery.ToList().FirstOrDefault();
 
       return first is { } && last is { } && peak is { }
         ? new OzdsIotDeviceBillingData(
@@ -291,42 +324,39 @@ List<string> sources
         .Where(measurement => measurement.Timestamp > fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
         .OrderBy(measurement => measurement.Timestamp)
-        .DeferredFirstOrDefault();
+        .DeferredFirstOrDefault()
+        .FutureValue();
 
       var lastQuery = context.AbbMeasurements
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp > fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
         .OrderBy(measurement => measurement.Timestamp)
-        .DeferredLastOrDefault();
+        .DeferredLastOrDefault()
+        .FutureValue();
 
-      var peakQuery = context.AbbMeasurements
-        .Where(measurement => measurement.Source == source)
-        .Where(measurement => measurement.Timestamp > fromDate)
-        .Where(measurement => measurement.Timestamp < toDate)
-        .GroupBy(measurement => measurement.Milliseconds / (1000 * 60 * 15))
-        .Select(
-          group =>
-            new PeakPowerQueryResult(
-              (
-                  group
-                    .OrderBy(measurement => measurement.Timestamp)
-                    .Last()
-                    .ActiveEnergyImportTotal_Wh
-                  - group
-                    .OrderBy(measurement => measurement.Timestamp)
-                    .First()
-                    .ActiveEnergyImportTotal_Wh
-                )
-                * 4M
-            )
+      var peakSourceParameter = new NpgsqlParameter("@source", source.ToString());
+      var peakFromDateParameter = new NpgsqlParameter("@fromDate", fromDate.ToString());
+      var peakToDateParameter = new NpgsqlParameter("@toDate", toDate.ToString());
+      var peakQuery =
+       context.PeakPowerQuery
+        .FromSqlRaw(
+            string.Format(
+              PeakPowerQueryTemplate,
+              nameof(OzdsTimeseriesDbContext.AbbMeasurements),
+              nameof(AbbMeasurementEntity.Timestamp),
+              nameof(AbbMeasurementEntity.Source),
+              nameof(AbbMeasurementEntity.ActiveEnergyImportTotal_Wh)
+            ),
+            peakSourceParameter,
+            peakFromDateParameter,
+            peakToDateParameter
         )
-        .OrderByDescending(measurement => measurement.ActivePower_W)
-        .DeferredFirstOrDefault();
+        .Future();
 
-      var first = await firstQuery.FutureValue().ValueAsync();
-      var last = await lastQuery.FutureValue().ValueAsync();
-      var peak = await peakQuery.FutureValue().ValueAsync();
+      var first = await firstQuery.ValueAsync();
+      var last = await lastQuery.ValueAsync();
+      var peak = (await peakQuery.ToListAsync()).FirstOrDefault();
 
       return first is { } && last is { } && peak is { }
         ? new OzdsIotDeviceBillingData(
@@ -443,42 +473,41 @@ List<string> sources
         .Where(measurement => measurement.Timestamp > fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
         .OrderBy(measurement => measurement.Timestamp)
-        .DeferredFirstOrDefault();
+        .DeferredFirstOrDefault()
+        .FutureValue();
 
       var lastQuery = context.SchneiderMeasurements
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp > fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
         .OrderBy(measurement => measurement.Timestamp)
-        .DeferredLastOrDefault();
+        .DeferredLastOrDefault()
+        .FutureValue();
 
-      var peakQuery = context.SchneiderMeasurements
-        .Where(measurement => measurement.Source == source)
-        .Where(measurement => measurement.Timestamp > fromDate)
-        .Where(measurement => measurement.Timestamp < toDate)
-        .GroupBy(measurement => measurement.Milliseconds / (1000 * 60 * 15))
-        .Select(
-          group =>
-            new PeakPowerQueryResult(
-              (
-                group
-                  .OrderBy(measurement => measurement.Timestamp)
-                  .Last()
-                  .ActiveEnergyImportTotal_Wh
-                - group
-                  .OrderBy(measurement => measurement.Timestamp)
-                  .First()
-                  .ActiveEnergyImportTotal_Wh
-              )
-              * 4M
-            )
+      var peakSourceParameter = new NpgsqlParameter("source", source);
+      var peakFromDateParameter = new NpgsqlParameter("fromDate", fromDate);
+      var peakToDateParameter = new NpgsqlParameter("toDate", toDate);
+      var peakQuery =
+       context.PeakPowerQuery
+        .FromSqlRaw(
+            string.Format(
+              PeakPowerQueryTemplate,
+              nameof(OzdsTimeseriesDbContext.SchneiderMeasurements),
+              nameof(SchneiderMeasurementEntity.Timestamp),
+              nameof(SchneiderMeasurementEntity.Source),
+              nameof(SchneiderMeasurementEntity.ActiveEnergyImportTotal_Wh)
+            ),
+            new[] {
+              peakSourceParameter,
+              peakFromDateParameter,
+              peakToDateParameter
+            }
         )
-        .OrderByDescending(interval => interval.ActivePower_W)
-        .DeferredFirstOrDefault();
+        .Future();
 
-      var first = firstQuery.FutureValue().Value;
-      var last = lastQuery.FutureValue().Value;
-      var peak = peakQuery.FutureValue().Value;
+      var first = firstQuery.Value;
+      var last = lastQuery.Value;
+      var peak = peakQuery.ToList().FirstOrDefault();
 
       return first is { } && last is { } && peak is { }
         ? new OzdsIotDeviceBillingData(
@@ -526,42 +555,41 @@ List<string> sources
         .Where(measurement => measurement.Timestamp > fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
         .OrderBy(measurement => measurement.Timestamp)
-        .DeferredFirstOrDefault();
+        .DeferredFirstOrDefault()
+        .FutureValue();
 
       var lastQuery = context.SchneiderMeasurements
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp > fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
         .OrderBy(measurement => measurement.Timestamp)
-        .DeferredLastOrDefault();
+        .DeferredLastOrDefault()
+        .FutureValue();
 
-      var peakQuery = context.SchneiderMeasurements
-        .Where(measurement => measurement.Source == source)
-        .Where(measurement => measurement.Timestamp > fromDate)
-        .Where(measurement => measurement.Timestamp < toDate)
-        .GroupBy(measurement => measurement.Milliseconds / (1000 * 60 * 15))
-        .Select(
-          group =>
-            new PeakPowerQueryResult(
-              (
-                group
-                  .OrderBy(measurement => measurement.Timestamp)
-                  .Last()
-                  .ActiveEnergyImportTotal_Wh
-                - group
-                  .OrderBy(measurement => measurement.Timestamp)
-                  .First()
-                  .ActiveEnergyImportTotal_Wh
-              )
-              * 4M
-            )
+      var peakSourceParameter = new NpgsqlParameter("source", source);
+      var peakFromDateParameter = new NpgsqlParameter("fromDate", fromDate);
+      var peakToDateParameter = new NpgsqlParameter("toDate", toDate);
+      var peakQuery =
+       context.PeakPowerQuery
+        .FromSqlRaw(
+            string.Format(
+              PeakPowerQueryTemplate,
+              nameof(OzdsTimeseriesDbContext.SchneiderMeasurements),
+              nameof(SchneiderMeasurementEntity.Timestamp),
+              nameof(SchneiderMeasurementEntity.Source),
+              nameof(SchneiderMeasurementEntity.ActiveEnergyImportTotal_Wh)
+            ),
+            new[] {
+              peakSourceParameter,
+              peakFromDateParameter,
+              peakToDateParameter
+            }
         )
-        .OrderByDescending(measurement => measurement.ActivePower_W)
-        .DeferredFirstOrDefault();
+        .Future();
 
-      var first = await firstQuery.FutureValue().ValueAsync();
-      var last = await lastQuery.FutureValue().ValueAsync();
-      var peak = await peakQuery.FutureValue().ValueAsync();
+      var first = await firstQuery.ValueAsync();
+      var last = await lastQuery.ValueAsync();
+      var peak = (await peakQuery.ToListAsync()).FirstOrDefault();
 
       return first is { } && last is { } && peak is { }
         ? new OzdsIotDeviceBillingData(
