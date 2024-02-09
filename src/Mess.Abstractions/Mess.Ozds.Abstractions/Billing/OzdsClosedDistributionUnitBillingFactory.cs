@@ -245,7 +245,7 @@ public class OzdsClosedDistributionUnitBillingFactory : IBillingFactory
     var total = usageExpenditure.Total + supplyExpenditure.Total;
     // TODO: from catalogue
     var taxRate = 0.13M;
-    var tax = total * taxRate;
+    var tax = Math.Round(total * taxRate, 2);
     var totalWithTax = total + tax;
 
     return new OzdsInvoiceData(
