@@ -17,10 +17,14 @@ public interface IOzdsTimeseriesQuery
   );
 
   public Task<(decimal? First, decimal? Last, DateTimeOffset FirstDate)> GetAbbLastMonthMeasurementsAsync(
-    string source
+    string source,
+    DateTimeOffset startDate,
+    DateTimeOffset endDate
   );
   public Task<(decimal? First, decimal? Last, DateTimeOffset FirstDate)> GetSchneiderLastMonthMeasurementsAsync(
-    string source
+    string source,
+    DateTimeOffset startDate,
+    DateTimeOffset endDate
   );
   public Task<IReadOnlyList<AbbMeasurement>> GetLastAbbMeasurementsBySourcesAsync(
     List<string> sources

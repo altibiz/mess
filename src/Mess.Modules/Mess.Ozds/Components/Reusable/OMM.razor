@@ -60,7 +60,7 @@
         <MudItem xs="12" Class="pa-1">
             <MudPaper Class="d-flex align-center justify-start mud-width-full pa-1 flex-column">
               <MudItem Class="d-flex justify-center align-center" Style="font-size: large; font-weight: bold;">
-                @(T["Potrošnja od"].Value + ": " + Source)
+                @(T["Trenutna snaga"].Value + ": " + Source)
               </MudItem>
         <MudContainer MaxWidth="MaxWidth.Small">
                 <ApexChart TItem="Order"
@@ -174,7 +174,7 @@
         <MudItem xs="6">
             <MudPaper Class="d-flex align-center justify-start mud-width-full py-8 px-8 flex-column" Height="450px">
               <MudItem Class="d-flex" Style="font-size: large; font-weight: bold;">
-                @(T["Potrošnja od"].Value + ": " + Source)
+                @(T["Trenutna snaga"].Value + ": " + Source)
               </MudItem>
         <MudContainer MaxWidth="MaxWidth.Small">
                 <ApexChart TItem="Order"
@@ -255,10 +255,12 @@
     public IEnumerable<ChartData>? _lastDay;
     public IEnumerable<ChartData>? _graphValues;
     private (decimal? First, decimal? Last, DateTimeOffset FirstDate) _startEnd;
+    private (decimal? First, decimal? Last, DateTimeOffset FirstDate) _startEndLastMonth;
     public record ChartData(decimal? L1, decimal? L2, decimal? L3, DateTimeOffset date);
     public record struct TabularData(int year, int month, decimal? monthStartTotal, decimal? monthEndTotal);
     private int _month = -1;
     private int _year = -1;
+    private DateTimeOffset nowMonth = DateTimeOffset.UtcNow.AddDays(-DateTimeOffset.UtcNow.Day);
     private ApexChart<ChartData> chart = default!;
     private Timer? timer;
     private bool timerInitialized;
@@ -267,8 +269,12 @@
     public decimal? valueMax = 100000;
     public decimal? percent = 50;
 
-    public Order(decimal? val){
+    public Order(decimal? val, decimal? max){
       value = val;
+      valueMax = max;
+      if(valueMax <= 0){
+        valueMax = 100000;
+      }
       percent = (value / valueMax) * 100;
     }
   }
@@ -337,27 +343,32 @@
             };
       options.PlotOptions = new PlotOptions { RadialBar = new PlotOptionsRadialBar { StartAngle = -90, EndAngle = 90 } };
       _startEnd = new();
-      // if(Source.StartsWith("abb"))
-      //  _startEnd = await _timeseriesClient.GetAbbLastMonthMeasurementsAsync(Source);
-      // else
-      //   _startEnd = await _timeseriesClient.GetSchneiderLastMonthMeasurementsAsync(Source);
+      _startEndLastMonth = new();
+       if(Source.StartsWith("abb")){
+        _startEnd = await _timeseriesClient.GetAbbLastMonthMeasurementsAsync(Source, nowMonth, DateTime.UtcNow);
+        _startEndLastMonth = await _timeseriesClient.GetAbbLastMonthMeasurementsAsync(Source, nowMonth.AddMonths(-1), nowMonth);
+       }
+       else{
+         _startEnd = await _timeseriesClient.GetSchneiderLastMonthMeasurementsAsync(Source, nowMonth, DateTime.UtcNow);
+        _startEndLastMonth = await _timeseriesClient.GetSchneiderLastMonthMeasurementsAsync(Source, nowMonth.AddMonths(-1), nowMonth);
+       }
 
       if(_startEnd.First != null && _startEnd.Last != null){
         _month = _startEnd.FirstDate.Month;
         _year = _startEnd.FirstDate.Year;
-        _dataStruct.Add(new TabularData(_year, _month, _startEnd.First, _startEnd.Last));
-        _shownOMMs.Add(new ExpandThing{data = new (_year, _month, _startEnd.First, _startEnd.Last), show = true, expand = false});
+        _dataStruct.Add(new TabularData(_year, _month, _startEnd.First/ 1000, _startEnd.Last/ 1000));
+        _shownOMMs.Add(new ExpandThing{data = new (_year, _month, _startEnd.First/ 1000, _startEnd.Last/ 1000), show = true, expand = false});
       }
       if(Source.StartsWith("abb")){
-        var a = await _timeseriesClient.GetAbbMeasurementsAsync(Source, DateTimeOffset.UtcNow.AddMinutes(-1), DateTimeOffset.UtcNow);
+        var a = await _timeseriesClient.GetAbbMeasurementsAsync(Source, DateTimeOffset.UtcNow.AddHours(-24), DateTimeOffset.UtcNow);
         _lastDay = a.Select(x => new ChartData(x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.Timestamp)).ToList();
       }
       else{
-        var a = await _timeseriesClient.GetSchneiderMeasurementsAsync(Source, DateTimeOffset.UtcNow.AddMinutes(-1), DateTimeOffset.UtcNow);
+        var a = await _timeseriesClient.GetSchneiderMeasurementsAsync(Source, DateTimeOffset.UtcNow.AddHours(-24), DateTimeOffset.UtcNow);
         _lastDay = a.Select(x => new ChartData(x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.Timestamp)).ToList();
       }
       _graphValues = _lastDay.TakeLast(20);
-      orders.Add(new Order(_startEnd.First));
+      orders.Add(new Order(_startEnd.First / 1000, _startEndLastMonth.First / 1000));
     }
 
   private async Task MenuItemClicked(string item)

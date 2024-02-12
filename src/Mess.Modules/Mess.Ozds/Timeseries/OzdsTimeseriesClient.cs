@@ -85,7 +85,9 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
   }
 
   public async Task<(decimal? First, decimal? Last, DateTimeOffset FirstDate)> GetAbbLastMonthMeasurementsAsync(
-    string source
+    string source,
+    DateTimeOffset startDate,
+    DateTimeOffset endDate
   )
   {
     return await _services.WithTimeseriesDbContextAsync<
@@ -96,6 +98,8 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
       AbbMeasurement? first = null;
       var query = context.AbbMeasurements
         .Where(measurement => measurement.Source == source)
+        .Where(measurement => measurement.Timestamp > startDate)
+        .Where(measurement => measurement.Timestamp < endDate)
         .OrderBy(measurement => measurement.Timestamp)
         .Select(measurement => measurement.ToModel());
       var last = await query
@@ -105,7 +109,8 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
       {
         first = await context.AbbMeasurements
           .Where(measurement => measurement.Source == source)
-          .Where(measurement => measurement.Timestamp.Month == last.Timestamp.Month)
+          .Where(measurement => measurement.Timestamp > startDate)
+          .Where(measurement => measurement.Timestamp < endDate)
           .OrderByDescending(measurement => measurement.Timestamp)
           .Select(measurement => measurement.ToModel())
           .FirstOrDefaultAsync();
@@ -122,7 +127,9 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
   }
 
   public async Task<(decimal? First, decimal? Last, DateTimeOffset FirstDate)> GetSchneiderLastMonthMeasurementsAsync(
-      string source
+      string source,
+    DateTimeOffset startDate,
+    DateTimeOffset endDate
     )
   {
     return await _services.WithTimeseriesDbContextAsync<
@@ -133,6 +140,8 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
       SchneiderMeasurement? first = null;
       var query = context.SchneiderMeasurements
         .Where(measurement => measurement.Source == source)
+        .Where(measurement => measurement.Timestamp > startDate)
+        .Where(measurement => measurement.Timestamp < endDate)
         .OrderBy(measurement => measurement.Timestamp)
         .Select(measurement => measurement.ToModel());
       var last = await query
@@ -142,7 +151,8 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
       {
         first = await context.SchneiderMeasurements
           .Where(measurement => measurement.Source == source)
-          .Where(measurement => measurement.Timestamp.Month == last.Timestamp.Month)
+        .Where(measurement => measurement.Timestamp > startDate)
+        .Where(measurement => measurement.Timestamp < endDate)
           .OrderByDescending(measurement => measurement.Timestamp)
           .Select(measurement => measurement.ToModel())
           .FirstOrDefaultAsync();

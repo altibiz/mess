@@ -10,6 +10,7 @@
 @using OrchardCore.Users.Indexes
 
 @inject NavigationManager NavigationManager
+@inject IOzdsTimeseriesClient _timeseriesClient
 
 
 @* MOBILE *@
@@ -24,13 +25,16 @@
         <MudStack Spacing="0">
           <MudGrid Class="d-flex pa-2">
             <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large;">
-              @T["Mjerna mjesta"].Value: @dataStruct.data.omm.DisplayText
+              @T["Mjerna mjesta"].Value: <br> @dataStruct.data.omm.DisplayText
             </MudItem>
             <MudItem xs="2" Class="d-flex align-center justify-end">
               <MudIconButton OnClick="() => InspectOMM(dataStruct.data.omm)" Icon="@Icons.Material.Filled.RemoveRedEye" Color="MudBlazor.Color.Primary"/>
             </MudItem>
             <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large; font-weight: bold;">
-              @T["Ukupna potrošnja"].Value: @dataStruct.data.lastMeasurement kWh
+              @T["Potrošnja zadnjih 30 dana"].Value: <br> @dataStruct.data.lastMonthUsage kWh
+            </MudItem>
+            <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large; font-weight: bold;">
+              @T["Zadnji obracun"].Value: <br> @dataStruct.data.lastTotal €
             </MudItem>
               <MudItem xs="2" Class="d-flex align-center justify-end">
                 <MudIconButton OnClick="() => OnExpandCollapseClick(dataStruct.data.omm.ContentItemId)" Icon="@(dataStruct.expand ? Icons.Material.Filled.KeyboardArrowUp : Icons.Material.Filled.KeyboardArrowDown)" Color="MudBlazor.Color.Default"/>
@@ -100,8 +104,7 @@
                 </MudStack>
             </CellTemplate>
         </TemplateColumn>
-        <TemplateColumn Title="@T["Korisnici lokacije"].Value" Sortable="false"
-
+        <TemplateColumn Title="@T["Korisnici mreže"].Value" Sortable="false"
            >
             <CellTemplate>
                 <MudStack Row>
@@ -113,8 +116,20 @@
         </TemplateColumn>
         <PropertyColumn
           CellStyle="font-size: x-large;"
-          Property="x => x.lastMeasurement"
-          Title='@T["Ukupna potrošnja"].Value' />
+          Property="x => x.lastMonthUsage"
+          Title='@T["Potrošnja zadnjih 30 dana"].Value' >
+            <CellTemplate>
+                @(context.Item.lastMonthUsage + " kWh")
+            </CellTemplate>
+        </PropertyColumn>
+        <PropertyColumn
+          CellStyle="font-size: x-large;"
+          Property="x => x.lastTotal"
+          Title='@T["Zadnji obracun"].Value' >
+          <CellTemplate>
+              @(context.Item.lastTotal + " €")
+          </CellTemplate>
+      </PropertyColumn>
       </Columns>
       <PagerContent>
         <MudDataGridPager T="TabularData" />
@@ -132,47 +147,82 @@
     private IReadOnlyList<AbbMeasurement>? _lastAbbMeasurements;
     private IReadOnlyList<SchneiderMeasurement>? _lastSchneiderMeasurements;
     private IEnumerable<ContentItem>? _ioTDevices;
+    private List<(decimal total, string source)> _totalPerOMM = new();
     private List<(string, decimal?)> _lastTotalPerOMM = new List<(string, decimal?)>();
-    public record struct TabularData(ContentItem omm, ContentItem system, ContentItem unit, decimal? lastMeasurement);
+    private (decimal? First, decimal? Last, DateTimeOffset FirstDate) _startEnd;
+    public record struct TabularData(ContentItem omm, ContentItem system, ContentItem unit, decimal? lastMonthUsage, decimal? lastTotal);
     protected override async Task OnInitializedAsync()
     {
-      await WithTransientSessionAsync(async session => {
-        if(LegalEntity.ContentType == "ClosedDistributionSystem"){
-          _ioTDevices = await session
-            .Query<ContentItem, OzdsIotDeviceIndex>()
-            .Where(index => index.ClosedDistributionSystemContentItemId == LegalEntity.ContentItemId)
-            .Where(index => !index.IsMessenger)
-            .ListAsync();
-          _systems = await session
-            .Query<ContentItem, ClosedDistributionSystemIndex>()
-            .Where(index => index.ClosedDistributionSystemContentItemId == LegalEntity.ContentItemId)
-            .ListAsync();
-          _units = await session
-            .Query<ContentItem, DistributionSystemUnitIndex>()
-            .Where(index => index.ClosedDistributionSystemContentItemId == LegalEntity.ContentItemId)
-            .ListAsync();
-        }
-        else{
-          _ioTDevices = await session
-            .Query<ContentItem, OzdsIotDeviceIndex>()
-            .Where(index => index.DistributionSystemOperatorContentItemId == LegalEntity.ContentItemId)
-            .Where(index => !index.IsMessenger)
-            .ListAsync();
-          _systems = await session
-            .Query<ContentItem, ClosedDistributionSystemIndex>()
-            .Where(index => index.DistributionSystemOperatorContentItemId == LegalEntity.ContentItemId)
-            .ListAsync();
-          _units = await session
-            .Query<ContentItem, DistributionSystemUnitIndex>()
-            .Where(index => index.DistributionSystemOperatorContentItemId == LegalEntity.ContentItemId)
-            .ListAsync();
+        await WithTransientSessionAsync(async session => {
+            if(LegalEntity.ContentType == "ClosedDistributionSystem"){
+                _ioTDevices = await session
+                  .Query<ContentItem, OzdsIotDeviceIndex>()
+                  .Where(index => index.ClosedDistributionSystemContentItemId == LegalEntity.ContentItemId)
+                  .Where(index => !index.IsMessenger)
+                  .ListAsync();
+                _systems = await session
+                  .Query<ContentItem, ClosedDistributionSystemIndex>()
+                  .Where(index => index.ClosedDistributionSystemContentItemId == LegalEntity.ContentItemId)
+                  .ListAsync();
+                _units = await session
+                  .Query<ContentItem, DistributionSystemUnitIndex>()
+                  .Where(index => index.ClosedDistributionSystemContentItemId == LegalEntity.ContentItemId)
+                  .ListAsync();
+                  if(_ioTDevices != null && _ioTDevices.Count() > 0){
+                    var a =  await session
+                      .Query<ContentItem, Mess.Billing.Abstractions.Indexes.PaymentIndex>()
+                      .Where(index => index.RecipientContentItemId == _units.First().ContentItemId) // TODO: fix this, this is real bad
+                      .ListAsync();
+                    foreach(var omm in _ioTDevices){
+                      List<List<OzdsCalculationData>> b = a.Select(x => x.As<OzdsCalculationPart>().Calculations).ToList();
+                      foreach(var calc in b){
+                        foreach(var cal in calc){
+                          _totalPerOMM.Add((cal.Total, cal.IotDevice.DisplayText));
+                        }
+                      }
+                    }
+                  }
+            }
+            else{
+                _ioTDevices = await session
+                  .Query<ContentItem, OzdsIotDeviceIndex>()
+                  .Where(index => index.DistributionSystemOperatorContentItemId == LegalEntity.ContentItemId)
+                  .Where(index => !index.IsMessenger)
+                  .ListAsync();
+                _systems = await session
+                  .Query<ContentItem, ClosedDistributionSystemIndex>()
+                  .Where(index => index.DistributionSystemOperatorContentItemId == LegalEntity.ContentItemId)
+                  .ListAsync();
+                _units = await session
+                  .Query<ContentItem, DistributionSystemUnitIndex>()
+                  .Where(index => index.DistributionSystemOperatorContentItemId == LegalEntity.ContentItemId)
+                  .ListAsync();
+                if(_ioTDevices != null && _ioTDevices.Count() > 0){
+                  var a =  await session
+                    .Query<ContentItem, Mess.Billing.Abstractions.Indexes.PaymentIndex>()
+                    .Where(index => index.IssuerContentItemId == LegalEntity.ContentItemId)
+                    .ListAsync();
+                  foreach(var omm in _ioTDevices){
+                    List<List<OzdsCalculationData>> b = a.Select(x => x.As<OzdsCalculationPart>().Calculations).ToList();
+                    foreach(var calc in b){
+                      foreach(var cal in calc){
+                        _totalPerOMM.Add((cal.Total, cal.IotDevice.DisplayText));
+                      }
+                    }
+                  }
+                }
         }
       });
       if(_systems is not null && _units is not null && _ioTDevices is not null)
         foreach(var system in _systems){
           foreach(var unit in _units){
             foreach(var omm in _ioTDevices){
-              _dataStruct.Add(new TabularData(omm, system, unit, omm.As<OzdsIotDevicePart>().LatestImport));
+              _startEnd = new();
+                if(omm.As<IotDevicePart>().DeviceId.Text.StartsWith("abb"))
+                  _startEnd = await _timeseriesClient.GetAbbLastMonthMeasurementsAsync(omm.As<IotDevicePart>().DeviceId.Text, DateTime.UtcNow.AddMonths(-1), DateTime.UtcNow);
+                else
+                  _startEnd = await _timeseriesClient.GetSchneiderLastMonthMeasurementsAsync(omm.As<IotDevicePart>().DeviceId.Text, DateTime.UtcNow.AddMonths(-1), DateTime.UtcNow);
+              _dataStruct.Add(new TabularData(omm, system, unit, _startEnd.First / 1000 - _startEnd.Last / 1000, _totalPerOMM.Where(x => x.source == omm.DisplayText).FirstOrDefault().total));
             }
           }
         }
