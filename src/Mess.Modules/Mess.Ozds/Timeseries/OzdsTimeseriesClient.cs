@@ -24,9 +24,8 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
       buckets as (
         select
           time_bucket('15 minutes', "{1}") as interval,
-          "{3}",
-          first_value("{3}") over bucket_windows as first_value,
-          last_value("{3}") over bucket_windows as last_value
+          first_value("{3}") over bucket_windows as begin_energy,
+          last_value("{3}") over bucket_windows as end_energy
         from
           "{0}"
         where
@@ -35,15 +34,17 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
             "{1}" < {{2}}
           and
             "{2}" = {{0}}
-          window bucket_windows as (
-            partition by time_bucket('15 minutes', "{1}")
-            order by "{1}"
-            range between unbounded preceding and unbounded following
-          )
+        group by
+          interval
+        window bucket_windows as (
+          partition by time_bucket('15 minutes', "{1}")
+          order by "{1}"
+          range between unbounded preceding and unbounded following
+        )
       ),
       calculation as (
         select
-          (last_value - first_value) * 4 as power
+          (end_energy - begin_energy) * 4 as power
         from
           buckets
       )
@@ -60,11 +61,14 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
     with
       buckets as (
         select
+          distinct on (
+            "{2}",
+            time_bucket('15 minutes', "{1}")
+          )
           "{2}" as device_id,
           time_bucket('15 minutes', "{1}") as interval,
-          "{3}",
-          first_value("{3}") over bucket_windows as first_value,
-          last_value("{3}") over bucket_windows as last_value
+          first_value("{3}") over bucket_windows as begin_energy,
+          last_value("{3}") over bucket_windows as end_energy
         from
           "{0}"
         where
@@ -75,6 +79,50 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
             "{2}" IN ({{0}})
         window bucket_windows as (
           partition by "{2}", time_bucket('15 minutes', "{1}")
+          range between unbounded preceding and unbounded following
+        )
+      ),
+      calculation as (
+        select
+          device_id,
+          (end_energy - begin_energy) * 4 as power
+        from
+          buckets
+      )
+    select
+      device_id as "Source",
+      max(power) as "ActivePower_W"
+    from
+      calculation
+    group by
+      device_id
+  """;
+
+  private const string PeakPowerQuerySumTemplate = """
+    with
+      buckets as (
+        select
+          distinct on (
+            "{2}",
+            time_bucket('15 minutes', "{1}")
+          )
+          "{2}" as device_id,
+          time_bucket('15 minutes', "{1}") as interval,
+          first_value("{3}") over bucket_windows as begin_energy,
+          last_value("{3}") over bucket_windows as end_energy
+        from
+          "{0}"
+        where
+            "{1}" >= {{1}}
+          and
+            "{1}" < {{2}}
+          and
+            "{2}" IN ({{0}})
+        group by
+          device_id,
+          interval
+        window bucket_windows as (
+          partition by "{2}", time_bucket('15 minutes', "{1}")
           order by "{1}"
           range between unbounded preceding and unbounded following
         )
@@ -82,17 +130,20 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
       calculation as (
         select
           device_id,
-          (last_value - first_value) * 4 as power
+          interval,
+          (end_energy - begin_energy) * 4 as power
         from
           buckets
       )
     select
       device_id as "Source",
+      interval as "Interval",
       power as "ActivePower_W"
     from
       calculation
     order by
-      device_id, power desc
+      device_id,
+      power desc
     limit {{3}}
   """;
 
