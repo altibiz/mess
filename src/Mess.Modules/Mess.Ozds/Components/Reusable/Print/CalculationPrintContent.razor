@@ -83,9 +83,9 @@
     @if (calculation.UsageExpenditure.IotDeviceFee is { } iotDeviceFee) {
       <tr class="even">
         <td colspan="4"><strong>Naknada za mjernu uslugu - MU</strong></td>
-        <td>1</td>
-        <td>@(iotDeviceFee.UnitPrice.ToString("F3"))</td>
-        <td>@(iotDeviceFee.Total.ToString("F2"))</td>
+        <td style="text-align: right;">1</td>
+        <td style="text-align: right;">@(iotDeviceFee.UnitPrice.ToString("F3"))</td>
+        <td style="text-align: right;">@(iotDeviceFee.Total.ToString("F2"))</td>
       </tr>
     }
     <tr class="odd">
@@ -93,7 +93,7 @@
       <td colspan="4">
         <strong>Naknada za korištenje mreže ZDS-a - UKUPNO:</strong>
       </td>
-      <td><strong>@calculation.UsageExpenditure.Total.ToString("F2")</strong></td>
+      <td style="text-align: right;"><strong>@calculation.UsageExpenditure.Total.ToString("F2")</strong></td>
     </tr>
   </tbody>
 </table>
@@ -152,7 +152,7 @@
       <td colspan="5">
         <strong>Naknada za opskrbu električnom energijom - UKUPNO:</strong>
       </td>
-      <td><strong>@calculation.SupplyExpenditure.Total.ToString("F2")</strong></td>
+      <td style="text-align: right;"><strong>@calculation.SupplyExpenditure.Total.ToString("F2")</strong></td>
     </tr>
   </tbody>
 </table>
