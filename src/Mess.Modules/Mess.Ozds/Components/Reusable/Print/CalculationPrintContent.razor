@@ -31,7 +31,7 @@
   Tarifni model: @(usageCatalogue.TitlePart.Value.Title)
 </p>
 <p style="margin-top: 1.2rem; margin-left: 0.8rem;">
-  <strong>A) TROŠKOVI KORIŠTENJA MREŽE ZDS-a</strong>
+  <strong>A) NAKNADA ZA KORIŠTENJE MREŽE ZDS-a</strong>
 </p>
 <table style="margin-top: 0.8rem; width: 100%">
   <colgroup>
@@ -84,21 +84,21 @@
       <tr class="even">
         <td colspan="4"><strong>Naknada za mjernu uslugu - MU</strong></td>
         <td>1</td>
-        <td>@(iotDeviceFee.UnitPrice)</td>
+        <td>@(iotDeviceFee.UnitPrice.ToString("F3"))</td>
         <td>@(iotDeviceFee.Total.ToString("F2"))</td>
       </tr>
     }
     <tr class="odd">
       <td colspan="5"></td>
       <td colspan="4">
-        <strong>Troškovi korištenja mreže ZDS-a - UKUPNO:</strong>
+        <strong>Naknada za korištenje mreže ZDS-a - UKUPNO:</strong>
       </td>
       <td><strong>@calculation.UsageExpenditure.Total.ToString("F2")</strong></td>
     </tr>
   </tbody>
 </table>
 <p style="margin-top: 1.2rem; margin-left: 0.8rem;">
-  <strong>B) TROŠKOVI OPSKRBE ELEKTRIČNOM ENERGIJOM</strong>
+  <strong>B) NAKNADA ZA OPSKRBU ELEKTRIČNOM ENERGIJOM</strong>
 </p>
 <table style="margin-top: 0.8rem;">
   <colgroup>
@@ -150,7 +150,7 @@
     <tr class="odd">
       <td colspan="4"></td>
       <td colspan="5">
-        <strong>Troškovi opskrbe električnom energijom - UKUPNO:</strong>
+        <strong>Naknada za opskrbu električnom energijom - UKUPNO:</strong>
       </td>
       <td><strong>@calculation.SupplyExpenditure.Total.ToString("F2")</strong></td>
     </tr>
@@ -194,12 +194,21 @@
   private RenderFragment renderItem(ItemData item) =>
     @<Fragment>
       <td><strong>@item.Name</strong></td>
-      <td>@item.ValueFrom</td>
-      <td>@item.ValueTo</td>
-      <td>@item.Status</td>
-      <td>@item.Amount</td>
-      <td>@item.Price</td>
-      <td>@item.Total.ToString("F2")</td>
+      <td style="text-align: right;">@item.ValueFrom</td>
+      <td style="text-align: right;">@item.ValueTo</td>
+      <td style="text-align: center;">@item.Status</td>
+      <td style="text-align: right;">@item.Amount.ToString("F0")</td>
+      <td style="text-align: right;">
+        @if (item.Name == "SVT")
+        {
+          @item.Price.ToString("F3")
+        }
+        else
+        {
+          @item.Price.ToString("F6")
+        }
+      </td>
+      <td style="text-align: right;">@item.Total.ToString("F2")</td>
     </Fragment>;
 
   private ItemData[]? _usageItems;
