@@ -341,6 +341,13 @@
                     Tools = new Tools { Zoomin = false, Zoomout = false, Download = false, Pan = false, Reset = false, Selection = false, Zoom = false, }
                 }
             };
+      graphOptions.Chart = new Chart
+            {
+                Toolbar = new ApexCharts.Toolbar
+                {
+                    Tools = new Tools { Zoomin = false, Zoomout = false, Download = false, Pan = false, Reset = false, Selection = false, Zoom = false, }
+                }
+            };
       options.PlotOptions = new PlotOptions { RadialBar = new PlotOptionsRadialBar { StartAngle = -90, EndAngle = 90 } };
       _startEnd = new();
       _startEndLastMonth = new();
@@ -373,20 +380,22 @@
 
   private async Task MenuItemClicked(string item)
   {
-    switch(item)
-    {
-      case "Scale1":
-          _graphValues = _lastDay.Where(x => x.date > DateTime.UtcNow.AddMinutes(-5));
-          break;
-      case "Scale2":
-          _graphValues =_lastDay.Where(x => x.date > DateTime.UtcNow.AddMinutes(-10));;
-          break;
-      case "Scale3":
-          _graphValues =_lastDay.Where(x => x.date > DateTime.UtcNow.AddMinutes(-15));;
-          break;
-      case "Scale4":
-          _graphValues =_lastDay.Where(x => x.date > DateTime.UtcNow.AddMinutes(-30));;
-          break;
+    if(_lastDay is not null){
+      switch(item)
+      {
+        case "Scale1":
+            _graphValues = _lastDay.Where(x => x.date > DateTime.UtcNow.AddMinutes(-5));
+            break;
+        case "Scale2":
+            _graphValues =_lastDay.Where(x => x.date > DateTime.UtcNow.AddMinutes(-10));;
+            break;
+        case "Scale3":
+            _graphValues =_lastDay.Where(x => x.date > DateTime.UtcNow.AddMinutes(-15));;
+            break;
+        case "Scale4":
+            _graphValues =_lastDay.Where(x => x.date > DateTime.UtcNow.AddMinutes(-30));;
+            break;
+      }
     }
     await chart.UpdateSeriesAsync(true);
   }
@@ -405,6 +414,7 @@
   }
   private void OnExpandCollapseClick(int year, int month) {
       var a = _shownOMMs.Where(x => x.data.year == year).Where(x => x.data.month == month).FirstOrDefault();
-      a.expand = !a.expand;
+      if(a is not null)
+        a.expand = !a.expand;
   }
 }

@@ -267,6 +267,20 @@
             }
         }
         };
+        graphLOptions.Chart = new Chart
+        {
+          Toolbar = new ApexCharts.Toolbar
+          {
+              Tools = new Tools { Zoomin = false, Zoomout = false, Download = false, Pan = false, Reset = false, Selection = false, Zoom = false, }
+          }
+        };
+        graphOptions.Chart = new Chart
+        {
+          Toolbar = new ApexCharts.Toolbar
+          {
+              Tools = new Tools { Zoomin = false, Zoomout = false, Download = false, Pan = false, Reset = false, Selection = false, Zoom = false, }
+          }
+        };
       graphLOptions.Tooltip = new ApexCharts.Tooltip { X = new TooltipX { Format = @"hh : mm : ss" } };
       graphOptions.Tooltip = new ApexCharts.Tooltip { X = new TooltipX { Format = @"hh : mm : ss" } };
       graphLOptionsMob.Tooltip = new ApexCharts.Tooltip { X = new TooltipX { Format = @"hh : mm : ss" } };
