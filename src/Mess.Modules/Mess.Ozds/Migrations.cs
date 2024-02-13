@@ -23,6 +23,340 @@ public class Migrations : DataMigration
     _serviceProvider = serviceProvider;
   }
 
+  public async Task<int> UpdateFrom1Async()
+  {
+    var contentDefinitionManager =
+      _serviceProvider.GetRequiredService<IContentDefinitionManager>();
+
+    contentDefinitionManager.AlterPartDefinition(
+      "ClosedDistributionSystemPart",
+      builder =>
+        builder
+          .Attachable()
+          .WithDescription("A closed distribution system.")
+          .WithDisplayName("Closed distribution system"));
+
+    contentDefinitionManager.AlterPartDefinition(
+      "DistributionSystemOperatorPart",
+      builder =>
+        builder
+          .Attachable()
+          .WithDescription("A distribution system operator.")
+          .WithDisplayName("Distribution system operator"));
+
+    contentDefinitionManager.AlterPartDefinition(
+      "OzdsIotDevicePart",
+      builder =>
+        builder
+          .Attachable()
+          .WithDescription("An OZDS measurement device.")
+          .WithDisplayName("OZDS measurement device")
+          .WithField(
+            "UsageCatalogue",
+            field =>
+              field
+                .OfType("ContentPickerField")
+                .WithDisplayName("Usage catalogue")
+                .WithDescription("Usage catalogue.")
+                .WithSettings(
+                  new ContentPickerFieldSettings
+                  {
+                    DisplayedContentTypes = new[]
+                    {
+                      "OperatorCatalogue"
+                    },
+                    DisplayAllContentTypes = false,
+                    Multiple = false,
+                    Required = true
+                  }
+                )
+          )
+          .WithField(
+            "SupplyCatalogue",
+            field =>
+              field
+                .OfType("ContentPickerField")
+                .WithDisplayName("Supply catalogue")
+                .WithDescription("Supply catalogue.")
+                .WithSettings(
+                  new ContentPickerFieldSettings
+                  {
+                    DisplayedContentTypes = new[]
+                    {
+                      "RegulatoryAgencyCatalogue"
+                    },
+                    DisplayAllContentTypes = false,
+                    Multiple = false,
+                    Required = true
+                  }
+                )
+          )
+    );
+
+    contentDefinitionManager.AlterPartDefinition(
+      "RegulatoryAgencyCataloguePart",
+      builder =>
+        builder
+          .Attachable()
+          .WithDescription("A regulatory agency catalogue.")
+          .WithDisplayName("Regulatory agency catalogue")
+          .WithField(
+            "HighEnergyPrice",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("High energy price")
+                .WithDescription("High energy price.")
+                .WithSettings(
+                  new NumericFieldSettings
+                  {
+                    Hint = "High energy price.",
+                    Required = true,
+                    Minimum = 0.0M,
+                    Scale = 6
+                  }
+                )
+          )
+          .WithField(
+            "LowEnergyPrice",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("Low energy price")
+                .WithDescription("Low energy price.")
+                .WithSettings(
+                  new NumericFieldSettings
+                  {
+                    Hint = "Low energy price.",
+                    Required = true,
+                    Minimum = 0.0M,
+                    Scale = 6
+                  }
+                )
+          )
+          .WithField(
+            "RenewableEnergyFee",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("Renewable energy fee")
+                .WithDescription("Renewable energy fee.")
+                .WithSettings(
+                  new NumericFieldSettings
+                  {
+                    Hint = "Renewable energy fee.",
+                    Required = true,
+                    Minimum = 0.0M,
+                    Scale = 6
+                  }
+                )
+          )
+          .WithField(
+            "BusinessUsageFee",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("Business usage fee")
+                .WithDescription("Business usage fee.")
+                .WithSettings(
+                  new NumericFieldSettings
+                  {
+                    Hint = "Business usage fee.",
+                    Required = true,
+                    Minimum = 0.0M,
+                    Scale = 6
+                  }
+                )
+          )
+          .WithField(
+            "TaxRate",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("Tax rate")
+                .WithDescription("Tax rate.")
+                .WithSettings(
+                  new NumericFieldSettings
+                  {
+                    Hint = "Tax rate.",
+                    Required = true,
+                    Minimum = 0.0M,
+                    Scale = 6
+                  }
+                )
+          )
+    );
+
+    contentDefinitionManager.AlterPartDefinition(
+      "OperatorCataloguePart",
+      builder =>
+        builder
+          .Attachable()
+          .WithDescription("A operator catalogue.")
+          .WithDisplayName("Operator catalogue")
+          .WithField(
+            "Voltage",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("TextField")
+                .WithDisplayName("Voltage")
+                .WithDescription("Voltage.")
+                .WithSettings(
+                  new TextFieldSettings { Hint = "Voltage.", Required = true }
+                )
+          )
+          .WithField(
+            "Model",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("TextField")
+                .WithDisplayName("Model")
+                .WithDescription("Model.")
+                .WithSettings(
+                  new TextFieldSettings { Hint = "Model.", Required = true }
+                )
+          )
+          .WithField(
+            "EnergyPrice",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("Energy price")
+                .WithDescription("Energy price.")
+                .WithSettings(
+                  new NumericFieldSettings
+                  {
+                    Hint = "Energy price.",
+                    Required = true,
+                    Minimum = 0.0M,
+                    Scale = 6
+                  }
+                )
+          )
+          .WithField(
+            "HighEnergyPrice",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("High energy price")
+                .WithDescription("High energy price.")
+                .WithSettings(
+                  new NumericFieldSettings
+                  {
+                    Hint = "High energy price.",
+                    Required = true,
+                    Minimum = 0.0M,
+                    Scale = 6
+                  }
+                )
+          )
+          .WithField(
+            "LowEnergyPrice",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("Low energy price")
+                .WithDescription("Low energy price.")
+                .WithSettings(
+                  new NumericFieldSettings
+                  {
+                    Hint = "Low energy price.",
+                    Required = true,
+                    Minimum = 0.0M,
+                    Scale = 6
+                  }
+                )
+          )
+          .WithField(
+            "ReactiveEnergyPrice",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("Reactive energy price")
+                .WithDescription("Reactive energy price.")
+                .WithSettings(
+                  new NumericFieldSettings
+                  {
+                    Hint = "Reactive energy price.",
+                    Required = true,
+                    Minimum = 0.0M,
+                    Scale = 6
+                  }
+                )
+          )
+          .WithField(
+            "HighReactiveEnergyPrice",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("High Reactive energy price")
+                .WithDescription("High Reactive energy price.")
+                .WithSettings(
+                  new NumericFieldSettings
+                  {
+                    Hint = "High Reactive energy price.",
+                    Required = true,
+                    Minimum = 0.0M,
+                    Scale = 6
+                  }
+                )
+          )
+          .WithField(
+            "LowReactiveEnergyPrice",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("Low Reactive energy price")
+                .WithDescription("Low Reactive energy price.")
+                .WithSettings(
+                  new NumericFieldSettings
+                  {
+                    Hint = "Low Reactive energy price.",
+                    Required = true,
+                    Minimum = 0.0M,
+                    Scale = 6
+                  }
+                )
+          )
+          .WithField(
+            "MaxPowerPrice",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("Max power price")
+                .WithDescription("Max power price.")
+                .WithSettings(
+                  new NumericFieldSettings
+                  {
+                    Hint = "Max power price.",
+                    Required = true,
+                    Minimum = 0.0M,
+                    Scale = 6
+                  }
+                )
+          )
+          .WithField(
+            "IotDeviceFee",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("Measurement device fee")
+                .WithDescription("Measurement device fee.")
+                .WithSettings(
+                  new NumericFieldSettings
+                  {
+                    Hint = "Measurement device fee.",
+                    Required = true,
+                    Minimum = 0.0M,
+                    Scale = 6
+                  }
+                )
+          )
+    );
+
+    return 2;
+  }
+
   public async Task<int> CreateAsync()
   {
     await CreateAsyncMigrations.MigrateRegulatoryAgencyCatalogue(
@@ -1051,57 +1385,6 @@ internal static partial class CreateAsyncMigrations
                   new NumericFieldSettings
                   {
                     Hint = "Low energy price.",
-                    Required = true,
-                    Minimum = 0.0M,
-                    Scale = 6
-                  }
-                )
-          )
-          .WithField(
-            "ReactiveEnergyPrice",
-            fieldBuilder =>
-              fieldBuilder
-                .OfType("NumericField")
-                .WithDisplayName("Reactive energy price")
-                .WithDescription("Reactive energy price.")
-                .WithSettings(
-                  new NumericFieldSettings
-                  {
-                    Hint = "Reactive energy price.",
-                    Required = true,
-                    Minimum = 0.0M,
-                    Scale = 6
-                  }
-                )
-          )
-          .WithField(
-            "HighReactiveEnergyPrice",
-            fieldBuilder =>
-              fieldBuilder
-                .OfType("NumericField")
-                .WithDisplayName("High Reactive energy price")
-                .WithDescription("High Reactive energy price.")
-                .WithSettings(
-                  new NumericFieldSettings
-                  {
-                    Hint = "High Reactive energy price.",
-                    Required = true,
-                    Minimum = 0.0M,
-                    Scale = 6
-                  }
-                )
-          )
-          .WithField(
-            "LowReactiveEnergyPrice",
-            fieldBuilder =>
-              fieldBuilder
-                .OfType("NumericField")
-                .WithDisplayName("Low Reactive energy price")
-                .WithDescription("Low Reactive energy price.")
-                .WithSettings(
-                  new NumericFieldSettings
-                  {
-                    Hint = "Low Reactive energy price.",
                     Required = true,
                     Minimum = 0.0M,
                     Scale = 6

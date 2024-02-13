@@ -5,9 +5,13 @@ namespace Mess.Ozds.Abstractions.Models;
 
 public class RegulatoryAgencyCataloguePart : ContentPart
 {
-  public NumericField RenewableEnergyFee { get; set; } = default!;
+  public NumericField HighEnergyPrice { get; set; } = new() { Value = 0.00M };
 
-  public NumericField BusinessUsageFee { get; set; } = default!;
+  public NumericField LowEnergyPrice { get; set; } = new() { Value = 0.00M };
 
-  public NumericField TaxRate { get; set; } = default!;
+  public NumericField RenewableEnergyFee { get; set; } = new() { Value = 0.00M };
+
+  public NumericField BusinessUsageFee { get; set; } = new() { Value = 0.00M };
+
+  public NumericField TaxRate { get; set; } = new() { Value = 0.00M };
 }

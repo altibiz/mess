@@ -159,15 +159,13 @@
   </MudGrid>
 </MudPaper>
 
-<MudHidden Breakpoint="Breakpoint.LgAndDown">
-  <MudText class="mt-8" Align="MudAlign.Right">
-    <MudLink class="ml-auto" Href="@printHref">
-      <MudButton Variant="Variant.Filled">
-        PRINT
-      </MudButton>
-    </MudLink>
-  </MudText>
-</MudHidden>
+<MudText class="mt-8" Align="MudAlign.Right">
+  <MudLink class="ml-auto" Href="@printHref">
+    <MudButton Variant="Variant.Filled">
+      PRINT
+    </MudButton>
+  </MudLink>
+</MudText>
 
 <div class="mb-16" />
 
@@ -192,6 +190,10 @@
     ? new Row[] { }
     : new[]
       {
+        new Row(
+          "Korištenje mreže u doba jedne dnevne tarife",
+          data.UsageExpenditure.EnergyFee
+        ),
         new Row(
           "Korištenje mreže u doba više dnevne tarife",
           data.UsageExpenditure.HighEnergyFee

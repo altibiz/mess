@@ -11,7 +11,6 @@ public interface IOzdsIotDeviceBillingFactory
     DistributionSystemUnitItem distributionSystemUnitItem,
     ClosedDistributionSystemItem closedDistributionSystemItem,
     DistributionSystemOperatorItem distributionSystemOperatorItem,
-    RegulatoryAgencyCatalogueItem regulatoryAgencyCatalogueItem,
     ContentItem iotDeviceItem,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
@@ -21,7 +20,6 @@ public interface IOzdsIotDeviceBillingFactory
     DistributionSystemUnitItem distributionSystemUnitItem,
     ClosedDistributionSystemItem closedDistributionSystemItem,
     DistributionSystemOperatorItem distributionSystemOperatorItem,
-    RegulatoryAgencyCatalogueItem regulatoryAgencyCatalogueItem,
     ContentItem iotDeviceItem,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
