@@ -3,29 +3,32 @@ using OrchardCore.ContentManagement;
 namespace Mess.Ozds.Abstractions.Models;
 
 public record OzdsInvoiceData(
-  ContentItem RegulatoryAgencyCatalogue,
   ContentItem DistributionSystemOperator,
   ContentItem ClosedDistributionSystem,
   ContentItem DistributionSystemUnit,
   DateTimeOffset From,
   DateTimeOffset To,
-  OzdsInvoiceExpenditureData UsageExpenditure,
-  OzdsInvoiceExpenditureData SupplyExpenditure,
+  OzdsInvoiceUsageExpenditureData UsageExpenditure,
+  OzdsInvoiceSupplyExpenditureData SupplyExpenditure,
   decimal Total,
   decimal TaxRate,
   decimal Tax,
   decimal TotalWithTax
 );
 
-public record OzdsInvoiceExpenditureData(
+public record OzdsInvoiceUsageExpenditureData(
   decimal HighEnergyFee,
   decimal LowEnergyFee,
   decimal EnergyFee,
-  decimal HighReactiveEnergyFee,
-  decimal LowReactiveEnergyFee,
   decimal ReactiveEnergyFee,
   decimal MaxPowerFee,
   decimal IotDeviceFee,
+  decimal Total
+);
+
+public record OzdsInvoiceSupplyExpenditureData(
+  decimal HighEnergyFee,
+  decimal LowEnergyFee,
   decimal RenewableEnergyFee,
   decimal BusinessUsageFee,
   decimal Total

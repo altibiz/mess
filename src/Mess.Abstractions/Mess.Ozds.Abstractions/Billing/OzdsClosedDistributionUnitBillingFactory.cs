@@ -63,17 +63,6 @@ public class OzdsClosedDistributionUnitBillingFactory : IBillingFactory
       .GetContentAsync<DistributionSystemOperatorItem>(system.ContainedPart.Value.ListContentItemId)
         ?? throw new InvalidOperationException($"Distribution system operator {system.ContainedPart.Value.ListContentItemId} not found");
 
-    var regulatoryAgencyCatalogueItem =
-      _contentManager
-        .GetContentAsync<RegulatoryAgencyCatalogueItem>(
-          @operator.DistributionSystemOperatorPart.Value
-            .RegulatoryAgencyCatalogue.ContentItemIds.First()
-        )
-        .Result
-      ?? throw new InvalidOperationException(
-        "Regulatory agency catalogue not found"
-      );
-
     var iotDevices = await _session
       .Query<ContentItem, OzdsIotDeviceIndex>()
       .Where(index => index.DistributionSystemUnitContentItemId == contentItem.ContentItemId)
@@ -96,7 +85,6 @@ public class OzdsClosedDistributionUnitBillingFactory : IBillingFactory
           unit,
           system,
           @operator,
-          regulatoryAgencyCatalogueItem,
           iotDevice,
           fromDate,
           toDate
@@ -106,7 +94,6 @@ public class OzdsClosedDistributionUnitBillingFactory : IBillingFactory
     }
 
     var invoiceData = await CreateInvoiceDataAsync(
-      regulatoryAgencyCatalogueItem,
       @operator,
       system,
       unit,
@@ -180,17 +167,6 @@ public class OzdsClosedDistributionUnitBillingFactory : IBillingFactory
       .GetContentAsync<DistributionSystemOperatorItem>(system.ContainedPart.Value.ListContentItemId)
         ?? throw new InvalidOperationException($"Distribution system operator {system.ContainedPart.Value.ListContentItemId} not found");
 
-    var regulatoryAgencyCatalogueItem =
-      _contentManager
-        .GetContentAsync<RegulatoryAgencyCatalogueItem>(
-          @operator.DistributionSystemOperatorPart.Value
-            .RegulatoryAgencyCatalogue.ContentItemIds.First()
-        )
-        .Result
-      ?? throw new InvalidOperationException(
-        "Regulatory agency catalogue not found"
-      );
-
     var receiptData = await CreateReceiptDataAsync(
       invoice.OzdsInvoicePart.Value.Data
     );
@@ -216,7 +192,6 @@ public class OzdsClosedDistributionUnitBillingFactory : IBillingFactory
   }
 
   private static OzdsInvoiceData CreateInvoiceData(
-    RegulatoryAgencyCatalogueItem regulatoryAgencyCatalogueItem,
     ContentItem distributionSystemOperator,
     ContentItem closedDistributionSystem,
     ContentItem distributionSystemUnit,
@@ -227,11 +202,7 @@ public class OzdsClosedDistributionUnitBillingFactory : IBillingFactory
   {
     var usageExpenditure = calculations
       .Aggregate(
-        new OzdsInvoiceExpenditureData(
-          0,
-          0,
-          0,
-          0,
+        new OzdsInvoiceUsageExpenditureData(
           0,
           0,
           0,
@@ -241,29 +212,19 @@ public class OzdsClosedDistributionUnitBillingFactory : IBillingFactory
           0
         ),
         (expenditure, calculation) =>
-          new OzdsInvoiceExpenditureData(
-            expenditure.HighEnergyFee + calculation.UsageExpenditure.HighEnergyItem?.Total ?? 0.0M,
-            expenditure.LowEnergyFee + calculation.UsageExpenditure.LowEnergyItem?.Total ?? 0.0M,
-            expenditure.EnergyFee + calculation.UsageExpenditure.EnergyItem?.Total ?? 0.0M,
-            expenditure.HighReactiveEnergyFee + calculation.UsageExpenditure.HighReactiveEnergyItem?.Total ?? 0.0M,
-            expenditure.LowReactiveEnergyFee + calculation.UsageExpenditure.LowReactiveEnergyItem?.Total ?? 0.0M,
-            expenditure.ReactiveEnergyFee + calculation.UsageExpenditure.ReactiveEnergyItem?.Total ?? 0.0M,
-            expenditure.MaxPowerFee + calculation.UsageExpenditure.MaxPowerItem?.Total ?? 0.0M,
-            expenditure.IotDeviceFee + calculation.UsageExpenditure.IotDeviceFee?.Total ?? 0.0M,
-            expenditure.RenewableEnergyFee + calculation.UsageExpenditure.RenewableEnergyFee?.Total ?? 0.0M,
-            expenditure.BusinessUsageFee + calculation.UsageExpenditure.BusinessUsageFee?.Total ?? 0.0M,
+          new OzdsInvoiceUsageExpenditureData(
+            expenditure.HighEnergyFee + (calculation.UsageExpenditure.HighEnergyItem?.Total ?? 0.0M),
+            expenditure.LowEnergyFee + (calculation.UsageExpenditure.LowEnergyItem?.Total ?? 0.0M),
+            expenditure.EnergyFee + (calculation.UsageExpenditure.EnergyItem?.Total ?? 0.0M),
+            expenditure.ReactiveEnergyFee + (calculation.UsageExpenditure.ReactiveEnergyItem?.Total ?? 0.0M),
+            expenditure.MaxPowerFee + (calculation.UsageExpenditure.MaxPowerItem?.Total ?? 0.0M),
+            expenditure.IotDeviceFee + (calculation.UsageExpenditure.IotDeviceFee?.Total ?? 0.0M),
             expenditure.Total + calculation.UsageExpenditure.Total
           )
     );
     var supplyExpenditure = calculations
       .Aggregate(
-        new OzdsInvoiceExpenditureData(
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
+        new OzdsInvoiceSupplyExpenditureData(
           0,
           0,
           0,
@@ -271,34 +232,23 @@ public class OzdsClosedDistributionUnitBillingFactory : IBillingFactory
           0
         ),
         (expenditure, calculation) =>
-          new OzdsInvoiceExpenditureData(
-            expenditure.HighEnergyFee + calculation.SupplyExpenditure.HighEnergyItem?.Total ?? 0.0M,
-            expenditure.LowEnergyFee + calculation.SupplyExpenditure.LowEnergyItem?.Total ?? 0.0M,
-            expenditure.EnergyFee + calculation.SupplyExpenditure.EnergyItem?.Total ?? 0.0M,
-            expenditure.HighReactiveEnergyFee + calculation.SupplyExpenditure.HighReactiveEnergyItem?.Total ?? 0.0M,
-            expenditure.LowReactiveEnergyFee + calculation.SupplyExpenditure.LowReactiveEnergyItem?.Total ?? 0.0M,
-            expenditure.ReactiveEnergyFee + calculation.SupplyExpenditure.ReactiveEnergyItem?.Total ?? 0.0M,
-            expenditure.MaxPowerFee + calculation.SupplyExpenditure.MaxPowerItem?.Total ?? 0.0M,
-            expenditure.IotDeviceFee + calculation.SupplyExpenditure.IotDeviceFee?.Total ?? 0.0M,
-            expenditure.RenewableEnergyFee + calculation.SupplyExpenditure.RenewableEnergyFee?.Total ?? 0.0M,
-            expenditure.BusinessUsageFee + calculation.SupplyExpenditure.BusinessUsageFee?.Total ?? 0.0M,
+          new OzdsInvoiceSupplyExpenditureData(
+            expenditure.HighEnergyFee + (calculation.SupplyExpenditure.HighEnergyItem?.Total ?? 0.0M),
+            expenditure.LowEnergyFee + (calculation.SupplyExpenditure.LowEnergyItem?.Total ?? 0.0M),
+            expenditure.RenewableEnergyFee + (calculation.SupplyExpenditure.RenewableEnergyFee?.Total ?? 0.0M),
+            expenditure.BusinessUsageFee + (calculation.SupplyExpenditure.BusinessUsageFee?.Total ?? 0.0M),
             expenditure.Total + calculation.SupplyExpenditure.Total
           )
     );
 
 
     var total = usageExpenditure.Total + supplyExpenditure.Total;
-    var taxRate =
-      regulatoryAgencyCatalogueItem
-        .RegulatoryAgencyCataloguePart
-        .Value
-        ?.TaxRate
-        .Value ?? 0.0M;
-    var tax = total * taxRate;
+    // TODO: from catalogue
+    var taxRate = 0.13M;
+    var tax = Math.Round(total * taxRate, 2);
     var totalWithTax = total + tax;
 
     return new OzdsInvoiceData(
-      regulatoryAgencyCatalogueItem,
       distributionSystemOperator,
       closedDistributionSystem,
       distributionSystemUnit,
@@ -314,7 +264,6 @@ public class OzdsClosedDistributionUnitBillingFactory : IBillingFactory
   }
 
   private static async Task<OzdsInvoiceData> CreateInvoiceDataAsync(
-    RegulatoryAgencyCatalogueItem regulatoryAgencyCatalogueItem,
     ContentItem distributionSystemOperator,
     ContentItem closedDistributionSystem,
     ContentItem distributionSystemUnit,
@@ -324,7 +273,6 @@ public class OzdsClosedDistributionUnitBillingFactory : IBillingFactory
   )
   {
     return CreateInvoiceData(
-      regulatoryAgencyCatalogueItem,
       distributionSystemOperator,
       closedDistributionSystem,
       distributionSystemUnit,
@@ -339,34 +287,23 @@ public class OzdsClosedDistributionUnitBillingFactory : IBillingFactory
   )
   {
     return new OzdsReceiptData(
-      invoiceData.RegulatoryAgencyCatalogue,
       invoiceData.DistributionSystemOperator,
       invoiceData.ClosedDistributionSystem,
       invoiceData.DistributionSystemUnit,
       invoiceData.From,
       invoiceData.To,
-      new OzdsReceiptExpenditureData(
+      new OzdsReceiptUsageExpenditureData(
         invoiceData.UsageExpenditure.HighEnergyFee,
         invoiceData.UsageExpenditure.LowEnergyFee,
         invoiceData.UsageExpenditure.EnergyFee,
-        invoiceData.UsageExpenditure.HighReactiveEnergyFee,
-        invoiceData.UsageExpenditure.LowReactiveEnergyFee,
         invoiceData.UsageExpenditure.ReactiveEnergyFee,
         invoiceData.UsageExpenditure.MaxPowerFee,
         invoiceData.UsageExpenditure.IotDeviceFee,
-        invoiceData.UsageExpenditure.RenewableEnergyFee,
-        invoiceData.UsageExpenditure.BusinessUsageFee,
         invoiceData.UsageExpenditure.Total
       ),
-      new OzdsReceiptExpenditureData(
+      new OzdsReceiptSupplyExpenditureData(
         invoiceData.SupplyExpenditure.HighEnergyFee,
         invoiceData.SupplyExpenditure.LowEnergyFee,
-        invoiceData.SupplyExpenditure.EnergyFee,
-        invoiceData.SupplyExpenditure.HighReactiveEnergyFee,
-        invoiceData.SupplyExpenditure.LowReactiveEnergyFee,
-        invoiceData.SupplyExpenditure.ReactiveEnergyFee,
-        invoiceData.SupplyExpenditure.MaxPowerFee,
-        invoiceData.SupplyExpenditure.IotDeviceFee,
         invoiceData.SupplyExpenditure.RenewableEnergyFee,
         invoiceData.SupplyExpenditure.BusinessUsageFee,
         invoiceData.SupplyExpenditure.Total
