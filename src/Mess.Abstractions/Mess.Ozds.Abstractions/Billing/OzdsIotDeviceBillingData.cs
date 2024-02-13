@@ -1,6 +1,7 @@
 namespace Mess.Ozds.Abstractions.Billing;
 
 public record OzdsIotDeviceBillingData(
+  string Source,
   decimal HighStartEnergyImportTotal_kWh,
   decimal HighEndEnergyImportTotal_kWh,
   decimal LowStartEnergyImportTotal_kWh,
