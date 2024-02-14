@@ -31,10 +31,15 @@
               <MudIconButton OnClick="() => InspectOMM(dataStruct.data.omm)" Icon="@Icons.Material.Filled.RemoveRedEye" Color="MudBlazor.Color.Primary"/>
             </MudItem>
             <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large; font-weight: bold;">
-              @T["Potrošnja zadnjih 30 dana"].Value: <br> @dataStruct.data.lastMonthUsage kWh
+              @T["Potrošnja zadnjih 30 dana"].Value: <br>
+              @if(dataStruct.data.lastMonthUsage is not null)
+              @Math.Round((decimal)dataStruct.data.lastMonthUsage/1000,2) kWh
             </MudItem>
             <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large; font-weight: bold;">
-              @T["Zadnji obracun"].Value: <br> @dataStruct.data.lastTotal €
+                @if(dataStruct.data.lastTotal is not null)
+              @T["Zadnji obracun"].Value: <br>
+              @if(dataStruct.data.lastTotal is not null)
+              @Math.Round((decimal)dataStruct.data.lastTotal,2) €
             </MudItem>
               <MudItem xs="2" Class="d-flex align-center justify-end">
                 <MudIconButton OnClick="() => OnExpandCollapseClick(dataStruct.data.omm.ContentItemId)" Icon="@(dataStruct.expand ? Icons.Material.Filled.KeyboardArrowUp : Icons.Material.Filled.KeyboardArrowDown)" Color="MudBlazor.Color.Default"/>
@@ -119,7 +124,8 @@
           Property="x => x.lastMonthUsage"
           Title='@T["Potrošnja zadnjih 30 dana"].Value' >
             <CellTemplate>
-                @(context.Item.lastMonthUsage + " kWh")
+              @if(context.Item.lastMonthUsage is not null)
+              @(Math.Round((decimal)context.Item.lastMonthUsage/1000,2) + " kWh")
             </CellTemplate>
         </PropertyColumn>
         <PropertyColumn
@@ -127,7 +133,8 @@
           Property="x => x.lastTotal"
           Title='@T["Zadnji obracun"].Value' >
           <CellTemplate>
-              @(context.Item.lastTotal + " €")
+              @if(context.Item.lastTotal is not null)
+              @(Math.Round((decimal)context.Item.lastTotal,2) + " €")
           </CellTemplate>
       </PropertyColumn>
       </Columns>

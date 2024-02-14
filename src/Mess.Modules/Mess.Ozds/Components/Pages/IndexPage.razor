@@ -22,7 +22,7 @@
 }
 
 @if (_user.RoleNames.Contains("Distribution System Unit Representative")) {
-  <DashboardGraphs LegalEntity="@_legalEntity" />
+  <TenantDashboard LegalEntity="@_legalEntity" />
   <OMMsMobileNew LegalEntity="@_legalEntity" />
 }
 @if (_user.RoleNames.Contains("Closed Distribution System Representative")) {

@@ -102,13 +102,19 @@
             <MudStack>
               <MudDivider DividerType="DividerType.Middle" Class="mt-2"/>
               <MudContainer>
-                @T["Poćetna potrošnja"].Value: @(dataStruct.data.monthEndTotal) kWh
+                  @T["Poćetna potrošnja"].Value:
+                  @if(dataStruct.data.monthEndTotal is not null)
+                  @(Math.Round((decimal)dataStruct.data.monthEndTotal,2)) kWh
               </MudContainer>
               <MudContainer>
-                @T["Zadnja potrošnja"].Value: @(dataStruct.data.monthStartTotal) kWh
+                @T["Zadnja potrošnja"].Value:
+                @if(dataStruct.data.monthEndTotal is not null)
+                @(Math.Round((decimal)dataStruct.data.monthEndTotal,2)) kWh
               </MudContainer>
               <MudContainer Style="font-size: large; font-weight:bold;">
-                @T["Ukupna potrošnja"].Value: @(dataStruct.data.monthStartTotal - dataStruct.data.monthEndTotal) kWh
+                @T["Ukupna potrošnja"].Value:
+                @if(dataStruct.data.monthStartTotal is not null && dataStruct.data.monthEndTotal is not null)
+                @(Math.Round((decimal)(dataStruct.data.monthStartTotal - dataStruct.data.monthEndTotal),2)) kWh
               </MudContainer>
             </MudStack>
           </MudCollapse>
@@ -151,19 +157,30 @@
     <PropertyColumn
       CellStyle="font-size: x-large;"
       Property="x => x.monthEndTotal"
-      Title='@T["Poćetna potrošnja"].Value'
-
-       />
+      Title='@T["Poćetna potrošnja"].Value'>
+          <CellTemplate>
+                @if(context.Item.monthEndTotal is not null)
+                @(Math.Round((decimal)context.Item.monthEndTotal,2) + " kWh")
+          </CellTemplate>
+      </PropertyColumn>
     <PropertyColumn
       CellStyle="font-size: x-large;"
       Property="x => x.monthStartTotal"
-      Title='@T["Zadnja potrošnja"].Value'
-
-       />
+      Title='@T["Zadnja potrošnja"].Value'>
+          <CellTemplate>
+                @if(context.Item.monthStartTotal is not null)
+                @(Math.Round((decimal)context.Item.monthStartTotal,2) + " kWh")
+          </CellTemplate>
+      </PropertyColumn>
     <PropertyColumn
       CellStyle="font-size: xx-large;"
       Property="x => x.monthStartTotal - x.monthEndTotal"
-      Title='@T["Ukupna potrošnja"].Value'/>
+      Title='@T["Ukupna potrošnja"].Value'>
+          <CellTemplate>
+                @if(context.Item.monthStartTotal is not null && context.Item.monthEndTotal is not null)
+                @(Math.Round((decimal)(context.Item.monthStartTotal - context.Item.monthEndTotal),2) + " kWh")
+          </CellTemplate>
+      </PropertyColumn>
   </Columns>
   <PagerContent>
     <MudDataGridPager T="TabularData" />

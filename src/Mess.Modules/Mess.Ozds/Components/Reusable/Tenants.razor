@@ -60,9 +60,11 @@
     <PropertyColumn
       CellStyle="font-size: x-large;"
       Property="x => x.unit.As<DistributionSystemUnitPart>().Consumption"
-      Title='@T["Potrošnja"].Value'
-
-        />
+      Title='@T["Potrošnja"].Value'>
+          <CellTemplate>
+                @(Math.Round((decimal)context.Item.unit.As<DistributionSystemUnitPart>().Consumption,2) + " €")
+          </CellTemplate>
+      </PropertyColumn>
     <TemplateColumn CellClass="d-flex justify-end">
           <CellTemplate>
               <MudStack Row>
@@ -105,6 +107,10 @@ else{
             <MudItem xs="2" Class="d-flex align-center justify-end">
               <MudIconButton OnClick="() => InspectTenant(dataStruct.data.unit)" Icon="@Icons.Material.Filled.RemoveRedEye" Color="MudBlazor.Color.Primary"/>
             </MudItem>
+            <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large;">
+              @T["Potrošnja"].Value: @(Math.Round((decimal)dataStruct.data.unit.As<DistributionSystemUnitPart>().Consumption,2) + " €")
+            </MudItem>
+
           </MudGrid>
         </MudStack>
       </MudPaper>
@@ -163,7 +169,7 @@ else{
     Property="x => x.unit.As<DistributionSystemUnitPart>().Consumption"
     Title='@T["Potrošnja"].Value'>
           <CellTemplate>
-              @(context.Item.unit.As<DistributionSystemUnitPart>().Consumption + " kWh")
+                @(Math.Round((decimal)context.Item.unit.As<DistributionSystemUnitPart>().Consumption,2) + " kWh")
           </CellTemplate>
       </PropertyColumn>
   </Columns>

@@ -47,7 +47,11 @@
     <PropertyColumn
       CellStyle="font-size: x-large;"
       Property="x => x.As<ClosedDistributionSystemPart>().Consumption"
-      Title='@T["Potrošnja"].Value' />
+      Title='@T["Potrošnja"].Value'>
+          <CellTemplate>
+              @(Math.Round((decimal)context.Item.As<ClosedDistributionSystemPart>().Consumption,2) + " €")
+          </CellTemplate>
+    </PropertyColumn>
   </Columns>
   <PagerContent>
     <MudDataGridPager T="ContentItem" />
