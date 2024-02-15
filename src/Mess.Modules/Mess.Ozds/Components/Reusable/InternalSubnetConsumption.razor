@@ -229,7 +229,7 @@
                   _startEnd = await _timeseriesClient.GetAbbLastMonthMeasurementsAsync(omm.As<IotDevicePart>().DeviceId.Text, DateTime.UtcNow.AddMonths(-1), DateTime.UtcNow);
                 else
                   _startEnd = await _timeseriesClient.GetSchneiderLastMonthMeasurementsAsync(omm.As<IotDevicePart>().DeviceId.Text, DateTime.UtcNow.AddMonths(-1), DateTime.UtcNow);
-              _dataStruct.Add(new TabularData(omm, system, unit, _startEnd.First / 1000 - _startEnd.Last / 1000, _totalPerOMM.Where(x => x.source == omm.DisplayText).FirstOrDefault().total));
+              _dataStruct.Add(new TabularData(omm, system, unit, _startEnd.First - _startEnd.Last, _totalPerOMM.Where(x => x.source == omm.DisplayText).FirstOrDefault().total));
             }
           }
         }

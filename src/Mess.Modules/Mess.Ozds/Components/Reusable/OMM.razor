@@ -53,6 +53,11 @@
           <MudMenuItem OnClick="@(() => MenuItemClicked("Scale2"))">10 min</MudMenuItem>
           <MudMenuItem OnClick="@(() => MenuItemClicked("Scale3"))">15 min</MudMenuItem>
           <MudMenuItem OnClick="@(() => MenuItemClicked("Scale4"))">30 min</MudMenuItem>
+          <MudMenuItem OnClick="@(() => MenuItemClicked("Scale5"))">1 h</MudMenuItem>
+          <MudMenuItem OnClick="@(() => MenuItemClicked("Scale6"))">3 h</MudMenuItem>
+          <MudMenuItem OnClick="@(() => MenuItemClicked("Scale7"))">6 h</MudMenuItem>
+          <MudMenuItem OnClick="@(() => MenuItemClicked("Scale8"))">12 h</MudMenuItem>
+          <MudMenuItem OnClick="@(() => MenuItemClicked("Scale9"))">24 h</MudMenuItem>
         </MudMenu>
         </MudContainer>
             </MudPaper>
@@ -60,7 +65,7 @@
         <MudItem xs="12" Class="pa-1">
             <MudPaper Class="d-flex align-center justify-start mud-width-full pa-1 flex-column">
               <MudItem Class="d-flex justify-center align-center" Style="font-size: large; font-weight: bold;">
-                @(T["Trenutna snaga"].Value + ": " + Source)
+                @(T["Trenutna snaga(kWh)"].Value + ": " + Source)
               </MudItem>
         <MudContainer MaxWidth="MaxWidth.Small">
                 <ApexChart TItem="Order"
@@ -191,7 +196,7 @@
         <MudItem xs="6">
             <MudPaper Class="d-flex align-center justify-start mud-width-full py-8 px-8 flex-column" Height="450px">
               <MudItem Class="d-flex" Style="font-size: large; font-weight: bold;">
-                @(T["Trenutna snaga"].Value + ": " + Source)
+                @(T["Trenutna snaga(kWh)"].Value + ": " + Source)
               </MudItem>
         <MudContainer MaxWidth="MaxWidth.Small">
                 <ApexChart TItem="Order"
@@ -245,11 +250,11 @@
           <MudMenuItem OnClick="@(() => MenuItemClicked("Scale2"))">10 min</MudMenuItem>
           <MudMenuItem OnClick="@(() => MenuItemClicked("Scale3"))">15 min</MudMenuItem>
           <MudMenuItem OnClick="@(() => MenuItemClicked("Scale4"))">30 min</MudMenuItem>
-          @* <MudMenuItem OnClick="@(() => MenuItemClicked("Scale5"))">1 h</MudMenuItem>
+          <MudMenuItem OnClick="@(() => MenuItemClicked("Scale5"))">1 h</MudMenuItem>
           <MudMenuItem OnClick="@(() => MenuItemClicked("Scale6"))">3 h</MudMenuItem>
           <MudMenuItem OnClick="@(() => MenuItemClicked("Scale7"))">6 h</MudMenuItem>
           <MudMenuItem OnClick="@(() => MenuItemClicked("Scale8"))">12 h</MudMenuItem>
-          <MudMenuItem OnClick="@(() => MenuItemClicked("Scale9"))">24 h</MudMenuItem>*@
+          <MudMenuItem OnClick="@(() => MenuItemClicked("Scale9"))">24 h</MudMenuItem>
         </MudMenu>
         </MudContainer>
             </MudPaper>
@@ -355,14 +360,14 @@
             {
                 Toolbar = new ApexCharts.Toolbar
                 {
-                    Tools = new Tools { Zoomin = false, Zoomout = false, Download = false, Pan = false, Reset = false, Selection = false, Zoom = false, }
+                    Tools = new Tools { Zoomin = false, Zoomout = false, Download = false, Pan = false, Selection = false}
                 }
             };
       graphOptions.Chart = new Chart
             {
                 Toolbar = new ApexCharts.Toolbar
                 {
-                    Tools = new Tools { Zoomin = false, Zoomout = false, Download = false, Pan = false, Reset = false, Selection = false, Zoom = false, }
+                    Tools = new Tools { Zoomin = false, Zoomout = false, Download = false, Pan = false, Selection = false }
                 }
             };
       options.PlotOptions = new PlotOptions { RadialBar = new PlotOptionsRadialBar { StartAngle = -90, EndAngle = 90 } };
@@ -404,13 +409,28 @@
             _graphValues = _lastDay.Where(x => x.date > DateTime.UtcNow.AddMinutes(-5));
             break;
         case "Scale2":
-            _graphValues =_lastDay.Where(x => x.date > DateTime.UtcNow.AddMinutes(-10));;
+            _graphValues =_lastDay.Where(x => x.date > DateTime.UtcNow.AddMinutes(-10));
             break;
         case "Scale3":
-            _graphValues =_lastDay.Where(x => x.date > DateTime.UtcNow.AddMinutes(-15));;
+            _graphValues =_lastDay.Where(x => x.date > DateTime.UtcNow.AddMinutes(-15));
             break;
         case "Scale4":
-            _graphValues =_lastDay.Where(x => x.date > DateTime.UtcNow.AddMinutes(-30));;
+            _graphValues =_lastDay.Where(x => x.date > DateTime.UtcNow.AddMinutes(-30));
+            break;
+        case "Scale5":
+            _graphValues = _lastDay.Where(x => x.date > DateTime.UtcNow.AddHours(-1));
+            break;
+        case "Scale6":
+            _graphValues =_lastDay.Where(x => x.date > DateTime.UtcNow.AddHours(-3));
+            break;
+        case "Scale7":
+            _graphValues =_lastDay.Where(x => x.date > DateTime.UtcNow.AddHours(-6));
+            break;
+        case "Scale8":
+            _graphValues =_lastDay.Where(x => x.date > DateTime.UtcNow.AddHours(-12));
+            break;
+        case "Scale9":
+            _graphValues =_lastDay.Where(x => x.date > DateTime.UtcNow.AddHours(-24));
             break;
       }
     }

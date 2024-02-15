@@ -271,14 +271,14 @@
         {
           Toolbar = new ApexCharts.Toolbar
           {
-              Tools = new Tools { Zoomin = false, Zoomout = false, Download = false, Pan = false, Reset = false, Selection = false, Zoom = false, }
+              Tools = new Tools { Zoomin = false, Zoomout = false, Download = false, Pan = false, Selection = false, }
           }
         };
         graphOptions.Chart = new Chart
         {
           Toolbar = new ApexCharts.Toolbar
           {
-              Tools = new Tools { Zoomin = false, Zoomout = false, Download = false, Pan = false, Reset = false, Selection = false, Zoom = false, }
+              Tools = new Tools { Zoomin = false, Zoomout = false, Download = false, Pan = false, Selection = false, }
           }
         };
       graphLOptions.Tooltip = new ApexCharts.Tooltip { X = new TooltipX { Format = @"hh : mm : ss" } };
@@ -300,7 +300,7 @@
             {
                 Toolbar = new ApexCharts.Toolbar
                 {
-                    Tools = new Tools { Zoomin = false, Zoomout = false, Download = false, Pan = false, Reset = false, Selection = false, Zoom = false, }
+                    Tools = new Tools { Zoomin = false, Zoomout = false, Download = false, Pan = false, Selection = false }
                 }
             };
       graphOptionsMob.Yaxis = new List<YAxis>();
@@ -318,7 +318,7 @@
             {
                 Toolbar = new ApexCharts.Toolbar
                 {
-                    Tools = new Tools { Zoomin = false, Zoomout = false, Download = false, Pan = false, Reset = false, Selection = false, Zoom = false, }
+                    Tools = new Tools { Zoomin = false, Zoomout = false, Download = false, Pan = false, Selection = false,  }
                 }
             };
       await WithTransientSessionAsync(async session => {
