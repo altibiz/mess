@@ -85,11 +85,11 @@
   <MudHidden Breakpoint="Breakpoint.SmAndDown">
     <MudGrid Class="my-3">
         <MudItem xs="12">
-          <MudPaper Class="d-flex align-center justify-center mud-width-full py-8 px-8 flex-column" Height="600px">
+          <MudPaper Class="d-flex align-center justify-center mud-width-full py-8 px-8 flex-column" Height="700px">
             <MudItem Class="d-flex justify-center align-center" Style="font-size: large; font-weight: bold;">
               @(_leftDataTitle + " za: " + _leftTitle)
             </MudItem>
-            <MudContainer Class="d-flex flex-column" MaxWidth="MaxWidth.Small">
+            <MudContainer Class="d-flex flex-column" MaxWidth="MaxWidth.Medium">
               @if(_leftGraphValues is not null ){
                 <ApexChart TItem="ChartDataL"
                   XAxisType="XAxisType.Datetime"
