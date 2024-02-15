@@ -12,7 +12,59 @@
 
 @inject NavigationManager NavigationManager
 
-  <MudDataGrid
+@if(_shownInvoices is not null && _shownInvoices.Count() > 0){
+@* MOBILE *@
+          <MudHidden Breakpoint="Breakpoint.LgAndUp">
+  <MudPaper Class="pa-1">
+      <MudText Typo="Typo.h4" Class="d-flex justify-center pa-1">
+        @T["Računi"]
+      </MudText>
+    <MudTextField Class="pa-3" ValueChanged="EventCallback.Factory.Create<string>(this, Filter)" Label="Pretraži" Variant="Variant.Text"></MudTextField>
+    @foreach(ExpandThing dataStruct in _shownInvoices.Where(x => x.show == true).ToList()){
+      <MudPaper Elevation="2" Class="ma-1">
+      <MudStack Spacing="0">
+            <MudGrid Class="d-flex pa-2">
+              <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: medium;">
+                @T["Id"].Value: @dataStruct.invoice.ContentItemId
+              </MudItem>
+              <MudItem xs="2" Class="d-flex align-center  justify-end">
+                <MudIconButton OnClick="() => InspectInvoice(dataStruct.invoice)" Icon="@Icons.Material.Filled.RemoveRedEye" Color="MudBlazor.Color.Primary"/>
+              </MudItem>
+              <MudItem xs="6" Class="d-flex align-center justify-start" Style="font-size: medium;">
+                @T["Od"].Value: @(dataStruct.invoice.As<OzdsInvoicePart>().Data.From.Date.ToShortDateString())
+              </MudItem>
+              <MudItem xs="6" Class="d-flex align-center justify-start" Style="font-size: medium;">
+                @T["Do"].Value: @(dataStruct.invoice.As<OzdsInvoicePart>().Data.To.Date.ToShortDateString())
+              </MudItem>
+              <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large; font-weight:bold;">
+                @T["Ukupni iznos"].Value:@(Math.Round((decimal)dataStruct.invoice.As<OzdsInvoicePart>().Data.TotalWithTax,2)) €
+              </MudItem>
+                <MudItem xs="2" Class="d-flex align-center justify-end">
+                  <MudIconButton OnClick="() => OnExpandCollapseClick(dataStruct.invoice.ContentItemId)" Icon="@(dataStruct.expand ? Icons.Material.Filled.KeyboardArrowUp : Icons.Material.Filled.KeyboardArrowDown)" Color="MudBlazor.Color.Default"/>
+                </MudItem>
+            </MudGrid>
+
+        <MudCollapse Class="py-2" Expanded="_shownInvoices.Where(x => x.invoice.ContentItemId == dataStruct.invoice.ContentItemId).First().expand">
+                <MudStack>
+                  <MudDivider DividerType="DividerType.Middle" Class="mt-2"/>
+                  <MudContainer>
+                    @T["Primatelj"].Value: @(dataStruct.invoice.As<OzdsInvoicePart>().Data.DistributionSystemUnit.DisplayText)
+                  </MudContainer>
+                  <MudContainer>
+                    @T["Izdavatelj"].Value: @(dataStruct.invoice.As<OzdsInvoicePart>().Data.DistributionSystemOperator.DisplayText)
+                  </MudContainer>
+                </MudStack>
+        </MudCollapse>
+      </MudStack>
+      </MudPaper>
+    }
+  </MudPaper>
+          </MudHidden>
+
+
+@* DESKTOP *@
+          <MudHidden Breakpoint="Breakpoint.MdAndDown">
+            <MudDataGrid
   T="ContentItem"
   MultiSelection="true"
   Items="@_invoices"
@@ -48,7 +100,11 @@
     <PropertyColumn
       CellStyle="font-size: x-large;"
       Property="x => x.As<OzdsInvoicePart>().Data.TotalWithTax"
-      Title='@T["Ukupno"].Value'/>
+      Title='@T["Ukupno"].Value'>
+          <CellTemplate>
+              @(Math.Round((decimal)context.Item.As<OzdsInvoicePart>().Data.TotalWithTax,2) + " €")
+          </CellTemplate>
+      </PropertyColumn>
     <PropertyColumn
       CellStyle="font-size: large;"
       Property="x => x.As<OzdsInvoicePart>().Data.From.Date.ToShortDateString()"
@@ -59,14 +115,18 @@
       Title='@T["Do"].Value' />
     <PropertyColumn
       Property="x => x.ContentItemId"
-      Title='@T["Id"].Value' Sortable="false"
-
-        />
+      Title='@T["Id"].Value' Sortable="false" CellClass="">
+          <CellTemplate>
+            <MudText>
+              @(context.Item.ContentItemId)
+            </MudText>
+          </CellTemplate>
+      </PropertyColumn>
     <TemplateColumn CellClass="d-flex justify-center"    >
         <CellTemplate>
             <MudStack Row>
               <MudButton OnClick="() => InspectInvoice(context.Item)" Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
-                @T["Pregled računa"]
+                @T["Pregled"]
               </MudButton>
             </MudStack>
         </CellTemplate>
@@ -76,10 +136,19 @@
     <MudDataGridPager T="ContentItem" />
   </PagerContent>
 </MudDataGrid>
+          </MudHidden>
+}
 
 @code {
     [Parameter]
     public ContentItem LegalEntity { get; set; } = default!;
+    public string TextValue { get; set; } = "";
+    private class ExpandThing {
+      public ContentItem invoice;
+      public bool expand;
+      public bool show;
+    }
+    List<ExpandThing> _shownInvoices = new();
     private string? _searchString;
     private IEnumerable<ContentItem>? _invoices;
     protected override async Task OnInitializedAsync()
@@ -90,8 +159,16 @@
               .Where(index => index.IssuerContentItemId == LegalEntity.ContentItemId || index.RecipientContentItemId == LegalEntity.ContentItemId)
           .ListAsync();
       });
+      if(_invoices is not null){
+        foreach(var invoice in _invoices){
+          _shownInvoices.Add( new() { invoice = invoice, expand = false, show = true});
+        }
+      }
   }
-
+  private void OnExpandCollapseClick(string invoiceId) {
+        var a = _shownInvoices.Where(x => x.invoice.ContentItemId == invoiceId).FirstOrDefault();
+        a.expand = !a.expand;
+    }
   private Func<ContentItem, bool> _quickFilter => x =>
   {
     if (string.IsNullOrWhiteSpace(_searchString))
@@ -102,10 +179,23 @@
 
     return false;
   };
-  private void InspectTenant(ContentItem item) {
-      NavigationManager.NavigateTo($"app/tenant/{item.As<OzdsInvoicePart>().Data.DistributionSystemUnit.ContentItemId}");
-  }
   private void InspectInvoice(ContentItem item) {
       NavigationManager.NavigateTo($"app/invoice/{item.ContentItemId}");
+  }
+  private Task Filter(string value) {
+    TextValue = value;
+    foreach (var inv in _shownInvoices)
+    {
+      if(value.Trim() != ""){
+        inv.show = false;
+      }
+    };
+    var a = _shownInvoices.Where(x => x.invoice.As<OzdsInvoicePart>().Data.DistributionSystemUnit.DisplayText.Contains(value, StringComparison.InvariantCultureIgnoreCase)).ToList();
+    foreach (var inv in a)
+    {
+        inv.show = true;
+    };
+    StateHasChanged();
+    return Task.CompletedTask;
   }
 }

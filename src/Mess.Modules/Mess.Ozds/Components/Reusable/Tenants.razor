@@ -169,7 +169,7 @@ else{
     Property="x => x.unit.As<DistributionSystemUnitPart>().Consumption"
     Title='@T["Potrošnja"].Value'>
           <CellTemplate>
-                @(Math.Round((decimal)context.Item.unit.As<DistributionSystemUnitPart>().Consumption,2) + " kWh")
+                @(Math.Round((decimal)context.Item.unit.As<DistributionSystemUnitPart>().Consumption,2) + " €")
           </CellTemplate>
       </PropertyColumn>
   </Columns>
