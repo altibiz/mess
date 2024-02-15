@@ -22,6 +22,6 @@ public class OzdsTimeseriesDbContext : TimeseriesDbContext
   public DbSet<PeakPowerQueryEntity> PeakPowerQuery { get; set; } =
     default!;
 
-  public DbSet<PeakPowerQueryMultipleEntity> PeakPowerQueryMultiple { get; set; } =
+  public DbSet<FirstLastEnergiesQueryEntity> FirstLastEnergiesQuery { get; set; } =
     default!;
 }
