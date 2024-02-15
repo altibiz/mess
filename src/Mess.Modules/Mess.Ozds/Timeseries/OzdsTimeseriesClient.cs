@@ -23,6 +23,11 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
     with
       buckets as (
         select
+          distinct on (
+            "{2}",
+            time_bucket('15 minutes', "{1}")
+          )
+          "{2}" as source,
           time_bucket('15 minutes', "{1}") as interval,
           first_value("{3}") over bucket_windows as begin_energy,
           last_value("{3}") over bucket_windows as end_energy
@@ -34,21 +39,21 @@ public class OzdsTimeseriesClient : IOzdsTimeseriesClient
             "{1}" < {{2}}
           and
             "{2}" = {{0}}
-        group by
-          interval
         window bucket_windows as (
-          partition by time_bucket('15 minutes', "{1}")
-          order by "{1}"
-          range between unbounded preceding and unbounded following
+          partition by "{2}", time_bucket('15 minutes', "{1}")
         )
       ),
       calculation as (
         select
+          source,
+          interval,
           (end_energy - begin_energy) * 4 as power
         from
           buckets
       )
     select
+      source as "Source",
+      interval as "Interval",
       power as "ActivePower_W"
     from
       calculation
