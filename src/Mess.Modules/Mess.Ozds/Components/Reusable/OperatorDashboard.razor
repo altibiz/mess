@@ -308,27 +308,11 @@
                 }
             };*@
       await WithTransientSessionAsync(async session => {
-        if(LegalEntity.ContentType == "ClosedDistributionSystem"){
-          _ioTDevices = await session
-            .Query<ContentItem, OzdsIotDeviceIndex>()
-            .Where(index => index.ClosedDistributionSystemContentItemId == LegalEntity.ContentItemId)
-            .Where(index => !index.IsMessenger)
-            .ListAsync();
-        }
-        else if (LegalEntity.ContentType == "DistributionSystemOperator"){
-          _ioTDevices = await session
-            .Query<ContentItem, OzdsIotDeviceIndex>()
-            .Where(index => index.DistributionSystemOperatorContentItemId == LegalEntity.ContentItemId)
-            .Where(index => !index.IsMessenger)
-            .ListAsync();
-        }
-        else if (LegalEntity.ContentType == "DistributionSystemUnit"){
-          _ioTDevices = await session
-            .Query<ContentItem, OzdsIotDeviceIndex>()
-            .Where(index => index.DistributionSystemUnitContentItemId == LegalEntity.ContentItemId)
-            .Where(index => !index.IsMessenger)
-            .ListAsync();
-        }
+        _ioTDevices = await session
+          .Query<ContentItem, OzdsIotDeviceIndex>()
+          .Where(index => index.DistributionSystemOperatorContentItemId == LegalEntity.ContentItemId)
+          .Where(index => !index.IsMessenger)
+          .ListAsync();
         if(_ioTDevices is not null && _ioTDevices.Count() > 1){
           var c = _ioTDevices.Select(x => x).Take(2);
           foreach(var omm in c){
