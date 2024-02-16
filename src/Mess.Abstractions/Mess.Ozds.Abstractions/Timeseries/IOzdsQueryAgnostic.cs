@@ -11,6 +11,8 @@ public partial interface IOzdsTimeseriesQuery
   );
 
   public Task<IReadOnlyList<Measurement>> GetLastMeasurements(
-    List<string> sources
+    List<string> sources,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
   );
 }
