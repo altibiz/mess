@@ -26,7 +26,6 @@
   <OMMs LegalEntity="@_legalEntity" />
 }
 @if (_user.RoleNames.Contains("Closed Distribution System Representative")) {
-  <DashboardGraphs LegalEntity="@_legalEntity" />
   <OwnedSubnets LegalEntity="@_legalEntity" />
 }
 @if (_user.RoleNames.Contains("Distribution System Operator Representative")) {

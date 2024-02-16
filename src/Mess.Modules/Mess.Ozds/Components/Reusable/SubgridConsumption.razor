@@ -10,7 +10,7 @@
 @using OrchardCore.Users.Indexes
 
 @inject NavigationManager NavigationManager;
-
+@inject IOzdsTimeseriesClient _timeseriesClient;
 
 @* MOBILE *@
   <MudHidden Breakpoint="Breakpoint.MdAndUp">
@@ -24,13 +24,13 @@
           <MudStack Spacing="0">
             <MudGrid Class="d-flex pa-2">
               <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large;">
-                @T["Lokacija"].Value: @dataStruct.data.DisplayText
+                @T["Lokacija"].Value: @dataStruct.data.system.DisplayText
               </MudItem>
               <MudItem xs="2" Class="d-flex align-center justify-end">
-                <MudIconButton OnClick="() => InspectSubnet(dataStruct.data)" Icon="@Icons.Material.Filled.RemoveRedEye" Color="MudBlazor.Color.Primary"/>
+                <MudIconButton OnClick="() => InspectSubnet(dataStruct.data.system)" Icon="@Icons.Material.Filled.RemoveRedEye" Color="MudBlazor.Color.Primary"/>
               </MudItem>
               <MudItem xs="12" Class="d-flex align-center justify-start" Style="font-size: large; font-weight: bold;">
-                @T["Potrpšnja"].Value: @(Math.Round((decimal)dataStruct.data.As<ClosedDistributionSystemPart>().Consumption,2) + " €")
+                @T["Potrpšnja"].Value: @(Math.Round((decimal)dataStruct.data.consumption,2) + " kWh")
               </MudItem>
             </MudGrid>
           </MudStack>
@@ -42,9 +42,9 @@
 @* DESKTOP *@
   <MudHidden Breakpoint="Breakpoint.SmAndDown">
     <MudDataGrid
-    T="ContentItem"
+    T="TabularData"
     MultiSelection="true"
-    Items="@_systems"
+    Items="@_dataStruct"
     SortMode="SortMode.Multiple"
     Filterable="true"
     QuickFilter="@_quickFilter"
@@ -63,28 +63,26 @@
       </MudTextField>
     </ToolBarContent>
     <Columns>
-      <TemplateColumn Title="@T["Lokacije"].Value" Sortable="false"
-
-        >
+      <TemplateColumn Title="@T["Lokacije"].Value" Sortable="false">
           <CellTemplate>
               <MudStack Row>
-                <MudButton OnClick="() => InspectSubnet(context.Item)" Variant="Variant.Outlined" Color="MudBlazor.Color.Primary">
-                  @context.Item.DisplayText
+                <MudButton OnClick="() => InspectSubnet(context.Item.system)" Variant="Variant.Outlined" Color="MudBlazor.Color.Primary">
+                  @context.Item.system.DisplayText
                 </MudButton>
               </MudStack>
           </CellTemplate>
       </TemplateColumn>
       <PropertyColumn
         CellStyle="font-size: x-large;"
-        Property="x => x.As<ClosedDistributionSystemPart>().Consumption"
+        Property="x => x.consumption"
         Title='@T["Potrošnja"].Value'>
             <CellTemplate>
-                @(Math.Round((decimal)context.Item.As<ClosedDistributionSystemPart>().Consumption,2) + " €")
+                @(Math.Round((decimal)context.Item.consumption/1000,2) + " kWh")
             </CellTemplate>
       </PropertyColumn>
     </Columns>
     <PagerContent>
-      <MudDataGridPager T="ContentItem" />
+      <MudDataGridPager T="TabularData" />
     </PagerContent>
   </MudDataGrid>
 </MudHidden>
@@ -92,9 +90,13 @@
 @code {
     [Parameter]
     public ContentItem LegalEntity { get; set; } = default!;
+    private IEnumerable<ContentItem>? _ioTDevices;
     private string? _searchString;
+    private DateTimeOffset nowMonth = DateTimeOffset.UtcNow.AddDays(-DateTimeOffset.UtcNow.Day);
     private IEnumerable<ContentItem>? _systems;
-    private List<ContentItem> _dataStruct = new List<ContentItem>();
+    private ClosedDistributionSystemDiagnostics? _diagnostics;
+    public record struct TabularData(ContentItem system, decimal consumption);
+    private List<TabularData> _dataStruct = new List<TabularData>();
     protected override async Task OnInitializedAsync()
     {
       await WithTransientSessionAsync(async session => {
@@ -102,18 +104,28 @@
           .Query<ContentItem, ClosedDistributionSystemIndex>()
           .Where(index => index.DistributionSystemOperatorContentItemId == LegalEntity.ContentItemId)
           .ListAsync();
-        foreach(var sys in _systems){
-          _shownSubnets.Add( new ExpandThing{data = sys, show = true, expand = false});
-        }
+        _ioTDevices = await session
+          .Query<ContentItem, OzdsIotDeviceIndex>()
+          .Where(index => index.DistributionSystemOperatorContentItemId == LegalEntity.ContentItemId)
+          .Where(index => !index.IsMessenger)
+          .ListAsync();
       });
+      if(_ioTDevices is not null)
+        _diagnostics = await _timeseriesClient.GetClosedDistributionSystemDiagnostics(_ioTDevices.Select(x => x.DisplayText).ToList(),nowMonth, DateTime.UtcNow);
+
+      if(_systems is not null && _diagnostics is not null)
+        foreach(var sys in _systems){
+          _dataStruct.Add( new TabularData{system = sys, consumption = _diagnostics.Consumption_kWh});
+          _shownSubnets.Add( new ExpandThing{data = new TabularData{system = sys, consumption = _diagnostics.Consumption_kWh}, show = true, expand = false});
+        }
   }
 
-  private Func<ContentItem, bool> _quickFilter => x =>
+  private Func<TabularData, bool> _quickFilter => x =>
   {
     if (string.IsNullOrWhiteSpace(_searchString))
       return true;
 
-    if (x.DisplayText.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+    if (x.system.DisplayText.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
       return true;
 
     return false;
@@ -130,13 +142,13 @@
   @* MOBILE *@
   public string TextValue { get; set; } = "";
   private class ExpandThing {
-    public ContentItem data = default!;
+    public TabularData data = default!;
     public bool expand;
     public bool show;
   }
   List<ExpandThing> _shownSubnets = new();
   private void OnExpandCollapseClick(string id) {
-    var a = _shownSubnets.Where(x => x.data.ContentItemId == id).FirstOrDefault();
+    var a = _shownSubnets.Where(x => x.data.system.ContentItemId == id).FirstOrDefault();
     a.expand = !a.expand;
   }
   private Task Filter(string value) {
@@ -147,7 +159,7 @@
         inv.show = false;
       }
     };
-    var a = _shownSubnets.Where(x => x.data.DisplayText.Contains(value, StringComparison.InvariantCultureIgnoreCase)).ToList();
+    var a = _shownSubnets.Where(x => x.data.system.DisplayText.Contains(value, StringComparison.InvariantCultureIgnoreCase)).ToList();
     foreach (var inv in a)
     {
         inv.show = true;

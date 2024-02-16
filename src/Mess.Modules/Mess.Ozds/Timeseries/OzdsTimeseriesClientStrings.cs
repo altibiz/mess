@@ -86,6 +86,7 @@ public partial class OzdsTimeseriesClient
           source,
           timestamp,
           energy,
+          power,
           row_number() over (partition by source order by timestamp asc) as timestamp_ascending,
           row_number() over (partition by source order by timestamp desc) as timestamp_descending
         from
@@ -132,7 +133,7 @@ public partial class OzdsTimeseriesClient
     select
       source as "Source",
       timestamp as "Timestamp",
-      energy as "ActiveEnergyImportTotal_Wh"
+      energy as "ActiveEnergyImportTotal_Wh",
       power as "ActivePower_W"
     from
       ranked
