@@ -18,23 +18,31 @@ public partial class OzdsTimeseriesClient
     DateTimeOffset toDate
   )
   {
+    if (sources.Count == 0)
+    {
+      return new ClosedDistributionSystemDiagnostics(0M, 0M);
+    }
+
     return await _services.WithTimeseriesDbContextAsync<
       OzdsTimeseriesDbContext,
       ClosedDistributionSystemDiagnostics
     >(async context =>
     {
+      var firstLastInput = string.Format(
+              FirstLastEnergiesQueryTemplate,
+              "= {"
+                + string
+                  .Join("} or \"Source\" = {", Enumerable
+                  .Range(0, sources.Count)
+                  .Select(index => index + 2))
+                + "}"
+            );
+
+
       var firstLastQuery =
        context.FirstLastEnergiesQuery
         .FromSqlRaw(
-            string.Format(
-              FirstLastEnergiesQueryTemplate,
-              "IN ({"
-                + string
-                  .Join("}, { ", Enumerable
-                  .Range(0, sources.Count)
-                  .Select(index => index + 2))
-                + "})"
-            ),
+            firstLastInput,
             (new object[] {
               fromDate,
               toDate,
@@ -42,18 +50,20 @@ public partial class OzdsTimeseriesClient
         )
         .Future();
 
+      var peakInput = string.Format(
+              PeakPowerQueryTemplate,
+              "= {"
+                + string
+                  .Join("} or \"Source\" = {", Enumerable
+                  .Range(0, sources.Count)
+                  .Select(index => index + 2))
+                + "}"
+            );
+
       var peakQuery =
        context.PeakPowerQuery
         .FromSqlRaw(
-            string.Format(
-              PeakPowerQueryTemplate,
-              "IN ({"
-                + string
-                  .Join("}, { ", Enumerable
-                  .Range(0, sources.Count)
-                  .Select(index => index + 2))
-                + "})"
-            ),
+            peakInput,
             (new object[] {
               fromDate,
               toDate,
@@ -89,23 +99,30 @@ public partial class OzdsTimeseriesClient
     DateTimeOffset toDate
   )
   {
+    if (sources.Count == 0)
+    {
+      return new List<Measurement>();
+    }
+
     return await _services.WithTimeseriesDbContextAsync<
       OzdsTimeseriesDbContext,
       IReadOnlyList<Measurement>
     >(async context =>
     {
+      var lastMeasurementInput = string.Format(
+              LastMeasurementsQueryTemplate,
+              "= {"
+                + string
+                  .Join("} or \"Source\" = {", Enumerable
+                  .Range(0, sources.Count)
+                  .Select(index => index + 2))
+                + "}"
+            );
+
       var lastMeasurementsQuery =
         context.MeasurementQuery
           .FromSqlRaw(
-            string.Format(
-              LastMeasurementsQueryTemplate,
-              "IN ({"
-                + string
-                  .Join("}, { ", Enumerable
-                  .Range(0, sources.Count)
-                  .Select(index => index + 2))
-                + "})"
-            ),
+            lastMeasurementInput,
             (new object[] {
               fromDate,
               toDate,

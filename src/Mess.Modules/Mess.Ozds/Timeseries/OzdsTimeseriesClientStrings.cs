@@ -16,7 +16,7 @@ public partial class OzdsTimeseriesClient
       and
         "Timestamp" < {{1}}
       and
-        "Source" {0}
+        ("Source" {0})
     union
     select
       "Source" as source,
@@ -30,7 +30,7 @@ public partial class OzdsTimeseriesClient
       and
         "Timestamp" < {{1}}
       and
-        "Source" {0}
+        ("Source" {0})
   """;
 
   // Peak Power Subqueries
