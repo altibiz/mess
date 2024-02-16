@@ -4,27 +4,25 @@ namespace Mess.Ozds.Abstractions.Timeseries;
 
 public partial interface IOzdsTimeseriesQuery
 {
-  public Task<IReadOnlyList<AbbMeasurement>> GetAbbMeasurementsAsync(
+  public OzdsIotDeviceBillingData GetAbbBillingData(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
 
-  public IReadOnlyList<AbbMeasurement> GetAbbMeasurements(
+  public Task<OzdsIotDeviceBillingData> GetAbbBillingDataAsync(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
 
-  public Task<
-    IReadOnlyList<SchneiderMeasurement>
-  > GetSchneiderMeasurementsAsync(
+  public OzdsIotDeviceBillingData GetSchneiderBillingData(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
 
-  public IReadOnlyList<SchneiderMeasurement> GetSchneiderMeasurements(
+  public Task<OzdsIotDeviceBillingData> GetSchneiderBillingDataAsync(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate

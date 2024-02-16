@@ -24,4 +24,6 @@ public class OzdsTimeseriesDbContext : TimeseriesDbContext
 
   public DbSet<FirstLastEnergiesQueryEntity> FirstLastEnergiesQuery { get; set; } =
     default!;
+
+  public DbSet<MeasurementEntity> MeasurementQuery { get; set; } = default!;
 }

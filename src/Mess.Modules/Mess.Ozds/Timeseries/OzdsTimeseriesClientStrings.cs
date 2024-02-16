@@ -8,6 +8,7 @@ public partial class OzdsTimeseriesClient
       "Source" as source,
       "Timestamp" as timestamp,
       "ActiveEnergyImportTotal_Wh" as energy
+      "ActivePowerL1_W" + "ActivePowerL2_W" + "ActivePowerL3_W" as power
     from
       "AbbMeasurements"
     where
@@ -21,6 +22,7 @@ public partial class OzdsTimeseriesClient
       "Source" as source,
       "Timestamp" as timestamp,
       "ActiveEnergyImportTotal_Wh" as energy
+      "ActivePowerL1_W" + "ActivePowerL2_W" + "ActivePowerL3_W" as power
     from
       "SchneiderMeasurements"
     where
@@ -83,8 +85,8 @@ public partial class OzdsTimeseriesClient
           source,
           timestamp,
           energy,
-          row_number() over (partition by source order by timestamp asc) as row_number_ascending,
-          row_number() over (partition by source order by timestamp desc) as row_number_descending
+          row_number() over (partition by source order by timestamp asc) as timestamp_ascending,
+          row_number() over (partition by source order by timestamp desc) as timestamp_descending
         from
           measurements
       )
@@ -121,7 +123,19 @@ public partial class OzdsTimeseriesClient
     from
       ranked
     where
-      row_number_ascending = 1
-      or row_number_descending = 1
+      timestamp_ascending = 1
+      or timestamp_descending = 1
+  """;
+
+  private const string LastMeasurementsQueryTemplate = FLS + """
+    select
+      source as "Source",
+      timestamp as "Timestamp",
+      energy as "ActiveEnergyImportTotal_Wh"
+      power as "ActivePower_W"
+    from
+      ranked
+    where
+      timestamp_descending = 1
   """;
 }

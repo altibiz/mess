@@ -84,4 +84,49 @@ public partial class OzdsTimeseriesClient
       );
     });
   }
+
+  public async Task<IReadOnlyList<Measurement>> GetLastMeasurements(
+    List<string> sources,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  )
+  {
+    return await _services.WithTimeseriesDbContextAsync<
+      OzdsTimeseriesDbContext,
+      IReadOnlyList<Measurement>
+    >(async context =>
+    {
+      var lastMeasurementsQuery =
+        context.MeasurementQuery
+          .FromSqlRaw(
+            string.Format(
+              LastMeasurementsQueryTemplate,
+              "measurements",
+              "IN ({"
+                + string
+                  .Join("}, { ", Enumerable
+                  .Range(0, sources.Count)
+                  .Select(index => index + 2))
+                + "})"
+            ),
+            (new object[] {
+              fromDate,
+              toDate,
+            }).Concat(sources).ToArray())
+          .Future();
+
+      var lastMeasurements = await lastMeasurementsQuery.ToListAsync();
+
+      return lastMeasurements
+        .Select(lastMeasurement =>
+          new Measurement(
+            lastMeasurement.Source,
+            lastMeasurement.Timestamp,
+            lastMeasurement.ActiveEnergyImportTotal_Wh,
+            lastMeasurement.ActivePower_W
+          )
+        )
+        .ToList();
+    });
+  }
 }
