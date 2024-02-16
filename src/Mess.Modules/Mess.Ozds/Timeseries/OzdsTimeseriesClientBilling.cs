@@ -44,7 +44,6 @@ public partial class OzdsTimeseriesClient
         .FromSqlRaw(
             string.Format(
               PeakPowerQueryTemplate,
-              nameof(OzdsTimeseriesDbContext.AbbMeasurements),
               "= {2}"
             ),
             fromDate,
@@ -121,7 +120,6 @@ public partial class OzdsTimeseriesClient
         .FromSqlRaw(
             string.Format(
               PeakPowerQueryTemplate,
-              nameof(OzdsTimeseriesDbContext.AbbMeasurements),
               "= {2}"
             ),
             fromDate,
@@ -198,7 +196,6 @@ public partial class OzdsTimeseriesClient
         .FromSqlRaw(
             string.Format(
               PeakPowerQueryTemplate,
-              nameof(OzdsTimeseriesDbContext.SchneiderMeasurements),
               "= {2}"
             ),
             fromDate,
@@ -275,7 +272,6 @@ public partial class OzdsTimeseriesClient
         .FromSqlRaw(
             string.Format(
               PeakPowerQueryTemplate,
-              nameof(OzdsTimeseriesDbContext.SchneiderMeasurements),
               "= {2}"
             ),
             fromDate,

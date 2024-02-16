@@ -145,6 +145,10 @@ public abstract class OzdsIotDeviceBillingFactory<T> : IOzdsIotDeviceBillingFact
         : new OzdsExpenditureItemData(
           energyStart,
           energyEnd,
+          null,
+          null,
+          null,
+          null,
           energyAmount,
           energyPrice,
           energyTotal
@@ -162,6 +166,10 @@ public abstract class OzdsIotDeviceBillingFactory<T> : IOzdsIotDeviceBillingFact
         : new OzdsExpenditureItemData(
           highEnergyStart,
           highEnergyEnd,
+          null,
+          null,
+          null,
+          null,
           highEnergyAmount,
           highEnergyPrice,
           highEnergyTotal
@@ -179,6 +187,10 @@ public abstract class OzdsIotDeviceBillingFactory<T> : IOzdsIotDeviceBillingFact
         : new OzdsExpenditureItemData(
           lowEnergyStart,
           lowEnergyEnd,
+          null,
+          null,
+          null,
+          null,
           lowEnergyAmount,
           lowEnergyPrice,
           lowEnergyTotal
@@ -187,8 +199,12 @@ public abstract class OzdsIotDeviceBillingFactory<T> : IOzdsIotDeviceBillingFact
     var reactiveEnergyPrice =
       Math.Round(catalogueItem.OperatorCataloguePart.Value.ReactiveEnergyPrice.Value ?? 0.0M, 6);
     var reactiveEnergyThreshold = (billingData.EndEnergyImportTotal_kWh - billingData.StartEnergyImportTotal_kWh) * 0.33M;
-    var reactiveEnergyInductive = Math.Abs(billingData.EndReactiveEnergyImportTotal_kVARh - billingData.StartReactiveEnergyImportTotal_kVARh);
-    var reactiveEnergyCapacitive = Math.Abs(billingData.EndReactiveEnergyExportTotal_kVARh - billingData.StartReactiveEnergyExportTotal_kVARh);
+    var reactiveEnergyInductiveStart = Math.Round(billingData.StartReactiveEnergyImportTotal_kVARh, 2);
+    var reactiveEnergyInductiveEnd = Math.Round(billingData.EndReactiveEnergyImportTotal_kVARh, 2);
+    var reactiveEnergyCapacitativeStart = Math.Round(billingData.StartReactiveEnergyExportTotal_kVARh, 2);
+    var reactiveEnergyCapacitativeEnd = Math.Round(billingData.EndReactiveEnergyExportTotal_kVARh, 2);
+    var reactiveEnergyInductive = Math.Abs(reactiveEnergyInductiveEnd - reactiveEnergyInductiveStart);
+    var reactiveEnergyCapacitive = Math.Abs(reactiveEnergyCapacitativeEnd - reactiveEnergyCapacitativeStart);
     var reactiveEnergyAmount = Math.Round(Math.Max(reactiveEnergyInductive + reactiveEnergyCapacitive - reactiveEnergyThreshold, 0.0M), 0);
     var reactiveEnergyTotal = Math.Round(reactiveEnergyAmount * reactiveEnergyPrice, 2);
     var reactiveEnergyItem =
@@ -197,6 +213,10 @@ public abstract class OzdsIotDeviceBillingFactory<T> : IOzdsIotDeviceBillingFact
         : new OzdsExpenditureItemData(
           null,
           null,
+          reactiveEnergyInductiveStart,
+          reactiveEnergyInductiveEnd,
+          reactiveEnergyCapacitativeStart,
+          reactiveEnergyCapacitativeEnd,
           reactiveEnergyAmount,
           reactiveEnergyPrice,
           reactiveEnergyTotal
@@ -212,6 +232,10 @@ public abstract class OzdsIotDeviceBillingFactory<T> : IOzdsIotDeviceBillingFact
         : new OzdsExpenditureItemData(
           null,
           null,
+          null,
+          null,
+          null,
+          null,
           maxPowerAmount,
           maxPowerPrice,
           maxPowerTotal
@@ -225,6 +249,10 @@ public abstract class OzdsIotDeviceBillingFactory<T> : IOzdsIotDeviceBillingFact
       iotDeviceFeePrice == 0.0M
         ? null
         : new OzdsExpenditureItemData(
+          null,
+          null,
+          null,
+          null,
           null,
           null,
           iotDeviceFeeAmount,
@@ -265,6 +293,10 @@ public abstract class OzdsIotDeviceBillingFactory<T> : IOzdsIotDeviceBillingFact
         : new OzdsExpenditureItemData(
           highEnergyStart,
           highEnergyEnd,
+          null,
+          null,
+          null,
+          null,
           highEnergyAmount,
           highEnergyPrice,
           highEnergyTotal
@@ -282,6 +314,10 @@ public abstract class OzdsIotDeviceBillingFactory<T> : IOzdsIotDeviceBillingFact
         : new OzdsExpenditureItemData(
           lowEnergyStart,
           lowEnergyEnd,
+          null,
+          null,
+          null,
+          null,
           lowEnergyAmount,
           lowEnergyPrice,
           lowEnergyTotal
@@ -299,6 +335,10 @@ public abstract class OzdsIotDeviceBillingFactory<T> : IOzdsIotDeviceBillingFact
         : new OzdsExpenditureItemData(
           renewableEnergyFeeStart,
           renewableEnergyFeeEnd,
+          null,
+          null,
+          null,
+          null,
           renewableEnergyFeeAmount,
           renewableEnergyFeePrice,
           renewableEnergyFeeTotal
@@ -316,6 +356,10 @@ public abstract class OzdsIotDeviceBillingFactory<T> : IOzdsIotDeviceBillingFact
         : new OzdsExpenditureItemData(
           businessUsageFeeStart,
           businessUsageFeeEnd,
+          null,
+          null,
+          null,
+          null,
           businessUsageFeeAmount,
           businessUsageFeePrice,
           businessUsageFeeTotal

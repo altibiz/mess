@@ -34,6 +34,10 @@ public record OzdsSupplyExpenditureData(
 public record OzdsExpenditureItemData(
   decimal? ValueFrom,
   decimal? ValueTo,
+  decimal? ValueFromInductive,
+  decimal? ValueToInductive,
+  decimal? ValueFromCapacitative,
+  decimal? ValueToCapacitative,
   decimal Amount,
   decimal UnitPrice,
   decimal Total

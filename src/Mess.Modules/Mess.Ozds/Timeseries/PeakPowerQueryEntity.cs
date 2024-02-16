@@ -7,7 +7,7 @@ namespace Mess.Ozds.Timeseries;
 public class PeakPowerQueryEntity
 {
   [Column(TypeName = "text")]
-  public decimal Source { get; set; } = default!;
+  public string Source { get; set; } = default!;
 
   [Column(TypeName = "timestamptz")]
   public DateTimeOffset Interval { get; set; } = default!;

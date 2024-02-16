@@ -28,7 +28,6 @@ public partial class OzdsTimeseriesClient
         .FromSqlRaw(
             string.Format(
               FirstLastEnergiesQueryTemplate,
-              "measurements",
               "IN ({"
                 + string
                   .Join("}, { ", Enumerable
@@ -48,7 +47,6 @@ public partial class OzdsTimeseriesClient
         .FromSqlRaw(
             string.Format(
               PeakPowerQueryTemplate,
-              "measurements",
               "IN ({"
                 + string
                   .Join("}, { ", Enumerable
@@ -101,7 +99,6 @@ public partial class OzdsTimeseriesClient
           .FromSqlRaw(
             string.Format(
               LastMeasurementsQueryTemplate,
-              "measurements",
               "IN ({"
                 + string
                   .Join("}, { ", Enumerable

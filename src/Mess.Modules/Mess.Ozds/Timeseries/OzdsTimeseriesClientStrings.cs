@@ -7,34 +7,35 @@ public partial class OzdsTimeseriesClient
     select
       "Source" as source,
       "Timestamp" as timestamp,
-      "ActiveEnergyImportTotal_Wh" as energy
+      "ActiveEnergyImportTotal_Wh" as energy,
       "ActivePowerL1_W" + "ActivePowerL2_W" + "ActivePowerL3_W" as power
     from
       "AbbMeasurements"
     where
-        timestamp >= {{0}}
+        "Timestamp" >= {{0}}
       and
-        timestamp < {{1}}
+        "Timestamp" < {{1}}
       and
-        source {1}
+        "Source" {0}
     union
     select
       "Source" as source,
       "Timestamp" as timestamp,
-      "ActiveEnergyImportTotal_Wh" as energy
+      "ActiveEnergyImportTotal_Wh" as energy,
       "ActivePowerL1_W" + "ActivePowerL2_W" + "ActivePowerL3_W" as power
     from
       "SchneiderMeasurements"
     where
-        timestamp >= {{0}}
+        "Timestamp" >= {{0}}
       and
-        timestamp < {{1}}
+        "Timestamp" < {{1}}
       and
-        source {1}
+        "Source" {0}
   """;
 
   // Peak Power Subqueries
-  private const string PPS = "with"
+  private const string PPS =
+    "with "
     + $"measurements as ({GMUS}), "
     + """
       buckets as (
@@ -49,7 +50,7 @@ public partial class OzdsTimeseriesClient
           first_value(energy) over bucket_windows as begin_energy,
           last_value(energy) over bucket_windows as end_energy
         from
-          {0}
+          measurements
         window bucket_windows as (
           partition by source, time_bucket('15 minutes', timestamp)
           order by timestamp asc
@@ -77,7 +78,7 @@ public partial class OzdsTimeseriesClient
 
   // First Last Subqueries
   private const string FLS =
-    "with"
+    "with "
     + $"measurements as ({GMUS}), "
     + """
       ranked as (
