@@ -65,7 +65,7 @@
         <MudItem xs="12" Class="pa-1">
             <MudPaper Class="d-flex align-center justify-start mud-width-full pa-1 flex-column">
               <MudItem Class="d-flex justify-center align-center" Style="font-size: large; font-weight: bold;">
-                @(T["Trenutna snaga(kWh)"].Value + ": " + Source)
+                @(T["Trenutna snaga(kW)"].Value + ": " + Source)
               </MudItem>
         <MudContainer MaxWidth="MaxWidth.Small">
                 <ApexChart TItem="Order"
@@ -109,17 +109,17 @@
               <MudContainer>
                   @T["Poćetna potrošnja"].Value:
                   @if(dataStruct.data.monthEndTotal is not null)
-                  @(Math.Round((decimal)dataStruct.data.monthEndTotal,2)) kWh
+                  @(DecimalString((decimal)dataStruct.data.monthEndTotal)) kWh
               </MudContainer>
               <MudContainer>
                 @T["Zadnja potrošnja"].Value:
-                @if(dataStruct.data.monthEndTotal is not null)
-                @(Math.Round((decimal)dataStruct.data.monthEndTotal,2)) kWh
+                @if(dataStruct.data.monthStartTotal is not null)
+                @(DecimalString((decimal)dataStruct.data.monthStartTotal)) kWh
               </MudContainer>
               <MudContainer Style="font-size: large; font-weight:bold;">
                 @T["Ukupna potrošnja"].Value:
                 @if(dataStruct.data.monthStartTotal is not null && dataStruct.data.monthEndTotal is not null)
-                @(Math.Round((decimal)(dataStruct.data.monthStartTotal - dataStruct.data.monthEndTotal),2)) kWh
+                @(DecimalString((decimal)(dataStruct.data.monthStartTotal - dataStruct.data.monthEndTotal))) kWh
               </MudContainer>
             </MudStack>
           </MudCollapse>
@@ -165,7 +165,7 @@
       Title='@T["Poćetna potrošnja"].Value'>
           <CellTemplate>
                 @if(context.Item.monthEndTotal is not null)
-                @(Math.Round((decimal)context.Item.monthEndTotal,2) + " kWh")
+                @(DecimalString((decimal)context.Item.monthEndTotal) + " kWh")
           </CellTemplate>
       </PropertyColumn>
     <PropertyColumn
@@ -174,7 +174,7 @@
       Title='@T["Zadnja potrošnja"].Value'>
           <CellTemplate>
                 @if(context.Item.monthStartTotal is not null)
-                @(Math.Round((decimal)context.Item.monthStartTotal,2) + " kWh")
+                @(DecimalString((decimal)context.Item.monthStartTotal) + " kWh")
           </CellTemplate>
       </PropertyColumn>
     <PropertyColumn
@@ -183,7 +183,7 @@
       Title='@T["Ukupna potrošnja"].Value'>
           <CellTemplate>
                 @if(context.Item.monthStartTotal is not null && context.Item.monthEndTotal is not null)
-                @(Math.Round((decimal)(context.Item.monthStartTotal - context.Item.monthEndTotal),2) + " kWh")
+                @(DecimalString((decimal)(context.Item.monthStartTotal - context.Item.monthEndTotal)) + " kWh")
           </CellTemplate>
       </PropertyColumn>
   </Columns>
@@ -196,7 +196,7 @@
         <MudItem xs="6">
             <MudPaper Class="d-flex align-center justify-start mud-width-full py-8 px-8 flex-column" Height="450px">
               <MudItem Class="d-flex" Style="font-size: large; font-weight: bold;">
-                @(T["Trenutna snaga(kWh)"].Value + ": " + Source)
+                @(T["Trenutna snaga(kW)"].Value + ": " + Source)
               </MudItem>
         <MudContainer MaxWidth="MaxWidth.Small">
                 <ApexChart TItem="Order"
@@ -397,7 +397,7 @@
         _lastDay = a.Select(x => new ChartData(x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.Timestamp)).ToList();
       }
       _graphValues = _lastDay.TakeLast(20);
-      orders.Add(new Order(_startEnd.First / 1000, _startEndLastMonth.First / 1000));
+      orders.Add(new Order(_startEnd.First / 1000, _startEndLastMonth.First / 1000)); //TODO: Change to compate max power of last month to current power
     }
 
   private async Task MenuItemClicked(string item)

@@ -12,78 +12,9 @@
 @inject IContentManager _contentManager;
 @inject IServiceProvider _serviceProvider;
 @inject NavigationManager NavigationManager;
+@inject IOzdsTimeseriesClient _timeseriesClient;
 
 @if(User.RoleNames.Contains("Distribution System Operator Representative")){
-  @* <MudDataGrid
-  T="TabularData"
-  MultiSelection="true"
-  Items="@_dataStruct"
-  SortMode="SortMode.Multiple"
-  Filterable="true"
-  QuickFilter="@_quickFilter">
-  <ToolBarContent>
-    <MudText Typo="Typo.h6">@T["Korisnici mreže"]</MudText>
-    <MudSpacer />
-    <MudTextField
-      @bind-Value="_searchString"
-      Placeholder="Search"
-      Adornment="Adornment.Start"
-      Immediate="true"
-      AdornmentIcon="@Icons.Material.Filled.Search"
-      IconSize="MudBlazor.Size.Medium"
-      Class="mt-0">
-    </MudTextField>
-  </ToolBarContent>
-  <Columns>
-    <TemplateColumn Title="@T["Lokacije"].Value" Sortable="false"
-
-       >
-        <CellTemplate>
-            <MudStack Row>
-              <MudButton OnClick="() => InspectSubnet(context.Item.system)" Variant="Variant.Outlined" Color="MudBlazor.Color.Primary">
-                @context.Item.system.DisplayText
-              </MudButton>
-            </MudStack>
-        </CellTemplate>
-    </TemplateColumn>
-    <TemplateColumn Title="@T["Korisnici mreže"].Value" Sortable="false"
-
-       >
-        <CellTemplate>
-            <MudStack Row>
-              <MudButton OnClick="() => InspectTenant(context.Item.unit)" Variant="Variant.Outlined" Color="MudBlazor.Color.Primary">
-                @context.Item.unit.DisplayText
-              </MudButton>
-            </MudStack>
-        </CellTemplate>
-    </TemplateColumn>
-    <PropertyColumn
-      CellStyle="font-size: x-large;"
-      Property="x => x.unit.As<DistributionSystemUnitPart>().Consumption"
-      Title='@T["Potrošnja"].Value'>
-          <CellTemplate>
-                @(Math.Round((decimal)context.Item.unit.As<DistributionSystemUnitPart>().Consumption,2) + " €")
-          </CellTemplate>
-      </PropertyColumn>
-    <TemplateColumn CellClass="d-flex justify-end">
-          <CellTemplate>
-              <MudStack Row>
-                <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
-                    <form method="post" action="@($"admin/IssueInvoice/{context.Item.unit.ContentItemId}")">
-                        <button type="submit">@T["Izdati Račun"].Value</button>
-                    </form>
-                </MudButton>
-              </MudStack>
-          </CellTemplate>
-      </TemplateColumn>
-  </Columns>
-  <PagerContent>
-    <MudDataGridPager T="TabularData" />
-  </PagerContent>
-</MudDataGrid> *@
-
-
-
 @* MOBILE *@
   <MudHidden Breakpoint="Breakpoint.MdAndUp">
     <MudPaper Class="pa-1">
@@ -95,12 +26,6 @@
       <MudPaper Elevation="2" Class="ma-1">
         <MudStack Spacing="0">
           <MudGrid Class="d-flex pa-2">
-            <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large;">
-              @T["Lokacija"].Value: @dataStruct.data.system.DisplayText
-            </MudItem>
-            <MudItem xs="2" Class="d-flex align-center justify-end">
-              <MudIconButton OnClick="() => InspectSubnet(dataStruct.data.system)" Icon="@Icons.Material.Filled.RemoveRedEye" Color="MudBlazor.Color.Primary"/>
-            </MudItem>
             <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large; font-weight: bold;">
               @T["Korisnik lokacije"].Value: @dataStruct.data.unit.DisplayText
             </MudItem>
@@ -108,7 +33,10 @@
               <MudIconButton OnClick="() => InspectTenant(dataStruct.data.unit)" Icon="@Icons.Material.Filled.RemoveRedEye" Color="MudBlazor.Color.Primary"/>
             </MudItem>
             <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large;">
-              @T["Potrošnja"].Value: @(Math.Round((decimal)dataStruct.data.unit.As<DistributionSystemUnitPart>().Consumption,2) + " €")
+              @T["Potrošnja tekućega mjeseca"].Value: @(DecimalString((decimal)dataStruct.data.totalConsumption/1000) + " kWh")
+            </MudItem>
+            <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large;">
+              @T["Iznos zadnjeg racuna"].Value: @(DecimalString((decimal)dataStruct.data.lastInvoiceTotal) + " €")
             </MudItem>
             <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large;">
               <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
@@ -149,20 +77,7 @@
     </MudTextField>
   </ToolBarContent>
   <Columns>
-    <TemplateColumn Title="@T["Lokacije"].Value" Sortable="false"
-
-       >
-        <CellTemplate>
-            <MudStack Row>
-              <MudButton OnClick="() => InspectSubnet(context.Item.system)" Variant="Variant.Outlined" Color="MudBlazor.Color.Primary">
-                @context.Item.system.DisplayText
-              </MudButton>
-            </MudStack>
-        </CellTemplate>
-    </TemplateColumn>
-    <TemplateColumn Title="@T["Korisnici mreže"].Value" Sortable="false"
-
-       >
+    <TemplateColumn Title="@T["Korisnici mreže"].Value" Sortable="false">
         <CellTemplate>
             <MudStack Row>
               <MudButton OnClick="() => InspectTenant(context.Item.unit)" Variant="Variant.Outlined" Color="MudBlazor.Color.Primary">
@@ -174,9 +89,17 @@
     <PropertyColumn
     CellStyle="font-size: x-large;"
     Property="x => x.unit.As<DistributionSystemUnitPart>().Consumption"
-    Title='@T["Potrošnja"].Value'>
+    Title='@T["Potrošnja tekućega mjeseca"].Value'>
           <CellTemplate>
-                @(Math.Round((decimal)context.Item.unit.As<DistributionSystemUnitPart>().Consumption,2) + " €")
+                @(DecimalString((decimal)context.Item.totalConsumption/1000) + " kWh")
+          </CellTemplate>
+      </PropertyColumn>
+    <PropertyColumn
+    CellStyle="font-size: x-large;"
+    Property="x => x.unit.As<DistributionSystemUnitPart>().Consumption"
+    Title='@T["Iznos zadnjeg racuna"].Value'>
+          <CellTemplate>
+                @(DecimalString((decimal)context.Item.lastInvoiceTotal) + " €")
           </CellTemplate>
       </PropertyColumn>
     <TemplateColumn CellClass="d-flex justify-end">
@@ -211,12 +134,6 @@ else{
       <MudPaper Elevation="2" Class="ma-1">
         <MudStack Spacing="0">
           <MudGrid Class="d-flex pa-2">
-            <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large;">
-              @T["Lokacija"].Value: @dataStruct.data.system.DisplayText
-            </MudItem>
-            <MudItem xs="2" Class="d-flex align-center justify-end">
-              <MudIconButton OnClick="() => InspectSubnet(dataStruct.data.system)" Icon="@Icons.Material.Filled.RemoveRedEye" Color="MudBlazor.Color.Primary"/>
-            </MudItem>
             <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large; font-weight: bold;">
               @T["Korisnik lokacije"].Value: @dataStruct.data.unit.DisplayText
             </MudItem>
@@ -224,7 +141,10 @@ else{
               <MudIconButton OnClick="() => InspectTenant(dataStruct.data.unit)" Icon="@Icons.Material.Filled.RemoveRedEye" Color="MudBlazor.Color.Primary"/>
             </MudItem>
             <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large;">
-              @T["Potrošnja"].Value: @(Math.Round((decimal)dataStruct.data.unit.As<DistributionSystemUnitPart>().Consumption,2) + " €")
+              @T["Potrošnja tekućega mjeseca"].Value: @(DecimalString((decimal)dataStruct.data.totalConsumption/1000) + " kWh")
+            </MudItem>
+            <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large;">
+              @T["Iznos zadnjeg racuna"].Value: @(DecimalString((decimal)dataStruct.data.lastInvoiceTotal) + " €")
             </MudItem>
 
           </MudGrid>
@@ -258,20 +178,7 @@ else{
     </MudTextField>
   </ToolBarContent>
   <Columns>
-    <TemplateColumn Title="@T["Lokacije"].Value" Sortable="false"
-
-       >
-        <CellTemplate>
-            <MudStack Row>
-              <MudButton OnClick="() => InspectSubnet(context.Item.system)" Variant="Variant.Outlined" Color="MudBlazor.Color.Primary">
-                @context.Item.system.DisplayText
-              </MudButton>
-            </MudStack>
-        </CellTemplate>
-    </TemplateColumn>
-    <TemplateColumn Title="@T["Korisnici mreže"].Value" Sortable="false"
-
-       >
+    <TemplateColumn Title="@T["Korisnici mreže"].Value" Sortable="false">
         <CellTemplate>
             <MudStack Row>
               <MudButton OnClick="() => InspectTenant(context.Item.unit)" Variant="Variant.Outlined" Color="MudBlazor.Color.Primary">
@@ -283,9 +190,17 @@ else{
     <PropertyColumn
     CellStyle="font-size: x-large;"
     Property="x => x.unit.As<DistributionSystemUnitPart>().Consumption"
-    Title='@T["Potrošnja"].Value'>
+    Title='@T["Potrošnja tekućega mjeseca"].Value'>
           <CellTemplate>
-                @(Math.Round((decimal)context.Item.unit.As<DistributionSystemUnitPart>().Consumption,2) + " €")
+                @(DecimalString((decimal)context.Item.totalConsumption/1000) + " kWh")
+          </CellTemplate>
+      </PropertyColumn>
+    <PropertyColumn
+    CellStyle="font-size: x-large;"
+    Property="x => x.unit.As<DistributionSystemUnitPart>().Consumption"
+    Title='@T["Iznos zadnjeg racuna"].Value'>
+          <CellTemplate>
+                @(DecimalString((decimal)context.Item.lastInvoiceTotal) + " €")
           </CellTemplate>
       </PropertyColumn>
   </Columns>
@@ -299,12 +214,15 @@ else{
 @code {
     [Parameter]
     public User User { get; set; } = default!;
+    private (decimal? First, decimal? Last, DateTimeOffset FirstDate) _startEnd;
+    private DateTimeOffset nowMonth = DateTimeOffset.UtcNow.AddDays(-DateTimeOffset.UtcNow.Day);
     private string? _searchString;
     private ContentItem? _legalEntity;
     private IEnumerable<ContentItem>? _units;
-    public record struct TabularData(ContentItem system, ContentItem unit);
+    private decimal? _totalConsumption = 0;
+    private decimal? _lastInvoiceTotal = 0;
+    public record struct TabularData(ContentItem unit, decimal? totalConsumption, decimal? lastInvoiceTotal);
     private List<TabularData> _dataStruct = new List<TabularData>();
-
     private IEnumerable<ContentItem>? _systems;
     protected override async Task OnInitializedAsync()
     {
@@ -335,16 +253,38 @@ else{
                   .Where(index => index.ClosedDistributionSystemContentItemId == _legalEntity.ContentItemId)
                   .ListAsync();
             }
-        });
-        if(_systems is not null && _units is not null)
-            foreach(var system in _systems){
-                foreach(var unit in _units){
-                    _dataStruct.Add(new TabularData(system, unit));
-                }
+
+            foreach(var unit in _units){
+                var ioTDevices = await session
+                  .Query<ContentItem, OzdsIotDeviceIndex>()
+                  .Where(index => index.DistributionSystemUnitContentItemId == unit.ContentItemId)
+                  .Where(index => !index.IsMessenger)
+                  .ListAsync();
+
+                var invoices = await session
+                  .Query<ContentItem, Mess.Billing.Abstractions.Indexes.PaymentIndex>()
+                  .Where(index => index.RecipientContentItemId == unit.ContentItemId)
+                  .ListAsync();
+
+            foreach(var omm in ioTDevices){
+              _startEnd = new();
+              if(omm.DisplayText.StartsWith("abb")){
+                _startEnd = await _timeseriesClient.GetAbbLastMonthMeasurementsAsync(omm.DisplayText, nowMonth, DateTime.UtcNow);
+              }
+              else{
+                _startEnd = await _timeseriesClient.GetSchneiderLastMonthMeasurementsAsync(omm.DisplayText, nowMonth, DateTime.UtcNow);
+              }
+              _totalConsumption += _startEnd.First - _startEnd.Last;
             }
+            if(invoices.Count() > 0)
+              _lastInvoiceTotal = invoices.Last().As<OzdsInvoicePart>().Data.TotalWithTax;
+            _dataStruct.Add(new TabularData(unit, _totalConsumption, _lastInvoiceTotal));
             foreach(var data in _dataStruct){
               _shownTenants.Add( new ExpandThing{data = data, show = true, expand = false});
             }
+            _totalConsumption = 0;
+          }
+        });
     }
     private Func<TabularData, bool> _quickFilter => x =>
   {

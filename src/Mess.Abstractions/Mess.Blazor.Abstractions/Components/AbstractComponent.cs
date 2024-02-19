@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Security.Claims;
 using Mess.Blazor.Abstractions.Extensions;
 using Mess.Blazor.Abstractions.Localization;
@@ -65,6 +66,8 @@ public abstract class AbstractComponent : ComponentBase
 
   private IShapeFactory ShapeFactory => _shapeFactory ??=
     HttpContext.RequestServices.GetRequiredService<IShapeFactory>();
+
+  protected string DecimalString(decimal number, int places = 2) => Math.Round(number, places).ToString("F" + places, new CultureInfo("hr-HR"));
 
   /// <summary>
   ///   Gets a dynamic shape factory to create new shapes.

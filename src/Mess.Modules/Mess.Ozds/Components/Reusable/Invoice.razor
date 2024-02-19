@@ -57,12 +57,12 @@
       <MudItem xs="12" sm="6">
         <MudHidden Breakpoint="Breakpoint.Xs">
           <MudText Type="Typo.body2" Align="MudAlign.Right">
-            @(row.Total.ToString("F2"))
+            @DecimalString(row.Total, 2)
           </MudText>
         </MudHidden>
         <MudHidden Breakpoint="Breakpoint.SmAndUp">
           <MudText Type="Typo.body2" Align="MudAlign.Left">
-            @(row.Total.ToString("F2"))
+            @DecimalString(row.Total, 2)
           </MudText>
         </MudHidden>
       </MudItem>
@@ -87,12 +87,12 @@
       <MudItem xs="12" sm="6">
         <MudHidden Breakpoint="Breakpoint.Xs">
           <MudText Type="Typo.body2" Align="MudAlign.Right">
-            @(row.Total.ToString("F2"))
+            @DecimalString(row.Total, 2)
           </MudText>
         </MudHidden>
         <MudHidden Breakpoint="Breakpoint.SmAndUp">
           <MudText Type="Typo.body2" Align="MudAlign.Left">
-            @(row.Total.ToString("F2"))
+            @DecimalString(row.Total, 2)
           </MudText>
         </MudHidden>
       </MudItem>
@@ -113,29 +113,30 @@
     <MudItem xs="12" sm="3">
       <MudHidden Breakpoint="Breakpoint.Xs">
         <MudText Type="Typo.body2" Align="MudAlign.Right">
-          @(data?.Total.ToString("F2"))
+          @(data?.Total is null ? null : DecimalString(data.Total, 2))
         </MudText>
       </MudHidden>
       <MudHidden Breakpoint="Breakpoint.SmAndUp">
         <MudText Type="Typo.body2" Align="MudAlign.Left">
-          @(data?.Total.ToString("F2"))
+          @(data?.Total is null ? null : DecimalString(data.Total, 2))
         </MudText>
       </MudHidden>
     </MudItem>
     <MudItem xs="12" sm="9">
       <MudText Typo="Typo.body1">
-        <strong>PDV (@((data?.TaxRate * 100M)?.ToString("F2"))%)</strong>
+
+        <strong>PDV (@(data?.TaxRate is null ? null : DecimalString((data.TaxRate * 100M), 2))%)</strong>
       </MudText>
     </MudItem>
     <MudItem xs="12" sm="3">
       <MudHidden Breakpoint="Breakpoint.Xs">
         <MudText Type="Typo.body2" Align="MudAlign.Right">
-          @(data?.Tax.ToString("F2"))
+          @(data?.Tax is null ? null : DecimalString(data.Tax, 2))
         </MudText>
       </MudHidden>
       <MudHidden Breakpoint="Breakpoint.SmAndUp">
         <MudText Type="Typo.body2" Align="MudAlign.Left">
-          @(data?.Tax.ToString("F2"))
+          @(data?.Tax is null ? null : DecimalString(data.Tax, 2))
         </MudText>
       </MudHidden>
     </MudItem>
@@ -147,12 +148,12 @@
     <MudItem xs="12" sm="3">
       <MudHidden Breakpoint="Breakpoint.Xs">
         <MudText Type="Typo.body2" Align="MudAlign.Right">
-          @(data?.TotalWithTax.ToString("F2"))
+          @(data?.TotalWithTax is null ? null : DecimalString(data.TotalWithTax, 2))
         </MudText>
       </MudHidden>
       <MudHidden Breakpoint="Breakpoint.SmAndUp">
         <MudText Type="Typo.body2" Align="MudAlign.Left">
-          @(data?.TotalWithTax.ToString("F2"))
+          @(data?.TotalWithTax is null ? null : DecimalString(data.TotalWithTax, 2))
         </MudText>
       </MudHidden>
     </MudItem>

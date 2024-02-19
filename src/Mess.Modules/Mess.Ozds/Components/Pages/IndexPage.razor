@@ -29,7 +29,28 @@
   <OwnedSubnets LegalEntity="@_legalEntity" />
 }
 @if (_user.RoleNames.Contains("Distribution System Operator Representative")) {
-  <OperatorDashboard LegalEntity="@_legalEntity" />
+@* MOBILE *@
+  <MudHidden Breakpoint="Breakpoint.MdAndUp">
+    <MudGrid Class="my-3 pa-1">
+        <MudItem xs="12" Class="pa-1">
+          <OperatorDashboard LegalEntity="@_legalEntity" />
+        </MudItem>
+        <MudItem xs="12" Class="pa-1">
+          <OperatorDashboard LegalEntity="@_legalEntity" />
+        </MudItem>
+    </MudGrid>
+  </MudHidden>
+@* DESKTOP *@
+  <MudHidden Breakpoint="Breakpoint.SmAndDown">
+    <MudGrid Class="my-3 pa-1">
+        <MudItem xs="6" Class="pa-1">
+          <OperatorDashboard LegalEntity="@_legalEntity" />
+        </MudItem>
+        <MudItem xs="6" Class="pa-1">
+          <OperatorDashboard LegalEntity="@_legalEntity" />
+        </MudItem>
+    </MudGrid>
+  </MudHidden>
   <SubgridConsumption LegalEntity="@_legalEntity" />
   <Invoices LegalEntity="@_legalEntity" />
 }

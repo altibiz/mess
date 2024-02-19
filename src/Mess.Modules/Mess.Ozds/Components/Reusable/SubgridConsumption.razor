@@ -30,7 +30,7 @@
                 <MudIconButton OnClick="() => InspectSubnet(dataStruct.data.system)" Icon="@Icons.Material.Filled.RemoveRedEye" Color="MudBlazor.Color.Primary"/>
               </MudItem>
               <MudItem xs="12" Class="d-flex align-center justify-start" Style="font-size: large; font-weight: bold;">
-                @T["Potrpšnja"].Value: @(Math.Round((decimal)dataStruct.data.consumption,2) + " kWh")
+                @T["Ukupna pretraži tekućeg mjeseca"].Value: @(DecimalString((decimal)dataStruct.data.consumption/1000) + " kWh")
               </MudItem>
             </MudGrid>
           </MudStack>
@@ -54,7 +54,7 @@
       <MudSpacer />
       <MudTextField
         @bind-Value="_searchString"
-        Placeholder="@T["Pretraži"].Value"
+        Placeholder="@T["Ukupna pretraži tekućeg mjeseca"].Value"
         Adornment="Adornment.Start"
         Immediate="true"
         AdornmentIcon="@Icons.Material.Filled.Search"
@@ -75,9 +75,9 @@
       <PropertyColumn
         CellStyle="font-size: x-large;"
         Property="x => x.consumption"
-        Title='@T["Potrošnja"].Value'>
+        Title='@T["Potrošnja tekućega mjeseca"].Value'>
             <CellTemplate>
-                @(Math.Round((decimal)context.Item.consumption/1000,2) + " kWh")
+                @(DecimalString((decimal)context.Item.consumption/1000) + " kWh")
             </CellTemplate>
       </PropertyColumn>
     </Columns>
@@ -91,11 +91,12 @@
     [Parameter]
     public ContentItem LegalEntity { get; set; } = default!;
     private IEnumerable<ContentItem>? _ioTDevices;
+    private (decimal? First, decimal? Last, DateTimeOffset FirstDate) _startEnd;
     private string? _searchString;
     private DateTimeOffset nowMonth = DateTimeOffset.UtcNow.AddDays(-DateTimeOffset.UtcNow.Day);
     private IEnumerable<ContentItem>? _systems;
-    private ClosedDistributionSystemDiagnostics? _diagnostics;
-    public record struct TabularData(ContentItem system, decimal consumption);
+    private decimal? _diagnostics = 0;
+    public record struct TabularData(ContentItem system, decimal? consumption);
     private List<TabularData> _dataStruct = new List<TabularData>();
     protected override async Task OnInitializedAsync()
     {
@@ -111,13 +112,23 @@
           .ListAsync();
       });
       if(_ioTDevices is not null)
-        _diagnostics = await _timeseriesClient.GetClosedDistributionSystemDiagnostics(_ioTDevices.Select(x => x.DisplayText).ToList(),nowMonth, DateTime.UtcNow);
+        foreach(var omm in _ioTDevices){
+          _startEnd = new();
+          if(omm.DisplayText.StartsWith("abb")){
+            _startEnd = await _timeseriesClient.GetAbbLastMonthMeasurementsAsync(omm.DisplayText, nowMonth, DateTime.UtcNow);
+          }
+          else{
+            _startEnd = await _timeseriesClient.GetSchneiderLastMonthMeasurementsAsync(omm.DisplayText, nowMonth, DateTime.UtcNow);
+          }
+          _diagnostics += _startEnd.First - _startEnd.Last;
+        }
 
       if(_systems is not null && _diagnostics is not null)
         foreach(var sys in _systems){
-          _dataStruct.Add( new TabularData{system = sys, consumption = _diagnostics.Consumption_kWh});
-          _shownSubnets.Add( new ExpandThing{data = new TabularData{system = sys, consumption = _diagnostics.Consumption_kWh}, show = true, expand = false});
+          _dataStruct.Add( new TabularData{system = sys, consumption = _diagnostics});
+          _shownSubnets.Add( new ExpandThing{data = new TabularData{system = sys, consumption = _diagnostics}, show = true, expand = false});
         }
+        _diagnostics = 0;
   }
 
   private Func<TabularData, bool> _quickFilter => x =>

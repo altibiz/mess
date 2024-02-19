@@ -84,8 +84,8 @@
       <tr class="even">
         <td colspan="4"><strong>Naknada za mjernu uslugu - MU</strong></td>
         <td style="text-align: right;">1</td>
-        <td style="text-align: right;">@(iotDeviceFee.UnitPrice.ToString("F3"))</td>
-        <td style="text-align: right;">@(iotDeviceFee.Total.ToString("F2"))</td>
+        <td style="text-align: right;">@DecimalString(iotDeviceFee.UnitPrice, 3)</td>
+        <td style="text-align: right;">@DecimalString(iotDeviceFee.Total, 2)</td>
       </tr>
     }
     <tr class="odd">
@@ -93,7 +93,7 @@
       <td colspan="4">
         <strong>Naknada za korištenje mreže ZDS-a - UKUPNO:</strong>
       </td>
-      <td style="text-align: right;"><strong>@calculation.UsageExpenditure.Total.ToString("F2")</strong></td>
+      <td style="text-align: right;"><strong>@DecimalString(calculation.UsageExpenditure.Total, 2)</strong></td>
     </tr>
   </tbody>
 </table>
@@ -152,7 +152,7 @@
       <td colspan="5">
         <strong>Naknada za opskrbu električnom energijom - UKUPNO:</strong>
       </td>
-      <td style="text-align: right;"><strong>@calculation.SupplyExpenditure.Total.ToString("F2")</strong></td>
+      <td style="text-align: right;"><strong>@DecimalString(calculation.SupplyExpenditure.Total, 2)</strong></td>
     </tr>
   </tbody>
 </table>
@@ -205,7 +205,7 @@
               IND:
             </strong>
             <span>
-              @item.ValueFromInductive
+              @(item.ValueFromInductive is null ? null : DecimalString((decimal)item.ValueFromInductive, 2))
             </span>
           </p>
           <p style="padding: 2px; display: flex; justify-content: space-between;">
@@ -213,7 +213,7 @@
               KAP:
             </strong>
             <span>
-              @item.ValueFromCapacitative
+              @(item.ValueFromCapacitative is null ? null : DecimalString((decimal)item.ValueFromCapacitative, 2))
             </span>
           </p>
         </td>
@@ -223,7 +223,7 @@
               IND:
             </strong>
             <span>
-              @item.ValueToInductive
+              @(item.ValueToInductive is null ? null : DecimalString((decimal)item.ValueToInductive, 2))
             </span>
           </p>
           <p style="padding: 2px; display: flex; justify-content: space-between;">
@@ -231,32 +231,32 @@
               KAP:
             </strong>
             <span>
-              @item.ValueToCapacitative
+              @(item.ValueToCapacitative is null ? null : DecimalString((decimal)item.ValueToCapacitative, 2))
             </span>
           </p>
         </td>
         <td style="text-align: center;">@item.Status</td>
-        <td style="text-align: right;">@item.Amount.ToString("F0")</td>
-        <td style="text-align: right;">@item.Price.ToString("F6")</td>
-        <td style="text-align: right;">@item.Total.ToString("F2")</td>
+        <td style="text-align: right;">@DecimalString(item.Amount, 0)</td>
+        <td style="text-align: right;">@DecimalString(item.Price, 6)</td>
+        <td style="text-align: right;">@DecimalString(item.Total, 2)</td>
       </Fragment>
     : @<Fragment>
         <td><strong>@item.Name</strong></td>
-        <td style="text-align: right;">@item.ValueFrom</td>
-        <td style="text-align: right;">@item.ValueTo</td>
+        <td style="text-align: right;">@(item.ValueFrom is null ? null : DecimalString((decimal)item.ValueFrom, 2))</td>
+        <td style="text-align: right;">@(item.ValueTo is null ? null : DecimalString((decimal)item.ValueTo, 2))</td>
         <td style="text-align: center;">@item.Status</td>
-        <td style="text-align: right;">@item.Amount.ToString("F0")</td>
+        <td style="text-align: right;">@DecimalString(item.Amount, 0)</td>
         <td style="text-align: right;">
           @if (item.Name == "SVT")
           {
-            @item.Price.ToString("F3")
+            @DecimalString(item.Price, 3)
           }
           else
           {
-            @item.Price.ToString("F6")
+            @DecimalString(item.Price, 6)
           }
         </td>
-        <td style="text-align: right;">@item.Total.ToString("F2")</td>
+        <td style="text-align: right;">@DecimalString(item.Total, 2)</td>
       </Fragment>;
 
   private ItemData[]? _usageItems;

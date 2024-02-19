@@ -33,13 +33,13 @@
             <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large; font-weight: bold;">
               @T["Potrošnja zadnjih 30 dana"].Value: <br>
               @if(dataStruct.data.lastMonthUsage is not null)
-              @Math.Round((decimal)dataStruct.data.lastMonthUsage/1000,2) kWh
+              @DecimalString((decimal)dataStruct.data.lastMonthUsage/1000) kWh
             </MudItem>
             <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large; font-weight: bold;">
-                @if(dataStruct.data.lastTotal is not null)
+                @if(dataStruct.data.thisMonthUsage is not null)
               @T["Zadnji obracun"].Value: <br>
-              @if(dataStruct.data.lastTotal is not null)
-              @Math.Round((decimal)dataStruct.data.lastTotal,2) €
+              @if(dataStruct.data.thisMonthUsage is not null)
+              @DecimalString((decimal)dataStruct.data.thisMonthUsage/1000) kWh
             </MudItem>
               <MudItem xs="2" Class="d-flex align-center justify-end">
                 <MudIconButton OnClick="() => OnExpandCollapseClick(dataStruct.data.omm.ContentItemId)" Icon="@(dataStruct.expand ? Icons.Material.Filled.KeyboardArrowUp : Icons.Material.Filled.KeyboardArrowDown)" Color="MudBlazor.Color.Default"/>
@@ -122,19 +122,19 @@
         <PropertyColumn
           CellStyle="font-size: x-large;"
           Property="x => x.lastMonthUsage"
-          Title='@T["Potrošnja zadnjih 30 dana"].Value' >
+          Title='@T["Potrošnja prošli mjesec"].Value' >
             <CellTemplate>
               @if(context.Item.lastMonthUsage is not null)
-              @(Math.Round((decimal)context.Item.lastMonthUsage/1000,2) + " kWh")
+              @(DecimalString((decimal)context.Item.lastMonthUsage/1000) + " kWh")
             </CellTemplate>
         </PropertyColumn>
         <PropertyColumn
           CellStyle="font-size: x-large;"
-          Property="x => x.lastTotal"
-          Title='@T["Zadnji obracun"].Value' >
+          Property="x => x.thisMonthUsage"
+          Title='@T["Potrošnja trenutni mjesec"].Value' >
           <CellTemplate>
-              @if(context.Item.lastTotal is not null)
-              @(Math.Round((decimal)context.Item.lastTotal,2) + " €")
+              @if(context.Item.thisMonthUsage is not null)
+              @(DecimalString((decimal)context.Item.thisMonthUsage/1000) + " kWh")
           </CellTemplate>
       </PropertyColumn>
       </Columns>
@@ -148,16 +148,18 @@
     [Parameter]
     public ContentItem LegalEntity { get; set; } = default!;
     private string? _searchString;
+    private DateTimeOffset nowMonth = DateTimeOffset.UtcNow.AddDays(-DateTimeOffset.UtcNow.Day);
     private List<TabularData> _dataStruct = new List<TabularData>();
     private IEnumerable<ContentItem>? _systems;
     private IEnumerable<ContentItem>? _units;
     private IReadOnlyList<AbbMeasurement>? _lastAbbMeasurements;
     private IReadOnlyList<SchneiderMeasurement>? _lastSchneiderMeasurements;
     private IEnumerable<ContentItem>? _ioTDevices;
-    private List<(decimal total, string source)> _totalPerOMM = new();
+    @* private List<(decimal total, string source)> _totalPerOMM = new(); *@
     private List<(string, decimal?)> _lastTotalPerOMM = new List<(string, decimal?)>();
     private (decimal? First, decimal? Last, DateTimeOffset FirstDate) _startEnd;
-    public record struct TabularData(ContentItem omm, ContentItem system, ContentItem unit, decimal? lastMonthUsage, decimal? lastTotal);
+    private (decimal? First, decimal? Last, DateTimeOffset FirstDate) _thisMonthStartEnd;
+    public record struct TabularData(ContentItem omm, ContentItem system, ContentItem unit, decimal? lastMonthUsage, decimal? thisMonthUsage);
     protected override async Task OnInitializedAsync()
     {
         await WithTransientSessionAsync(async session => {
@@ -182,11 +184,11 @@
                       .ListAsync();
                     foreach(var omm in _ioTDevices){
                       List<List<OzdsCalculationData>> b = a.Select(x => x.As<OzdsCalculationPart>().Calculations).ToList();
-                      foreach(var calc in b){
+                      @* foreach(var calc in b){
                         foreach(var cal in calc){
                           _totalPerOMM.Add((cal.Total, cal.IotDevice.DisplayText));
                         }
-                      }
+                      } *@
                     }
                   }
             }
@@ -211,11 +213,11 @@
                     .ListAsync();
                   foreach(var omm in _ioTDevices){
                     List<List<OzdsCalculationData>> b = a.Select(x => x.As<OzdsCalculationPart>().Calculations).ToList();
-                    foreach(var calc in b){
+                    @* foreach(var calc in b){
                       foreach(var cal in calc){
                         _totalPerOMM.Add((cal.Total, cal.IotDevice.DisplayText));
                       }
-                    }
+                    } *@
                   }
                 }
         }
@@ -225,11 +227,16 @@
           foreach(var unit in _units){
             foreach(var omm in _ioTDevices){
               _startEnd = new();
-                if(omm.As<IotDevicePart>().DeviceId.Text.StartsWith("abb"))
-                  _startEnd = await _timeseriesClient.GetAbbLastMonthMeasurementsAsync(omm.As<IotDevicePart>().DeviceId.Text, DateTime.UtcNow.AddMonths(-1), DateTime.UtcNow);
-                else
-                  _startEnd = await _timeseriesClient.GetSchneiderLastMonthMeasurementsAsync(omm.As<IotDevicePart>().DeviceId.Text, DateTime.UtcNow.AddMonths(-1), DateTime.UtcNow);
-              _dataStruct.Add(new TabularData(omm, system, unit, _startEnd.First - _startEnd.Last, _totalPerOMM.Where(x => x.source == omm.DisplayText).FirstOrDefault().total));
+              _thisMonthStartEnd = new();
+                if(omm.As<IotDevicePart>().DeviceId.Text.StartsWith("abb")){
+                  _thisMonthStartEnd = await _timeseriesClient.GetAbbLastMonthMeasurementsAsync(omm.As<IotDevicePart>().DeviceId.Text, nowMonth, DateTime.UtcNow);
+                  _startEnd = await _timeseriesClient.GetAbbLastMonthMeasurementsAsync(omm.As<IotDevicePart>().DeviceId.Text, nowMonth.AddMonths(-1), nowMonth);
+                  }
+                else{
+                  _thisMonthStartEnd = await _timeseriesClient.GetSchneiderLastMonthMeasurementsAsync(omm.As<IotDevicePart>().DeviceId.Text, nowMonth, DateTime.UtcNow);
+                  _startEnd = await _timeseriesClient.GetSchneiderLastMonthMeasurementsAsync(omm.As<IotDevicePart>().DeviceId.Text, nowMonth.AddMonths(-1), nowMonth);
+                }
+              _dataStruct.Add(new TabularData(omm, system, unit, _startEnd.First - _startEnd.Last, _thisMonthStartEnd.First - _thisMonthStartEnd.Last));
             }
           }
         }
