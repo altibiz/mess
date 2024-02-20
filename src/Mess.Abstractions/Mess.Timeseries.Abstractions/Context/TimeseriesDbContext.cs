@@ -45,7 +45,7 @@ public abstract class TimeseriesDbContext : RelationalDbContext
     CreateTenantedEntitiesWithBase(
       modelBuilder,
       typeof(HypertableEntity),
-      entity =>
+      (@type, entity) =>
       {
         entity.HasKey(
           nameof(HypertableEntity.Tenant),
@@ -59,7 +59,7 @@ public abstract class TimeseriesDbContext : RelationalDbContext
           nameof(HypertableEntity.Timestamp)
         );
 
-        entity.ToTable(entity.GetType().Name.RegexRemove("Entity$"));
+        entity.ToTable(@type.Name.RegexRemove("Entity$"));
       }
     );
 
@@ -71,7 +71,7 @@ public abstract class TimeseriesDbContext : RelationalDbContext
     CreateTenantedEntitiesWithBase(
       modelBuilder,
       typeof(HypertableViewEntity),
-      entity =>
+      (@type, entity) =>
       {
         entity.HasKey(
           nameof(HypertableViewEntity.Tenant),
@@ -85,7 +85,7 @@ public abstract class TimeseriesDbContext : RelationalDbContext
           nameof(HypertableViewEntity.Timestamp)
         );
 
-        entity.ToView(entity.GetType().Name.RegexRemove("Entity$"));
+        entity.ToView(@type.Name.RegexRemove("Entity$"));
       }
     );
 

@@ -46,15 +46,20 @@ public abstract class RelationalDbContext : DbContext
     CreateTenantedEntitiesWithBase(
       modelBuilder,
       typeof(TenantedEntity),
-      entity =>
-        entity.HasKey(nameof(TenantedEntity.Tenant), nameof(TenantedEntity.Id))
+      (_, entity) =>
+      {
+        entity.HasKey(
+          nameof(TenantedEntity.Tenant),
+          nameof(TenantedEntity.Id)
+        );
+      }
     );
   }
 
   protected void CreateTenantedEntitiesWithBase(
     ModelBuilder builder,
     Type @base,
-    Action<EntityTypeBuilder>? configuration = null
+    Action<Type, EntityTypeBuilder>? configuration = null
   )
   {
     foreach (
@@ -82,7 +87,7 @@ public abstract class RelationalDbContext : DbContext
             new List<ParameterExpression> { entityParameter }
           )
         );
-      configuration?.Invoke(entity);
+      configuration?.Invoke(entityType, entity);
     }
   }
 }
