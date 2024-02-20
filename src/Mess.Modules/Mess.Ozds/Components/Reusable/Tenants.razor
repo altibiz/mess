@@ -277,7 +277,7 @@ else{
               _totalConsumption += _startEnd.First - _startEnd.Last;
             }
             if(invoices.Count() > 0)
-              _lastInvoiceTotal = invoices.Last().As<OzdsInvoicePart>().Data.TotalWithTax;
+              _lastInvoiceTotal = invoices.OrderBy(x => x.As<InvoicePart>().Date.Value).Last().As<OzdsInvoicePart>().Data.TotalWithTax;
             _dataStruct.Add(new TabularData(unit, _totalConsumption, _lastInvoiceTotal));
             foreach(var data in _dataStruct){
               _shownTenants.Add( new ExpandThing{data = data, show = true, expand = false});

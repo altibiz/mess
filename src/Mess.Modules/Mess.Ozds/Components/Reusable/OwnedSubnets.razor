@@ -103,7 +103,7 @@
                 @(T["Potrošnja ovaj mjesec(kWh):"].Value)
               </MudText>
             </MudItem>
-            <MudContainer Class="d-flex align-end justify-center" Style="height: 80%;" MaxWidth="MaxWidth.Small">
+            <MudContainer Class="d-flex align-center justify-center" MaxWidth="MaxWidth.Small" Style="height: 100%;">
               <MudText Typo="Typo.h1">
                   @(DecimalString((decimal)_totalConsumption/1000))
               </MudText>
@@ -117,7 +117,7 @@
                 @(T["Potrošnja prošlog mjeseca(kWh):"].Value)
               </MudText>
             </MudItem>
-            <MudContainer Class="d-flex align-end justify-center" Style="height: 80%;" MaxWidth="MaxWidth.Small">
+            <MudContainer Class="d-flex align-center justify-center" MaxWidth="MaxWidth.Small" Style="height: 75%;">
               <MudText Typo="Typo.h1">
                   @(DecimalString((decimal)_totalLastMonthConsumption/1000))
               </MudText>
@@ -131,7 +131,7 @@
                 @(T["Trenutna snaga(kW):"].Value)
               </MudText>
             </MudItem>
-            <MudContainer Class="d-flex align-end justify-center" Style="height: 80%;" MaxWidth="MaxWidth.Small">
+            <MudContainer Class="d-flex align-center justify-center" MaxWidth="MaxWidth.Small" Style="height: 100%;">
               <MudText Typo="Typo.h1">
                   @(DecimalString((decimal)_totalLastPower/1000))
               </MudText>

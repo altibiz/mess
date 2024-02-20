@@ -10,6 +10,7 @@
 @using OrchardCore.Users.Indexes
 
 @inject NavigationManager NavigationManager
+@inject IOzdsTimeseriesClient _timeseriesClient
 @* MOBILE *@
   <MudHidden Breakpoint="Breakpoint.MdAndUp">
     <MudPaper Class="pa-1">
@@ -31,7 +32,7 @@
               </MudGrid>
               <MudGrid Class="d-flex pa-2">
                 <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large; font-weight:bold;">
-                  @T["Potrošnja"].Value: @(DecimalString((decimal)dataStruct.omm.consumption/1000)) kWh
+                  @T["Zadnji obračun"].Value: @(dataStruct.omm.lastInvoiceTotal is null ? null : DecimalString((decimal)dataStruct.omm.lastInvoiceTotal)) €
                 </MudItem>
                 <MudItem xs="2" Class="d-flex align-center justify-end">
                   <MudIconButton OnClick="() => OnExpandCollapseClick(dataStruct.omm.source)" Icon="@(dataStruct.expand ? Icons.Material.Filled.KeyboardArrowUp : Icons.Material.Filled.KeyboardArrowDown)" Color="MudBlazor.Color.Default"/>
@@ -41,17 +42,11 @@
           <MudCollapse Class="py-2" Expanded="_shownOMMs.Where(x => x.omm.source == dataStruct.omm.source).First().expand">
             <MudStack>
               <MudDivider DividerType="DividerType.Middle" Class="mt-2"/>
-              @* <MudContainer>
-                @T["Ukupna potrošnja"].Value: @(dataStruct.omm.consumption) €
+              <MudContainer>
+                @T["Potrošnja tekućeg mjeseca"].Value: @(dataStruct.omm.thisMonthUsage is null ? null : DecimalString((decimal)dataStruct.omm.thisMonthUsage/1000, 2) + " kWh")
               </MudContainer>
               <MudContainer>
-                @T["Broj računa"].Value: @(dataStruct.omm.invoiceCount)
-              </MudContainer> *@
-              <MudContainer>
-                @T["Privremeni obracun tekuceg mjeseca"].Value: @(dataStruct.omm.thisMonthTotal is null ? null : DecimalString((decimal)dataStruct.omm.thisMonthTotal, 2) + " €")
-              </MudContainer>
-              <MudContainer>
-                @T["Obračuni prošlog mjeseca"].Value: @(dataStruct.omm.lastMonthTotal is null ? null : DecimalString((decimal)dataStruct.omm.lastMonthTotal, 2) + " €")
+                @T["Potrošnja prošlog mjeseca"].Value: @(dataStruct.omm.lastMonthUsage is null ? null : DecimalString((decimal)dataStruct.omm.lastMonthUsage/1000, 2) + " kWh")
               </MudContainer>
             </MudStack>
           </MudCollapse>
@@ -65,7 +60,7 @@
 @* DESKTOP *@
           <MudHidden Breakpoint="Breakpoint.SmAndDown">
   <MudDataGrid
-  T="(string source, decimal? lastImport, decimal? consumption, int invoiceCount, decimal? lastMonthTotal, decimal? thisMonthTotal)"
+  T="(string source, decimal? lastInvoiceTotal, decimal? thisMonthUsage, decimal? lastMonthUsage)"
   MultiSelection="true"
   Items="@_lastTotalPerOMM"
   SortMode="SortMode.Multiple"
@@ -98,39 +93,34 @@
     </TemplateColumn>
     <PropertyColumn
       CellStyle="font-size: x-large;"
-      Property="x => x.consumption"
-      Title='@T["Ukupna potrošnja"].Value'>
+      Property="x => x.thisMonthUsage"
+      Title='@T["Potrošnja tekućeg mjeseca"].Value'>
           <CellTemplate>
-              @(DecimalString((decimal)context.Item.consumption/1000) + " kWh")
+                @if(context.Item.thisMonthUsage is not null)
+                @(DecimalString((decimal)context.Item.thisMonthUsage/1000) + " kWh")
           </CellTemplate>
       </PropertyColumn>
-    @* <PropertyColumn
+    <PropertyColumn
       CellStyle="font-size: x-large;"
-      Property="x => x.lastImport"
-      Title='@T["Zadnji import"].Value'/>
-    <PropertyColumn
-      CellStyle="font-size: large;"
-      Property="x => x.invoiceCount"
-      Title='@T["Broj računa"].Value'/> *@
-    <PropertyColumn
-      CellStyle="font-size: large;"
-      Property="x => x.thisMonthTotal"
-      Title='@T["Privremeni obracun tekuceg mjeseca"].Value'>
+      Property="x => x.lastMonthUsage"
+      Title='@T["Potrošnja prošlog mjeseca"].Value'>
           <CellTemplate>
-              @(context.Item.thisMonthTotal + " €")
+                @if(context.Item.lastMonthUsage is not null)
+                @(DecimalString((decimal)context.Item.lastMonthUsage/1000) + " kWh")
           </CellTemplate>
       </PropertyColumn>
     <PropertyColumn
-      CellStyle="font-size: large;"
-      Property="x => x.lastMonthTotal"
-      Title='@T["Obračuni prošlog mjeseca"].Value'>
+      CellStyle="font-size: x-large;"
+      Property="x => x.lastInvoiceTotal"
+      Title='@T["Zadnji obračun"].Value'>
           <CellTemplate>
-              @(context.Item.lastMonthTotal + " €")
+                @if(context.Item.lastInvoiceTotal is not null)
+                @(DecimalString((decimal)context.Item.lastInvoiceTotal) + " €")
           </CellTemplate>
       </PropertyColumn>
   </Columns>
   <PagerContent>
-    <MudDataGridPager T="(string source, decimal? lastImport, decimal? consumption, int invoiceCount, decimal? lastMonthTotal, decimal? thisMonthTotal)" />
+    <MudDataGridPager T="(string source, decimal? lastInvoiceTotal, decimal? thisMonthUsage, decimal? lastMonthUsage)" />
   </PagerContent>
 </MudDataGrid>
           </MudHidden>
@@ -139,18 +129,20 @@
     [Parameter]
     public ContentItem LegalEntity { get; set; } = default!;
     public string TextValue { get; set; } = "";
+    private (decimal? First, decimal? Last, DateTimeOffset FirstDate) _startEnd;
+    private (decimal? First, decimal? Last, DateTimeOffset FirstDate) _startEndLastMonth;
+    private DateTimeOffset nowMonth = DateTimeOffset.UtcNow.AddDays(-DateTimeOffset.UtcNow.Day);
     private class ExpandThing {
-      public (string source, decimal? lastImport, decimal? consumption, int invoiceCount, decimal? lastMonthTotal, decimal? thisMonthTotal) omm;
+      public (string source, decimal? lastInvoiceTotal, decimal? thisMonthUsage, decimal? lastMonthUsage) omm;
       public bool expand;
       public bool show;
     }
     List<ExpandThing> _shownOMMs = new();
     private IEnumerable<ContentItem> _units = Enumerable.Empty<ContentItem>();
     private List<(decimal total, string source)> _lastMonthCosts = new();
-    private List<(decimal total, string source)> _thisMonthCosts = new();
-    private List<(ContentItem omm, decimal? consumption, int invoiceCount)> _unitsOMMs = new List<(ContentItem omm, decimal? consumption, int invoiceCount)>();
+    private List<ContentItem> _unitsOMMs = new();
     private string? _searchString;
-    private List<(string source, decimal? lastImport, decimal? consumption, int invoiceCount, decimal? lastMonthTotal, decimal? thisMonthTotal)> _lastTotalPerOMM = new();
+    private List<(string source, decimal? lastInvoiceTotal, decimal? thisMonthUsage, decimal? lastMonthUsage)> _lastTotalPerOMM = new();
     protected override async Task OnInitializedAsync()
     {
       await WithTransientSessionAsync(async session => {
@@ -161,66 +153,32 @@
             .Where(index => !index.IsMessenger)
           .Where(x => x.DistributionSystemUnitContentItemId == _units.First().ContentItemId)
           .ListAsync();
-        var invoiceCount = await session.Query<ContentItem, Mess.Billing.Abstractions.Indexes.PaymentIndex>()
+        var invoices = await session.Query<ContentItem, Mess.Billing.Abstractions.Indexes.PaymentIndex>()
           .Where(index => index.RecipientContentItemId == _units.First().ContentItemId)
           .ListAsync();
-        foreach(var invoice in invoiceCount){
-
-        }
         var consumption = _units.First().As<DistributionSystemUnitPart>().Consumption;
         foreach(var omm in omms){
-          List<List<OzdsCalculationData>> thisMonthInvoices = invoiceCount.Where(x => x.As<InvoicePart>().Date.Value.Value.Month == DateTime.UtcNow.AddMonths(-0).Month).Select(x => x.As<OzdsCalculationPart>().Calculations).ToList();
-          List<List<OzdsCalculationData>> lastMonthInvoices = invoiceCount.Where(x => x.As<InvoicePart>().Date.Value.Value.Month == DateTime.UtcNow.AddMonths(-1).Month).Select(x => x.As<OzdsCalculationPart>().Calculations).ToList();
-          foreach(var calc in lastMonthInvoices){
-            foreach(var cal in calc){
-              _lastMonthCosts.Add((cal.Total, cal.IotDevice.DisplayText));
-            }
+          _startEnd = new();
+          _startEndLastMonth = new();
+          if(omm.DisplayText.StartsWith("abb")){
+          _startEnd = await _timeseriesClient.GetAbbLastMonthMeasurementsAsync(omm.DisplayText, nowMonth, DateTime.UtcNow);
+          _startEndLastMonth = await _timeseriesClient.GetAbbLastMonthMeasurementsAsync(omm.DisplayText, nowMonth.AddMonths(-1), nowMonth);
           }
-          foreach(var calc in thisMonthInvoices){
-            foreach(var cal in calc){
-              _thisMonthCosts.Add((cal.Total, cal.IotDevice.DisplayText));
-            }
+          else{
+            _startEnd = await _timeseriesClient.GetSchneiderLastMonthMeasurementsAsync(omm.DisplayText, nowMonth, DateTime.UtcNow);
+          _startEndLastMonth = await _timeseriesClient.GetSchneiderLastMonthMeasurementsAsync(omm.DisplayText, nowMonth.AddMonths(-1), nowMonth);
           }
-          _unitsOMMs.Add((omm, consumption, invoiceCount.Count()));
-        }
-      }
-      @* else{
-        _units = await session
-            .Query<ContentItem, DistributionSystemUnitIndex>()
-            .Where(x => x.ClosedDistributionSystemContentItemId == LegalEntity.ContentItemId)
-            .ListAsync();
-        var unitIds = _units.Select(unit => unit.ContentItemId).ToList();
-        //TODO: DO NOT USE FOREACH WHEN TALKING TO DB
-        foreach(var unit in unitIds){
-          var omms = await session
-          .Query<ContentItem, OzdsIotDeviceIndex>()
-            .Where(index => !index.IsMessenger)
-          .Where(x => x.DistributionSystemUnitContentItemId == unit)
-          .ListAsync();
-        var invoiceCount = await session.Query<ContentItem, Mess.Billing.Abstractions.Indexes.PaymentIndex>()
-          .Where(index => index.RecipientContentItemId == unit).ListAsync();
-        var consumption = _units.First().As<DistributionSystemUnitPart>().Consumption;
-        foreach(var omm in omms){
-          List<List<OzdsCalculationData>> b = invoiceCount.Select(x => x.As<OzdsCalculationPart>().Calculations).ToList();
-          foreach(var calc in b){
-            foreach(var cal in calc){
-              _lastMonthCosts.Add((cal.Total, cal.IotDevice.DisplayText));
-            }
+          ContentItem lastInvoice = invoices.OrderBy(x => x.As<InvoicePart>().Date.Value.Value).Last();
+          var lastMonth = lastInvoice.As<OzdsCalculationPart>().Calculations.Where(x => x.IotDevice.DisplayText == omm.DisplayText).FirstOrDefault();
+          if(lastMonth is not null){
+            _lastTotalPerOMM.Add(new (omm.DisplayText, lastMonth.Total, _startEnd.First - _startEnd.Last, _startEndLastMonth.First - _startEndLastMonth.Last));
+            _shownOMMs.Add(new ExpandThing{omm = (source: omm.DisplayText, lastMonthTotal: lastMonth.Total, _startEnd.First - _startEnd.Last, _startEndLastMonth.First - _startEndLastMonth.Last), show = true, expand = false});
           }
-          _unitsOMMs.Add((omm, consumption, invoiceCount.Count()));
         }
-        }
-      }*@
-
-      foreach(var omm in _unitsOMMs){
-        var totalLastMonth = _lastMonthCosts.Where(x => x.source == omm.omm.DisplayText).Sum(x => x.total);
-        var totalThisMonth = _thisMonthCosts.Where(x => x.source == omm.omm.DisplayText).Sum(x => x.total);
-        _lastTotalPerOMM.Add(new (omm.omm.As<IotDevicePart>().DeviceId.Text, omm.omm.As<OzdsIotDevicePart>().LatestImport, omm.consumption, omm.invoiceCount, totalLastMonth, totalThisMonth));
-        _shownOMMs.Add(new ExpandThing{omm = (source: omm.omm.As<IotDevicePart>().DeviceId.Text, lastImport: omm.omm.As<OzdsIotDevicePart>().LatestImport, consumption: omm.consumption, invoiceCount: omm.invoiceCount, lastMonthTotal: totalLastMonth, thisMonthTotal: totalThisMonth), show = true, expand = false});
       }
       });
     }
-     private Func<(string source, decimal? lastImport, decimal? consumption, int invoiceCount, decimal? lastMonthTotal, decimal? thisMonthTotal), bool> _quickFilter => x =>
+     private Func<(string source, decimal? lastInvoiceTotal, decimal? thisMonthUsage, decimal? lastMonthUsage), bool> _quickFilter => x =>
   {
     if (string.IsNullOrWhiteSpace(_searchString))
       return true;
