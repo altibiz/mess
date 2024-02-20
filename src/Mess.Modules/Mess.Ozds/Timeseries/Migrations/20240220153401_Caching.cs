@@ -29,7 +29,7 @@ namespace Mess.Ozds.Timeseries.Migrations
 
       // TODO: materialize view create
       migrationBuilder.Sql("""
-        create materialized view if not exists FirstLastEnergiesQuery as
+        create materialized view if not exists MonthlyBoundsEnergy as
         with
           measurements as (
             select
@@ -85,7 +85,7 @@ namespace Mess.Ozds.Timeseries.Migrations
       """);
 
       migrationBuilder.Sql("""
-        create materialized view if not exists IntervalAveragePowerQuery as
+        create materialized view if not exists QuarterHourAveragePower as
         with
           measurements as (
             select
@@ -161,11 +161,11 @@ namespace Mess.Ozds.Timeseries.Migrations
     protected override void Down(MigrationBuilder migrationBuilder)
     {
       migrationBuilder.Sql("""
-        drop materialized view if exists FirstLastEnergiesQuery;
+        drop materialized view if exists MonthlyBoundsEnergy;
       """);
 
       migrationBuilder.Sql("""
-        drop materialized view if exists IntervalAveragePowerQuery;
+        drop materialized view if exists QuarterHourAveragePower;
       """);
 
       migrationBuilder.AddColumn<long>(

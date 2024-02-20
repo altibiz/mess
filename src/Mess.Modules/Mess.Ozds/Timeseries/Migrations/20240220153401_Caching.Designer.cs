@@ -128,7 +128,7 @@ namespace Mess.Ozds.Timeseries.Migrations
             b.ToTable("AbbMeasurements");
           });
 
-      modelBuilder.Entity("Mess.Ozds.Timeseries.FirstLastEnergiesQueryEntity", b =>
+      modelBuilder.Entity("Mess.Ozds.Timeseries.MonthlyBoundsEnergyEntity", b =>
           {
             b.Property<string>("Tenant")
                       .HasColumnType("text");
@@ -146,10 +146,10 @@ namespace Mess.Ozds.Timeseries.Migrations
 
             b.HasIndex("Tenant", "Source", "Timestamp");
 
-            b.ToView("FirstLastEnergiesQuery");
+            b.ToView("MonthlyBoundsEnergy");
           });
 
-      modelBuilder.Entity("Mess.Ozds.Timeseries.IntervalAveragePowerQuery", b =>
+      modelBuilder.Entity("Mess.Ozds.Timeseries.QuarterHourAveragePowerEntity", b =>
           {
             b.Property<string>("Tenant")
                       .HasColumnType("text");
@@ -167,7 +167,7 @@ namespace Mess.Ozds.Timeseries.Migrations
 
             b.HasIndex("Tenant", "Source", "Timestamp");
 
-            b.ToView("IntervalAveragePowerQuery");
+            b.ToView("QuarterHourAveragePower");
           });
 
       modelBuilder.Entity("Mess.Ozds.Timeseries.SchneiderMeasurementEntity", b =>

@@ -40,7 +40,7 @@ public partial class OzdsTimeseriesClient
 
 
       var firstLastQuery =
-       context.FirstLastEnergiesQuery
+       context.MonthlyBoundsEnergy
         .FromSqlRaw(
             firstLastInput,
             (new object[] {
@@ -61,7 +61,7 @@ public partial class OzdsTimeseriesClient
             );
 
       var peakQuery =
-       context.IntervalAveragePowerQuery
+       context.QuarterHourAveragePower
         .FromSqlRaw(
             peakInput,
             (new object[] {

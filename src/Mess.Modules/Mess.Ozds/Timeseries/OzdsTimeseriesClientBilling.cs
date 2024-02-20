@@ -40,7 +40,7 @@ public partial class OzdsTimeseriesClient
         .FutureValue();
 
       var peakQuery =
-       context.IntervalAveragePowerQuery
+       context.QuarterHourAveragePower
         .FromSqlRaw(
             string.Format(
               PeakPowerQueryTemplate,
@@ -119,7 +119,7 @@ public partial class OzdsTimeseriesClient
         .FutureValue();
 
       var peakQuery =
-       context.IntervalAveragePowerQuery
+       context.QuarterHourAveragePower
         .FromSqlRaw(
             string.Format(
               PeakPowerQueryTemplate,
@@ -198,7 +198,7 @@ public partial class OzdsTimeseriesClient
         .FutureValue();
 
       var peakQuery =
-       context.IntervalAveragePowerQuery
+       context.QuarterHourAveragePower
         .FromSqlRaw(
             string.Format(
               PeakPowerQueryTemplate,
@@ -277,7 +277,7 @@ public partial class OzdsTimeseriesClient
         .FutureValue();
 
       var peakQuery =
-       context.IntervalAveragePowerQuery
+       context.QuarterHourAveragePower
         .FromSqlRaw(
             string.Format(
               PeakPowerQueryTemplate,
