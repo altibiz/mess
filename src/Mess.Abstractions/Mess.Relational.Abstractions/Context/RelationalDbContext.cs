@@ -61,7 +61,9 @@ public abstract class RelationalDbContext : DbContext
       var entityType in GetType().Assembly
         .GetTypes()
         .Where(
-          type => type.IsClass && !type.IsAbstract && type.IsAssignableTo(@base)
+          type => type.IsClass
+            && !type.IsAbstract
+            && type.IsAssignableTo(@base)
         )
     )
     {

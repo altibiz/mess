@@ -58,7 +58,14 @@ public abstract class TimeseriesDbContext : RelationalDbContext
           nameof(HypertableEntity.Source),
           nameof(HypertableEntity.Timestamp)
         );
+
+        entity.ToTable(entity.GetType().Name.RegexRemove("Entity$"));
       }
+    );
+
+    CreateEnumPropertyTypes(
+      modelBuilder,
+      typeof(HypertableEntity)
     );
 
     CreateTenantedEntitiesWithBase(
@@ -67,22 +74,25 @@ public abstract class TimeseriesDbContext : RelationalDbContext
       entity =>
       {
         entity.HasKey(
-          nameof(HypertableEntity.Tenant),
-          nameof(HypertableEntity.Source),
-          nameof(HypertableEntity.Timestamp)
+          nameof(HypertableViewEntity.Tenant),
+          nameof(HypertableViewEntity.Source),
+          nameof(HypertableViewEntity.Timestamp)
         );
 
         entity.HasIndex(
-          nameof(HypertableEntity.Tenant),
-          nameof(HypertableEntity.Source),
-          nameof(HypertableEntity.Timestamp)
+          nameof(HypertableViewEntity.Tenant),
+          nameof(HypertableViewEntity.Source),
+          nameof(HypertableViewEntity.Timestamp)
         );
 
         entity.ToView(entity.GetType().Name.RegexRemove("Entity$"));
       }
     );
 
-    CreateEnumPropertyTypes(modelBuilder, typeof(HypertableEntity));
+    CreateEnumPropertyTypes(
+      modelBuilder,
+      typeof(HypertableViewEntity)
+    );
   }
 
   protected void CreateEnumPropertyTypes(ModelBuilder modelBuilder, Type @base)
