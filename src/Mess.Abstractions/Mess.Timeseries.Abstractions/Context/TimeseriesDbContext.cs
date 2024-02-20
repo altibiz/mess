@@ -1,4 +1,5 @@
 using System.Reflection;
+using Mess.Prelude.Extensions.Strings;
 using Mess.Relational.Abstractions.Context;
 using Mess.Timeseries.Abstractions.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -57,6 +58,27 @@ public abstract class TimeseriesDbContext : RelationalDbContext
           nameof(HypertableEntity.Source),
           nameof(HypertableEntity.Timestamp)
         );
+      }
+    );
+
+    CreateTenantedEntitiesWithBase(
+      modelBuilder,
+      typeof(HypertableViewEntity),
+      entity =>
+      {
+        entity.HasKey(
+          nameof(HypertableEntity.Tenant),
+          nameof(HypertableEntity.Source),
+          nameof(HypertableEntity.Timestamp)
+        );
+
+        entity.HasIndex(
+          nameof(HypertableEntity.Tenant),
+          nameof(HypertableEntity.Source),
+          nameof(HypertableEntity.Timestamp)
+        );
+
+        entity.ToView(entity.GetType().Name.RegexRemove("Entity$"));
       }
     );
 

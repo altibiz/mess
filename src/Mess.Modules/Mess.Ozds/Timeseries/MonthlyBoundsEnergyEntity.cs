@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Mess.Ozds.Timeseries;
 
-public class MonthlyBoundsEnergyEntity : HypertableEntity
+public class MonthlyBoundsEnergyEntity : HypertableViewEntity
 {
   [Column(TypeName = "float8")]
   public decimal ActiveEnergyImportTotal_Wh { get; set; } = default!;
