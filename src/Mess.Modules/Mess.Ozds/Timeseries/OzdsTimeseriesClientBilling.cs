@@ -44,7 +44,10 @@ public partial class OzdsTimeseriesClient
         .FromSqlRaw(
             string.Format(
               PeakPowerQueryTemplate,
-              "= {2}"
+              string.Format(
+                AbbBaseSubquery,
+                "= {2}"
+              )
             ),
             fromDate,
             toDate,
@@ -120,7 +123,10 @@ public partial class OzdsTimeseriesClient
         .FromSqlRaw(
             string.Format(
               PeakPowerQueryTemplate,
-              "= {2}"
+              string.Format(
+                AbbBaseSubquery,
+                "= {2}"
+              )
             ),
             fromDate,
             toDate,
@@ -196,7 +202,10 @@ public partial class OzdsTimeseriesClient
         .FromSqlRaw(
             string.Format(
               PeakPowerQueryTemplate,
-              "= {2}"
+              string.Format(
+                SchneiderBaseSubquery,
+                "= {2}"
+              )
             ),
             fromDate,
             toDate,
@@ -272,7 +281,10 @@ public partial class OzdsTimeseriesClient
         .FromSqlRaw(
             string.Format(
               PeakPowerQueryTemplate,
-              "= {2}"
+              string.Format(
+                SchneiderBaseSubquery,
+                "= {2}"
+              )
             ),
             fromDate,
             toDate,

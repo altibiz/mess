@@ -2,8 +2,8 @@ namespace Mess.Ozds.Timeseries;
 
 public partial class OzdsTimeseriesClient
 {
-  // Grand Meter Unification Subquery
-  private const string GMUS = """
+  // Abb Base Subquery
+  private const string AbbBaseSubquery = """
     select
       "Source" as source,
       "Timestamp" as timestamp,
@@ -12,12 +12,17 @@ public partial class OzdsTimeseriesClient
     from
       "AbbMeasurements"
     where
+        "Tenant" = 'ozds'
+      and
         "Timestamp" >= {{0}}
       and
         "Timestamp" < {{1}}
       and
         ("Source" {0})
-    union
+  """;
+
+  // Schneider Base Subquery
+  private const string SchneiderBaseSubquery = """
     select
       "Source" as source,
       "Timestamp" as timestamp,
@@ -26,6 +31,8 @@ public partial class OzdsTimeseriesClient
     from
       "SchneiderMeasurements"
     where
+        "Tenant" = 'ozds'
+      and
         "Timestamp" >= {{0}}
       and
         "Timestamp" < {{1}}
@@ -34,10 +41,7 @@ public partial class OzdsTimeseriesClient
   """;
 
   // Peak Power Subqueries
-  private const string PPS =
-    "with "
-    + $"measurements as ({GMUS}), "
-    + """
+  private const string PPS = """
       buckets as (
         select
           distinct on (
@@ -77,67 +81,80 @@ public partial class OzdsTimeseriesClient
     """;
 
   // First Last Subqueries
-  private const string FLS =
+  private const string FLS = """
+    ranked as (
+      select
+        source,
+        timestamp,
+        energy,
+        power,
+        row_number() over (partition by source order by timestamp asc) as timestamp_ascending,
+        row_number() over (partition by source order by timestamp desc) as timestamp_descending
+      from
+        measurements
+    )
+  """;
+
+  private const string PeakPowerQueryTemplate =
     "with "
-    + $"measurements as ({GMUS}), "
+    + "measurements as ({0}), "
+    + PPS
     + """
-      ranked as (
-        select
-          source,
-          timestamp,
-          energy,
-          power,
-          row_number() over (partition by source order by timestamp asc) as timestamp_ascending,
-          row_number() over (partition by source order by timestamp desc) as timestamp_descending
-        from
-          measurements
-      )
+      select
+        source as "Source",
+        interval as "Interval",
+        power as "ActivePower_W"
+      from
+        calculation
+      order by
+        power desc
+      limit 1
     """;
 
-  private const string PeakPowerQueryTemplate = PPS + """
-    select
-      source as "Source",
-      interval as "Interval",
-      power as "ActivePower_W"
-    from
-      calculation
-    order by
-      power desc
-    limit 1
-  """;
+  private const string PeakPowerQuerySumTemplate =
+    "with "
+    + "measurements as ({0}), "
+    + PPS
+    + """
+      select
+        interval as "Interval",
+        power as "ActivePower_W"
+      from
+        sum
+      group by
+        power desc
+      limit 1
+    """;
 
-  private const string PeakPowerQuerySumTemplate = PPS + """
-    select
-      interval as "Interval",
-      power as "ActivePower_W"
-    from
-      sum
-    group by
-      power desc
-    limit 1
-  """;
+  private const string FirstLastEnergiesQueryTemplate =
+    "with "
+    + "measurements as ({0}), "
+    + FLS
+    + """
+      select
+        source as "Source",
+        timestamp as "Timestamp",
+        energy as "ActiveEnergyImportTotal_Wh"
+      from
+        ranked
+      where
+        timestamp_ascending = 1
+        or timestamp_descending = 1
+    """;
 
-  private const string FirstLastEnergiesQueryTemplate = FLS + """
-    select
-      source as "Source",
-      timestamp as "Timestamp",
-      energy as "ActiveEnergyImportTotal_Wh"
-    from
-      ranked
-    where
-      timestamp_ascending = 1
-      or timestamp_descending = 1
-  """;
-
-  private const string LastMeasurementsQueryTemplate = FLS + """
-    select
-      source as "Source",
-      timestamp as "Timestamp",
-      energy as "ActiveEnergyImportTotal_Wh",
-      power as "ActivePower_W"
-    from
-      ranked
-    where
-      timestamp_descending = 1
-  """;
+  private const string LastMeasurementsQueryTemplate =
+    "with "
+    + "measurements as ({0}), "
+    + FLS
+    + """
+      select
+        source as "Source",
+        timestamp as "Timestamp",
+        energy as "ActiveEnergyImportTotal_Wh",
+        power as "ActivePower_W"
+      from
+        ranked
+      where
+        timestamp_descending = 1
+    """;
 }
