@@ -1,3 +1,4 @@
+using Mess.Cms.Extensions.Microsoft;
 using Mess.Relational.Abstractions.Migrations;
 using Mess.Timeseries.Abstractions.Connection;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,5 +12,7 @@ public class Startup : StartupBase
   {
     services.AddScoped<IRelationalDbMigrator, TimeseriesDbMigrator>();
     services.AddScoped<ITimeseriesDbConnection, TimeseriesDbConnection>();
+
+    services.AddBackgroundTask<MaterializedViewRefreshBackgroundTask>();
   }
 }

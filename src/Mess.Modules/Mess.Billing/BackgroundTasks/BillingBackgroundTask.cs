@@ -11,7 +11,7 @@ using YesSql;
 
 namespace Mess.Billing.BackgroundTasks;
 
-[BackgroundTask(Schedule = "0 * * */1 *")]
+[BackgroundTask(Schedule = "0 * * */1 *")] // NOTE: first minute of every month
 public class BillingBackgroundTask : IBackgroundTask
 {
   public async Task DoWorkAsync(
