@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Hosting.Internal;
 using OrchardCore.Environment.Shell;
 using OrchardCore.Environment.Shell.Configuration;
 
@@ -19,7 +20,7 @@ public abstract class RelationalDbContextDesignTimeFactory<T>
           var parameters = constructor.GetParameters();
           return parameters.Length == 2
                  && parameters[0].ParameterType == typeof(DbContextOptions<T>)
-                 && parameters[1].ParameterType == typeof(ShellSettings);
+                 && parameters[1].ParameterType == typeof(IServiceProvider);
         })
       ?? throw new InvalidOperationException(
         $"Cannot find a suitable constructor for {typeof(T).Name}"
@@ -44,9 +45,23 @@ public abstract class RelationalDbContextDesignTimeFactory<T>
       Name = "Default"
     };
 
+    var hostEnvironment = new HostingEnvironment()
+    {
+      EnvironmentName = Environments.Development
+    };
+
+    var serviceCollection = new ServiceCollection();
+
+    serviceCollection.AddSingleton<IHostEnvironment>(hostEnvironment);
+    serviceCollection.AddSingleton(shellSettings);
+
     var timeseriesContext =
       constructor.Invoke(
-        new object[] { optionsBuilder.Options, shellSettings }
+        new object[]
+        {
+          optionsBuilder.Options,
+          serviceCollection.BuildServiceProvider()
+        }
       ) as T
       ?? throw new InvalidOperationException(
         $"Failed constructing {typeof(T).Name}"

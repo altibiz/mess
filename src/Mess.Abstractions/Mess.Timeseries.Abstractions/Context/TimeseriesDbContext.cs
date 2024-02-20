@@ -57,12 +57,6 @@ public abstract class TimeseriesDbContext : RelationalDbContext
           nameof(HypertableEntity.Source),
           nameof(HypertableEntity.Timestamp)
         );
-
-        entity.HasIndex(
-          nameof(HypertableEntity.Tenant),
-          nameof(HypertableEntity.Source),
-          nameof(HypertableEntity.Milliseconds)
-        );
       }
     );
 

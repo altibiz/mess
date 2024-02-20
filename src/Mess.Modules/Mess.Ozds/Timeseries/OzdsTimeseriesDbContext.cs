@@ -19,11 +19,9 @@ public class OzdsTimeseriesDbContext : TimeseriesDbContext
   public DbSet<SchneiderMeasurementEntity> SchneiderMeasurements { get; set; } =
     default!;
 
-  public DbSet<PeakPowerQueryEntity> PeakPowerQuery { get; set; } =
+  public DbSet<IntervalAveragePowerQuery> IntervalAveragePowerQuery { get; set; } =
     default!;
 
   public DbSet<FirstLastEnergiesQueryEntity> FirstLastEnergiesQuery { get; set; } =
     default!;
-
-  public DbSet<MeasurementEntity> MeasurementQuery { get; set; } = default!;
 }

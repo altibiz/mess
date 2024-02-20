@@ -17,7 +17,7 @@ namespace Mess.Ozds.Timeseries.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.5")
+                .HasAnnotation("ProductVersion", "7.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "timescaledb");
@@ -76,9 +76,6 @@ namespace Mess.Ozds.Timeseries.Migrations
                     b.Property<double>("CurrentL3_A")
                         .HasColumnType("double precision");
 
-                    b.Property<long>("Milliseconds")
-                        .HasColumnType("bigint");
-
                     b.Property<double>("ReactiveEnergyExportTotal_VARh")
                         .HasColumnType("double precision");
 
@@ -123,11 +120,51 @@ namespace Mess.Ozds.Timeseries.Migrations
 
                     b.HasKey("Tenant", "Source", "Timestamp");
 
-                    b.HasIndex("Tenant", "Source", "Milliseconds");
-
                     b.HasIndex("Tenant", "Source", "Timestamp");
 
                     b.ToTable("AbbMeasurements");
+                });
+
+            modelBuilder.Entity("Mess.Ozds.Timeseries.FirstLastEnergiesQueryEntity", b =>
+                {
+                    b.Property<string>("Tenant")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Source")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("Timestamp")
+                        .HasColumnType("timestamptz");
+
+                    b.Property<double>("ActiveEnergyImportTotal_Wh")
+                        .HasColumnType("float8");
+
+                    b.HasKey("Tenant", "Source", "Timestamp");
+
+                    b.HasIndex("Tenant", "Source", "Timestamp");
+
+                    b.ToTable("FirstLastEnergiesQuery");
+                });
+
+            modelBuilder.Entity("Mess.Ozds.Timeseries.IntervalAveragePowerQuery", b =>
+                {
+                    b.Property<string>("Tenant")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Source")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("Timestamp")
+                        .HasColumnType("timestamptz");
+
+                    b.Property<double>("ActivePower_W")
+                        .HasColumnType("float8");
+
+                    b.HasKey("Tenant", "Source", "Timestamp");
+
+                    b.HasIndex("Tenant", "Source", "Timestamp");
+
+                    b.ToTable("IntervalAveragePowerQuery");
                 });
 
             modelBuilder.Entity("Mess.Ozds.Timeseries.SchneiderMeasurementEntity", b =>
@@ -177,9 +214,6 @@ namespace Mess.Ozds.Timeseries.Migrations
                     b.Property<double>("CurrentL3_A")
                         .HasColumnType("double precision");
 
-                    b.Property<long>("Milliseconds")
-                        .HasColumnType("bigint");
-
                     b.Property<double>("ReactiveEnergyExportTotal_VARh")
                         .HasColumnType("double precision");
 
@@ -199,8 +233,6 @@ namespace Mess.Ozds.Timeseries.Migrations
                         .HasColumnType("double precision");
 
                     b.HasKey("Tenant", "Source", "Timestamp");
-
-                    b.HasIndex("Tenant", "Source", "Milliseconds");
 
                     b.HasIndex("Tenant", "Source", "Timestamp");
 

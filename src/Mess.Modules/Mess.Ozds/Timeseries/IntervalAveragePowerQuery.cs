@@ -4,8 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Mess.Ozds.Timeseries;
 
-public class FirstLastEnergiesQueryEntity : HypertableEntity
+public class IntervalAveragePowerQuery : HypertableEntity
 {
   [Column(TypeName = "float8")]
-  public decimal ActiveEnergyImportTotal_Wh { get; set; } = default!;
+  public decimal ActivePower_W { get; set; } = default!;
 };

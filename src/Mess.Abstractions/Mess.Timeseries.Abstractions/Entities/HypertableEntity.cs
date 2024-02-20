@@ -17,12 +17,4 @@ public abstract class HypertableEntity
     get => _timestamp.ToUniversalTime();
     set => _timestamp = value.ToUniversalTime();
   }
-
-  [Column(TypeName = "bigint")]
-  public long Milliseconds
-  {
-    get => Timestamp.Ticks / TimeSpan.TicksPerMillisecond;
-    // NOTE: https://stackoverflow.com/a/52367289
-    private set { }
-  }
 }

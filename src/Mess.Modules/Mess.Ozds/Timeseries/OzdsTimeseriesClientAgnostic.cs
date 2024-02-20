@@ -61,7 +61,7 @@ public partial class OzdsTimeseriesClient
             );
 
       var peakQuery =
-       context.PeakPowerQuery
+       context.IntervalAveragePowerQuery
         .FromSqlRaw(
             peakInput,
             (new object[] {
@@ -90,57 +90,6 @@ public partial class OzdsTimeseriesClient
         }),
         peaks.FirstOrDefault()?.ActivePower_W ?? 0M
       );
-    });
-  }
-
-  public async Task<IReadOnlyList<Measurement>> GetLastMeasurements(
-    List<string> sources,
-    DateTimeOffset fromDate,
-    DateTimeOffset toDate
-  )
-  {
-    if (sources.Count == 0)
-    {
-      return new List<Measurement>();
-    }
-
-    return await _services.WithTimeseriesDbContextAsync<
-      OzdsTimeseriesDbContext,
-      IReadOnlyList<Measurement>
-    >(async context =>
-    {
-      var lastMeasurementInput = string.Format(
-              LastMeasurementsQueryTemplate,
-              "= {"
-                + string
-                  .Join("} or \"Source\" = {", Enumerable
-                  .Range(0, sources.Count)
-                  .Select(index => index + 2))
-                + "}"
-            );
-
-      var lastMeasurementsQuery =
-        context.MeasurementQuery
-          .FromSqlRaw(
-            lastMeasurementInput,
-            (new object[] {
-              fromDate,
-              toDate,
-            }).Concat(sources).ToArray())
-          .Future();
-
-      var lastMeasurements = await lastMeasurementsQuery.ToListAsync();
-
-      return lastMeasurements
-        .Select(lastMeasurement =>
-          new Measurement(
-            lastMeasurement.Source,
-            lastMeasurement.Timestamp,
-            lastMeasurement.ActiveEnergyImportTotal_Wh,
-            lastMeasurement.ActivePower_W
-          )
-        )
-        .ToList();
     });
   }
 }
