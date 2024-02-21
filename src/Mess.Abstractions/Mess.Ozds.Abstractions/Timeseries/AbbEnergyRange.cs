@@ -1,6 +1,6 @@
 namespace Mess.Ozds.Abstractions.Timeseries;
 
-public record AbbEnergyBounds(
+public record AbbEnergyRange(
   string Source,
   DateTimeOffset Timestamp,
   TimeSpan TimeSpan,

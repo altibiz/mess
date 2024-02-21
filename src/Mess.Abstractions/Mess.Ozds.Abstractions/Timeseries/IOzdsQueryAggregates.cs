@@ -2,105 +2,105 @@ namespace Mess.Ozds.Abstractions.Timeseries;
 
 public partial interface IOzdsTimeseriesQuery
 {
-  Task<IReadOnlyList<AbbEnergyBounds>> GetAbbQuarterHourlyEnergyBoundsAsync(
+  Task<IReadOnlyList<AbbEnergyRange>> GetAbbQuarterHourlyEnergyRangeAsync(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
 
-  IReadOnlyList<AbbEnergyBounds> GetAbbQuarterHourlyEnergyBounds(
-    string source,
-    DateTimeOffset fromDate,
-    DateTimeOffset toDate
-  );
-
-  Task<
-    IReadOnlyList<SchneiderEnergyBounds>
-  > GetSchneiderQuarterHourlyEnergyBoundsAsync(
-    string source,
-    DateTimeOffset fromDate,
-    DateTimeOffset toDate
-  );
-
-  IReadOnlyList<SchneiderEnergyBounds> GetSchneiderQuarterHourlyEnergyBounds(
-    string source,
-    DateTimeOffset fromDate,
-    DateTimeOffset toDate
-  );
-
-  Task<IReadOnlyList<AbbEnergyBounds>> GetAbbMonthlyEnergyBoundsAsync(
-    string source,
-    DateTimeOffset fromDate,
-    DateTimeOffset toDate
-  );
-
-  IReadOnlyList<AbbEnergyBounds> GetAbbMonthlyEnergyBounds(
+  IReadOnlyList<AbbEnergyRange> GetAbbQuarterHourlyEnergyRange(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
 
   Task<
-    IReadOnlyList<SchneiderEnergyBounds>
-  > GetSchneiderMonthlyEnergyBoundsAsync(
+    IReadOnlyList<SchneiderEnergyRange>
+  > GetSchneiderQuarterHourlyEnergyRangeAsync(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
 
-  IReadOnlyList<SchneiderEnergyBounds> GetSchneiderMonthlyEnergyBounds(
+  IReadOnlyList<SchneiderEnergyRange> GetSchneiderQuarterHourlyEnergyRange(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
 
-  Task<IReadOnlyList<AbbEnergyBounds>> GetBulkAbbQuarterHourlyEnergyBoundsAsync(
+  Task<IReadOnlyList<AbbEnergyRange>> GetAbbMonthlyEnergyRangeAsync(
+    string source,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  );
+
+  IReadOnlyList<AbbEnergyRange> GetAbbMonthlyEnergyRange(
+    string source,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  );
+
+  Task<
+    IReadOnlyList<SchneiderEnergyRange>
+  > GetSchneiderMonthlyEnergyRangeAsync(
+    string source,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  );
+
+  IReadOnlyList<SchneiderEnergyRange> GetSchneiderMonthlyEnergyRange(
+    string source,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  );
+
+  Task<IReadOnlyList<AbbEnergyRange>> GetBulkAbbQuarterHourlyEnergyRangeAsync(
     IEnumerable<string> source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
 
-  IReadOnlyList<AbbEnergyBounds> GetBulkAbbQuarterHourlyEnergyBounds(
+  IReadOnlyList<AbbEnergyRange> GetBulkAbbQuarterHourlyEnergyRange(
     IEnumerable<string> sources,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
 
   Task<
-    IReadOnlyList<SchneiderEnergyBounds>
-  > GetBulkSchneiderQuarterHourlyEnergyBoundsAsync(
+    IReadOnlyList<SchneiderEnergyRange>
+  > GetBulkSchneiderQuarterHourlyEnergyRangeAsync(
     IEnumerable<string> sources,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
 
-  IReadOnlyList<SchneiderEnergyBounds> GetBulkSchneiderQuarterHourlyEnergyBounds(
+  IReadOnlyList<SchneiderEnergyRange> GetBulkSchneiderQuarterHourlyEnergyRange(
     IEnumerable<string> sources,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
 
-  Task<IReadOnlyList<AbbEnergyBounds>> GetBulkAbbMonthlyEnergyBoundsAsync(
+  Task<IReadOnlyList<AbbEnergyRange>> GetBulkAbbMonthlyEnergyRangeAsync(
     IEnumerable<string> sources,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
 
-  IReadOnlyList<AbbEnergyBounds> GetBulkAbbMonthlyEnergyBounds(
+  IReadOnlyList<AbbEnergyRange> GetBulkAbbMonthlyEnergyRange(
     IEnumerable<string> sources,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
 
   Task<
-    IReadOnlyList<SchneiderEnergyBounds>
-  > GetBulkSchneiderMonthlyEnergyBoundsAsync(
+    IReadOnlyList<SchneiderEnergyRange>
+  > GetBulkSchneiderMonthlyEnergyRangeAsync(
     IEnumerable<string> sources,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
 
-  IReadOnlyList<SchneiderEnergyBounds> GetBulkSchneiderMonthlyEnergyBounds(
+  IReadOnlyList<SchneiderEnergyRange> GetBulkSchneiderMonthlyEnergyRange(
     IEnumerable<string> sources,
     DateTimeOffset fromDate,
     DateTimeOffset toDate

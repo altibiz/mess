@@ -63,7 +63,7 @@ public partial class OzdsTimeseriesClient
         .DeferredLastOrDefault()
         .FutureValue();
 
-      var peakQuery = context.AbbQuarterHourlyEnergyBounds
+      var peakQuery = context.AbbQuarterHourlyEnergyRange
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp >= fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
@@ -139,7 +139,7 @@ public partial class OzdsTimeseriesClient
         .DeferredLastOrDefault()
         .FutureValue();
 
-      var peakQuery = context.AbbQuarterHourlyEnergyBounds
+      var peakQuery = context.AbbQuarterHourlyEnergyRange
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp >= fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
@@ -215,7 +215,7 @@ public partial class OzdsTimeseriesClient
         .DeferredLastOrDefault()
         .FutureValue();
 
-      var peakQuery = context.SchneiderQuarterHourlyEnergyBounds
+      var peakQuery = context.SchneiderQuarterHourlyEnergyRange
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp >= fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
@@ -291,7 +291,7 @@ public partial class OzdsTimeseriesClient
         .DeferredLastOrDefault()
         .FutureValue();
 
-      var peakQuery = context.SchneiderQuarterHourlyEnergyBounds
+      var peakQuery = context.SchneiderQuarterHourlyEnergyRange
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp >= fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
@@ -387,7 +387,7 @@ public partial class OzdsTimeseriesClient
         )
         .Future();
 
-      var powerPeaksQuery = context.AbbQuarterHourlyEnergyBounds
+      var powerPeaksQuery = context.AbbQuarterHourlyEnergyRange
         .Where(measurement => sources.Contains(measurement.Source))
         .Where(measurement => measurement.Timestamp >= fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
@@ -505,7 +505,7 @@ public partial class OzdsTimeseriesClient
         )
         .Future();
 
-      var powerPeaksQuery = context.AbbQuarterHourlyEnergyBounds
+      var powerPeaksQuery = context.AbbQuarterHourlyEnergyRange
         .Where(measurement => sources.Contains(measurement.Source))
         .Where(measurement => measurement.Timestamp >= fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
@@ -623,7 +623,7 @@ public partial class OzdsTimeseriesClient
         )
         .Future();
 
-      var powerPeaksQuery = context.SchneiderQuarterHourlyEnergyBounds
+      var powerPeaksQuery = context.SchneiderQuarterHourlyEnergyRange
         .Where(measurement => sources.Contains(measurement.Source))
         .Where(measurement => measurement.Timestamp >= fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
@@ -741,7 +741,7 @@ public partial class OzdsTimeseriesClient
         )
         .Future();
 
-      var powerPeaksQuery = context.SchneiderQuarterHourlyEnergyBounds
+      var powerPeaksQuery = context.SchneiderQuarterHourlyEnergyRange
         .Where(measurement => sources.Contains(measurement.Source))
         .Where(measurement => measurement.Timestamp >= fromDate)
         .Where(measurement => measurement.Timestamp < toDate)

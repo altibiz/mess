@@ -26,7 +26,7 @@ namespace Mess.Ozds.Timeseries.Migrations
       NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "timescaledb");
       NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-      modelBuilder.Entity("Mess.Ozds.Timeseries.AbbMonthlyEnergyBoundsEntity", b =>
+      modelBuilder.Entity("Mess.Ozds.Timeseries.AbbMonthlyEnergyRangeEntity", b =>
           {
             b.Property<DateTimeOffset>("Timestamp")
                       .HasColumnType("timestamptz");
@@ -65,10 +65,10 @@ namespace Mess.Ozds.Timeseries.Migrations
 
             b.ToTable((string)null);
 
-            b.ToView("AbbMonthlyEnergyBounds", (string)null);
+            b.ToView("AbbMonthlyEnergyRange", (string)null);
           });
 
-      modelBuilder.Entity("Mess.Ozds.Timeseries.AbbQuarterHourlyEnergyBoundsEntity", b =>
+      modelBuilder.Entity("Mess.Ozds.Timeseries.AbbQuarterHourlyEnergyRangeEntity", b =>
           {
             b.Property<DateTimeOffset>("Timestamp")
                       .HasColumnType("timestamptz");
@@ -107,7 +107,7 @@ namespace Mess.Ozds.Timeseries.Migrations
 
             b.ToTable((string)null);
 
-            b.ToView("AbbQuarterHourlyEnergyBounds", (string)null);
+            b.ToView("AbbQuarterHourlyEnergyRange", (string)null);
           });
 
       modelBuilder.Entity("Mess.Ozds.Timeseries.AbbMeasurementEntity", b =>
@@ -212,7 +212,7 @@ namespace Mess.Ozds.Timeseries.Migrations
             b.ToTable("AbbMeasurements", (string)null);
           });
 
-      modelBuilder.Entity("Mess.Ozds.Timeseries.SchneiderMonthlyEnergyBoundsEntity", b =>
+      modelBuilder.Entity("Mess.Ozds.Timeseries.SchneiderMonthlyEnergyRangeEntity", b =>
           {
             b.Property<DateTimeOffset>("Timestamp")
                       .HasColumnType("timestamptz");
@@ -251,10 +251,10 @@ namespace Mess.Ozds.Timeseries.Migrations
 
             b.ToTable((string)null);
 
-            b.ToView("SchneiderMonthlyEnergyBounds", (string)null);
+            b.ToView("SchneiderMonthlyEnergyRange", (string)null);
           });
 
-      modelBuilder.Entity("Mess.Ozds.Timeseries.SchneiderQuarterHourlyEnergyBoundsEntity", b =>
+      modelBuilder.Entity("Mess.Ozds.Timeseries.SchneiderQuarterHourlyEnergyRangeEntity", b =>
           {
             b.Property<DateTimeOffset>("Timestamp")
                       .HasColumnType("timestamptz");
@@ -293,7 +293,7 @@ namespace Mess.Ozds.Timeseries.Migrations
 
             b.ToTable((string)null);
 
-            b.ToView("SchneiderQuarterHourlyEnergyBounds", (string)null);
+            b.ToView("SchneiderQuarterHourlyEnergyRange", (string)null);
           });
 
       modelBuilder.Entity("Mess.Ozds.Timeseries.SchneiderMeasurementEntity", b =>

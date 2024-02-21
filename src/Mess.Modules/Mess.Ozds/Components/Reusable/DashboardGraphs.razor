@@ -348,11 +348,11 @@
           foreach(var omm in c){
             if(omm.DisplayText.StartsWith("abb")){
               var a = await _timeseriesClient.GetAbbMeasurementsAsync(omm.DisplayText, DateTimeOffset.UtcNow.AddHours(-24), DateTimeOffset.UtcNow);
-              _lastDay.Add(a.Select(x => new ChartData(x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.Timestamp, x.DeviceId)).ToList());
+              _lastDay.Add(a.Select(x => new ChartData(x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.Timestamp, x.Source)).ToList());
             }
             else if(omm.DisplayText.StartsWith("schneider")){
               var a = await _timeseriesClient.GetSchneiderMeasurementsAsync(omm.DisplayText, DateTimeOffset.UtcNow.AddHours(-24), DateTimeOffset.UtcNow);
-              _lastDay.Add(a.Select(x => new ChartData(x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.Timestamp, x.DeviceId)).ToList());
+              _lastDay.Add(a.Select(x => new ChartData(x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.Timestamp, x.Source)).ToList());
             }
           }
         }
@@ -377,11 +377,11 @@
   {
     if(source.StartsWith("abb")){
       var a = await _timeseriesClient.GetAbbMeasurementsAsync(source, DateTimeOffset.UtcNow.AddHours(-24), DateTimeOffset.UtcNow);
-      _leftGraphValues = a.Select(x => new ChartDataL(x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.Timestamp, x.DeviceId)).ToList().TakeLast(20);
+      _leftGraphValues = a.Select(x => new ChartDataL(x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.Timestamp, x.Source)).ToList().TakeLast(20);
     }
     else if(source.StartsWith("schneider")){
       var a = await _timeseriesClient.GetSchneiderMeasurementsAsync(source, DateTimeOffset.UtcNow.AddHours(-24), DateTimeOffset.UtcNow);
-      _leftGraphValues = a.Select(x => new ChartDataL(x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.Timestamp, x.DeviceId)).ToList().TakeLast(20);
+      _leftGraphValues = a.Select(x => new ChartDataL(x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.Timestamp, x.Source)).ToList().TakeLast(20);
     }
     if(_leftGraphValues is not null && _leftGraphValues.Count() > 0){
       _leftTitle = _leftGraphValues.First().source;
@@ -396,11 +396,11 @@
   {
     if(source.StartsWith("abb")){
       var a = await _timeseriesClient.GetAbbMeasurementsAsync(source, DateTimeOffset.UtcNow.AddHours(-24), DateTimeOffset.UtcNow);
-      _rightGraphValues = a.Select(x => new ChartData(x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.Timestamp, x.DeviceId)).ToList().TakeLast(20);
+      _rightGraphValues = a.Select(x => new ChartData(x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.Timestamp, x.Source)).ToList().TakeLast(20);
     }
     else if(source.StartsWith("schneider")){
       var a = await _timeseriesClient.GetSchneiderMeasurementsAsync(source, DateTimeOffset.UtcNow.AddHours(-24), DateTimeOffset.UtcNow);
-      _rightGraphValues = a.Select(x => new ChartData(x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.Timestamp, x.DeviceId)).ToList().TakeLast(20);
+      _rightGraphValues = a.Select(x => new ChartData(x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.Timestamp, x.Source)).ToList().TakeLast(20);
     }
     if(_rightGraphValues is not null && _rightGraphValues.Count() > 0){
       _rightTitle = _rightGraphValues.First().source;

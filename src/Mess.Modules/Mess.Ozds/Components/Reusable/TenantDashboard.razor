@@ -9,6 +9,7 @@
 @using OrchardCore.ContentManagement.Records
 @using OrchardCore.Users.Indexes
 @using System.Threading;
+@using Mess.Prelude.Extensions.Timestamps;
 
 @inject IOzdsTimeseriesClient _timeseriesClient
 
@@ -104,19 +105,28 @@
             .Where(index => !index.IsMessenger)
             .ListAsync();
 
+
         if(_ioTDevices is not null){
-          foreach(var omm in _ioTDevices){
-            if(omm.DisplayText.StartsWith("abb")){
-              _startEnd = await _timeseriesClient.GetAbbLastMonthMeasurementsAsync(omm.DisplayText, nowMonth, DateTime.UtcNow);
-              _startEndLastMonth = await _timeseriesClient.GetAbbLastMonthMeasurementsAsync(omm.DisplayText, nowMonth.AddMonths(-1), nowMonth);
-            }
-            else{
-              _startEnd = await _timeseriesClient.GetSchneiderLastMonthMeasurementsAsync(omm.DisplayText, nowMonth, DateTime.UtcNow);
-              _startEndLastMonth = await _timeseriesClient.GetSchneiderLastMonthMeasurementsAsync(omm.DisplayText, nowMonth.AddMonths(-1), nowMonth);
-            }
-            _thisMonthTotal += _startEnd.First - _startEnd.Last;
-            _lastMonthTotal += _startEndLastMonth.First - _startEndLastMonth.Last;
-          }
+          var now = DateTimeOffset.UtcNow;
+          var (startLastMonth, startThisMonth) = now.GetMonthRange();
+          var startNextMonth = startThisMonth.AddMonths(-2);
+          var deviceIds = _ioTDevices.Select(device => (string)device.Content.IotDevicePart.DeviceId.Text);
+          var resultAbb = await _timeseriesClient.GetBulkAbbMonthlyEnergyRangeAsync(deviceIds, startLastMonth, startNextMonth);
+          var resultSchneider = await _timeseriesClient.GetBulkSchneiderMonthlyEnergyRangeAsync(deviceIds, startLastMonth, startNextMonth);
+
+          _thisMonthTotal = resultAbb
+            .Where(resultAbb => resultAbb.Timestamp == startThisMonth)
+            .Aggregate(0M, (last, resultAbb) => last + resultAbb.ActiveEnergyImport_Wh)
+            + resultSchneider
+              .Where(resultSchneider => resultSchneider.Timestamp == startThisMonth)
+              .Aggregate(0M, (last, resultAbb) => last + resultAbb.ActiveEnergyImport_Wh);
+
+          _lastMonthTotal = resultAbb
+            .Where(resultAbb => resultAbb.Timestamp == startLastMonth)
+            .Aggregate(0M, (last, resultAbb) => last + resultAbb.ActiveEnergyImport_Wh)
+            + resultSchneider
+              .Where(resultSchneider => resultSchneider.Timestamp == startLastMonth)
+              .Aggregate(0M, (last, resultAbb) => last + resultAbb.ActiveEnergyImport_Wh);
         }
       });
     }

@@ -1,6 +1,6 @@
 namespace Mess.Ozds.Abstractions.Timeseries;
 
-public record SchneiderEnergyBounds(
+public record SchneiderEnergyRange(
   string Source,
   DateTimeOffset Timestamp,
   TimeSpan TimeSpan,

@@ -1,10 +1,11 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using Mess.Ozds.Abstractions.Timeseries;
 using Mess.Timeseries.Abstractions.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Mess.Ozds.Timeseries;
 
-public class SchneiderQuarterHourlyEnergyBoundsEntity : QuarterHourlyContinuousAggregateEntity
+public class AbbMonthlyEnergyRangeEntity : MonthlyContinuousAggregateEntity
 {
   [Column(TypeName = "float8")]
   public decimal ActiveEnergyImportTotalMin_Wh { get; set; } = default!;
@@ -62,3 +63,52 @@ public class SchneiderQuarterHourlyEnergyBoundsEntity : QuarterHourlyContinuousA
   public decimal ReactivePowerExportAverage_VAR =>
     ReactiveEnergyExport_VARh / (decimal)TimeSpan.TotalHours;
 };
+
+public static class AbbMonthlyEnergyRangeEntityExtensions
+{
+  public static AbbMonthlyEnergyRangeEntity ToEntity(
+    this AbbEnergyRange model
+  )
+  {
+    return new AbbMonthlyEnergyRangeEntity
+    {
+      Timestamp = model.Timestamp,
+      Source = model.Source,
+      ActiveEnergyImportTotalMin_Wh = model.ActiveEnergyImportTotalMin_Wh,
+      ActiveEnergyImportTotalMax_Wh = model.ActiveEnergyImportTotalMax_Wh,
+      ActiveEnergyExportTotalMin_Wh = model.ActiveEnergyExportTotalMin_Wh,
+      ActiveEnergyExportTotalMax_Wh = model.ActiveEnergyExportTotalMax_Wh,
+      ReactiveEnergyImportTotalMin_VARh = model.ReactiveEnergyImportTotalMin_VARh,
+      ReactiveEnergyImportTotalMax_VARh = model.ReactiveEnergyImportTotalMax_VARh,
+      ReactiveEnergyExportTotalMin_VARh = model.ReactiveEnergyExportTotalMin_VARh,
+      ReactiveEnergyExportTotalMax_VARh = model.ReactiveEnergyExportTotalMax_VARh
+    };
+  }
+
+  public static AbbEnergyRange ToModel(
+    this AbbMonthlyEnergyRangeEntity entity
+  )
+  {
+    return new AbbEnergyRange(
+      entity.Source,
+      entity.Timestamp,
+      entity.TimeSpan,
+      entity.ActiveEnergyImportTotalMin_Wh,
+      entity.ActiveEnergyImportTotalMax_Wh,
+      entity.ActiveEnergyImport_Wh,
+      entity.ActivePowerImportAverage_W,
+      entity.ActiveEnergyExportTotalMin_Wh,
+      entity.ActiveEnergyExportTotalMax_Wh,
+      entity.ActiveEnergyExport_Wh,
+      entity.ActivePowerExportAverage_W,
+      entity.ReactiveEnergyImportTotalMin_VARh,
+      entity.ReactiveEnergyImportTotalMax_VARh,
+      entity.ReactiveEnergyImport_VARh,
+      entity.ReactivePowerImportAverage_VAR,
+      entity.ReactiveEnergyExportTotalMin_VARh,
+      entity.ReactiveEnergyExportTotalMax_VARh,
+      entity.ReactiveEnergyExport_VARh,
+      entity.ReactivePowerExportAverage_VAR
+    );
+  }
+}

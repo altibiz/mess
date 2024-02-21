@@ -232,14 +232,14 @@
             if(omm.DisplayText.StartsWith("abb")){
               var a = await _timeseriesClient.GetAbbMeasurementsAsync(omm.DisplayText, DateTimeOffset.UtcNow.AddMinutes(- timeSpanMins), DateTimeOffset.UtcNow);
               if(_leftGraphValues is null){
-                _leftGraphValues = a.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W}, names: new string[]{"L1 Potrošnja", "L2 Potrošnja","L3 Potrošnja"}, date:x.Timestamp, source:x.DeviceId)).ToList();
+                _leftGraphValues = a.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W}, names: new string[]{"L1 Potrošnja", "L2 Potrošnja","L3 Potrošnja"}, date:x.Timestamp, source:x.Source)).ToList();
                 leftLineCount = 3;
                 }
             }
             else if(omm.DisplayText.StartsWith("schneider")){
               var a = await _timeseriesClient.GetSchneiderMeasurementsAsync(omm.DisplayText, DateTimeOffset.UtcNow.AddMinutes(- timeSpanMins), DateTimeOffset.UtcNow);
               if(_leftGraphValues is null){
-                _leftGraphValues = a.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W}, names: new string[]{"L1 Potrošnja", "L2 Potrošnja","L3 Potrošnja"}, date:x.Timestamp, source:x.DeviceId)).ToList();
+                _leftGraphValues = a.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W}, names: new string[]{"L1 Potrošnja", "L2 Potrošnja","L3 Potrošnja"}, date:x.Timestamp, source:x.Source)).ToList();
                 leftLineCount = 3;
               }
             }
@@ -264,14 +264,14 @@
   {
     if(source.StartsWith("abb")){
       var a = await _timeseriesClient.GetAbbMeasurementsAsync(source, DateTimeOffset.UtcNow.AddMinutes(- timeSpanMins), DateTimeOffset.UtcNow);
-      _leftGraphValues = a.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W}, names: new string[]{"L1 Potrošnja", "L2 Potrošnja","L3 Potrošnja"}, date:x.Timestamp, source:x.DeviceId)).ToList();
+      _leftGraphValues = a.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W}, names: new string[]{"L1 Potrošnja", "L2 Potrošnja","L3 Potrošnja"}, date:x.Timestamp, source:x.Source)).ToList();
       _displayType = new List<string>{"Napon", "Struja", "Snaga", "Jalova Snaga"};
       if(_leftDataTitle == "Prividna snaga")
         _leftDataTitle = "Jalova Snaga";
     }
     else if(source.StartsWith("schneider")){
       var a = await _timeseriesClient.GetSchneiderMeasurementsAsync(source, DateTimeOffset.UtcNow.AddMinutes(- timeSpanMins), DateTimeOffset.UtcNow);
-      _leftGraphValues = a.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W}, names: new string[]{"L1 Potrošnja", "L2 Potrošnja","L3 Potrošnja"}, date:x.Timestamp, source:x.DeviceId)).ToList();
+      _leftGraphValues = a.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W}, names: new string[]{"L1 Potrošnja", "L2 Potrošnja","L3 Potrošnja"}, date:x.Timestamp, source:x.Source)).ToList();
       _displayType = new List<string>{"Napon", "Struja", "Snaga", "Jalova Snaga", "Prividna snaga"};
     }
     _leftTitle = source;
@@ -286,12 +286,12 @@
       case "Struja":
         if(_leftTitle.StartsWith("abb")){
           var a = await _timeseriesClient.GetAbbMeasurementsAsync(_leftTitle, DateTimeOffset.UtcNow.AddMinutes(- timeSpanMins), DateTimeOffset.UtcNow);
-          _leftGraphValues = a.Select(x => new ChartDataL(values: new decimal?[]{x.CurrentL1_A, x.CurrentL2_A, x.CurrentL3_A}, names: new string[]{"L1 Struja", "L2 Struja","L3 Struja"}, date:x.Timestamp, source:x.DeviceId)).ToList();
+          _leftGraphValues = a.Select(x => new ChartDataL(values: new decimal?[]{x.CurrentL1_A, x.CurrentL2_A, x.CurrentL3_A}, names: new string[]{"L1 Struja", "L2 Struja","L3 Struja"}, date:x.Timestamp, source:x.Source)).ToList();
           leftLineCount = 3;
         }
         else if(_leftTitle.StartsWith("schneider")){
           var a = await _timeseriesClient.GetSchneiderMeasurementsAsync(_leftTitle, DateTimeOffset.UtcNow.AddMinutes(- timeSpanMins), DateTimeOffset.UtcNow);
-          _leftGraphValues = a.Select(x => new ChartDataL(values: new decimal?[]{x.CurrentL1_A, x.CurrentL2_A, x.CurrentL3_A}, names: new string[]{"L1 Struja", "L2 Struja","L3 Struja"}, date:x.Timestamp, source:x.DeviceId)).ToList();
+          _leftGraphValues = a.Select(x => new ChartDataL(values: new decimal?[]{x.CurrentL1_A, x.CurrentL2_A, x.CurrentL3_A}, names: new string[]{"L1 Struja", "L2 Struja","L3 Struja"}, date:x.Timestamp, source:x.Source)).ToList();
           leftLineCount = 3;
         }
         _leftDataTitle = "Struja";
@@ -299,12 +299,12 @@
       case "Snaga":
         if(_leftTitle.StartsWith("abb")){
           var a = await _timeseriesClient.GetAbbMeasurementsAsync(_leftTitle, DateTimeOffset.UtcNow.AddMinutes(- timeSpanMins), DateTimeOffset.UtcNow);
-          _leftGraphValues = a.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W}, names: new string[]{"L1 Potrošnja", "L2 Potrošnja","L3 Potrošnja"}, date:x.Timestamp, source:x.DeviceId)).ToList();
+          _leftGraphValues = a.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W}, names: new string[]{"L1 Potrošnja", "L2 Potrošnja","L3 Potrošnja"}, date:x.Timestamp, source:x.Source)).ToList();
           leftLineCount = 3;
         }
         else if(_leftTitle.StartsWith("schneider")){
           var a = await _timeseriesClient.GetSchneiderMeasurementsAsync(_leftTitle, DateTimeOffset.UtcNow.AddMinutes(- timeSpanMins), DateTimeOffset.UtcNow);
-          _leftGraphValues = a.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W}, names: new string[]{"L1 Potrošnja", "L2 Potrošnja","L3 Potrošnja"}, date:x.Timestamp, source:x.DeviceId)).ToList();
+          _leftGraphValues = a.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W}, names: new string[]{"L1 Potrošnja", "L2 Potrošnja","L3 Potrošnja"}, date:x.Timestamp, source:x.Source)).ToList();
           leftLineCount = 3;
         }
         _leftDataTitle = "Snaga";
@@ -312,12 +312,12 @@
       case "Napon":
         if(_leftTitle.StartsWith("abb")){
           var a = await _timeseriesClient.GetAbbMeasurementsAsync(_leftTitle, DateTimeOffset.UtcNow.AddMinutes(- timeSpanMins), DateTimeOffset.UtcNow);
-          _leftGraphValues = a.Select(x => new ChartDataL(values: new decimal?[]{x.VoltageL1_V, x.VoltageL2_V, x.VoltageL3_V}, names: new string[]{"L1 Napon", "L2 Napon","L3 Napon"}, date:x.Timestamp, source:x.DeviceId)).ToList();
+          _leftGraphValues = a.Select(x => new ChartDataL(values: new decimal?[]{x.VoltageL1_V, x.VoltageL2_V, x.VoltageL3_V}, names: new string[]{"L1 Napon", "L2 Napon","L3 Napon"}, date:x.Timestamp, source:x.Source)).ToList();
           leftLineCount = 3;
         }
         else if(_leftTitle.StartsWith("schneider")){
           var a = await _timeseriesClient.GetSchneiderMeasurementsAsync(_leftTitle, DateTimeOffset.UtcNow.AddMinutes(- timeSpanMins), DateTimeOffset.UtcNow);
-          _leftGraphValues = a.Select(x => new ChartDataL(values: new decimal?[]{x.VoltageL1_V, x.VoltageL2_V, x.VoltageL3_V}, names: new string[]{"L1 Napon", "L2 Napon","L3 Napon"}, date:x.Timestamp, source:x.DeviceId)).ToList();
+          _leftGraphValues = a.Select(x => new ChartDataL(values: new decimal?[]{x.VoltageL1_V, x.VoltageL2_V, x.VoltageL3_V}, names: new string[]{"L1 Napon", "L2 Napon","L3 Napon"}, date:x.Timestamp, source:x.Source)).ToList();
           leftLineCount = 3;
         }
         _leftDataTitle = "Napon";
@@ -325,12 +325,12 @@
       case "Jalova Snaga":
         if(_leftTitle.StartsWith("abb")){
           var a = await _timeseriesClient.GetAbbMeasurementsAsync(_leftTitle, DateTimeOffset.UtcNow.AddMinutes(- timeSpanMins), DateTimeOffset.UtcNow);
-          _leftGraphValues = a.Select(x => new ChartDataL(values: new decimal?[]{x.ReactivePowerL1_VAR, x.ReactivePowerL2_VAR, x.ReactivePowerL3_VAR}, names: new string[]{"L1 Jalova snaga", "L2 Jalova snaga","L3 Jalova snaga"}, date:x.Timestamp, source:x.DeviceId)).ToList();
+          _leftGraphValues = a.Select(x => new ChartDataL(values: new decimal?[]{x.ReactivePowerL1_VAR, x.ReactivePowerL2_VAR, x.ReactivePowerL3_VAR}, names: new string[]{"L1 Jalova snaga", "L2 Jalova snaga","L3 Jalova snaga"}, date:x.Timestamp, source:x.Source)).ToList();
           leftLineCount = 3;
         }
         else if(_leftTitle.StartsWith("schneider")){
           var a = await _timeseriesClient.GetSchneiderMeasurementsAsync(_leftTitle, DateTimeOffset.UtcNow.AddMinutes(- timeSpanMins), DateTimeOffset.UtcNow);
-          _leftGraphValues = a.Select(x => new ChartDataL(values: new decimal?[]{x.ReactivePowerTotal_VAR}, names: new string[]{"Reaktivna snaga"}, date:x.Timestamp, source:x.DeviceId)).ToList();
+          _leftGraphValues = a.Select(x => new ChartDataL(values: new decimal?[]{x.ReactivePowerTotal_VAR}, names: new string[]{"Reaktivna snaga"}, date:x.Timestamp, source:x.Source)).ToList();
           leftLineCount = 1;
         }
         _leftDataTitle = "Jalova Snaga";
@@ -338,12 +338,12 @@
       case "Prividna snaga":
         if(_leftTitle.StartsWith("abb")){
           var a = await _timeseriesClient.GetAbbMeasurementsAsync(_leftTitle, DateTimeOffset.UtcNow.AddMinutes(- timeSpanMins), DateTimeOffset.UtcNow);
-          _leftGraphValues = a.Select(x => new ChartDataL(values: new decimal?[]{}, names: new string[]{}, date:x.Timestamp, source:x.DeviceId)).ToList();
+          _leftGraphValues = a.Select(x => new ChartDataL(values: new decimal?[]{}, names: new string[]{}, date:x.Timestamp, source:x.Source)).ToList();
           leftLineCount = 0;
         }
         else if(_leftTitle.StartsWith("schneider")){
           var a = await _timeseriesClient.GetSchneiderMeasurementsAsync(_leftTitle, DateTimeOffset.UtcNow.AddMinutes(- timeSpanMins), DateTimeOffset.UtcNow);
-          _leftGraphValues = a.Select(x => new ChartDataL(values: new decimal?[]{x.ApparentPowerTotal_VA}, names: new string[]{"Prividna snaga"}, date:x.Timestamp, source:x.DeviceId)).ToList();
+          _leftGraphValues = a.Select(x => new ChartDataL(values: new decimal?[]{x.ApparentPowerTotal_VA}, names: new string[]{"Prividna snaga"}, date:x.Timestamp, source:x.Source)).ToList();
           leftLineCount = 1;
         }
         _leftDataTitle = "Prividna snaga";

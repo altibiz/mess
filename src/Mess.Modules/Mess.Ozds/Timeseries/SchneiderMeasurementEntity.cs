@@ -26,8 +26,6 @@ public class SchneiderMeasurementEntity : HypertableEntity
   [Column(TypeName = "double precision")] public decimal ReactiveEnergyExportTotal_VARh { get; set; } = default;
 }
 
-// TODO: safer conversions
-
 public static class SchneiderMeasurementEntityExtensions
 {
   public static SchneiderMeasurementEntity ToEntity(
@@ -36,9 +34,8 @@ public static class SchneiderMeasurementEntityExtensions
   {
     return new SchneiderMeasurementEntity
     {
-      Tenant = model.Tenant,
       Timestamp = model.Timestamp,
-      Source = model.DeviceId,
+      Source = model.Source,
       VoltageL1_V = model.VoltageL1_V,
       VoltageL2_V = model.VoltageL2_V,
       VoltageL3_V = model.VoltageL3_V,
@@ -65,7 +62,6 @@ public static class SchneiderMeasurementEntityExtensions
   )
   {
     return new SchneiderMeasurement(
-      entity.Tenant,
       entity.Source,
       entity.Timestamp,
       entity.VoltageL1_V,
