@@ -141,8 +141,6 @@ namespace Mess.Ozds.Timeseries.Migrations
 
                     b.HasKey("Tenant", "Source", "Timestamp");
 
-                    b.HasIndex("Tenant", "Source", "Timestamp");
-
                     b.ToTable((string)null);
 
                     b.ToView("MonthlyBoundsEnergy", (string)null);
@@ -163,8 +161,6 @@ namespace Mess.Ozds.Timeseries.Migrations
                         .HasColumnType("float8");
 
                     b.HasKey("Tenant", "Source", "Timestamp");
-
-                    b.HasIndex("Tenant", "Source", "Timestamp");
 
                     b.ToTable((string)null);
 
