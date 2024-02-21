@@ -10,23 +10,23 @@ public class AbbEnergyBoundsQuarterHourlyEntity : ContinuousAggregateEntity
   public decimal ActiveEnergyImportTotalMin_Wh { get; set; } = default!;
 
   [Column(TypeName = "float8")]
-  public decimal ActiveEnergyImportTotalMax_W { get; set; } = default!;
+  public decimal ActiveEnergyImportTotalMax_Wh { get; set; } = default!;
 
   [Column(TypeName = "float8")]
   public decimal ActiveEnergyExportTotalMin_Wh { get; set; } = default!;
 
   [Column(TypeName = "float8")]
-  public decimal ActiveEnergyExportTotalMax_W { get; set; } = default!;
+  public decimal ActiveEnergyExportTotalMax_Wh { get; set; } = default!;
 
   [Column(TypeName = "float8")]
-  public decimal ReactiveEnergyImportTotalMin_Wh { get; set; } = default!;
+  public decimal ReactiveEnergyImportTotalMin_VARh { get; set; } = default!;
 
   [Column(TypeName = "float8")]
-  public decimal ReactiveEnergyImportTotalMax_W { get; set; } = default!;
+  public decimal ReactiveEnergyImportTotalMax_VARh { get; set; } = default!;
 
   [Column(TypeName = "float8")]
-  public decimal ReactiveEnergyExportTotalMin_Wh { get; set; } = default!;
+  public decimal ReactiveEnergyExportTotalMin_VARh { get; set; } = default!;
 
   [Column(TypeName = "float8")]
-  public decimal ReactiveEnergyExportTotalMax_W { get; set; } = default!;
+  public decimal ReactiveEnergyExportTotalMax_VARh { get; set; } = default!;
 };

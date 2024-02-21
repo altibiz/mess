@@ -58,10 +58,10 @@ namespace Mess.Ozds.Timeseries.Migrations
             max("ActiveEnergyImportTotal_Wh") as "ActiveEnergyImportTotalMax_Wh",
             min("ActiveEnergyExportTotal_Wh") as "ActiveEnergyExportTotalMin_Wh",
             max("ActiveEnergyExportTotal_Wh") as "ActiveEnergyExportTotalMax_Wh",
-            min("ReactiveEnergyImportTotal_Wh") as "ReactiveEnergyImportTotalMin_Wh",
-            max("ReactiveEnergyImportTotal_Wh") as "ReactiveEnergyImportTotalMax_Wh",
-            min("ReactiveEnergyExportTotal_Wh") as "ReactiveEnergyExportTotalMin_Wh",
-            max("ReactiveEnergyExportTotal_Wh") as "ReactiveEnergyExportTotalMax_Wh"
+            min("ReactiveEnergyImportTotal_VARh") as "ReactiveEnergyImportTotalMin_VARh",
+            max("ReactiveEnergyImportTotal_VARh") as "ReactiveEnergyImportTotalMax_VARh",
+            min("ReactiveEnergyExportTotal_VARh") as "ReactiveEnergyExportTotalMin_VARh",
+            max("ReactiveEnergyExportTotal_VARh") as "ReactiveEnergyExportTotalMax_VARh"
           from
             "AbbMeasurements"
           group by
@@ -90,10 +90,10 @@ namespace Mess.Ozds.Timeseries.Migrations
             max("ActiveEnergyImportTotal_Wh") as "ActiveEnergyImportTotalMax_Wh",
             min("ActiveEnergyExportTotal_Wh") as "ActiveEnergyExportTotalMin_Wh",
             max("ActiveEnergyExportTotal_Wh") as "ActiveEnergyExportTotalMax_Wh",
-            min("ReactiveEnergyImportTotal_Wh") as "ReactiveEnergyImportTotalMin_Wh",
-            max("ReactiveEnergyImportTotal_Wh") as "ReactiveEnergyImportTotalMax_Wh",
-            min("ReactiveEnergyExportTotal_Wh") as "ReactiveEnergyExportTotalMin_Wh",
-            max("ReactiveEnergyExportTotal_Wh") as "ReactiveEnergyExportTotalMax_Wh"
+            min("ReactiveEnergyImportTotal_VARh") as "ReactiveEnergyImportTotalMin_VARh",
+            max("ReactiveEnergyImportTotal_VARh") as "ReactiveEnergyImportTotalMax_VARh",
+            min("ReactiveEnergyExportTotal_VARh") as "ReactiveEnergyExportTotalMin_VARh",
+            max("ReactiveEnergyExportTotal_VARh") as "ReactiveEnergyExportTotalMax_VARh"
           from
             "SchneiderMeasurements"
           group by
@@ -122,10 +122,10 @@ namespace Mess.Ozds.Timeseries.Migrations
             max("ActiveEnergyImportTotal_Wh") as "ActiveEnergyImportTotalMax_Wh",
             min("ActiveEnergyExportTotal_Wh") as "ActiveEnergyExportTotalMin_Wh",
             max("ActiveEnergyExportTotal_Wh") as "ActiveEnergyExportTotalMax_Wh",
-            min("ReactiveEnergyImportTotal_Wh") as "ReactiveEnergyImportTotalMin_Wh",
-            max("ReactiveEnergyImportTotal_Wh") as "ReactiveEnergyImportTotalMax_Wh",
-            min("ReactiveEnergyExportTotal_Wh") as "ReactiveEnergyExportTotalMin_Wh",
-            max("ReactiveEnergyExportTotal_Wh") as "ReactiveEnergyExportTotalMax_Wh"
+            min("ReactiveEnergyImportTotal_VARh") as "ReactiveEnergyImportTotalMin_VARh",
+            max("ReactiveEnergyImportTotal_VARh") as "ReactiveEnergyImportTotalMax_VARh",
+            min("ReactiveEnergyExportTotal_VARh") as "ReactiveEnergyExportTotalMin_VARh",
+            max("ReactiveEnergyExportTotal_VARh") as "ReactiveEnergyExportTotalMax_VARh"
           from
             "AbbMeasurements"
           group by
@@ -154,10 +154,10 @@ namespace Mess.Ozds.Timeseries.Migrations
             max("ActiveEnergyImportTotal_Wh") as "ActiveEnergyImportTotalMax_Wh",
             min("ActiveEnergyExportTotal_Wh") as "ActiveEnergyExportTotalMin_Wh",
             max("ActiveEnergyExportTotal_Wh") as "ActiveEnergyExportTotalMax_Wh",
-            min("ReactiveEnergyImportTotal_Wh") as "ReactiveEnergyImportTotalMin_Wh",
-            max("ReactiveEnergyImportTotal_Wh") as "ReactiveEnergyImportTotalMax_Wh",
-            min("ReactiveEnergyExportTotal_Wh") as "ReactiveEnergyExportTotalMin_Wh",
-            max("ReactiveEnergyExportTotal_Wh") as "ReactiveEnergyExportTotalMax_Wh"
+            min("ReactiveEnergyImportTotal_VARh") as "ReactiveEnergyImportTotalMin_VARh",
+            max("ReactiveEnergyImportTotal_VARh") as "ReactiveEnergyImportTotalMax_VARh",
+            min("ReactiveEnergyExportTotal_VARh") as "ReactiveEnergyExportTotalMin_VARh",
+            max("ReactiveEnergyExportTotal_VARh") as "ReactiveEnergyExportTotalMax_VARh"
           from
             "SchneiderMeasurements"
           group by
