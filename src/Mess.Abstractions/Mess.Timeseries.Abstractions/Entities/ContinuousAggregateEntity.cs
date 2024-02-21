@@ -2,6 +2,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Mess.Timeseries.Abstractions.Entities;
 
+// TODO: create attributes for migrations
+
 public abstract class ContinuousAggregateEntity
 {
   [NotMapped] private DateTimeOffset _timestamp;
