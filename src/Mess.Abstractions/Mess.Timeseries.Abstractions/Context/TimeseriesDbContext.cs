@@ -79,12 +79,6 @@ public abstract class TimeseriesDbContext : RelationalDbContext
           nameof(HypertableViewEntity.Timestamp)
         );
 
-        entity.HasIndex(
-          nameof(HypertableViewEntity.Tenant),
-          nameof(HypertableViewEntity.Source),
-          nameof(HypertableViewEntity.Timestamp)
-        );
-
         entity.ToView(@type.Name.RegexRemove("Entity$"));
       }
     );
