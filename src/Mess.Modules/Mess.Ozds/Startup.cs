@@ -72,6 +72,7 @@ public class Startup : StartupBase
       IOzdsTimeseriesClient,
       IOzdsTimeseriesQuery
     >();
+    // services.AddMaterializedViewRefresher<OzdsMaterializedViewRefresher>();
 
     // Billing
     services.AddBillingIndexer<OzdsBillingIndexer>();
