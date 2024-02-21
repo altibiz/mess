@@ -19,15 +19,15 @@ public class OzdsTimeseriesDbContext : TimeseriesDbContext
   public DbSet<SchneiderMeasurementEntity> SchneiderMeasurements { get; set; } =
     default!;
 
-  public DbSet<AbbEnergyBoundsQuarterHourlyEntity> AbbEnergyBoundsQuarterHourlylies { get; set; } =
+  public DbSet<AbbQuarterHourlyEnergyBoundsEntity> AbbQuarterHourlyEnergyBounds { get; set; } =
     default!;
 
-  public DbSet<AbbEnergyBoundsMonthlyEntity> AbbEnergyBoundsMonthlies { get; set; } =
+  public DbSet<AbbMonthlyEnergyBoundsEntity> AbbMonthlyEnergyBounds { get; set; } =
     default!;
 
-  public DbSet<SchneiderEnergyBoundsQuarterHourlyEntity> SchneiderEnergyBoundsQuarterHourlylies { get; set; } =
+  public DbSet<SchneiderQuarterHourlyEnergyBoundsEntity> SchneiderQuarterHourlyEnergyBounds { get; set; } =
     default!;
 
-  public DbSet<SchneiderEnergyBoundsMonthlyEntity> SchneiderEnergyBoundsMonthlies { get; set; } =
+  public DbSet<SchneiderMonthlyEnergyBoundsEntity> SchneiderMonthlyEnergyBounds { get; set; } =
     default!;
 }

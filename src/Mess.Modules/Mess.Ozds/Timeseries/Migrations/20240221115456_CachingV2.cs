@@ -47,7 +47,7 @@ namespace Mess.Ozds.Timeseries.Migrations
           columns: new[] { "Timestamp", "Source", "Tenant" });
 
       migrationBuilder.Sql("""
-        create materialized view "AbbEnergyBoundsQuarterHourly"
+        create materialized view "AbbQuarterHourlyEnergyBounds"
         with (timescaledb.continuous)
         as
           select
@@ -72,7 +72,7 @@ namespace Mess.Ozds.Timeseries.Migrations
       """);
 
       migrationBuilder.Sql("""
-        create index on "AbbEnergyBoundsQuarterHourly" (
+        create index on "AbbQuarterHourlyEnergyBounds" (
           "Timestamp",
           "Source",
           "Tenant"
@@ -81,7 +81,7 @@ namespace Mess.Ozds.Timeseries.Migrations
 
       migrationBuilder.Sql("""
         select add_continuous_aggregate_policy(
-          'AbbEnergyBoundsQuarterHourly',
+          'AbbQuarterHourlyEnergyBounds',
           start_offset => NULL,
           end_offset => INTERVAL '15 minutes',
           schedule_interval => INTERVAL '15 minutes'
@@ -89,7 +89,7 @@ namespace Mess.Ozds.Timeseries.Migrations
       """);
 
       migrationBuilder.Sql("""
-        create materialized view "SchneiderEnergyBoundsQuarterHourly"
+        create materialized view "SchneiderQuarterHourlyEnergyBounds"
         with (timescaledb.continuous)
         as
           select
@@ -114,7 +114,7 @@ namespace Mess.Ozds.Timeseries.Migrations
       """);
 
       migrationBuilder.Sql("""
-        create index on "SchneiderEnergyBoundsQuarterHourly" (
+        create index on "SchneiderQuarterHourlyEnergyBounds" (
           "Timestamp",
           "Source",
           "Tenant"
@@ -123,7 +123,7 @@ namespace Mess.Ozds.Timeseries.Migrations
 
       migrationBuilder.Sql("""
         select add_continuous_aggregate_policy(
-          'SchneiderEnergyBoundsQuarterHourly',
+          'SchneiderQuarterHourlyEnergyBounds',
           start_offset => NULL,
           end_offset => INTERVAL '15 minutes',
           schedule_interval => INTERVAL '15 minutes'
@@ -131,7 +131,7 @@ namespace Mess.Ozds.Timeseries.Migrations
       """);
 
       migrationBuilder.Sql("""
-        create materialized view "AbbEnergyBoundsMonthly"
+        create materialized view "AbbMonthlyEnergyBounds"
         with (timescaledb.continuous)
         as
           select
@@ -156,7 +156,7 @@ namespace Mess.Ozds.Timeseries.Migrations
       """);
 
       migrationBuilder.Sql("""
-        create index on "AbbEnergyBoundsMonthly" (
+        create index on "AbbMonthlyEnergyBounds" (
           "Timestamp",
           "Source",
           "Tenant"
@@ -165,7 +165,7 @@ namespace Mess.Ozds.Timeseries.Migrations
 
       migrationBuilder.Sql("""
         select add_continuous_aggregate_policy(
-          'SchneiderEnergyBoundsMonthly',
+          'SchneiderMonthlyEnergyBounds',
           start_offset => NULL,
           end_offset => INTERVAL '1 month',
           schedule_interval => INTERVAL '1 month'
@@ -173,7 +173,7 @@ namespace Mess.Ozds.Timeseries.Migrations
       """);
 
       migrationBuilder.Sql("""
-        create materialized view "SchneiderEnergyBoundsMonthly"
+        create materialized view "SchneiderMonthlyEnergyBounds"
         with (timescaledb.continuous)
         as
           select
@@ -198,7 +198,7 @@ namespace Mess.Ozds.Timeseries.Migrations
       """);
 
       migrationBuilder.Sql("""
-        create index on "SchneiderEnergyBoundsMonthly" (
+        create index on "SchneiderMonthlyEnergyBounds" (
           "Timestamp",
           "Source",
           "Tenant"
@@ -207,7 +207,7 @@ namespace Mess.Ozds.Timeseries.Migrations
 
       migrationBuilder.Sql("""
         select add_continuous_aggregate_policy(
-          'SchneiderEnergyBoundsMonthly',
+          'SchneiderMonthlyEnergyBounds',
           start_offset => NULL,
           end_offset => INTERVAL '1 month',
           schedule_interval => INTERVAL '1 month'
@@ -375,19 +375,19 @@ namespace Mess.Ozds.Timeseries.Migrations
       """);
 
       migrationBuilder.Sql("""
-        drop materialized view "AbbEnergyBoundsQuarterHourly";
+        drop materialized view "AbbQuarterHourlyEnergyBounds";
       """);
 
       migrationBuilder.Sql("""
-        drop materialized view "SchneiderEnergyBoundsQuarterHourly";
+        drop materialized view "SchneiderQuarterHourlyEnergyBounds";
       """);
 
       migrationBuilder.Sql("""
-        drop materialized view "AbbEnergyBoundsMonthly";
+        drop materialized view "AbbMonthlyEnergyBounds";
       """);
 
       migrationBuilder.Sql("""
-        drop materialized view "SchneiderEnergyBoundsMonthly";
+        drop materialized view "SchneiderMonthlyEnergyBounds";
       """);
 
       migrationBuilder.DropPrimaryKey(
