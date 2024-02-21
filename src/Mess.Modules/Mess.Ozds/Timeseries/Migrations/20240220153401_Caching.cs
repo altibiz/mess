@@ -50,6 +50,7 @@ namespace Mess.Ozds.Timeseries.Migrations
           ),
           ranked as (
             select
+              tenant,
               source,
               timestamp,
               energy,
@@ -57,7 +58,7 @@ namespace Mess.Ozds.Timeseries.Migrations
                 partition by
                   tenant,
                   source,
-                  time_bucket("1 month", timestamp)
+                  time_bucket('1 month', timestamp)
                 order by
                   timestamp asc
               ) as timestamp_ascending,
@@ -65,7 +66,7 @@ namespace Mess.Ozds.Timeseries.Migrations
                 partition by
                   tenant,
                   source,
-                  time_bucket("1 month", timestamp)
+                  time_bucket('1 month', timestamp)
                 order by
                   timestamp desc
               ) as timestamp_descending
@@ -121,7 +122,6 @@ namespace Mess.Ozds.Timeseries.Migrations
               )
               tenant,
               source,
-              timestamp,
               time_bucket('15 minutes', timestamp) as timestamp,
               first_value(energy) over bucket_windows as begin_energy,
               last_value(energy) over bucket_windows as end_energy
