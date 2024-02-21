@@ -10,6 +10,170 @@ namespace Mess.Ozds.Timeseries.Migrations
     /// <inheritdoc />
     protected override void Up(MigrationBuilder migrationBuilder)
     {
+      migrationBuilder.DropPrimaryKey(
+          name: "PK_SchneiderMeasurements",
+          table: "SchneiderMeasurements");
+
+      migrationBuilder.DropIndex(
+          name: "IX_SchneiderMeasurements_Tenant_Source_Timestamp",
+          table: "SchneiderMeasurements");
+
+      migrationBuilder.DropPrimaryKey(
+          name: "PK_AbbMeasurements",
+          table: "AbbMeasurements");
+
+      migrationBuilder.DropIndex(
+          name: "IX_AbbMeasurements_Tenant_Source_Timestamp",
+          table: "AbbMeasurements");
+
+      migrationBuilder.AddPrimaryKey(
+          name: "PK_SchneiderMeasurements",
+          table: "SchneiderMeasurements",
+          columns: new[] { "Timestamp", "Source", "Tenant" });
+
+      migrationBuilder.AddPrimaryKey(
+          name: "PK_AbbMeasurements",
+          table: "AbbMeasurements",
+          columns: new[] { "Timestamp", "Source", "Tenant" });
+
+      migrationBuilder.CreateIndex(
+          name: "IX_SchneiderMeasurements_Timestamp_Source_Tenant",
+          table: "SchneiderMeasurements",
+          columns: new[] { "Timestamp", "Source", "Tenant" });
+
+      migrationBuilder.CreateIndex(
+          name: "IX_AbbMeasurements_Timestamp_Source_Tenant",
+          table: "AbbMeasurements",
+          columns: new[] { "Timestamp", "Source", "Tenant" });
+
+      migrationBuilder.Sql("""
+        create materialized view "AbbEnergyBoundsQuarterHourly"
+        with (timescaledb.continuous)
+        as
+          select
+            "Tenant",
+            "Source",
+            time_bucket('15 minutes', "Timestamp") as "Timestamp",
+            min("ActiveEnergyImportTotal_Wh") as "ActiveEnergyImportTotalMin_Wh",
+            max("ActiveEnergyImportTotal_Wh") as "ActiveEnergyImportTotalMax_Wh"
+            min("ActiveEnergyExportTotal_Wh") as "ActiveEnergyExportTotalMin_Wh",
+            max("ActiveEnergyExportTotal_Wh") as "ActiveEnergyExportTotalMax_Wh"
+            min("ReactiveEnergyImportTotal_Wh") as "ReactiveEnergyImportTotalMin_Wh",
+            max("ReactiveEnergyImportTotal_Wh") as "ReactiveEnergyImportTotalMax_Wh"
+            min("ReactiveEnergyExportTotal_Wh") as "ReactiveEnergyExportTotalMin_Wh",
+            max("ReactiveEnergyExportTotal_Wh") as "ReactiveEnergyExportTotalMax_Wh"
+          from
+            "AbbMeasurements"
+          group by
+            time_bucket('15 minutes', "Timestamp"),
+            "Source",
+            "Tenant";
+      """);
+
+      migrationBuilder.Sql("""
+        create index on "AbbEnergyBoundsQuarterHourly" (
+          "Timestamp",
+          "Source",
+          "Tenant"
+        );
+      """);
+
+      migrationBuilder.Sql("""
+        create materialized view "SchneiderEnergyBoundsQuarterHourly"
+        with (timescaledb.continuous)
+        as
+          select
+            "Tenant",
+            "Source",
+            time_bucket('15 minutes', "Timestamp") as "Timestamp",
+            min("ActiveEnergyImportTotal_Wh") as "ActiveEnergyImportTotalMin_Wh",
+            max("ActiveEnergyImportTotal_Wh") as "ActiveEnergyImportTotalMax_Wh"
+            min("ActiveEnergyExportTotal_Wh") as "ActiveEnergyExportTotalMin_Wh",
+            max("ActiveEnergyExportTotal_Wh") as "ActiveEnergyExportTotalMax_Wh"
+            min("ReactiveEnergyImportTotal_Wh") as "ReactiveEnergyImportTotalMin_Wh",
+            max("ReactiveEnergyImportTotal_Wh") as "ReactiveEnergyImportTotalMax_Wh"
+            min("ReactiveEnergyExportTotal_Wh") as "ReactiveEnergyExportTotalMin_Wh",
+            max("ReactiveEnergyExportTotal_Wh") as "ReactiveEnergyExportTotalMax_Wh"
+          from
+            "SchneiderMeasurements"
+          group by
+            time_bucket('15 minutes', "Timestamp"),
+            "Source",
+            "Tenant";
+      """);
+
+      migrationBuilder.Sql("""
+        create index on "SchneiderEnergyBoundsQuarterHourly" (
+          "Timestamp",
+          "Source",
+          "Tenant"
+        );
+      """);
+
+      migrationBuilder.Sql("""
+        create materialized view "AbbEnergyBoundsMonthly"
+        with (timescaledb.continuous)
+        as
+          select
+            "Tenant",
+            "Source",
+            time_bucket('1 month', "Timestamp") as "Timestamp",
+            min("ActiveEnergyImportTotal_Wh") as "ActiveEnergyImportTotalMin_Wh",
+            max("ActiveEnergyImportTotal_Wh") as "ActiveEnergyImportTotalMax_Wh"
+            min("ActiveEnergyExportTotal_Wh") as "ActiveEnergyExportTotalMin_Wh",
+            max("ActiveEnergyExportTotal_Wh") as "ActiveEnergyExportTotalMax_Wh"
+            min("ReactiveEnergyImportTotal_Wh") as "ReactiveEnergyImportTotalMin_Wh",
+            max("ReactiveEnergyImportTotal_Wh") as "ReactiveEnergyImportTotalMax_Wh"
+            min("ReactiveEnergyExportTotal_Wh") as "ReactiveEnergyExportTotalMin_Wh",
+            max("ReactiveEnergyExportTotal_Wh") as "ReactiveEnergyExportTotalMax_Wh"
+          from
+            "AbbMeasurements"
+          group by
+            time_bucket('1 month', "Timestamp"),
+            "Source",
+            "Tenant";
+      """);
+
+      migrationBuilder.Sql("""
+        create index on "AbbEnergyBoundsMonthly" (
+          "Timestamp",
+          "Source",
+          "Tenant"
+        );
+      """);
+
+      migrationBuilder.Sql("""
+        create materialized view "SchneiderEnergyBoundsMonthly"
+        with (timescaledb.continuous)
+        as
+          select
+            "Tenant",
+            "Source",
+            time_bucket('1 month', "Timestamp") as "Timestamp",
+            min("ActiveEnergyImportTotal_Wh") as "ActiveEnergyImportTotalMin_Wh",
+            max("ActiveEnergyImportTotal_Wh") as "ActiveEnergyImportTotalMax_Wh"
+            min("ActiveEnergyExportTotal_Wh") as "ActiveEnergyExportTotalMin_Wh",
+            max("ActiveEnergyExportTotal_Wh") as "ActiveEnergyExportTotalMax_Wh"
+            min("ReactiveEnergyImportTotal_Wh") as "ReactiveEnergyImportTotalMin_Wh",
+            max("ReactiveEnergyImportTotal_Wh") as "ReactiveEnergyImportTotalMax_Wh"
+            min("ReactiveEnergyExportTotal_Wh") as "ReactiveEnergyExportTotalMin_Wh",
+            max("ReactiveEnergyExportTotal_Wh") as "ReactiveEnergyExportTotalMax_Wh"
+          from
+            "SchneiderMeasurements"
+          group by
+            time_bucket('1 month', "Timestamp"),
+            "Source",
+            "Tenant";
+      """);
+
+      migrationBuilder.Sql("""
+        create index on "SchneiderEnergyBoundsMonthly" (
+          "Timestamp",
+          "Source",
+          "Tenant"
+        );
+      """);
+
       migrationBuilder.Sql("""
         drop materialized view "MonthlyBoundsEnergy";
       """);
@@ -17,83 +181,11 @@ namespace Mess.Ozds.Timeseries.Migrations
       migrationBuilder.Sql("""
         drop materialized view "QuarterHourAveragePower";
       """);
-
-      migrationBuilder.DropPrimaryKey(
-          name: "PK_SchneiderMeasurements",
-          table: "SchneiderMeasurements");
-
-      migrationBuilder.DropIndex(
-          name: "IX_SchneiderMeasurements_Tenant_Source_Timestamp",
-          table: "SchneiderMeasurements");
-
-      migrationBuilder.DropPrimaryKey(
-          name: "PK_AbbMeasurements",
-          table: "AbbMeasurements");
-
-      migrationBuilder.DropIndex(
-          name: "IX_AbbMeasurements_Tenant_Source_Timestamp",
-          table: "AbbMeasurements");
-
-      migrationBuilder.AddPrimaryKey(
-          name: "PK_SchneiderMeasurements",
-          table: "SchneiderMeasurements",
-          columns: new[] { "Timestamp", "Source", "Tenant" });
-
-      migrationBuilder.AddPrimaryKey(
-          name: "PK_AbbMeasurements",
-          table: "AbbMeasurements",
-          columns: new[] { "Timestamp", "Source", "Tenant" });
-
-      migrationBuilder.CreateIndex(
-          name: "IX_SchneiderMeasurements_Timestamp_Source_Tenant",
-          table: "SchneiderMeasurements",
-          columns: new[] { "Timestamp", "Source", "Tenant" });
-
-      migrationBuilder.CreateIndex(
-          name: "IX_AbbMeasurements_Timestamp_Source_Tenant",
-          table: "AbbMeasurements",
-          columns: new[] { "Timestamp", "Source", "Tenant" });
     }
 
     /// <inheritdoc />
     protected override void Down(MigrationBuilder migrationBuilder)
     {
-      migrationBuilder.DropPrimaryKey(
-          name: "PK_SchneiderMeasurements",
-          table: "SchneiderMeasurements");
-
-      migrationBuilder.DropIndex(
-          name: "IX_SchneiderMeasurements_Timestamp_Source_Tenant",
-          table: "SchneiderMeasurements");
-
-      migrationBuilder.DropPrimaryKey(
-          name: "PK_AbbMeasurements",
-          table: "AbbMeasurements");
-
-      migrationBuilder.DropIndex(
-          name: "IX_AbbMeasurements_Timestamp_Source_Tenant",
-          table: "AbbMeasurements");
-
-      migrationBuilder.AddPrimaryKey(
-          name: "PK_SchneiderMeasurements",
-          table: "SchneiderMeasurements",
-          columns: new[] { "Tenant", "Source", "Timestamp" });
-
-      migrationBuilder.AddPrimaryKey(
-          name: "PK_AbbMeasurements",
-          table: "AbbMeasurements",
-          columns: new[] { "Tenant", "Source", "Timestamp" });
-
-      migrationBuilder.CreateIndex(
-          name: "IX_SchneiderMeasurements_Tenant_Source_Timestamp",
-          table: "SchneiderMeasurements",
-          columns: new[] { "Tenant", "Source", "Timestamp" });
-
-      migrationBuilder.CreateIndex(
-          name: "IX_AbbMeasurements_Tenant_Source_Timestamp",
-          table: "AbbMeasurements",
-          columns: new[] { "Tenant", "Source", "Timestamp" });
-
       migrationBuilder.Sql("""
         create materialized view if not exists "MonthlyBoundsEnergy" as
         with
@@ -237,6 +329,58 @@ namespace Mess.Ozds.Timeseries.Migrations
           "Timestamp"
         );
       """);
+
+      migrationBuilder.Sql("""
+        drop materialized view "AbbEnergyBoundsQuarterHourly";
+      """);
+
+      migrationBuilder.Sql("""
+        drop materialized view "SchneiderEnergyBoundsQuarterHourly";
+      """);
+
+      migrationBuilder.Sql("""
+        drop materialized view "AbbEnergyBoundsMonthly";
+      """);
+
+      migrationBuilder.Sql("""
+        drop materialized view "SchneiderEnergyBoundsMonthly";
+      """);
+
+      migrationBuilder.DropPrimaryKey(
+          name: "PK_SchneiderMeasurements",
+          table: "SchneiderMeasurements");
+
+      migrationBuilder.DropIndex(
+          name: "IX_SchneiderMeasurements_Timestamp_Source_Tenant",
+          table: "SchneiderMeasurements");
+
+      migrationBuilder.DropPrimaryKey(
+          name: "PK_AbbMeasurements",
+          table: "AbbMeasurements");
+
+      migrationBuilder.DropIndex(
+          name: "IX_AbbMeasurements_Timestamp_Source_Tenant",
+          table: "AbbMeasurements");
+
+      migrationBuilder.AddPrimaryKey(
+          name: "PK_SchneiderMeasurements",
+          table: "SchneiderMeasurements",
+          columns: new[] { "Tenant", "Source", "Timestamp" });
+
+      migrationBuilder.AddPrimaryKey(
+          name: "PK_AbbMeasurements",
+          table: "AbbMeasurements",
+          columns: new[] { "Tenant", "Source", "Timestamp" });
+
+      migrationBuilder.CreateIndex(
+          name: "IX_SchneiderMeasurements_Tenant_Source_Timestamp",
+          table: "SchneiderMeasurements",
+          columns: new[] { "Tenant", "Source", "Timestamp" });
+
+      migrationBuilder.CreateIndex(
+          name: "IX_AbbMeasurements_Tenant_Source_Timestamp",
+          table: "AbbMeasurements",
+          columns: new[] { "Tenant", "Source", "Timestamp" });
     }
   }
 }
