@@ -46,16 +46,16 @@ namespace Mess.Ozds.Timeseries.Migrations
                     b.Property<double>("ActiveEnergyImportTotalMin_Wh")
                         .HasColumnType("float8");
 
-                    b.Property<double>("ReactiveEnergyExportTotalMax_W")
+                    b.Property<double>("ReactiveEnergyExportTotalMax_VARh")
                         .HasColumnType("float8");
 
-                    b.Property<double>("ReactiveEnergyExportTotalMin_Wh")
+                    b.Property<double>("ReactiveEnergyExportTotalMin_VARh")
                         .HasColumnType("float8");
 
-                    b.Property<double>("ReactiveEnergyImportTotalMax_W")
+                    b.Property<double>("ReactiveEnergyImportTotalMax_VARh")
                         .HasColumnType("float8");
 
-                    b.Property<double>("ReactiveEnergyImportTotalMin_Wh")
+                    b.Property<double>("ReactiveEnergyImportTotalMin_VARh")
                         .HasColumnType("float8");
 
                     b.HasKey("Timestamp", "Source", "Tenant");
@@ -76,28 +76,28 @@ namespace Mess.Ozds.Timeseries.Migrations
                     b.Property<string>("Tenant")
                         .HasColumnType("text");
 
-                    b.Property<double>("ActiveEnergyExportTotalMax_W")
+                    b.Property<double>("ActiveEnergyExportTotalMax_Wh")
                         .HasColumnType("float8");
 
                     b.Property<double>("ActiveEnergyExportTotalMin_Wh")
                         .HasColumnType("float8");
 
-                    b.Property<double>("ActiveEnergyImportTotalMax_W")
+                    b.Property<double>("ActiveEnergyImportTotalMax_Wh")
                         .HasColumnType("float8");
 
                     b.Property<double>("ActiveEnergyImportTotalMin_Wh")
                         .HasColumnType("float8");
 
-                    b.Property<double>("ReactiveEnergyExportTotalMax_W")
+                    b.Property<double>("ReactiveEnergyExportTotalMax_VARh")
                         .HasColumnType("float8");
 
-                    b.Property<double>("ReactiveEnergyExportTotalMin_Wh")
+                    b.Property<double>("ReactiveEnergyExportTotalMin_VARh")
                         .HasColumnType("float8");
 
-                    b.Property<double>("ReactiveEnergyImportTotalMax_W")
+                    b.Property<double>("ReactiveEnergyImportTotalMax_VARh")
                         .HasColumnType("float8");
 
-                    b.Property<double>("ReactiveEnergyImportTotalMin_Wh")
+                    b.Property<double>("ReactiveEnergyImportTotalMin_VARh")
                         .HasColumnType("float8");
 
                     b.HasKey("Timestamp", "Source", "Tenant");
@@ -232,16 +232,16 @@ namespace Mess.Ozds.Timeseries.Migrations
                     b.Property<double>("ActiveEnergyImportTotalMin_Wh")
                         .HasColumnType("float8");
 
-                    b.Property<double>("ReactiveEnergyExportTotalMax_W")
+                    b.Property<double>("ReactiveEnergyExportTotalMax_VARh")
                         .HasColumnType("float8");
 
-                    b.Property<double>("ReactiveEnergyExportTotalMin_Wh")
+                    b.Property<double>("ReactiveEnergyExportTotalMin_VARh")
                         .HasColumnType("float8");
 
-                    b.Property<double>("ReactiveEnergyImportTotalMax_W")
+                    b.Property<double>("ReactiveEnergyImportTotalMax_VARh")
                         .HasColumnType("float8");
 
-                    b.Property<double>("ReactiveEnergyImportTotalMin_Wh")
+                    b.Property<double>("ReactiveEnergyImportTotalMin_VARh")
                         .HasColumnType("float8");
 
                     b.HasKey("Timestamp", "Source", "Tenant");
@@ -274,16 +274,16 @@ namespace Mess.Ozds.Timeseries.Migrations
                     b.Property<double>("ActiveEnergyImportTotalMin_Wh")
                         .HasColumnType("float8");
 
-                    b.Property<double>("ReactiveEnergyExportTotalMax_W")
+                    b.Property<double>("ReactiveEnergyExportTotalMax_VARh")
                         .HasColumnType("float8");
 
-                    b.Property<double>("ReactiveEnergyExportTotalMin_Wh")
+                    b.Property<double>("ReactiveEnergyExportTotalMin_VARh")
                         .HasColumnType("float8");
 
-                    b.Property<double>("ReactiveEnergyImportTotalMax_W")
+                    b.Property<double>("ReactiveEnergyImportTotalMax_VARh")
                         .HasColumnType("float8");
 
-                    b.Property<double>("ReactiveEnergyImportTotalMin_Wh")
+                    b.Property<double>("ReactiveEnergyImportTotalMin_VARh")
                         .HasColumnType("float8");
 
                     b.HasKey("Timestamp", "Source", "Tenant");
