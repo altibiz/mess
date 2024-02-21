@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Mess.Timeseries.Abstractions.Entities;
 
-public abstract class HypertableViewEntity
+public abstract class ContinuousAggregateEntity
 {
   [NotMapped] private DateTimeOffset _timestamp;
 
@@ -10,7 +10,6 @@ public abstract class HypertableViewEntity
 
   [Column(TypeName = "text")] public string Source { get; set; } = default!;
 
-  [HypertableColumn]
   [Column(TypeName = "timestamptz")]
   public DateTimeOffset Timestamp
   {

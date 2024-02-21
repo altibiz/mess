@@ -48,15 +48,15 @@ public abstract class TimeseriesDbContext : RelationalDbContext
       (@type, entity) =>
       {
         entity.HasKey(
-          nameof(HypertableEntity.Tenant),
-          nameof(HypertableEntity.Source),
-          nameof(HypertableEntity.Timestamp)
+          nameof(ContinuousAggregateEntity.Timestamp),
+          nameof(ContinuousAggregateEntity.Source),
+          nameof(ContinuousAggregateEntity.Tenant)
         );
 
         entity.HasIndex(
-          nameof(HypertableEntity.Tenant),
-          nameof(HypertableEntity.Source),
-          nameof(HypertableEntity.Timestamp)
+          nameof(ContinuousAggregateEntity.Timestamp),
+          nameof(ContinuousAggregateEntity.Source),
+          nameof(ContinuousAggregateEntity.Tenant)
         );
 
         entity.ToTable(@type.Name.RegexRemove("Entity$") + "s");
@@ -70,13 +70,13 @@ public abstract class TimeseriesDbContext : RelationalDbContext
 
     CreateTenantedEntitiesWithBase(
       modelBuilder,
-      typeof(HypertableViewEntity),
+      typeof(ContinuousAggregateEntity),
       (@type, entity) =>
       {
         entity.HasKey(
-          nameof(HypertableViewEntity.Tenant),
-          nameof(HypertableViewEntity.Source),
-          nameof(HypertableViewEntity.Timestamp)
+          nameof(ContinuousAggregateEntity.Timestamp),
+          nameof(ContinuousAggregateEntity.Source),
+          nameof(ContinuousAggregateEntity.Tenant)
         );
 
         entity.ToView(@type.Name.RegexRemove("Entity$"));
@@ -85,7 +85,7 @@ public abstract class TimeseriesDbContext : RelationalDbContext
 
     CreateEnumPropertyTypes(
       modelBuilder,
-      typeof(HypertableViewEntity)
+      typeof(ContinuousAggregateEntity)
     );
   }
 
