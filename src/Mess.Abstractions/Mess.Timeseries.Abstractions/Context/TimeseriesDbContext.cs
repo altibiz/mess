@@ -59,7 +59,7 @@ public abstract class TimeseriesDbContext : RelationalDbContext
           nameof(HypertableEntity.Timestamp)
         );
 
-        entity.ToTable(@type.Name.RegexRemove("Entity$"));
+        entity.ToTable(@type.Name.RegexRemove("Entity$") + "s");
       }
     );
 
