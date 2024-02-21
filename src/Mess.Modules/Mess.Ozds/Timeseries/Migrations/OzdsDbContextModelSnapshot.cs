@@ -34,13 +34,13 @@ namespace Mess.Ozds.Timeseries.Migrations
                     b.Property<string>("Tenant")
                         .HasColumnType("text");
 
-                    b.Property<double>("ActiveEnergyExportTotalMax_W")
+                    b.Property<double>("ActiveEnergyExportTotalMax_Wh")
                         .HasColumnType("float8");
 
                     b.Property<double>("ActiveEnergyExportTotalMin_Wh")
                         .HasColumnType("float8");
 
-                    b.Property<double>("ActiveEnergyImportTotalMax_W")
+                    b.Property<double>("ActiveEnergyImportTotalMax_Wh")
                         .HasColumnType("float8");
 
                     b.Property<double>("ActiveEnergyImportTotalMin_Wh")
@@ -220,13 +220,13 @@ namespace Mess.Ozds.Timeseries.Migrations
                     b.Property<string>("Tenant")
                         .HasColumnType("text");
 
-                    b.Property<double>("ActiveEnergyExportTotalMax_W")
+                    b.Property<double>("ActiveEnergyExportTotalMax_Wh")
                         .HasColumnType("float8");
 
                     b.Property<double>("ActiveEnergyExportTotalMin_Wh")
                         .HasColumnType("float8");
 
-                    b.Property<double>("ActiveEnergyImportTotalMax_W")
+                    b.Property<double>("ActiveEnergyImportTotalMax_Wh")
                         .HasColumnType("float8");
 
                     b.Property<double>("ActiveEnergyImportTotalMin_Wh")
@@ -262,13 +262,13 @@ namespace Mess.Ozds.Timeseries.Migrations
                     b.Property<string>("Tenant")
                         .HasColumnType("text");
 
-                    b.Property<double>("ActiveEnergyExportTotalMax_W")
+                    b.Property<double>("ActiveEnergyExportTotalMax_Wh")
                         .HasColumnType("float8");
 
                     b.Property<double>("ActiveEnergyExportTotalMin_Wh")
                         .HasColumnType("float8");
 
-                    b.Property<double>("ActiveEnergyImportTotalMax_W")
+                    b.Property<double>("ActiveEnergyImportTotalMax_Wh")
                         .HasColumnType("float8");
 
                     b.Property<double>("ActiveEnergyImportTotalMin_Wh")
