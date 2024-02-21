@@ -29,7 +29,7 @@ namespace Mess.Ozds.Timeseries.Migrations
 
       // TODO: materialize view create
       migrationBuilder.Sql("""
-        create materialized view if not exists MonthlyBoundsEnergy as
+        create materialized view if not exists "MonthlyBoundsEnergy" as
         with
           measurements as (
             select
@@ -81,11 +81,19 @@ namespace Mess.Ozds.Timeseries.Migrations
           ranked
         where
           timestamp_ascending = 1
-          or timestamp_descending = 1
+          or timestamp_descending = 1;
       """);
 
       migrationBuilder.Sql("""
-        create materialized view if not exists QuarterHourAveragePower as
+        create index on "MonthlyBoundsEnergy" (
+          "Tenant",
+          "Source",
+          "Timestamp"
+        );
+      """);
+
+      migrationBuilder.Sql("""
+        create materialized view if not exists "QuarterHourAveragePower" as
         with
           measurements as (
             select
@@ -153,7 +161,15 @@ namespace Mess.Ozds.Timeseries.Migrations
           timestamp as "Timestamp",
           power as "ActivePower_W"
         from
-          sum
+          sum;
+      """);
+
+      migrationBuilder.Sql("""
+        create index on "QuarterHourAveragePower" (
+          "Tenant",
+          "Source",
+          "Timestamp"
+        );
       """);
     }
 
@@ -161,11 +177,11 @@ namespace Mess.Ozds.Timeseries.Migrations
     protected override void Down(MigrationBuilder migrationBuilder)
     {
       migrationBuilder.Sql("""
-        drop materialized view if exists MonthlyBoundsEnergy;
+        drop materialized view if exists "MonthlyBoundsEnergy";
       """);
 
       migrationBuilder.Sql("""
-        drop materialized view if exists QuarterHourAveragePower;
+        drop materialized view if exists "QuarterHourAveragePower";
       """);
 
       migrationBuilder.AddColumn<long>(
