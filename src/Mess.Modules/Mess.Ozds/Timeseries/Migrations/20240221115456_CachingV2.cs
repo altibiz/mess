@@ -55,11 +55,11 @@ namespace Mess.Ozds.Timeseries.Migrations
             "Source",
             time_bucket('15 minutes', "Timestamp") as "Timestamp",
             min("ActiveEnergyImportTotal_Wh") as "ActiveEnergyImportTotalMin_Wh",
-            max("ActiveEnergyImportTotal_Wh") as "ActiveEnergyImportTotalMax_Wh"
+            max("ActiveEnergyImportTotal_Wh") as "ActiveEnergyImportTotalMax_Wh",
             min("ActiveEnergyExportTotal_Wh") as "ActiveEnergyExportTotalMin_Wh",
-            max("ActiveEnergyExportTotal_Wh") as "ActiveEnergyExportTotalMax_Wh"
+            max("ActiveEnergyExportTotal_Wh") as "ActiveEnergyExportTotalMax_Wh",
             min("ReactiveEnergyImportTotal_Wh") as "ReactiveEnergyImportTotalMin_Wh",
-            max("ReactiveEnergyImportTotal_Wh") as "ReactiveEnergyImportTotalMax_Wh"
+            max("ReactiveEnergyImportTotal_Wh") as "ReactiveEnergyImportTotalMax_Wh",
             min("ReactiveEnergyExportTotal_Wh") as "ReactiveEnergyExportTotalMin_Wh",
             max("ReactiveEnergyExportTotal_Wh") as "ReactiveEnergyExportTotalMax_Wh"
           from
@@ -87,11 +87,11 @@ namespace Mess.Ozds.Timeseries.Migrations
             "Source",
             time_bucket('15 minutes', "Timestamp") as "Timestamp",
             min("ActiveEnergyImportTotal_Wh") as "ActiveEnergyImportTotalMin_Wh",
-            max("ActiveEnergyImportTotal_Wh") as "ActiveEnergyImportTotalMax_Wh"
+            max("ActiveEnergyImportTotal_Wh") as "ActiveEnergyImportTotalMax_Wh",
             min("ActiveEnergyExportTotal_Wh") as "ActiveEnergyExportTotalMin_Wh",
-            max("ActiveEnergyExportTotal_Wh") as "ActiveEnergyExportTotalMax_Wh"
+            max("ActiveEnergyExportTotal_Wh") as "ActiveEnergyExportTotalMax_Wh",
             min("ReactiveEnergyImportTotal_Wh") as "ReactiveEnergyImportTotalMin_Wh",
-            max("ReactiveEnergyImportTotal_Wh") as "ReactiveEnergyImportTotalMax_Wh"
+            max("ReactiveEnergyImportTotal_Wh") as "ReactiveEnergyImportTotalMax_Wh",
             min("ReactiveEnergyExportTotal_Wh") as "ReactiveEnergyExportTotalMin_Wh",
             max("ReactiveEnergyExportTotal_Wh") as "ReactiveEnergyExportTotalMax_Wh"
           from
@@ -119,11 +119,11 @@ namespace Mess.Ozds.Timeseries.Migrations
             "Source",
             time_bucket('1 month', "Timestamp") as "Timestamp",
             min("ActiveEnergyImportTotal_Wh") as "ActiveEnergyImportTotalMin_Wh",
-            max("ActiveEnergyImportTotal_Wh") as "ActiveEnergyImportTotalMax_Wh"
+            max("ActiveEnergyImportTotal_Wh") as "ActiveEnergyImportTotalMax_Wh",
             min("ActiveEnergyExportTotal_Wh") as "ActiveEnergyExportTotalMin_Wh",
-            max("ActiveEnergyExportTotal_Wh") as "ActiveEnergyExportTotalMax_Wh"
+            max("ActiveEnergyExportTotal_Wh") as "ActiveEnergyExportTotalMax_Wh",
             min("ReactiveEnergyImportTotal_Wh") as "ReactiveEnergyImportTotalMin_Wh",
-            max("ReactiveEnergyImportTotal_Wh") as "ReactiveEnergyImportTotalMax_Wh"
+            max("ReactiveEnergyImportTotal_Wh") as "ReactiveEnergyImportTotalMax_Wh",
             min("ReactiveEnergyExportTotal_Wh") as "ReactiveEnergyExportTotalMin_Wh",
             max("ReactiveEnergyExportTotal_Wh") as "ReactiveEnergyExportTotalMax_Wh"
           from
@@ -151,11 +151,11 @@ namespace Mess.Ozds.Timeseries.Migrations
             "Source",
             time_bucket('1 month', "Timestamp") as "Timestamp",
             min("ActiveEnergyImportTotal_Wh") as "ActiveEnergyImportTotalMin_Wh",
-            max("ActiveEnergyImportTotal_Wh") as "ActiveEnergyImportTotalMax_Wh"
+            max("ActiveEnergyImportTotal_Wh") as "ActiveEnergyImportTotalMax_Wh",
             min("ActiveEnergyExportTotal_Wh") as "ActiveEnergyExportTotalMin_Wh",
-            max("ActiveEnergyExportTotal_Wh") as "ActiveEnergyExportTotalMax_Wh"
+            max("ActiveEnergyExportTotal_Wh") as "ActiveEnergyExportTotalMax_Wh",
             min("ReactiveEnergyImportTotal_Wh") as "ReactiveEnergyImportTotalMin_Wh",
-            max("ReactiveEnergyImportTotal_Wh") as "ReactiveEnergyImportTotalMax_Wh"
+            max("ReactiveEnergyImportTotal_Wh") as "ReactiveEnergyImportTotalMax_Wh",
             min("ReactiveEnergyExportTotal_Wh") as "ReactiveEnergyExportTotalMin_Wh",
             max("ReactiveEnergyExportTotal_Wh") as "ReactiveEnergyExportTotalMax_Wh"
           from
