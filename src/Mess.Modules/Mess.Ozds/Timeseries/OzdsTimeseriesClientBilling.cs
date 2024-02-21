@@ -39,25 +39,9 @@ public partial class OzdsTimeseriesClient
         .DeferredLastOrDefault()
         .FutureValue();
 
-      var peakQuery =
-       context.QuarterHourAveragePower
-        .FromSqlRaw(
-            string.Format(
-              PeakPowerQueryTemplate,
-              string.Format(
-                AbbBaseSubquery,
-                "= {2}"
-              )
-            ),
-            fromDate,
-            toDate,
-            source
-        )
-        .Future();
-
       var first = firstQuery.Value;
       var last = lastQuery.Value;
-      var peak = peakQuery.ToList().FirstOrDefault();
+      object? peak = null;
 
       return first is { } && last is { } && peak is { }
         ? new OzdsIotDeviceBillingData(
@@ -72,7 +56,7 @@ public partial class OzdsTimeseriesClient
           last.ReactiveEnergyImportTotal_VARh / 1000,
           first.ReactiveEnergyExportTotal_VARh / 1000,
           last.ReactiveEnergyExportTotal_VARh / 1000,
-          peak.ActivePower_W / 1000
+          0
         )
         : new OzdsIotDeviceBillingData(
             source,
@@ -118,25 +102,9 @@ public partial class OzdsTimeseriesClient
         .DeferredLastOrDefault()
         .FutureValue();
 
-      var peakQuery =
-       context.QuarterHourAveragePower
-        .FromSqlRaw(
-            string.Format(
-              PeakPowerQueryTemplate,
-              string.Format(
-                AbbBaseSubquery,
-                "= {2}"
-              )
-            ),
-            fromDate,
-            toDate,
-            source
-        )
-        .Future();
-
       var first = await firstQuery.ValueAsync();
       var last = await lastQuery.ValueAsync();
-      var peak = (await peakQuery.ToListAsync()).FirstOrDefault();
+      object? peak = null;
 
       return first is { } && last is { } && peak is { }
         ? new OzdsIotDeviceBillingData(
@@ -151,7 +119,7 @@ public partial class OzdsTimeseriesClient
           last.ReactiveEnergyImportTotal_VARh / 1000,
           first.ReactiveEnergyExportTotal_VARh / 1000,
           last.ReactiveEnergyExportTotal_VARh / 1000,
-          peak.ActivePower_W / 1000
+          0
         )
         : new OzdsIotDeviceBillingData(
             source,
@@ -197,25 +165,9 @@ public partial class OzdsTimeseriesClient
         .DeferredLastOrDefault()
         .FutureValue();
 
-      var peakQuery =
-       context.QuarterHourAveragePower
-        .FromSqlRaw(
-            string.Format(
-              PeakPowerQueryTemplate,
-              string.Format(
-                SchneiderBaseSubquery,
-                "= {2}"
-              )
-            ),
-            fromDate,
-            toDate,
-            source
-        )
-        .Future();
-
       var first = firstQuery.Value;
       var last = lastQuery.Value;
-      var peak = peakQuery.ToList().FirstOrDefault();
+      object? peak = null;
 
       return first is { } && last is { } && peak is { }
         ? new OzdsIotDeviceBillingData(
@@ -230,7 +182,7 @@ public partial class OzdsTimeseriesClient
           last.ReactiveEnergyImportTotal_VARh / 1000,
           first.ReactiveEnergyExportTotal_VARh / 1000,
           last.ReactiveEnergyExportTotal_VARh / 1000,
-          peak.ActivePower_W / 1000
+          0
         )
         : new OzdsIotDeviceBillingData(
             source,
@@ -276,25 +228,9 @@ public partial class OzdsTimeseriesClient
         .DeferredLastOrDefault()
         .FutureValue();
 
-      var peakQuery =
-       context.QuarterHourAveragePower
-        .FromSqlRaw(
-            string.Format(
-              PeakPowerQueryTemplate,
-              string.Format(
-                SchneiderBaseSubquery,
-                "= {2}"
-              )
-            ),
-            fromDate,
-            toDate,
-            source
-        )
-        .Future();
-
       var first = await firstQuery.ValueAsync();
       var last = await lastQuery.ValueAsync();
-      var peak = (await peakQuery.ToListAsync()).FirstOrDefault();
+      object? peak = null;
 
       return first is { } && last is { } && peak is { }
         ? new OzdsIotDeviceBillingData(
@@ -309,7 +245,7 @@ public partial class OzdsTimeseriesClient
           last.ReactiveEnergyImportTotal_VARh / 1000,
           first.ReactiveEnergyExportTotal_VARh / 1000,
           last.ReactiveEnergyExportTotal_VARh / 1000,
-          peak.ActivePower_W / 1000
+          0
         )
         : new OzdsIotDeviceBillingData(
             source,
