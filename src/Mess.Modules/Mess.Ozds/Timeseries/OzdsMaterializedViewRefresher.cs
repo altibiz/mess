@@ -4,9 +4,9 @@ namespace Mess.Ozds.Timeseries;
 
 public class OzdsMaterializedViewRefresher : MaterializedViewRefresher<OzdsTimeseriesDbContext>
 {
-  protected override string[] Views => new[]
+  protected override IEnumerable<ViewDescriptor> Views => new[]
   {
-    "MonthlyBoundsEnergy",
-    "QuarterHourAveragePower",
+    new ViewDescriptor("MonthlyBoundsEnergy", false),
+    new ViewDescriptor("QuarterHourAveragePower", false),
   };
 }

@@ -9,15 +9,10 @@ public partial interface IOzdsTimeseriesQuery
     DateTimeOffset startDate,
     DateTimeOffset endDate
   );
+
   public Task<(decimal? First, decimal? Last, DateTimeOffset FirstDate)> GetSchneiderLastMonthMeasurementsAsync(
     string source,
     DateTimeOffset startDate,
     DateTimeOffset endDate
-  );
-  public Task<IReadOnlyList<AbbMeasurement>> GetLastAbbMeasurementsBySourcesAsync(
-    List<string> sources
-  );
-  public Task<IReadOnlyList<SchneiderMeasurement>> GetLastSchneiderMeasurementsBySourcesAsync(
-    List<string> sources
   );
 }

@@ -4,7 +4,7 @@ namespace Mess.Relational.Abstractions.Extensions;
 
 public static class IServiceCollectionExtensions
 {
-  public static void AddTimeseriesDbContext<T>(this IServiceCollection services)
+  public static void AddRelationalDbContext<T>(this IServiceCollection services)
     where T : RelationalDbContext
   {
     services.AddDbContext<T>();

@@ -44,48 +44,6 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
       });
   }
 
-  public IReadOnlyList<AbbMeasurement> GetAbbMeasurements(
-    string source,
-    DateTimeOffset fromDate,
-    DateTimeOffset toDate
-  )
-  {
-    return _services.WithTimeseriesDbContext<
-      OzdsTimeseriesDbContext,
-      List<AbbMeasurement>
-    >(context =>
-    {
-      return context.AbbMeasurements
-        .Where(measurement => measurement.Source == source)
-        .Where(measurement => measurement.Timestamp > fromDate)
-        .Where(measurement => measurement.Timestamp < toDate)
-        .OrderBy(measurement => measurement.Timestamp)
-        .Select(measurement => measurement.ToModel())
-        .ToList();
-    });
-  }
-
-  public async Task<IReadOnlyList<AbbMeasurement>> GetAbbMeasurementsAsync(
-    string source,
-    DateTimeOffset fromDate,
-    DateTimeOffset toDate
-  )
-  {
-    return await _services.WithTimeseriesDbContextAsync<
-      OzdsTimeseriesDbContext,
-      List<AbbMeasurement>
-    >(async context =>
-    {
-      return await context.AbbMeasurements
-        .Where(measurement => measurement.Source == source)
-        .Where(measurement => measurement.Timestamp > fromDate)
-        .Where(measurement => measurement.Timestamp < toDate)
-        .OrderBy(measurement => measurement.Timestamp)
-        .Select(measurement => measurement.ToModel())
-        .ToListAsync();
-    });
-  }
-
   public void AddSchneiderMeasurement(SchneiderMeasurement model)
   {
     _services.WithTimeseriesDbContext<OzdsTimeseriesDbContext>(context =>
@@ -111,47 +69,53 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
       });
   }
 
-  public IReadOnlyList<SchneiderMeasurement> GetSchneiderMeasurements(
-    string source,
-    DateTimeOffset fromDate,
-    DateTimeOffset toDate
-  )
+  public void AddBulkAbbMeasurement(IEnumerable<AbbMeasurement> measurements)
   {
-    return _services.WithTimeseriesDbContext<
-      OzdsTimeseriesDbContext,
-      List<SchneiderMeasurement>
-    >(context =>
+    _services.WithTimeseriesDbContext<OzdsTimeseriesDbContext>(context =>
     {
-      return context.SchneiderMeasurements
-        .Where(measurement => measurement.Source == source)
-        .Where(measurement => measurement.Timestamp > fromDate)
-        .Where(measurement => measurement.Timestamp < toDate)
-        .OrderBy(measurement => measurement.Timestamp)
-        .Select(measurement => measurement.ToModel())
-        .ToList();
+      context.AbbMeasurements
+        .UpsertRange(measurements.Select(measurement => measurement.ToEntity()).ToArray())
+        .On(v => new { v.Tenant, v.Source, v.Timestamp })
+        .NoUpdate()
+        .Run();
     });
   }
 
-  public async Task<
-    IReadOnlyList<SchneiderMeasurement>
-  > GetSchneiderMeasurementsAsync(
-    string source,
-    DateTimeOffset fromDate,
-    DateTimeOffset toDate
-  )
+  public Task AddBulkAbbMeasurementAsync(IEnumerable<AbbMeasurement> measurements)
   {
-    return await _services.WithTimeseriesDbContextAsync<
-      OzdsTimeseriesDbContext,
-      List<SchneiderMeasurement>
-    >(async context =>
+    return _services.WithTimeseriesDbContextAsync<OzdsTimeseriesDbContext>(
+      async context =>
+      {
+        await context.AbbMeasurements
+          .UpsertRange(measurements.Select(measurement => measurement.ToEntity()).ToArray())
+          .On(v => new { v.Tenant, v.Source, v.Timestamp })
+          .NoUpdate()
+          .RunAsync();
+      });
+  }
+
+  public void AddBulkSchneiderMeasurement(IEnumerable<SchneiderMeasurement> measurements)
+  {
+    _services.WithTimeseriesDbContext<OzdsTimeseriesDbContext>(context =>
     {
-      return await context.SchneiderMeasurements
-        .Where(measurement => measurement.Source == source)
-        .Where(measurement => measurement.Timestamp > fromDate)
-        .Where(measurement => measurement.Timestamp < toDate)
-        .OrderBy(measurement => measurement.Timestamp)
-        .Select(measurement => measurement.ToModel())
-        .ToListAsync();
+      context.SchneiderMeasurements
+        .UpsertRange(measurements.Select(measurement => measurement.ToEntity()).ToArray())
+        .On(v => new { v.Tenant, v.Source, v.Timestamp })
+        .NoUpdate()
+        .Run();
     });
+  }
+
+  public Task AddBulkSchneiderMeasurementAsync(IEnumerable<SchneiderMeasurement> measurements)
+  {
+    return _services.WithTimeseriesDbContextAsync<OzdsTimeseriesDbContext>(
+      async context =>
+      {
+        await context.SchneiderMeasurements
+          .UpsertRange(measurements.Select(measurement => measurement.ToEntity()).ToArray())
+          .On(v => new { v.Tenant, v.Source, v.Timestamp })
+          .NoUpdate()
+          .RunAsync();
+      });
   }
 }

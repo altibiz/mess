@@ -2,7 +2,9 @@ using Mess.Relational.Abstractions.Context;
 
 namespace Mess.Relational.Abstractions.Extensions;
 
-public static class RelationalDbContextIServiceProviderExtensions
+// TODO: scoped/singleton detection
+
+public static class IServiceProviderExtensions
 {
   public static async Task<TReturn> WithRelationalDbContextAsync<
     TContext,

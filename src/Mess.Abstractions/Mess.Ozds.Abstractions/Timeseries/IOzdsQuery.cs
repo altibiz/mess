@@ -29,4 +29,30 @@ public partial interface IOzdsTimeseriesQuery
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
+
+  public Task<IReadOnlyList<AbbMeasurement>> GetBulkAbbMeasurementsAsync(
+    IEnumerable<string> sources,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  );
+
+  public IReadOnlyList<AbbMeasurement> GetBulkAbbMeasurements(
+    IEnumerable<string> sources,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  );
+
+  public Task<
+    IReadOnlyList<SchneiderMeasurement>
+  > GetBulkSchneiderMeasurementsAsync(
+    IEnumerable<string> sources,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  );
+
+  public IReadOnlyList<SchneiderMeasurement> GetBulkSchneiderMeasurements(
+    IEnumerable<string> sources,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  );
 }

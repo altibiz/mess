@@ -1,8 +1,7 @@
 namespace Mess.Ozds.Abstractions.Timeseries;
 
 public record SchneiderMeasurement(
-  string Tenant,
-  string DeviceId,
+  string Source,
   DateTimeOffset Timestamp,
   decimal VoltageL1_V,
   decimal VoltageL2_V,

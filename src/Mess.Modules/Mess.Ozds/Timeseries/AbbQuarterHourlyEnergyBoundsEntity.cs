@@ -13,9 +13,12 @@ public class AbbQuarterHourlyEnergyBoundsEntity : QuarterHourlyContinuousAggrega
   public decimal ActiveEnergyImportTotalMax_Wh { get; set; } = default!;
 
   [NotMapped]
+  public decimal ActiveEnergyImport_Wh =>
+    ActiveEnergyImportTotalMax_Wh - ActiveEnergyImportTotalMin_Wh;
+
+  [NotMapped]
   public decimal ActivePowerImportAverage_W =>
-    (ActiveEnergyImportTotalMax_Wh - ActiveEnergyImportTotalMin_Wh) *
-      (decimal)TimeSpan.TotalHours;
+    ActiveEnergyImport_Wh / (decimal)TimeSpan.TotalHours;
 
   [Column(TypeName = "float8")]
   public decimal ActiveEnergyExportTotalMin_Wh { get; set; } = default!;
@@ -24,9 +27,12 @@ public class AbbQuarterHourlyEnergyBoundsEntity : QuarterHourlyContinuousAggrega
   public decimal ActiveEnergyExportTotalMax_Wh { get; set; } = default!;
 
   [NotMapped]
+  public decimal ActiveEnergyExport_Wh =>
+    ActiveEnergyExportTotalMax_Wh - ActiveEnergyExportTotalMin_Wh;
+
+  [NotMapped]
   public decimal ActivePowerExportAverage_W =>
-    (ActiveEnergyExportTotalMax_Wh - ActiveEnergyExportTotalMin_Wh) *
-      (decimal)TimeSpan.TotalHours;
+    ActiveEnergyExport_Wh / (decimal)TimeSpan.TotalHours;
 
   [Column(TypeName = "float8")]
   public decimal ReactiveEnergyImportTotalMin_VARh { get; set; } = default!;
@@ -35,9 +41,12 @@ public class AbbQuarterHourlyEnergyBoundsEntity : QuarterHourlyContinuousAggrega
   public decimal ReactiveEnergyImportTotalMax_VARh { get; set; } = default!;
 
   [NotMapped]
+  public decimal ReactiveEnergyImport_VARh =>
+    ReactiveEnergyImportTotalMax_VARh - ReactiveEnergyImportTotalMin_VARh;
+
+  [NotMapped]
   public decimal ReactivePowerImportAverage_VAR =>
-    (ReactiveEnergyImportTotalMax_VARh - ReactiveEnergyImportTotalMin_VARh) *
-      (decimal)TimeSpan.TotalHours;
+    ReactiveEnergyImport_VARh / (decimal)TimeSpan.TotalHours;
 
   [Column(TypeName = "float8")]
   public decimal ReactiveEnergyExportTotalMin_VARh { get; set; } = default!;
@@ -46,7 +55,10 @@ public class AbbQuarterHourlyEnergyBoundsEntity : QuarterHourlyContinuousAggrega
   public decimal ReactiveEnergyExportTotalMax_VARh { get; set; } = default!;
 
   [NotMapped]
+  public decimal ReactiveEnergyExport_VARh =>
+    ReactiveEnergyExportTotalMax_VARh - ReactiveEnergyExportTotalMin_VARh;
+
+  [NotMapped]
   public decimal ReactivePowerExportAverage_VAR =>
-    (ReactiveEnergyExportTotalMax_VARh - ReactiveEnergyExportTotalMin_VARh) *
-      (decimal)TimeSpan.TotalHours;
+    ReactiveEnergyExport_VARh / (decimal)TimeSpan.TotalHours;
 };

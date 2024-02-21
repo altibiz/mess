@@ -1,10 +1,59 @@
 using Mess.Timeseries.Abstractions.Connection;
+using Mess.Timeseries.Abstractions.Context;
 using Npgsql;
 
 namespace Mess.Timeseries.Abstractions.Extensions;
 
-public static class ITimeseriesDbConnectionIServiceProviderExtensions
+// TODO: scoped/singleton detection
+
+public static class IServiceProviderExtensions
 {
+  public static async Task<TReturn> WithTimeseriesDbContextAsync<
+    TContext,
+    TReturn
+  >(this IServiceProvider services, Func<TContext, Task<TReturn>> todo)
+    where TContext : TimeseriesDbContext
+  {
+    await using var scope = services.CreateAsyncScope();
+    var context = scope.ServiceProvider.GetRequiredService<TContext>();
+    var result = await todo(context);
+    return result;
+  }
+
+  public static TReturn WithTimeseriesDbContext<TContext, TReturn>(
+    this IServiceProvider services,
+    Func<TContext, TReturn> todo
+  )
+    where TContext : TimeseriesDbContext
+  {
+    using var scope = services.CreateScope();
+    var context = scope.ServiceProvider.GetRequiredService<TContext>();
+    var result = todo(context);
+    return result;
+  }
+
+  public static async Task WithTimeseriesDbContextAsync<TContext>(
+    this IServiceProvider services,
+    Func<TContext, Task> todo
+  )
+    where TContext : TimeseriesDbContext
+  {
+    await using var scope = services.CreateAsyncScope();
+    var context = scope.ServiceProvider.GetRequiredService<TContext>();
+    await todo(context);
+  }
+
+  public static void WithTimeseriesDbContext<TContext>(
+    this IServiceProvider services,
+    Action<TContext> todo
+  )
+    where TContext : TimeseriesDbContext
+  {
+    using var scope = services.CreateScope();
+    var context = scope.ServiceProvider.GetRequiredService<TContext>();
+    todo(context);
+  }
+
   public static async Task<T> WithTimeseriesDbConnectionAsync<T>(
     this IServiceProvider services,
     Func<ITimeseriesDbConnection, Task<T>> todo

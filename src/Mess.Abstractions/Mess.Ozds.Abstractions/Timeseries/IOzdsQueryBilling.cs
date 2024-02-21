@@ -27,4 +27,28 @@ public partial interface IOzdsTimeseriesQuery
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
+
+  public IReadOnlyList<OzdsIotDeviceBillingData> GetBulkAbbBillingData(
+    IEnumerable<string> sources,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  );
+
+  public Task<IReadOnlyList<OzdsIotDeviceBillingData>> GetBulkAbbBillingDataAsync(
+    IEnumerable<string> sources,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  );
+
+  public IReadOnlyList<OzdsIotDeviceBillingData> GetBulkSchneiderBillingData(
+    IEnumerable<string> sources,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  );
+
+  public Task<IReadOnlyList<OzdsIotDeviceBillingData>> GetBulkSchneiderBillingDataAsync(
+    IEnumerable<string> sources,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  );
 }
