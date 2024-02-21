@@ -80,6 +80,15 @@ namespace Mess.Ozds.Timeseries.Migrations
       """);
 
       migrationBuilder.Sql("""
+        select add_continuous_aggregate_policy(
+          'AbbEnergyBoundsQuarterHourly',
+          start_offset => NULL,
+          end_offset => INTERVAL '15 minutes',
+          schedule_interval => INTERVAL '15 minutes'
+        );
+      """);
+
+      migrationBuilder.Sql("""
         create materialized view "SchneiderEnergyBoundsQuarterHourly"
         with (timescaledb.continuous)
         as
@@ -109,6 +118,15 @@ namespace Mess.Ozds.Timeseries.Migrations
           "Timestamp",
           "Source",
           "Tenant"
+        );
+      """);
+
+      migrationBuilder.Sql("""
+        select add_continuous_aggregate_policy(
+          'SchneiderEnergyBoundsQuarterHourly',
+          start_offset => NULL,
+          end_offset => INTERVAL '15 minutes',
+          schedule_interval => INTERVAL '15 minutes'
         );
       """);
 
@@ -146,6 +164,15 @@ namespace Mess.Ozds.Timeseries.Migrations
       """);
 
       migrationBuilder.Sql("""
+        select add_continuous_aggregate_policy(
+          'SchneiderEnergyBoundsMonthly',
+          start_offset => NULL,
+          end_offset => INTERVAL '1 month',
+          schedule_interval => INTERVAL '1 month'
+        );
+      """);
+
+      migrationBuilder.Sql("""
         create materialized view "SchneiderEnergyBoundsMonthly"
         with (timescaledb.continuous)
         as
@@ -175,6 +202,15 @@ namespace Mess.Ozds.Timeseries.Migrations
           "Timestamp",
           "Source",
           "Tenant"
+        );
+      """);
+
+      migrationBuilder.Sql("""
+        select add_continuous_aggregate_policy(
+          'SchneiderEnergyBoundsMonthly',
+          start_offset => NULL,
+          end_offset => INTERVAL '1 month',
+          schedule_interval => INTERVAL '1 month'
         );
       """);
 
