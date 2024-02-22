@@ -24,7 +24,7 @@ public class EnmsTimeseriesClient : IEnmsTimeseriesClient
   {
     _services.WithTimeseriesDbContext<EnmsTimeseriesDbContext>(context =>
     {
-      context.EgaugeMeasurements.Add(model.ToEntity(_shellSettings.GetTenantName()));
+      context.EgaugeMeasurements.Add(model.ToEntity(_shellSettings.GetDatabaseTablePrefix()));
       context.SaveChanges();
     });
   }
@@ -34,7 +34,7 @@ public class EnmsTimeseriesClient : IEnmsTimeseriesClient
     return _services.WithTimeseriesDbContextAsync<EnmsTimeseriesDbContext>(
       async context =>
       {
-        context.EgaugeMeasurements.Add(model.ToEntity(_shellSettings.GetTenantName()));
+        context.EgaugeMeasurements.Add(model.ToEntity(_shellSettings.GetDatabaseTablePrefix()));
         await context.SaveChangesAsync();
       });
   }

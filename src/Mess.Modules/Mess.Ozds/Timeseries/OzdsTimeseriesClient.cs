@@ -29,7 +29,7 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
     _services.WithTimeseriesDbContext<OzdsTimeseriesDbContext>(context =>
     {
       context.AbbMeasurements
-        .Upsert(model.ToEntity(_shellSettings.GetTenantName()))
+        .Upsert(model.ToEntity(_shellSettings.GetDatabaseTablePrefix()))
         .On(v => new { v.Tenant, v.Source, v.Timestamp })
         .NoUpdate()
         .Run();
@@ -42,7 +42,7 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
       async context =>
       {
         await context.AbbMeasurements
-          .Upsert(model.ToEntity(_shellSettings.GetTenantName()))
+          .Upsert(model.ToEntity(_shellSettings.GetDatabaseTablePrefix()))
           .On(v => new { v.Tenant, v.Source, v.Timestamp })
           .NoUpdate()
           .RunAsync();
@@ -54,7 +54,7 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
     _services.WithTimeseriesDbContext<OzdsTimeseriesDbContext>(context =>
     {
       context.SchneiderMeasurements
-        .Upsert(model.ToEntity(_shellSettings.GetTenantName()))
+        .Upsert(model.ToEntity(_shellSettings.GetDatabaseTablePrefix()))
         .On(v => new { v.Tenant, v.Source, v.Timestamp })
         .NoUpdate()
         .Run();
@@ -67,7 +67,7 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
       async context =>
       {
         await context.SchneiderMeasurements
-          .Upsert(model.ToEntity(_shellSettings.GetTenantName()))
+          .Upsert(model.ToEntity(_shellSettings.GetDatabaseTablePrefix()))
           .On(v => new { v.Tenant, v.Source, v.Timestamp })
           .NoUpdate()
           .RunAsync();
@@ -79,7 +79,7 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
     _services.WithTimeseriesDbContext<OzdsTimeseriesDbContext>(context =>
     {
       context.AbbMeasurements
-        .UpsertRange(measurements.Select(measurement => measurement.ToEntity(_shellSettings.GetTenantName())).ToArray())
+        .UpsertRange(measurements.Select(measurement => measurement.ToEntity(_shellSettings.GetDatabaseTablePrefix())).ToArray())
         .On(v => new { v.Tenant, v.Source, v.Timestamp })
         .NoUpdate()
         .Run();
@@ -92,7 +92,7 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
       async context =>
       {
         await context.AbbMeasurements
-          .UpsertRange(measurements.Select(measurement => measurement.ToEntity(_shellSettings.GetTenantName())).ToArray())
+          .UpsertRange(measurements.Select(measurement => measurement.ToEntity(_shellSettings.GetDatabaseTablePrefix())).ToArray())
           .On(v => new { v.Tenant, v.Source, v.Timestamp })
           .NoUpdate()
           .RunAsync();
@@ -104,7 +104,7 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
     _services.WithTimeseriesDbContext<OzdsTimeseriesDbContext>(context =>
     {
       context.SchneiderMeasurements
-        .UpsertRange(measurements.Select(measurement => measurement.ToEntity(_shellSettings.GetTenantName())).ToArray())
+        .UpsertRange(measurements.Select(measurement => measurement.ToEntity(_shellSettings.GetDatabaseTablePrefix())).ToArray())
         .On(v => new { v.Tenant, v.Source, v.Timestamp })
         .NoUpdate()
         .Run();
@@ -117,7 +117,7 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
       async context =>
       {
         await context.SchneiderMeasurements
-          .UpsertRange(measurements.Select(measurement => measurement.ToEntity(_shellSettings.GetTenantName())).ToArray())
+          .UpsertRange(measurements.Select(measurement => measurement.ToEntity(_shellSettings.GetDatabaseTablePrefix())).ToArray())
           .On(v => new { v.Tenant, v.Source, v.Timestamp })
           .NoUpdate()
           .RunAsync();

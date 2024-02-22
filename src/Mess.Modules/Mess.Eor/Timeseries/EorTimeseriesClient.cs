@@ -28,7 +28,7 @@ public class EorTimeseriesClient : IEorTimeseriesClient
   {
     _services.WithTimeseriesDbContext<EorTimeseriesDbContext>(context =>
     {
-      context.EorMeasurements.Add(model.ToEntity(_shellSettings.GetTenantName()));
+      context.EorMeasurements.Add(model.ToEntity(_shellSettings.GetDatabaseTablePrefix()));
       context.SaveChanges();
     });
   }
@@ -38,7 +38,7 @@ public class EorTimeseriesClient : IEorTimeseriesClient
     return _services.WithTimeseriesDbContextAsync<EorTimeseriesDbContext>(
       async context =>
       {
-        context.EorMeasurements.Add(model.ToEntity(_shellSettings.GetTenantName()));
+        context.EorMeasurements.Add(model.ToEntity(_shellSettings.GetDatabaseTablePrefix()));
         await context.SaveChangesAsync();
       });
   }
