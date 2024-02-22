@@ -17,7 +17,6 @@ public record class EgaugePushHandlerTest(
   {
     Handler.Handle(
       measurement.DeviceId,
-      measurement.Tenant,
       measurement.Timestamp,
       new ContentItem(),
       request

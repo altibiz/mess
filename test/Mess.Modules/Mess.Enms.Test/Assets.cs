@@ -14,8 +14,6 @@ public static class Assets
       ),
       new EgaugeMeasurement(
         DeviceId: "egauge",
-        Tenant:
-        "mess.measurement-device.test.egauge-measurement-dispatcher-test.dispatch Test",
         Timestamp: new DateTimeOffset(DateTime.FromBinary(638073944400000000)),
         Voltage: 4560858953370,
         Power: 27848558872
