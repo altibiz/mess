@@ -102,13 +102,20 @@ public class PidgeonPushHandler
         continue;
       }
 
-      (propagatedRequests[measurementHandler] ??= new()).Add(
-        new(
+      var handlerRequest = new BulkIotPushRequest(
           measurement.DeviceId,
           measurement.Timestamp,
           measurementContentItem,
           measurement.Data
-        ));
+      );
+      if (propagatedRequests.TryGetValue(measurementHandler, out var handlerRequests))
+      {
+        handlerRequests.Add(handlerRequest);
+      }
+      else
+      {
+        propagatedRequests.Add(measurementHandler, new() { handlerRequest });
+      }
     }
 
     foreach (var (handler, requests) in propagatedRequests)
@@ -181,13 +188,20 @@ public class PidgeonPushHandler
         continue;
       }
 
-      (propagatedRequests[measurementHandler] ??= new()).Add(
-        new(
+      var handlerRequest = new BulkIotPushRequest(
           measurement.DeviceId,
           measurement.Timestamp,
           measurementContentItem,
           measurement.Data
-        ));
+      );
+      if (propagatedRequests.TryGetValue(measurementHandler, out var handlerRequests))
+      {
+        handlerRequests.Add(handlerRequest);
+      }
+      else
+      {
+        propagatedRequests.Add(measurementHandler, new() { handlerRequest });
+      }
     }
 
     foreach (var (handler, requests) in propagatedRequests)
@@ -260,13 +274,20 @@ public class PidgeonPushHandler
         continue;
       }
 
-      (propagatedRequests[measurementHandler] ??= new()).Add(
-        new(
+      var handlerRequest = new BulkIotPushRequest(
           measurement.DeviceId,
           measurement.Timestamp,
           measurementContentItem,
           measurement.Data
-        ));
+      );
+      if (propagatedRequests.TryGetValue(measurementHandler, out var handlerRequests))
+      {
+        handlerRequests.Add(handlerRequest);
+      }
+      else
+      {
+        propagatedRequests.Add(measurementHandler, new() { handlerRequest });
+      }
     }
 
     foreach (var (handler, handlerRequests) in propagatedRequests)
@@ -338,13 +359,20 @@ public class PidgeonPushHandler
         continue;
       }
 
-      (propagatedRequests[measurementHandler] ??= new()).Add(
-        new(
+      var handlerRequest = new BulkIotPushRequest(
           measurement.DeviceId,
           measurement.Timestamp,
           measurementContentItem,
           measurement.Data
-        ));
+      );
+      if (propagatedRequests.TryGetValue(measurementHandler, out var handlerRequests))
+      {
+        handlerRequests.Add(handlerRequest);
+      }
+      else
+      {
+        propagatedRequests.Add(measurementHandler, new() { handlerRequest });
+      }
     }
 
     foreach (var (handler, handlerRequests) in propagatedRequests)
