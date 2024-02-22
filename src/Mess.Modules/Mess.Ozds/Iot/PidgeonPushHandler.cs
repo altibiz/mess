@@ -67,7 +67,7 @@ public class PidgeonPushHandler
                 _shellSettings.GetTenantName(),
                 measurement.Timestamp,
                 measurement.DeviceId,
-                measurement.Data
+                measurement.Data.ToString()
               )
           )
           .ToArray()
@@ -106,7 +106,7 @@ public class PidgeonPushHandler
           measurement.DeviceId,
           measurement.Timestamp,
           measurementContentItem,
-          measurement.Data
+          measurement.Data.ToString()
       );
       if (propagatedRequests.TryGetValue(measurementHandler, out var handlerRequests))
       {
@@ -154,7 +154,7 @@ public class PidgeonPushHandler
                 _shellSettings.GetTenantName(),
                 measurement.Timestamp,
                 measurement.DeviceId,
-                measurement.Data
+                measurement.Data.ToString()
               )
           )
           .ToArray()
@@ -192,7 +192,7 @@ public class PidgeonPushHandler
           measurement.DeviceId,
           measurement.Timestamp,
           measurementContentItem,
-          measurement.Data
+          measurement.Data.ToString()
       );
       if (propagatedRequests.TryGetValue(measurementHandler, out var handlerRequests))
       {
@@ -236,7 +236,7 @@ public class PidgeonPushHandler
                   _shellSettings.GetTenantName(),
                   measurement.Timestamp,
                   measurement.DeviceId,
-                  measurement.Data
+                  measurement.Data.ToString()
                 )
               )
           )
@@ -278,7 +278,7 @@ public class PidgeonPushHandler
           measurement.DeviceId,
           measurement.Timestamp,
           measurementContentItem,
-          measurement.Data
+          measurement.Data.ToString()
       );
       if (propagatedRequests.TryGetValue(measurementHandler, out var handlerRequests))
       {
@@ -322,7 +322,7 @@ public class PidgeonPushHandler
                   _shellSettings.GetTenantName(),
                   measurement.Timestamp,
                   measurement.DeviceId,
-                  measurement.Data
+                  measurement.Data.ToString()
                 )
               )
           )
@@ -363,7 +363,7 @@ public class PidgeonPushHandler
           measurement.DeviceId,
           measurement.Timestamp,
           measurementContentItem,
-          measurement.Data
+          measurement.Data.ToString()
       );
       if (propagatedRequests.TryGetValue(measurementHandler, out var handlerRequests))
       {
