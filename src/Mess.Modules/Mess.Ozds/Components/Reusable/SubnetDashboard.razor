@@ -25,7 +25,7 @@
             <MudContainer Class="d-flex justify-center" MaxWidth="MaxWidth.Small">
               <MudText Typo="Typo.h4">
                 @if(_lastMonthTotal is not null)
-                  @(DecimalString((decimal)_lastMonthTotal/1000))
+                  @(DecimalString((decimal)_lastMonthTotal/1000, 0))
               </MudText>
             </MudContainer>
           </MudPaper>
@@ -40,7 +40,7 @@
             <MudContainer Class="d-flex justify-center" MaxWidth="MaxWidth.Small">
               <MudText Typo="Typo.h4">
                 @if(_thisMonthTotal is not null)
-                  @(DecimalString((decimal)_thisMonthTotal/1000))
+                  @(DecimalString((decimal)_thisMonthTotal/1000, 0))
               </MudText>
             </MudContainer>
           </MudPaper>
@@ -63,7 +63,7 @@
             <MudContainer Class="d-flex align-center justify-center" Style="height: 80%;" MaxWidth="MaxWidth.Small">
               <MudText Typo="Typo.h1">
                 @if(_lastMonthTotal is not null)
-                  @(DecimalString((decimal)_lastMonthTotal/1000))
+                  @(DecimalString((decimal)_lastMonthTotal/1000, 0))
               </MudText>
             </MudContainer>
           </MudPaper>
@@ -78,7 +78,7 @@
             <MudContainer Class="d-flex align-center justify-center" Style="height: 80%;" MaxWidth="MaxWidth.Small">
               <MudText Typo="Typo.h1">
                 @if(_thisMonthTotal is not null)
-                  @(DecimalString((decimal)_thisMonthTotal/1000))
+                  @(DecimalString((decimal)_thisMonthTotal/1000, 0))
               </MudText>
             </MudContainer>
           </MudPaper>

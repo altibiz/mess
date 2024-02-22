@@ -24,7 +24,7 @@
             </MudItem>
             <MudContainer Class="d-flex justify-center" MaxWidth="MaxWidth.Small">
               <MudText Typo="Typo.h4">
-                  @(DecimalString((decimal)_totalLastMonthConsumption/1000))
+                  @(DecimalString((decimal)_totalLastMonthConsumption/1000, 0))
               </MudText>
             </MudContainer>
           </MudPaper>
@@ -38,7 +38,7 @@
             </MudItem>
             <MudContainer Class="d-flex justify-center" MaxWidth="MaxWidth.Small">
               <MudText Typo="Typo.h4">
-                  @(DecimalString((decimal)_totalConsumption/1000))
+                  @(DecimalString((decimal)_totalConsumption/1000, 0))
               </MudText>
             </MudContainer>
           </MudPaper>
@@ -52,7 +52,7 @@
             </MudItem>
             <MudContainer Class="d-flex justify-center" MaxWidth="MaxWidth.Small">
               <MudText Typo="Typo.h4">
-                  @(DecimalString((decimal)_totalLastPower/1000))
+                  @(DecimalString((decimal)_totalLastPower/1000, 0))
               </MudText>
             </MudContainer>
           </MudPaper>
@@ -77,13 +77,13 @@
               <MudIconButton OnClick="() => InspectSubnet(dataStruct.data.system)" Icon="@Icons.Material.Filled.RemoveRedEye" Color="MudBlazor.Color.Primary"/>
             </MudItem>
             <MudItem xs="12" Class="d-flex align-center justify-start" Style="font-size: large; font-weight: bold;">
-              @T["Potrošnja trenutni mjesec"].Value: @(DecimalString((decimal)dataStruct.data.consumption/1000) + " kWh")
+              @T["Potrošnja trenutni mjesec"].Value: @(DecimalString((decimal)dataStruct.data.consumption/1000, 0) + " kWh")
             </MudItem>
             <MudItem xs="12" Class="d-flex align-center justify-start" Style="font-size: large; font-weight: bold;">
-              @T["Potrošnja prošli mjesec"].Value: @(DecimalString((decimal)dataStruct.data.lastMonthConsumption/1000) + " kWh")
+              @T["Potrošnja prošli mjesec"].Value: @(DecimalString((decimal)dataStruct.data.lastMonthConsumption/1000, 0) + " kWh")
             </MudItem>
             <MudItem xs="12" Class="d-flex align-center justify-start" Style="font-size: large; font-weight: bold;">
-              @T["Trenutna snaga"].Value: @(DecimalString((decimal)dataStruct.data.lastPower/1000) + " kW")
+              @T["Trenutna snaga"].Value: @(DecimalString((decimal)dataStruct.data.lastPower/1000, 0) + " kW")
             </MudItem>
           </MudGrid>
         </MudStack>
@@ -105,7 +105,7 @@
             </MudItem>
             <MudContainer Class="d-flex align-center justify-center" MaxWidth="MaxWidth.Small" Style="height: 100%;">
               <MudText Typo="Typo.h1">
-                  @(DecimalString((decimal)_totalConsumption/1000))
+                  @(DecimalString((decimal)_totalConsumption/1000, 0))
               </MudText>
             </MudContainer>
           </MudPaper>
@@ -119,7 +119,7 @@
             </MudItem>
             <MudContainer Class="d-flex align-center justify-center" MaxWidth="MaxWidth.Small" Style="height: 75%;">
               <MudText Typo="Typo.h1">
-                  @(DecimalString((decimal)_totalLastMonthConsumption/1000))
+                  @(DecimalString((decimal)_totalLastMonthConsumption/1000, 0))
               </MudText>
             </MudContainer>
           </MudPaper>
@@ -133,7 +133,7 @@
             </MudItem>
             <MudContainer Class="d-flex align-center justify-center" MaxWidth="MaxWidth.Small" Style="height: 100%;">
               <MudText Typo="Typo.h1">
-                  @(DecimalString((decimal)_totalLastPower/1000))
+                  @(DecimalString((decimal)_totalLastPower/1000, 0))
               </MudText>
             </MudContainer>
           </MudPaper>
@@ -179,7 +179,7 @@
         Property="x => x.consumption"
         Title='@T["Potrošnja trenutni mjesec"].Value'>
             <CellTemplate>
-                @(DecimalString((decimal)context.Item.consumption/1000) + " kWh")
+                @(DecimalString((decimal)context.Item.consumption/1000, 0) + " kWh")
             </CellTemplate>
       </PropertyColumn>
       <PropertyColumn
@@ -187,7 +187,7 @@
         Property="x => x.consumption"
         Title='@T["Potrošnja prošli mjesec"].Value'>
             <CellTemplate>
-                @(DecimalString((decimal)context.Item.lastMonthConsumption/1000) + " kWh")
+                @(DecimalString((decimal)context.Item.lastMonthConsumption/1000, 0) + " kWh")
             </CellTemplate>
       </PropertyColumn>
       <PropertyColumn
@@ -195,7 +195,7 @@
         Property="x => x.consumption"
         Title='@T["Trenutna snaga"].Value'>
             <CellTemplate>
-                @(DecimalString((decimal)context.Item.lastPower/1000) + " kW")
+                @(DecimalString((decimal)context.Item.lastPower/1000, 0) + " kW")
             </CellTemplate>
       </PropertyColumn>
       </Columns>

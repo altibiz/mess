@@ -15,27 +15,127 @@
   return;
 }
 else if (_legalEntityPart != null && _user != null){
-  <MudContainer MaxWidth="MaxWidth.Small" Class="d-flex" Style="float: left;">
-  <MudStack>
-    <MudPaper Class="pa-4">
-      @T["Korisničko ime"]: @_user.UserName
-    </MudPaper>
-    <MudPaper Class="pa-4">
-      @T["Korisnički Email"]: @_user.Email
-    </MudPaper>
-    <MudPaper Class="pa-4">
-      @T["Ime"]: @_legalEntityPart.Name.Text
-    </MudPaper>
-    <MudPaper Class="pa-4">
-      @T["Email"]: @_legalEntityPart.Email.Text
-    </MudPaper>
-    <MudPaper Class="pa-4">
-      @T["Grad"]: @_legalEntityPart.PostalCode.Text @_legalEntityPart.City.Text
-    </MudPaper>
-    <MudPaper Class="pa-4">
-      @T["OIB"]: @_legalEntityPart.SocialSecurityNumber.Text
-    </MudPaper>
-  </MudStack>
+  <MudContainer MaxWidth="MaxWidth.ExtraSmall" Class="d-flex  flex-column" Style="float: left;">
+    <MudText Class="d-flex align-center my-2" Typo="@Typo.h5">@_legalEntityPart.Name.Text</MudText>
+  <MudPaper class="mt-2 px-4 py-2">
+    <MudGrid Spacing="3">
+
+      <MudItem xs="12" sm="6">
+        <MudText Typo="Typo.body1" Style="font-weight: bold;">
+         @T["Korisničko ime"]:
+        </MudText>
+      </MudItem>
+      <MudItem xs="12" sm="6">
+        <MudHidden Breakpoint="Breakpoint.Xs">
+          <MudText Type="Typo.body2" Align="MudAlign.Right">
+            @_user.UserName
+          </MudText>
+        </MudHidden>
+        <MudHidden Breakpoint="Breakpoint.SmAndUp">
+          <MudText Type="Typo.body2" Align="MudAlign.Left">
+            @_user.UserName
+          </MudText>
+        </MudHidden>
+      </MudItem>
+
+      <MudItem xs="12" sm="6">
+        <MudText Typo="Typo.body1" Style="font-weight: bold;">
+         @T["Korisnički Email"]:
+        </MudText>
+      </MudItem>
+      <MudItem xs="12" sm="6">
+        <MudHidden Breakpoint="Breakpoint.Xs">
+          <MudText Type="Typo.body2" Align="MudAlign.Right">
+            @_user.Email
+          </MudText>
+        </MudHidden>
+        <MudHidden Breakpoint="Breakpoint.SmAndUp">
+          <MudText Type="Typo.body2" Align="MudAlign.Left">
+            @_user.Email
+          </MudText>
+        </MudHidden>
+      </MudItem>
+
+      <MudItem xs="12" sm="6">
+        <MudText Typo="Typo.body1" Style="font-weight: bold;">
+         @T["Email"]:
+        </MudText>
+      </MudItem>
+      <MudItem xs="12" sm="6">
+        <MudHidden Breakpoint="Breakpoint.Xs">
+          <MudText Type="Typo.body2" Align="MudAlign.Right">
+            @_legalEntityPart.Email.Text
+          </MudText>
+        </MudHidden>
+        <MudHidden Breakpoint="Breakpoint.SmAndUp">
+          <MudText Type="Typo.body2" Align="MudAlign.Left">
+            @_legalEntityPart.Email.Text
+          </MudText>
+        </MudHidden>
+      </MudItem>
+
+      <MudItem xs="12" sm="6">
+        <MudText Typo="Typo.body1" Style="font-weight: bold;">
+         @T["Grad"]:
+        </MudText>
+      </MudItem>
+      <MudItem xs="12" sm="6">
+        <MudHidden Breakpoint="Breakpoint.Xs">
+          <MudText Type="Typo.body2" Align="MudAlign.Right">
+            @_legalEntityPart.PostalCode.Text @_legalEntityPart.City.Text
+          </MudText>
+        </MudHidden>
+        <MudHidden Breakpoint="Breakpoint.SmAndUp">
+          <MudText Type="Typo.body2" Align="MudAlign.Left">
+            @_legalEntityPart.PostalCode.Text @_legalEntityPart.City.Text
+          </MudText>
+        </MudHidden>
+      </MudItem>
+
+      <MudItem xs="12" sm="6">
+        <MudText Typo="Typo.body1" Style="font-weight: bold;">
+         @T["OIB"]:
+        </MudText>
+      </MudItem>
+      <MudItem xs="12" sm="6">
+        <MudHidden Breakpoint="Breakpoint.Xs">
+          <MudText Type="Typo.body2" Align="MudAlign.Right">
+            @_legalEntityPart.SocialSecurityNumber.Text
+          </MudText>
+        </MudHidden>
+        <MudHidden Breakpoint="Breakpoint.SmAndUp">
+          <MudText Type="Typo.body2" Align="MudAlign.Left">
+            @_legalEntityPart.SocialSecurityNumber.Text
+          </MudText>
+        </MudHidden>
+      </MudItem>
+
+    </MudGrid>
+  </MudPaper>
+    @* <MudPaper Class="pa-4" Style="width: 100%;">
+      <MudStack>
+        <MudItem Class="pa-2 d-flex justify-space-between">
+          <MudText Style="font-weight: bold;" Typo="@Typo.body1">@T["Korisničko ime"]:</MudText>
+          <MudText Typo="@Typo.body2">@_user.UserName</MudText>
+        </MudItem>
+        <MudItem Class="pa-2 d-flex justify-space-between">
+          <MudText Style="font-weight: bold;"  Typo="@Typo.body1">@T["Korisnički Email"]:</MudText>
+          <MudText Style="float: right;" Typo="@Typo.body2">@_user.Email</MudText>
+        </MudItem>
+        <MudItem Class="pa-2 d-flex justify-space-between">
+          <MudText Style="font-weight: bold;"  Typo="@Typo.body1">@T["Email"]:</MudText>
+          <MudText Style="float: right;" Typo="@Typo.body2">@_legalEntityPart.Email.Text</MudText>
+        </MudItem>
+        <MudItem Class="pa-2 d-flex justify-space-between">
+          <MudText Style="font-weight: bold;"  Typo="@Typo.body1">@T["Grad"]:</MudText>
+          <MudText Style="float: right;" Typo="@Typo.body2">@_legalEntityPart.PostalCode.Text @_legalEntityPart.City.Text</MudText>
+        </MudItem>
+        <MudItem Class="pa-2 d-flex justify-space-between">
+          <MudText Style="font-weight: bold;"  Typo="@Typo.body1">@T["OIB"]:</MudText>
+          <MudText Style="float: right;" Typo="@Typo.body2">@_legalEntityPart.SocialSecurityNumber.Text</MudText>
+        </MudItem>
+      </MudStack>
+    </MudPaper> *@
   </MudContainer>
 }
 

@@ -90,8 +90,8 @@
       <MudHidden Breakpoint="Breakpoint.SmAndDown">
         <MudToolBar DisableGutters="true">
           <MudIconButton Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit" OnClick="@((e) => DrawerToggle())" Class="ml-3" />
-          <MudBreadcrumbs Items="_items"></MudBreadcrumbs>
-          <MudSpacer />
+          @* <MudBreadcrumbs Items="_items"></MudBreadcrumbs>
+          <MudSpacer /> *@
         </MudToolBar>
       </MudHidden>
       <MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
@@ -128,10 +128,10 @@
     ("/ozds/login", "Prijava", Icons.Material.Outlined.Login,  new List<string>{"Administrator", "Distribution System Operator Representative", "Closed Distribution System Representative", "Distribution System Unit Representative"}),
   };
 
-  private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+  @* private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
   {
     new BreadcrumbItem("App", href: "app"),
-  };
+  }; *@
 
   protected override void OnLayoutInitialized()
   {

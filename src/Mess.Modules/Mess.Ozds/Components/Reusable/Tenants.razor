@@ -33,10 +33,10 @@
               <MudIconButton OnClick="() => InspectTenant(dataStruct.data.unit)" Icon="@Icons.Material.Filled.RemoveRedEye" Color="MudBlazor.Color.Primary"/>
             </MudItem>
             <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large;">
-              @T["Potrošnja tekućega mjeseca"].Value: @(DecimalString((decimal)dataStruct.data.totalConsumption/1000) + " kWh")
+              @T["Potrošnja tekućega mjeseca"].Value: @(DecimalString((decimal)dataStruct.data.totalConsumption/1000, 0) + " kWh")
             </MudItem>
             <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large;">
-              @T["Iznos zadnjeg racuna"].Value: @(DecimalString((decimal)dataStruct.data.lastInvoiceTotal) + " €")
+              @T["Iznos zadnjeg računa"].Value: @(DecimalString((decimal)dataStruct.data.lastInvoiceTotal) + " €")
             </MudItem>
             <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large;">
               <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
@@ -91,13 +91,13 @@
     Property="x => x.unit.As<DistributionSystemUnitPart>().Consumption"
     Title='@T["Potrošnja tekućega mjeseca"].Value'>
           <CellTemplate>
-                @(DecimalString((decimal)context.Item.totalConsumption/1000) + " kWh")
+                @(DecimalString((decimal)context.Item.totalConsumption/1000, 0) + " kWh")
           </CellTemplate>
       </PropertyColumn>
     <PropertyColumn
     CellStyle="font-size: x-large;"
     Property="x => x.unit.As<DistributionSystemUnitPart>().Consumption"
-    Title='@T["Iznos zadnjeg racuna"].Value'>
+    Title='@T["Iznos zadnjeg računa"].Value'>
           <CellTemplate>
                 @(DecimalString((decimal)context.Item.lastInvoiceTotal) + " €")
           </CellTemplate>
@@ -141,10 +141,10 @@ else{
               <MudIconButton OnClick="() => InspectTenant(dataStruct.data.unit)" Icon="@Icons.Material.Filled.RemoveRedEye" Color="MudBlazor.Color.Primary"/>
             </MudItem>
             <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large;">
-              @T["Potrošnja tekućega mjeseca"].Value: @(DecimalString((decimal)dataStruct.data.totalConsumption/1000) + " kWh")
+              @T["Potrošnja tekućega mjeseca"].Value: @(DecimalString((decimal)dataStruct.data.totalConsumption/1000, 0) + " kWh")
             </MudItem>
             <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large;">
-              @T["Iznos zadnjeg racuna"].Value: @(DecimalString((decimal)dataStruct.data.lastInvoiceTotal) + " €")
+              @T["Iznos zadnjeg računa"].Value: @(DecimalString((decimal)dataStruct.data.lastInvoiceTotal) + " €")
             </MudItem>
 
           </MudGrid>
@@ -192,13 +192,13 @@ else{
     Property="x => x.unit.As<DistributionSystemUnitPart>().Consumption"
     Title='@T["Potrošnja tekućega mjeseca"].Value'>
           <CellTemplate>
-                @(DecimalString((decimal)context.Item.totalConsumption/1000) + " kWh")
+                @(DecimalString((decimal)context.Item.totalConsumption/1000, 0) + " kWh")
           </CellTemplate>
       </PropertyColumn>
     <PropertyColumn
     CellStyle="font-size: x-large;"
     Property="x => x.unit.As<DistributionSystemUnitPart>().Consumption"
-    Title='@T["Iznos zadnjeg racuna"].Value'>
+    Title='@T["Iznos zadnjeg računa"].Value'>
           <CellTemplate>
                 @(DecimalString((decimal)context.Item.lastInvoiceTotal) + " €")
           </CellTemplate>

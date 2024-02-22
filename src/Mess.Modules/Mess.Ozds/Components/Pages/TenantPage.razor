@@ -15,21 +15,67 @@
   return;
 }
 else if (_legalEntityPart != null){
-  <MudContainer MaxWidth="MaxWidth.Small" Class="d-flex" Style="float: left;">
-    <MudStack>
-      <MudPaper Class="pa-4">
-        @T["Ime"]: @_legalEntityPart.Name.Text
-      </MudPaper>
-      <MudPaper Class="pa-4">
-        @T["Email"]: @_legalEntityPart.Email.Text
-      </MudPaper>
-      <MudPaper Class="pa-4">
-        @T["Grad"]: @_legalEntityPart.PostalCode.Text @_legalEntityPart.City.Text
-      </MudPaper>
-      <MudPaper Class="pa-4">
-        @T["OIB"]: @_legalEntityPart.SocialSecurityNumber.Text
-      </MudPaper>
-    </MudStack>
+  <MudContainer MaxWidth="MaxWidth.ExtraSmall" Class="d-flex  flex-column" Style="float: left;">
+    <MudText Class="d-flex align-center my-2" Typo="@Typo.h5">@_legalEntityPart.Name.Text</MudText>
+    <MudPaper class="mt-2 px-4 py-2">
+      <MudGrid Spacing="3">
+
+        <MudItem xs="12" sm="6">
+          <MudText Typo="Typo.body1" Style="font-weight: bold;">
+          @T["Email"]:
+          </MudText>
+        </MudItem>
+        <MudItem xs="12" sm="6">
+          <MudHidden Breakpoint="Breakpoint.Xs">
+            <MudText Type="Typo.body2" Align="MudAlign.Right">
+              @_legalEntityPart.Email.Text
+            </MudText>
+          </MudHidden>
+          <MudHidden Breakpoint="Breakpoint.SmAndUp">
+            <MudText Type="Typo.body2" Align="MudAlign.Left">
+              @_legalEntityPart.Email.Text
+            </MudText>
+          </MudHidden>
+        </MudItem>
+
+        <MudItem xs="12" sm="6">
+          <MudText Typo="Typo.body1" Style="font-weight: bold;">
+          @T["Grad"]:
+          </MudText>
+        </MudItem>
+        <MudItem xs="12" sm="6">
+          <MudHidden Breakpoint="Breakpoint.Xs">
+            <MudText Type="Typo.body2" Align="MudAlign.Right">
+              @_legalEntityPart.PostalCode.Text @_legalEntityPart.City.Text
+            </MudText>
+          </MudHidden>
+          <MudHidden Breakpoint="Breakpoint.SmAndUp">
+            <MudText Type="Typo.body2" Align="MudAlign.Left">
+              @_legalEntityPart.PostalCode.Text @_legalEntityPart.City.Text
+            </MudText>
+          </MudHidden>
+        </MudItem>
+
+        <MudItem xs="12" sm="6">
+          <MudText Typo="Typo.body1" Style="font-weight: bold;">
+          @T["OIB"]:
+          </MudText>
+        </MudItem>
+        <MudItem xs="12" sm="6">
+          <MudHidden Breakpoint="Breakpoint.Xs">
+            <MudText Type="Typo.body2" Align="MudAlign.Right">
+              @_legalEntityPart.SocialSecurityNumber.Text
+            </MudText>
+          </MudHidden>
+          <MudHidden Breakpoint="Breakpoint.SmAndUp">
+            <MudText Type="Typo.body2" Align="MudAlign.Left">
+              @_legalEntityPart.SocialSecurityNumber.Text
+            </MudText>
+          </MudHidden>
+        </MudItem>
+
+      </MudGrid>
+    </MudPaper>
   </MudContainer>
 }
 

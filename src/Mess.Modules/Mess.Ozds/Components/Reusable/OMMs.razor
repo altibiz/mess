@@ -43,10 +43,10 @@
             <MudStack>
               <MudDivider DividerType="DividerType.Middle" Class="mt-2"/>
               <MudContainer>
-                @T["Potrošnja tekućeg mjeseca"].Value: @(dataStruct.omm.thisMonthUsage is null ? null : DecimalString((decimal)dataStruct.omm.thisMonthUsage/1000, 2) + " kWh")
+                @T["Potrošnja tekućeg mjeseca"].Value: @(dataStruct.omm.thisMonthUsage is null ? null : DecimalString((decimal)dataStruct.omm.thisMonthUsage/1000, 0) + " kWh")
               </MudContainer>
               <MudContainer>
-                @T["Potrošnja prošlog mjeseca"].Value: @(dataStruct.omm.lastMonthUsage is null ? null : DecimalString((decimal)dataStruct.omm.lastMonthUsage/1000, 2) + " kWh")
+                @T["Potrošnja prošlog mjeseca"].Value: @(dataStruct.omm.lastMonthUsage is null ? null : DecimalString((decimal)dataStruct.omm.lastMonthUsage/1000, 0) + " kWh")
               </MudContainer>
             </MudStack>
           </MudCollapse>
@@ -97,7 +97,7 @@
       Title='@T["Potrošnja tekućeg mjeseca"].Value'>
           <CellTemplate>
                 @if(context.Item.thisMonthUsage is not null)
-                @(DecimalString((decimal)context.Item.thisMonthUsage/1000) + " kWh")
+                @(DecimalString((decimal)context.Item.thisMonthUsage/1000, 0) + " kWh")
           </CellTemplate>
       </PropertyColumn>
     <PropertyColumn
@@ -106,7 +106,7 @@
       Title='@T["Potrošnja prošlog mjeseca"].Value'>
           <CellTemplate>
                 @if(context.Item.lastMonthUsage is not null)
-                @(DecimalString((decimal)context.Item.lastMonthUsage/1000) + " kWh")
+                @(DecimalString((decimal)context.Item.lastMonthUsage/1000, 0) + " kWh")
           </CellTemplate>
       </PropertyColumn>
     <PropertyColumn

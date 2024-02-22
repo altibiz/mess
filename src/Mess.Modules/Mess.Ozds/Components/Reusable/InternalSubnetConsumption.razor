@@ -33,13 +33,13 @@
             <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large; font-weight: bold;">
               @T["Potrošnja zadnjih 30 dana"].Value: <br>
               @if(dataStruct.data.lastMonthUsage is not null)
-              @DecimalString((decimal)dataStruct.data.lastMonthUsage/1000) kWh
+              @DecimalString((decimal)dataStruct.data.lastMonthUsage/1000, 0) kWh
             </MudItem>
             <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large; font-weight: bold;">
                 @if(dataStruct.data.thisMonthUsage is not null)
               @T["Zadnji obracun"].Value: <br>
               @if(dataStruct.data.thisMonthUsage is not null)
-              @DecimalString((decimal)dataStruct.data.thisMonthUsage/1000) kWh
+              @DecimalString((decimal)dataStruct.data.thisMonthUsage/1000, 0) kWh
             </MudItem>
               <MudItem xs="2" Class="d-flex align-center justify-end">
                 <MudIconButton OnClick="() => OnExpandCollapseClick(dataStruct.data.omm.ContentItemId)" Icon="@(dataStruct.expand ? Icons.Material.Filled.KeyboardArrowUp : Icons.Material.Filled.KeyboardArrowDown)" Color="MudBlazor.Color.Default"/>
@@ -125,7 +125,7 @@
           Title='@T["Potrošnja prošli mjesec"].Value' >
             <CellTemplate>
               @if(context.Item.lastMonthUsage is not null)
-              @(DecimalString((decimal)context.Item.lastMonthUsage/1000) + " kWh")
+              @(DecimalString((decimal)context.Item.lastMonthUsage/1000, 0) + " kWh")
             </CellTemplate>
         </PropertyColumn>
         <PropertyColumn
@@ -134,7 +134,7 @@
           Title='@T["Potrošnja trenutni mjesec"].Value' >
           <CellTemplate>
               @if(context.Item.thisMonthUsage is not null)
-              @(DecimalString((decimal)context.Item.thisMonthUsage/1000) + " kWh")
+              @(DecimalString((decimal)context.Item.thisMonthUsage/1000, 0) + " kWh")
           </CellTemplate>
       </PropertyColumn>
       </Columns>
