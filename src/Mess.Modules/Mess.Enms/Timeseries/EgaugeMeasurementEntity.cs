@@ -14,12 +14,13 @@ public class EgaugeMeasurementEntity : HypertableEntity
 public static class EgaugeMeasurementEntityExtensions
 {
   public static EgaugeMeasurementEntity ToEntity(
-    this EgaugeMeasurement model
+    this EgaugeMeasurement model,
+    string tenant
   )
   {
     return new EgaugeMeasurementEntity
     {
-      Tenant = model.Tenant,
+      Tenant = tenant,
       Timestamp = model.Timestamp,
       Source = model.DeviceId,
       Voltage = model.Voltage,
@@ -32,7 +33,6 @@ public static class EgaugeMeasurementEntityExtensions
   )
   {
     return new EgaugeMeasurement(
-      entity.Tenant,
       entity.Source,
       entity.Timestamp,
       Power: entity.Power,

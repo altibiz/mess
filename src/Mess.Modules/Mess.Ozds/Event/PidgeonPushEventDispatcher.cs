@@ -3,6 +3,7 @@ using Mess.Iot.Abstractions.Caches;
 using Mess.Iot.Abstractions.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using OrchardCore.Environment.Shell;
 using YesSql;
 
 namespace Mess.Ozds.Event;
@@ -16,6 +17,7 @@ public class PidgeonPushEventDispatcher : IEventDispatcher
     var logger = services.GetRequiredService<
       ILogger<PidgeonPushEventDispatcher>
     >();
+    var shellSettings = services.GetRequiredService<ShellSettings>();
 
     foreach (var @event in events.OfType<PidgeonMeasured>())
     {
@@ -29,9 +31,9 @@ public class PidgeonPushEventDispatcher : IEventDispatcher
         );
       if (handler is null) continue;
 
+      shellSettings.Name = @event.Tenant;
       handler.Handle(
         @event.DeviceId,
-        @event.Tenant,
         @event.Timestamp,
         contentItem,
         @event.Payload
@@ -52,6 +54,7 @@ public class PidgeonPushEventDispatcher : IEventDispatcher
     var logger = services.GetRequiredService<
       ILogger<PidgeonPushEventDispatcher>
     >();
+    var shellSettings = services.GetRequiredService<ShellSettings>();
 
     foreach (var @event in events.OfType<PidgeonMeasured>())
     {
@@ -65,9 +68,9 @@ public class PidgeonPushEventDispatcher : IEventDispatcher
         );
       if (handler is null) continue;
 
+      shellSettings.Name = @event.Tenant;
       await handler.HandleAsync(
         @event.DeviceId,
-        @event.Tenant,
         @event.Timestamp,
         contentItem,
         @event.Payload

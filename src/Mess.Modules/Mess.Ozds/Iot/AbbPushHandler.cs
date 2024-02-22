@@ -9,65 +9,70 @@ namespace Mess.Ozds.Iot;
 public class AbbPushHandler
   : JsonIotPushHandler<AbbIotDeviceItem, AbbPushRequest>
 {
-  private readonly IContentManager _contentManager;
   private readonly IOzdsTimeseriesClient _measurementClient;
 
   public AbbPushHandler(
-    IOzdsTimeseriesClient measurementClient,
-    IContentManager contentManager)
+    IOzdsTimeseriesClient measurementClient)
   {
-    _contentManager = contentManager;
     _measurementClient = measurementClient;
   }
 
   protected override void Handle(
     string deviceId,
-    string tenant,
     DateTimeOffset timestamp,
     AbbIotDeviceItem contentItem,
     AbbPushRequest request
   )
   {
-    var newMeasurement = MakeMeasurement(deviceId, tenant, timestamp, contentItem, request);
+    var newMeasurement = MakeMeasurement(deviceId, timestamp, contentItem, request);
     _measurementClient.AddAbbMeasurement(newMeasurement);
-    contentItem.Alter(
-      abbIotDevice => abbIotDevice.OzdsIotDevicePart,
-      part =>
-      {
-        part.LatestImport = newMeasurement.ActiveEnergyImportTotal_Wh;
-      });
-    _contentManager.UpdateAsync(contentItem).RunSynchronously();
   }
 
   protected override async Task HandleAsync(
     string deviceId,
-    string tenant,
     DateTimeOffset timestamp,
     AbbIotDeviceItem contentItem,
     AbbPushRequest request
   )
   {
-    var newMeasurement = MakeMeasurement(deviceId, tenant, timestamp, contentItem, request);
+    var newMeasurement = MakeMeasurement(deviceId, timestamp, contentItem, request);
     await _measurementClient.AddAbbMeasurementAsync(newMeasurement);
-    contentItem.Alter(
-      abbIotDevice => abbIotDevice.OzdsIotDevicePart,
-      abbIotDevicePart =>
-      {
-        abbIotDevicePart.LatestImport = newMeasurement.ActiveEnergyImportTotal_Wh;
-      });
-    await _contentManager.UpdateAsync(contentItem);
+  }
+
+  protected override void HandleBulk(BulkIotJsonPushRequest<AbbIotDeviceItem, AbbPushRequest>[] requests)
+  {
+    var newMeasurement = requests
+      .Select(request =>
+        MakeMeasurement(
+          request.DeviceId,
+          request.Timestamp,
+          request.ContentItem,
+          request.Request))
+      .ToArray();
+    _measurementClient.AddBulkAbbMeasurement(newMeasurement);
+  }
+
+  protected override async Task HandleBulkAsync(BulkIotJsonPushRequest<AbbIotDeviceItem, AbbPushRequest>[] requests)
+  {
+    var newMeasurement = requests
+      .Select(request =>
+        MakeMeasurement(
+          request.DeviceId,
+          request.Timestamp,
+          request.ContentItem,
+          request.Request))
+      .ToArray();
+    await _measurementClient.AddBulkAbbMeasurementAsync(newMeasurement);
   }
 
   private static AbbMeasurement MakeMeasurement(
     string deviceId,
-    string tenant,
     DateTimeOffset timestamp,
     ContentItem _,
     AbbPushRequest request
   )
   {
     return new AbbMeasurement(
-      tenant,
       deviceId,
       timestamp,
       request.VoltageL1_V,

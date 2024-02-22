@@ -1,3 +1,4 @@
+using Mess.Cms.Extensions.OrchardCore;
 using Mess.Eor.Abstractions.Timeseries;
 using Mess.Timeseries.Abstractions.Extensions;
 using Microsoft.EntityFrameworkCore;
@@ -27,7 +28,7 @@ public class EorTimeseriesClient : IEorTimeseriesClient
   {
     _services.WithTimeseriesDbContext<EorTimeseriesDbContext>(context =>
     {
-      context.EorMeasurements.Add(model.ToEntity());
+      context.EorMeasurements.Add(model.ToEntity(_shellSettings.GetTenantName()));
       context.SaveChanges();
     });
   }
@@ -37,7 +38,7 @@ public class EorTimeseriesClient : IEorTimeseriesClient
     return _services.WithTimeseriesDbContextAsync<EorTimeseriesDbContext>(
       async context =>
       {
-        context.EorMeasurements.Add(model.ToEntity());
+        context.EorMeasurements.Add(model.ToEntity(_shellSettings.GetTenantName()));
         await context.SaveChangesAsync();
       });
   }

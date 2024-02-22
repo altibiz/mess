@@ -9,70 +9,79 @@ namespace Mess.Ozds.Iot;
 public class SchneiderPushHandler
   : JsonIotPushHandler<SchneiderIotDeviceItem, SchneiderPushRequest>
 {
-  private readonly IContentManager _contentManager;
   private readonly IOzdsTimeseriesClient _measurementClient;
 
   public SchneiderPushHandler(
-    IOzdsTimeseriesClient measurementClient,
-    IContentManager contentManager)
+    IOzdsTimeseriesClient measurementClient)
   {
-    _contentManager = contentManager;
     _measurementClient = measurementClient;
   }
 
   protected override void Handle(
     string deviceId,
-    string tenant,
     DateTimeOffset timestamp,
     SchneiderIotDeviceItem contentItem,
     SchneiderPushRequest request
   )
   {
-    var newMeasurement = MakeMeasurement(deviceId, tenant, timestamp, contentItem, request);
+    var newMeasurement = MakeMeasurement(deviceId, timestamp, contentItem, request);
     _measurementClient.AddSchneiderMeasurement(
       newMeasurement
     );
-    contentItem.Alter(
-      schneiderIotDevice => schneiderIotDevice.OzdsIotDevicePart,
-      part =>
-      {
-        part.LatestImport = newMeasurement.ActiveEnergyImportTotal_Wh;
-      });
-    _contentManager.UpdateAsync(contentItem).RunSynchronously();
   }
 
   protected override async Task HandleAsync(
     string deviceId,
-    string tenant,
     DateTimeOffset timestamp,
     SchneiderIotDeviceItem contentItem,
     SchneiderPushRequest request
   )
   {
-    var newMeasurement = MakeMeasurement(deviceId, tenant, timestamp, contentItem, request);
+    var newMeasurement = MakeMeasurement(deviceId, timestamp, contentItem, request);
     await _measurementClient.AddSchneiderMeasurementAsync(
       newMeasurement
     );
-    contentItem.Alter(
-      schneiderIotDevice => schneiderIotDevice.OzdsIotDevicePart,
-      part =>
-      {
-        part.LatestImport = newMeasurement.ActiveEnergyImportTotal_Wh;
-      });
-    await _contentManager.UpdateAsync(contentItem);
+  }
+
+  protected override void HandleBulk(BulkIotJsonPushRequest<SchneiderIotDeviceItem, SchneiderPushRequest>[] requests)
+  {
+    var newMeasurement = requests
+      .Select(request =>
+        MakeMeasurement(
+          request.DeviceId,
+          request.Timestamp,
+          request.ContentItem,
+          request.Request))
+      .ToArray();
+    _measurementClient.AddBulkSchneiderMeasurement(
+      newMeasurement
+    );
+  }
+
+  protected override async Task HandleBulkAsync(BulkIotJsonPushRequest<SchneiderIotDeviceItem, SchneiderPushRequest>[] requests)
+  {
+    var newMeasurement = requests
+      .Select(request =>
+        MakeMeasurement(
+          request.DeviceId,
+          request.Timestamp,
+          request.ContentItem,
+          request.Request))
+      .ToArray();
+    await _measurementClient.AddBulkSchneiderMeasurementAsync(
+      newMeasurement
+    );
   }
 
   private static SchneiderMeasurement MakeMeasurement(
-    string deviceId,
-    string tenant,
+    string source,
     DateTimeOffset timestamp,
     ContentItem _,
     SchneiderPushRequest request
   )
   {
     return new SchneiderMeasurement(
-      tenant,
-      deviceId,
+      source,
       timestamp,
       request.VoltageL1_V,
       request.VoltageL2_V,

@@ -38,10 +38,11 @@ public class AbbMeasurementEntity : HypertableEntity
 
 public static class AbbMeasurementEntityExtensions
 {
-  public static AbbMeasurementEntity ToEntity(this AbbMeasurement model)
+  public static AbbMeasurementEntity ToEntity(this AbbMeasurement model, string tenant)
   {
     return new AbbMeasurementEntity
     {
+      Tenant = tenant,
       Timestamp = model.Timestamp,
       Source = model.Source,
       VoltageL1_V = model.VoltageL1_V,

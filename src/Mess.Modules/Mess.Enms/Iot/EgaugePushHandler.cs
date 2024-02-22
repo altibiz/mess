@@ -1,7 +1,9 @@
 using System.Xml.Linq;
+using Mess.Cms.Extensions.OrchardCore;
 using Mess.Enms.Abstractions.Models;
 using Mess.Enms.Abstractions.Timeseries;
 using Mess.Iot.Abstractions.Services;
+using OrchardCore.Environment.Shell;
 using OrchardCore.Environment.Shell.Scope;
 
 namespace Mess.Enms.Iot;
@@ -11,14 +13,14 @@ public class EgaugePushHandler
 {
   private readonly IEnmsTimeseriesClient _measurementClient;
 
-  public EgaugePushHandler(IEnmsTimeseriesClient measurementClient)
+  public EgaugePushHandler(
+    IEnmsTimeseriesClient measurementClient)
   {
     _measurementClient = measurementClient;
   }
 
   protected override void Handle(
     string deviceId,
-    string tenant,
     DateTimeOffset timestamp,
     EgaugeIotDeviceItem contentItem,
     EgaugeMeasurement request
@@ -28,7 +30,6 @@ public class EgaugePushHandler
       request with
       {
         DeviceId = request.DeviceId,
-        Tenant = request.Tenant,
         Timestamp = request.Timestamp
       }
     );
@@ -36,7 +37,6 @@ public class EgaugePushHandler
 
   protected override async Task HandleAsync(
     string deviceId,
-    string tenant,
     DateTimeOffset timestamp,
     EgaugeIotDeviceItem contentItem,
     EgaugeMeasurement request
@@ -46,10 +46,37 @@ public class EgaugePushHandler
       request with
       {
         DeviceId = request.DeviceId,
-        Tenant = request.Tenant,
         Timestamp = request.Timestamp
       }
     );
+  }
+
+  protected override void HandleBulk(BulkIotXmlPushRequest<EgaugeIotDeviceItem, EgaugeMeasurement>[] requests)
+  {
+    foreach (var request in requests)
+    {
+      _measurementClient.AddEgaugeMeasurement(
+        request.Request with
+        {
+          DeviceId = request.DeviceId,
+          Timestamp = request.Timestamp
+        }
+      );
+    }
+  }
+
+  protected override async Task HandleBulkAsync(BulkIotXmlPushRequest<EgaugeIotDeviceItem, EgaugeMeasurement>[] requests)
+  {
+    foreach (var request in requests)
+    {
+      await _measurementClient.AddEgaugeMeasurementAsync(
+        request.Request with
+        {
+          DeviceId = request.DeviceId,
+          Timestamp = request.Timestamp
+        }
+      );
+    }
   }
 
   protected override EgaugeMeasurement Parse(XDocument xml)
@@ -86,7 +113,6 @@ public class EgaugePushHandler
 
     var measurement = new EgaugeMeasurement(
       DeviceId: measurementRegisters.Source,
-      Tenant: measurementRegisters.Tenant,
       Timestamp: measurementRegisters.Timestamp,
       Voltage: measurementRegisters.Voltage,
       Power: measurementRegisters.Power

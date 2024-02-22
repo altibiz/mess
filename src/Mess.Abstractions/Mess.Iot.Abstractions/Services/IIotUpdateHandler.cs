@@ -8,7 +8,6 @@ public interface IIotUpdateHandler
 
   public void Handle(
     string deviceId,
-    string tenant,
     DateTimeOffset timestamp,
     ContentItem contentItem,
     string request
@@ -16,7 +15,6 @@ public interface IIotUpdateHandler
 
   public Task HandleAsync(
     string deviceId,
-    string tenant,
     DateTimeOffset timestamp,
     ContentItem contentItem,
     string request

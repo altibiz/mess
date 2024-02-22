@@ -29,11 +29,13 @@ public class SchneiderMeasurementEntity : HypertableEntity
 public static class SchneiderMeasurementEntityExtensions
 {
   public static SchneiderMeasurementEntity ToEntity(
-    this SchneiderMeasurement model
+    this SchneiderMeasurement model,
+    string tenant
   )
   {
     return new SchneiderMeasurementEntity
     {
+      Tenant = tenant,
       Timestamp = model.Timestamp,
       Source = model.Source,
       VoltageL1_V = model.VoltageL1_V,

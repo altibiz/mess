@@ -73,7 +73,7 @@ public class IotDeviceController : Controller
     }
     else
     {
-      await handler.HandleAsync(deviceId, tenant, now, contentItem, request);
+      await handler.HandleAsync(deviceId, now, contentItem, request);
     }
 
     return Ok("pushed");
@@ -112,7 +112,7 @@ public class IotDeviceController : Controller
     }
     else
     {
-      await handler.HandleAsync(deviceId, tenant, now, contentItem, request);
+      await handler.HandleAsync(deviceId, now, contentItem, request);
     }
 
     return Ok("updated");
@@ -139,7 +139,6 @@ public class IotDeviceController : Controller
     var now = DateTimeOffset.UtcNow;
     var response = await handler.HandleAsync(
       deviceId,
-      tenant,
       now,
       contentItem
     );

@@ -19,11 +19,11 @@ public class EorMeasurementEntity : HypertableEntity
 
 public static class EorMeasurementEntityExtensions
 {
-  public static EorMeasurementEntity ToEntity(this EorMeasurement model)
+  public static EorMeasurementEntity ToEntity(this EorMeasurement model, string tenant)
   {
     return new EorMeasurementEntity
     {
-      Tenant = model.Tenant,
+      Tenant = tenant,
       Timestamp = model.Timestamp,
       Source = model.DeviceId,
       Voltage = model.Voltage,
@@ -37,7 +37,6 @@ public static class EorMeasurementEntityExtensions
   public static EorMeasurement ToModel(this EorMeasurementEntity entity)
   {
     return new EorMeasurement(
-      entity.Tenant,
       entity.Source,
       entity.Timestamp,
       entity.Voltage,

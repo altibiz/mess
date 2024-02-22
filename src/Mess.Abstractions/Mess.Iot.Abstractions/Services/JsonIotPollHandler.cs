@@ -9,37 +9,33 @@ public abstract class JsonIotPollHandler<TItem, TResponse>
 {
   protected abstract TResponse MakeResponse(
     string deviceId,
-    string tenant,
     DateTimeOffset timestamp,
     TItem contentItem
   );
 
   protected abstract Task<TResponse> MakeResponseAsync(
     string deviceId,
-    string tenant,
     DateTimeOffset timestamp,
     TItem contentItem
   );
 
   protected override string Handle(
     string deviceId,
-    string tenant,
     DateTimeOffset timestamp,
     TItem contentItem
   )
   {
-    var response = MakeResponse(deviceId, tenant, timestamp, contentItem);
+    var response = MakeResponse(deviceId, timestamp, contentItem);
     return response.ToJson();
   }
 
   protected override async Task<string> HandleAsync(
     string deviceId,
-    string tenant,
     DateTimeOffset timestamp,
     TItem contentItem
   )
   {
-    var response = MakeResponseAsync(deviceId, tenant, timestamp, contentItem);
+    var response = MakeResponseAsync(deviceId, timestamp, contentItem);
     return response.ToJson();
   }
 }

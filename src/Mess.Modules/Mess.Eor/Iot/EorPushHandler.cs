@@ -16,27 +16,45 @@ public class EorPushHandler
 
   protected override void Handle(
     string deviceId,
-    string tenant,
     DateTimeOffset timestamp,
     EorIotDeviceItem contentItem,
     EorPushRequest request
   )
   {
     _measurementClient.AddEorMeasurement(
-      request.ToMeasurement(deviceId, tenant)
+      request.ToMeasurement(deviceId)
     );
   }
 
   protected override async Task HandleAsync(
     string deviceId,
-    string tenant,
     DateTimeOffset timestamp,
     EorIotDeviceItem contentItem,
     EorPushRequest request
   )
   {
     await _measurementClient.AddEorMeasurementAsync(
-      request.ToMeasurement(deviceId, tenant)
+      request.ToMeasurement(deviceId)
     );
+  }
+
+  protected override void HandleBulk(BulkIotJsonPushRequest<EorIotDeviceItem, EorPushRequest>[] requests)
+  {
+    foreach (var request in requests)
+    {
+      _measurementClient.AddEorMeasurement(
+        request.Request.ToMeasurement(request.DeviceId)
+      );
+    }
+  }
+
+  protected override async Task HandleBulkAsync(BulkIotJsonPushRequest<EorIotDeviceItem, EorPushRequest>[] requests)
+  {
+    foreach (var request in requests)
+    {
+      await _measurementClient.AddEorMeasurementAsync(
+        request.Request.ToMeasurement(request.DeviceId)
+      );
+    }
   }
 }

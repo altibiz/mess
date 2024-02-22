@@ -1,25 +1,30 @@
+using Mess.Cms.Extensions.OrchardCore;
 using Mess.Enms.Abstractions.Timeseries;
 using Mess.Timeseries.Abstractions.Extensions;
 using Microsoft.EntityFrameworkCore;
+using OrchardCore.Environment.Shell;
 
 namespace Mess.Enms.Timeseries;
 
 public class EnmsTimeseriesClient : IEnmsTimeseriesClient
 {
   private readonly IServiceProvider _services;
+  private readonly ShellSettings _shellSettings;
 
   public EnmsTimeseriesClient(
-    IServiceProvider services
+    IServiceProvider services,
+    ShellSettings shellSettings
   )
   {
     _services = services;
+    _shellSettings = shellSettings;
   }
 
   public void AddEgaugeMeasurement(EgaugeMeasurement model)
   {
     _services.WithTimeseriesDbContext<EnmsTimeseriesDbContext>(context =>
     {
-      context.EgaugeMeasurements.Add(model.ToEntity());
+      context.EgaugeMeasurements.Add(model.ToEntity(_shellSettings.GetTenantName()));
       context.SaveChanges();
     });
   }
@@ -29,7 +34,7 @@ public class EnmsTimeseriesClient : IEnmsTimeseriesClient
     return _services.WithTimeseriesDbContextAsync<EnmsTimeseriesDbContext>(
       async context =>
       {
-        context.EgaugeMeasurements.Add(model.ToEntity());
+        context.EgaugeMeasurements.Add(model.ToEntity(_shellSettings.GetTenantName()));
         await context.SaveChangesAsync();
       });
   }

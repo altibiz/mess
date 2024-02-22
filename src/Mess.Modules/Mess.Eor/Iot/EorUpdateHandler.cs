@@ -1,8 +1,10 @@
 using Mess.Cms;
+using Mess.Cms.Extensions.OrchardCore;
 using Mess.Eor.Abstractions.Models;
 using Mess.Eor.Abstractions.Timeseries;
 using Mess.Iot.Abstractions.Services;
 using OrchardCore.ContentManagement;
+using OrchardCore.Environment.Shell;
 
 namespace Mess.Eor.Iot;
 
@@ -13,24 +15,27 @@ public class EorUpdateHandler
 
   private readonly IEorTimeseriesClient _measurementClient;
 
+  private readonly ShellSettings _shellSettings;
+
   public EorUpdateHandler(
     IEorTimeseriesClient measurementClient,
-    IContentManager contentManager
+    IContentManager contentManager,
+    ShellSettings shellSettings
   )
   {
     _contentManager = contentManager;
     _measurementClient = measurementClient;
+    _shellSettings = shellSettings;
   }
 
   protected override void Handle(
     string deviceId,
-    string tenant,
     DateTimeOffset timestamp,
     EorIotDeviceItem contentItem,
     EorUpdateRequest request
   )
   {
-    var status = request.ToStatus(tenant, deviceId);
+    var status = request.ToStatus(_shellSettings.GetTenantName(), deviceId);
 
     contentItem.Alter(
       eorIotDevice => eorIotDevice.EorIotDevicePart,
@@ -48,13 +53,12 @@ public class EorUpdateHandler
 
   protected override async Task HandleAsync(
     string deviceId,
-    string tenant,
     DateTimeOffset timestamp,
     EorIotDeviceItem contentItem,
     EorUpdateRequest request
   )
   {
-    var status = request.ToStatus(tenant, deviceId);
+    var status = request.ToStatus(_shellSettings.GetTenantName(), deviceId);
 
     if (
       contentItem.EorIotDevicePart.Value.Controls.Mode != status.Mode

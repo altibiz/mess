@@ -3,6 +3,7 @@ using Mess.Iot.Abstractions.Caches;
 using Mess.Iot.Abstractions.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using OrchardCore.Environment.Shell;
 using YesSql;
 
 namespace Mess.Iot.Event;
@@ -14,6 +15,7 @@ public class PushEventDispatcher : IEventDispatcher
     var session = services.GetRequiredService<ISession>();
     var cache = services.GetRequiredService<IIotDeviceContentItemCache>();
     var logger = services.GetRequiredService<ILogger<PushEventDispatcher>>();
+    var shellSettings = services.GetRequiredService<ShellSettings>();
 
     foreach (var @event in events.OfType<Measured>())
     {
@@ -43,9 +45,9 @@ public class PushEventDispatcher : IEventDispatcher
 
       try
       {
+        shellSettings.Name = @event.Tenant;
         handler.Handle(
           @event.DeviceId,
-          @event.Tenant,
           @event.Timestamp,
           contentItem,
           @event.Payload
@@ -73,6 +75,7 @@ public class PushEventDispatcher : IEventDispatcher
     var session = services.GetRequiredService<ISession>();
     var cache = services.GetRequiredService<IIotDeviceContentItemCache>();
     var logger = services.GetRequiredService<ILogger<PushEventDispatcher>>();
+    var shellSettings = services.GetRequiredService<ShellSettings>();
 
     foreach (var @event in events.OfType<Measured>())
     {
@@ -102,9 +105,9 @@ public class PushEventDispatcher : IEventDispatcher
 
       try
       {
+        shellSettings.Name = @event.Tenant;
         await handler.HandleAsync(
           @event.DeviceId,
-          @event.Tenant,
           @event.Timestamp,
           contentItem,
           @event.Payload

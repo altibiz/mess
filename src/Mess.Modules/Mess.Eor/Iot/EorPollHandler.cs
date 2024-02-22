@@ -9,7 +9,6 @@ public class EorPollHandler
 {
   protected override EorPollResponse MakeResponse(
     string deviceId,
-    string tenant,
     DateTimeOffset timestamp,
     EorIotDeviceItem contentItem
   )
@@ -27,7 +26,6 @@ public class EorPollHandler
 
   protected override async Task<EorPollResponse> MakeResponseAsync(
     string deviceId,
-    string tenant,
     DateTimeOffset timestamp,
     EorIotDeviceItem contentItem
   )

@@ -9,7 +9,6 @@ public abstract class JsonIotUpdateHandler<TItem, TResponse>
 {
   protected abstract void Handle(
     string deviceId,
-    string tenant,
     DateTimeOffset timestamp,
     TItem contentItem,
     TResponse request
@@ -17,7 +16,6 @@ public abstract class JsonIotUpdateHandler<TItem, TResponse>
 
   protected abstract Task HandleAsync(
     string deviceId,
-    string tenant,
     DateTimeOffset timestamp,
     TItem contentItem,
     TResponse request
@@ -25,25 +23,23 @@ public abstract class JsonIotUpdateHandler<TItem, TResponse>
 
   protected override void Handle(
     string deviceId,
-    string tenant,
     DateTimeOffset timestamp,
     TItem contentItem,
     string request
   )
   {
     var json = request.FromJson<TResponse>();
-    Handle(deviceId, tenant, timestamp, contentItem, json);
+    Handle(deviceId, timestamp, contentItem, json);
   }
 
   protected override async Task HandleAsync(
     string deviceId,
-    string tenant,
     DateTimeOffset timestamp,
     TItem contentItem,
     string request
   )
   {
     var json = request.FromJson<TResponse>();
-    await HandleAsync(deviceId, tenant, timestamp, contentItem, json);
+    await HandleAsync(deviceId, timestamp, contentItem, json);
   }
 }

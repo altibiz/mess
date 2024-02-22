@@ -66,25 +66,6 @@ public class AbbMonthlyEnergyRangeEntity : MonthlyContinuousAggregateEntity
 
 public static class AbbMonthlyEnergyRangeEntityExtensions
 {
-  public static AbbMonthlyEnergyRangeEntity ToEntity(
-    this AbbEnergyRange model
-  )
-  {
-    return new AbbMonthlyEnergyRangeEntity
-    {
-      Timestamp = model.Timestamp,
-      Source = model.Source,
-      ActiveEnergyImportTotalMin_Wh = model.ActiveEnergyImportTotalMin_Wh,
-      ActiveEnergyImportTotalMax_Wh = model.ActiveEnergyImportTotalMax_Wh,
-      ActiveEnergyExportTotalMin_Wh = model.ActiveEnergyExportTotalMin_Wh,
-      ActiveEnergyExportTotalMax_Wh = model.ActiveEnergyExportTotalMax_Wh,
-      ReactiveEnergyImportTotalMin_VARh = model.ReactiveEnergyImportTotalMin_VARh,
-      ReactiveEnergyImportTotalMax_VARh = model.ReactiveEnergyImportTotalMax_VARh,
-      ReactiveEnergyExportTotalMin_VARh = model.ReactiveEnergyExportTotalMin_VARh,
-      ReactiveEnergyExportTotalMax_VARh = model.ReactiveEnergyExportTotalMax_VARh
-    };
-  }
-
   public static AbbEnergyRange ToModel(
     this AbbMonthlyEnergyRangeEntity entity
   )

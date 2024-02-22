@@ -66,25 +66,6 @@ public class SchneiderQuarterHourlyEnergyRangeEntity : QuarterHourlyContinuousAg
 
 public static class SchneiderQuarterHourlyEnergyRangeEntityExtensions
 {
-  public static SchneiderQuarterHourlyEnergyRangeEntity ToEntity(
-    this SchneiderEnergyRange model
-  )
-  {
-    return new SchneiderQuarterHourlyEnergyRangeEntity
-    {
-      Timestamp = model.Timestamp,
-      Source = model.Source,
-      ActiveEnergyImportTotalMin_Wh = model.ActiveEnergyImportTotalMin_Wh,
-      ActiveEnergyImportTotalMax_Wh = model.ActiveEnergyImportTotalMax_Wh,
-      ActiveEnergyExportTotalMin_Wh = model.ActiveEnergyExportTotalMin_Wh,
-      ActiveEnergyExportTotalMax_Wh = model.ActiveEnergyExportTotalMax_Wh,
-      ReactiveEnergyImportTotalMin_VARh = model.ReactiveEnergyImportTotalMin_VARh,
-      ReactiveEnergyImportTotalMax_VARh = model.ReactiveEnergyImportTotalMax_VARh,
-      ReactiveEnergyExportTotalMin_VARh = model.ReactiveEnergyExportTotalMin_VARh,
-      ReactiveEnergyExportTotalMax_VARh = model.ReactiveEnergyExportTotalMax_VARh
-    };
-  }
-
   public static SchneiderEnergyRange ToModel(
     this SchneiderQuarterHourlyEnergyRangeEntity entity
   )

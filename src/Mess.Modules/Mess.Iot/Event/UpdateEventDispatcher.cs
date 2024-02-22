@@ -1,9 +1,11 @@
+using Mess.Cms.Extensions.OrchardCore;
 using Mess.Event.Abstractions.Services;
 using Mess.Iot.Abstractions.Indexes;
 using Mess.Iot.Abstractions.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OrchardCore.ContentManagement;
+using OrchardCore.Environment.Shell;
 using YesSql;
 
 namespace Mess.Iot.Event;
@@ -14,6 +16,7 @@ public class UpdateEventDispatcher : IEventDispatcher
   {
     var session = services.GetRequiredService<ISession>();
     var logger = services.GetRequiredService<ILogger<UpdateEventDispatcher>>();
+    var shellSettings = services.GetRequiredService<ShellSettings>();
 
     foreach (var @event in events.OfType<Updated>())
     {
@@ -45,9 +48,10 @@ public class UpdateEventDispatcher : IEventDispatcher
         continue;
       }
 
+
+      shellSettings.Name = @event.Tenant;
       handler.Handle(
         @event.DeviceId,
-        @event.Tenant,
         @event.Timestamp,
         contentItem,
         @event.Payload
@@ -65,6 +69,7 @@ public class UpdateEventDispatcher : IEventDispatcher
   {
     var session = services.GetRequiredService<ISession>();
     var logger = services.GetRequiredService<ILogger<UpdateEventDispatcher>>();
+    var shellSettings = services.GetRequiredService<ShellSettings>();
 
     foreach (var @event in events.OfType<Updated>())
     {
@@ -97,9 +102,9 @@ public class UpdateEventDispatcher : IEventDispatcher
 
       try
       {
+        shellSettings.Name = @event.Tenant;
         await handler.HandleAsync(
           @event.DeviceId,
-          @event.Tenant,
           @event.Timestamp,
           contentItem,
           @event.Payload
