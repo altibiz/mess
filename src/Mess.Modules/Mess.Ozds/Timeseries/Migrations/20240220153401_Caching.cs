@@ -28,7 +28,7 @@ namespace Mess.Ozds.Timeseries.Migrations
           table: "AbbMeasurements");
 
       migrationBuilder.Sql("""
-        create materialized view if not exists "MonthlyBoundsEnergy"
+        create materialized view if not exists "MonthlyRangeEnergy"
         as
           with
             measurements as (
@@ -87,7 +87,7 @@ namespace Mess.Ozds.Timeseries.Migrations
       """);
 
       migrationBuilder.Sql("""
-        create index on "MonthlyBoundsEnergy" (
+        create index on "MonthlyRangeEnergy" (
           "Tenant",
           "Source",
           "Timestamp"
@@ -180,7 +180,7 @@ namespace Mess.Ozds.Timeseries.Migrations
     protected override void Down(MigrationBuilder migrationBuilder)
     {
       migrationBuilder.Sql("""
-        drop materialized view "MonthlyBoundsEnergy";
+        drop materialized view "MonthlyRangeEnergy";
       """);
 
       migrationBuilder.Sql("""

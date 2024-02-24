@@ -10,7 +10,7 @@ public class Startup : StartupBase
 {
   public override void ConfigureServices(IServiceCollection services)
   {
-    services.AddScoped<IRelationalDbMigrator, TimeseriesDbMigrator>();
+    // services.AddScoped<IRelationalDbMigrator, TimeseriesDbMigrator>();
     services.AddScoped<ITimeseriesDbConnection, TimeseriesDbConnection>();
 
     services.AddBackgroundTask<MaterializedViewRefreshBackgroundTask>();

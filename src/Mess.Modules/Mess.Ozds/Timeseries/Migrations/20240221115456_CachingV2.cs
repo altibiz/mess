@@ -81,7 +81,7 @@ namespace Mess.Ozds.Timeseries.Migrations
 
       migrationBuilder.Sql("""
         select add_continuous_aggregate_policy(
-          'AbbQuarterHourlyEnergyRange',
+          '"AbbQuarterHourlyEnergyRange"',
           start_offset => NULL,
           end_offset => INTERVAL '15 minutes',
           schedule_interval => INTERVAL '15 minutes'
@@ -123,7 +123,7 @@ namespace Mess.Ozds.Timeseries.Migrations
 
       migrationBuilder.Sql("""
         select add_continuous_aggregate_policy(
-          'SchneiderQuarterHourlyEnergyRange',
+          '"SchneiderQuarterHourlyEnergyRange"',
           start_offset => NULL,
           end_offset => INTERVAL '15 minutes',
           schedule_interval => INTERVAL '15 minutes'
@@ -165,7 +165,7 @@ namespace Mess.Ozds.Timeseries.Migrations
 
       migrationBuilder.Sql("""
         select add_continuous_aggregate_policy(
-          'SchneiderMonthlyEnergyRange',
+          '"AbbMonthlyEnergyRange"',
           start_offset => NULL,
           end_offset => INTERVAL '1 month',
           schedule_interval => INTERVAL '1 month'
@@ -207,7 +207,7 @@ namespace Mess.Ozds.Timeseries.Migrations
 
       migrationBuilder.Sql("""
         select add_continuous_aggregate_policy(
-          'SchneiderMonthlyEnergyRange',
+          '"SchneiderMonthlyEnergyRange"',
           start_offset => NULL,
           end_offset => INTERVAL '1 month',
           schedule_interval => INTERVAL '1 month'

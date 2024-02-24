@@ -385,6 +385,10 @@ namespace Mess.Ozds.Timeseries.Migrations
         table: "SchneiderMeasurements",
         columns: new[] { "Tenant", "Source", "Timestamp" }
       );
+
+      migrationBuilder.Sql("""
+        SELECT create_hypertable('"SchneiderMeasurements"', 'Timestamp');
+      """);
     }
 
     /// <inheritdoc />

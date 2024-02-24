@@ -88,6 +88,10 @@ namespace Mess.Ozds.Timeseries
         table: "AbbMeasurements",
         columns: new[] { "Tenant", "Source", "Timestamp" }
       );
+
+      migrationBuilder.Sql("""
+        SELECT create_hypertable('"AbbMeasurements"', 'Timestamp');
+      """);
     }
 
     /// <inheritdoc />
