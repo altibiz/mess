@@ -24,7 +24,7 @@
             </MudItem>
             <MudContainer Class="d-flex justify-center" MaxWidth="MaxWidth.Small">
               <MudText Typo="Typo.h4">
-                  @(DecimalString((decimal)_totalLastMonthConsumption/1000, 0))
+                  @(_totalLastMonthConsumption is null ? null : DecimalString((decimal)_totalLastMonthConsumption/1000, 0))
               </MudText>
             </MudContainer>
           </MudPaper>
@@ -38,7 +38,7 @@
             </MudItem>
             <MudContainer Class="d-flex justify-center" MaxWidth="MaxWidth.Small">
               <MudText Typo="Typo.h4">
-                  @(DecimalString((decimal)_totalConsumption/1000, 0))
+                  @(_totalConsumption is null ? null : DecimalString((decimal)_totalConsumption/1000, 0))
               </MudText>
             </MudContainer>
           </MudPaper>
@@ -52,7 +52,7 @@
             </MudItem>
             <MudContainer Class="d-flex justify-center" MaxWidth="MaxWidth.Small">
               <MudText Typo="Typo.h4">
-                  @(DecimalString((decimal)_totalLastPower/1000, 0))
+                  @(_totalLastPower is null ? null : DecimalString((decimal)_totalLastPower/1000, 0))
               </MudText>
             </MudContainer>
           </MudPaper>
@@ -77,13 +77,13 @@
               <MudIconButton OnClick="() => InspectSubnet(dataStruct.data.system)" Icon="@Icons.Material.Filled.RemoveRedEye" Color="MudBlazor.Color.Primary"/>
             </MudItem>
             <MudItem xs="12" Class="d-flex align-center justify-start" Style="font-size: large; font-weight: bold;">
-              @T["Potrošnja trenutni mjesec"].Value: @(DecimalString((decimal)dataStruct.data.consumption/1000, 0) + " kWh")
+              @T["Potrošnja trenutni mjesec"].Value: @(dataStruct.data.consumption is null ? null : DecimalString((decimal)dataStruct.data.consumption/1000, 0) + " kWh")
             </MudItem>
             <MudItem xs="12" Class="d-flex align-center justify-start" Style="font-size: large; font-weight: bold;">
-              @T["Potrošnja prošli mjesec"].Value: @(DecimalString((decimal)dataStruct.data.lastMonthConsumption/1000, 0) + " kWh")
+              @T["Potrošnja prošli mjesec"].Value: @(dataStruct.data.lastMonthConsumption is null ? null : DecimalString((decimal)dataStruct.data.lastMonthConsumption/1000, 0) + " kWh")
             </MudItem>
             <MudItem xs="12" Class="d-flex align-center justify-start" Style="font-size: large; font-weight: bold;">
-              @T["Trenutna snaga"].Value: @(DecimalString((decimal)dataStruct.data.lastPower/1000, 0) + " kW")
+              @T["Trenutna snaga"].Value: @(dataStruct.data.lastPower is null ? null : DecimalString((decimal)dataStruct.data.lastPower/1000, 0) + " kW")
             </MudItem>
           </MudGrid>
         </MudStack>
@@ -105,7 +105,7 @@
             </MudItem>
             <MudContainer Class="d-flex align-center justify-center" MaxWidth="MaxWidth.Small" Style="height: 100%;">
               <MudText Typo="Typo.h1">
-                  @(DecimalString((decimal)_totalConsumption/1000, 0))
+                  @(_totalConsumption is null ? null : DecimalString((decimal)_totalConsumption/1000, 0))
               </MudText>
             </MudContainer>
           </MudPaper>
@@ -119,7 +119,7 @@
             </MudItem>
             <MudContainer Class="d-flex align-center justify-center" MaxWidth="MaxWidth.Small" Style="height: 75%;">
               <MudText Typo="Typo.h1">
-                  @(DecimalString((decimal)_totalLastMonthConsumption/1000, 0))
+                  @(_totalLastMonthConsumption is null ? null : DecimalString((decimal)_totalLastMonthConsumption/1000, 0))
               </MudText>
             </MudContainer>
           </MudPaper>
@@ -133,7 +133,7 @@
             </MudItem>
             <MudContainer Class="d-flex align-center justify-center" MaxWidth="MaxWidth.Small" Style="height: 100%;">
               <MudText Typo="Typo.h1">
-                  @(DecimalString((decimal)_totalLastPower/1000, 0))
+                  @(_totalLastPower is null ? null : DecimalString((decimal)_totalLastPower/1000, 0))
               </MudText>
             </MudContainer>
           </MudPaper>
@@ -179,7 +179,7 @@
         Property="x => x.consumption"
         Title='@T["Potrošnja trenutni mjesec"].Value'>
             <CellTemplate>
-                @(DecimalString((decimal)context.Item.consumption/1000, 0) + " kWh")
+                @(context.Item.consumption is null ? null : DecimalString((decimal)context.Item.consumption/1000, 0) + " kWh")
             </CellTemplate>
       </PropertyColumn>
       <PropertyColumn
@@ -187,7 +187,7 @@
         Property="x => x.consumption"
         Title='@T["Potrošnja prošli mjesec"].Value'>
             <CellTemplate>
-                @(DecimalString((decimal)context.Item.lastMonthConsumption/1000, 0) + " kWh")
+                @(context.Item.lastMonthConsumption is null ? null : DecimalString((decimal)context.Item.lastMonthConsumption/1000, 0) + " kWh")
             </CellTemplate>
       </PropertyColumn>
       <PropertyColumn
@@ -195,7 +195,7 @@
         Property="x => x.consumption"
         Title='@T["Trenutna snaga"].Value'>
             <CellTemplate>
-                @(DecimalString((decimal)context.Item.lastPower/1000, 0) + " kW")
+                @(context.Item.lastPower is null ? null : DecimalString((decimal)context.Item.lastPower/1000, 0) + " kW")
             </CellTemplate>
       </PropertyColumn>
       </Columns>
@@ -212,7 +212,7 @@
     [Parameter]
     public ContentItem LegalEntity { get; set; } = default!;
     private (decimal? First, decimal? Last, DateTimeOffset FirstDate) _startEnd;
-    private (decimal? First, decimal? Last, DateTimeOffset FirstDate) _startEndLastMonth;
+    private (decimal? First, decimal? Last, DateTimeOffset FirstDate) _startEndLastMonth = new(0, 0, DateTime.UtcNow);
     private IEnumerable<ContentItem>? _ioTDevices;
     private string? _searchString;
     private IEnumerable<ContentItem>? _systems;
@@ -225,11 +225,11 @@
     private decimal? _totalLastPower = 0;
     private List<TabularData> _dataStruct = new List<TabularData>();
     private IReadOnlyList<AbbEnergyRange>? _abbRange;
-    private IReadOnlyList<SchneiderEnergyRange>? _schniderRange;
+    private IReadOnlyList<SchneiderEnergyRange>? _schneiderRange;
     private IReadOnlyList<AbbEnergyRange>? _abbRangeLastMonth;
-    private IReadOnlyList<SchneiderEnergyRange>? _schniderRangeLastMonth;
+    private IReadOnlyList<SchneiderEnergyRange>? _schneiderRangeLastMonth;
     private IReadOnlyList<AbbMeasurement>? _abbLast;
-    private IReadOnlyList<SchneiderMeasurement>? _schniderLast;
+    private IReadOnlyList<SchneiderMeasurement>? _schneiderLast;
     private DateTimeOffset nowMonth = DateTimeOffset.UtcNow.AddDays(-DateTimeOffset.UtcNow.Day);
     private DateTimeOffset now = DateTimeOffset.UtcNow;
     protected override async Task OnInitializedAsync()
@@ -246,37 +246,49 @@
               .Where(index => index.ClosedDistributionSystemContentItemId == sub.ContentItemId)
               .Where(index => !index.IsMessenger)
               .ListAsync();
-          if(_ioTDevices is not null){
-            _abbRange = await _timeseriesClient.GetBulkAbbMonthlyEnergyRangeAsync(_ioTDevices.Where(x => x.DisplayText.StartsWith("abb")).Select(x => x.DisplayText),nowMonth,now);
-            _abbRangeLastMonth = await _timeseriesClient.GetBulkAbbMonthlyEnergyRangeAsync(_ioTDevices.Where(x => x.DisplayText.StartsWith("abb")).Select(x => x.DisplayText),nowMonth,now);
-            _abbLast = await _timeseriesClient.GetBulkLastAbbMeasurementAsync(_ioTDevices.Where(x => x.DisplayText.StartsWith("abb")).Select(x => x.DisplayText));
-            _schniderRange = await _timeseriesClient.GetBulkSchneiderMonthlyEnergyRangeAsync(_ioTDevices.Where(x => x.DisplayText.StartsWith("schnider")).Select(x => x.DisplayText),nowMonth,now);
-            _schniderRangeLastMonth = await _timeseriesClient.GetBulkSchneiderMonthlyEnergyRangeAsync(_ioTDevices.Where(x => x.DisplayText.StartsWith("schnider")).Select(x => x.DisplayText),nowMonth,now);
-            _schniderLast = await _timeseriesClient.GetBulkLastSchneiderMeasurementAsync(_ioTDevices.Where(x => x.DisplayText.StartsWith("abb")).Select(x => x.DisplayText));
-          }
+          if(ioTDevices is not null){
+            _abbRange = await _timeseriesClient.GetBulkAbbMonthlyEnergyRangeAsync(ioTDevices.Where(x => x.DisplayText.StartsWith("abb")).Select(x => x.DisplayText),nowMonth,now);
+            _abbRangeLastMonth = await _timeseriesClient.GetBulkAbbMonthlyEnergyRangeAsync(ioTDevices.Where(x => x.DisplayText.StartsWith("abb")).Select(x => x.DisplayText),nowMonth.AddMonths(-1),nowMonth);
+            _abbLast = await _timeseriesClient.GetBulkLastAbbMeasurementAsync(ioTDevices.Where(x => x.DisplayText.StartsWith("abb")).Select(x => x.DisplayText));
+            _schneiderRange = await _timeseriesClient.GetBulkSchneiderMonthlyEnergyRangeAsync(ioTDevices.Where(x => x.DisplayText.StartsWith("schneider")).Select(x => x.DisplayText),nowMonth,now);
+            _schneiderRangeLastMonth = await _timeseriesClient.GetBulkSchneiderMonthlyEnergyRangeAsync(ioTDevices.Where(x => x.DisplayText.StartsWith("schneider")).Select(x => x.DisplayText),nowMonth.AddMonths(-1),nowMonth);
+            _schneiderLast = await _timeseriesClient.GetBulkLastSchneiderMeasurementAsync(ioTDevices.Where(x => x.DisplayText.StartsWith("schneider")).Select(x => x.DisplayText));
+
             foreach(var omm in ioTDevices){
               _startEnd = new();
-              _startEndLastMonth = new();
               if(omm.DisplayText.StartsWith("abb")){
-                var device = _abbRange.Where(x => x.Source == omm.DisplayText).First();
-                var deviceLastMonth = _abbRangeLastMonth.Where(x => x.Source == omm.DisplayText).First();
-                _startEnd = (device.ActiveEnergyImportTotalMax_Wh, device.ActiveEnergyImportTotalMin_Wh, device.Timestamp);
-                _startEndLastMonth = (deviceLastMonth.ActiveEnergyImportTotalMax_Wh, deviceLastMonth.ActiveEnergyImportTotalMin_Wh, deviceLastMonth.Timestamp);
-                var a = _abbLast.Where(x => x.Source == omm.DisplayText).FirstOrDefault();
-                if(a is not null)
-                  _lastMeasurements += a.ActivePowerL1_W + a.ActivePowerL2_W + a.ActivePowerL3_W;
+                if(_abbRange is not null &&_abbRange.Count() > 0){
+                    var device = _abbRange.Where(x => x.Source == omm.DisplayText).First();
+                    _startEnd = (device.ActiveEnergyImportTotalMax_Wh, device.ActiveEnergyImportTotalMin_Wh, device.Timestamp);
+                }
+                if(_abbRangeLastMonth is not null &&_abbRangeLastMonth.Count() > 0){
+                    var deviceLastMonth = _abbRangeLastMonth.Where(x => x.Source == omm.DisplayText).First();
+                    _startEndLastMonth = (deviceLastMonth.ActiveEnergyImportTotalMax_Wh, deviceLastMonth.ActiveEnergyImportTotalMin_Wh, deviceLastMonth.Timestamp);
+                }
+                if(_abbLast is not null){
+                  var a = _abbLast.Where(x => x.Source == omm.DisplayText).FirstOrDefault();
+                  if(a is not null)
+                    _lastMeasurements += a.ActivePowerL1_W + a.ActivePowerL2_W + a.ActivePowerL3_W;
+                }
               }
               else{
-                var device = _schniderRange.Where(x => x.Source == omm.DisplayText).First();
-                var deviceLastMonth = _schniderRangeLastMonth.Where(x => x.Source == omm.DisplayText).First();
-                _startEnd = (device.ActiveEnergyImportTotalMax_Wh, device.ActiveEnergyImportTotalMin_Wh, device.Timestamp);
-                _startEndLastMonth = (deviceLastMonth.ActiveEnergyImportTotalMax_Wh, deviceLastMonth.ActiveEnergyImportTotalMin_Wh, deviceLastMonth.Timestamp);
-                var a = _schniderLast.Where(x => x.Source == omm.DisplayText).FirstOrDefault();
-                if(a is not null)
-                  _lastMeasurements += a.ActivePowerL1_W + a.ActivePowerL2_W + a.ActivePowerL3_W;
+                if(_schneiderRange is not null &&_schneiderRange.Count() > 0){
+                  var device = _schneiderRange.Where(x => x.Source == omm.DisplayText).First();
+                  _startEnd = (device.ActiveEnergyImportTotalMax_Wh, device.ActiveEnergyImportTotalMin_Wh, device.Timestamp);
+                }
+                if(_schneiderRangeLastMonth is not null &&_schneiderRangeLastMonth.Count() > 0){
+                  var deviceLastMonth = _schneiderRangeLastMonth.Where(x => x.Source == omm.DisplayText).First();
+                  _startEndLastMonth = (deviceLastMonth.ActiveEnergyImportTotalMax_Wh, deviceLastMonth.ActiveEnergyImportTotalMin_Wh, deviceLastMonth.Timestamp);
+                }
+                if(_schneiderLast is not null){
+                  var a = _schneiderLast.Where(x => x.Source == omm.DisplayText).FirstOrDefault();
+                  if(a is not null)
+                    _lastMeasurements += a.ActivePowerL1_W + a.ActivePowerL2_W + a.ActivePowerL3_W;
+                }
               }
               _diagnostics += _startEnd.First - _startEnd.Last;
               _lastMonthDiagnostics += _startEndLastMonth.First - _startEndLastMonth.Last;
+            }
             }
             _dataStruct.Add( new TabularData{system = sub, consumption = _diagnostics, lastMonthConsumption = _lastMonthDiagnostics, lastPower = _lastMeasurements});
             _shownSubnets.Add( new ExpandThing{data = new TabularData{system = sub, consumption = _diagnostics, lastMonthConsumption = _lastMonthDiagnostics, lastPower = _lastMeasurements}, show = true, expand = false});

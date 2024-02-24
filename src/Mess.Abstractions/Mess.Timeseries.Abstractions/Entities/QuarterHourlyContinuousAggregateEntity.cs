@@ -9,5 +9,5 @@ public abstract class QuarterHourlyContinuousAggregateEntity : ContinuousAggrega
   [NotMapped] private TimeSpan? _timeSpan;
 
   [NotMapped]
-  public TimeSpan TimeSpan => _timeSpan ??= TimeSpan.FromMinutes(15);
+  public TimeSpan TimeSpan => _timeSpan ??= Timestamp.AddMinutes(15) - Timestamp;
 }

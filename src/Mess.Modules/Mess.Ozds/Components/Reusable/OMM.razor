@@ -11,7 +11,7 @@
 @using System.Threading;
 
 @inject IOzdsTimeseriesClient _timeseriesClient
-
+@if(_lastAbbPower is not null || _lastSchneiderPower is not null){
 @* MOBILE *@
   <MudHidden Breakpoint="Breakpoint.MdAndUp">
     <MudGrid Class="my-3 pa-1">
@@ -174,7 +174,7 @@
         </MudItem>
     </MudGrid>
   </MudHidden>
-
+}
 @code {
 
     [Parameter]
@@ -190,9 +190,9 @@
     private int _month = -1;
     private int _year = -1;
     private IReadOnlyList<AbbEnergyRange>? _abbRange;
-    private IReadOnlyList<SchneiderEnergyRange>? _schniderRange;
+    private IReadOnlyList<SchneiderEnergyRange>? _schneiderRange;
     private IReadOnlyList<AbbEnergyRange>? _abbRangeLastMonth;
-    private IReadOnlyList<SchneiderEnergyRange>? _schniderRangeLastMonth;
+    private IReadOnlyList<SchneiderEnergyRange>? _schneiderRangeLastMonth;
     private AbbMeasurement? _lastAbbPower;
     private SchneiderMeasurement? _lastSchneiderPower;
     private IReadOnlyList<SchneiderEnergyRange>? _lastSchneiderMonthPowerRange;
@@ -253,27 +253,31 @@
       _startEnd = new();
       if(Source.StartsWith("abb")){
         _abbRange = await _timeseriesClient.GetBulkAbbMonthlyEnergyRangeAsync(new List<string>{Source},nowMonth,now);
-        _abbRangeLastMonth = await _timeseriesClient.GetBulkAbbMonthlyEnergyRangeAsync(new List<string>{Source},nowMonth,now);
+        _abbRangeLastMonth = await _timeseriesClient.GetBulkAbbMonthlyEnergyRangeAsync(new List<string>{Source},nowMonth.AddMonths(-1),nowMonth);
         var device = _abbRange.Where(x => x.Source == Source).First();
         _startEnd = (device.ActiveEnergyImportTotalMax_Wh, device.ActiveEnergyImportTotalMin_Wh, device.Timestamp);
         _lastAbbPower = await _timeseriesClient.GetLastAbbMeasurementAsync(Source);
         _lastAbbMonthPowerRange = await _timeseriesClient.GetBulkAbbQuarterHourlyEnergyRangeAsync(new List<string>{Source}, nowMonth.AddMonths(-1), nowMonth);
         if(_lastAbbPower is not null){
           var lastTotalPower = _lastAbbPower.ActivePowerL1_W + _lastAbbPower.ActivePowerL2_W + _lastAbbPower.ActivePowerL3_W;
-          var lastMonthMaxPower = _lastAbbMonthPowerRange.Select(x => x.ActivePowerImportAverage_W).Max();
+          var lastMonthMaxPower = 1000000m;
+          if(_lastAbbMonthPowerRange.Count() > 0)
+            lastMonthMaxPower = _lastAbbMonthPowerRange.Select(x => x.ActivePowerImportAverage_W).Max();
           orders.Add(new Order(lastTotalPower, lastMonthMaxPower));
         }
       }
       else{
-        _schniderRange = await _timeseriesClient.GetBulkSchneiderMonthlyEnergyRangeAsync(new List<string>{Source},nowMonth,now);
-        _schniderRangeLastMonth = await _timeseriesClient.GetBulkSchneiderMonthlyEnergyRangeAsync(new List<string>{Source},nowMonth,now);
-        var device = _schniderRange.Where(x => x.Source == Source).First();
+        _schneiderRange = await _timeseriesClient.GetBulkSchneiderMonthlyEnergyRangeAsync(new List<string>{Source},nowMonth,now);
+        _schneiderRangeLastMonth = await _timeseriesClient.GetBulkSchneiderMonthlyEnergyRangeAsync(new List<string>{Source},nowMonth,now);
+        var device = _schneiderRange.Where(x => x.Source == Source).First();
         _startEnd = (device.ActiveEnergyImportTotalMax_Wh, device.ActiveEnergyImportTotalMin_Wh, device.Timestamp);
         _lastSchneiderPower = await _timeseriesClient.GetLastSchneiderMeasurementAsync(Source);
         _lastSchneiderMonthPowerRange = await _timeseriesClient.GetBulkSchneiderQuarterHourlyEnergyRangeAsync(new List<string>{Source}, nowMonth.AddMonths(-1), nowMonth);
         if(_lastSchneiderPower is not null){
           var lastTotalPower = _lastSchneiderPower.ActivePowerL1_W + _lastSchneiderPower.ActivePowerL2_W + _lastSchneiderPower.ActivePowerL3_W;
-          var lastMonthMaxPower = _lastSchneiderMonthPowerRange.Select(x => x.ActivePowerImportAverage_W).Max();
+          var lastMonthMaxPower = 1000000m;
+          if(_lastSchneiderMonthPowerRange.Count() > 0)
+            lastMonthMaxPower = _lastSchneiderMonthPowerRange.Select(x => x.ActivePowerImportAverage_W).Max();
           orders.Add(new Order(lastTotalPower, lastMonthMaxPower));
         }
       }

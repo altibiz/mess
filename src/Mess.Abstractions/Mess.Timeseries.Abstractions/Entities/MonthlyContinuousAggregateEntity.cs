@@ -9,14 +9,5 @@ public abstract class MonthlyContinuousAggregateEntity : ContinuousAggregateEnti
   [NotMapped] private TimeSpan? _timeSpan;
 
   [NotMapped]
-  public TimeSpan TimeSpan => _timeSpan ??=
-    new DateTimeOffset(
-      Timestamp.Year,
-      Timestamp.Month,
-      1,
-      0,
-      0,
-      0,
-      Timestamp.Offset)
-      - Timestamp;
+  public TimeSpan TimeSpan => _timeSpan ??= Timestamp.AddMonths(1) - Timestamp;
 }
