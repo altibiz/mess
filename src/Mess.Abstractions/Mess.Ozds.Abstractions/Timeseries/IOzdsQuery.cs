@@ -67,7 +67,7 @@ public partial interface IOzdsTimeseriesQuery
   );
 
 
-  public Task<SchneiderMeasurement?> GetBulkAbbMeasurementsAsync(
+  public Task<IReadOnlyList<AbbMeasurement>> GetBulkAbbMeasurementsAsync(
     IEnumerable<string> sources,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
