@@ -215,7 +215,6 @@ else{
     [Parameter]
     public User User { get; set; } = default!;
     private (decimal? First, decimal? Last, DateTimeOffset FirstDate) _startEnd;
-    private DateTimeOffset nowMonth = DateTimeOffset.UtcNow.AddDays(-DateTimeOffset.UtcNow.Day);
     private string? _searchString;
     private ContentItem? _legalEntity;
     private IEnumerable<ContentItem>? _units;
@@ -224,6 +223,12 @@ else{
     public record struct TabularData(ContentItem unit, decimal? totalConsumption, decimal? lastInvoiceTotal);
     private List<TabularData> _dataStruct = new List<TabularData>();
     private IEnumerable<ContentItem>? _systems;
+    private IReadOnlyList<AbbEnergyRange>? _abbRange;
+    private IReadOnlyList<SchneiderEnergyRange>? _schniderRange;
+    private IReadOnlyList<AbbEnergyRange>? _abbRangeLastMonth;
+    private IReadOnlyList<SchneiderEnergyRange>? _schniderRangeLastMonth;
+    private DateTimeOffset nowMonth = DateTimeOffset.UtcNow.AddDays(-DateTimeOffset.UtcNow.Day);
+    private DateTimeOffset now = DateTimeOffset.UtcNow;
     protected override async Task OnInitializedAsync()
     {
         await WithTransientSessionAsync(async session => {
@@ -265,14 +270,19 @@ else{
                   .Query<ContentItem, Mess.Billing.Abstractions.Indexes.PaymentIndex>()
                   .Where(index => index.RecipientContentItemId == unit.ContentItemId)
                   .ListAsync();
-
+            if(ioTDevices is not null){
+              _abbRange = await _timeseriesClient.GetBulkAbbMonthlyEnergyRangeAsync(ioTDevices.Where(x => x.DisplayText.StartsWith("abb")).Select(x => x.DisplayText),nowMonth,now);
+              _schniderRange = await _timeseriesClient.GetBulkSchneiderMonthlyEnergyRangeAsync(ioTDevices.Where(x => x.DisplayText.StartsWith("schnider")).Select(x => x.DisplayText),nowMonth,now);
+            }
             foreach(var omm in ioTDevices){
               _startEnd = new();
               if(omm.DisplayText.StartsWith("abb")){
-                _startEnd = await _timeseriesClient.GetAbbLastMonthMeasurementsAsync(omm.DisplayText, nowMonth, DateTime.UtcNow);
+                var device = _abbRange.Where(x => x.Source == omm.DisplayText).First();
+                _startEnd = (device.ActiveEnergyImportTotalMax_Wh, device.ActiveEnergyImportTotalMin_Wh, device.Timestamp);
               }
               else{
-                _startEnd = await _timeseriesClient.GetSchneiderLastMonthMeasurementsAsync(omm.DisplayText, nowMonth, DateTime.UtcNow);
+                var device = _schniderRange.Where(x => x.Source == omm.DisplayText).First();
+                _startEnd = (device.ActiveEnergyImportTotalMax_Wh, device.ActiveEnergyImportTotalMin_Wh, device.Timestamp);
               }
               _totalConsumption += _startEnd.First - _startEnd.Last;
             }
