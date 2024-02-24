@@ -12,7 +12,6 @@
 
 @inject IOzdsTimeseriesClient _timeseriesClient
 
-@if(_lastDay != null){
 @* MOBILE *@
   <MudHidden Breakpoint="Breakpoint.MdAndUp">
     <MudGrid Class="my-3 pa-1">
@@ -32,7 +31,7 @@
                                     Items="orders"
                                     SeriesType=SeriesType.RadialBar
                                     Name="@T["Potrošnja"].Value"
-                                    XValue="@(e => DecimalString((decimal)e.value, 0) + " kW")"
+                                    XValue="@(e => DecimalString((decimal)e.value/1000, 0) + " kW")"
                                     YAggregate="@(e => e.First().percent)"
                                     OrderByDescending="e=>e.X" />
                 </ApexChart>
@@ -64,19 +63,19 @@
             <MudStack>
               <MudDivider DividerType="DividerType.Middle" Class="mt-2"/>
               <MudContainer>
-                  @T["Prvo očitanje"].Value:
-                  @if(dataStruct.data.monthEndTotal is not null)
-                  @(DecimalString((decimal)dataStruct.data.monthEndTotal, 0)) kWh
+                @T["Prvo očitanje"].Value:
+                @if(dataStruct.data.monthEndTotal is not null)
+                @(DecimalString((decimal)dataStruct.data.monthEndTotal/1000, 0)) kWh
               </MudContainer>
               <MudContainer>
                 @T["Zadnje očitanje"].Value:
                 @if(dataStruct.data.monthStartTotal is not null)
-                @(DecimalString((decimal)dataStruct.data.monthStartTotal, 0)) kWh
+                @(DecimalString((decimal)dataStruct.data.monthStartTotal/1000, 0)) kWh
               </MudContainer>
               <MudContainer Style="font-size: large; font-weight:bold;">
                 @T["Ukupna potrošnja"].Value:
                 @if(dataStruct.data.monthStartTotal is not null && dataStruct.data.monthEndTotal is not null)
-                @(DecimalString((decimal)(dataStruct.data.monthStartTotal - dataStruct.data.monthEndTotal), 0)) kWh
+                @(DecimalString((decimal)(dataStruct.data.monthStartTotal - dataStruct.data.monthEndTotal)/1000, 0)) kWh
               </MudContainer>
             </MudStack>
           </MudCollapse>
@@ -122,7 +121,7 @@
       Title='@T["Prvo očitanje"].Value'>
           <CellTemplate>
                 @if(context.Item.monthEndTotal is not null)
-                @(DecimalString((decimal)context.Item.monthEndTotal, 0) + " kWh")
+                @(DecimalString((decimal)context.Item.monthEndTotal/1000, 0) + " kWh")
           </CellTemplate>
       </PropertyColumn>
     <PropertyColumn
@@ -131,7 +130,7 @@
       Title='@T["Zadnje očitanje"].Value'>
           <CellTemplate>
                 @if(context.Item.monthStartTotal is not null)
-                @(DecimalString((decimal)context.Item.monthStartTotal, 0) + " kWh")
+                @(DecimalString((decimal)context.Item.monthStartTotal/1000, 0) + " kWh")
           </CellTemplate>
       </PropertyColumn>
     <PropertyColumn
@@ -140,7 +139,7 @@
       Title='@T["Ukupna potrošnja"].Value'>
           <CellTemplate>
                 @if(context.Item.monthStartTotal is not null && context.Item.monthEndTotal is not null)
-                @(DecimalString((decimal)(context.Item.monthStartTotal - context.Item.monthEndTotal), 0) + " kWh")
+                @(DecimalString((decimal)(context.Item.monthStartTotal - context.Item.monthEndTotal)/1000, 0) + " kWh")
           </CellTemplate>
       </PropertyColumn>
   </Columns>
@@ -163,7 +162,7 @@
                                     Items="orders"
                                     SeriesType=SeriesType.RadialBar
                                     Name="@T["Potrošnja"].Value"
-                                    XValue="@(e => DecimalString((decimal)e.value, 0) + " kW")"
+                                    XValue="@(e => DecimalString((decimal)e.value/1000, 0) + " kW")"
                                     YAggregate="@(e =>  Math.Round(e.First().percent ?? 0M, 2))"
                                     OrderByDescending="e=>e.X" />
                 </ApexChart>
@@ -175,7 +174,6 @@
         </MudItem>
     </MudGrid>
   </MudHidden>
-}
 
 @code {
 
@@ -184,22 +182,23 @@
     public string TextValue { get; set; } = "";
     private List<Order> orders = new List<Order>();
     private ApexChartOptions<Order> options = new();
-    private ApexChartOptions<ChartData> graphOptions = new();
-    private ApexChartOptions<ChartData> graphOptionsMobile = new();
     private string? _searchString;
     private List<TabularData> _dataStruct = new List<TabularData>();
-    public IEnumerable<ChartData>? _lastDay;
-    public IEnumerable<ChartData>? _graphValues;
     private (decimal? First, decimal? Last, DateTimeOffset FirstDate) _startEnd;
-    private (decimal? First, decimal? Last, DateTimeOffset FirstDate) _startEndLastMonth;
     public record ChartData(decimal? L1, decimal? L2, decimal? L3, DateTimeOffset date);
     public record struct TabularData(int year, int month, decimal? monthStartTotal, decimal? monthEndTotal);
     private int _month = -1;
     private int _year = -1;
+    private IReadOnlyList<AbbEnergyRange>? _abbRange;
+    private IReadOnlyList<SchneiderEnergyRange>? _schniderRange;
+    private IReadOnlyList<AbbEnergyRange>? _abbRangeLastMonth;
+    private IReadOnlyList<SchneiderEnergyRange>? _schniderRangeLastMonth;
+    private AbbMeasurement? _lastAbbPower;
+    private SchneiderMeasurement? _lastSchneiderPower;
+    private IReadOnlyList<SchneiderEnergyRange>? _lastSchneiderMonthPowerRange;
+    private IReadOnlyList<AbbEnergyRange>? _lastAbbMonthPowerRange;
     private DateTimeOffset nowMonth = DateTimeOffset.UtcNow.AddDays(-DateTimeOffset.UtcNow.Day);
-    private ApexChart<ChartData> chart = default!;
-    private Timer? timer;
-    private bool timerInitialized;
+    private DateTimeOffset now = DateTime.UtcNow;
   private class Order {
     public decimal? value = 10;
     public decimal? valueMax = 100000;
@@ -220,72 +219,9 @@
       public bool show;
     }
     List<ExpandThing> _shownOMMs = new();
-    protected override void OnAfterRender(bool firstRender)
-    {
-        // if (firstRender && !timerInitialized)
-        // {
-        //     timerInitialized = true;
-        //     timer = new Timer(
-        //       new TimerCallback(async _ => await GetValues()),
-        //       null,
-        //       0,
-        //       10000
-        //     );
-        // }
-    }
     protected override async Task OnInitializedAsync()
     {
-      graphOptions= new ApexChartOptions<ChartData>() {
-        Grid = new Grid
-        {
-            BorderColor = "#e7e7e7",
-            Row = new GridRow
-            {
-                Colors = new List<string> { "#f3f3f3", "transparent" },
-                Opacity = 0.5d
-            }
-        }
-        };
-      graphOptionsMobile= new () {
-      Grid = new Grid
-      {
-          BorderColor = "#e7e7e7",
-          Row = new GridRow
-          {
-              Colors = new List<string> { "#f3f3f3", "transparent" },
-              Opacity = 0.5d
-          }
-      }
-      };
-      graphOptions.Tooltip = new ApexCharts.Tooltip { X = new TooltipX { Format = @"hh : mm : ss" } };
-      graphOptionsMobile.Tooltip = new () { X = new TooltipX { Format = @"hh : mm : ss" } };
-      graphOptionsMobile.Yaxis = new List<YAxis>();
-      graphOptionsMobile.Xaxis = new XAxis();
-
-      graphOptionsMobile.Yaxis.Add(new YAxis
-            {
-                Show = false
-            });
-      graphOptionsMobile.Xaxis = new XAxis()
-            {
-              Labels = new XAxisLabels(){ Show = false }
-            };
-      graphOptionsMobile.Chart = new Chart
-            {
-                Toolbar = new ApexCharts.Toolbar
-                {
-                    Tools = new Tools { Zoomin = false, Zoomout = false, Download = false, Pan = false, Selection = false}
-                }
-            };
-      graphOptions.Chart = new Chart
-            {
-                Toolbar = new ApexCharts.Toolbar
-                {
-                    Tools = new Tools { Zoomin = false, Zoomout = false, Download = false, Pan = false, Selection = false }
-                }
-            };
       options.PlotOptions = new PlotOptions { RadialBar = new PlotOptionsRadialBar { StartAngle = -90, EndAngle = 90 } };
-
       options.DataLabels = new DataLabels() {
         Enabled = true,
         Formatter = @"function(value, opts) {
@@ -315,83 +251,39 @@
           };
 
       _startEnd = new();
-      _startEndLastMonth = new();
-       if(Source.StartsWith("abb")){
-        _startEnd = await _timeseriesClient.GetAbbLastMonthMeasurementsAsync(Source, nowMonth, DateTime.UtcNow);
-        _startEndLastMonth = await _timeseriesClient.GetAbbLastMonthMeasurementsAsync(Source, nowMonth.AddMonths(-1), nowMonth);
-       }
-       else{
-         _startEnd = await _timeseriesClient.GetSchneiderLastMonthMeasurementsAsync(Source, nowMonth, DateTime.UtcNow);
-        _startEndLastMonth = await _timeseriesClient.GetSchneiderLastMonthMeasurementsAsync(Source, nowMonth.AddMonths(-1), nowMonth);
-       }
-
+      if(Source.StartsWith("abb")){
+        _abbRange = await _timeseriesClient.GetBulkAbbMonthlyEnergyRangeAsync(new List<string>{Source},nowMonth,now);
+        _abbRangeLastMonth = await _timeseriesClient.GetBulkAbbMonthlyEnergyRangeAsync(new List<string>{Source},nowMonth,now);
+        var device = _abbRange.Where(x => x.Source == Source).First();
+        _startEnd = (device.ActiveEnergyImportTotalMax_Wh, device.ActiveEnergyImportTotalMin_Wh, device.Timestamp);
+        _lastAbbPower = await _timeseriesClient.GetLastAbbMeasurementAsync(Source);
+        _lastAbbMonthPowerRange = await _timeseriesClient.GetBulkAbbQuarterHourlyEnergyRangeAsync(new List<string>{Source}, nowMonth.AddMonths(-1), nowMonth);
+        if(_lastAbbPower is not null){
+          var lastTotalPower = _lastAbbPower.ActivePowerL1_W + _lastAbbPower.ActivePowerL2_W + _lastAbbPower.ActivePowerL3_W;
+          var lastMonthMaxPower = _lastAbbMonthPowerRange.Select(x => x.ActivePowerImportAverage_W).Max();
+          orders.Add(new Order(lastTotalPower, lastMonthMaxPower));
+        }
+      }
+      else{
+        _schniderRange = await _timeseriesClient.GetBulkSchneiderMonthlyEnergyRangeAsync(new List<string>{Source},nowMonth,now);
+        _schniderRangeLastMonth = await _timeseriesClient.GetBulkSchneiderMonthlyEnergyRangeAsync(new List<string>{Source},nowMonth,now);
+        var device = _schniderRange.Where(x => x.Source == Source).First();
+        _startEnd = (device.ActiveEnergyImportTotalMax_Wh, device.ActiveEnergyImportTotalMin_Wh, device.Timestamp);
+        _lastSchneiderPower = await _timeseriesClient.GetLastSchneiderMeasurementAsync(Source);
+        _lastSchneiderMonthPowerRange = await _timeseriesClient.GetBulkSchneiderQuarterHourlyEnergyRangeAsync(new List<string>{Source}, nowMonth.AddMonths(-1), nowMonth);
+        if(_lastSchneiderPower is not null){
+          var lastTotalPower = _lastSchneiderPower.ActivePowerL1_W + _lastSchneiderPower.ActivePowerL2_W + _lastSchneiderPower.ActivePowerL3_W;
+          var lastMonthMaxPower = _lastSchneiderMonthPowerRange.Select(x => x.ActivePowerImportAverage_W).Max();
+          orders.Add(new Order(lastTotalPower, lastMonthMaxPower));
+        }
+      }
       if(_startEnd.First != null && _startEnd.Last != null){
         _month = _startEnd.FirstDate.Month;
         _year = _startEnd.FirstDate.Year;
-        _dataStruct.Add(new TabularData(_year, _month, _startEnd.First/ 1000, _startEnd.Last/ 1000));
-        _shownOMMs.Add(new ExpandThing{data = new (_year, _month, _startEnd.First/ 1000, _startEnd.Last/ 1000), show = true, expand = false});
-      }
-      if(Source.StartsWith("abb")){
-        var a = await _timeseriesClient.GetAbbMeasurementsAsync(Source, DateTimeOffset.UtcNow.AddHours(-24), DateTimeOffset.UtcNow);
-        _lastDay = a.Select(x => new ChartData(x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.Timestamp)).ToList();
-      }
-      else{
-        var a = await _timeseriesClient.GetSchneiderMeasurementsAsync(Source, DateTimeOffset.UtcNow.AddHours(-24), DateTimeOffset.UtcNow);
-        _lastDay = a.Select(x => new ChartData(x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.Timestamp)).ToList();
-      }
-      _graphValues = _lastDay.TakeLast(20);
-      orders.Add(new Order(285, 423)); //TODO: Change to compate max power of last month to current power
-    }
-
-  private async Task MenuItemClicked(string item)
-  {
-    if(_lastDay is not null){
-      switch(item)
-      {
-        case "Scale1":
-            _graphValues = _lastDay.Where(x => x.date > DateTime.UtcNow.AddMinutes(-5));
-            break;
-        case "Scale2":
-            _graphValues =_lastDay.Where(x => x.date > DateTime.UtcNow.AddMinutes(-10));
-            break;
-        case "Scale3":
-            _graphValues =_lastDay.Where(x => x.date > DateTime.UtcNow.AddMinutes(-15));
-            break;
-        case "Scale4":
-            _graphValues =_lastDay.Where(x => x.date > DateTime.UtcNow.AddMinutes(-30));
-            break;
-        case "Scale5":
-            _graphValues = _lastDay.Where(x => x.date > DateTime.UtcNow.AddHours(-1));
-            break;
-        case "Scale6":
-            _graphValues =_lastDay.Where(x => x.date > DateTime.UtcNow.AddHours(-3));
-            break;
-        case "Scale7":
-            _graphValues =_lastDay.Where(x => x.date > DateTime.UtcNow.AddHours(-6));
-            break;
-        case "Scale8":
-            _graphValues =_lastDay.Where(x => x.date > DateTime.UtcNow.AddHours(-12));
-            break;
-        case "Scale9":
-            _graphValues =_lastDay.Where(x => x.date > DateTime.UtcNow.AddHours(-24));
-            break;
+        _dataStruct.Add(new TabularData(_year, _month, _startEnd.First, _startEnd.Last));
+        _shownOMMs.Add(new ExpandThing{data = new (_year, _month, _startEnd.First, _startEnd.Last), show = true, expand = false});
       }
     }
-    await chart.UpdateSeriesAsync(true);
-  }
-
-  private async Task GetValues(){
-    if(Source.StartsWith("abb")){
-        var a = await _timeseriesClient.GetAbbMeasurementsAsync(Source, DateTimeOffset.UtcNow.AddMinutes(-1), DateTimeOffset.UtcNow);
-        _lastDay = a.Select(x => new ChartData(x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.Timestamp)).ToList();
-      }
-      else{
-        var a = await _timeseriesClient.GetSchneiderMeasurementsAsync(Source, DateTimeOffset.UtcNow.AddMinutes(-1), DateTimeOffset.UtcNow);
-        _lastDay = a.Select(x => new ChartData(x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.Timestamp)).ToList();
-      }
-    _graphValues = _lastDay.TakeLast(20);
-    await chart.UpdateSeriesAsync(true);
-  }
   private void OnExpandCollapseClick(int year, int month) {
       var a = _shownOMMs.Where(x => x.data.year == year).Where(x => x.data.month == month).FirstOrDefault();
       if(a is not null)
