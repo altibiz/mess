@@ -231,20 +231,23 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
           .RunAsync();
 
         await context.AbbQuarterHourlyEnergyRange
-        .UpsertRange(measurements
-          .Select(measurement => measurement
-            .ToQuarterHourlyEnergyRangeEntity(_shellSettings.GetDatabaseTablePrefix()))
-          .OrderBy(range => range.Timestamp)
-          .Aggregate(
-            new List<AbbQuarterHourlyEnergyRangeEntity>(),
-            (list, next) =>
-              list
-                .Concat(
-                list.LastOrDefault() is { } last
-                  ? last.Upsert(next)
-                  : new() { next }
-                )
-                .ToList()))
+        .UpsertRange(
+        measurements
+                  .Select(measurement => measurement
+                    .ToQuarterHourlyEnergyRangeEntity(_shellSettings.GetDatabaseTablePrefix()))
+                  .OrderBy(range => range.Timestamp)
+                  .Aggregate(
+                    new List<AbbQuarterHourlyEnergyRangeEntity>(),
+                    (list, next) =>
+                      list
+                        .Take(list.Count == 0 ? 0 : list.Count - 1)
+                        .Concat(
+                        list.LastOrDefault() is { } last
+                          ? last.Upsert(next)
+                          : new() { next }
+                        )
+                        .ToList())
+)
                 .On(v => new { v.Tenant, v.Source, v.Timestamp })
                 .WhenMatched(AbbQuarterHourlyEnergyRangeEntityExtensions.UpsertRow)
                 .RunAsync();
@@ -258,6 +261,7 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
             new List<AbbDailyEnergyRangeEntity>(),
             (list, next) =>
               list
+                        .Take(list.Count == 0 ? 0 : list.Count - 1)
                 .Concat(
                 list.LastOrDefault() is { } last
                   ? last.Upsert(next)
@@ -277,6 +281,7 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
             new List<AbbMonthlyEnergyRangeEntity>(),
             (list, next) =>
               list
+                        .Take(list.Count == 0 ? 0 : list.Count - 1)
                 .Concat(
                 list.LastOrDefault() is { } last
                   ? last.Upsert(next)
@@ -310,6 +315,7 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
             new List<SchneiderQuarterHourlyEnergyRangeEntity>(),
             (list, next) =>
               list
+                        .Take(list.Count == 0 ? 0 : list.Count - 1)
                 .Concat(
                 list.LastOrDefault() is { } last
                   ? last.Upsert(next)
@@ -329,6 +335,7 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
             new List<SchneiderDailyEnergyRangeEntity>(),
             (list, next) =>
               list
+                        .Take(list.Count == 0 ? 0 : list.Count - 1)
                 .Concat(
                 list.LastOrDefault() is { } last
                   ? last.Upsert(next)
@@ -348,6 +355,7 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
             new List<SchneiderMonthlyEnergyRangeEntity>(),
             (list, next) =>
               list
+                        .Take(list.Count == 0 ? 0 : list.Count - 1)
                 .Concat(
                 list.LastOrDefault() is { } last
                   ? last.Upsert(next)
@@ -382,6 +390,7 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
             new List<SchneiderQuarterHourlyEnergyRangeEntity>(),
             (list, next) =>
               list
+                        .Take(list.Count == 0 ? 0 : list.Count - 1)
                 .Concat(
                 list.LastOrDefault() is { } last
                   ? last.Upsert(next)
@@ -401,6 +410,7 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
             new List<SchneiderDailyEnergyRangeEntity>(),
             (list, next) =>
               list
+                        .Take(list.Count == 0 ? 0 : list.Count - 1)
                 .Concat(
                 list.LastOrDefault() is { } last
                   ? last.Upsert(next)
@@ -420,6 +430,7 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
             new List<SchneiderMonthlyEnergyRangeEntity>(),
             (list, next) =>
               list
+                        .Take(list.Count == 0 ? 0 : list.Count - 1)
                 .Concat(
                 list.LastOrDefault() is { } last
                   ? last.Upsert(next)
