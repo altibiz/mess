@@ -89,8 +89,36 @@ public static class SchneiderDailyEnergyRangeEntityExtensions
     };
   }
 
+  public static List<SchneiderDailyEnergyRangeEntity> Upsert(
+    this SchneiderDailyEnergyRangeEntity previous,
+    SchneiderDailyEnergyRangeEntity next
+  ) =>
+    previous.Timestamp == next.Timestamp ?
+    new()
+    {
+      new SchneiderDailyEnergyRangeEntity
+      {
+        Tenant = previous.Tenant,
+        Source = previous.Source,
+        Timestamp = previous.Timestamp,
+        ActiveEnergyImportTotalMin_Wh = previous.ActiveEnergyExportTotalMin_Wh,
+        ActiveEnergyImportTotalMax_Wh = next.ActiveEnergyImportTotalMax_Wh,
+        ActiveEnergyExportTotalMin_Wh = previous.ActiveEnergyImportTotalMin_Wh,
+        ActiveEnergyExportTotalMax_Wh = next.ActiveEnergyImportTotalMax_Wh,
+        ReactiveEnergyImportTotalMin_VARh = previous.ActiveEnergyImportTotalMin_Wh,
+        ReactiveEnergyImportTotalMax_VARh = next.ActiveEnergyImportTotalMax_Wh,
+        ReactiveEnergyExportTotalMin_VARh = previous.ActiveEnergyImportTotalMin_Wh,
+        ReactiveEnergyExportTotalMax_VARh = next.ActiveEnergyImportTotalMax_Wh,
+      }
+    } :
+    new()
+    {
+      previous,
+      next
+    };
+
   public static readonly Expression<Func<SchneiderDailyEnergyRangeEntity, SchneiderDailyEnergyRangeEntity, SchneiderDailyEnergyRangeEntity>>
-  Upsert = (
+  UpsertRow = (
     SchneiderDailyEnergyRangeEntity previous,
     SchneiderDailyEnergyRangeEntity next
   ) =>

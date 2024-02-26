@@ -89,8 +89,36 @@ public static class AbbQuarterHourlyEnergyRangeEntityExtensions
     };
   }
 
+  public static List<AbbQuarterHourlyEnergyRangeEntity> Upsert(
+    this AbbQuarterHourlyEnergyRangeEntity previous,
+    AbbQuarterHourlyEnergyRangeEntity next
+  ) =>
+    previous.Timestamp == next.Timestamp ?
+    new()
+    {
+      new AbbQuarterHourlyEnergyRangeEntity
+      {
+        Tenant = previous.Tenant,
+        Source = previous.Source,
+        Timestamp = previous.Timestamp,
+        ActiveEnergyImportTotalMin_Wh = previous.ActiveEnergyExportTotalMin_Wh,
+        ActiveEnergyImportTotalMax_Wh = next.ActiveEnergyImportTotalMax_Wh,
+        ActiveEnergyExportTotalMin_Wh = previous.ActiveEnergyImportTotalMin_Wh,
+        ActiveEnergyExportTotalMax_Wh = next.ActiveEnergyImportTotalMax_Wh,
+        ReactiveEnergyImportTotalMin_VARh = previous.ActiveEnergyImportTotalMin_Wh,
+        ReactiveEnergyImportTotalMax_VARh = next.ActiveEnergyImportTotalMax_Wh,
+        ReactiveEnergyExportTotalMin_VARh = previous.ActiveEnergyImportTotalMin_Wh,
+        ReactiveEnergyExportTotalMax_VARh = next.ActiveEnergyImportTotalMax_Wh,
+      }
+    } :
+    new()
+    {
+      previous,
+      next
+    };
+
   public static readonly Expression<Func<AbbQuarterHourlyEnergyRangeEntity, AbbQuarterHourlyEnergyRangeEntity, AbbQuarterHourlyEnergyRangeEntity>>
-  Upsert = (
+  UpsertRow = (
     AbbQuarterHourlyEnergyRangeEntity previous,
     AbbQuarterHourlyEnergyRangeEntity next
   ) =>
