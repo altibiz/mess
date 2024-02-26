@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Mess.Ozds.Abstractions.Timeseries;
+using Mess.Prelude.Extensions.Timestamps;
 using Mess.Timeseries.Abstractions.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -66,6 +67,48 @@ public class SchneiderMonthlyEnergyRangeEntity : MonthlyContinuousAggregateEntit
 
 public static class SchneiderMonthlyEnergyRangeEntityExtensions
 {
+  public static SchneiderMonthlyEnergyRangeEntity ToMonthlyEnergyRangeEntity(
+    this SchneiderMeasurement measurement,
+    string tenant
+  )
+  {
+    return new SchneiderMonthlyEnergyRangeEntity
+    {
+      Tenant = tenant,
+      Source = measurement.Source,
+      Timestamp = measurement.Timestamp.GetStartOfMonth(),
+      ActiveEnergyImportTotalMin_Wh = measurement.ActiveEnergyImportTotal_Wh,
+      ActiveEnergyImportTotalMax_Wh = measurement.ActiveEnergyImportTotal_Wh,
+      ActiveEnergyExportTotalMin_Wh = measurement.ActiveEnergyImportTotal_Wh,
+      ActiveEnergyExportTotalMax_Wh = measurement.ActiveEnergyImportTotal_Wh,
+      ReactiveEnergyImportTotalMin_VARh = measurement.ActiveEnergyImportTotal_Wh,
+      ReactiveEnergyImportTotalMax_VARh = measurement.ActiveEnergyImportTotal_Wh,
+      ReactiveEnergyExportTotalMin_VARh = measurement.ActiveEnergyImportTotal_Wh,
+      ReactiveEnergyExportTotalMax_VARh = measurement.ActiveEnergyImportTotal_Wh,
+    };
+  }
+
+  public static SchneiderMonthlyEnergyRangeEntity Upsert(
+    this SchneiderMonthlyEnergyRangeEntity previous,
+    SchneiderMonthlyEnergyRangeEntity next
+  )
+  {
+    return new SchneiderMonthlyEnergyRangeEntity
+    {
+      Tenant = previous.Tenant,
+      Source = previous.Source,
+      Timestamp = previous.Timestamp,
+      ActiveEnergyImportTotalMin_Wh = previous.ActiveEnergyExportTotalMin_Wh,
+      ActiveEnergyImportTotalMax_Wh = next.ActiveEnergyImportTotalMax_Wh,
+      ActiveEnergyExportTotalMin_Wh = previous.ActiveEnergyImportTotalMin_Wh,
+      ActiveEnergyExportTotalMax_Wh = next.ActiveEnergyImportTotalMax_Wh,
+      ReactiveEnergyImportTotalMin_VARh = previous.ActiveEnergyImportTotalMin_Wh,
+      ReactiveEnergyImportTotalMax_VARh = next.ActiveEnergyImportTotalMax_Wh,
+      ReactiveEnergyExportTotalMin_VARh = previous.ActiveEnergyImportTotalMin_Wh,
+      ReactiveEnergyExportTotalMax_VARh = next.ActiveEnergyImportTotalMax_Wh,
+    };
+  }
+
   public static SchneiderEnergyRange ToModel(
     this SchneiderMonthlyEnergyRangeEntity entity
   )

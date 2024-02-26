@@ -33,6 +33,24 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
         .On(v => new { v.Tenant, v.Source, v.Timestamp })
         .NoUpdate()
         .Run();
+
+      context.AbbQuarterHourlyEnergyRange
+        .Upsert(model.ToQuarterHourlyEnergyRangeEntity(_shellSettings.GetDatabaseTablePrefix()))
+        .On(v => new { v.Tenant, v.Source, v.Timestamp })
+        .WhenMatched((previous, next) => previous.Upsert(next))
+        .Run();
+
+      context.AbbDailyEnergyRange
+        .Upsert(model.ToDailyEnergyRangeEntity(_shellSettings.GetDatabaseTablePrefix()))
+        .On(v => new { v.Tenant, v.Source, v.Timestamp })
+        .WhenMatched((previous, next) => previous.Upsert(next))
+        .Run();
+
+      context.AbbMonthlyEnergyRange
+        .Upsert(model.ToMonthlyEnergyRangeEntity(_shellSettings.GetDatabaseTablePrefix()))
+        .On(v => new { v.Tenant, v.Source, v.Timestamp })
+        .WhenMatched((previous, next) => previous.Upsert(next))
+        .Run();
     });
   }
 
@@ -46,6 +64,24 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
           .On(v => new { v.Tenant, v.Source, v.Timestamp })
           .NoUpdate()
           .RunAsync();
+
+        await context.AbbQuarterHourlyEnergyRange
+          .Upsert(model.ToQuarterHourlyEnergyRangeEntity(_shellSettings.GetDatabaseTablePrefix()))
+          .On(v => new { v.Tenant, v.Source, v.Timestamp })
+          .WhenMatched((previous, next) => previous.Upsert(next))
+          .RunAsync();
+
+        await context.AbbDailyEnergyRange
+          .Upsert(model.ToDailyEnergyRangeEntity(_shellSettings.GetDatabaseTablePrefix()))
+          .On(v => new { v.Tenant, v.Source, v.Timestamp })
+          .WhenMatched((previous, next) => previous.Upsert(next))
+          .RunAsync();
+
+        await context.AbbMonthlyEnergyRange
+          .Upsert(model.ToMonthlyEnergyRangeEntity(_shellSettings.GetDatabaseTablePrefix()))
+          .On(v => new { v.Tenant, v.Source, v.Timestamp })
+          .WhenMatched((previous, next) => previous.Upsert(next))
+          .RunAsync();
       });
   }
 
@@ -57,6 +93,24 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
         .Upsert(model.ToEntity(_shellSettings.GetDatabaseTablePrefix()))
         .On(v => new { v.Tenant, v.Source, v.Timestamp })
         .NoUpdate()
+        .Run();
+
+      context.SchneiderQuarterHourlyEnergyRange
+        .Upsert(model.ToQuarterHourlyEnergyRangeEntity(_shellSettings.GetDatabaseTablePrefix()))
+        .On(v => new { v.Tenant, v.Source, v.Timestamp })
+        .WhenMatched((previous, next) => previous.Upsert(next))
+        .Run();
+
+      context.SchneiderDailyEnergyRange
+        .Upsert(model.ToDailyEnergyRangeEntity(_shellSettings.GetDatabaseTablePrefix()))
+        .On(v => new { v.Tenant, v.Source, v.Timestamp })
+        .WhenMatched((previous, next) => previous.Upsert(next))
+        .Run();
+
+      context.SchneiderMonthlyEnergyRange
+        .Upsert(model.ToMonthlyEnergyRangeEntity(_shellSettings.GetDatabaseTablePrefix()))
+        .On(v => new { v.Tenant, v.Source, v.Timestamp })
+        .WhenMatched((previous, next) => previous.Upsert(next))
         .Run();
     });
   }
@@ -71,6 +125,24 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
           .On(v => new { v.Tenant, v.Source, v.Timestamp })
           .NoUpdate()
           .RunAsync();
+
+        await context.SchneiderQuarterHourlyEnergyRange
+          .Upsert(model.ToQuarterHourlyEnergyRangeEntity(_shellSettings.GetDatabaseTablePrefix()))
+          .On(v => new { v.Tenant, v.Source, v.Timestamp })
+          .WhenMatched((previous, next) => previous.Upsert(next))
+          .RunAsync();
+
+        await context.SchneiderDailyEnergyRange
+          .Upsert(model.ToDailyEnergyRangeEntity(_shellSettings.GetDatabaseTablePrefix()))
+          .On(v => new { v.Tenant, v.Source, v.Timestamp })
+          .WhenMatched((previous, next) => previous.Upsert(next))
+          .RunAsync();
+
+        await context.SchneiderMonthlyEnergyRange
+          .Upsert(model.ToMonthlyEnergyRangeEntity(_shellSettings.GetDatabaseTablePrefix()))
+          .On(v => new { v.Tenant, v.Source, v.Timestamp })
+          .WhenMatched((previous, next) => previous.Upsert(next))
+          .RunAsync();
       });
   }
 
@@ -79,9 +151,35 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
     _services.WithTimeseriesDbContext<OzdsTimeseriesDbContext>(context =>
     {
       context.AbbMeasurements
-        .UpsertRange(measurements.Select(measurement => measurement.ToEntity(_shellSettings.GetDatabaseTablePrefix())).ToArray())
+        .UpsertRange(measurements
+          .Select(measurement => measurement
+            .ToEntity(_shellSettings.GetDatabaseTablePrefix())))
         .On(v => new { v.Tenant, v.Source, v.Timestamp })
         .NoUpdate()
+        .Run();
+
+      context.AbbQuarterHourlyEnergyRange
+        .UpsertRange(measurements
+          .Select(measurement => measurement
+            .ToQuarterHourlyEnergyRangeEntity(_shellSettings.GetDatabaseTablePrefix())))
+        .On(v => new { v.Tenant, v.Source, v.Timestamp })
+        .WhenMatched((previous, next) => previous.Upsert(next))
+        .Run();
+
+      context.AbbDailyEnergyRange
+        .UpsertRange(measurements
+          .Select(measurement => measurement
+            .ToDailyEnergyRangeEntity(_shellSettings.GetDatabaseTablePrefix())))
+        .On(v => new { v.Tenant, v.Source, v.Timestamp })
+        .WhenMatched((previous, next) => previous.Upsert(next))
+        .Run();
+
+      context.AbbMonthlyEnergyRange
+        .UpsertRange(measurements
+          .Select(measurement => measurement
+            .ToMonthlyEnergyRangeEntity(_shellSettings.GetDatabaseTablePrefix())))
+        .On(v => new { v.Tenant, v.Source, v.Timestamp })
+        .WhenMatched((previous, next) => previous.Upsert(next))
         .Run();
     });
   }
@@ -92,10 +190,36 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
       async context =>
       {
         await context.AbbMeasurements
-          .UpsertRange(measurements.Select(measurement => measurement.ToEntity(_shellSettings.GetDatabaseTablePrefix())).ToArray())
+          .UpsertRange(measurements
+            .Select(measurement => measurement
+              .ToEntity(_shellSettings.GetDatabaseTablePrefix())))
           .On(v => new { v.Tenant, v.Source, v.Timestamp })
           .NoUpdate()
           .RunAsync();
+
+        await context.AbbQuarterHourlyEnergyRange
+                .UpsertRange(measurements
+                  .Select(measurement => measurement
+                    .ToQuarterHourlyEnergyRangeEntity(_shellSettings.GetDatabaseTablePrefix())))
+                .On(v => new { v.Tenant, v.Source, v.Timestamp })
+                .WhenMatched((previous, next) => previous.Upsert(next))
+                .RunAsync();
+
+        await context.AbbDailyEnergyRange
+                .UpsertRange(measurements
+                  .Select(measurement => measurement
+                    .ToDailyEnergyRangeEntity(_shellSettings.GetDatabaseTablePrefix())))
+                .On(v => new { v.Tenant, v.Source, v.Timestamp })
+                .WhenMatched((previous, next) => previous.Upsert(next))
+                .RunAsync();
+
+        await context.AbbMonthlyEnergyRange
+                .UpsertRange(measurements
+                  .Select(measurement => measurement
+                    .ToMonthlyEnergyRangeEntity(_shellSettings.GetDatabaseTablePrefix())))
+                .On(v => new { v.Tenant, v.Source, v.Timestamp })
+                .WhenMatched((previous, next) => previous.Upsert(next))
+                .RunAsync();
       });
   }
 
@@ -104,9 +228,35 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
     _services.WithTimeseriesDbContext<OzdsTimeseriesDbContext>(context =>
     {
       context.SchneiderMeasurements
-        .UpsertRange(measurements.Select(measurement => measurement.ToEntity(_shellSettings.GetDatabaseTablePrefix())).ToArray())
+        .UpsertRange(measurements
+          .Select(measurement => measurement
+            .ToEntity(_shellSettings.GetDatabaseTablePrefix())))
         .On(v => new { v.Tenant, v.Source, v.Timestamp })
         .NoUpdate()
+        .Run();
+
+      context.SchneiderQuarterHourlyEnergyRange
+        .UpsertRange(measurements
+          .Select(measurement => measurement
+            .ToQuarterHourlyEnergyRangeEntity(_shellSettings.GetDatabaseTablePrefix())))
+        .On(v => new { v.Tenant, v.Source, v.Timestamp })
+        .WhenMatched((previous, next) => previous.Upsert(next))
+        .Run();
+
+      context.SchneiderDailyEnergyRange
+        .UpsertRange(measurements
+          .Select(measurement => measurement
+            .ToDailyEnergyRangeEntity(_shellSettings.GetDatabaseTablePrefix())))
+        .On(v => new { v.Tenant, v.Source, v.Timestamp })
+        .WhenMatched((previous, next) => previous.Upsert(next))
+        .Run();
+
+      context.SchneiderMonthlyEnergyRange
+        .UpsertRange(measurements
+          .Select(measurement => measurement
+            .ToMonthlyEnergyRangeEntity(_shellSettings.GetDatabaseTablePrefix())))
+        .On(v => new { v.Tenant, v.Source, v.Timestamp })
+        .WhenMatched((previous, next) => previous.Upsert(next))
         .Run();
     });
   }
@@ -117,10 +267,36 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
       async context =>
       {
         await context.SchneiderMeasurements
-          .UpsertRange(measurements.Select(measurement => measurement.ToEntity(_shellSettings.GetDatabaseTablePrefix())).ToArray())
+          .UpsertRange(measurements
+            .Select(measurement => measurement
+              .ToEntity(_shellSettings.GetDatabaseTablePrefix())))
           .On(v => new { v.Tenant, v.Source, v.Timestamp })
           .NoUpdate()
           .RunAsync();
+
+        await context.SchneiderQuarterHourlyEnergyRange
+                .UpsertRange(measurements
+                  .Select(measurement => measurement
+                    .ToQuarterHourlyEnergyRangeEntity(_shellSettings.GetDatabaseTablePrefix())))
+                .On(v => new { v.Tenant, v.Source, v.Timestamp })
+                .WhenMatched((previous, next) => previous.Upsert(next))
+                .RunAsync();
+
+        await context.SchneiderDailyEnergyRange
+                .UpsertRange(measurements
+                  .Select(measurement => measurement
+                    .ToDailyEnergyRangeEntity(_shellSettings.GetDatabaseTablePrefix())))
+                .On(v => new { v.Tenant, v.Source, v.Timestamp })
+                .WhenMatched((previous, next) => previous.Upsert(next))
+                .RunAsync();
+
+        await context.SchneiderMonthlyEnergyRange
+                .UpsertRange(measurements
+                  .Select(measurement => measurement
+                    .ToMonthlyEnergyRangeEntity(_shellSettings.GetDatabaseTablePrefix())))
+                .On(v => new { v.Tenant, v.Source, v.Timestamp })
+                .WhenMatched((previous, next) => previous.Upsert(next))
+                .RunAsync();
       });
   }
 }

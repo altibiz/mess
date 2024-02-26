@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Mess.Ozds.Timeseries;
 
-public class AbbQuarterHourlyEnergyRangeEntity : QuarterHourlyContinuousAggregateEntity
+public class SchneiderDailyEnergyRangeEntity : DailyContinuousAggregateEntity
 {
   [Column(TypeName = "float8")]
   public decimal ActiveEnergyImportTotalMin_Wh { get; set; } = default!;
@@ -65,18 +65,18 @@ public class AbbQuarterHourlyEnergyRangeEntity : QuarterHourlyContinuousAggregat
     ReactiveEnergyExport_VARh / (decimal)TimeSpan.TotalHours;
 };
 
-public static class AbbQuarterHourlyEnergyRangeEntityExtensions
+public static class SchneiderDailyEnergyRangeEntityExtensions
 {
-  public static AbbQuarterHourlyEnergyRangeEntity ToQuarterHourlyEnergyRangeEntity(
-    this AbbMeasurement measurement,
+  public static SchneiderDailyEnergyRangeEntity ToDailyEnergyRangeEntity(
+    this SchneiderMeasurement measurement,
     string tenant
   )
   {
-    return new AbbQuarterHourlyEnergyRangeEntity
+    return new SchneiderDailyEnergyRangeEntity
     {
       Tenant = tenant,
       Source = measurement.Source,
-      Timestamp = measurement.Timestamp.GetStartOfQuarterHour(),
+      Timestamp = measurement.Timestamp.GetStartOfDay(),
       ActiveEnergyImportTotalMin_Wh = measurement.ActiveEnergyImportTotal_Wh,
       ActiveEnergyImportTotalMax_Wh = measurement.ActiveEnergyImportTotal_Wh,
       ActiveEnergyExportTotalMin_Wh = measurement.ActiveEnergyImportTotal_Wh,
@@ -88,12 +88,12 @@ public static class AbbQuarterHourlyEnergyRangeEntityExtensions
     };
   }
 
-  public static AbbQuarterHourlyEnergyRangeEntity Upsert(
-    this AbbQuarterHourlyEnergyRangeEntity previous,
-    AbbQuarterHourlyEnergyRangeEntity next
+  public static SchneiderDailyEnergyRangeEntity Upsert(
+    this SchneiderDailyEnergyRangeEntity previous,
+    SchneiderDailyEnergyRangeEntity next
   )
   {
-    return new AbbQuarterHourlyEnergyRangeEntity
+    return new SchneiderDailyEnergyRangeEntity
     {
       Tenant = previous.Tenant,
       Source = previous.Source,
@@ -109,11 +109,11 @@ public static class AbbQuarterHourlyEnergyRangeEntityExtensions
     };
   }
 
-  public static AbbEnergyRange ToModel(
-    this AbbQuarterHourlyEnergyRangeEntity entity
+  public static SchneiderEnergyRange ToModel(
+    this SchneiderDailyEnergyRangeEntity entity
   )
   {
-    return new AbbEnergyRange(
+    return new SchneiderEnergyRange(
       entity.Source,
       entity.Timestamp,
       entity.TimeSpan,

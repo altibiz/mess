@@ -22,10 +22,16 @@ public class OzdsTimeseriesDbContext : TimeseriesDbContext
   public DbSet<AbbQuarterHourlyEnergyRangeEntity> AbbQuarterHourlyEnergyRange { get; set; } =
     default!;
 
+  public DbSet<AbbDailyEnergyRangeEntity> AbbDailyEnergyRange { get; set; } =
+    default!;
+
   public DbSet<AbbMonthlyEnergyRangeEntity> AbbMonthlyEnergyRange { get; set; } =
     default!;
 
   public DbSet<SchneiderQuarterHourlyEnergyRangeEntity> SchneiderQuarterHourlyEnergyRange { get; set; } =
+    default!;
+
+  public DbSet<SchneiderDailyEnergyRangeEntity> SchneiderDailyEnergyRange { get; set; } =
     default!;
 
   public DbSet<SchneiderMonthlyEnergyRangeEntity> SchneiderMonthlyEnergyRange { get; set; } =

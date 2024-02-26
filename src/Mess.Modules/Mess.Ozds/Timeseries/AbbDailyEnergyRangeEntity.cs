@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Mess.Ozds.Timeseries;
 
-public class AbbQuarterHourlyEnergyRangeEntity : QuarterHourlyContinuousAggregateEntity
+public class AbbDailyEnergyRangeEntity : DailyContinuousAggregateEntity
 {
   [Column(TypeName = "float8")]
   public decimal ActiveEnergyImportTotalMin_Wh { get; set; } = default!;
@@ -65,18 +65,18 @@ public class AbbQuarterHourlyEnergyRangeEntity : QuarterHourlyContinuousAggregat
     ReactiveEnergyExport_VARh / (decimal)TimeSpan.TotalHours;
 };
 
-public static class AbbQuarterHourlyEnergyRangeEntityExtensions
+public static class AbbDailyEnergyRangeEntityExtensions
 {
-  public static AbbQuarterHourlyEnergyRangeEntity ToQuarterHourlyEnergyRangeEntity(
+  public static AbbDailyEnergyRangeEntity ToDailyEnergyRangeEntity(
     this AbbMeasurement measurement,
     string tenant
   )
   {
-    return new AbbQuarterHourlyEnergyRangeEntity
+    return new AbbDailyEnergyRangeEntity
     {
       Tenant = tenant,
       Source = measurement.Source,
-      Timestamp = measurement.Timestamp.GetStartOfQuarterHour(),
+      Timestamp = measurement.Timestamp.GetStartOfDay(),
       ActiveEnergyImportTotalMin_Wh = measurement.ActiveEnergyImportTotal_Wh,
       ActiveEnergyImportTotalMax_Wh = measurement.ActiveEnergyImportTotal_Wh,
       ActiveEnergyExportTotalMin_Wh = measurement.ActiveEnergyImportTotal_Wh,
@@ -88,12 +88,12 @@ public static class AbbQuarterHourlyEnergyRangeEntityExtensions
     };
   }
 
-  public static AbbQuarterHourlyEnergyRangeEntity Upsert(
-    this AbbQuarterHourlyEnergyRangeEntity previous,
-    AbbQuarterHourlyEnergyRangeEntity next
+  public static AbbDailyEnergyRangeEntity Upsert(
+    this AbbDailyEnergyRangeEntity previous,
+    AbbDailyEnergyRangeEntity next
   )
   {
-    return new AbbQuarterHourlyEnergyRangeEntity
+    return new AbbDailyEnergyRangeEntity
     {
       Tenant = previous.Tenant,
       Source = previous.Source,
@@ -110,7 +110,7 @@ public static class AbbQuarterHourlyEnergyRangeEntityExtensions
   }
 
   public static AbbEnergyRange ToModel(
-    this AbbQuarterHourlyEnergyRangeEntity entity
+    this AbbDailyEnergyRangeEntity entity
   )
   {
     return new AbbEnergyRange(
