@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq.Expressions;
 using Mess.Ozds.Abstractions.Timeseries;
 using Mess.Prelude.Extensions.Timestamps;
 using Mess.Timeseries.Abstractions.Entities;
@@ -88,12 +89,12 @@ public static class AbbMonthlyEnergyRangeEntityExtensions
     };
   }
 
-  public static AbbMonthlyEnergyRangeEntity Upsert(
-    this AbbMonthlyEnergyRangeEntity previous,
+  public static readonly Expression<Func<AbbMonthlyEnergyRangeEntity, AbbMonthlyEnergyRangeEntity, AbbMonthlyEnergyRangeEntity>>
+  Upsert = (
+    AbbMonthlyEnergyRangeEntity previous,
     AbbMonthlyEnergyRangeEntity next
-  )
-  {
-    return new AbbMonthlyEnergyRangeEntity
+  ) =>
+    new AbbMonthlyEnergyRangeEntity
     {
       Tenant = previous.Tenant,
       Source = previous.Source,
@@ -107,7 +108,6 @@ public static class AbbMonthlyEnergyRangeEntityExtensions
       ReactiveEnergyExportTotalMin_VARh = previous.ActiveEnergyImportTotalMin_Wh,
       ReactiveEnergyExportTotalMax_VARh = next.ActiveEnergyImportTotalMax_Wh,
     };
-  }
 
   public static AbbEnergyRange ToModel(
     this AbbMonthlyEnergyRangeEntity entity
