@@ -138,6 +138,142 @@ namespace Mess.Ozds.Timeseries.Migrations
       migrationBuilder.Sql("""
         drop materialized view "QuarterHourAveragePower";
       """);
+
+      migrationBuilder.Sql("""
+        insert into "SchneiderQuarterHourlyEnergyRanges" (
+            "Tenant",
+            "Source",
+            "Timestamp",
+            "ActiveEnergyImportTotalMin_Wh",
+            "ActiveEnergyImportTotalMax_Wh",
+            "ActiveEnergyExportTotalMin_Wh",
+            "ActiveEnergyExportTotalMax_Wh",
+            "ReactiveEnergyImportTotalMin_VARh",
+            "ReactiveEnergyImportTotalMax_VARh",
+            "ReactiveEnergyExportTotalMin_VARh",
+            "ReactiveEnergyExportTotalMax_VARh"
+        )
+        select
+            "Tenant",
+            "Source",
+            time_bucket('15 minutes', "Timestamp") as "Timestamp",
+            min("ActiveEnergyImportTotal_Wh") as "ActiveEnergyImportTotalMin_Wh",
+            max("ActiveEnergyImportTotal_Wh") as "ActiveEnergyImportTotalMax_Wh",
+            min("ActiveEnergyExportTotal_Wh") as "ActiveEnergyExportTotalMin_Wh",
+            max("ActiveEnergyExportTotal_Wh") as "ActiveEnergyExportTotalMax_Wh",
+            min("ReactiveEnergyImportTotal_VARh") as "ReactiveEnergyImportTotalMin_VARh",
+            max("ReactiveEnergyImportTotal_VARh") as "ReactiveEnergyImportTotalMax_VARh",
+            min("ReactiveEnergyExportTotal_VARh") as "ReactiveEnergyExportTotalMin_VARh",
+            max("ReactiveEnergyExportTotal_VARh") as "ReactiveEnergyExportTotalMax_VARh"
+        from
+            "SchneiderMeasurements"
+        group by
+            time_bucket('15 minutes', "Timestamp"),
+            "Source",
+            "Tenant";
+      """);
+
+      migrationBuilder.Sql("""
+        insert into "AbbQuarterHourlyEnergyRanges" (
+            "Tenant",
+            "Source",
+            "Timestamp",
+            "ActiveEnergyImportTotalMin_Wh",
+            "ActiveEnergyImportTotalMax_Wh",
+            "ActiveEnergyExportTotalMin_Wh",
+            "ActiveEnergyExportTotalMax_Wh",
+            "ReactiveEnergyImportTotalMin_VARh",
+            "ReactiveEnergyImportTotalMax_VARh",
+            "ReactiveEnergyExportTotalMin_VARh",
+            "ReactiveEnergyExportTotalMax_VARh"
+        )
+        select
+            "Tenant",
+            "Source",
+            time_bucket('15 minutes', "Timestamp") as "Timestamp",
+            min("ActiveEnergyImportTotal_Wh") as "ActiveEnergyImportTotalMin_Wh",
+            max("ActiveEnergyImportTotal_Wh") as "ActiveEnergyImportTotalMax_Wh",
+            min("ActiveEnergyExportTotal_Wh") as "ActiveEnergyExportTotalMin_Wh",
+            max("ActiveEnergyExportTotal_Wh") as "ActiveEnergyExportTotalMax_Wh",
+            min("ReactiveEnergyImportTotal_VARh") as "ReactiveEnergyImportTotalMin_VARh",
+            max("ReactiveEnergyImportTotal_VARh") as "ReactiveEnergyImportTotalMax_VARh",
+            min("ReactiveEnergyExportTotal_VARh") as "ReactiveEnergyExportTotalMin_VARh",
+            max("ReactiveEnergyExportTotal_VARh") as "ReactiveEnergyExportTotalMax_VARh"
+        from
+            "AbbMeasurements"
+        group by
+            time_bucket('15 minutes', "Timestamp"),
+            "Source",
+            "Tenant";
+      """);
+
+      migrationBuilder.Sql("""
+        insert into "SchneiderMonthlyEnergyRanges" (
+            "Tenant",
+            "Source",
+            "Timestamp",
+            "ActiveEnergyImportTotalMin_Wh",
+            "ActiveEnergyImportTotalMax_Wh",
+            "ActiveEnergyExportTotalMin_Wh",
+            "ActiveEnergyExportTotalMax_Wh",
+            "ReactiveEnergyImportTotalMin_VARh",
+            "ReactiveEnergyImportTotalMax_VARh",
+            "ReactiveEnergyExportTotalMin_VARh",
+            "ReactiveEnergyExportTotalMax_VARh"
+        )
+        select
+            "Tenant",
+            "Source",
+            time_bucket('1 month', "Timestamp") as "Timestamp",
+            min("ActiveEnergyImportTotal_Wh") as "ActiveEnergyImportTotalMin_Wh",
+            max("ActiveEnergyImportTotal_Wh") as "ActiveEnergyImportTotalMax_Wh",
+            min("ActiveEnergyExportTotal_Wh") as "ActiveEnergyExportTotalMin_Wh",
+            max("ActiveEnergyExportTotal_Wh") as "ActiveEnergyExportTotalMax_Wh",
+            min("ReactiveEnergyImportTotal_VARh") as "ReactiveEnergyImportTotalMin_VARh",
+            max("ReactiveEnergyImportTotal_VARh") as "ReactiveEnergyImportTotalMax_VARh",
+            min("ReactiveEnergyExportTotal_VARh") as "ReactiveEnergyExportTotalMin_VARh",
+            max("ReactiveEnergyExportTotal_VARh") as "ReactiveEnergyExportTotalMax_VARh"
+        from
+            "SchneiderMeasurements"
+        group by
+            time_bucket('1 month', "Timestamp"),
+            "Source",
+            "Tenant";
+      """);
+
+      migrationBuilder.Sql("""
+        insert into "AbbMonthlyEnergyRanges" (
+            "Tenant",
+            "Source",
+            "Timestamp",
+            "ActiveEnergyImportTotalMin_Wh",
+            "ActiveEnergyImportTotalMax_Wh",
+            "ActiveEnergyExportTotalMin_Wh",
+            "ActiveEnergyExportTotalMax_Wh",
+            "ReactiveEnergyImportTotalMin_VARh",
+            "ReactiveEnergyImportTotalMax_VARh",
+            "ReactiveEnergyExportTotalMin_VARh",
+            "ReactiveEnergyExportTotalMax_VARh"
+        )
+        select
+            "Tenant",
+            "Source",
+            time_bucket('1 month', "Timestamp") as "Timestamp",
+            min("ActiveEnergyImportTotal_Wh") as "ActiveEnergyImportTotalMin_Wh",
+            max("ActiveEnergyImportTotal_Wh") as "ActiveEnergyImportTotalMax_Wh",
+            min("ActiveEnergyExportTotal_Wh") as "ActiveEnergyExportTotalMin_Wh",
+            max("ActiveEnergyExportTotal_Wh") as "ActiveEnergyExportTotalMax_Wh",
+            min("ReactiveEnergyImportTotal_VARh") as "ReactiveEnergyImportTotalMin_VARh",
+            max("ReactiveEnergyImportTotal_VARh") as "ReactiveEnergyImportTotalMax_VARh",
+            min("ReactiveEnergyExportTotal_VARh") as "ReactiveEnergyExportTotalMin_VARh",
+            max("ReactiveEnergyExportTotal_VARh") as "ReactiveEnergyExportTotalMax_VARh"
+        from
+            "AbbMeasurements"
+        group by
+            time_bucket('1 month', "Timestamp"),
+            "Source",
+            "Tenant";
+      """);
     }
 
     /// <inheritdoc />
