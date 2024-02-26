@@ -79,7 +79,13 @@ public abstract class TimeseriesDbContext : RelationalDbContext
           nameof(ContinuousAggregateEntity.Tenant)
         );
 
-        entity.ToView(@type.Name.RegexRemove("Entity$"));
+        entity.HasIndex(
+          nameof(ContinuousAggregateEntity.Timestamp),
+          nameof(ContinuousAggregateEntity.Source),
+          nameof(ContinuousAggregateEntity.Tenant)
+        );
+
+        entity.ToTable(@type.Name.RegexRemove("Entity$") + "s");
       }
     );
 
