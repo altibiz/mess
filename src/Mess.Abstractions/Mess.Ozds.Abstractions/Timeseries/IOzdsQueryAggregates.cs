@@ -28,6 +28,32 @@ public partial interface IOzdsTimeseriesQuery
     DateTimeOffset toDate
   );
 
+  Task<IReadOnlyList<AbbEnergyRange>> GetAbbDailyEnergyRangeAsync(
+    string source,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  );
+
+  IReadOnlyList<AbbEnergyRange> GetAbbDailyEnergyRange(
+    string source,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  );
+
+  Task<
+    IReadOnlyList<SchneiderEnergyRange>
+  > GetSchneiderDailyEnergyRangeAsync(
+    string source,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  );
+
+  IReadOnlyList<SchneiderEnergyRange> GetSchneiderDailyEnergyRange(
+    string source,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  );
+
   Task<IReadOnlyList<AbbEnergyRange>> GetAbbMonthlyEnergyRangeAsync(
     string source,
     DateTimeOffset fromDate,
@@ -75,6 +101,32 @@ public partial interface IOzdsTimeseriesQuery
   );
 
   IReadOnlyList<SchneiderEnergyRange> GetBulkSchneiderQuarterHourlyEnergyRange(
+    IEnumerable<string> sources,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  );
+
+  Task<IReadOnlyList<AbbEnergyRange>> GetBulkAbbDailyEnergyRangeAsync(
+    IEnumerable<string> source,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  );
+
+  IReadOnlyList<AbbEnergyRange> GetBulkAbbDailyEnergyRange(
+    IEnumerable<string> sources,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  );
+
+  Task<
+    IReadOnlyList<SchneiderEnergyRange>
+  > GetBulkSchneiderDailyEnergyRangeAsync(
+    IEnumerable<string> sources,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  );
+
+  IReadOnlyList<SchneiderEnergyRange> GetBulkSchneiderDailyEnergyRange(
     IEnumerable<string> sources,
     DateTimeOffset fromDate,
     DateTimeOffset toDate

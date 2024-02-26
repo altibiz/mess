@@ -98,6 +98,92 @@ public partial class OzdsTimeseriesClient
     });
   }
 
+  public async Task<IReadOnlyList<AbbEnergyRange>> GetAbbDailyEnergyRangeAsync(
+    string source,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  )
+  {
+    return await _services.WithTimeseriesDbContextAsync<
+      OzdsTimeseriesDbContext,
+      List<AbbEnergyRange>
+    >(async context =>
+    {
+      return await context.AbbDailyEnergyRange
+        .Where(measurement => measurement.Source == source)
+        .Where(measurement => measurement.Timestamp >= fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
+        .OrderBy(measurement => measurement.Timestamp)
+        .Select(measurement => measurement.ToModel())
+        .ToListAsync();
+    });
+  }
+
+  public IReadOnlyList<AbbEnergyRange> GetAbbDailyEnergyRange(
+    string source,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  )
+  {
+    return _services.WithTimeseriesDbContext<
+      OzdsTimeseriesDbContext,
+      List<AbbEnergyRange>
+    >(context =>
+    {
+      return context.AbbDailyEnergyRange
+        .Where(measurement => measurement.Source == source)
+        .Where(measurement => measurement.Timestamp >= fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
+        .OrderBy(measurement => measurement.Timestamp)
+        .Select(measurement => measurement.ToModel())
+        .ToList();
+    });
+  }
+
+  public async Task<
+    IReadOnlyList<SchneiderEnergyRange>
+  > GetSchneiderDailyEnergyRangeAsync(
+    string source,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  )
+  {
+    return await _services.WithTimeseriesDbContextAsync<
+      OzdsTimeseriesDbContext,
+      List<SchneiderEnergyRange>
+    >(async context =>
+    {
+      return await context.SchneiderDailyEnergyRange
+        .Where(measurement => measurement.Source == source)
+        .Where(measurement => measurement.Timestamp >= fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
+        .OrderBy(measurement => measurement.Timestamp)
+        .Select(measurement => measurement.ToModel())
+        .ToListAsync();
+    });
+  }
+
+  public IReadOnlyList<SchneiderEnergyRange> GetSchneiderDailyEnergyRange(
+    string source,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  )
+  {
+    return _services.WithTimeseriesDbContext<
+      OzdsTimeseriesDbContext,
+      List<SchneiderEnergyRange>
+    >(context =>
+    {
+      return context.SchneiderDailyEnergyRange
+        .Where(measurement => measurement.Source == source)
+        .Where(measurement => measurement.Timestamp >= fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
+        .OrderBy(measurement => measurement.Timestamp)
+        .Select(measurement => measurement.ToModel())
+        .ToList();
+    });
+  }
+
   public async Task<IReadOnlyList<AbbEnergyRange>> GetAbbMonthlyEnergyRangeAsync(
     string source,
     DateTimeOffset fromDate,
@@ -261,6 +347,92 @@ public partial class OzdsTimeseriesClient
     >(context =>
     {
       return context.SchneiderQuarterHourlyEnergyRange
+        .Where(measurement => sources.Contains(measurement.Source))
+        .Where(measurement => measurement.Timestamp >= fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
+        .OrderBy(measurement => measurement.Timestamp)
+        .Select(measurement => measurement.ToModel())
+        .ToList();
+    });
+  }
+
+  public async Task<IReadOnlyList<AbbEnergyRange>> GetBulkAbbDailyEnergyRangeAsync(
+    IEnumerable<string> sources,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  )
+  {
+    return await _services.WithTimeseriesDbContextAsync<
+      OzdsTimeseriesDbContext,
+      List<AbbEnergyRange>
+    >(async context =>
+    {
+      return await context.AbbDailyEnergyRange
+        .Where(measurement => sources.Contains(measurement.Source))
+        .Where(measurement => measurement.Timestamp >= fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
+        .OrderBy(measurement => measurement.Timestamp)
+        .Select(measurement => measurement.ToModel())
+        .ToListAsync();
+    });
+  }
+
+  public IReadOnlyList<AbbEnergyRange> GetBulkAbbDailyEnergyRange(
+    IEnumerable<string> sources,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  )
+  {
+    return _services.WithTimeseriesDbContext<
+      OzdsTimeseriesDbContext,
+      List<AbbEnergyRange>
+    >(context =>
+    {
+      return context.AbbDailyEnergyRange
+        .Where(measurement => sources.Contains(measurement.Source))
+        .Where(measurement => measurement.Timestamp >= fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
+        .OrderBy(measurement => measurement.Timestamp)
+        .Select(measurement => measurement.ToModel())
+        .ToList();
+    });
+  }
+
+  public async Task<
+    IReadOnlyList<SchneiderEnergyRange>
+  > GetBulkSchneiderDailyEnergyRangeAsync(
+    IEnumerable<string> sources,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  )
+  {
+    return await _services.WithTimeseriesDbContextAsync<
+      OzdsTimeseriesDbContext,
+      List<SchneiderEnergyRange>
+    >(async context =>
+    {
+      return await context.SchneiderDailyEnergyRange
+        .Where(measurement => sources.Contains(measurement.Source))
+        .Where(measurement => measurement.Timestamp >= fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
+        .OrderBy(measurement => measurement.Timestamp)
+        .Select(measurement => measurement.ToModel())
+        .ToListAsync();
+    });
+  }
+
+  public IReadOnlyList<SchneiderEnergyRange> GetBulkSchneiderDailyEnergyRange(
+    IEnumerable<string> sources,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  )
+  {
+    return _services.WithTimeseriesDbContext<
+      OzdsTimeseriesDbContext,
+      List<SchneiderEnergyRange>
+    >(context =>
+    {
+      return context.SchneiderDailyEnergyRange
         .Where(measurement => sources.Contains(measurement.Source))
         .Where(measurement => measurement.Timestamp >= fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
