@@ -224,7 +224,7 @@ namespace Mess.Ozds.Timeseries.Migrations
         select
             "Tenant",
             "Source",
-            time_bucket('1 month', "Timestamp") as "Timestamp",
+            date_trunc('month', "Timestamp" at time zone 'UTC') at time zone 'UTC' as "Timestamp",
             min("ActiveEnergyImportTotal_Wh") as "ActiveEnergyImportTotalMin_Wh",
             max("ActiveEnergyImportTotal_Wh") as "ActiveEnergyImportTotalMax_Wh",
             min("ActiveEnergyExportTotal_Wh") as "ActiveEnergyExportTotalMin_Wh",
@@ -236,7 +236,7 @@ namespace Mess.Ozds.Timeseries.Migrations
         from
             "SchneiderMeasurements"
         group by
-            time_bucket('1 month', "Timestamp"),
+            date_trunc('month', "Timestamp" at time zone 'UTC') at time zone 'UTC',
             "Source",
             "Tenant";
       """);
@@ -258,7 +258,7 @@ namespace Mess.Ozds.Timeseries.Migrations
         select
             "Tenant",
             "Source",
-            time_bucket('1 month', "Timestamp") as "Timestamp",
+            date_trunc('month', "Timestamp" at time zone 'UTC') at time zone 'UTC' as "Timestamp",
             min("ActiveEnergyImportTotal_Wh") as "ActiveEnergyImportTotalMin_Wh",
             max("ActiveEnergyImportTotal_Wh") as "ActiveEnergyImportTotalMax_Wh",
             min("ActiveEnergyExportTotal_Wh") as "ActiveEnergyExportTotalMin_Wh",
@@ -270,7 +270,7 @@ namespace Mess.Ozds.Timeseries.Migrations
         from
             "AbbMeasurements"
         group by
-            time_bucket('1 month', "Timestamp"),
+            date_trunc('month', "Timestamp" at time zone 'UTC') at time zone 'UTC',
             "Source",
             "Tenant";
       """);
