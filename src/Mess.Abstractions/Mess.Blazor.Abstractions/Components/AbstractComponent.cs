@@ -67,7 +67,19 @@ public abstract class AbstractComponent : ComponentBase
   private IShapeFactory ShapeFactory => _shapeFactory ??=
     HttpContext.RequestServices.GetRequiredService<IShapeFactory>();
 
-  protected string DecimalString(decimal number, int places = 2) => Math.Round(number, places).ToString("F" + places, new CultureInfo("hr-HR"));
+  protected string DecimalString(decimal number, int places = 2)
+  {
+    CultureInfo cultureInfo = new CultureInfo("hr-HR");
+    // Clone the NumberFormat to avoid modifying the global culture settings
+    NumberFormatInfo nfi = (NumberFormatInfo)cultureInfo.NumberFormat.Clone();
+    // Set the thousand separator to a period
+    nfi.NumberGroupSeparator = ".";
+    // Set the number of decimal places
+    nfi.NumberDecimalDigits = places;
+    // Round the number to the specified number of places
+    decimal roundedNumber = Math.Round(number, places);
+    return roundedNumber.ToString("N", nfi);
+  }
 
   /// <summary>
   ///   Gets a dynamic shape factory to create new shapes.

@@ -15,11 +15,10 @@
 @if(_shownInvoices is not null && _shownInvoices.Count() > 0){
 @* MOBILE *@
           <MudHidden Breakpoint="Breakpoint.LgAndUp">
-  <MudPaper Class="pa-1">
-      <MudText Typo="Typo.h4" Class="d-flex justify-center pa-1">
+      <MudText Typo="Typo.h4" Class="d-flex">
         @T["Računi"]
       </MudText>
-    <MudTextField Class="pa-3" ValueChanged="EventCallback.Factory.Create<string>(this, Filter)" Label="Pretraži" Variant="Variant.Text"></MudTextField>
+    <MudTextField Class="" ValueChanged="EventCallback.Factory.Create<string>(this, Filter)" Label="Pretraži" Variant="Variant.Text"></MudTextField>
     @foreach(ExpandThing dataStruct in _shownInvoices.Where(x => x.show == true).ToList()){
       <MudPaper Elevation="2" Class="ma-1">
       <MudStack Spacing="0">
@@ -55,7 +54,6 @@
       </MudStack>
       </MudPaper>
     }
-  </MudPaper>
           </MudHidden>
 
 

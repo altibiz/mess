@@ -61,11 +61,9 @@
 
 
 
-    <MudPaper Class="pa-1">
-      <MudText Typo="Typo.h4" Class="d-flex justify-center">
+      <MudText Typo="Typo.h4" Class="d-flex">
         @(T["Tvoje Lokacije"].Value)
       </MudText>
-      <MudDivider />
       @foreach(ExpandThing dataStruct in _shownSubnets.Where(x => x.show == true).ToList()){
       <MudPaper Elevation="2" Class="ma-1">
         <MudStack Spacing="0">
@@ -89,7 +87,6 @@
         </MudStack>
       </MudPaper>
       }
-    </MudPaper>
   </MudHidden>
 
 

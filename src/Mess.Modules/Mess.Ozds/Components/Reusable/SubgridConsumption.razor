@@ -14,11 +14,10 @@
 
 @* MOBILE *@
   <MudHidden Breakpoint="Breakpoint.MdAndUp">
-    <MudPaper Class="pa-1 mb-5">
-      <MudText Typo="Typo.h4" Class="d-flex justify-center">
+    <MudItem Class="mb-5">
+      <MudText Typo="Typo.h4" Class="d-flex">
         @(T["Potrošnja lokacija"].Value)
       </MudText>
-      <MudDivider />
       @foreach(ExpandThing dataStruct in _shownSubnets.Where(x => x.show == true).ToList()){
         <MudPaper Elevation="2" Class="ma-1">
           <MudStack Spacing="0">
@@ -36,7 +35,7 @@
           </MudStack>
         </MudPaper>
       }
-    </MudPaper>
+    </MudItem>
   </MudHidden>
 
 @* DESKTOP *@

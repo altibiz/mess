@@ -17,11 +17,10 @@
 @if(User.RoleNames.Contains("Distribution System Operator Representative")){
 @* MOBILE *@
   <MudHidden Breakpoint="Breakpoint.MdAndUp">
-    <MudPaper Class="pa-1">
-      <MudText Typo="Typo.h4" Class="d-flex justify-center">
+      <MudText Typo="Typo.h4" Class="d-flex">
         @(T["Korisnici mreže"].Value)
       </MudText>
-      <MudTextField Class="pa-3" ValueChanged="EventCallback.Factory.Create<string>(this, Filter)" Label="Pretraži korisnike lokacije" Variant="Variant.Text"></MudTextField>
+      <MudTextField Class="" ValueChanged="EventCallback.Factory.Create<string>(this, Filter)" Label="Pretraži korisnike lokacije" Variant="Variant.Text"></MudTextField>
       @foreach(ExpandThing dataStruct in _shownTenants.Where(x => x.show == true).ToList()){
       <MudPaper Elevation="2" Class="ma-1">
         <MudStack Spacing="0">
@@ -50,7 +49,6 @@
         </MudStack>
       </MudPaper>
       }
-    </MudPaper>
   </MudHidden>
 
 
@@ -125,11 +123,10 @@ else{
 
 @* MOBILE *@
   <MudHidden Breakpoint="Breakpoint.MdAndUp">
-    <MudPaper Class="pa-1">
-      <MudText Typo="Typo.h4" Class="d-flex justify-center">
+      <MudText Typo="Typo.h4" Class="d-flex">
         @(T["Korisnici mreže"].Value)
       </MudText>
-      <MudTextField Class="pa-3" ValueChanged="EventCallback.Factory.Create<string>(this, Filter)" Label="Pretraži korisnike lokacije" Variant="Variant.Text"></MudTextField>
+      <MudTextField Class="" ValueChanged="EventCallback.Factory.Create<string>(this, Filter)" Label="Pretraži korisnike lokacije" Variant="Variant.Text"></MudTextField>
       @foreach(ExpandThing dataStruct in _shownTenants.Where(x => x.show == true).ToList()){
       <MudPaper Elevation="2" Class="ma-1">
         <MudStack Spacing="0">
@@ -151,7 +148,6 @@ else{
         </MudStack>
       </MudPaper>
       }
-    </MudPaper>
   </MudHidden>
 
 

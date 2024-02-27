@@ -13,12 +13,10 @@
 @inject IOzdsTimeseriesClient _timeseriesClient
 @* MOBILE *@
   <MudHidden Breakpoint="Breakpoint.MdAndUp">
-    <MudPaper Class="pa-1">
-      <MudText Typo="Typo.h4" Class="d-flex justify-center pa-1">
+      <MudText Typo="Typo.h4" Class="d-flex">
         @T["Brojila"]
       </MudText>
-      <MudDivider />
-    <MudTextField Class="pa-3" ValueChanged="EventCallback.Factory.Create<string>(this, Filter)" Label="Pretraži" Variant="Variant.Text"></MudTextField>
+    <MudTextField Class="" ValueChanged="EventCallback.Factory.Create<string>(this, Filter)" Label="Pretraži" Variant="Variant.Text"></MudTextField>
     @foreach(ExpandThing dataStruct in _shownOMMs.Where(x => x.show == true).ToList()){
       <MudPaper Elevation="2" Class="ma-1">
         <MudStack Spacing="0">
@@ -53,7 +51,6 @@
         </MudStack>
       </MudPaper>
     }
-    </MudPaper>
   </MudHidden>
 
 
