@@ -219,10 +219,10 @@ else{
     public record struct TabularData(ContentItem unit, decimal? totalConsumption, decimal? lastInvoiceTotal);
     private List<TabularData> _dataStruct = new List<TabularData>();
     private IEnumerable<ContentItem>? _systems;
-    private IReadOnlyList<AbbEnergyRange>? _abbRange;
-    private IReadOnlyList<SchneiderEnergyRange>? _schneiderRange;
-    private IReadOnlyList<AbbEnergyRange>? _abbRangeLastMonth;
-    private IReadOnlyList<SchneiderEnergyRange>? _schneiderRangeLastMonth;
+    private IReadOnlyList<AbbAggregate>? _abbRange;
+    private IReadOnlyList<SchneiderAggregate>? _schneiderRange;
+    private IReadOnlyList<AbbAggregate>? _abbRangeLastMonth;
+    private IReadOnlyList<SchneiderAggregate>? _schneiderRangeLastMonth;
     private DateTimeOffset nowMonth = DateTimeOffset.UtcNow.AddDays(-DateTimeOffset.UtcNow.Day);
     private DateTimeOffset now = DateTimeOffset.UtcNow;
     protected override async Task OnInitializedAsync()
@@ -267,8 +267,8 @@ else{
                   .Where(index => index.RecipientContentItemId == unit.ContentItemId)
                   .ListAsync();
             if(ioTDevices is not null){
-              _abbRange = await _timeseriesClient.GetBulkAbbMonthlyEnergyRangeAsync(ioTDevices.Where(x => x.DisplayText.StartsWith("abb")).Select(x => x.DisplayText),nowMonth,now);
-              _schneiderRange = await _timeseriesClient.GetBulkSchneiderMonthlyEnergyRangeAsync(ioTDevices.Where(x => x.DisplayText.StartsWith("schneider")).Select(x => x.DisplayText),nowMonth,now);
+              _abbRange = await _timeseriesClient.GetBulkAbbMonthlyAggregateAsync(ioTDevices.Where(x => x.DisplayText.StartsWith("abb")).Select(x => x.DisplayText),nowMonth,now);
+              _schneiderRange = await _timeseriesClient.GetBulkSchneiderMonthlyAggregateAsync(ioTDevices.Where(x => x.DisplayText.StartsWith("schneider")).Select(x => x.DisplayText),nowMonth,now);
               foreach(var omm in ioTDevices){
                 _startEnd = new();
                 if(omm.DisplayText.StartsWith("abb")){

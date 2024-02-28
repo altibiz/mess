@@ -136,8 +136,8 @@
           var (startThisMonth, startNextMonth) = now.GetMonthRange();
           var startLastMonth = startThisMonth.AddMonths(-2);
           var deviceIds = _ioTDevices.Select(device => (string)device.Content.IotDevicePart.DeviceId.Text).ToList();
-          var resultAbb = await _timeseriesClient.GetBulkAbbMonthlyEnergyRangeAsync(new List<string>{"abb"}, startLastMonth , startNextMonth);
-          var resultSchneider = await _timeseriesClient.GetBulkSchneiderMonthlyEnergyRangeAsync(deviceIds, startLastMonth , startNextMonth);
+          var resultAbb = await _timeseriesClient.GetBulkAbbMonthlyAggregateAsync(new List<string>{"abb"}, startLastMonth , startNextMonth);
+          var resultSchneider = await _timeseriesClient.GetBulkSchneiderMonthlyAggregateAsync(deviceIds, startLastMonth , startNextMonth);
 
           _thisMonthTotal = resultAbb
             .Where(resultAbb => resultAbb.Timestamp == startThisMonth)

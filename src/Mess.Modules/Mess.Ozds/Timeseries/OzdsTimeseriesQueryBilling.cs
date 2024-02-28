@@ -17,7 +17,7 @@ namespace Mess.Ozds.Timeseries;
 
 public partial class OzdsTimeseriesClient
 {
-  private record BulkEnergyRange(
+  private record BulkAggregate(
     string Source,
     DateTimeOffset DateFrom,
     DateTimeOffset DateTo,
@@ -63,7 +63,7 @@ public partial class OzdsTimeseriesClient
         .DeferredLastOrDefault()
         .FutureValue();
 
-      var peakQuery = context.AbbQuarterHourlyEnergyRange
+      var peakQuery = context.AbbQuarterHourlyAggregate
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp >= fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
@@ -73,7 +73,7 @@ public partial class OzdsTimeseriesClient
       var last = lastQuery.Value;
       var peak = peakQuery
         .ToList()
-        .OrderByDescending(measurement => measurement.ActivePowerImportAverage_W)
+        .OrderByDescending(measurement => measurement.ActivePowerImportAvg_W)
         .FirstOrDefault();
 
       return first is { } && last is { } && peak is { }
@@ -91,7 +91,7 @@ public partial class OzdsTimeseriesClient
           last.ReactiveEnergyImportTotal_VARh / 1000,
           first.ReactiveEnergyExportTotal_VARh / 1000,
           last.ReactiveEnergyExportTotal_VARh / 1000,
-          peak.ActivePowerImportAverage_W / 1000
+          peak.ActivePowerImportAvg_W / 1000
         )
         : new OzdsIotDeviceBillingData(
             source,
@@ -139,7 +139,7 @@ public partial class OzdsTimeseriesClient
         .DeferredLastOrDefault()
         .FutureValue();
 
-      var peakQuery = context.AbbQuarterHourlyEnergyRange
+      var peakQuery = context.AbbQuarterHourlyAggregate
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp >= fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
@@ -149,7 +149,7 @@ public partial class OzdsTimeseriesClient
       var last = await lastQuery.ValueAsync();
       var peak = (await peakQuery
         .ToListAsync())
-        .OrderByDescending(measurement => measurement.ActivePowerImportAverage_W)
+        .OrderByDescending(measurement => measurement.ActivePowerImportAvg_W)
         .FirstOrDefault();
 
       return first is { } && last is { } && peak is { }
@@ -167,7 +167,7 @@ public partial class OzdsTimeseriesClient
           last.ReactiveEnergyImportTotal_VARh / 1000,
           first.ReactiveEnergyExportTotal_VARh / 1000,
           last.ReactiveEnergyExportTotal_VARh / 1000,
-          peak.ActivePowerImportAverage_W / 1000
+          peak.ActivePowerImportAvg_W / 1000
         )
         : new OzdsIotDeviceBillingData(
             source,
@@ -215,7 +215,7 @@ public partial class OzdsTimeseriesClient
         .DeferredLastOrDefault()
         .FutureValue();
 
-      var peakQuery = context.SchneiderQuarterHourlyEnergyRange
+      var peakQuery = context.SchneiderQuarterHourlyAggregate
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp >= fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
@@ -225,7 +225,7 @@ public partial class OzdsTimeseriesClient
       var last = lastQuery.Value;
       var peak = peakQuery
         .ToList()
-        .OrderByDescending(measurement => measurement.ActivePowerImportAverage_W)
+        .OrderByDescending(measurement => measurement.ActivePowerImportAvg_W)
         .FirstOrDefault();
 
       return first is { } && last is { } && peak is { }
@@ -243,7 +243,7 @@ public partial class OzdsTimeseriesClient
           last.ReactiveEnergyImportTotal_VARh / 1000,
           first.ReactiveEnergyExportTotal_VARh / 1000,
           last.ReactiveEnergyExportTotal_VARh / 1000,
-          peak.ActivePowerImportAverage_W / 1000
+          peak.ActivePowerImportAvg_W / 1000
         )
         : new OzdsIotDeviceBillingData(
             source,
@@ -291,7 +291,7 @@ public partial class OzdsTimeseriesClient
         .DeferredLastOrDefault()
         .FutureValue();
 
-      var peakQuery = context.SchneiderQuarterHourlyEnergyRange
+      var peakQuery = context.SchneiderQuarterHourlyAggregate
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp >= fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
@@ -301,7 +301,7 @@ public partial class OzdsTimeseriesClient
       var last = await lastQuery.ValueAsync();
       var peak = (await peakQuery
         .ToListAsync())
-        .OrderByDescending(measurement => measurement.ActivePowerImportAverage_W)
+        .OrderByDescending(measurement => measurement.ActivePowerImportAvg_W)
         .FirstOrDefault();
 
       return first is { } && last is { } && peak is { }
@@ -319,7 +319,7 @@ public partial class OzdsTimeseriesClient
           last.ReactiveEnergyImportTotal_VARh / 1000,
           first.ReactiveEnergyExportTotal_VARh / 1000,
           last.ReactiveEnergyExportTotal_VARh / 1000,
-          peak.ActivePowerImportAverage_W / 1000
+          peak.ActivePowerImportAvg_W / 1000
         )
         : new OzdsIotDeviceBillingData(
             source,
@@ -357,7 +357,7 @@ public partial class OzdsTimeseriesClient
         .Where(measurement => sources.Contains(measurement.Source))
         .GroupBy(
           measurement => measurement.Source,
-          (source, measurements) => new BulkEnergyRange(
+          (source, measurements) => new BulkAggregate(
             source,
             measurements
               .MinBy(measurement => measurement.Timestamp)
@@ -387,7 +387,7 @@ public partial class OzdsTimeseriesClient
         )
         .Future();
 
-      var powerPeaksQuery = context.AbbQuarterHourlyEnergyRange
+      var powerPeaksQuery = context.AbbQuarterHourlyAggregate
         .Where(measurement => sources.Contains(measurement.Source))
         .Where(measurement => measurement.Timestamp >= fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
@@ -475,7 +475,7 @@ public partial class OzdsTimeseriesClient
         .Where(measurement => sources.Contains(measurement.Source))
         .GroupBy(
           measurement => measurement.Source,
-          (source, measurements) => new BulkEnergyRange(
+          (source, measurements) => new BulkAggregate(
             source,
             measurements
               .MinBy(measurement => measurement.Timestamp)
@@ -505,7 +505,7 @@ public partial class OzdsTimeseriesClient
         )
         .Future();
 
-      var powerPeaksQuery = context.AbbQuarterHourlyEnergyRange
+      var powerPeaksQuery = context.AbbQuarterHourlyAggregate
         .Where(measurement => sources.Contains(measurement.Source))
         .Where(measurement => measurement.Timestamp >= fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
@@ -593,7 +593,7 @@ public partial class OzdsTimeseriesClient
         .Where(measurement => sources.Contains(measurement.Source))
         .GroupBy(
           measurement => measurement.Source,
-          (source, measurements) => new BulkEnergyRange(
+          (source, measurements) => new BulkAggregate(
             source,
             measurements
               .MinBy(measurement => measurement.Timestamp)
@@ -623,7 +623,7 @@ public partial class OzdsTimeseriesClient
         )
         .Future();
 
-      var powerPeaksQuery = context.SchneiderQuarterHourlyEnergyRange
+      var powerPeaksQuery = context.SchneiderQuarterHourlyAggregate
         .Where(measurement => sources.Contains(measurement.Source))
         .Where(measurement => measurement.Timestamp >= fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
@@ -711,7 +711,7 @@ public partial class OzdsTimeseriesClient
         .Where(measurement => sources.Contains(measurement.Source))
         .GroupBy(
           measurement => measurement.Source,
-          (source, measurements) => new BulkEnergyRange(
+          (source, measurements) => new BulkAggregate(
             source,
             measurements
               .MinBy(measurement => measurement.Timestamp)
@@ -741,7 +741,7 @@ public partial class OzdsTimeseriesClient
         )
         .Future();
 
-      var powerPeaksQuery = context.SchneiderQuarterHourlyEnergyRange
+      var powerPeaksQuery = context.SchneiderQuarterHourlyAggregate
         .Where(measurement => sources.Contains(measurement.Source))
         .Where(measurement => measurement.Timestamp >= fromDate)
         .Where(measurement => measurement.Timestamp < toDate)

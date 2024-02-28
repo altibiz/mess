@@ -2,10 +2,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Mess.Timeseries.Abstractions.Entities;
 
-// TODO: create attributes for migrations
-
 public abstract class ContinuousAggregateEntity
 {
+  [Column(TypeName = "int2")]
+  public int AggregateCount { get; set; } = default!;
+
   [NotMapped] private DateTimeOffset _timestamp;
 
   [Column(TypeName = "text")] public string Tenant { get; set; } = default!;

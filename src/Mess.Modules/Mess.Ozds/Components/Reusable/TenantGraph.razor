@@ -147,12 +147,12 @@
           .ListAsync();
         foreach(var omm in _ioTDevices){
           if(omm.DisplayText.StartsWith("abb")){
-            var measurements = await _timeseriesClient.GetAbbMonthlyEnergyRangeAsync(omm.DisplayText, nowYear, now);
+            var measurements = await _timeseriesClient.GetAbbMonthlyAggregateAsync(omm.DisplayText, nowYear, now);
             var chartDataList = measurements.Select(x => new ChartDataL(values: new decimal[]{x.ActiveEnergyImportTotalMax_Wh}, names: new string[]{"Potrošnja"}, date: x.Timestamp, source: x.Source)).FirstOrDefault();
             _totalConsumption.Add(chartDataList);
           }
           else{
-            var measurements = await _timeseriesClient.GetSchneiderMonthlyEnergyRangeAsync(omm.DisplayText, nowYear, now);
+            var measurements = await _timeseriesClient.GetSchneiderMonthlyAggregateAsync(omm.DisplayText, nowYear, now);
             var chartDataList = measurements.Select(x => new ChartDataL(values: new decimal[]{x.ActiveEnergyImportTotalMax_Wh}, names: new string[]{"Potrošnja"}, date: x.Timestamp, source: x.Source)).ToList();
             _totalConsumption.AddRange(chartDataList);
           }

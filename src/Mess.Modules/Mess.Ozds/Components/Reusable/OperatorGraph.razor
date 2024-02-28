@@ -284,14 +284,14 @@
   private async Task GetValues(string source, string type){
     IReadOnlyList<AbbMeasurement>? abbMeasurements = null;
     IReadOnlyList<SchneiderMeasurement>? schneiderMeasurements = null;
-    IReadOnlyList<AbbEnergyRange>? abbEnergyRange = null;
-    IReadOnlyList<SchneiderEnergyRange>? schneiderEnergyRange = null;
+    IReadOnlyList<AbbAggregate>? abbAggregate = null;
+    IReadOnlyList<SchneiderAggregate>? schneiderAggregate = null;
     if(source.StartsWith("abb")){
       if(timeSpanMins <= 60){
         abbMeasurements = await _timeseriesClient.GetAbbMeasurementsAsync(source, DateTimeOffset.UtcNow.AddMinutes(- timeSpanMins), DateTimeOffset.UtcNow);
       }
       else{
-        abbEnergyRange = await _timeseriesClient.GetAbbQuarterHourlyEnergyRangeAsync(source, DateTimeOffset.UtcNow.AddMinutes(- timeSpanMins), DateTimeOffset.UtcNow);
+        abbAggregate = await _timeseriesClient.GetAbbQuarterHourlyAggregateAsync(source, DateTimeOffset.UtcNow.AddMinutes(- timeSpanMins), DateTimeOffset.UtcNow);
       }
       _displayType = new List<string>{"Napon", "Struja", "Snaga", "Jalova Snaga"};
       if(_leftDataTitle == "Prividna snaga")
@@ -302,7 +302,7 @@
         schneiderMeasurements = await _timeseriesClient.GetSchneiderMeasurementsAsync(source, DateTimeOffset.UtcNow.AddMinutes(- timeSpanMins), DateTimeOffset.UtcNow);
       }
       else{
-        schneiderEnergyRange = await _timeseriesClient.GetSchneiderQuarterHourlyEnergyRangeAsync(source, DateTimeOffset.UtcNow.AddMinutes(- timeSpanMins), DateTimeOffset.UtcNow);
+        schneiderAggregate = await _timeseriesClient.GetSchneiderQuarterHourlyAggregateAsync(source, DateTimeOffset.UtcNow.AddMinutes(- timeSpanMins), DateTimeOffset.UtcNow);
       }
       _displayType = new List<string>{"Napon", "Struja", "Snaga", "Jalova Snaga", "Prividna snaga"};
     }
@@ -319,12 +319,12 @@
           _leftGraphValues = schneiderMeasurements.Select(x => new ChartDataL(values: new decimal?[]{x.CurrentL1_A, x.CurrentL2_A, x.CurrentL3_A}, names: new string[]{"L1 Struja", "L2 Struja","L3 Struja"}, date:x.Timestamp, source:x.Source)).ToList();
           leftLineCount = 3;
         }
-        else if(abbEnergyRange is not null){
-          @* _leftGraphValues = abbEnergyRange.Select(x => new ChartDataL(values: new decimal?[]{x.CurrentL1_A, x.CurrentL2_A, x.CurrentL3_A}, names: new string[]{"L1 Struja", "L2 Struja","L3 Struja"}, date:x.Timestamp, source:x.Source)).ToList(); *@
+        else if(abbAggregate is not null){
+          @* _leftGraphValues = abbAggregate.Select(x => new ChartDataL(values: new decimal?[]{x.CurrentL1_A, x.CurrentL2_A, x.CurrentL3_A}, names: new string[]{"L1 Struja", "L2 Struja","L3 Struja"}, date:x.Timestamp, source:x.Source)).ToList(); *@
           leftLineCount = 3;
         }
-        else if(schneiderEnergyRange is not null){
-          @* _leftGraphValues = schneiderEnergyRange.Select(x => new ChartDataL(values: new decimal?[]{x.CurrentL1_A, x.CurrentL2_A, x.CurrentL3_A}, names: new string[]{"L1 Struja", "L2 Struja","L3 Struja"}, date:x.Timestamp, source:x.Source)).ToList(); *@
+        else if(schneiderAggregate is not null){
+          @* _leftGraphValues = schneiderAggregate.Select(x => new ChartDataL(values: new decimal?[]{x.CurrentL1_A, x.CurrentL2_A, x.CurrentL3_A}, names: new string[]{"L1 Struja", "L2 Struja","L3 Struja"}, date:x.Timestamp, source:x.Source)).ToList(); *@
           leftLineCount = 3;
         }
         _leftDataTitle = "Struja";

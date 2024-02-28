@@ -2,157 +2,157 @@ namespace Mess.Ozds.Abstractions.Timeseries;
 
 public partial interface IOzdsTimeseriesQuery
 {
-  Task<IReadOnlyList<AbbEnergyRange>> GetAbbQuarterHourlyEnergyRangeAsync(
+  Task<IReadOnlyList<AbbAggregate>> GetAbbQuarterHourlyAggregateAsync(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
 
-  IReadOnlyList<AbbEnergyRange> GetAbbQuarterHourlyEnergyRange(
-    string source,
-    DateTimeOffset fromDate,
-    DateTimeOffset toDate
-  );
-
-  Task<
-    IReadOnlyList<SchneiderEnergyRange>
-  > GetSchneiderQuarterHourlyEnergyRangeAsync(
-    string source,
-    DateTimeOffset fromDate,
-    DateTimeOffset toDate
-  );
-
-  IReadOnlyList<SchneiderEnergyRange> GetSchneiderQuarterHourlyEnergyRange(
-    string source,
-    DateTimeOffset fromDate,
-    DateTimeOffset toDate
-  );
-
-  Task<IReadOnlyList<AbbEnergyRange>> GetAbbDailyEnergyRangeAsync(
-    string source,
-    DateTimeOffset fromDate,
-    DateTimeOffset toDate
-  );
-
-  IReadOnlyList<AbbEnergyRange> GetAbbDailyEnergyRange(
+  IReadOnlyList<AbbAggregate> GetAbbQuarterHourlyAggregate(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
 
   Task<
-    IReadOnlyList<SchneiderEnergyRange>
-  > GetSchneiderDailyEnergyRangeAsync(
+    IReadOnlyList<SchneiderAggregate>
+  > GetSchneiderQuarterHourlyAggregateAsync(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
 
-  IReadOnlyList<SchneiderEnergyRange> GetSchneiderDailyEnergyRange(
+  IReadOnlyList<SchneiderAggregate> GetSchneiderQuarterHourlyAggregate(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
 
-  Task<IReadOnlyList<AbbEnergyRange>> GetAbbMonthlyEnergyRangeAsync(
+  Task<IReadOnlyList<AbbAggregate>> GetAbbDailyAggregateAsync(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
 
-  IReadOnlyList<AbbEnergyRange> GetAbbMonthlyEnergyRange(
+  IReadOnlyList<AbbAggregate> GetAbbDailyAggregate(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
 
   Task<
-    IReadOnlyList<SchneiderEnergyRange>
-  > GetSchneiderMonthlyEnergyRangeAsync(
+    IReadOnlyList<SchneiderAggregate>
+  > GetSchneiderDailyAggregateAsync(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
 
-  IReadOnlyList<SchneiderEnergyRange> GetSchneiderMonthlyEnergyRange(
+  IReadOnlyList<SchneiderAggregate> GetSchneiderDailyAggregate(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
 
-  Task<IReadOnlyList<AbbEnergyRange>> GetBulkAbbQuarterHourlyEnergyRangeAsync(
+  Task<IReadOnlyList<AbbAggregate>> GetAbbMonthlyAggregateAsync(
+    string source,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  );
+
+  IReadOnlyList<AbbAggregate> GetAbbMonthlyAggregate(
+    string source,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  );
+
+  Task<
+    IReadOnlyList<SchneiderAggregate>
+  > GetSchneiderMonthlyAggregateAsync(
+    string source,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  );
+
+  IReadOnlyList<SchneiderAggregate> GetSchneiderMonthlyAggregate(
+    string source,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  );
+
+  Task<IReadOnlyList<AbbAggregate>> GetBulkAbbQuarterHourlyAggregateAsync(
     IEnumerable<string> source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
 
-  IReadOnlyList<AbbEnergyRange> GetBulkAbbQuarterHourlyEnergyRange(
+  IReadOnlyList<AbbAggregate> GetBulkAbbQuarterHourlyAggregate(
     IEnumerable<string> sources,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
 
   Task<
-    IReadOnlyList<SchneiderEnergyRange>
-  > GetBulkSchneiderQuarterHourlyEnergyRangeAsync(
+    IReadOnlyList<SchneiderAggregate>
+  > GetBulkSchneiderQuarterHourlyAggregateAsync(
     IEnumerable<string> sources,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
 
-  IReadOnlyList<SchneiderEnergyRange> GetBulkSchneiderQuarterHourlyEnergyRange(
+  IReadOnlyList<SchneiderAggregate> GetBulkSchneiderQuarterHourlyAggregate(
     IEnumerable<string> sources,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
 
-  Task<IReadOnlyList<AbbEnergyRange>> GetBulkAbbDailyEnergyRangeAsync(
+  Task<IReadOnlyList<AbbAggregate>> GetBulkAbbDailyAggregateAsync(
     IEnumerable<string> source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
 
-  IReadOnlyList<AbbEnergyRange> GetBulkAbbDailyEnergyRange(
+  IReadOnlyList<AbbAggregate> GetBulkAbbDailyAggregate(
     IEnumerable<string> sources,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
 
   Task<
-    IReadOnlyList<SchneiderEnergyRange>
-  > GetBulkSchneiderDailyEnergyRangeAsync(
+    IReadOnlyList<SchneiderAggregate>
+  > GetBulkSchneiderDailyAggregateAsync(
     IEnumerable<string> sources,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
 
-  IReadOnlyList<SchneiderEnergyRange> GetBulkSchneiderDailyEnergyRange(
+  IReadOnlyList<SchneiderAggregate> GetBulkSchneiderDailyAggregate(
     IEnumerable<string> sources,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
 
-  Task<IReadOnlyList<AbbEnergyRange>> GetBulkAbbMonthlyEnergyRangeAsync(
+  Task<IReadOnlyList<AbbAggregate>> GetBulkAbbMonthlyAggregateAsync(
     IEnumerable<string> sources,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
 
-  IReadOnlyList<AbbEnergyRange> GetBulkAbbMonthlyEnergyRange(
+  IReadOnlyList<AbbAggregate> GetBulkAbbMonthlyAggregate(
     IEnumerable<string> sources,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
 
   Task<
-    IReadOnlyList<SchneiderEnergyRange>
-  > GetBulkSchneiderMonthlyEnergyRangeAsync(
+    IReadOnlyList<SchneiderAggregate>
+  > GetBulkSchneiderMonthlyAggregateAsync(
     IEnumerable<string> sources,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
   );
 
-  IReadOnlyList<SchneiderEnergyRange> GetBulkSchneiderMonthlyEnergyRange(
+  IReadOnlyList<SchneiderAggregate> GetBulkSchneiderMonthlyAggregate(
     IEnumerable<string> sources,
     DateTimeOffset fromDate,
     DateTimeOffset toDate

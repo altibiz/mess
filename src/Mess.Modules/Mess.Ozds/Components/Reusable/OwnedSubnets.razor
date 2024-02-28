@@ -221,10 +221,10 @@
     private decimal? _totalLastMonthConsumption = 0;
     private decimal? _totalLastPower = 0;
     private List<TabularData> _dataStruct = new List<TabularData>();
-    private IReadOnlyList<AbbEnergyRange>? _abbRange;
-    private IReadOnlyList<SchneiderEnergyRange>? _schneiderRange;
-    private IReadOnlyList<AbbEnergyRange>? _abbRangeLastMonth;
-    private IReadOnlyList<SchneiderEnergyRange>? _schneiderRangeLastMonth;
+    private IReadOnlyList<AbbAggregate>? _abbRange;
+    private IReadOnlyList<SchneiderAggregate>? _schneiderRange;
+    private IReadOnlyList<AbbAggregate>? _abbRangeLastMonth;
+    private IReadOnlyList<SchneiderAggregate>? _schneiderRangeLastMonth;
     private IReadOnlyList<AbbMeasurement>? _abbLast;
     private IReadOnlyList<SchneiderMeasurement>? _schneiderLast;
     private DateTimeOffset nowMonth = DateTimeOffset.UtcNow.AddDays(-DateTimeOffset.UtcNow.Day);
@@ -244,11 +244,11 @@
               .Where(index => !index.IsMessenger)
               .ListAsync();
           if(ioTDevices is not null){
-            _abbRange = await _timeseriesClient.GetBulkAbbMonthlyEnergyRangeAsync(ioTDevices.Where(x => x.DisplayText.StartsWith("abb")).Select(x => x.DisplayText),nowMonth,now);
-            _abbRangeLastMonth = await _timeseriesClient.GetBulkAbbMonthlyEnergyRangeAsync(ioTDevices.Where(x => x.DisplayText.StartsWith("abb")).Select(x => x.DisplayText),nowMonth.AddMonths(-1),nowMonth);
+            _abbRange = await _timeseriesClient.GetBulkAbbMonthlyAggregateAsync(ioTDevices.Where(x => x.DisplayText.StartsWith("abb")).Select(x => x.DisplayText),nowMonth,now);
+            _abbRangeLastMonth = await _timeseriesClient.GetBulkAbbMonthlyAggregateAsync(ioTDevices.Where(x => x.DisplayText.StartsWith("abb")).Select(x => x.DisplayText),nowMonth.AddMonths(-1),nowMonth);
             _abbLast = await _timeseriesClient.GetBulkLastAbbMeasurementAsync(ioTDevices.Where(x => x.DisplayText.StartsWith("abb")).Select(x => x.DisplayText));
-            _schneiderRange = await _timeseriesClient.GetBulkSchneiderMonthlyEnergyRangeAsync(ioTDevices.Where(x => x.DisplayText.StartsWith("schneider")).Select(x => x.DisplayText),nowMonth,now);
-            _schneiderRangeLastMonth = await _timeseriesClient.GetBulkSchneiderMonthlyEnergyRangeAsync(ioTDevices.Where(x => x.DisplayText.StartsWith("schneider")).Select(x => x.DisplayText),nowMonth.AddMonths(-1),nowMonth);
+            _schneiderRange = await _timeseriesClient.GetBulkSchneiderMonthlyAggregateAsync(ioTDevices.Where(x => x.DisplayText.StartsWith("schneider")).Select(x => x.DisplayText),nowMonth,now);
+            _schneiderRangeLastMonth = await _timeseriesClient.GetBulkSchneiderMonthlyAggregateAsync(ioTDevices.Where(x => x.DisplayText.StartsWith("schneider")).Select(x => x.DisplayText),nowMonth.AddMonths(-1),nowMonth);
             _schneiderLast = await _timeseriesClient.GetBulkLastSchneiderMeasurementAsync(ioTDevices.Where(x => x.DisplayText.StartsWith("schneider")).Select(x => x.DisplayText));
 
             foreach(var omm in ioTDevices){

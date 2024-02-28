@@ -12,7 +12,7 @@ namespace Mess.Ozds.Timeseries;
 
 public partial class OzdsTimeseriesClient
 {
-  public async Task<IReadOnlyList<AbbEnergyRange>> GetAbbQuarterHourlyEnergyRangeAsync(
+  public async Task<IReadOnlyList<AbbAggregate>> GetAbbQuarterHourlyAggregateAsync(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
@@ -20,10 +20,10 @@ public partial class OzdsTimeseriesClient
   {
     return await _services.WithTimeseriesDbContextAsync<
       OzdsTimeseriesDbContext,
-      List<AbbEnergyRange>
+      List<AbbAggregate>
     >(async context =>
     {
-      return await context.AbbQuarterHourlyEnergyRange
+      return await context.AbbQuarterHourlyAggregate
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp >= fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
@@ -33,7 +33,7 @@ public partial class OzdsTimeseriesClient
     });
   }
 
-  public IReadOnlyList<AbbEnergyRange> GetAbbQuarterHourlyEnergyRange(
+  public IReadOnlyList<AbbAggregate> GetAbbQuarterHourlyAggregate(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
@@ -41,96 +41,10 @@ public partial class OzdsTimeseriesClient
   {
     return _services.WithTimeseriesDbContext<
       OzdsTimeseriesDbContext,
-      List<AbbEnergyRange>
+      List<AbbAggregate>
     >(context =>
     {
-      return context.AbbQuarterHourlyEnergyRange
-        .Where(measurement => measurement.Source == source)
-        .Where(measurement => measurement.Timestamp >= fromDate)
-        .Where(measurement => measurement.Timestamp < toDate)
-        .OrderBy(measurement => measurement.Timestamp)
-        .Select(measurement => measurement.ToModel())
-        .ToList();
-    });
-  }
-
-  public async Task<
-    IReadOnlyList<SchneiderEnergyRange>
-  > GetSchneiderQuarterHourlyEnergyRangeAsync(
-    string source,
-    DateTimeOffset fromDate,
-    DateTimeOffset toDate
-  )
-  {
-    return await _services.WithTimeseriesDbContextAsync<
-      OzdsTimeseriesDbContext,
-      List<SchneiderEnergyRange>
-    >(async context =>
-    {
-      return await context.SchneiderQuarterHourlyEnergyRange
-        .Where(measurement => measurement.Source == source)
-        .Where(measurement => measurement.Timestamp >= fromDate)
-        .Where(measurement => measurement.Timestamp < toDate)
-        .OrderBy(measurement => measurement.Timestamp)
-        .Select(measurement => measurement.ToModel())
-        .ToListAsync();
-    });
-  }
-
-  public IReadOnlyList<SchneiderEnergyRange> GetSchneiderQuarterHourlyEnergyRange(
-    string source,
-    DateTimeOffset fromDate,
-    DateTimeOffset toDate
-  )
-  {
-    return _services.WithTimeseriesDbContext<
-      OzdsTimeseriesDbContext,
-      List<SchneiderEnergyRange>
-    >(context =>
-    {
-      return context.SchneiderQuarterHourlyEnergyRange
-        .Where(measurement => measurement.Source == source)
-        .Where(measurement => measurement.Timestamp >= fromDate)
-        .Where(measurement => measurement.Timestamp < toDate)
-        .OrderBy(measurement => measurement.Timestamp)
-        .Select(measurement => measurement.ToModel())
-        .ToList();
-    });
-  }
-
-  public async Task<IReadOnlyList<AbbEnergyRange>> GetAbbDailyEnergyRangeAsync(
-    string source,
-    DateTimeOffset fromDate,
-    DateTimeOffset toDate
-  )
-  {
-    return await _services.WithTimeseriesDbContextAsync<
-      OzdsTimeseriesDbContext,
-      List<AbbEnergyRange>
-    >(async context =>
-    {
-      return await context.AbbDailyEnergyRange
-        .Where(measurement => measurement.Source == source)
-        .Where(measurement => measurement.Timestamp >= fromDate)
-        .Where(measurement => measurement.Timestamp < toDate)
-        .OrderBy(measurement => measurement.Timestamp)
-        .Select(measurement => measurement.ToModel())
-        .ToListAsync();
-    });
-  }
-
-  public IReadOnlyList<AbbEnergyRange> GetAbbDailyEnergyRange(
-    string source,
-    DateTimeOffset fromDate,
-    DateTimeOffset toDate
-  )
-  {
-    return _services.WithTimeseriesDbContext<
-      OzdsTimeseriesDbContext,
-      List<AbbEnergyRange>
-    >(context =>
-    {
-      return context.AbbDailyEnergyRange
+      return context.AbbQuarterHourlyAggregate
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp >= fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
@@ -141,8 +55,8 @@ public partial class OzdsTimeseriesClient
   }
 
   public async Task<
-    IReadOnlyList<SchneiderEnergyRange>
-  > GetSchneiderDailyEnergyRangeAsync(
+    IReadOnlyList<SchneiderAggregate>
+  > GetSchneiderQuarterHourlyAggregateAsync(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
@@ -150,10 +64,10 @@ public partial class OzdsTimeseriesClient
   {
     return await _services.WithTimeseriesDbContextAsync<
       OzdsTimeseriesDbContext,
-      List<SchneiderEnergyRange>
+      List<SchneiderAggregate>
     >(async context =>
     {
-      return await context.SchneiderDailyEnergyRange
+      return await context.SchneiderQuarterHourlyAggregate
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp >= fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
@@ -163,7 +77,7 @@ public partial class OzdsTimeseriesClient
     });
   }
 
-  public IReadOnlyList<SchneiderEnergyRange> GetSchneiderDailyEnergyRange(
+  public IReadOnlyList<SchneiderAggregate> GetSchneiderQuarterHourlyAggregate(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
@@ -171,10 +85,10 @@ public partial class OzdsTimeseriesClient
   {
     return _services.WithTimeseriesDbContext<
       OzdsTimeseriesDbContext,
-      List<SchneiderEnergyRange>
+      List<SchneiderAggregate>
     >(context =>
     {
-      return context.SchneiderDailyEnergyRange
+      return context.SchneiderQuarterHourlyAggregate
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp >= fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
@@ -184,7 +98,7 @@ public partial class OzdsTimeseriesClient
     });
   }
 
-  public async Task<IReadOnlyList<AbbEnergyRange>> GetAbbMonthlyEnergyRangeAsync(
+  public async Task<IReadOnlyList<AbbAggregate>> GetAbbDailyAggregateAsync(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
@@ -192,10 +106,10 @@ public partial class OzdsTimeseriesClient
   {
     return await _services.WithTimeseriesDbContextAsync<
       OzdsTimeseriesDbContext,
-      List<AbbEnergyRange>
+      List<AbbAggregate>
     >(async context =>
     {
-      return await context.AbbMonthlyEnergyRange
+      return await context.AbbDailyAggregate
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp >= fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
@@ -205,7 +119,7 @@ public partial class OzdsTimeseriesClient
     });
   }
 
-  public IReadOnlyList<AbbEnergyRange> GetAbbMonthlyEnergyRange(
+  public IReadOnlyList<AbbAggregate> GetAbbDailyAggregate(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
@@ -213,10 +127,10 @@ public partial class OzdsTimeseriesClient
   {
     return _services.WithTimeseriesDbContext<
       OzdsTimeseriesDbContext,
-      List<AbbEnergyRange>
+      List<AbbAggregate>
     >(context =>
     {
-      return context.AbbMonthlyEnergyRange
+      return context.AbbDailyAggregate
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp >= fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
@@ -227,8 +141,8 @@ public partial class OzdsTimeseriesClient
   }
 
   public async Task<
-    IReadOnlyList<SchneiderEnergyRange>
-  > GetSchneiderMonthlyEnergyRangeAsync(
+    IReadOnlyList<SchneiderAggregate>
+  > GetSchneiderDailyAggregateAsync(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
@@ -236,10 +150,10 @@ public partial class OzdsTimeseriesClient
   {
     return await _services.WithTimeseriesDbContextAsync<
       OzdsTimeseriesDbContext,
-      List<SchneiderEnergyRange>
+      List<SchneiderAggregate>
     >(async context =>
     {
-      return await context.SchneiderMonthlyEnergyRange
+      return await context.SchneiderDailyAggregate
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp >= fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
@@ -249,7 +163,7 @@ public partial class OzdsTimeseriesClient
     });
   }
 
-  public IReadOnlyList<SchneiderEnergyRange> GetSchneiderMonthlyEnergyRange(
+  public IReadOnlyList<SchneiderAggregate> GetSchneiderDailyAggregate(
     string source,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
@@ -257,10 +171,10 @@ public partial class OzdsTimeseriesClient
   {
     return _services.WithTimeseriesDbContext<
       OzdsTimeseriesDbContext,
-      List<SchneiderEnergyRange>
+      List<SchneiderAggregate>
     >(context =>
     {
-      return context.SchneiderMonthlyEnergyRange
+      return context.SchneiderDailyAggregate
         .Where(measurement => measurement.Source == source)
         .Where(measurement => measurement.Timestamp >= fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
@@ -270,7 +184,93 @@ public partial class OzdsTimeseriesClient
     });
   }
 
-  public async Task<IReadOnlyList<AbbEnergyRange>> GetBulkAbbQuarterHourlyEnergyRangeAsync(
+  public async Task<IReadOnlyList<AbbAggregate>> GetAbbMonthlyAggregateAsync(
+    string source,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  )
+  {
+    return await _services.WithTimeseriesDbContextAsync<
+      OzdsTimeseriesDbContext,
+      List<AbbAggregate>
+    >(async context =>
+    {
+      return await context.AbbMonthlyAggregate
+        .Where(measurement => measurement.Source == source)
+        .Where(measurement => measurement.Timestamp >= fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
+        .OrderBy(measurement => measurement.Timestamp)
+        .Select(measurement => measurement.ToModel())
+        .ToListAsync();
+    });
+  }
+
+  public IReadOnlyList<AbbAggregate> GetAbbMonthlyAggregate(
+    string source,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  )
+  {
+    return _services.WithTimeseriesDbContext<
+      OzdsTimeseriesDbContext,
+      List<AbbAggregate>
+    >(context =>
+    {
+      return context.AbbMonthlyAggregate
+        .Where(measurement => measurement.Source == source)
+        .Where(measurement => measurement.Timestamp >= fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
+        .OrderBy(measurement => measurement.Timestamp)
+        .Select(measurement => measurement.ToModel())
+        .ToList();
+    });
+  }
+
+  public async Task<
+    IReadOnlyList<SchneiderAggregate>
+  > GetSchneiderMonthlyAggregateAsync(
+    string source,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  )
+  {
+    return await _services.WithTimeseriesDbContextAsync<
+      OzdsTimeseriesDbContext,
+      List<SchneiderAggregate>
+    >(async context =>
+    {
+      return await context.SchneiderMonthlyAggregate
+        .Where(measurement => measurement.Source == source)
+        .Where(measurement => measurement.Timestamp >= fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
+        .OrderBy(measurement => measurement.Timestamp)
+        .Select(measurement => measurement.ToModel())
+        .ToListAsync();
+    });
+  }
+
+  public IReadOnlyList<SchneiderAggregate> GetSchneiderMonthlyAggregate(
+    string source,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  )
+  {
+    return _services.WithTimeseriesDbContext<
+      OzdsTimeseriesDbContext,
+      List<SchneiderAggregate>
+    >(context =>
+    {
+      return context.SchneiderMonthlyAggregate
+        .Where(measurement => measurement.Source == source)
+        .Where(measurement => measurement.Timestamp >= fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
+        .OrderBy(measurement => measurement.Timestamp)
+        .Select(measurement => measurement.ToModel())
+        .ToList();
+    });
+  }
+
+  public async Task<IReadOnlyList<AbbAggregate>> GetBulkAbbQuarterHourlyAggregateAsync(
     IEnumerable<string> sources,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
@@ -278,10 +278,10 @@ public partial class OzdsTimeseriesClient
   {
     return await _services.WithTimeseriesDbContextAsync<
       OzdsTimeseriesDbContext,
-      List<AbbEnergyRange>
+      List<AbbAggregate>
     >(async context =>
     {
-      return await context.AbbQuarterHourlyEnergyRange
+      return await context.AbbQuarterHourlyAggregate
         .Where(measurement => sources.Contains(measurement.Source))
         .Where(measurement => measurement.Timestamp >= fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
@@ -291,7 +291,7 @@ public partial class OzdsTimeseriesClient
     });
   }
 
-  public IReadOnlyList<AbbEnergyRange> GetBulkAbbQuarterHourlyEnergyRange(
+  public IReadOnlyList<AbbAggregate> GetBulkAbbQuarterHourlyAggregate(
     IEnumerable<string> sources,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
@@ -299,10 +299,10 @@ public partial class OzdsTimeseriesClient
   {
     return _services.WithTimeseriesDbContext<
       OzdsTimeseriesDbContext,
-      List<AbbEnergyRange>
+      List<AbbAggregate>
     >(context =>
     {
-      return context.AbbQuarterHourlyEnergyRange
+      return context.AbbQuarterHourlyAggregate
         .Where(measurement => sources.Contains(measurement.Source))
         .Where(measurement => measurement.Timestamp >= fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
@@ -313,8 +313,8 @@ public partial class OzdsTimeseriesClient
   }
 
   public async Task<
-    IReadOnlyList<SchneiderEnergyRange>
-  > GetBulkSchneiderQuarterHourlyEnergyRangeAsync(
+    IReadOnlyList<SchneiderAggregate>
+  > GetBulkSchneiderQuarterHourlyAggregateAsync(
     IEnumerable<string> sources,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
@@ -322,10 +322,10 @@ public partial class OzdsTimeseriesClient
   {
     return await _services.WithTimeseriesDbContextAsync<
       OzdsTimeseriesDbContext,
-      List<SchneiderEnergyRange>
+      List<SchneiderAggregate>
     >(async context =>
     {
-      return await context.SchneiderQuarterHourlyEnergyRange
+      return await context.SchneiderQuarterHourlyAggregate
         .Where(measurement => sources.Contains(measurement.Source))
         .Where(measurement => measurement.Timestamp >= fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
@@ -335,7 +335,7 @@ public partial class OzdsTimeseriesClient
     });
   }
 
-  public IReadOnlyList<SchneiderEnergyRange> GetBulkSchneiderQuarterHourlyEnergyRange(
+  public IReadOnlyList<SchneiderAggregate> GetBulkSchneiderQuarterHourlyAggregate(
     IEnumerable<string> sources,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
@@ -343,10 +343,10 @@ public partial class OzdsTimeseriesClient
   {
     return _services.WithTimeseriesDbContext<
       OzdsTimeseriesDbContext,
-      List<SchneiderEnergyRange>
+      List<SchneiderAggregate>
     >(context =>
     {
-      return context.SchneiderQuarterHourlyEnergyRange
+      return context.SchneiderQuarterHourlyAggregate
         .Where(measurement => sources.Contains(measurement.Source))
         .Where(measurement => measurement.Timestamp >= fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
@@ -356,7 +356,7 @@ public partial class OzdsTimeseriesClient
     });
   }
 
-  public async Task<IReadOnlyList<AbbEnergyRange>> GetBulkAbbDailyEnergyRangeAsync(
+  public async Task<IReadOnlyList<AbbAggregate>> GetBulkAbbDailyAggregateAsync(
     IEnumerable<string> sources,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
@@ -364,10 +364,10 @@ public partial class OzdsTimeseriesClient
   {
     return await _services.WithTimeseriesDbContextAsync<
       OzdsTimeseriesDbContext,
-      List<AbbEnergyRange>
+      List<AbbAggregate>
     >(async context =>
     {
-      return await context.AbbDailyEnergyRange
+      return await context.AbbDailyAggregate
         .Where(measurement => sources.Contains(measurement.Source))
         .Where(measurement => measurement.Timestamp >= fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
@@ -377,7 +377,7 @@ public partial class OzdsTimeseriesClient
     });
   }
 
-  public IReadOnlyList<AbbEnergyRange> GetBulkAbbDailyEnergyRange(
+  public IReadOnlyList<AbbAggregate> GetBulkAbbDailyAggregate(
     IEnumerable<string> sources,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
@@ -385,96 +385,10 @@ public partial class OzdsTimeseriesClient
   {
     return _services.WithTimeseriesDbContext<
       OzdsTimeseriesDbContext,
-      List<AbbEnergyRange>
+      List<AbbAggregate>
     >(context =>
     {
-      return context.AbbDailyEnergyRange
-        .Where(measurement => sources.Contains(measurement.Source))
-        .Where(measurement => measurement.Timestamp >= fromDate)
-        .Where(measurement => measurement.Timestamp < toDate)
-        .OrderBy(measurement => measurement.Timestamp)
-        .Select(measurement => measurement.ToModel())
-        .ToList();
-    });
-  }
-
-  public async Task<
-    IReadOnlyList<SchneiderEnergyRange>
-  > GetBulkSchneiderDailyEnergyRangeAsync(
-    IEnumerable<string> sources,
-    DateTimeOffset fromDate,
-    DateTimeOffset toDate
-  )
-  {
-    return await _services.WithTimeseriesDbContextAsync<
-      OzdsTimeseriesDbContext,
-      List<SchneiderEnergyRange>
-    >(async context =>
-    {
-      return await context.SchneiderDailyEnergyRange
-        .Where(measurement => sources.Contains(measurement.Source))
-        .Where(measurement => measurement.Timestamp >= fromDate)
-        .Where(measurement => measurement.Timestamp < toDate)
-        .OrderBy(measurement => measurement.Timestamp)
-        .Select(measurement => measurement.ToModel())
-        .ToListAsync();
-    });
-  }
-
-  public IReadOnlyList<SchneiderEnergyRange> GetBulkSchneiderDailyEnergyRange(
-    IEnumerable<string> sources,
-    DateTimeOffset fromDate,
-    DateTimeOffset toDate
-  )
-  {
-    return _services.WithTimeseriesDbContext<
-      OzdsTimeseriesDbContext,
-      List<SchneiderEnergyRange>
-    >(context =>
-    {
-      return context.SchneiderDailyEnergyRange
-        .Where(measurement => sources.Contains(measurement.Source))
-        .Where(measurement => measurement.Timestamp >= fromDate)
-        .Where(measurement => measurement.Timestamp < toDate)
-        .OrderBy(measurement => measurement.Timestamp)
-        .Select(measurement => measurement.ToModel())
-        .ToList();
-    });
-  }
-
-  public async Task<IReadOnlyList<AbbEnergyRange>> GetBulkAbbMonthlyEnergyRangeAsync(
-    IEnumerable<string> sources,
-    DateTimeOffset fromDate,
-    DateTimeOffset toDate
-  )
-  {
-    return await _services.WithTimeseriesDbContextAsync<
-      OzdsTimeseriesDbContext,
-      List<AbbEnergyRange>
-    >(async context =>
-    {
-      return await context.AbbMonthlyEnergyRange
-        .Where(measurement => sources.Contains(measurement.Source))
-        .Where(measurement => measurement.Timestamp >= fromDate)
-        .Where(measurement => measurement.Timestamp < toDate)
-        .OrderBy(measurement => measurement.Timestamp)
-        .Select(measurement => measurement.ToModel())
-        .ToListAsync();
-    });
-  }
-
-  public IReadOnlyList<AbbEnergyRange> GetBulkAbbMonthlyEnergyRange(
-    IEnumerable<string> sources,
-    DateTimeOffset fromDate,
-    DateTimeOffset toDate
-  )
-  {
-    return _services.WithTimeseriesDbContext<
-      OzdsTimeseriesDbContext,
-      List<AbbEnergyRange>
-    >(context =>
-    {
-      return context.AbbMonthlyEnergyRange
+      return context.AbbDailyAggregate
         .Where(measurement => sources.Contains(measurement.Source))
         .Where(measurement => measurement.Timestamp >= fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
@@ -485,8 +399,8 @@ public partial class OzdsTimeseriesClient
   }
 
   public async Task<
-    IReadOnlyList<SchneiderEnergyRange>
-  > GetBulkSchneiderMonthlyEnergyRangeAsync(
+    IReadOnlyList<SchneiderAggregate>
+  > GetBulkSchneiderDailyAggregateAsync(
     IEnumerable<string> sources,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
@@ -494,10 +408,10 @@ public partial class OzdsTimeseriesClient
   {
     return await _services.WithTimeseriesDbContextAsync<
       OzdsTimeseriesDbContext,
-      List<SchneiderEnergyRange>
+      List<SchneiderAggregate>
     >(async context =>
     {
-      return await context.SchneiderMonthlyEnergyRange
+      return await context.SchneiderDailyAggregate
         .Where(measurement => sources.Contains(measurement.Source))
         .Where(measurement => measurement.Timestamp >= fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
@@ -507,7 +421,7 @@ public partial class OzdsTimeseriesClient
     });
   }
 
-  public IReadOnlyList<SchneiderEnergyRange> GetBulkSchneiderMonthlyEnergyRange(
+  public IReadOnlyList<SchneiderAggregate> GetBulkSchneiderDailyAggregate(
     IEnumerable<string> sources,
     DateTimeOffset fromDate,
     DateTimeOffset toDate
@@ -515,10 +429,96 @@ public partial class OzdsTimeseriesClient
   {
     return _services.WithTimeseriesDbContext<
       OzdsTimeseriesDbContext,
-      List<SchneiderEnergyRange>
+      List<SchneiderAggregate>
     >(context =>
     {
-      return context.SchneiderMonthlyEnergyRange
+      return context.SchneiderDailyAggregate
+        .Where(measurement => sources.Contains(measurement.Source))
+        .Where(measurement => measurement.Timestamp >= fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
+        .OrderBy(measurement => measurement.Timestamp)
+        .Select(measurement => measurement.ToModel())
+        .ToList();
+    });
+  }
+
+  public async Task<IReadOnlyList<AbbAggregate>> GetBulkAbbMonthlyAggregateAsync(
+    IEnumerable<string> sources,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  )
+  {
+    return await _services.WithTimeseriesDbContextAsync<
+      OzdsTimeseriesDbContext,
+      List<AbbAggregate>
+    >(async context =>
+    {
+      return await context.AbbMonthlyAggregate
+        .Where(measurement => sources.Contains(measurement.Source))
+        .Where(measurement => measurement.Timestamp >= fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
+        .OrderBy(measurement => measurement.Timestamp)
+        .Select(measurement => measurement.ToModel())
+        .ToListAsync();
+    });
+  }
+
+  public IReadOnlyList<AbbAggregate> GetBulkAbbMonthlyAggregate(
+    IEnumerable<string> sources,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  )
+  {
+    return _services.WithTimeseriesDbContext<
+      OzdsTimeseriesDbContext,
+      List<AbbAggregate>
+    >(context =>
+    {
+      return context.AbbMonthlyAggregate
+        .Where(measurement => sources.Contains(measurement.Source))
+        .Where(measurement => measurement.Timestamp >= fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
+        .OrderBy(measurement => measurement.Timestamp)
+        .Select(measurement => measurement.ToModel())
+        .ToList();
+    });
+  }
+
+  public async Task<
+    IReadOnlyList<SchneiderAggregate>
+  > GetBulkSchneiderMonthlyAggregateAsync(
+    IEnumerable<string> sources,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  )
+  {
+    return await _services.WithTimeseriesDbContextAsync<
+      OzdsTimeseriesDbContext,
+      List<SchneiderAggregate>
+    >(async context =>
+    {
+      return await context.SchneiderMonthlyAggregate
+        .Where(measurement => sources.Contains(measurement.Source))
+        .Where(measurement => measurement.Timestamp >= fromDate)
+        .Where(measurement => measurement.Timestamp < toDate)
+        .OrderBy(measurement => measurement.Timestamp)
+        .Select(measurement => measurement.ToModel())
+        .ToListAsync();
+    });
+  }
+
+  public IReadOnlyList<SchneiderAggregate> GetBulkSchneiderMonthlyAggregate(
+    IEnumerable<string> sources,
+    DateTimeOffset fromDate,
+    DateTimeOffset toDate
+  )
+  {
+    return _services.WithTimeseriesDbContext<
+      OzdsTimeseriesDbContext,
+      List<SchneiderAggregate>
+    >(context =>
+    {
+      return context.SchneiderMonthlyAggregate
         .Where(measurement => sources.Contains(measurement.Source))
         .Where(measurement => measurement.Timestamp >= fromDate)
         .Where(measurement => measurement.Timestamp < toDate)
