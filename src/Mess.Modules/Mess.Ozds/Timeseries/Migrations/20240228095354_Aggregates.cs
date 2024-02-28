@@ -56,7 +56,7 @@ namespace Mess.Ozds.Timeseries.Migrations
             ReactiveEnergyImportTotalMax_VARh = table.Column<double>(type: "float8", nullable: false),
             ReactiveEnergyExportTotalMin_VARh = table.Column<double>(type: "float8", nullable: false),
             ReactiveEnergyExportTotalMax_VARh = table.Column<double>(type: "float8", nullable: false),
-            AggregateCount = table.Column<short>(type: "int2", nullable: false)
+            AggregateCount = table.Column<short>(type: "int8", nullable: false)
           },
           constraints: table =>
           {
@@ -90,7 +90,7 @@ namespace Mess.Ozds.Timeseries.Migrations
             ReactiveEnergyImportTotalMax_VARh = table.Column<double>(type: "float8", nullable: false),
             ReactiveEnergyExportTotalMin_VARh = table.Column<double>(type: "float8", nullable: false),
             ReactiveEnergyExportTotalMax_VARh = table.Column<double>(type: "float8", nullable: false),
-            AggregateCount = table.Column<short>(type: "int2", nullable: false)
+            AggregateCount = table.Column<short>(type: "int8", nullable: false)
           },
           constraints: table =>
           {
@@ -124,7 +124,7 @@ namespace Mess.Ozds.Timeseries.Migrations
             ReactiveEnergyImportTotalMax_VARh = table.Column<double>(type: "float8", nullable: false),
             ReactiveEnergyExportTotalMin_VARh = table.Column<double>(type: "float8", nullable: false),
             ReactiveEnergyExportTotalMax_VARh = table.Column<double>(type: "float8", nullable: false),
-            AggregateCount = table.Column<short>(type: "int2", nullable: false)
+            AggregateCount = table.Column<short>(type: "int8", nullable: false)
           },
           constraints: table =>
           {
@@ -157,7 +157,7 @@ namespace Mess.Ozds.Timeseries.Migrations
             ReactiveEnergyImportTotalMax_VARh = table.Column<double>(type: "float8", nullable: false),
             ReactiveEnergyExportTotalMin_VARh = table.Column<double>(type: "float8", nullable: false),
             ReactiveEnergyExportTotalMax_VARh = table.Column<double>(type: "float8", nullable: false),
-            AggregateCount = table.Column<short>(type: "int2", nullable: false)
+            AggregateCount = table.Column<short>(type: "int8", nullable: false)
           },
           constraints: table =>
           {
@@ -190,7 +190,7 @@ namespace Mess.Ozds.Timeseries.Migrations
             ReactiveEnergyImportTotalMax_VARh = table.Column<double>(type: "float8", nullable: false),
             ReactiveEnergyExportTotalMin_VARh = table.Column<double>(type: "float8", nullable: false),
             ReactiveEnergyExportTotalMax_VARh = table.Column<double>(type: "float8", nullable: false),
-            AggregateCount = table.Column<short>(type: "int2", nullable: false)
+            AggregateCount = table.Column<short>(type: "int8", nullable: false)
           },
           constraints: table =>
           {
@@ -223,7 +223,7 @@ namespace Mess.Ozds.Timeseries.Migrations
             ReactiveEnergyImportTotalMax_VARh = table.Column<double>(type: "float8", nullable: false),
             ReactiveEnergyExportTotalMin_VARh = table.Column<double>(type: "float8", nullable: false),
             ReactiveEnergyExportTotalMax_VARh = table.Column<double>(type: "float8", nullable: false),
-            AggregateCount = table.Column<short>(type: "int2", nullable: false)
+            AggregateCount = table.Column<short>(type: "int8", nullable: false)
           },
           constraints: table =>
           {

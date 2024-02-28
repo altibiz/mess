@@ -4,7 +4,7 @@ namespace Mess.Timeseries.Abstractions.Entities;
 
 public abstract class ContinuousAggregateEntity
 {
-  [Column(TypeName = "int2")]
+  [Column(TypeName = "int8")]
   public int AggregateCount { get; set; } = default!;
 
   [NotMapped] private DateTimeOffset _timestamp;
