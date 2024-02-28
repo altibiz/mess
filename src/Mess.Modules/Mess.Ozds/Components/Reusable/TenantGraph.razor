@@ -40,7 +40,7 @@
     @if(_leftGraphValues is not null ){
       <ApexChart TItem="ChartDataL"
         XAxisType="XAxisType.Datetime"
-        Options="graphLOptionsMob"
+        Options="graphLOptions"
         @ref="leftChart">
             <ApexPointSeries TItem="ChartDataL"
             Items="@_leftGraphValues"
@@ -62,7 +62,7 @@
     private ApexChartOptions<ChartDataL> graphLOptionsMob = new();
     public IEnumerable<ChartDataL>? _leftGraphValues;
     public List<ChartDataL>? _totalConsumption = new();
-    public record ChartDataL(decimal?[] values, string[] names, DateTimeOffset date, string source);
+    public record ChartDataL(decimal[] values, string[] names, DateTimeOffset date, string source);
     private ApexChart<ChartDataL> leftChart = default!;
     private DateTimeOffset nowYear = DateTimeOffset.UtcNow.AddDays(-DateTimeOffset.UtcNow.Day).AddMonths(-DateTimeOffset.UtcNow.Month);
     private DateTimeOffset now = DateTime.UtcNow;
@@ -97,8 +97,8 @@
             Tools = new Tools { Zoomin = false, Zoomout = false, Download = false, Pan = false, Selection = false }
         }
       };
-      graphLOptions.Tooltip = new ApexCharts.Tooltip { X = new TooltipX { Format = @"hh : mm : ss" } };
-      graphLOptionsMob.Tooltip = new ApexCharts.Tooltip { X = new TooltipX { Format = @"hh : mm : ss" } };
+      graphLOptions.Tooltip = new ApexCharts.Tooltip { X = new TooltipX { Format = @"dd. MM. yyyy." } };
+      graphLOptionsMob.Tooltip = new ApexCharts.Tooltip { X = new TooltipX { Format = @"dd. MM. yyyy." } };
       graphLOptionsMob.Yaxis = new List<YAxis>();
       graphLOptions.Yaxis = new List<YAxis>();
       graphLOptionsMob.Xaxis = new XAxis();
@@ -115,9 +115,24 @@
             });
       graphLOptionsMob.Xaxis = new XAxis()
             {
-              Labels = new XAxisLabels(){ Show = false }
+                Labels = new XAxisLabels(){
+                  Format = @"dd. MM."
+                 }
             };
       graphLOptionsMob.Chart = new Chart
+            {
+                Toolbar = new ApexCharts.Toolbar
+                {
+                    Tools = new Tools { Zoomin = false, Zoomout = false, Download = false, Pan = false, Selection = false}
+                }
+            };
+      graphLOptions.Xaxis = new XAxis()
+            {
+                Labels = new XAxisLabels(){
+                  Format = @"dd. MM."
+                 }
+            };
+      graphLOptions.Chart = new Chart
             {
                 Toolbar = new ApexCharts.Toolbar
                 {
@@ -133,12 +148,12 @@
         foreach(var omm in _ioTDevices){
           if(omm.DisplayText.StartsWith("abb")){
             var measurements = await _timeseriesClient.GetAbbMonthlyEnergyRangeAsync(omm.DisplayText, nowYear, now);
-            var chartDataList = measurements.Select(x => new ChartDataL(values: new decimal?[]{x.ActiveEnergyImportTotalMax_Wh}, names: new string[]{"Potrošnja"}, date: x.Timestamp, source: x.Source)).FirstOrDefault();
+            var chartDataList = measurements.Select(x => new ChartDataL(values: new decimal[]{x.ActiveEnergyImportTotalMax_Wh}, names: new string[]{"Potrošnja"}, date: x.Timestamp, source: x.Source)).FirstOrDefault();
             _totalConsumption.Add(chartDataList);
           }
           else{
             var measurements = await _timeseriesClient.GetSchneiderMonthlyEnergyRangeAsync(omm.DisplayText, nowYear, now);
-            var chartDataList = measurements.Select(x => new ChartDataL(values: new decimal?[]{x.ActiveEnergyImportTotalMax_Wh}, names: new string[]{"Potrošnja"}, date: x.Timestamp, source: x.Source)).ToList();
+            var chartDataList = measurements.Select(x => new ChartDataL(values: new decimal[]{x.ActiveEnergyImportTotalMax_Wh}, names: new string[]{"Potrošnja"}, date: x.Timestamp, source: x.Source)).ToList();
             _totalConsumption.AddRange(chartDataList);
           }
         }
@@ -148,9 +163,10 @@
             {
                 var aggregatedValues = group
                     .Select(g => g.values)
-                    .Aggregate((a, b) => a.Zip(b, (x, y) => (x ?? 0) + (y ?? 0))
-                    .Select(sum => (decimal?)sum) // Ensure the result is nullable
-                    .ToArray());
+                    .Aggregate((a, b) => a
+                      .Zip(b, (x, y) => x + y)
+                      .ToArray()
+                    );
 
                 var firstItem = group.First();
 
