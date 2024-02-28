@@ -4,7 +4,7 @@ public record SchneiderAggregate(
   string Source,
   DateTimeOffset Timestamp,
   TimeSpan TimeSpan,
-  int AggregateCount,
+  long AggregateCount,
   decimal VoltageL1Avg_V,
   decimal VoltageL2Avg_V,
   decimal VoltageL3Avg_V,
