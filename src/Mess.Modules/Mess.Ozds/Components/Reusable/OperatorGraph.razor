@@ -153,6 +153,7 @@
     public int leftLineCount = 0;
     public int rightLineCount = 0;
     public IEnumerable<ChartDataL>? _leftGraphValues;
+    public IEnumerable<ChartDataL>? _rowData;
     private string _leftTitle = "";
     private string _leftDataTitle = "";
     private string _leftTimeTitle = "1 min";
@@ -279,6 +280,58 @@
     await leftChart.UpdateSeriesAsync(true);
     await LeftMenuDataItemClicked(_leftDataTitle);
   }
+
+  private async Task GetValues(string source, string type){
+    IReadOnlyList<AbbMeasurement>? abbMeasurements = null;
+    IReadOnlyList<SchneiderMeasurement>? schneiderMeasurements = null;
+    IReadOnlyList<AbbEnergyRange>? abbEnergyRange = null;
+    IReadOnlyList<SchneiderEnergyRange>? schneiderEnergyRange = null;
+    if(source.StartsWith("abb")){
+      if(timeSpanMins <= 60){
+        abbMeasurements = await _timeseriesClient.GetAbbMeasurementsAsync(source, DateTimeOffset.UtcNow.AddMinutes(- timeSpanMins), DateTimeOffset.UtcNow);
+      }
+      else{
+        abbEnergyRange = await _timeseriesClient.GetAbbQuarterHourlyEnergyRangeAsync(source, DateTimeOffset.UtcNow.AddMinutes(- timeSpanMins), DateTimeOffset.UtcNow);
+      }
+      _displayType = new List<string>{"Napon", "Struja", "Snaga", "Jalova Snaga"};
+      if(_leftDataTitle == "Prividna snaga")
+        _leftDataTitle = "Jalova Snaga";
+    }
+    else if(source.StartsWith("schneider")){
+      if(timeSpanMins <= 60){
+        schneiderMeasurements = await _timeseriesClient.GetSchneiderMeasurementsAsync(source, DateTimeOffset.UtcNow.AddMinutes(- timeSpanMins), DateTimeOffset.UtcNow);
+      }
+      else{
+        schneiderEnergyRange = await _timeseriesClient.GetSchneiderQuarterHourlyEnergyRangeAsync(source, DateTimeOffset.UtcNow.AddMinutes(- timeSpanMins), DateTimeOffset.UtcNow);
+      }
+      _displayType = new List<string>{"Napon", "Struja", "Snaga", "Jalova Snaga", "Prividna snaga"};
+    }
+    _leftTitle = source;
+
+    switch(type)
+    {
+      case "Struja":
+        if(abbMeasurements is not null){
+          _leftGraphValues = abbMeasurements.Select(x => new ChartDataL(values: new decimal?[]{x.CurrentL1_A, x.CurrentL2_A, x.CurrentL3_A}, names: new string[]{"L1 Struja", "L2 Struja","L3 Struja"}, date:x.Timestamp, source:x.Source)).ToList();
+          leftLineCount = 3;
+        }
+        else if(schneiderMeasurements is not null){
+          _leftGraphValues = schneiderMeasurements.Select(x => new ChartDataL(values: new decimal?[]{x.CurrentL1_A, x.CurrentL2_A, x.CurrentL3_A}, names: new string[]{"L1 Struja", "L2 Struja","L3 Struja"}, date:x.Timestamp, source:x.Source)).ToList();
+          leftLineCount = 3;
+        }
+        else if(abbEnergyRange is not null){
+          @* _leftGraphValues = abbEnergyRange.Select(x => new ChartDataL(values: new decimal?[]{x.CurrentL1_A, x.CurrentL2_A, x.CurrentL3_A}, names: new string[]{"L1 Struja", "L2 Struja","L3 Struja"}, date:x.Timestamp, source:x.Source)).ToList(); *@
+          leftLineCount = 3;
+        }
+        else if(schneiderEnergyRange is not null){
+          @* _leftGraphValues = schneiderEnergyRange.Select(x => new ChartDataL(values: new decimal?[]{x.CurrentL1_A, x.CurrentL2_A, x.CurrentL3_A}, names: new string[]{"L1 Struja", "L2 Struja","L3 Struja"}, date:x.Timestamp, source:x.Source)).ToList(); *@
+          leftLineCount = 3;
+        }
+        _leftDataTitle = "Struja";
+        break;
+    }
+
+  }
   private async Task LeftMenuDataItemClicked(string type)
   {
     switch(type)
@@ -353,6 +406,7 @@
     }
     StateHasChanged();
     await leftChart.UpdateSeriesAsync(true);
+    @* await GetValues(_leftTitle, _leftDataTitle); *@
   }
   private async Task MenuItemClicked(string item)
   {
@@ -396,5 +450,6 @@
             break;
       }
     await LeftMenuItemClicked(_leftTitle);
+    @* await GetValues(_leftTitle, _leftDataTitle); *@
   }
 }

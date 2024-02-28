@@ -1,0 +1,172 @@
+@using Mess.Ozds.Abstractions.Indexes
+@using Mess.Iot.Abstractions.Models
+@using Mess.Ozds.Abstractions.Models
+@using OrchardCore.Users.Models
+@using OrchardCore.ContentFields.Indexing.SQL
+@using System.Linq.Expressions
+@using Mess.Ozds.Abstractions.Timeseries
+@using Mess.Billing.Abstractions.Models
+@using OrchardCore.ContentManagement.Records
+@using OrchardCore.Users.Indexes
+@using System.Threading;
+
+@inject IOzdsTimeseriesClient _timeseriesClient
+
+@if(_leftGraphValues is not null){
+@* MOBILE *@
+   <MudHidden Breakpoint="Breakpoint.MdAndUp">
+            <MudContainer Class="d-flex flex-column" MaxWidth="MaxWidth.Small">
+              @if(_leftGraphValues is not null ){
+                <ApexChart TItem="ChartDataL"
+                  XAxisType="XAxisType.Datetime"
+                  Options="graphLOptionsMob"
+                  @ref="leftChart">
+                      <ApexPointSeries TItem="ChartDataL"
+                      Items="@_leftGraphValues"
+                      Name="Potrošnja"
+                      SeriesType="SeriesType.Area"
+                      XValue='x => x.date'
+                      YValue="x => x.values.FirstOrDefault()"
+                    />
+                </ApexChart>
+              }
+            </MudContainer>
+  </MudHidden>
+
+
+
+@* DESKTOP *@
+  <MudHidden Breakpoint="Breakpoint.SmAndDown">
+    @if(_leftGraphValues is not null ){
+      <ApexChart TItem="ChartDataL"
+        XAxisType="XAxisType.Datetime"
+        Options="graphLOptionsMob"
+        @ref="leftChart">
+            <ApexPointSeries TItem="ChartDataL"
+            Items="@_leftGraphValues"
+            Name="Potrošnja"
+            SeriesType="SeriesType.Area"
+            XValue='x => x.date'
+            YValue="x => x.values.FirstOrDefault()"
+          />
+      </ApexChart>
+    }
+  </MudHidden>
+}
+
+
+@code {
+    [Parameter]
+    public ContentItem LegalEntity { get; set; } = default!;
+    private ApexChartOptions<ChartDataL> graphLOptions = new();
+    private ApexChartOptions<ChartDataL> graphLOptionsMob = new();
+    public IEnumerable<ChartDataL>? _leftGraphValues;
+    public List<ChartDataL>? _totalConsumption = new();
+    public record ChartDataL(decimal?[] values, string[] names, DateTimeOffset date, string source);
+    private ApexChart<ChartDataL> leftChart = default!;
+    private DateTimeOffset nowYear = DateTimeOffset.UtcNow.AddDays(-DateTimeOffset.UtcNow.Day).AddMonths(-DateTimeOffset.UtcNow.Month);
+    private DateTimeOffset now = DateTime.UtcNow;
+    protected override async Task OnInitializedAsync()
+    {
+      graphLOptionsMob= new ApexChartOptions<ChartDataL>() {
+        Grid = new Grid
+        {
+            BorderColor = "#e7e7e7",
+            Row = new GridRow
+            {
+                Colors = new List<string> { "#f3f3f3", "transparent" },
+                Opacity = 0.5d
+            }
+        }
+        };
+      graphLOptions= new ApexChartOptions<ChartDataL>() {
+        Grid = new Grid
+        {
+            BorderColor = "#e7e7e7",
+            Row = new GridRow
+            {
+                Colors = new List<string> { "#f3f3f3", "transparent" },
+                Opacity = 0.5d
+            }
+        }
+        };
+      graphLOptions.Chart = new Chart
+      {
+        Toolbar = new ApexCharts.Toolbar
+        {
+            Tools = new Tools { Zoomin = false, Zoomout = false, Download = false, Pan = false, Selection = false }
+        }
+      };
+      graphLOptions.Tooltip = new ApexCharts.Tooltip { X = new TooltipX { Format = @"hh : mm : ss" } };
+      graphLOptionsMob.Tooltip = new ApexCharts.Tooltip { X = new TooltipX { Format = @"hh : mm : ss" } };
+      graphLOptionsMob.Yaxis = new List<YAxis>();
+      graphLOptions.Yaxis = new List<YAxis>();
+      graphLOptionsMob.Xaxis = new XAxis();
+
+      graphLOptionsMob.Yaxis.Add(new YAxis
+            {
+                Show = false
+            });
+      graphLOptions.Yaxis.Add(new YAxis()
+            {
+              Labels = new YAxisLabels(){
+                Formatter = "function(val, index) { return val.toFixed(0); }"
+                }
+            });
+      graphLOptionsMob.Xaxis = new XAxis()
+            {
+              Labels = new XAxisLabels(){ Show = false }
+            };
+      graphLOptionsMob.Chart = new Chart
+            {
+                Toolbar = new ApexCharts.Toolbar
+                {
+                    Tools = new Tools { Zoomin = false, Zoomout = false, Download = false, Pan = false, Selection = false}
+                }
+            };
+      await WithTransientSessionAsync(async session => {
+        var _ioTDevices = await session
+          .Query<ContentItem, OzdsIotDeviceIndex>()
+            .Where(index => !index.IsMessenger)
+          .Where(x => x.DistributionSystemUnitContentItemId == LegalEntity.ContentItemId)
+          .ListAsync();
+        foreach(var omm in _ioTDevices){
+          if(omm.DisplayText.StartsWith("abb")){
+            var measurements = await _timeseriesClient.GetAbbMonthlyEnergyRangeAsync(omm.DisplayText, nowYear, now);
+            var chartDataList = measurements.Select(x => new ChartDataL(values: new decimal?[]{x.ActiveEnergyImportTotalMax_Wh}, names: new string[]{"Potrošnja"}, date: x.Timestamp, source: x.Source)).FirstOrDefault();
+            _totalConsumption.Add(chartDataList);
+          }
+          else{
+            var measurements = await _timeseriesClient.GetSchneiderMonthlyEnergyRangeAsync(omm.DisplayText, nowYear, now);
+            var chartDataList = measurements.Select(x => new ChartDataL(values: new decimal?[]{x.ActiveEnergyImportTotalMax_Wh}, names: new string[]{"Potrošnja"}, date: x.Timestamp, source: x.Source)).ToList();
+            _totalConsumption.AddRange(chartDataList);
+          }
+        }
+        var aggregatedConsumption = _totalConsumption
+            .GroupBy(x => x.date)
+            .Select(group =>
+            {
+                var aggregatedValues = group
+                    .Select(g => g.values)
+                    .Aggregate((a, b) => a.Zip(b, (x, y) => (x ?? 0) + (y ?? 0))
+                    .Select(sum => (decimal?)sum) // Ensure the result is nullable
+                    .ToArray());
+
+                var firstItem = group.First();
+
+                // Make sure this matches your ChartDataL constructor signature
+                return new ChartDataL(
+                    aggregatedValues,
+                    firstItem.names,
+                    group.Key,
+                    firstItem.source);
+            })
+            .ToList();
+
+        // Step 3: Replace _totalConsumption with aggregated results
+        _totalConsumption.Clear(); // Clear existing items
+        _totalConsumption.AddRange(aggregatedConsumption); // Add aggregated items
+        _leftGraphValues = _totalConsumption;
+      });
+    }
+}

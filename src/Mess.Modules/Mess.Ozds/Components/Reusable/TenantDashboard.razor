@@ -15,7 +15,20 @@
 
 @* MOBILE *@
    <MudHidden Breakpoint="Breakpoint.MdAndUp">
+
     <MudGrid Class="my-3 pa-1">
+        <MudItem xs="12" Class="pa-1">
+          <MudPaper Class="d-flex align-center justify-stat mud-width-full pa-1 pb-3 flex-column">
+            <MudItem Class="d-flex justify-center align-center" Style="font-size: large; font-weight: bold;">
+              <MudText Typo="Typo.h6">
+                @(T["Potrošnja u godini(kWh):"].Value)
+              </MudText>
+            </MudItem>
+            @* <MudContainer Class="d-flex justify-center" MaxWidth="MaxWidth.Small"> *@
+              <TenantGraph LegalEntity="@LegalEntity"></TenantGraph>
+            @* </MudContainer> *@
+          </MudPaper>
+        </MudItem>
         <MudItem xs="12" Class="pa-1">
           <MudPaper Class="d-flex align-center justify-stat mud-width-full pa-1 pb-3 flex-column">
             <MudItem Class="d-flex justify-center align-center" Style="font-size: large; font-weight: bold;">
@@ -54,14 +67,26 @@
 @* DESKTOP *@
   <MudHidden Breakpoint="Breakpoint.SmAndDown">
     <MudGrid Class="my-3">
-        <MudItem xs="6">
+        <MudItem xs="4">
           <MudPaper Class="mud-width-full py-8 px-8" Height="300px">
             <MudItem Class="" Style="font-size: large; font-weight: bold;">
-              <MudText Typo="Typo.h4">
+              <MudText Typo="Typo.h5">
+                @(T["Potrošnja u godini(kWh):"].Value)
+              </MudText>
+            </MudItem>
+            @* <MudContainer Class="d-flex align-center justify-center" MaxWidth="MaxWidth.Small" Style="height: 100%;"> *@
+              <TenantGraph LegalEntity="@LegalEntity"></TenantGraph>
+            @* </MudContainer> *@
+          </MudPaper>
+        </MudItem>
+        <MudItem xs="4">
+          <MudPaper Class="mud-width-full py-8 px-8" Height="300px">
+            <MudItem Class="" Style="font-size: large; font-weight: bold;">
+              <MudText Typo="Typo.h5">
                 @(T["Potrošnja prošlog mjeseca(kWh):"].Value)
               </MudText>
             </MudItem>
-            <MudContainer Class="d-flex align-center justify-center" Style="height: 80%;" MaxWidth="MaxWidth.Small">
+            <MudContainer Class="d-flex align-center justify-center" MaxWidth="MaxWidth.Small" Style="height: 100%;">
               <MudText Typo="Typo.h1">
                 @if(_lastMonthTotal is not null)
                   @(DecimalString((decimal)_lastMonthTotal/1000, 0))
@@ -69,14 +94,14 @@
             </MudContainer>
           </MudPaper>
         </MudItem>
-        <MudItem xs="6">
+        <MudItem xs="4">
           <MudPaper Class="mud-width-full py-8 px-8" Height="300px">
             <MudItem Class="" Style="font-size: large; font-weight: bold;">
-              <MudText Typo="Typo.h4">
+              <MudText Typo="Typo.h5">
                 @(T["Potrošnja ovaj mjesec(kWh):"].Value)
               </MudText>
             </MudItem>
-            <MudContainer Class="d-flex align-center justify-center" Style="height: 80%;" MaxWidth="MaxWidth.Small">
+            <MudContainer Class="d-flex align-center justify-center" MaxWidth="MaxWidth.Small" Style="height: 75%;">
               <MudText Typo="Typo.h1">
                 @if(_thisMonthTotal is not null)
                   @(DecimalString((decimal)_thisMonthTotal/1000, 0))
