@@ -58,7 +58,7 @@ namespace Mess.Ozds.Timeseries.Migrations
             b.Property<double>("ActivePowerL3Avg_W")
                       .HasColumnType("float8");
 
-            b.Property<short>("AggregateCount")
+            b.Property<long>("AggregateCount")
                       .HasColumnType("int8");
 
             b.Property<double>("CurrentL1Avg_A")
@@ -241,7 +241,7 @@ namespace Mess.Ozds.Timeseries.Migrations
             b.Property<double>("ActivePowerL3Avg_W")
                       .HasColumnType("float8");
 
-            b.Property<short>("AggregateCount")
+            b.Property<long>("AggregateCount")
                       .HasColumnType("int8");
 
             b.Property<double>("CurrentL1Avg_A")
@@ -322,7 +322,7 @@ namespace Mess.Ozds.Timeseries.Migrations
             b.Property<double>("ActivePowerL3Avg_W")
                       .HasColumnType("float8");
 
-            b.Property<short>("AggregateCount")
+            b.Property<long>("AggregateCount")
                       .HasColumnType("int8");
 
             b.Property<double>("CurrentL1Avg_A")
@@ -403,7 +403,7 @@ namespace Mess.Ozds.Timeseries.Migrations
             b.Property<double>("ActivePowerL3Avg_W")
                       .HasColumnType("float8");
 
-            b.Property<short>("AggregateCount")
+            b.Property<long>("AggregateCount")
                       .HasColumnType("int8");
 
             b.Property<double>("ApparentPowerTotalAvg_VA")
@@ -553,7 +553,7 @@ namespace Mess.Ozds.Timeseries.Migrations
             b.Property<double>("ActivePowerL3Avg_W")
                       .HasColumnType("float8");
 
-            b.Property<short>("AggregateCount")
+            b.Property<long>("AggregateCount")
                       .HasColumnType("int8");
 
             b.Property<double>("ApparentPowerTotalAvg_VA")
@@ -631,7 +631,7 @@ namespace Mess.Ozds.Timeseries.Migrations
             b.Property<double>("ActivePowerL3Avg_W")
                       .HasColumnType("float8");
 
-            b.Property<short>("AggregateCount")
+            b.Property<long>("AggregateCount")
                       .HasColumnType("int8");
 
             b.Property<double>("ApparentPowerTotalAvg_VA")
