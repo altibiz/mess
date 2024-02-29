@@ -192,45 +192,37 @@ public static class SchneiderMonthlyAggregateEntityExtensions
             + next.ApparentPowerTotalAvg_VA * next.AggregateCount)
             / (previous.AggregateCount + next.AggregateCount),
       ActiveEnergyImportTotalMin_Wh =
-          Math.Min(
-            previous.ActiveEnergyImportTotalMin_Wh,
-            next.ActiveEnergyImportTotalMin_Wh
-          ),
+          previous.ActiveEnergyImportTotalMin_Wh < next.ActiveEnergyImportTotalMin_Wh
+           ? previous.ActiveEnergyImportTotalMin_Wh
+           : next.ActiveEnergyImportTotalMin_Wh,
       ActiveEnergyImportTotalMax_Wh =
-          Math.Max(
-            previous.ActiveEnergyImportTotalMax_Wh,
-            next.ActiveEnergyImportTotalMax_Wh
-          ),
+          previous.ActiveEnergyImportTotalMax_Wh > next.ActiveEnergyImportTotalMax_Wh
+            ? previous.ActiveEnergyImportTotalMax_Wh
+            : next.ActiveEnergyImportTotalMax_Wh,
       ActiveEnergyExportTotalMin_Wh =
-          Math.Min(
-            previous.ActiveEnergyExportTotalMin_Wh,
-            next.ActiveEnergyExportTotalMin_Wh
-          ),
+          previous.ActiveEnergyExportTotalMin_Wh < next.ActiveEnergyExportTotalMin_Wh
+           ? previous.ActiveEnergyExportTotalMin_Wh
+           : next.ActiveEnergyExportTotalMin_Wh,
       ActiveEnergyExportTotalMax_Wh =
-          Math.Max(
-            previous.ActiveEnergyExportTotalMax_Wh,
-            next.ActiveEnergyExportTotalMax_Wh
-          ),
+          previous.ActiveEnergyExportTotalMax_Wh > next.ActiveEnergyExportTotalMax_Wh
+            ? previous.ActiveEnergyExportTotalMax_Wh
+            : next.ActiveEnergyExportTotalMax_Wh,
       ReactiveEnergyImportTotalMin_VARh =
-          Math.Min(
-            previous.ReactiveEnergyImportTotalMin_VARh,
-            next.ReactiveEnergyImportTotalMin_VARh
-          ),
+          previous.ReactiveEnergyImportTotalMin_VARh < next.ReactiveEnergyImportTotalMin_VARh
+           ? previous.ReactiveEnergyImportTotalMin_VARh
+           : next.ReactiveEnergyImportTotalMin_VARh,
       ReactiveEnergyImportTotalMax_VARh =
-          Math.Max(
-            previous.ReactiveEnergyImportTotalMax_VARh,
-            next.ReactiveEnergyImportTotalMax_VARh
-          ),
+          previous.ReactiveEnergyImportTotalMax_VARh > next.ReactiveEnergyImportTotalMax_VARh
+            ? previous.ReactiveEnergyImportTotalMax_VARh
+            : next.ReactiveEnergyImportTotalMax_VARh,
       ReactiveEnergyExportTotalMin_VARh =
-          Math.Min(
-            previous.ReactiveEnergyExportTotalMin_VARh,
-            next.ReactiveEnergyExportTotalMin_VARh
-          ),
+          previous.ReactiveEnergyExportTotalMin_VARh < next.ReactiveEnergyExportTotalMin_VARh
+           ? previous.ReactiveEnergyExportTotalMin_VARh
+           : next.ReactiveEnergyExportTotalMin_VARh,
       ReactiveEnergyExportTotalMax_VARh =
-          Math.Max(
-            previous.ReactiveEnergyExportTotalMax_VARh,
-            next.ReactiveEnergyExportTotalMax_VARh
-          ),
+          previous.ReactiveEnergyExportTotalMax_VARh > next.ReactiveEnergyExportTotalMax_VARh
+            ? previous.ReactiveEnergyExportTotalMax_VARh
+            : next.ReactiveEnergyExportTotalMax_VARh,
       }
     } :
     new()
@@ -295,45 +287,37 @@ public static class SchneiderMonthlyAggregateEntityExtensions
             + next.ApparentPowerTotalAvg_VA * next.AggregateCount)
             / (previous.AggregateCount + next.AggregateCount),
       ActiveEnergyImportTotalMin_Wh =
-          Math.Min(
-            previous.ActiveEnergyImportTotalMin_Wh,
-            next.ActiveEnergyImportTotalMin_Wh
-          ),
+          previous.ActiveEnergyImportTotalMin_Wh < next.ActiveEnergyImportTotalMin_Wh
+           ? previous.ActiveEnergyImportTotalMin_Wh
+           : next.ActiveEnergyImportTotalMin_Wh,
       ActiveEnergyImportTotalMax_Wh =
-          Math.Max(
-            previous.ActiveEnergyImportTotalMax_Wh,
-            next.ActiveEnergyImportTotalMax_Wh
-          ),
+          previous.ActiveEnergyImportTotalMax_Wh > next.ActiveEnergyImportTotalMax_Wh
+            ? previous.ActiveEnergyImportTotalMax_Wh
+            : next.ActiveEnergyImportTotalMax_Wh,
       ActiveEnergyExportTotalMin_Wh =
-          Math.Min(
-            previous.ActiveEnergyExportTotalMin_Wh,
-            next.ActiveEnergyExportTotalMin_Wh
-          ),
+          previous.ActiveEnergyExportTotalMin_Wh < next.ActiveEnergyExportTotalMin_Wh
+           ? previous.ActiveEnergyExportTotalMin_Wh
+           : next.ActiveEnergyExportTotalMin_Wh,
       ActiveEnergyExportTotalMax_Wh =
-          Math.Max(
-            previous.ActiveEnergyExportTotalMax_Wh,
-            next.ActiveEnergyExportTotalMax_Wh
-          ),
+          previous.ActiveEnergyExportTotalMax_Wh > next.ActiveEnergyExportTotalMax_Wh
+            ? previous.ActiveEnergyExportTotalMax_Wh
+            : next.ActiveEnergyExportTotalMax_Wh,
       ReactiveEnergyImportTotalMin_VARh =
-          Math.Min(
-            previous.ReactiveEnergyImportTotalMin_VARh,
-            next.ReactiveEnergyImportTotalMin_VARh
-          ),
+          previous.ReactiveEnergyImportTotalMin_VARh < next.ReactiveEnergyImportTotalMin_VARh
+           ? previous.ReactiveEnergyImportTotalMin_VARh
+           : next.ReactiveEnergyImportTotalMin_VARh,
       ReactiveEnergyImportTotalMax_VARh =
-          Math.Max(
-            previous.ReactiveEnergyImportTotalMax_VARh,
-            next.ReactiveEnergyImportTotalMax_VARh
-          ),
+          previous.ReactiveEnergyImportTotalMax_VARh > next.ReactiveEnergyImportTotalMax_VARh
+            ? previous.ReactiveEnergyImportTotalMax_VARh
+            : next.ReactiveEnergyImportTotalMax_VARh,
       ReactiveEnergyExportTotalMin_VARh =
-          Math.Min(
-            previous.ReactiveEnergyExportTotalMin_VARh,
-            next.ReactiveEnergyExportTotalMin_VARh
-          ),
+          previous.ReactiveEnergyExportTotalMin_VARh < next.ReactiveEnergyExportTotalMin_VARh
+           ? previous.ReactiveEnergyExportTotalMin_VARh
+           : next.ReactiveEnergyExportTotalMin_VARh,
       ReactiveEnergyExportTotalMax_VARh =
-          Math.Max(
-            previous.ReactiveEnergyExportTotalMax_VARh,
-            next.ReactiveEnergyExportTotalMax_VARh
-          ),
+          previous.ReactiveEnergyExportTotalMax_VARh > next.ReactiveEnergyExportTotalMax_VARh
+            ? previous.ReactiveEnergyExportTotalMax_VARh
+            : next.ReactiveEnergyExportTotalMax_VARh,
     };
 
   public static SchneiderAggregate ToModel(
