@@ -429,6 +429,20 @@ internal static partial class CreateAsyncMigrations
       abbIotDevice => abbIotDevice.ChartPart,
       chartPart => { chartPart.ChartContentItemId = abbChart.ContentItemId; }
     );
+    abbIotDevice.Alter(
+      abbIotDevice => abbIotDevice.AbbIotDevicePart,
+      abbIotDevicePart =>
+      {
+        abbIotDevicePart.MinVoltage_V = new NumericField { Value = 161 };
+        abbIotDevicePart.MaxVoltage_V = new NumericField { Value = 300 };
+        abbIotDevicePart.MinCurrent_A = new NumericField { Value = 0 };
+        abbIotDevicePart.MaxCurrent_A = new NumericField { Value = 80 };
+        abbIotDevicePart.MinActivePower_W = new NumericField { Value = 0 };
+        abbIotDevicePart.MaxActivePower_W = new NumericField { Value = 24000 };
+        abbIotDevicePart.MinReactivePower_VAR = new NumericField { Value = -24000 };
+        abbIotDevicePart.MaxReactivePower_VAR = new NumericField { Value = 24000 };
+      }
+    );
     await contentManager.CreateAsync(abbIotDevice, VersionOptions.Latest);
 
     await session.SaveChangesAsync();
@@ -553,6 +567,22 @@ internal static partial class CreateAsyncMigrations
       chartPart =>
       {
         chartPart.ChartContentItemId = schneiderChart.ContentItemId;
+      }
+    );
+    schneiderIotDevice.Alter(
+      schneiderIotDevice => schneiderIotDevice.SchneiderIotDevicePart,
+      schneiderIotDevicePart =>
+      {
+        schneiderIotDevicePart.MinVoltage_V = new NumericField { Value = 161 };
+        schneiderIotDevicePart.MaxVoltage_V = new NumericField { Value = 300 };
+        schneiderIotDevicePart.MinCurrent_A = new NumericField { Value = 0 };
+        schneiderIotDevicePart.MaxCurrent_A = new NumericField { Value = 80 };
+        schneiderIotDevicePart.MinActivePower_W = new NumericField { Value = 0 };
+        schneiderIotDevicePart.MaxActivePower_W = new NumericField { Value = 24000 };
+        schneiderIotDevicePart.MinReactivePower_VAR = new NumericField { Value = -24000 };
+        schneiderIotDevicePart.MaxReactivePower_VAR = new NumericField { Value = 24000 };
+        schneiderIotDevicePart.MinApparentPower_VA = new NumericField { Value = -72000 };
+        schneiderIotDevicePart.MaxApparentPower_VA = new NumericField { Value = 72000 };
       }
     );
     await contentManager.CreateAsync(schneiderIotDevice, VersionOptions.Latest);
