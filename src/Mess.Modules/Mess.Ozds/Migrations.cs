@@ -23,6 +23,320 @@ public class Migrations : DataMigration
     _serviceProvider = serviceProvider;
   }
 
+  public async Task<int> UpdateFrom2Async()
+  {
+    var contentDefinitionManager =
+      _serviceProvider.GetRequiredService<IContentDefinitionManager>();
+
+    contentDefinitionManager.AlterPartDefinition(
+      "AbbIotDevicePart",
+      builder =>
+        builder
+          .Attachable()
+          .WithDescription("A Abb measurement device.")
+          .WithDisplayName("Abb measurement device")
+          .WithField(
+            "MinVoltage_V",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("Minimum voltage")
+                .WithDescription("Minimum voltage in volts (V).")
+                .WithSettings(
+                  new NumericFieldSettings
+                  {
+                    Hint = "Minimum voltage in volts (V).",
+                    Required = false,
+                    Scale = 0
+                  }
+                )
+          )
+          .WithField(
+            "MaxVoltage_V",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("Maximum voltage")
+                .WithDescription("Maximum voltage in volts (V).")
+                .WithSettings(
+                  new NumericFieldSettings
+                  {
+                    Hint = "Maximum voltage in volts (V).",
+                    Required = false,
+                    Scale = 0
+                  }
+                )
+          )
+          .WithField(
+            "MinCurrent_A",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("Minimum current")
+                .WithDescription("Minimum current in amperes (A).")
+                .WithSettings(
+                  new NumericFieldSettings
+                  {
+                    Hint = "Minimum current in amperes (A).",
+                    Required = false,
+                    Scale = 0
+                  }
+                )
+          )
+          .WithField(
+            "MaxCurrent_A",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("Maximum current")
+                .WithDescription("Maximum current in amperes (A).")
+                .WithSettings(
+                  new NumericFieldSettings
+                  {
+                    Hint = "Maximum current in amperes (A).",
+                    Required = false,
+                    Scale = 0
+                  }
+                )
+          )
+          .WithField(
+            "MinActivePower_W",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("Minimum active power")
+                .WithDescription("Minimum active power in watts (W).")
+                .WithSettings(
+                  new NumericFieldSettings
+                  {
+                    Hint = "Minimum active power in watts (W).",
+                    Required = false,
+                    Scale = 0
+                  }
+                )
+          )
+          .WithField(
+            "MaxActivePower_W",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("Maximum active power")
+                .WithDescription("Maximum active power in watts (W).")
+                .WithSettings(
+                  new NumericFieldSettings
+                  {
+                    Hint = "Maximum active power in watts (W).",
+                    Required = false,
+                    Scale = 0
+                  }
+                )
+          )
+          .WithField(
+            "MinReactivePower_VAR",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("Minimum reactive power")
+                .WithDescription("Minimum reactive power in volt-amperes reactive (VAR).")
+                .WithSettings(
+                  new NumericFieldSettings
+                  {
+                    Hint = "Minimum reactive power in volt-amperes reactive (VAR).",
+                    Required = false,
+                    Scale = 0
+                  }
+                )
+          )
+          .WithField(
+            "MaxReactivePower_VAR",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("Maximum reactive power")
+                .WithDescription("Maximum reactive power in volt-amperes reactive (VAR).")
+                .WithSettings(
+                  new NumericFieldSettings
+                  {
+                    Hint = "Maximum reactive power in volt-amperes reactive (VAR).",
+                    Required = false,
+                    Scale = 0
+                  }
+                )
+          )
+    );
+
+    contentDefinitionManager.AlterPartDefinition(
+      "SchneiderIotDevicePart",
+      builder =>
+        builder
+          .Attachable()
+          .WithDescription("A Schneider measurement device.")
+          .WithDisplayName("Schneider measurement device")
+          .WithField(
+            "MinVoltage_V",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("Minimum voltage")
+                .WithDescription("Minimum voltage in volts (V).")
+                .WithSettings(
+                  new NumericFieldSettings
+                  {
+                    Hint = "Minimum voltage in volts (V).",
+                    Required = false,
+                    Scale = 0
+                  }
+                )
+          )
+          .WithField(
+            "MaxVoltage_V",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("Maximum voltage")
+                .WithDescription("Maximum voltage in volts (V).")
+                .WithSettings(
+                  new NumericFieldSettings
+                  {
+                    Hint = "Maximum voltage in volts (V).",
+                    Required = false,
+                    Scale = 0
+                  }
+                )
+          )
+          .WithField(
+            "MinCurrent_V",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("Minimum current")
+                .WithDescription("Minimum current in amperes (A).")
+                .WithSettings(
+                  new NumericFieldSettings
+                  {
+                    Hint = "Minimum current in amperes (A).",
+                    Required = false,
+                    Scale = 0
+                  }
+                )
+          )
+          .WithField(
+            "MaxCurrent_A",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("Maximum current")
+                .WithDescription("Maximum current in amperes (A).")
+                .WithSettings(
+                  new NumericFieldSettings
+                  {
+                    Hint = "Maximum current in amperes (A).",
+                    Required = false,
+                    Scale = 0
+                  }
+                )
+          )
+          .WithField(
+            "MinActivePower_W",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("Minimum active power")
+                .WithDescription("Minimum active power in watts (W).")
+                .WithSettings(
+                  new NumericFieldSettings
+                  {
+                    Hint = "Minimum active power in watts (W).",
+                    Required = false,
+                    Scale = 0
+                  }
+                )
+          )
+          .WithField(
+            "MaxActivePower_W",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("Maximum active power")
+                .WithDescription("Maximum active power in watts (W).")
+                .WithSettings(
+                  new NumericFieldSettings
+                  {
+                    Hint = "Maximum active power in watts (W).",
+                    Required = false,
+                    Scale = 0
+                  }
+                )
+          )
+          .WithField(
+            "MinReactivePower_VAR",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("Minimum reactive power")
+                .WithDescription("Minimum reactive power in volt-amperes reactive (VAR).")
+                .WithSettings(
+                  new NumericFieldSettings
+                  {
+                    Hint = "Minimum reactive power in volt-amperes reactive (VAR).",
+                    Required = false,
+                    Scale = 0
+                  }
+                )
+          )
+          .WithField(
+            "MaxReactivePower_VAR",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("Maximum reactive power")
+                .WithDescription("Maximum reactive power in volt-amperes reactive (VAR).")
+                .WithSettings(
+                  new NumericFieldSettings
+                  {
+                    Hint = "Maximum reactive power in volt-amperes reactive (VAR).",
+                    Required = false,
+                    Scale = 0
+                  }
+                )
+          )
+          .WithField(
+            "MinApparentPower_VA",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("Minimum apparent power")
+                .WithDescription("Minimum apparent power in volt-amperes (VA).")
+                .WithSettings(
+                  new NumericFieldSettings
+                  {
+                    Hint = "Minimum apparent power in volt-amperes (VA).",
+                    Required = false,
+                    Scale = 0
+                  }
+                )
+          )
+          .WithField(
+            "MaxApparentPower_VA",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("NumericField")
+                .WithDisplayName("Maximum apparent power")
+                .WithDescription("Maximum apparent power in volt-amperes (VA).")
+                .WithSettings(
+                  new NumericFieldSettings
+                  {
+                    Hint = "Maximum apparent power in volt-amperes (VA).",
+                    Required = false,
+                    Scale = 0
+                  }
+                )
+          )
+    );
+
+    return 3;
+  }
+
   public async Task<int> UpdateFrom1Async()
   {
     var contentDefinitionManager =

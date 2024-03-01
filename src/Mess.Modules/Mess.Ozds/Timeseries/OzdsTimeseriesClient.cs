@@ -1,6 +1,8 @@
 using FlexLabs.EntityFrameworkCore.Upsert;
 using Mess.Cms.Extensions.OrchardCore;
+using Mess.Iot.Abstractions.Caches;
 using Mess.Ozds.Abstractions.Billing;
+using Mess.Ozds.Abstractions.Models;
 using Mess.Ozds.Abstractions.Timeseries;
 using Mess.Prelude.Extensions.Objects;
 using Mess.Timeseries.Abstractions.Extensions;
@@ -18,14 +20,27 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
 
   private readonly ShellSettings _shellSettings;
 
-  public OzdsTimeseriesClient(IServiceProvider services, ShellSettings shellSettings)
+  private readonly IIotDeviceContentItemCache _itemCache;
+
+  public OzdsTimeseriesClient(
+    IServiceProvider services,
+    ShellSettings shellSettings,
+    IIotDeviceContentItemCache itemCache
+  )
   {
     _services = services;
     _shellSettings = shellSettings;
+    _itemCache = itemCache;
   }
 
   public void AddAbbMeasurement(AbbMeasurement model)
   {
+    var item = _itemCache.GetIotDeviceContent<AbbIotDeviceItem>(model.Source);
+    if (item is null || !model.IsValid(item))
+    {
+      return;
+    }
+
     _services.WithTimeseriesDbContext<OzdsTimeseriesDbContext>(context =>
     {
       context.AbbMeasurements
@@ -54,9 +69,15 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
     });
   }
 
-  public Task AddAbbMeasurementAsync(AbbMeasurement model)
+  public async Task AddAbbMeasurementAsync(AbbMeasurement model)
   {
-    return _services.WithTimeseriesDbContextAsync<OzdsTimeseriesDbContext>(
+    var item = await _itemCache.GetIotDeviceContentAsync<AbbIotDeviceItem>(model.Source);
+    if (item is null || !model.IsValid(item))
+    {
+      return;
+    }
+
+    await _services.WithTimeseriesDbContextAsync<OzdsTimeseriesDbContext>(
       async context =>
       {
         await context.AbbMeasurements
@@ -87,6 +108,12 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
 
   public void AddSchneiderMeasurement(SchneiderMeasurement model)
   {
+    var item = _itemCache.GetIotDeviceContent<SchneiderIotDeviceItem>(model.Source);
+    if (item is null || !model.IsValid(item))
+    {
+      return;
+    }
+
     _services.WithTimeseriesDbContext<OzdsTimeseriesDbContext>(context =>
     {
       context.SchneiderMeasurements
@@ -115,9 +142,15 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
     });
   }
 
-  public Task AddSchneiderMeasurementAsync(SchneiderMeasurement model)
+  public async Task AddSchneiderMeasurementAsync(SchneiderMeasurement model)
   {
-    return _services.WithTimeseriesDbContextAsync<OzdsTimeseriesDbContext>(
+    var item = await _itemCache.GetIotDeviceContentAsync<SchneiderIotDeviceItem>(model.Source);
+    if (item is null || !model.IsValid(item))
+    {
+      return;
+    }
+
+    await _services.WithTimeseriesDbContextAsync<OzdsTimeseriesDbContext>(
       async context =>
       {
         await context.SchneiderMeasurements
@@ -148,10 +181,28 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
 
   public void AddBulkAbbMeasurement(IEnumerable<AbbMeasurement> measurements)
   {
+    var filtered = new List<AbbMeasurement>();
+    foreach (var measurement in measurements)
+    {
+
+      var item = _itemCache.GetIotDeviceContent<AbbIotDeviceItem>(measurement.Source);
+      if (item is null || !measurement.IsValid(item))
+      {
+        continue;
+      }
+
+      filtered.Add(measurement);
+    }
+
+    if (filtered.Count is 0)
+    {
+      return;
+    }
+
     _services.WithTimeseriesDbContext<OzdsTimeseriesDbContext>(context =>
     {
       context.AbbMeasurements
-        .UpsertRange(measurements
+        .UpsertRange(filtered
           .Select(measurement => measurement
             .ToEntity(_shellSettings.GetDatabaseTablePrefix())))
         .On(v => new { v.Tenant, v.Source, v.Timestamp })
@@ -159,7 +210,7 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
         .Run();
 
       context.AbbQuarterHourlyAggregate
-        .UpsertRange(measurements
+        .UpsertRange(filtered
           .Select(measurement => measurement
             .ToQuarterHourlyAggregateEntity(_shellSettings.GetDatabaseTablePrefix()))
           .OrderBy(range => range.Timestamp)
@@ -178,7 +229,7 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
         .Run();
 
       context.AbbDailyAggregate
-        .UpsertRange(measurements
+        .UpsertRange(filtered
           .Select(measurement => measurement
             .ToDailyAggregateEntity(_shellSettings.GetDatabaseTablePrefix()))
           .OrderBy(range => range.Timestamp)
@@ -197,7 +248,7 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
         .Run();
 
       context.AbbMonthlyAggregate
-        .UpsertRange(measurements
+        .UpsertRange(filtered
           .Select(measurement => measurement
             .ToMonthlyAggregateEntity(_shellSettings.GetDatabaseTablePrefix()))
           .OrderBy(range => range.Timestamp)
@@ -217,13 +268,31 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
     });
   }
 
-  public Task AddBulkAbbMeasurementAsync(IEnumerable<AbbMeasurement> measurements)
+  public async Task AddBulkAbbMeasurementAsync(IEnumerable<AbbMeasurement> measurements)
   {
-    return _services.WithTimeseriesDbContextAsync<OzdsTimeseriesDbContext>(
+    var filtered = new List<AbbMeasurement>();
+    foreach (var measurement in measurements)
+    {
+
+      var item = await _itemCache.GetIotDeviceContentAsync<AbbIotDeviceItem>(measurement.Source);
+      if (item is null || !measurement.IsValid(item))
+      {
+        continue;
+      }
+
+      filtered.Add(measurement);
+    }
+
+    if (filtered.Count is 0)
+    {
+      return;
+    }
+
+    await _services.WithTimeseriesDbContextAsync<OzdsTimeseriesDbContext>(
       async context =>
       {
         await context.AbbMeasurements
-          .UpsertRange(measurements
+          .UpsertRange(filtered
             .Select(measurement => measurement
               .ToEntity(_shellSettings.GetDatabaseTablePrefix())))
           .On(v => new { v.Tenant, v.Source, v.Timestamp })
@@ -232,7 +301,7 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
 
         await context.AbbQuarterHourlyAggregate
         .UpsertRange(
-        measurements
+        filtered
                   .Select(measurement => measurement
                     .ToQuarterHourlyAggregateEntity(_shellSettings.GetDatabaseTablePrefix()))
                   .OrderBy(range => range.Timestamp)
@@ -253,7 +322,7 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
                 .RunAsync();
 
         await context.AbbDailyAggregate
-        .UpsertRange(measurements
+        .UpsertRange(filtered
           .Select(measurement => measurement
             .ToDailyAggregateEntity(_shellSettings.GetDatabaseTablePrefix()))
           .OrderBy(range => range.Timestamp)
@@ -273,7 +342,7 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
                 .RunAsync();
 
         await context.AbbMonthlyAggregate
-        .UpsertRange(measurements
+        .UpsertRange(filtered
           .Select(measurement => measurement
             .ToMonthlyAggregateEntity(_shellSettings.GetDatabaseTablePrefix()))
           .OrderBy(range => range.Timestamp)
@@ -296,10 +365,28 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
 
   public void AddBulkSchneiderMeasurement(IEnumerable<SchneiderMeasurement> measurements)
   {
+    var filtered = new List<SchneiderMeasurement>();
+    foreach (var measurement in measurements)
+    {
+
+      var item = _itemCache.GetIotDeviceContent<SchneiderIotDeviceItem>(measurement.Source);
+      if (item is null || !measurement.IsValid(item))
+      {
+        continue;
+      }
+
+      filtered.Add(measurement);
+    }
+
+    if (filtered.Count is 0)
+    {
+      return;
+    }
+
     _services.WithTimeseriesDbContext<OzdsTimeseriesDbContext>(context =>
     {
       context.SchneiderMeasurements
-        .UpsertRange(measurements
+        .UpsertRange(filtered
           .Select(measurement => measurement
             .ToEntity(_shellSettings.GetDatabaseTablePrefix())))
         .On(v => new { v.Tenant, v.Source, v.Timestamp })
@@ -307,7 +394,7 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
         .Run();
 
       context.SchneiderQuarterHourlyAggregate
-        .UpsertRange(measurements
+        .UpsertRange(filtered
           .Select(measurement => measurement
             .ToQuarterHourlyAggregateEntity(_shellSettings.GetDatabaseTablePrefix()))
           .OrderBy(range => range.Timestamp)
@@ -327,7 +414,7 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
         .Run();
 
       context.SchneiderDailyAggregate
-        .UpsertRange(measurements
+        .UpsertRange(filtered
           .Select(measurement => measurement
             .ToDailyAggregateEntity(_shellSettings.GetDatabaseTablePrefix()))
           .OrderBy(range => range.Timestamp)
@@ -347,7 +434,7 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
         .Run();
 
       context.SchneiderMonthlyAggregate
-        .UpsertRange(measurements
+        .UpsertRange(filtered
           .Select(measurement => measurement
             .ToMonthlyAggregateEntity(_shellSettings.GetDatabaseTablePrefix()))
           .OrderBy(range => range.Timestamp)
@@ -368,13 +455,31 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
     });
   }
 
-  public Task AddBulkSchneiderMeasurementAsync(IEnumerable<SchneiderMeasurement> measurements)
+  public async Task AddBulkSchneiderMeasurementAsync(IEnumerable<SchneiderMeasurement> measurements)
   {
-    return _services.WithTimeseriesDbContextAsync<OzdsTimeseriesDbContext>(
+    var filtered = new List<SchneiderMeasurement>();
+    foreach (var measurement in measurements)
+    {
+
+      var item = await _itemCache.GetIotDeviceContentAsync<SchneiderIotDeviceItem>(measurement.Source);
+      if (item is null || !measurement.IsValid(item))
+      {
+        continue;
+      }
+
+      filtered.Add(measurement);
+    }
+
+    if (filtered.Count is 0)
+    {
+      return;
+    }
+
+    await _services.WithTimeseriesDbContextAsync<OzdsTimeseriesDbContext>(
       async context =>
       {
         await context.SchneiderMeasurements
-          .UpsertRange(measurements
+          .UpsertRange(filtered
             .Select(measurement => measurement
               .ToEntity(_shellSettings.GetDatabaseTablePrefix())))
           .On(v => new { v.Tenant, v.Source, v.Timestamp })
@@ -382,7 +487,7 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
           .RunAsync();
 
         await context.SchneiderQuarterHourlyAggregate
-        .UpsertRange(measurements
+        .UpsertRange(filtered
           .Select(measurement => measurement
             .ToQuarterHourlyAggregateEntity(_shellSettings.GetDatabaseTablePrefix()))
           .OrderBy(range => range.Timestamp)
@@ -402,7 +507,7 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
                 .RunAsync();
 
         await context.SchneiderDailyAggregate
-        .UpsertRange(measurements
+        .UpsertRange(filtered
           .Select(measurement => measurement
             .ToDailyAggregateEntity(_shellSettings.GetDatabaseTablePrefix()))
           .OrderBy(range => range.Timestamp)
@@ -422,7 +527,7 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
                 .RunAsync();
 
         await context.SchneiderMonthlyAggregate
-        .UpsertRange(measurements
+        .UpsertRange(filtered
           .Select(measurement => measurement
             .ToMonthlyAggregateEntity(_shellSettings.GetDatabaseTablePrefix()))
           .OrderBy(range => range.Timestamp)

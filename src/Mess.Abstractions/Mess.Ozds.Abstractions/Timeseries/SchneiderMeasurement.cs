@@ -1,3 +1,5 @@
+using Mess.Ozds.Abstractions.Models;
+
 namespace Mess.Ozds.Abstractions.Timeseries;
 
 public record SchneiderMeasurement(
@@ -22,3 +24,40 @@ public record SchneiderMeasurement(
   decimal ReactiveEnergyImportTotal_VARh,
   decimal ReactiveEnergyExportTotal_VARh
 );
+
+public static class SchneiderMeasurementExtensions
+{
+  public static bool IsValid(this SchneiderMeasurement measurement, SchneiderIotDeviceItem item) =>
+    item.SchneiderIotDevicePart.Value.MinVoltage_V.Value is { } minVoltage_V
+      && measurement.VoltageL1_V >= minVoltage_V
+      && measurement.VoltageL2_V >= minVoltage_V
+      && measurement.VoltageL3_V >= minVoltage_V
+    && item.SchneiderIotDevicePart.Value.MaxVoltage_V.Value is { } maxVoltage_V
+      && measurement.VoltageL1_V < maxVoltage_V
+      && measurement.VoltageL2_V < maxVoltage_V
+      && measurement.VoltageL3_V < maxVoltage_V
+    && item.SchneiderIotDevicePart.Value.MinCurrent_A.Value is { } minCurrent_A
+      && measurement.CurrentL1_A >= minCurrent_A
+      && measurement.CurrentL2_A >= minCurrent_A
+      && measurement.CurrentL3_A >= minCurrent_A
+    && item.SchneiderIotDevicePart.Value.MaxCurrent_A.Value is { } maxCurrent_A
+      && measurement.CurrentL1_A < maxCurrent_A
+      && measurement.CurrentL2_A < maxCurrent_A
+      && measurement.CurrentL3_A < maxCurrent_A
+    && item.SchneiderIotDevicePart.Value.MinActivePower_W.Value is { } minActivePower_W
+      && measurement.ActivePowerL1_W >= minActivePower_W
+      && measurement.ActivePowerL2_W >= minActivePower_W
+      && measurement.ActivePowerL3_W >= minActivePower_W
+    && item.SchneiderIotDevicePart.Value.MaxActivePower_W.Value is { } maxActivePower_W
+      && measurement.ActivePowerL1_W < maxActivePower_W
+      && measurement.ActivePowerL2_W < maxActivePower_W
+      && measurement.ActivePowerL3_W < maxActivePower_W
+    && item.SchneiderIotDevicePart.Value.MinReactivePower_VAR.Value is { } minReactivePower_VAR
+      && measurement.ReactivePowerTotal_VAR >= minReactivePower_VAR
+    && item.SchneiderIotDevicePart.Value.MaxReactivePower_VAR.Value is { } maxReactivePower_VAR
+      && measurement.ReactivePowerTotal_VAR < maxReactivePower_VAR
+    && item.SchneiderIotDevicePart.Value.MinApparentPower_VA.Value is { } minApparentPower_VA
+      && measurement.ApparentPowerTotal_VA >= minApparentPower_VA
+    && item.SchneiderIotDevicePart.Value.MaxApparentPower_VA.Value is { } maxApparentPower_VA
+      && measurement.ApparentPowerTotal_VA < maxApparentPower_VA;
+}

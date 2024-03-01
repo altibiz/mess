@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Fields.Abstractions/Mess.Fields.Abstractions.csproj" />
+    <ProjectReference Include="../../../src/Mess.Cms/Mess.Cms.csproj" />
   </ItemGroup>
 
 </Project>
