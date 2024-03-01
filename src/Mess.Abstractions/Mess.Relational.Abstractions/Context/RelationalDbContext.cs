@@ -29,9 +29,9 @@ public abstract class RelationalDbContext : DbContext
   {
     if (_environment.IsDevelopment())
     {
-      optionsBuilder.UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()));
-      optionsBuilder.EnableSensitiveDataLogging();
-      optionsBuilder.EnableDetailedErrors();
+      // optionsBuilder.UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()));
+      // optionsBuilder.EnableSensitiveDataLogging();
+      // optionsBuilder.EnableDetailedErrors();
     }
   }
 

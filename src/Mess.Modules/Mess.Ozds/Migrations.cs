@@ -36,7 +36,7 @@ public class Migrations : DataMigration
           .WithDescription("A Abb measurement device.")
           .WithDisplayName("Abb measurement device")
           .WithField(
-            "MinVoltage_V",
+            "MinVoltage",
             fieldBuilder =>
               fieldBuilder
                 .OfType("NumericField")
@@ -52,7 +52,7 @@ public class Migrations : DataMigration
                 )
           )
           .WithField(
-            "MaxVoltage_V",
+            "MaxVoltage",
             fieldBuilder =>
               fieldBuilder
                 .OfType("NumericField")
@@ -68,7 +68,7 @@ public class Migrations : DataMigration
                 )
           )
           .WithField(
-            "MinCurrent_A",
+            "MinCurrent",
             fieldBuilder =>
               fieldBuilder
                 .OfType("NumericField")
@@ -84,7 +84,7 @@ public class Migrations : DataMigration
                 )
           )
           .WithField(
-            "MaxCurrent_A",
+            "MaxCurrent",
             fieldBuilder =>
               fieldBuilder
                 .OfType("NumericField")
@@ -100,7 +100,7 @@ public class Migrations : DataMigration
                 )
           )
           .WithField(
-            "MinActivePower_W",
+            "MinActivePower",
             fieldBuilder =>
               fieldBuilder
                 .OfType("NumericField")
@@ -116,7 +116,7 @@ public class Migrations : DataMigration
                 )
           )
           .WithField(
-            "MaxActivePower_W",
+            "MaxActivePower",
             fieldBuilder =>
               fieldBuilder
                 .OfType("NumericField")
@@ -132,7 +132,7 @@ public class Migrations : DataMigration
                 )
           )
           .WithField(
-            "MinReactivePower_VAR",
+            "MinReactivePower",
             fieldBuilder =>
               fieldBuilder
                 .OfType("NumericField")
@@ -148,7 +148,7 @@ public class Migrations : DataMigration
                 )
           )
           .WithField(
-            "MaxReactivePower_VAR",
+            "MaxReactivePower",
             fieldBuilder =>
               fieldBuilder
                 .OfType("NumericField")
@@ -173,7 +173,7 @@ public class Migrations : DataMigration
           .WithDescription("A Schneider measurement device.")
           .WithDisplayName("Schneider measurement device")
           .WithField(
-            "MinVoltage_V",
+            "MinVoltage",
             fieldBuilder =>
               fieldBuilder
                 .OfType("NumericField")
@@ -189,7 +189,7 @@ public class Migrations : DataMigration
                 )
           )
           .WithField(
-            "MaxVoltage_V",
+            "MaxVoltage",
             fieldBuilder =>
               fieldBuilder
                 .OfType("NumericField")
@@ -205,7 +205,7 @@ public class Migrations : DataMigration
                 )
           )
           .WithField(
-            "MinCurrent_V",
+            "MinCurrent",
             fieldBuilder =>
               fieldBuilder
                 .OfType("NumericField")
@@ -221,7 +221,7 @@ public class Migrations : DataMigration
                 )
           )
           .WithField(
-            "MaxCurrent_A",
+            "MaxCurrent",
             fieldBuilder =>
               fieldBuilder
                 .OfType("NumericField")
@@ -237,7 +237,7 @@ public class Migrations : DataMigration
                 )
           )
           .WithField(
-            "MinActivePower_W",
+            "MinActivePower",
             fieldBuilder =>
               fieldBuilder
                 .OfType("NumericField")
@@ -253,7 +253,7 @@ public class Migrations : DataMigration
                 )
           )
           .WithField(
-            "MaxActivePower_W",
+            "MaxActivePower",
             fieldBuilder =>
               fieldBuilder
                 .OfType("NumericField")
@@ -269,7 +269,7 @@ public class Migrations : DataMigration
                 )
           )
           .WithField(
-            "MinReactivePower_VAR",
+            "MinReactivePower",
             fieldBuilder =>
               fieldBuilder
                 .OfType("NumericField")
@@ -285,7 +285,7 @@ public class Migrations : DataMigration
                 )
           )
           .WithField(
-            "MaxReactivePower_VAR",
+            "MaxReactivePower",
             fieldBuilder =>
               fieldBuilder
                 .OfType("NumericField")
@@ -301,7 +301,7 @@ public class Migrations : DataMigration
                 )
           )
           .WithField(
-            "MinApparentPower_VA",
+            "MinApparentPower",
             fieldBuilder =>
               fieldBuilder
                 .OfType("NumericField")
@@ -317,7 +317,7 @@ public class Migrations : DataMigration
                 )
           )
           .WithField(
-            "MaxApparentPower_VA",
+            "MaxApparentPower",
             fieldBuilder =>
               fieldBuilder
                 .OfType("NumericField")

@@ -38,35 +38,35 @@ public record AbbMeasurement(
 public static class AbbMeasurementExtensions
 {
   public static bool IsValid(this AbbMeasurement measurement, AbbIotDeviceItem item) =>
-    item.AbbIotDevicePart.Value.MinVoltage_V.Value is { } minVoltage_V
+    item.AbbIotDevicePart.Value.MinVoltage.Value is { } minVoltage_V
       && measurement.VoltageL1_V >= minVoltage_V
       && measurement.VoltageL2_V >= minVoltage_V
       && measurement.VoltageL3_V >= minVoltage_V
-    && item.AbbIotDevicePart.Value.MaxVoltage_V.Value is { } maxVoltage_V
+    && item.AbbIotDevicePart.Value.MaxVoltage.Value is { } maxVoltage_V
       && measurement.VoltageL1_V < maxVoltage_V
       && measurement.VoltageL2_V < maxVoltage_V
       && measurement.VoltageL3_V < maxVoltage_V
-    && item.AbbIotDevicePart.Value.MinCurrent_A.Value is { } minCurrent_A
+    && item.AbbIotDevicePart.Value.MinCurrent.Value is { } minCurrent_A
       && measurement.CurrentL1_A >= minCurrent_A
       && measurement.CurrentL2_A >= minCurrent_A
       && measurement.CurrentL3_A >= minCurrent_A
-    && item.AbbIotDevicePart.Value.MaxCurrent_A.Value is { } maxCurrent_A
+    && item.AbbIotDevicePart.Value.MaxCurrent.Value is { } maxCurrent_A
       && measurement.CurrentL1_A < maxCurrent_A
       && measurement.CurrentL2_A < maxCurrent_A
       && measurement.CurrentL3_A < maxCurrent_A
-    && item.AbbIotDevicePart.Value.MinActivePower_W.Value is { } minActivePower_W
+    && item.AbbIotDevicePart.Value.MinActivePower.Value is { } minActivePower_W
       && measurement.ActivePowerL1_W >= minActivePower_W
       && measurement.ActivePowerL2_W >= minActivePower_W
       && measurement.ActivePowerL3_W >= minActivePower_W
-    && item.AbbIotDevicePart.Value.MaxActivePower_W.Value is { } maxActivePower_W
+    && item.AbbIotDevicePart.Value.MaxActivePower.Value is { } maxActivePower_W
       && measurement.ActivePowerL1_W < maxActivePower_W
       && measurement.ActivePowerL2_W < maxActivePower_W
       && measurement.ActivePowerL3_W < maxActivePower_W
-    && item.AbbIotDevicePart.Value.MinReactivePower_VAR.Value is { } minReactivePower_VAR
+    && item.AbbIotDevicePart.Value.MinReactivePower.Value is { } minReactivePower_VAR
       && measurement.ReactivePowerL1_VAR >= minReactivePower_VAR
       && measurement.ReactivePowerL2_VAR >= minReactivePower_VAR
       && measurement.ReactivePowerL3_VAR >= minReactivePower_VAR
-    && item.AbbIotDevicePart.Value.MaxReactivePower_VAR.Value is { } maxReactivePower_VAR
+    && item.AbbIotDevicePart.Value.MaxReactivePower.Value is { } maxReactivePower_VAR
       && measurement.ReactivePowerL1_VAR < maxReactivePower_VAR
       && measurement.ReactivePowerL2_VAR < maxReactivePower_VAR
       && measurement.ReactivePowerL3_VAR < maxReactivePower_VAR;

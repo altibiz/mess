@@ -433,14 +433,14 @@ internal static partial class CreateAsyncMigrations
       abbIotDevice => abbIotDevice.AbbIotDevicePart,
       abbIotDevicePart =>
       {
-        abbIotDevicePart.MinVoltage_V = new NumericField { Value = 161 };
-        abbIotDevicePart.MaxVoltage_V = new NumericField { Value = 300 };
-        abbIotDevicePart.MinCurrent_A = new NumericField { Value = 0 };
-        abbIotDevicePart.MaxCurrent_A = new NumericField { Value = 80 };
-        abbIotDevicePart.MinActivePower_W = new NumericField { Value = 0 };
-        abbIotDevicePart.MaxActivePower_W = new NumericField { Value = 24000 };
-        abbIotDevicePart.MinReactivePower_VAR = new NumericField { Value = -24000 };
-        abbIotDevicePart.MaxReactivePower_VAR = new NumericField { Value = 24000 };
+        abbIotDevicePart.MinVoltage = new NumericField { Value = 161 };
+        abbIotDevicePart.MaxVoltage = new NumericField { Value = 300 };
+        abbIotDevicePart.MinCurrent = new NumericField { Value = 0 };
+        abbIotDevicePart.MaxCurrent = new NumericField { Value = 80 };
+        abbIotDevicePart.MinActivePower = new NumericField { Value = 0 };
+        abbIotDevicePart.MaxActivePower = new NumericField { Value = 24000 };
+        abbIotDevicePart.MinReactivePower = new NumericField { Value = -24000 };
+        abbIotDevicePart.MaxReactivePower = new NumericField { Value = 24000 };
       }
     );
     await contentManager.CreateAsync(abbIotDevice, VersionOptions.Latest);
@@ -573,16 +573,16 @@ internal static partial class CreateAsyncMigrations
       schneiderIotDevice => schneiderIotDevice.SchneiderIotDevicePart,
       schneiderIotDevicePart =>
       {
-        schneiderIotDevicePart.MinVoltage_V = new NumericField { Value = 161 };
-        schneiderIotDevicePart.MaxVoltage_V = new NumericField { Value = 300 };
-        schneiderIotDevicePart.MinCurrent_A = new NumericField { Value = 0 };
-        schneiderIotDevicePart.MaxCurrent_A = new NumericField { Value = 80 };
-        schneiderIotDevicePart.MinActivePower_W = new NumericField { Value = 0 };
-        schneiderIotDevicePart.MaxActivePower_W = new NumericField { Value = 24000 };
-        schneiderIotDevicePart.MinReactivePower_VAR = new NumericField { Value = -24000 };
-        schneiderIotDevicePart.MaxReactivePower_VAR = new NumericField { Value = 24000 };
-        schneiderIotDevicePart.MinApparentPower_VA = new NumericField { Value = -72000 };
-        schneiderIotDevicePart.MaxApparentPower_VA = new NumericField { Value = 72000 };
+        schneiderIotDevicePart.MinVoltage = new NumericField { Value = 161 };
+        schneiderIotDevicePart.MaxVoltage = new NumericField { Value = 300 };
+        schneiderIotDevicePart.MinCurrent = new NumericField { Value = 0 };
+        schneiderIotDevicePart.MaxCurrent = new NumericField { Value = 80 };
+        schneiderIotDevicePart.MinActivePower = new NumericField { Value = 0 };
+        schneiderIotDevicePart.MaxActivePower = new NumericField { Value = 24000 };
+        schneiderIotDevicePart.MinReactivePower = new NumericField { Value = -24000 };
+        schneiderIotDevicePart.MaxReactivePower = new NumericField { Value = 24000 };
+        schneiderIotDevicePart.MinApparentPower = new NumericField { Value = -72000 };
+        schneiderIotDevicePart.MaxApparentPower = new NumericField { Value = 72000 };
       }
     );
     await contentManager.CreateAsync(schneiderIotDevice, VersionOptions.Latest);
