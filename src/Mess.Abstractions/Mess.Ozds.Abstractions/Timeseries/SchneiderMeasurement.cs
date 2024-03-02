@@ -53,11 +53,11 @@ public static class SchneiderMeasurementExtensions
       && measurement.ActivePowerL2_W < maxActivePower_W
       && measurement.ActivePowerL3_W < maxActivePower_W
     && item.SchneiderIotDevicePart.Value.MinReactivePower.Value is { } minReactivePower_VAR
-      && measurement.ReactivePowerTotal_VAR >= minReactivePower_VAR
+      && measurement.ReactivePowerTotal_VAR >= 3 * minReactivePower_VAR
     && item.SchneiderIotDevicePart.Value.MaxReactivePower.Value is { } maxReactivePower_VAR
-      && measurement.ReactivePowerTotal_VAR < maxReactivePower_VAR
+      && measurement.ReactivePowerTotal_VAR < 3 * maxReactivePower_VAR
     && item.SchneiderIotDevicePart.Value.MinApparentPower.Value is { } minApparentPower_VA
-      && measurement.ApparentPowerTotal_VA >= minApparentPower_VA
+      && measurement.ApparentPowerTotal_VA >= 3 * minApparentPower_VA
     && item.SchneiderIotDevicePart.Value.MaxApparentPower.Value is { } maxApparentPower_VA
-      && measurement.ApparentPowerTotal_VA < maxApparentPower_VA;
+      && measurement.ApparentPowerTotal_VA < 3 * maxApparentPower_VA;
 }
