@@ -31,7 +31,7 @@ public class Startup : StartupBase
 
     services.AddIndexProvider<IotDeviceIndexProvider>();
 
-    services.AddScoped<IIotDeviceContentItemCache, IotDeviceContentItemCache>();
+    services.AddSingleton<IIotDeviceContentItemCache, IotDeviceContentItemCache>();
   }
 
   public override void Configure(

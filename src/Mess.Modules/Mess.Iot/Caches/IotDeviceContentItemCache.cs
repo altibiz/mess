@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using Mess.Iot.Abstractions.Caches;
 using Mess.Iot.Abstractions.Indexes;
+using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.ContentManagement;
 using YesSql;
 
@@ -13,11 +14,11 @@ public class IotDeviceContentItemCache : IIotDeviceContentItemCache
     Lazy<Task<ContentItem?>>
   > _cache = new();
 
-  private readonly ISession _session;
+  private readonly IServiceProvider _services;
 
-  public IotDeviceContentItemCache(ISession session)
+  public IotDeviceContentItemCache(IServiceProvider services)
   {
-    _session = session;
+    _services = services;
   }
 
   public ContentItem? GetIotDevice(string deviceId)
@@ -27,11 +28,15 @@ public class IotDeviceContentItemCache : IIotDeviceContentItemCache
         deviceId,
         _ =>
           new Lazy<Task<ContentItem?>>(
-            () =>
-              _session
+            async () =>
+            {
+              await using var scope = _services.CreateAsyncScope();
+              return await scope.ServiceProvider
+                .GetRequiredService<ISession>()
                 .Query<ContentItem?, IotDeviceIndex>()
                 .Where(device => device.DeviceId == deviceId)
-                .FirstOrDefaultAsync()
+                .FirstOrDefaultAsync();
+            }
           )
       )
       .Value.Result;
@@ -44,11 +49,15 @@ public class IotDeviceContentItemCache : IIotDeviceContentItemCache
         deviceId,
         _ =>
           new Lazy<Task<ContentItem?>>(
-            () =>
-              _session
+            async () =>
+            {
+              await using var scope = _services.CreateAsyncScope();
+              return await scope.ServiceProvider
+                .GetRequiredService<ISession>()
                 .Query<ContentItem?, IotDeviceIndex>()
                 .Where(device => device.DeviceId == deviceId)
-                .FirstOrDefaultAsync()
+                .FirstOrDefaultAsync();
+            }
           )
       )
       .Value;
