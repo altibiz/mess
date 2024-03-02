@@ -110,7 +110,7 @@ public static class SchneiderQuarterHourlyAggregateEntityExtensions
     {
       Tenant = tenant,
       Source = measurement.Source,
-      Timestamp = measurement.Timestamp.GetStartOfMonth(),
+      Timestamp = measurement.Timestamp.GetStartOfQuarterHour(),
       AggregateCount = 1,
       VoltageL1Avg_V = measurement.VoltageL1_V,
       VoltageL2Avg_V = measurement.VoltageL2_V,

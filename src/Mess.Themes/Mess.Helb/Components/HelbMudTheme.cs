@@ -8,10 +8,10 @@ public class HelbMudTheme : MudTheme
   {
     Palette = new PaletteLight()
     {
-      Primary = Colors.Blue.Darken1,
+      Primary = "#0072bc",
       Secondary = Colors.DeepPurple.Accent2,
-      Background = Colors.Blue.Lighten5,
-      AppbarBackground = Colors.Blue.Darken1,
+      Background = "#e3e3e3",
+      AppbarBackground = "#0072bc",
       DrawerBackground = "#FFF",
       DrawerText = "rgba(0,0,0, 0.7)",
       Success = "#06d79c"
