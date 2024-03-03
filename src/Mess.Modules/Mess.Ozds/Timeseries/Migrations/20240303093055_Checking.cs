@@ -59,7 +59,7 @@ namespace Mess.Ozds.Timeseries.Migrations
           or "ActivePowerL2_W" < -24000 or "ActivePowerL2_W" >= 24000
           or "ActivePowerL3_W" < -24000 or "ActivePowerL3_W" >= 24000
           or "ReactivePowerTotal_VAR" < -72000 or "ReactivePowerTotal_VAR" >= 72000
-          or "ApparentPowerTotal_VAR" < -72000 or "ApparentPowerTotal_VAR" >= 72000;
+          or "ApparentPowerTotal_VA" < -72000 or "ApparentPowerTotal_VA" >= 72000;
       """);
 
       migrationBuilder.Sql("""
