@@ -1,3 +1,4 @@
+using Etch.OrchardCore.Fields.MultiSelect.Fields;
 using OrchardCore.ContentFields.Fields;
 using OrchardCore.ContentManagement;
 
@@ -24,4 +25,6 @@ public class SchneiderIotDevicePart : ContentPart
   public NumericField MinApparentPower { get; set; } = default!;
 
   public NumericField MaxApparentPower { get; set; } = default!;
+
+  public MultiSelectField Phases { get; set; } = default!;
 }

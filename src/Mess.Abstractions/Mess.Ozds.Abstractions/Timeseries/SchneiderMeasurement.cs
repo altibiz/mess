@@ -27,31 +27,36 @@ public record SchneiderMeasurement(
 
 public static class SchneiderMeasurementExtensions
 {
-  public static bool IsValid(this SchneiderMeasurement measurement, SchneiderIotDeviceItem item) =>
-    item.SchneiderIotDevicePart.Value.MinVoltage.Value is { } minVoltage_V
-      && measurement.VoltageL1_V >= minVoltage_V
-      && measurement.VoltageL2_V >= minVoltage_V
-      && measurement.VoltageL3_V >= minVoltage_V
+  public static bool IsValid(this SchneiderMeasurement measurement, SchneiderIotDeviceItem item)
+  {
+    var checkL1 = item.SchneiderIotDevicePart.Value.Phases.SelectedValues.Contains("L1");
+    var checkL2 = item.SchneiderIotDevicePart.Value.Phases.SelectedValues.Contains("L2");
+    var checkL3 = item.SchneiderIotDevicePart.Value.Phases.SelectedValues.Contains("L3");
+
+    return item.SchneiderIotDevicePart.Value.MinVoltage.Value is { } minVoltage_V
+      && (!checkL1 || measurement.VoltageL1_V >= minVoltage_V)
+      && (!checkL2 || measurement.VoltageL2_V >= minVoltage_V)
+      && (!checkL3 || measurement.VoltageL3_V >= minVoltage_V)
     && item.SchneiderIotDevicePart.Value.MaxVoltage.Value is { } maxVoltage_V
-      && measurement.VoltageL1_V < maxVoltage_V
-      && measurement.VoltageL2_V < maxVoltage_V
-      && measurement.VoltageL3_V < maxVoltage_V
+      && (!checkL1 || measurement.VoltageL1_V < maxVoltage_V)
+      && (!checkL2 || measurement.VoltageL2_V < maxVoltage_V)
+      && (!checkL3 || measurement.VoltageL3_V < maxVoltage_V)
     && item.SchneiderIotDevicePart.Value.MinCurrent.Value is { } minCurrent_A
-      && measurement.CurrentL1_A >= minCurrent_A
-      && measurement.CurrentL2_A >= minCurrent_A
-      && measurement.CurrentL3_A >= minCurrent_A
+      && (!checkL1 || measurement.CurrentL1_A >= minCurrent_A)
+      && (!checkL2 || measurement.CurrentL2_A >= minCurrent_A)
+      && (!checkL3 || measurement.CurrentL3_A >= minCurrent_A)
     && item.SchneiderIotDevicePart.Value.MaxCurrent.Value is { } maxCurrent_A
-      && measurement.CurrentL1_A < maxCurrent_A
-      && measurement.CurrentL2_A < maxCurrent_A
-      && measurement.CurrentL3_A < maxCurrent_A
+      && (!checkL1 || measurement.CurrentL1_A < maxCurrent_A)
+      && (!checkL2 || measurement.CurrentL2_A < maxCurrent_A)
+      && (!checkL3 || measurement.CurrentL3_A < maxCurrent_A)
     && item.SchneiderIotDevicePart.Value.MinActivePower.Value is { } minActivePower_W
-      && measurement.ActivePowerL1_W >= minActivePower_W
-      && measurement.ActivePowerL2_W >= minActivePower_W
-      && measurement.ActivePowerL3_W >= minActivePower_W
+      && (!checkL1 || measurement.ActivePowerL1_W >= minActivePower_W)
+      && (!checkL2 || measurement.ActivePowerL2_W >= minActivePower_W)
+      && (!checkL3 || measurement.ActivePowerL3_W >= minActivePower_W)
     && item.SchneiderIotDevicePart.Value.MaxActivePower.Value is { } maxActivePower_W
-      && measurement.ActivePowerL1_W < maxActivePower_W
-      && measurement.ActivePowerL2_W < maxActivePower_W
-      && measurement.ActivePowerL3_W < maxActivePower_W
+      && (!checkL1 || measurement.ActivePowerL1_W < maxActivePower_W)
+      && (!checkL2 || measurement.ActivePowerL2_W < maxActivePower_W)
+      && (!checkL3 || measurement.ActivePowerL3_W < maxActivePower_W)
     && item.SchneiderIotDevicePart.Value.MinReactivePower.Value is { } minReactivePower_VAR
       && measurement.ReactivePowerTotal_VAR >= 3 * minReactivePower_VAR
     && item.SchneiderIotDevicePart.Value.MaxReactivePower.Value is { } maxReactivePower_VAR
@@ -60,4 +65,5 @@ public static class SchneiderMeasurementExtensions
       && measurement.ApparentPowerTotal_VA >= 3 * minApparentPower_VA
     && item.SchneiderIotDevicePart.Value.MaxApparentPower.Value is { } maxApparentPower_VA
       && measurement.ApparentPowerTotal_VA < 3 * maxApparentPower_VA;
+  }
 }

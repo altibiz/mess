@@ -1,3 +1,4 @@
+using Etch.OrchardCore.Fields.MultiSelect.Fields;
 using OrchardCore.ContentFields.Fields;
 using OrchardCore.ContentManagement;
 
@@ -20,4 +21,6 @@ public class AbbIotDevicePart : ContentPart
   public NumericField MinReactivePower { get; set; } = default!;
 
   public NumericField MaxReactivePower { get; set; } = default!;
+
+  public MultiSelectField Phases { get; set; } = default!;
 }

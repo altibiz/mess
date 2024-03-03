@@ -37,37 +37,43 @@ public record AbbMeasurement(
 
 public static class AbbMeasurementExtensions
 {
-  public static bool IsValid(this AbbMeasurement measurement, AbbIotDeviceItem item) =>
-    item.AbbIotDevicePart.Value.MinVoltage.Value is { } minVoltage_V
-      && measurement.VoltageL1_V >= minVoltage_V
-      && measurement.VoltageL2_V >= minVoltage_V
-      && measurement.VoltageL3_V >= minVoltage_V
+  public static bool IsValid(this AbbMeasurement measurement, AbbIotDeviceItem item)
+  {
+    var checkL1 = item.AbbIotDevicePart.Value.Phases.SelectedValues.Contains("L1");
+    var checkL2 = item.AbbIotDevicePart.Value.Phases.SelectedValues.Contains("L2");
+    var checkL3 = item.AbbIotDevicePart.Value.Phases.SelectedValues.Contains("L3");
+
+    return item.AbbIotDevicePart.Value.MinVoltage.Value is { } minVoltage_V
+      && (!checkL1 || measurement.VoltageL1_V >= minVoltage_V)
+      && (!checkL2 || measurement.VoltageL2_V >= minVoltage_V)
+      && (!checkL3 || measurement.VoltageL3_V >= minVoltage_V)
     && item.AbbIotDevicePart.Value.MaxVoltage.Value is { } maxVoltage_V
-      && measurement.VoltageL1_V < maxVoltage_V
-      && measurement.VoltageL2_V < maxVoltage_V
-      && measurement.VoltageL3_V < maxVoltage_V
+      && (!checkL1 || measurement.VoltageL1_V < maxVoltage_V)
+      && (!checkL2 || measurement.VoltageL2_V < maxVoltage_V)
+      && (!checkL3 || measurement.VoltageL3_V < maxVoltage_V)
     && item.AbbIotDevicePart.Value.MinCurrent.Value is { } minCurrent_A
-      && measurement.CurrentL1_A >= minCurrent_A
-      && measurement.CurrentL2_A >= minCurrent_A
-      && measurement.CurrentL3_A >= minCurrent_A
+      && (!checkL1 || measurement.CurrentL1_A >= minCurrent_A)
+      && (!checkL2 || measurement.CurrentL2_A >= minCurrent_A)
+      && (!checkL3 || measurement.CurrentL3_A >= minCurrent_A)
     && item.AbbIotDevicePart.Value.MaxCurrent.Value is { } maxCurrent_A
-      && measurement.CurrentL1_A < maxCurrent_A
-      && measurement.CurrentL2_A < maxCurrent_A
-      && measurement.CurrentL3_A < maxCurrent_A
+      && (!checkL1 || measurement.CurrentL1_A < maxCurrent_A)
+      && (!checkL2 || measurement.CurrentL2_A < maxCurrent_A)
+      && (!checkL3 || measurement.CurrentL3_A < maxCurrent_A)
     && item.AbbIotDevicePart.Value.MinActivePower.Value is { } minActivePower_W
-      && measurement.ActivePowerL1_W >= minActivePower_W
-      && measurement.ActivePowerL2_W >= minActivePower_W
-      && measurement.ActivePowerL3_W >= minActivePower_W
+      && (!checkL1 || measurement.ActivePowerL1_W >= minActivePower_W)
+      && (!checkL2 || measurement.ActivePowerL2_W >= minActivePower_W)
+      && (!checkL3 || measurement.ActivePowerL3_W >= minActivePower_W)
     && item.AbbIotDevicePart.Value.MaxActivePower.Value is { } maxActivePower_W
-      && measurement.ActivePowerL1_W < maxActivePower_W
-      && measurement.ActivePowerL2_W < maxActivePower_W
-      && measurement.ActivePowerL3_W < maxActivePower_W
+      && (!checkL1 || measurement.ActivePowerL1_W < maxActivePower_W)
+      && (!checkL2 || measurement.ActivePowerL2_W < maxActivePower_W)
+      && (!checkL3 || measurement.ActivePowerL3_W < maxActivePower_W)
     && item.AbbIotDevicePart.Value.MinReactivePower.Value is { } minReactivePower_VAR
-      && measurement.ReactivePowerL1_VAR >= minReactivePower_VAR
-      && measurement.ReactivePowerL2_VAR >= minReactivePower_VAR
-      && measurement.ReactivePowerL3_VAR >= minReactivePower_VAR
+      && (!checkL1 || measurement.ReactivePowerL1_VAR >= minReactivePower_VAR)
+      && (!checkL2 || measurement.ReactivePowerL2_VAR >= minReactivePower_VAR)
+      && (!checkL3 || measurement.ReactivePowerL3_VAR >= minReactivePower_VAR)
     && item.AbbIotDevicePart.Value.MaxReactivePower.Value is { } maxReactivePower_VAR
-      && measurement.ReactivePowerL1_VAR < maxReactivePower_VAR
-      && measurement.ReactivePowerL2_VAR < maxReactivePower_VAR
-      && measurement.ReactivePowerL3_VAR < maxReactivePower_VAR;
+      && (!checkL1 || measurement.ReactivePowerL1_VAR < maxReactivePower_VAR)
+      && (!checkL2 || measurement.ReactivePowerL2_VAR < maxReactivePower_VAR)
+      && (!checkL3 || measurement.ReactivePowerL3_VAR < maxReactivePower_VAR);
+  }
 }

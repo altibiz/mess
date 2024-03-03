@@ -1,3 +1,4 @@
+using Etch.OrchardCore.Fields.MultiSelect.Settings;
 using Mess.Fields.Abstractions.Settings;
 using Mess.Ozds.Abstractions.Indexes;
 using Microsoft.AspNetCore.Identity;
@@ -160,6 +161,21 @@ public class Migrations : DataMigration
                     Hint = "Maximum reactive power in volt-amperes reactive (VAR).",
                     Required = false,
                     Scale = 0
+                  }
+                )
+          )
+          .WithField(
+            "Phases",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("MultiSelectField")
+                .WithDisplayName("Phases")
+                .WithDescription("Phases that will be checked (L1, L2, L3).")
+                .WithSettings(
+                  new MultiSelectFieldSettings
+                  {
+                    Hint = "Phases that will be checked (L1, L2, L3).",
+                    Options = new[] { "L1", "L2", "L3" }
                   }
                 )
           )
@@ -329,6 +345,21 @@ public class Migrations : DataMigration
                     Hint = "Maximum apparent power in volt-amperes (VA).",
                     Required = false,
                     Scale = 0
+                  }
+                )
+          )
+          .WithField(
+            "Phases",
+            fieldBuilder =>
+              fieldBuilder
+                .OfType("MultiSelectField")
+                .WithDisplayName("Phases")
+                .WithDescription("Phases that will be checked (L1, L2, L3).")
+                .WithSettings(
+                  new MultiSelectFieldSettings
+                  {
+                    Hint = "Phases that will be checked (L1, L2, L3).",
+                    Options = new[] { "L1", "L2", "L3" }
                   }
                 )
           )
