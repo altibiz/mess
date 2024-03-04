@@ -149,13 +149,15 @@ public static class AbbMonthlyAggregateEntityExtensions
         .Aggregate(
           new List<AbbMonthlyAggregateEntity>(),
           (list, next) =>
-            list
-              .Concat(
-              list.LastOrDefault() is { } last
-                ? last.Upsert(next)
-                : new() { next }
-              )
-              .ToList()))
+          {
+            var last = list.LastOrDefault();
+            if (last is null)
+            {
+              return new() { next };
+            }
+
+            return last.Upsert(next);
+          }))
         .ToList();
 
     return result;
@@ -171,8 +173,8 @@ public static class AbbMonthlyAggregateEntityExtensions
       throw new InvalidOperationException($"Trying to upsert aggregate from {previous.Tenant} {previous.Source} with aggregate from {next.Tenant} {next.Source}");
     }
 
-    return previous.Timestamp == next.Timestamp ?
-      new()
+    var result = previous.Timestamp == next.Timestamp ?
+      new List<AbbMonthlyAggregateEntity>()
       {
         new AbbMonthlyAggregateEntity
         {
@@ -267,6 +269,8 @@ public static class AbbMonthlyAggregateEntityExtensions
         previous,
         next
       };
+
+    return result;
   }
 
   public static readonly Expression<Func<AbbMonthlyAggregateEntity, AbbMonthlyAggregateEntity, AbbMonthlyAggregateEntity>>
