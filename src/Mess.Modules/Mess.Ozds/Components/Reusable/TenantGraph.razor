@@ -9,7 +9,7 @@
 @using OrchardCore.ContentManagement.Records
 @using OrchardCore.Users.Indexes
 @using System.Threading;
-
+@using Mess.Prelude.Extensions.Timestamps;
 @inject IOzdsTimeseriesClient _timeseriesClient
 
 @if(_leftGraphValues is not null){
@@ -64,7 +64,7 @@
     public List<ChartDataL>? _totalConsumption = new();
     public record ChartDataL(decimal[] values, string[] names, DateTimeOffset date, string source);
     private ApexChart<ChartDataL> leftChart = default!;
-    private DateTimeOffset nowYear = DateTimeOffset.UtcNow.AddDays(-DateTimeOffset.UtcNow.Day).AddMonths(-DateTimeOffset.UtcNow.Month);
+    private DateTimeOffset nowYear = DateTimeOffset.UtcNow.GetStartOfYear();
     private DateTimeOffset now = DateTime.UtcNow;
     protected override async Task OnInitializedAsync()
     {

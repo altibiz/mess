@@ -58,4 +58,17 @@ public static class DateTimeOffsetExtensions
       dateTime.Offset
     );
   }
+
+  public static DateTimeOffset GetStartOfYear(this DateTimeOffset dateTime)
+  {
+    return new DateTimeOffset(
+      dateTime.Year,
+      1,
+      1,
+      0,
+      0,
+      0,
+      dateTime.Offset
+    );
+  }
 }
