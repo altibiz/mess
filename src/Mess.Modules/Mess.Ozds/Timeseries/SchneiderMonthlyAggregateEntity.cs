@@ -136,22 +136,26 @@ public static class SchneiderMonthlyAggregateEntityExtensions
 
   public static List<SchneiderMonthlyAggregateEntity> UpsertRange(
     this IEnumerable<SchneiderMonthlyAggregateEntity> aggregates
-  ) =>
-    aggregates
-    .GroupBy(aggregate => (aggregate.Tenant, aggregate.Source))
-    .SelectMany(group => group
-      .OrderBy(range => range.Timestamp)
-      .Aggregate(
-        new List<SchneiderMonthlyAggregateEntity>(),
-        (list, next) =>
-          list
-            .Concat(
-            list.LastOrDefault() is { } last
-              ? last.Upsert(next)
-              : new() { next }
-            )
-            .ToList()))
-      .ToList();
+  )
+  {
+    var result = aggregates
+      .GroupBy(aggregate => (aggregate.Tenant, aggregate.Source))
+      .SelectMany(group => group
+        .OrderBy(range => range.Timestamp)
+        .Aggregate(
+          new List<SchneiderMonthlyAggregateEntity>(),
+          (list, next) =>
+            list
+              .Concat(
+              list.LastOrDefault() is { } last
+                ? last.Upsert(next)
+                : new() { next }
+              )
+              .ToList()))
+        .ToList();
+
+    return result;
+  }
 
   public static List<SchneiderMonthlyAggregateEntity> Upsert(
     this SchneiderMonthlyAggregateEntity previous,

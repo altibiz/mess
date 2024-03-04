@@ -136,22 +136,26 @@ public static class SchneiderQuarterHourlyAggregateEntityExtensions
 
   public static List<SchneiderQuarterHourlyAggregateEntity> UpsertRange(
     this IEnumerable<SchneiderQuarterHourlyAggregateEntity> aggregates
-  ) =>
-    aggregates
-    .GroupBy(aggregate => (aggregate.Tenant, aggregate.Source))
-    .SelectMany(group => group
-      .OrderBy(range => range.Timestamp)
-      .Aggregate(
-        new List<SchneiderQuarterHourlyAggregateEntity>(),
-        (list, next) =>
-          list
-            .Concat(
-            list.LastOrDefault() is { } last
-              ? last.Upsert(next)
-              : new() { next }
-            )
-            .ToList()))
-      .ToList();
+  )
+  {
+    var result = aggregates
+      .GroupBy(aggregate => (aggregate.Tenant, aggregate.Source))
+      .SelectMany(group => group
+        .OrderBy(range => range.Timestamp)
+        .Aggregate(
+          new List<SchneiderQuarterHourlyAggregateEntity>(),
+          (list, next) =>
+            list
+              .Concat(
+              list.LastOrDefault() is { } last
+                ? last.Upsert(next)
+                : new() { next }
+              )
+              .ToList()))
+        .ToList();
+
+    return result;
+  }
 
   public static List<SchneiderQuarterHourlyAggregateEntity> Upsert(
     this SchneiderQuarterHourlyAggregateEntity previous,

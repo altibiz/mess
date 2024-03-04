@@ -140,22 +140,26 @@ public static class AbbQuarterHourlyAggregateEntityExtensions
 
   public static List<AbbQuarterHourlyAggregateEntity> UpsertRange(
     this IEnumerable<AbbQuarterHourlyAggregateEntity> aggregates
-  ) =>
-    aggregates
-    .GroupBy(aggregate => (aggregate.Tenant, aggregate.Source))
-    .SelectMany(group => group
-      .OrderBy(range => range.Timestamp)
-      .Aggregate(
-        new List<AbbQuarterHourlyAggregateEntity>(),
-        (list, next) =>
-          list
-            .Concat(
-            list.LastOrDefault() is { } last
-              ? last.Upsert(next)
-              : new() { next }
-            )
-            .ToList()))
-      .ToList();
+  )
+  {
+    var result = aggregates
+      .GroupBy(aggregate => (aggregate.Tenant, aggregate.Source))
+      .SelectMany(group => group
+        .OrderBy(range => range.Timestamp)
+        .Aggregate(
+          new List<AbbQuarterHourlyAggregateEntity>(),
+          (list, next) =>
+            list
+              .Concat(
+              list.LastOrDefault() is { } last
+                ? last.Upsert(next)
+                : new() { next }
+              )
+              .ToList()))
+        .ToList();
+
+    return result;
+  }
 
   public static List<AbbQuarterHourlyAggregateEntity> Upsert(
     this AbbQuarterHourlyAggregateEntity previous,

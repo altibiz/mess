@@ -140,22 +140,26 @@ public static class AbbDailyAggregateEntityExtensions
 
   public static List<AbbDailyAggregateEntity> UpsertRange(
     this IEnumerable<AbbDailyAggregateEntity> aggregates
-  ) =>
-    aggregates
-    .GroupBy(aggregate => (aggregate.Tenant, aggregate.Source))
-    .SelectMany(group => group
-      .OrderBy(range => range.Timestamp)
-      .Aggregate(
-        new List<AbbDailyAggregateEntity>(),
-        (list, next) =>
-          list
-            .Concat(
-            list.LastOrDefault() is { } last
-              ? last.Upsert(next)
-              : new() { next }
-            )
-            .ToList()))
-      .ToList();
+  )
+  {
+    var result = aggregates
+      .GroupBy(aggregate => (aggregate.Tenant, aggregate.Source))
+      .SelectMany(group => group
+        .OrderBy(range => range.Timestamp)
+        .Aggregate(
+          new List<AbbDailyAggregateEntity>(),
+          (list, next) =>
+            list
+              .Concat(
+              list.LastOrDefault() is { } last
+                ? last.Upsert(next)
+                : new() { next }
+              )
+              .ToList()))
+        .ToList();
+
+    return result;
+  }
 
   public static List<AbbDailyAggregateEntity> Upsert(
     this AbbDailyAggregateEntity previous,

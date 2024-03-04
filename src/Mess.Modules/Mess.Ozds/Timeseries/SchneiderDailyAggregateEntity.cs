@@ -136,22 +136,26 @@ public static class SchneiderDailyAggregateEntityExtensions
 
   public static List<SchneiderDailyAggregateEntity> UpsertRange(
     this IEnumerable<SchneiderDailyAggregateEntity> aggregates
-  ) =>
-    aggregates
-    .GroupBy(aggregate => (aggregate.Tenant, aggregate.Source))
-    .SelectMany(group => group
-      .OrderBy(range => range.Timestamp)
-      .Aggregate(
-        new List<SchneiderDailyAggregateEntity>(),
-        (list, next) =>
-          list
-            .Concat(
-            list.LastOrDefault() is { } last
-              ? last.Upsert(next)
-              : new() { next }
-            )
-            .ToList()))
-      .ToList();
+  )
+  {
+    var result = aggregates
+      .GroupBy(aggregate => (aggregate.Tenant, aggregate.Source))
+      .SelectMany(group => group
+        .OrderBy(range => range.Timestamp)
+        .Aggregate(
+          new List<SchneiderDailyAggregateEntity>(),
+          (list, next) =>
+            list
+              .Concat(
+              list.LastOrDefault() is { } last
+                ? last.Upsert(next)
+                : new() { next }
+              )
+              .ToList()))
+        .ToList();
+
+    return result;
+  }
 
   public static List<SchneiderDailyAggregateEntity> Upsert(
     this SchneiderDailyAggregateEntity previous,
