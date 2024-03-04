@@ -464,10 +464,15 @@ internal static partial class CreateAsyncMigrations
       abbIotDevice => abbIotDevice.AbbIotDevicePart,
       abbIotDevicePart =>
       {
+        abbIotDevicePart.MinVoltage = new NumericField { Value = 161 };
+        abbIotDevicePart.MaxVoltage = new NumericField { Value = 300 };
+        abbIotDevicePart.MinCurrent = new NumericField { Value = 0 };
+        abbIotDevicePart.MaxCurrent = new NumericField { Value = 80 };
         abbIotDevicePart.MinActivePower = new NumericField { Value = 0 };
         abbIotDevicePart.MaxActivePower = new NumericField { Value = 24000 };
         abbIotDevicePart.MinReactivePower = new NumericField { Value = 0 };
         abbIotDevicePart.MaxReactivePower = new NumericField { Value = 24000 };
+        abbIotDevicePart.Phases = new MultiSelectField { SelectedValues = new[] { "L1", "L2", "L3" } };
       }
     );
     await contentManager.CreateAsync(abbIotDevice1856212, VersionOptions.Latest);
@@ -489,6 +494,10 @@ internal static partial class CreateAsyncMigrations
       abbIotDevice => abbIotDevice.AbbIotDevicePart,
       abbIotDevicePart =>
       {
+        abbIotDevicePart.MinVoltage = new NumericField { Value = 161 };
+        abbIotDevicePart.MaxVoltage = new NumericField { Value = 300 };
+        abbIotDevicePart.MinCurrent = new NumericField { Value = 0 };
+        abbIotDevicePart.MaxCurrent = new NumericField { Value = 80 };
         abbIotDevicePart.MinActivePower = new NumericField { Value = 0 };
         abbIotDevicePart.MaxActivePower = new NumericField { Value = 24000 };
         abbIotDevicePart.MinReactivePower = new NumericField { Value = 0 };
