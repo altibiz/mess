@@ -1,4 +1,5 @@
 using Etch.OrchardCore.Fields.Colour.Fields;
+using Etch.OrchardCore.Fields.MultiSelect.Fields;
 using Mess.Chart.Abstractions.Models;
 using Mess.Cms;
 using Mess.Cms.Extensions.OrchardCore;
@@ -394,24 +395,24 @@ internal static partial class CreateAsyncMigrations
     );
     await contentManager.CreateAsync(abbChart, VersionOptions.Latest);
 
-    var abbIotDevice = await contentManager.NewContentAsync<AbbIotDeviceItem>();
-    abbIotDevice.Alter(
+    var abbIotDevice1624226 = await contentManager.NewContentAsync<AbbIotDeviceItem>();
+    abbIotDevice1624226.Alter(
       abbIotDevice => abbIotDevice.TitlePart,
-      titlePart => { titlePart.Title = "Abb"; }
+      titlePart => { titlePart.Title = "abb-B2x-1624226"; }
     );
-    abbIotDevice.Inner.DisplayText = "Abb";
-    abbIotDevice.Alter(
+    abbIotDevice1624226.Inner.DisplayText = "abb-B2x-1624226";
+    abbIotDevice1624226.Alter(
       abbIotDevice => abbIotDevice.IotDevicePart,
       measurementDevicePart =>
       {
-        measurementDevicePart.DeviceId = new TextField { Text = "abb" };
+        measurementDevicePart.DeviceId = new TextField { Text = "abb-B2x-1624226" };
       }
     );
-    abbIotDevice.Alter(
+    abbIotDevice1624226.Alter(
       abbIotDevice => abbIotDevice.ContainedPart,
       containedPart => { containedPart.ListContentItemId = unitContentItemId; }
     );
-    abbIotDevice.Alter(
+    abbIotDevice1624226.Alter(
       abbIotDevice => abbIotDevice.OzdsIotDevicePart,
       ozdsIotDevicePart =>
       {
@@ -425,11 +426,11 @@ internal static partial class CreateAsyncMigrations
         };
       }
     );
-    abbIotDevice.Alter(
+    abbIotDevice1624226.Alter(
       abbIotDevice => abbIotDevice.ChartPart,
       chartPart => { chartPart.ChartContentItemId = abbChart.ContentItemId; }
     );
-    abbIotDevice.Alter(
+    abbIotDevice1624226.Alter(
       abbIotDevice => abbIotDevice.AbbIotDevicePart,
       abbIotDevicePart =>
       {
@@ -441,9 +442,61 @@ internal static partial class CreateAsyncMigrations
         abbIotDevicePart.MaxActivePower = new NumericField { Value = 24000 };
         abbIotDevicePart.MinReactivePower = new NumericField { Value = -24000 };
         abbIotDevicePart.MaxReactivePower = new NumericField { Value = 24000 };
+        abbIotDevicePart.Phases = new MultiSelectField { SelectedValues = new[] { "L1", "L2", "L3" } };
       }
     );
-    await contentManager.CreateAsync(abbIotDevice, VersionOptions.Latest);
+    await contentManager.CreateAsync(abbIotDevice1624226, VersionOptions.Latest);
+
+    var abbIotDevice1856212 = (await contentManager.CloneContentAsync<AbbIotDeviceItem>(abbIotDevice1624226))!;
+    abbIotDevice1856212.Alter(
+      abbIotDevice => abbIotDevice.TitlePart,
+      titlePart => { titlePart.Title = "abb-B2x-1856212"; }
+    );
+    abbIotDevice1856212.Inner.DisplayText = "abb-B2x-1856212";
+    abbIotDevice1856212.Alter(
+      abbIotDevice => abbIotDevice.IotDevicePart,
+      measurementDevicePart =>
+      {
+        measurementDevicePart.DeviceId = new TextField { Text = "abb-B2x-1856212" };
+      }
+    );
+    abbIotDevice1856212.Alter(
+      abbIotDevice => abbIotDevice.AbbIotDevicePart,
+      abbIotDevicePart =>
+      {
+        abbIotDevicePart.MinActivePower = new NumericField { Value = 0 };
+        abbIotDevicePart.MaxActivePower = new NumericField { Value = 24000 };
+        abbIotDevicePart.MinReactivePower = new NumericField { Value = 0 };
+        abbIotDevicePart.MaxReactivePower = new NumericField { Value = 24000 };
+      }
+    );
+    await contentManager.CreateAsync(abbIotDevice1856212, VersionOptions.Latest);
+
+    var abbIotDevice1856214 = (await contentManager.CloneContentAsync<AbbIotDeviceItem>(abbIotDevice1624226))!;
+    abbIotDevice1856214.Alter(
+      abbIotDevice => abbIotDevice.TitlePart,
+      titlePart => { titlePart.Title = "abb-B2x-1856214"; }
+    );
+    abbIotDevice1856214.Inner.DisplayText = "abb-B2x-1856214";
+    abbIotDevice1856214.Alter(
+      abbIotDevice => abbIotDevice.IotDevicePart,
+      measurementDevicePart =>
+      {
+        measurementDevicePart.DeviceId = new TextField { Text = "abb-B2x-1856214" };
+      }
+    );
+    abbIotDevice1856214.Alter(
+      abbIotDevice => abbIotDevice.AbbIotDevicePart,
+      abbIotDevicePart =>
+      {
+        abbIotDevicePart.MinActivePower = new NumericField { Value = 0 };
+        abbIotDevicePart.MaxActivePower = new NumericField { Value = 24000 };
+        abbIotDevicePart.MinReactivePower = new NumericField { Value = 0 };
+        abbIotDevicePart.MaxReactivePower = new NumericField { Value = 24000 };
+        abbIotDevicePart.Phases = new MultiSelectField { SelectedValues = new[] { "L1" } };
+      }
+    );
+    await contentManager.CreateAsync(abbIotDevice1856214, VersionOptions.Latest);
 
     await session.SaveChangesAsync();
   }
@@ -534,14 +587,14 @@ internal static partial class CreateAsyncMigrations
       await contentManager.NewContentAsync<SchneiderIotDeviceItem>();
     schneiderIotDevice.Alter(
       schneiderIotDevice => schneiderIotDevice.TitlePart,
-      titlePart => { titlePart.Title = "Schneider"; }
+      titlePart => { titlePart.Title = "schneider-iEM3xxx-19453067"; }
     );
-    schneiderIotDevice.Inner.DisplayText = "Schneider";
+    schneiderIotDevice.Inner.DisplayText = "schneider-iEM3xxx-19453067";
     schneiderIotDevice.Alter(
       schneiderIotDevice => schneiderIotDevice.IotDevicePart,
       measurementDevicePart =>
       {
-        measurementDevicePart.DeviceId = new TextField { Text = "schneider" };
+        measurementDevicePart.DeviceId = new TextField { Text = "schneider-iEM3xxx-19453067" };
       }
     );
     schneiderIotDevice.Alter(
@@ -583,6 +636,7 @@ internal static partial class CreateAsyncMigrations
         schneiderIotDevicePart.MaxReactivePower = new NumericField { Value = 24000 };
         schneiderIotDevicePart.MinApparentPower = new NumericField { Value = -24000 };
         schneiderIotDevicePart.MaxApparentPower = new NumericField { Value = 24000 };
+        schneiderIotDevicePart.Phases = new MultiSelectField { SelectedValues = new[] { "L1", "L2", "L3" } };
       }
     );
     await contentManager.CreateAsync(schneiderIotDevice, VersionOptions.Latest);

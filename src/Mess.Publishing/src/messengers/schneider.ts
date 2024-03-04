@@ -31,7 +31,7 @@ export const push: Create = async (template) => {
     metadata: {
       contentType: "application/json",
       apiKey: "schneider",
-      deviceId: "schneider",
+      deviceId: "schneider-iEM3xxx-19453067",
     },
     payload: compile(template, data),
   };

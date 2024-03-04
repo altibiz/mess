@@ -37,7 +37,7 @@ export const push: Create = async (template) => {
     metadata: {
       contentType: "application/json",
       apiKey: "abb",
-      deviceId: "abb",
+      deviceId: "abb-B2x-1624226",
     },
     payload: compile(template, data),
   };

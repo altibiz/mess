@@ -21,6 +21,7 @@ using ManifestConstants = Mess.Cms.ManifestConstants;
     "OrchardCore.ContentFields.Indexing.SQL.UserPicker",
     "OrchardCore.Title",
     "OrchardCore.Lists",
+    "Etch.OrchardCore.Fields.MultiSelect",
     "Mess.Population",
     "Mess.Timeseries",
     "Mess.Iot",
