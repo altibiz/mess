@@ -134,102 +134,129 @@ public static class SchneiderDailyAggregateEntityExtensions
     };
   }
 
+  public static List<SchneiderDailyAggregateEntity> UpsertRange(
+    this IEnumerable<SchneiderDailyAggregateEntity> aggregates
+  ) =>
+    aggregates
+    .GroupBy(aggregate => (aggregate.Tenant, aggregate.Source))
+    .SelectMany(group => group
+      .OrderBy(range => range.Timestamp)
+      .Aggregate(
+        new List<SchneiderDailyAggregateEntity>(),
+        (list, next) =>
+          list
+            .Concat(
+            list.LastOrDefault() is { } last
+              ? last.Upsert(next)
+              : new() { next }
+            )
+            .ToList()))
+      .ToList();
+
   public static List<SchneiderDailyAggregateEntity> Upsert(
     this SchneiderDailyAggregateEntity previous,
     SchneiderDailyAggregateEntity next
-  ) =>
-    previous.Timestamp == next.Timestamp ?
-    new()
+  )
+  {
+    if (previous.Tenant != next.Tenant || previous.Source != next.Source)
     {
-      new SchneiderDailyAggregateEntity
+      throw new InvalidOperationException($"Trying to upsert aggregate from {previous.Tenant} {previous.Source} with aggregate from {next.Tenant} {next.Source}");
+    }
+
+    return previous.Timestamp == next.Timestamp ?
+      new()
       {
-        Tenant = previous.Tenant,
-        Source = previous.Source,
-        Timestamp = previous.Timestamp,
-      AggregateCount = previous.AggregateCount + next.AggregateCount,
-      VoltageL1Avg_V =
-          (previous.VoltageL1Avg_V * previous.AggregateCount
-            + next.VoltageL1Avg_V * next.AggregateCount)
-            / (previous.AggregateCount + next.AggregateCount),
-      VoltageL2Avg_V =
-          (previous.VoltageL2Avg_V * previous.AggregateCount
-            + next.VoltageL2Avg_V * next.AggregateCount)
-            / (previous.AggregateCount + next.AggregateCount),
-      VoltageL3Avg_V =
-          (previous.VoltageL3Avg_V * previous.AggregateCount
-            + next.VoltageL3Avg_V * next.AggregateCount)
-            / (previous.AggregateCount + next.AggregateCount),
-      CurrentL1Avg_A =
-          (previous.CurrentL1Avg_A * previous.AggregateCount
-            + next.CurrentL1Avg_A * next.AggregateCount)
-            / (previous.AggregateCount + next.AggregateCount),
-      CurrentL2Avg_A =
-          (previous.CurrentL2Avg_A * previous.AggregateCount
-            + next.CurrentL2Avg_A * next.AggregateCount)
-            / (previous.AggregateCount + next.AggregateCount),
-      CurrentL3Avg_A =
-          (previous.CurrentL3Avg_A * previous.AggregateCount
-            + next.CurrentL3Avg_A * next.AggregateCount)
-            / (previous.AggregateCount + next.AggregateCount),
-      ActivePowerL1Avg_W =
-          (previous.ActivePowerL1Avg_W * previous.AggregateCount
-            + next.ActivePowerL1Avg_W * next.AggregateCount)
-            / (previous.AggregateCount + next.AggregateCount),
-      ActivePowerL2Avg_W =
-          (previous.ActivePowerL2Avg_W * previous.AggregateCount
-            + next.ActivePowerL2Avg_W * next.AggregateCount)
-            / (previous.AggregateCount + next.AggregateCount),
-      ActivePowerL3Avg_W =
-          (previous.ActivePowerL3Avg_W * previous.AggregateCount
-            + next.ActivePowerL3Avg_W * next.AggregateCount)
-            / (previous.AggregateCount + next.AggregateCount),
-      ReactivePowerTotalAvg_VAR =
-          (previous.ReactivePowerTotalAvg_VAR * previous.AggregateCount
-            + next.ReactivePowerTotalAvg_VAR * next.AggregateCount)
-            / (previous.AggregateCount + next.AggregateCount),
-      ApparentPowerTotalAvg_VA =
-          (previous.ApparentPowerTotalAvg_VA * previous.AggregateCount
-            + next.ApparentPowerTotalAvg_VA * next.AggregateCount)
-            / (previous.AggregateCount + next.AggregateCount),
-      ActiveEnergyImportTotalMin_Wh =
-          previous.ActiveEnergyImportTotalMin_Wh < next.ActiveEnergyImportTotalMin_Wh
-           ? previous.ActiveEnergyImportTotalMin_Wh
-           : next.ActiveEnergyImportTotalMin_Wh,
-      ActiveEnergyImportTotalMax_Wh =
-          previous.ActiveEnergyImportTotalMax_Wh > next.ActiveEnergyImportTotalMax_Wh
-            ? previous.ActiveEnergyImportTotalMax_Wh
-            : next.ActiveEnergyImportTotalMax_Wh,
-      ActiveEnergyExportTotalMin_Wh =
-          previous.ActiveEnergyExportTotalMin_Wh < next.ActiveEnergyExportTotalMin_Wh
-           ? previous.ActiveEnergyExportTotalMin_Wh
-           : next.ActiveEnergyExportTotalMin_Wh,
-      ActiveEnergyExportTotalMax_Wh =
-          previous.ActiveEnergyExportTotalMax_Wh > next.ActiveEnergyExportTotalMax_Wh
-            ? previous.ActiveEnergyExportTotalMax_Wh
-            : next.ActiveEnergyExportTotalMax_Wh,
-      ReactiveEnergyImportTotalMin_VARh =
-          previous.ReactiveEnergyImportTotalMin_VARh < next.ReactiveEnergyImportTotalMin_VARh
-           ? previous.ReactiveEnergyImportTotalMin_VARh
-           : next.ReactiveEnergyImportTotalMin_VARh,
-      ReactiveEnergyImportTotalMax_VARh =
-          previous.ReactiveEnergyImportTotalMax_VARh > next.ReactiveEnergyImportTotalMax_VARh
-            ? previous.ReactiveEnergyImportTotalMax_VARh
-            : next.ReactiveEnergyImportTotalMax_VARh,
-      ReactiveEnergyExportTotalMin_VARh =
-          previous.ReactiveEnergyExportTotalMin_VARh < next.ReactiveEnergyExportTotalMin_VARh
-           ? previous.ReactiveEnergyExportTotalMin_VARh
-           : next.ReactiveEnergyExportTotalMin_VARh,
-      ReactiveEnergyExportTotalMax_VARh =
-          previous.ReactiveEnergyExportTotalMax_VARh > next.ReactiveEnergyExportTotalMax_VARh
-            ? previous.ReactiveEnergyExportTotalMax_VARh
-            : next.ReactiveEnergyExportTotalMax_VARh,
-      }
-    } :
-    new()
-    {
-      previous,
-      next
-    };
+        new SchneiderDailyAggregateEntity
+        {
+          Tenant = previous.Tenant,
+          Source = previous.Source,
+          Timestamp = previous.Timestamp,
+        AggregateCount = previous.AggregateCount + next.AggregateCount,
+        VoltageL1Avg_V =
+            (previous.VoltageL1Avg_V * previous.AggregateCount
+              + next.VoltageL1Avg_V * next.AggregateCount)
+              / (previous.AggregateCount + next.AggregateCount),
+        VoltageL2Avg_V =
+            (previous.VoltageL2Avg_V * previous.AggregateCount
+              + next.VoltageL2Avg_V * next.AggregateCount)
+              / (previous.AggregateCount + next.AggregateCount),
+        VoltageL3Avg_V =
+            (previous.VoltageL3Avg_V * previous.AggregateCount
+              + next.VoltageL3Avg_V * next.AggregateCount)
+              / (previous.AggregateCount + next.AggregateCount),
+        CurrentL1Avg_A =
+            (previous.CurrentL1Avg_A * previous.AggregateCount
+              + next.CurrentL1Avg_A * next.AggregateCount)
+              / (previous.AggregateCount + next.AggregateCount),
+        CurrentL2Avg_A =
+            (previous.CurrentL2Avg_A * previous.AggregateCount
+              + next.CurrentL2Avg_A * next.AggregateCount)
+              / (previous.AggregateCount + next.AggregateCount),
+        CurrentL3Avg_A =
+            (previous.CurrentL3Avg_A * previous.AggregateCount
+              + next.CurrentL3Avg_A * next.AggregateCount)
+              / (previous.AggregateCount + next.AggregateCount),
+        ActivePowerL1Avg_W =
+            (previous.ActivePowerL1Avg_W * previous.AggregateCount
+              + next.ActivePowerL1Avg_W * next.AggregateCount)
+              / (previous.AggregateCount + next.AggregateCount),
+        ActivePowerL2Avg_W =
+            (previous.ActivePowerL2Avg_W * previous.AggregateCount
+              + next.ActivePowerL2Avg_W * next.AggregateCount)
+              / (previous.AggregateCount + next.AggregateCount),
+        ActivePowerL3Avg_W =
+            (previous.ActivePowerL3Avg_W * previous.AggregateCount
+              + next.ActivePowerL3Avg_W * next.AggregateCount)
+              / (previous.AggregateCount + next.AggregateCount),
+        ReactivePowerTotalAvg_VAR =
+            (previous.ReactivePowerTotalAvg_VAR * previous.AggregateCount
+              + next.ReactivePowerTotalAvg_VAR * next.AggregateCount)
+              / (previous.AggregateCount + next.AggregateCount),
+        ApparentPowerTotalAvg_VA =
+            (previous.ApparentPowerTotalAvg_VA * previous.AggregateCount
+              + next.ApparentPowerTotalAvg_VA * next.AggregateCount)
+              / (previous.AggregateCount + next.AggregateCount),
+        ActiveEnergyImportTotalMin_Wh =
+            previous.ActiveEnergyImportTotalMin_Wh < next.ActiveEnergyImportTotalMin_Wh
+            ? previous.ActiveEnergyImportTotalMin_Wh
+            : next.ActiveEnergyImportTotalMin_Wh,
+        ActiveEnergyImportTotalMax_Wh =
+            previous.ActiveEnergyImportTotalMax_Wh > next.ActiveEnergyImportTotalMax_Wh
+              ? previous.ActiveEnergyImportTotalMax_Wh
+              : next.ActiveEnergyImportTotalMax_Wh,
+        ActiveEnergyExportTotalMin_Wh =
+            previous.ActiveEnergyExportTotalMin_Wh < next.ActiveEnergyExportTotalMin_Wh
+            ? previous.ActiveEnergyExportTotalMin_Wh
+            : next.ActiveEnergyExportTotalMin_Wh,
+        ActiveEnergyExportTotalMax_Wh =
+            previous.ActiveEnergyExportTotalMax_Wh > next.ActiveEnergyExportTotalMax_Wh
+              ? previous.ActiveEnergyExportTotalMax_Wh
+              : next.ActiveEnergyExportTotalMax_Wh,
+        ReactiveEnergyImportTotalMin_VARh =
+            previous.ReactiveEnergyImportTotalMin_VARh < next.ReactiveEnergyImportTotalMin_VARh
+            ? previous.ReactiveEnergyImportTotalMin_VARh
+            : next.ReactiveEnergyImportTotalMin_VARh,
+        ReactiveEnergyImportTotalMax_VARh =
+            previous.ReactiveEnergyImportTotalMax_VARh > next.ReactiveEnergyImportTotalMax_VARh
+              ? previous.ReactiveEnergyImportTotalMax_VARh
+              : next.ReactiveEnergyImportTotalMax_VARh,
+        ReactiveEnergyExportTotalMin_VARh =
+            previous.ReactiveEnergyExportTotalMin_VARh < next.ReactiveEnergyExportTotalMin_VARh
+            ? previous.ReactiveEnergyExportTotalMin_VARh
+            : next.ReactiveEnergyExportTotalMin_VARh,
+        ReactiveEnergyExportTotalMax_VARh =
+            previous.ReactiveEnergyExportTotalMax_VARh > next.ReactiveEnergyExportTotalMax_VARh
+              ? previous.ReactiveEnergyExportTotalMax_VARh
+              : next.ReactiveEnergyExportTotalMax_VARh,
+        }
+      } :
+      new()
+      {
+        previous,
+        next
+      };
+  }
+
 
   public static readonly Expression<Func<SchneiderDailyAggregateEntity, SchneiderDailyAggregateEntity, SchneiderDailyAggregateEntity>>
   UpsertRow = (

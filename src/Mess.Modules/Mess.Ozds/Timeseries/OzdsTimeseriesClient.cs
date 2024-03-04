@@ -213,17 +213,7 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
         .UpsertRange(filtered
           .Select(measurement => measurement
             .ToQuarterHourlyAggregateEntity(_shellSettings.GetDatabaseTablePrefix()))
-          .OrderBy(range => range.Timestamp)
-          .Aggregate(
-            new List<AbbQuarterHourlyAggregateEntity>(),
-            (list, next) =>
-              list
-                .Concat(
-                list.LastOrDefault() is { } last
-                  ? last.Upsert(next)
-                  : new() { next }
-                )
-                .ToList()))
+          .UpsertRange())
         .On(v => new { v.Tenant, v.Source, v.Timestamp })
         .WhenMatched(AbbQuarterHourlyAggregateEntityExtensions.UpsertRow)
         .Run();
@@ -232,17 +222,7 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
         .UpsertRange(filtered
           .Select(measurement => measurement
             .ToDailyAggregateEntity(_shellSettings.GetDatabaseTablePrefix()))
-          .OrderBy(range => range.Timestamp)
-          .Aggregate(
-            new List<AbbDailyAggregateEntity>(),
-            (list, next) =>
-              list
-                .Concat(
-                list.LastOrDefault() is { } last
-                  ? last.Upsert(next)
-                  : new() { next }
-                )
-                .ToList()))
+          .UpsertRange())
         .On(v => new { v.Tenant, v.Source, v.Timestamp })
         .WhenMatched(AbbDailyAggregateEntityExtensions.UpsertRow)
         .Run();
@@ -251,17 +231,7 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
         .UpsertRange(filtered
           .Select(measurement => measurement
             .ToMonthlyAggregateEntity(_shellSettings.GetDatabaseTablePrefix()))
-          .OrderBy(range => range.Timestamp)
-          .Aggregate(
-            new List<AbbMonthlyAggregateEntity>(),
-            (list, next) =>
-              list
-                .Concat(
-                list.LastOrDefault() is { } last
-                  ? last.Upsert(next)
-                  : new() { next }
-                )
-                .ToList()))
+          .UpsertRange())
         .On(v => new { v.Tenant, v.Source, v.Timestamp })
         .WhenMatched(AbbMonthlyAggregateEntityExtensions.UpsertRow)
         .Run();
@@ -300,66 +270,31 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
           .RunAsync();
 
         await context.AbbQuarterHourlyAggregate
-        .UpsertRange(
-        filtered
-                  .Select(measurement => measurement
-                    .ToQuarterHourlyAggregateEntity(_shellSettings.GetDatabaseTablePrefix()))
-                  .OrderBy(range => range.Timestamp)
-                  .Aggregate(
-                    new List<AbbQuarterHourlyAggregateEntity>(),
-                    (list, next) =>
-                      list
-                        .Take(list.Count == 0 ? 0 : list.Count - 1)
-                        .Concat(
-                        list.LastOrDefault() is { } last
-                          ? last.Upsert(next)
-                          : new() { next }
-                        )
-                        .ToList())
-)
-                .On(v => new { v.Tenant, v.Source, v.Timestamp })
-                .WhenMatched(AbbQuarterHourlyAggregateEntityExtensions.UpsertRow)
-                .RunAsync();
+          .UpsertRange(filtered
+            .Select(measurement => measurement
+              .ToQuarterHourlyAggregateEntity(_shellSettings.GetDatabaseTablePrefix()))
+            .UpsertRange())
+          .On(v => new { v.Tenant, v.Source, v.Timestamp })
+          .WhenMatched(AbbQuarterHourlyAggregateEntityExtensions.UpsertRow)
+          .RunAsync();
 
         await context.AbbDailyAggregate
-        .UpsertRange(filtered
-          .Select(measurement => measurement
-            .ToDailyAggregateEntity(_shellSettings.GetDatabaseTablePrefix()))
-          .OrderBy(range => range.Timestamp)
-          .Aggregate(
-            new List<AbbDailyAggregateEntity>(),
-            (list, next) =>
-              list
-                        .Take(list.Count == 0 ? 0 : list.Count - 1)
-                .Concat(
-                list.LastOrDefault() is { } last
-                  ? last.Upsert(next)
-                  : new() { next }
-                )
-                .ToList()))
-                .On(v => new { v.Tenant, v.Source, v.Timestamp })
-                .WhenMatched(AbbDailyAggregateEntityExtensions.UpsertRow)
-                .RunAsync();
+          .UpsertRange(filtered
+            .Select(measurement => measurement
+              .ToDailyAggregateEntity(_shellSettings.GetDatabaseTablePrefix()))
+            .UpsertRange())
+          .On(v => new { v.Tenant, v.Source, v.Timestamp })
+          .WhenMatched(AbbDailyAggregateEntityExtensions.UpsertRow)
+          .RunAsync();
 
         await context.AbbMonthlyAggregate
-        .UpsertRange(filtered
-          .Select(measurement => measurement
-            .ToMonthlyAggregateEntity(_shellSettings.GetDatabaseTablePrefix()))
-          .OrderBy(range => range.Timestamp)
-          .Aggregate(
-            new List<AbbMonthlyAggregateEntity>(),
-            (list, next) =>
-              list
-                        .Take(list.Count == 0 ? 0 : list.Count - 1)
-                .Concat(
-                list.LastOrDefault() is { } last
-                  ? last.Upsert(next)
-                  : new() { next }
-                )
-                .ToList()))
-                .On(v => new { v.Tenant, v.Source, v.Timestamp })
-                .WhenMatched(AbbMonthlyAggregateEntityExtensions.UpsertRow)
-                .RunAsync();
+          .UpsertRange(filtered
+            .Select(measurement => measurement
+              .ToMonthlyAggregateEntity(_shellSettings.GetDatabaseTablePrefix()))
+            .UpsertRange())
+          .On(v => new { v.Tenant, v.Source, v.Timestamp })
+          .WhenMatched(AbbMonthlyAggregateEntityExtensions.UpsertRow)
+          .RunAsync();
       });
   }
 
@@ -397,18 +332,7 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
         .UpsertRange(filtered
           .Select(measurement => measurement
             .ToQuarterHourlyAggregateEntity(_shellSettings.GetDatabaseTablePrefix()))
-          .OrderBy(range => range.Timestamp)
-          .Aggregate(
-            new List<SchneiderQuarterHourlyAggregateEntity>(),
-            (list, next) =>
-              list
-                        .Take(list.Count == 0 ? 0 : list.Count - 1)
-                .Concat(
-                list.LastOrDefault() is { } last
-                  ? last.Upsert(next)
-                  : new() { next }
-                )
-                .ToList()))
+          .UpsertRange())
         .On(v => new { v.Tenant, v.Source, v.Timestamp })
         .WhenMatched(SchneiderQuarterHourlyAggregateEntityExtensions.UpsertRow)
         .Run();
@@ -417,18 +341,7 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
         .UpsertRange(filtered
           .Select(measurement => measurement
             .ToDailyAggregateEntity(_shellSettings.GetDatabaseTablePrefix()))
-          .OrderBy(range => range.Timestamp)
-          .Aggregate(
-            new List<SchneiderDailyAggregateEntity>(),
-            (list, next) =>
-              list
-                        .Take(list.Count == 0 ? 0 : list.Count - 1)
-                .Concat(
-                list.LastOrDefault() is { } last
-                  ? last.Upsert(next)
-                  : new() { next }
-                )
-                .ToList()))
+          .UpsertRange())
         .On(v => new { v.Tenant, v.Source, v.Timestamp })
         .WhenMatched(SchneiderDailyAggregateEntityExtensions.UpsertRow)
         .Run();
@@ -437,18 +350,7 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
         .UpsertRange(filtered
           .Select(measurement => measurement
             .ToMonthlyAggregateEntity(_shellSettings.GetDatabaseTablePrefix()))
-          .OrderBy(range => range.Timestamp)
-          .Aggregate(
-            new List<SchneiderMonthlyAggregateEntity>(),
-            (list, next) =>
-              list
-                        .Take(list.Count == 0 ? 0 : list.Count - 1)
-                .Concat(
-                list.LastOrDefault() is { } last
-                  ? last.Upsert(next)
-                  : new() { next }
-                )
-                .ToList()))
+          .UpsertRange())
         .On(v => new { v.Tenant, v.Source, v.Timestamp })
         .WhenMatched(SchneiderMonthlyAggregateEntityExtensions.UpsertRow)
         .Run();
@@ -487,64 +389,31 @@ public partial class OzdsTimeseriesClient : IOzdsTimeseriesClient
           .RunAsync();
 
         await context.SchneiderQuarterHourlyAggregate
-        .UpsertRange(filtered
-          .Select(measurement => measurement
-            .ToQuarterHourlyAggregateEntity(_shellSettings.GetDatabaseTablePrefix()))
-          .OrderBy(range => range.Timestamp)
-          .Aggregate(
-            new List<SchneiderQuarterHourlyAggregateEntity>(),
-            (list, next) =>
-              list
-                        .Take(list.Count == 0 ? 0 : list.Count - 1)
-                .Concat(
-                list.LastOrDefault() is { } last
-                  ? last.Upsert(next)
-                  : new() { next }
-                )
-                .ToList()))
-                .On(v => new { v.Tenant, v.Source, v.Timestamp })
-                .WhenMatched(SchneiderQuarterHourlyAggregateEntityExtensions.UpsertRow)
-                .RunAsync();
+          .UpsertRange(filtered
+            .Select(measurement => measurement
+              .ToQuarterHourlyAggregateEntity(_shellSettings.GetDatabaseTablePrefix()))
+            .UpsertRange())
+          .On(v => new { v.Tenant, v.Source, v.Timestamp })
+          .WhenMatched(SchneiderQuarterHourlyAggregateEntityExtensions.UpsertRow)
+          .RunAsync();
 
         await context.SchneiderDailyAggregate
-        .UpsertRange(filtered
-          .Select(measurement => measurement
-            .ToDailyAggregateEntity(_shellSettings.GetDatabaseTablePrefix()))
-          .OrderBy(range => range.Timestamp)
-          .Aggregate(
-            new List<SchneiderDailyAggregateEntity>(),
-            (list, next) =>
-              list
-                        .Take(list.Count == 0 ? 0 : list.Count - 1)
-                .Concat(
-                list.LastOrDefault() is { } last
-                  ? last.Upsert(next)
-                  : new() { next }
-                )
-                .ToList()))
-                .On(v => new { v.Tenant, v.Source, v.Timestamp })
-                .WhenMatched(SchneiderDailyAggregateEntityExtensions.UpsertRow)
-                .RunAsync();
+          .UpsertRange(filtered
+            .Select(measurement => measurement
+              .ToDailyAggregateEntity(_shellSettings.GetDatabaseTablePrefix()))
+            .UpsertRange())
+          .On(v => new { v.Tenant, v.Source, v.Timestamp })
+          .WhenMatched(SchneiderDailyAggregateEntityExtensions.UpsertRow)
+          .RunAsync();
 
         await context.SchneiderMonthlyAggregate
-        .UpsertRange(filtered
-          .Select(measurement => measurement
-            .ToMonthlyAggregateEntity(_shellSettings.GetDatabaseTablePrefix()))
-          .OrderBy(range => range.Timestamp)
-          .Aggregate(
-            new List<SchneiderMonthlyAggregateEntity>(),
-            (list, next) =>
-              list
-                        .Take(list.Count == 0 ? 0 : list.Count - 1)
-                .Concat(
-                list.LastOrDefault() is { } last
-                  ? last.Upsert(next)
-                  : new() { next }
-                )
-                .ToList()))
-                .On(v => new { v.Tenant, v.Source, v.Timestamp })
-                .WhenMatched(SchneiderMonthlyAggregateEntityExtensions.UpsertRow)
-                .RunAsync();
+          .UpsertRange(filtered
+            .Select(measurement => measurement
+              .ToMonthlyAggregateEntity(_shellSettings.GetDatabaseTablePrefix()))
+            .UpsertRange())
+          .On(v => new { v.Tenant, v.Source, v.Timestamp })
+          .WhenMatched(SchneiderMonthlyAggregateEntityExtensions.UpsertRow)
+          .RunAsync();
       });
   }
 }
