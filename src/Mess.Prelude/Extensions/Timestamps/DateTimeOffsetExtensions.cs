@@ -51,7 +51,7 @@ public static class DateTimeOffsetExtensions
     return new DateTimeOffset(
       dateTime.Year,
       dateTime.Month,
-      dateTime.Hour,
+      dateTime.Day,
       0,
       0,
       0,
