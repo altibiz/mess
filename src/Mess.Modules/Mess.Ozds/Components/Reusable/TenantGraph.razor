@@ -26,7 +26,7 @@
                       Name="Potrošnja"
                       SeriesType="SeriesType.Area"
                       XValue='x => x.date'
-                      YValue="x => x.values.FirstOrDefault()"
+                      YValue="x => x.value"
                     />
                 </ApexChart>
               }
@@ -47,7 +47,7 @@
             Name="Potrošnja"
             SeriesType="SeriesType.Area"
             XValue='x => x.date'
-            YValue="x => x.values.FirstOrDefault()"
+            YValue="x => x.value"
           />
       </ApexChart>
     }
@@ -61,8 +61,8 @@
     private ApexChartOptions<ChartDataL> graphLOptions = new();
     private ApexChartOptions<ChartDataL> graphLOptionsMob = new();
     public IEnumerable<ChartDataL>? _leftGraphValues;
-    public List<ChartDataL>? _totalConsumption = new();
-    public record ChartDataL(decimal[] values, string[] names, DateTimeOffset date, string source);
+    public List<ChartDataL> _totalConsumption = new();
+    public record ChartDataL(decimal value, string name, DateTimeOffset date, string source);
     private ApexChart<ChartDataL> leftChart = default!;
     private DateTimeOffset nowYear = DateTimeOffset.UtcNow.GetStartOfYear();
     private DateTimeOffset now = DateTime.UtcNow;
@@ -148,12 +148,12 @@
         foreach(var omm in _ioTDevices){
           if(omm.DisplayText.StartsWith("abb")){
             var measurements = await _timeseriesClient.GetAbbMonthlyAggregateAsync(omm.DisplayText, nowYear, now);
-            var chartDataList = measurements.Select(x => new ChartDataL(values: new decimal[]{x.ActiveEnergyImportTotalMax_Wh/1000}, names: new string[]{"Potrošnja"}, date: x.Timestamp, source: x.Source)).ToList();
+            var chartDataList = measurements.Select(x => new ChartDataL(value: x.ActiveEnergyImportTotalMax_Wh/1000, name: "Potrošnja", date: x.Timestamp, source: x.Source)).ToList();
             _totalConsumption.AddRange(chartDataList);
           }
           else{
             var measurements = await _timeseriesClient.GetSchneiderMonthlyAggregateAsync(omm.DisplayText, nowYear, now);
-            var chartDataList = measurements.Select(x => new ChartDataL(values: new decimal[]{x.ActiveEnergyImportTotalMax_Wh/1000}, names: new string[]{"Potrošnja"}, date: x.Timestamp, source: x.Source)).ToList();
+            var chartDataList = measurements.Select(x => new ChartDataL(value: x.ActiveEnergyImportTotalMax_Wh/1000, name: "Potrošnja", date: x.Timestamp, source: x.Source)).ToList();
             _totalConsumption.AddRange(chartDataList);
           }
         }
@@ -161,19 +161,16 @@
             .GroupBy(x => x.date)
             .Select(group =>
             {
-                var aggregatedValues = group
-                    .Select(g => g.values)
-                    .Aggregate((a, b) => a
-                      .Zip(b, (x, y) => x + y)
-                      .ToArray()
-                    );
+                // Since values is now a decimal, we aggregate by summing directly
+                var aggregatedValue = group.Sum(g => g.value);
 
                 var firstItem = group.First();
 
-                // Make sure this matches your ChartDataL constructor signature
+                // Since names is now a string, we simply take the name from the first item
+                // Assuming 'name' is still relevant to be passed in this manner
                 return new ChartDataL(
-                    aggregatedValues,
-                    firstItem.names,
+                    aggregatedValue,
+                    firstItem.name,
                     group.Key,
                     firstItem.source);
             })
@@ -182,7 +179,15 @@
         // Step 3: Replace _totalConsumption with aggregated results
         _totalConsumption.Clear(); // Clear existing items
         _totalConsumption.AddRange(aggregatedConsumption); // Add aggregated items
-        _leftGraphValues = _totalConsumption;
+        var minValue = _totalConsumption.Min();
+        if (minValue is not null)
+          _leftGraphValues = _totalConsumption.Select(x => {
+            return new ChartDataL(
+                      x.value - minValue.value,
+                      x.name,
+                      x.date,
+                      x.source);
+          });
       });
     }
 }

@@ -74,7 +74,7 @@
       <PropertyColumn
         CellStyle="font-size: x-large;"
         Property="x => x.consumption"
-        Title='@T["Potrošnja tekućega mjeseca"].Value'>
+        Title='@T["Potrošnja u tekućem mjesecu"].Value'>
             <CellTemplate>
                 @(DecimalString((decimal)context.Item.consumption/1000, 0) + " kWh")
             </CellTemplate>
@@ -123,11 +123,17 @@
         foreach(var omm in _ioTDevices){
           _startEnd = new();
           if(omm.DisplayText.StartsWith("abb")){
-            var device = _abbRange.Where(x => x.Source == omm.DisplayText).First();
+            var device = _abbRange.Where(x => x.Source == omm.DisplayText).FirstOrDefault();
+            if (device is null){
+              continue;
+            }
             _startEnd = (device.ActiveEnergyImportTotalMax_Wh, device.ActiveEnergyImportTotalMin_Wh, device.Timestamp);
           }
           else{
-            var device = _schneiderRange.Where(x => x.Source == omm.DisplayText).First();
+            var device = _schneiderRange.Where(x => x.Source == omm.DisplayText).FirstOrDefault();
+            if (device is null){
+              continue;
+            }
             _startEnd = (device.ActiveEnergyImportTotalMax_Wh, device.ActiveEnergyImportTotalMin_Wh, device.Timestamp);
           }
           _diagnostics += _startEnd.First - _startEnd.Last;

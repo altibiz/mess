@@ -85,30 +85,7 @@
         </MudTextField>
       </ToolBarContent>
       <Columns>
-      <TemplateColumn Title="@T["Mjerna mjesta"].Value" Sortable="false"
-
-           >
-            <CellTemplate>
-                <MudStack Row>
-                  <MudButton OnClick="() => InspectOMM(context.Item.omm)" Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
-                    @context.Item.omm.DisplayText
-                  </MudButton>
-                </MudStack>
-            </CellTemplate>
-        </TemplateColumn>
-        <TemplateColumn Title="@T["Lokacije"].Value" Sortable="false"
-
-           >
-            <CellTemplate>
-                <MudStack Row>
-                  <MudButton OnClick="() => InspectSubnet(context.Item.system)" Variant="Variant.Outlined" Color="MudBlazor.Color.Primary">
-                    @context.Item.system.DisplayText
-                  </MudButton>
-                </MudStack>
-            </CellTemplate>
-        </TemplateColumn>
-        <TemplateColumn Title="@T["Korisnici mreže"].Value" Sortable="false"
-           >
+        <TemplateColumn Title="@T["Korisnici mreže"].Value" Sortable="false">
             <CellTemplate>
                 <MudStack Row>
                   <MudButton OnClick="() => InspectTenant(context.Item.unit)" Variant="Variant.Outlined" Color="MudBlazor.Color.Primary">
@@ -117,10 +94,31 @@
                 </MudStack>
             </CellTemplate>
         </TemplateColumn>
+
+        <TemplateColumn Title="@T["Lokacije"].Value" Sortable="false">
+            <CellTemplate>
+                <MudStack Row>
+                  <MudButton OnClick="() => InspectSubnet(context.Item.system)" Variant="Variant.Outlined" Color="MudBlazor.Color.Primary">
+                    @context.Item.system.DisplayText
+                  </MudButton>
+                </MudStack>
+            </CellTemplate>
+        </TemplateColumn>
+
+      <TemplateColumn Title="@T["Mjerna mjesta"].Value" Sortable="false">
+            <CellTemplate>
+                <MudStack Row>
+                  <MudButton OnClick="() => InspectOMM(context.Item.omm)" Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
+                    @context.Item.omm.DisplayText
+                  </MudButton>
+                </MudStack>
+            </CellTemplate>
+        </TemplateColumn>
+
         <PropertyColumn
           CellStyle="font-size: x-large;"
           Property="x => x.lastMonthUsage"
-          Title='@T["Potrošnja prošli mjesec"].Value' >
+          Title='@T["Potrošnja u prethodnom mjesecu"].Value' >
             <CellTemplate>
               @if(context.Item.lastMonthUsage is not null)
               @(DecimalString((decimal)context.Item.lastMonthUsage/1000, 0) + " kWh")
@@ -129,7 +127,7 @@
         <PropertyColumn
           CellStyle="font-size: x-large;"
           Property="x => x.thisMonthUsage"
-          Title='@T["Potrošnja trenutni mjesec"].Value' >
+          Title='@T["Potrošnja u tekućem mjesecu"].Value' >
           <CellTemplate>
               @if(context.Item.thisMonthUsage is not null)
               @(DecimalString((decimal)context.Item.thisMonthUsage/1000, 0) + " kWh")
@@ -232,27 +230,39 @@
         _schneiderRangeLastMonth = await _timeseriesClient.GetBulkSchneiderMonthlyAggregateAsync(_ioTDevices.Where(x => x.DisplayText.StartsWith("schneider")).Select(x => x.DisplayText),nowMonth.AddMonths(-1),nowMonth);
       }
 
-      if(_systems is not null && _units is not null && _ioTDevices is not null)
+      if(_systems is not null && _units is not null && _ioTDevices is not null) // TODO: THIS DOES NOT WORK FOR MORE SYSTEMS OR UNITS !!!
         foreach(var system in _systems){
           foreach(var unit in _units){
             foreach(var omm in _ioTDevices){
               if(omm.DisplayText.StartsWith("abb")){
                 if(_abbRange is not null &&_abbRange.Count() > 0){
-                  var device = _abbRange.Where(x => x.Source == omm.DisplayText).First();
+                  var device = _abbRange.Where(x => x.Source == omm.DisplayText).FirstOrDefault();
+                  if (device is null){
+                    continue;
+                  }
                   _startEnd = (device.ActiveEnergyImportTotalMax_Wh, device.ActiveEnergyImportTotalMin_Wh, device.Timestamp);
                 }
                 if(_abbRangeLastMonth is not null &&_abbRangeLastMonth.Count() > 0){
-                  var deviceLastMonth = _abbRangeLastMonth.Where(x => x.Source == omm.DisplayText).First();
+                  var deviceLastMonth = _abbRangeLastMonth.Where(x => x.Source == omm.DisplayText).FirstOrDefault();
+                  if (deviceLastMonth is null){
+                    continue;
+                  }
                   _lastMonthStartEnd = (deviceLastMonth.ActiveEnergyImportTotalMax_Wh, deviceLastMonth.ActiveEnergyImportTotalMin_Wh, deviceLastMonth.Timestamp);
                 }
               }
               else{
                 if(_schneiderRange is not null &&_schneiderRange.Count() > 0){
-                  var device = _schneiderRange.Where(x => x.Source == omm.DisplayText).First();
+                  var device = _schneiderRange.Where(x => x.Source == omm.DisplayText).FirstOrDefault();
+                  if (device is null){
+                    continue;
+                  }
                   _startEnd = (device.ActiveEnergyImportTotalMax_Wh, device.ActiveEnergyImportTotalMin_Wh, device.Timestamp);
                 }
                 if(_schneiderRangeLastMonth is not null &&_schneiderRangeLastMonth.Count() > 0){
-                  var deviceLastMonth = _schneiderRangeLastMonth.Where(x => x.Source == omm.DisplayText).First();
+                  var deviceLastMonth = _schneiderRangeLastMonth.Where(x => x.Source == omm.DisplayText).FirstOrDefault();
+                  if (deviceLastMonth is null){
+                    continue;
+                  }
                   _lastMonthStartEnd = (deviceLastMonth.ActiveEnergyImportTotalMax_Wh, deviceLastMonth.ActiveEnergyImportTotalMin_Wh, deviceLastMonth.Timestamp);
                 }
               }

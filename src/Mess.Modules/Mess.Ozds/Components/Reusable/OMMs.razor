@@ -44,7 +44,7 @@
                 @T["Potrošnja tekućeg mjeseca"].Value: @(dataStruct.omm.thisMonthUsage is null ? null : DecimalString((decimal)dataStruct.omm.thisMonthUsage/1000, 0) + " kWh")
               </MudContainer>
               <MudContainer>
-                @T["Potrošnja prošlog mjeseca"].Value: @(dataStruct.omm.lastMonthUsage is null ? null : DecimalString((decimal)dataStruct.omm.lastMonthUsage/1000, 0) + " kWh")
+                @T["Potrošnja u prethodnom mjesecu"].Value: @(dataStruct.omm.lastMonthUsage is null ? null : DecimalString((decimal)dataStruct.omm.lastMonthUsage/1000, 0) + " kWh")
               </MudContainer>
             </MudStack>
           </MudCollapse>
@@ -100,7 +100,7 @@
     <PropertyColumn
       CellStyle="font-size: x-large;"
       Property="x => x.lastMonthUsage"
-      Title='@T["Potrošnja prošlog mjeseca"].Value'>
+      Title='@T["Potrošnja u prethodnom mjesecu"].Value'>
           <CellTemplate>
                 @if(context.Item.lastMonthUsage is not null)
                 @(DecimalString((decimal)context.Item.lastMonthUsage/1000, 0) + " kWh")
@@ -168,25 +168,40 @@
             _startEnd = new();
             if(omm.DisplayText.StartsWith("abb")){
               if(_abbRange is not null &&_abbRange.Count() > 0){
-                var device = _abbRange.Where(x => x.Source == omm.DisplayText).First();
+                var device = _abbRange.Where(x => x.Source == omm.DisplayText).FirstOrDefault();
+                if (device is null){
+                  continue;
+                }
                 _startEnd = (device.ActiveEnergyImportTotalMax_Wh, device.ActiveEnergyImportTotalMin_Wh, device.Timestamp);
               }
               if(_abbRangeLastMonth is not null &&_abbRangeLastMonth.Count() > 0){
-                var deviceLastMonth = _abbRangeLastMonth.Where(x => x.Source == omm.DisplayText).First();
+                var deviceLastMonth = _abbRangeLastMonth.Where(x => x.Source == omm.DisplayText).FirstOrDefault();
+                if (deviceLastMonth is null){
+                  continue;
+                }
                 _startEndLastMonth = (deviceLastMonth.ActiveEnergyImportTotalMax_Wh, deviceLastMonth.ActiveEnergyImportTotalMin_Wh, deviceLastMonth.Timestamp);
               }
             }
             else{
               if(_schneiderRange is not null &&_schneiderRange.Count() > 0){
-                var device = _schneiderRange.Where(x => x.Source == omm.DisplayText).First();
+                var device = _schneiderRange.Where(x => x.Source == omm.DisplayText).FirstOrDefault();
+                if (device is null){
+                  continue;
+                }
                 _startEnd = (device.ActiveEnergyImportTotalMax_Wh, device.ActiveEnergyImportTotalMin_Wh, device.Timestamp);
               }
               if(_schneiderRangeLastMonth is not null &&_schneiderRangeLastMonth.Count() > 0){
-                var deviceLastMonth = _schneiderRangeLastMonth.Where(x => x.Source == omm.DisplayText).First();
+                var deviceLastMonth = _schneiderRangeLastMonth.Where(x => x.Source == omm.DisplayText).FirstOrDefault();
+                if (deviceLastMonth is null){
+                  continue;
+                }
                 _startEndLastMonth = (deviceLastMonth.ActiveEnergyImportTotalMax_Wh, deviceLastMonth.ActiveEnergyImportTotalMin_Wh, deviceLastMonth.Timestamp);
               }
             }
-            ContentItem lastInvoice = invoices.OrderBy(x => x.As<InvoicePart>().Date.Value.Value).Last();
+            ContentItem lastInvoice = invoices.OrderBy(x => x.As<InvoicePart>().Date.Value.Value).LastOrDefault();
+            if (lastInvoice is null){
+              continue;
+            }
             var lastMonth = lastInvoice.As<OzdsCalculationPart>().Calculations.Where(x => x.IotDevice.DisplayText == omm.DisplayText).FirstOrDefault();
             if(lastMonth is not null){
               _lastTotalPerOMM.Add(new (omm.DisplayText, lastMonth.Total, _startEnd.First - _startEnd.Last, _startEndLastMonth.First - _startEndLastMonth.Last));

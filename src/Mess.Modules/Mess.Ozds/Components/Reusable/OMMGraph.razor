@@ -45,22 +45,33 @@
                     />
                     }
                 </ApexChart>
-                <MudItem Class="d-flex flex-row justify-center gap-2">
-                  <MudMenu Label="@_leftDataTitle" Dense="true" Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
+                <MudItem Class="d-flex flex-column justify-center gap-2">
+                  <MudMenu Dense="true" Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
+                    <ActivatorContent>
+                      <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
+                        @_leftDataTitle
+                        <MudIcon Icon="@Icons.Material.Filled.KeyboardArrowDown" />
+                      </MudButton>
+                    </ActivatorContent>
+                    <ChildContent>
                       @foreach(var type in _displayType){
                         <MudMenuItem OnClick="@(() => LeftMenuDataItemClicked(type))">@type</MudMenuItem>
                       }
+                    </ChildContent>
                   </MudMenu>
-                  <MudMenu Label="@_leftTimeTitle" Dense="true" Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
-                    <MudMenuItem OnClick="@(() => MenuItemClicked("Scale1"))">5 min</MudMenuItem>
-                    <MudMenuItem OnClick="@(() => MenuItemClicked("Scale2"))">10 min</MudMenuItem>
-                    <MudMenuItem OnClick="@(() => MenuItemClicked("Scale3"))">15 min</MudMenuItem>
-                    <MudMenuItem OnClick="@(() => MenuItemClicked("Scale4"))">30 min</MudMenuItem>
-                    <MudMenuItem OnClick="@(() => MenuItemClicked("Scale5"))">1 h</MudMenuItem>
-                    <MudMenuItem OnClick="@(() => MenuItemClicked("Scale6"))">3 h</MudMenuItem>
-                    <MudMenuItem OnClick="@(() => MenuItemClicked("Scale7"))">6 h</MudMenuItem>
-                    <MudMenuItem OnClick="@(() => MenuItemClicked("Scale8"))">12 h</MudMenuItem>
-                    <MudMenuItem OnClick="@(() => MenuItemClicked("Scale9"))">24 h</MudMenuItem>
+                  <MudMenu Dense="true" Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
+                    <ActivatorContent>
+                      <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
+                        @_leftTimeTitle
+                        <MudIcon Icon="@Icons.Material.Filled.KeyboardArrowDown" />
+                      </MudButton>
+                    </ActivatorContent>
+                    <ChildContent>
+                      <MudMenuItem OnClick="@(() => MenuItemClicked("Scale1"))">15 min</MudMenuItem>
+                      <MudMenuItem OnClick="@(() => MenuItemClicked("Scale2"))">1 h</MudMenuItem>
+                      <MudMenuItem OnClick="@(() => MenuItemClicked("Scale3"))">6 h</MudMenuItem>
+                      <MudMenuItem OnClick="@(() => MenuItemClicked("Scale4"))">24 h</MudMenuItem>
+                    </ChildContent>
                   </MudMenu>
                 </MudItem>
               }
@@ -103,21 +114,32 @@
                     }
                 </ApexChart>
                 <MudItem Class="d-flex flex-row justify-center gap-2">
-                  <MudMenu Label="@_leftDataTitle" Dense="true" Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
+                  <MudMenu Dense="true" Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
+                    <ActivatorContent>
+                      <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
+                        @_leftDataTitle
+                        <MudIcon Icon="@Icons.Material.Filled.KeyboardArrowDown" />
+                      </MudButton>
+                    </ActivatorContent>
+                    <ChildContent>
                       @foreach(var type in _displayType){
                         <MudMenuItem OnClick="@(() => LeftMenuDataItemClicked(type))">@type</MudMenuItem>
                       }
+                    </ChildContent>
                   </MudMenu>
-                  <MudMenu Label="@_leftTimeTitle" Dense="true" Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
-                    <MudMenuItem OnClick="@(() => MenuItemClicked("Scale1"))">5 min</MudMenuItem>
-                    <MudMenuItem OnClick="@(() => MenuItemClicked("Scale2"))">10 min</MudMenuItem>
-                    <MudMenuItem OnClick="@(() => MenuItemClicked("Scale3"))">15 min</MudMenuItem>
-                    <MudMenuItem OnClick="@(() => MenuItemClicked("Scale4"))">30 min</MudMenuItem>
-                    <MudMenuItem OnClick="@(() => MenuItemClicked("Scale5"))">1 h</MudMenuItem>
-                    <MudMenuItem OnClick="@(() => MenuItemClicked("Scale6"))">3 h</MudMenuItem>
-                    <MudMenuItem OnClick="@(() => MenuItemClicked("Scale7"))">6 h</MudMenuItem>
-                    <MudMenuItem OnClick="@(() => MenuItemClicked("Scale8"))">12 h</MudMenuItem>
-                    <MudMenuItem OnClick="@(() => MenuItemClicked("Scale9"))">24 h</MudMenuItem>
+                  <MudMenu Dense="true" Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
+                    <ActivatorContent>
+                      <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
+                        @_leftTimeTitle
+                        <MudIcon Icon="@Icons.Material.Filled.KeyboardArrowDown" />
+                      </MudButton>
+                    </ActivatorContent>
+                    <ChildContent>
+                      <MudMenuItem OnClick="@(() => MenuItemClicked("Scale1"))">15 min</MudMenuItem>
+                      <MudMenuItem OnClick="@(() => MenuItemClicked("Scale2"))">1 h</MudMenuItem>
+                      <MudMenuItem OnClick="@(() => MenuItemClicked("Scale3"))">6 h</MudMenuItem>
+                      <MudMenuItem OnClick="@(() => MenuItemClicked("Scale4"))">24 h</MudMenuItem>
+                    </ChildContent>
                   </MudMenu>
                 </MudItem>
               }
@@ -135,12 +157,12 @@
     private List<string> _displayType = new List<string>{
       "Napon", "Struja", "Snaga", "Jalova snaga", "Prividna snaga"
     };
-    public int timeSpanMins = 1;
+    public int timeSpanMins = 15;
     public int leftLineCount = 0;
     public int rightLineCount = 0;
     public IEnumerable<ChartDataL>? _leftGraphValues;
     private string _leftDataTitle = "";
-    private string _leftTimeTitle = "1 min";
+    private string _leftTimeTitle = "15 min";
     public record ChartDataL(decimal?[] values, string[] names, DateTimeOffset date, string source);
     private ApexChart<ChartDataL> leftChart = default!;
     protected override async Task OnInitializedAsync()
@@ -403,38 +425,18 @@
       switch(item)
       {
         case "Scale1":
-            timeSpanMins = 5;
-            _leftTimeTitle = "5 min";
-            break;
-        case "Scale2":
-            timeSpanMins = 10;
-            _leftTimeTitle = "10 min";
-            break;
-        case "Scale3":
             timeSpanMins = 15;
             _leftTimeTitle = "15 min";
             break;
-        case "Scale4":
-            timeSpanMins = 30;
-            _leftTimeTitle = "30 min";
-            break;
-        case "Scale5":
+        case "Scale2":
             timeSpanMins = 60;
             _leftTimeTitle = "1 h";
             break;
-        case "Scale6":
-            timeSpanMins = 60 * 3;
-            _leftTimeTitle = "3 h";
-            break;
-        case "Scale7":
+        case "Scale3":
             timeSpanMins = 60 * 6;
             _leftTimeTitle = "6 h";
             break;
-        case "Scale8":
-            timeSpanMins = 60 * 12;
-            _leftTimeTitle = "12 h";
-            break;
-        case "Scale9":
+        case "Scale4":
             timeSpanMins = 60 * 24;
             _leftTimeTitle = "24 h";
             break;

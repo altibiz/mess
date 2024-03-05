@@ -32,7 +32,7 @@
               <MudIconButton OnClick="() => InspectTenant(dataStruct.data.unit)" Icon="@Icons.Material.Filled.RemoveRedEye" Color="MudBlazor.Color.Primary"/>
             </MudItem>
             <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large;">
-              @T["Potrošnja tekućega mjeseca"].Value: @(dataStruct.data.totalConsumption is null ? null : DecimalString((decimal)dataStruct.data.totalConsumption/1000, 0) + " kWh")
+              @T["Potrošnja u tekućem mjesecu"].Value: @(dataStruct.data.totalConsumption is null ? null : DecimalString((decimal)dataStruct.data.totalConsumption/1000, 0) + " kWh")
             </MudItem>
             <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large;">
               @T["Iznos zadnjeg računa"].Value: @(dataStruct.data.lastInvoiceTotal is null ? null : DecimalString((decimal)dataStruct.data.lastInvoiceTotal) + " €")
@@ -87,7 +87,7 @@
     <PropertyColumn
     CellStyle="font-size: x-large;"
     Property="x => x.unit.As<DistributionSystemUnitPart>().Consumption"
-    Title='@T["Potrošnja tekućega mjeseca"].Value'>
+    Title='@T["Potrošnja u tekućem mjesecu"].Value'>
           <CellTemplate>
                 @(context.Item.totalConsumption is null ? null : DecimalString((decimal)context.Item.totalConsumption/1000, 0) + " kWh")
           </CellTemplate>
@@ -138,7 +138,7 @@ else{
               <MudIconButton OnClick="() => InspectTenant(dataStruct.data.unit)" Icon="@Icons.Material.Filled.RemoveRedEye" Color="MudBlazor.Color.Primary"/>
             </MudItem>
             <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large;">
-              @T["Potrošnja tekućega mjeseca"].Value: @(dataStruct.data.totalConsumption is null ? null : DecimalString((decimal)dataStruct.data.totalConsumption/1000, 0) + " kWh")
+              @T["Potrošnja u tekućem mjesecu"].Value: @(dataStruct.data.totalConsumption is null ? null : DecimalString((decimal)dataStruct.data.totalConsumption/1000, 0) + " kWh")
             </MudItem>
             <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large;">
               @T["Iznos zadnjeg računa"].Value: @(dataStruct.data.lastInvoiceTotal is null ? null : DecimalString((decimal)dataStruct.data.lastInvoiceTotal) + " €")
@@ -186,7 +186,7 @@ else{
     <PropertyColumn
     CellStyle="font-size: x-large;"
     Property="x => x.unit.As<DistributionSystemUnitPart>().Consumption"
-    Title='@T["Potrošnja tekućega mjeseca"].Value'>
+    Title='@T["Potrošnja u tekućem mjesecu"].Value'>
           <CellTemplate>
                 @(context.Item.totalConsumption is null ? null : DecimalString((decimal)context.Item.totalConsumption/1000, 0) + " kWh")
           </CellTemplate>
@@ -272,11 +272,17 @@ else{
               foreach(var omm in ioTDevices){
                 _startEnd = new();
                 if(omm.DisplayText.StartsWith("abb")){
-                  var device = _abbRange.Where(x => x.Source == omm.DisplayText).First();
+                  var device = _abbRange.Where(x => x.Source == omm.DisplayText).FirstOrDefault();
+                  if (device is null){
+                    continue;
+                  }
                   _startEnd = (device.ActiveEnergyImportTotalMax_Wh, device.ActiveEnergyImportTotalMin_Wh, device.Timestamp);
                 }
                 else{
-                  var device = _schneiderRange.Where(x => x.Source == omm.DisplayText).First();
+                  var device = _schneiderRange.Where(x => x.Source == omm.DisplayText).FirstOrDefault();
+                  if (device is null){
+                    continue;
+                  }
                   _startEnd = (device.ActiveEnergyImportTotalMax_Wh, device.ActiveEnergyImportTotalMin_Wh, device.Timestamp);
                 }
                 _totalConsumption += _startEnd.First - _startEnd.Last;
