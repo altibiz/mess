@@ -31,5 +31,13 @@ public record SchneiderAggregate(
   decimal ReactiveEnergyExportTotalMin_VARh,
   decimal ReactiveEnergyExportTotalMax_VARh,
   decimal ReactiveEnergyExport_VARh,
-  decimal ReactivePowerExportAvg_VAR
+  decimal ReactivePowerExportAvg_VAR,
+  decimal ActiveEnergyImportTotalT1Min_Wh,
+  decimal ActiveEnergyImportTotalT1Max_Wh,
+  decimal ActiveEnergyImportT1_Wh,
+  decimal ActivePowerImportT1Avg_W,
+  decimal ActiveEnergyImportTotalT2Min_Wh,
+  decimal ActiveEnergyImportTotalT2Max_Wh,
+  decimal ActiveEnergyImportT2_Wh,
+  decimal ActivePowerImportT2Avg_W
 );

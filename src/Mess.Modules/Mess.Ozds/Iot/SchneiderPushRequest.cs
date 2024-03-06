@@ -18,5 +18,7 @@ public record SchneiderPushRequest(
   decimal ActiveEnergyImportTotal_Wh,
   decimal ActiveEnergyExportTotal_Wh,
   decimal ReactiveEnergyImportTotal_VARh,
-  decimal ReactiveEnergyExportTotal_VARh
+  decimal ReactiveEnergyExportTotal_VARh,
+  decimal ActiveEnergyImportTotalT1_Wh,
+  decimal ActiveEnergyImportTotalT2_Wh
 );

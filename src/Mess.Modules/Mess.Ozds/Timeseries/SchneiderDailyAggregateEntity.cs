@@ -97,6 +97,34 @@ public class SchneiderDailyAggregateEntity : DailyContinuousAggregateEntity
   [NotMapped]
   public decimal ReactivePowerExportAvg_VAR =>
     ReactiveEnergyExport_VARh / (decimal)TimeSpan.TotalHours;
+
+  [Column(TypeName = "float8")]
+  public decimal ActiveEnergyImportTotalT1Min_Wh { get; set; } = default!;
+
+  [Column(TypeName = "float8")]
+  public decimal ActiveEnergyImportTotalT1Max_Wh { get; set; } = default!;
+
+  [NotMapped]
+  public decimal ActiveEnergyImportT1_Wh =>
+    ActiveEnergyImportTotalT1Max_Wh - ActiveEnergyImportTotalT1Min_Wh;
+
+  [NotMapped]
+  public decimal ActivePowerImportT1Avg_W =>
+    ActiveEnergyImportT1_Wh / (decimal)TimeSpan.TotalHours;
+
+  [Column(TypeName = "float8")]
+  public decimal ActiveEnergyImportTotalT2Min_Wh { get; set; } = default!;
+
+  [Column(TypeName = "float8")]
+  public decimal ActiveEnergyImportTotalT2Max_Wh { get; set; } = default!;
+
+  [NotMapped]
+  public decimal ActiveEnergyImportT2_Wh =>
+    ActiveEnergyImportTotalT2Max_Wh - ActiveEnergyImportTotalT2Min_Wh;
+
+  [NotMapped]
+  public decimal ActivePowerImportT2Avg_W =>
+    ActiveEnergyImportT2_Wh / (decimal)TimeSpan.TotalHours;
 };
 
 public static class SchneiderDailyAggregateEntityExtensions
@@ -131,6 +159,10 @@ public static class SchneiderDailyAggregateEntityExtensions
       ReactiveEnergyImportTotalMax_VARh = measurement.ActiveEnergyImportTotal_Wh,
       ReactiveEnergyExportTotalMin_VARh = measurement.ActiveEnergyImportTotal_Wh,
       ReactiveEnergyExportTotalMax_VARh = measurement.ActiveEnergyImportTotal_Wh,
+      ActiveEnergyImportTotalT1Min_Wh = measurement.ActiveEnergyImportTotalT1_Wh,
+      ActiveEnergyImportTotalT1Max_Wh = measurement.ActiveEnergyImportTotalT1_Wh,
+      ActiveEnergyImportTotalT2Min_Wh = measurement.ActiveEnergyImportTotalT2_Wh,
+      ActiveEnergyImportTotalT2Max_Wh = measurement.ActiveEnergyImportTotalT2_Wh,
     };
   }
 
@@ -254,6 +286,22 @@ public static class SchneiderDailyAggregateEntityExtensions
               previous.ReactiveEnergyExportTotalMax_VARh > next.ReactiveEnergyExportTotalMax_VARh
                 ? previous.ReactiveEnergyExportTotalMax_VARh
                 : next.ReactiveEnergyExportTotalMax_VARh,
+          ActiveEnergyImportTotalT1Min_Wh =
+            previous.ActiveEnergyImportTotalT1Min_Wh < next.ActiveEnergyImportTotalT1Min_Wh
+            ? previous.ActiveEnergyImportTotalT1Min_Wh
+            : next.ActiveEnergyImportTotalT1Min_Wh,
+          ActiveEnergyImportTotalT1Max_Wh =
+            previous.ActiveEnergyImportTotalT1Max_Wh > next.ActiveEnergyImportTotalT1Max_Wh
+              ? previous.ActiveEnergyImportTotalT1Max_Wh
+              : next.ActiveEnergyImportTotalT1Max_Wh,
+          ActiveEnergyImportTotalT2Min_Wh =
+            previous.ActiveEnergyImportTotalT2Min_Wh < next.ActiveEnergyImportTotalT2Min_Wh
+            ? previous.ActiveEnergyImportTotalT2Min_Wh
+            : next.ActiveEnergyImportTotalT2Min_Wh,
+          ActiveEnergyImportTotalT2Max_Wh =
+            previous.ActiveEnergyImportTotalT2Max_Wh > next.ActiveEnergyImportTotalT2Max_Wh
+              ? previous.ActiveEnergyImportTotalT2Max_Wh
+              : next.ActiveEnergyImportTotalT2Max_Wh,
         }
       } :
       new()
@@ -353,6 +401,22 @@ public static class SchneiderDailyAggregateEntityExtensions
           previous.ReactiveEnergyExportTotalMax_VARh > next.ReactiveEnergyExportTotalMax_VARh
             ? previous.ReactiveEnergyExportTotalMax_VARh
             : next.ReactiveEnergyExportTotalMax_VARh,
+      ActiveEnergyImportTotalT1Min_Wh =
+            previous.ActiveEnergyImportTotalT1Min_Wh < next.ActiveEnergyImportTotalT1Min_Wh
+            ? previous.ActiveEnergyImportTotalT1Min_Wh
+            : next.ActiveEnergyImportTotalT1Min_Wh,
+      ActiveEnergyImportTotalT1Max_Wh =
+            previous.ActiveEnergyImportTotalT1Max_Wh > next.ActiveEnergyImportTotalT1Max_Wh
+              ? previous.ActiveEnergyImportTotalT1Max_Wh
+              : next.ActiveEnergyImportTotalT1Max_Wh,
+      ActiveEnergyImportTotalT2Min_Wh =
+            previous.ActiveEnergyImportTotalT2Min_Wh < next.ActiveEnergyImportTotalT2Min_Wh
+            ? previous.ActiveEnergyImportTotalT2Min_Wh
+            : next.ActiveEnergyImportTotalT2Min_Wh,
+      ActiveEnergyImportTotalT2Max_Wh =
+            previous.ActiveEnergyImportTotalT2Max_Wh > next.ActiveEnergyImportTotalT2Max_Wh
+              ? previous.ActiveEnergyImportTotalT2Max_Wh
+              : next.ActiveEnergyImportTotalT2Max_Wh,
     };
 
   public static SchneiderAggregate ToModel(
@@ -390,7 +454,15 @@ public static class SchneiderDailyAggregateEntityExtensions
       entity.ReactiveEnergyExportTotalMin_VARh,
       entity.ReactiveEnergyExportTotalMax_VARh,
       entity.ReactiveEnergyExport_VARh,
-      entity.ReactivePowerExportAvg_VAR
+      entity.ReactivePowerExportAvg_VAR,
+      entity.ActiveEnergyImportTotalT1Min_Wh,
+      entity.ActiveEnergyImportTotalT1Max_Wh,
+      entity.ActiveEnergyImportT1_Wh,
+      entity.ActivePowerImportT1Avg_W,
+      entity.ActiveEnergyImportTotalT2Min_Wh,
+      entity.ActiveEnergyImportTotalT2Max_Wh,
+      entity.ActiveEnergyImportT2_Wh,
+      entity.ActivePowerImportT2Avg_W
     );
   }
 }

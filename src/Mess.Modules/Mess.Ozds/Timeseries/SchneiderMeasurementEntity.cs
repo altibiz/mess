@@ -24,6 +24,8 @@ public class SchneiderMeasurementEntity : HypertableEntity
   [Column(TypeName = "double precision")] public decimal ActiveEnergyExportTotal_Wh { get; set; } = default;
   [Column(TypeName = "double precision")] public decimal ReactiveEnergyImportTotal_VARh { get; set; } = default;
   [Column(TypeName = "double precision")] public decimal ReactiveEnergyExportTotal_VARh { get; set; } = default;
+  [Column(TypeName = "double precision")] public decimal ActiveEnergyImportTotalT1_Wh { get; set; } = default;
+  [Column(TypeName = "double precision")] public decimal ActiveEnergyImportTotalT2_Wh { get; set; } = default;
 }
 
 public static class SchneiderMeasurementEntityExtensions
@@ -55,7 +57,9 @@ public static class SchneiderMeasurementEntityExtensions
       ActiveEnergyImportTotal_Wh = model.ActiveEnergyImportTotal_Wh,
       ActiveEnergyExportTotal_Wh = model.ActiveEnergyExportTotal_Wh,
       ReactiveEnergyImportTotal_VARh = model.ReactiveEnergyImportTotal_VARh,
-      ReactiveEnergyExportTotal_VARh = model.ReactiveEnergyExportTotal_VARh
+      ReactiveEnergyExportTotal_VARh = model.ReactiveEnergyExportTotal_VARh,
+      ActiveEnergyImportTotalT1_Wh = model.ActiveEnergyImportTotalT1_Wh,
+      ActiveEnergyImportTotalT2_Wh = model.ActiveEnergyImportTotalT2_Wh
     };
   }
 
@@ -83,7 +87,9 @@ public static class SchneiderMeasurementEntityExtensions
       entity.ActiveEnergyImportTotal_Wh,
       entity.ActiveEnergyExportTotal_Wh,
       entity.ReactiveEnergyImportTotal_VARh,
-      entity.ReactiveEnergyExportTotal_VARh
+      entity.ReactiveEnergyExportTotal_VARh,
+      entity.ActiveEnergyImportTotalT1_Wh,
+      entity.ActiveEnergyImportTotalT2_Wh
     );
   }
 }

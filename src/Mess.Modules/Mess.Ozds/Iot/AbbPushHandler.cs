@@ -102,7 +102,9 @@ public class AbbPushHandler
       request.ActiveEnergyImportTotal_Wh,
       request.ActiveEnergyExportTotal_Wh,
       request.ReactiveEnergyImportTotal_VARh,
-      request.ReactiveEnergyExportTotal_VARh
+      request.ReactiveEnergyExportTotal_VARh,
+      request.ActiveEnergyImportTotalT1_Wh,
+      request.ActiveEnergyImportTotalT2_Wh
     );
   }
 }
