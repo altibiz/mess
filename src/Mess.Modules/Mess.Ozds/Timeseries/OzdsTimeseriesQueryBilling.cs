@@ -23,6 +23,10 @@ public partial class OzdsTimeseriesClient
     DateTimeOffset DateTo,
     decimal ActiveEnergyImportTotalMin_Wh,
     decimal ActiveEnergyImportTotalMax_Wh,
+    decimal ActiveEnergyImportTotalT1Min_Wh,
+    decimal ActiveEnergyImportTotalT1Max_Wh,
+    decimal ActiveEnergyImportTotalT2Min_Wh,
+    decimal ActiveEnergyImportTotalT2Max_Wh,
     decimal ReactiveEnergyImportTotalMin_VARh,
     decimal ReactiveEnergyImportTotalMax_VARh,
     decimal ReactiveEnergyExportTotalMin_VARh,
@@ -32,8 +36,8 @@ public partial class OzdsTimeseriesClient
   private record BulkPowerPeak(
     string Source,
     DateTimeOffset Timestamp,
-    decimal ActiveEnergyImportTotalMin_Wh,
-    decimal ActiveEnergyImportTotalMax_Wh
+    decimal ActiveEnergyImportTotalT1Min_Wh,
+    decimal ActiveEnergyImportTotalT1Max_Wh
   );
 
   public OzdsIotDeviceBillingData GetAbbBillingData(
@@ -73,7 +77,7 @@ public partial class OzdsTimeseriesClient
       var last = lastQuery.Value;
       var peak = peakQuery
         .ToList()
-        .OrderByDescending(measurement => measurement.ActivePowerImportAvg_W)
+        .OrderByDescending(measurement => measurement.ActivePowerImportT1Avg_W)
         .FirstOrDefault();
 
       return first is { } && last is { } && peak is { }
@@ -81,17 +85,17 @@ public partial class OzdsTimeseriesClient
           source,
           fromDate,
           toDate,
-          first.ActiveEnergyImportTotal_Wh / 1000,
-          last.ActiveEnergyImportTotal_Wh / 1000,
-          first.ActiveEnergyImportTotal_Wh / 1000,
-          last.ActiveEnergyImportTotal_Wh / 1000,
+          first.ActiveEnergyImportTotalT1_Wh / 1000,
+          last.ActiveEnergyImportTotalT1_Wh / 1000,
+          first.ActiveEnergyImportTotalT2_Wh / 1000,
+          last.ActiveEnergyImportTotalT2_Wh / 1000,
           first.ActiveEnergyImportTotal_Wh / 1000,
           last.ActiveEnergyImportTotal_Wh / 1000,
           first.ReactiveEnergyImportTotal_VARh / 1000,
           last.ReactiveEnergyImportTotal_VARh / 1000,
           first.ReactiveEnergyExportTotal_VARh / 1000,
           last.ReactiveEnergyExportTotal_VARh / 1000,
-          peak.ActivePowerImportAvg_W / 1000
+          peak.ActivePowerImportT1Avg_W / 1000
         )
         : new OzdsIotDeviceBillingData(
             source,
@@ -149,7 +153,7 @@ public partial class OzdsTimeseriesClient
       var last = await lastQuery.ValueAsync();
       var peak = (await peakQuery
         .ToListAsync())
-        .OrderByDescending(measurement => measurement.ActivePowerImportAvg_W)
+        .OrderByDescending(measurement => measurement.ActivePowerImportT1Avg_W)
         .FirstOrDefault();
 
       return first is { } && last is { } && peak is { }
@@ -157,17 +161,17 @@ public partial class OzdsTimeseriesClient
           source,
           fromDate,
           toDate,
-          first.ActiveEnergyImportTotal_Wh / 1000,
-          last.ActiveEnergyImportTotal_Wh / 1000,
-          first.ActiveEnergyImportTotal_Wh / 1000,
-          last.ActiveEnergyImportTotal_Wh / 1000,
+          first.ActiveEnergyImportTotalT1_Wh / 1000,
+          last.ActiveEnergyImportTotalT1_Wh / 1000,
+          first.ActiveEnergyImportTotalT2_Wh / 1000,
+          last.ActiveEnergyImportTotalT2_Wh / 1000,
           first.ActiveEnergyImportTotal_Wh / 1000,
           last.ActiveEnergyImportTotal_Wh / 1000,
           first.ReactiveEnergyImportTotal_VARh / 1000,
           last.ReactiveEnergyImportTotal_VARh / 1000,
           first.ReactiveEnergyExportTotal_VARh / 1000,
           last.ReactiveEnergyExportTotal_VARh / 1000,
-          peak.ActivePowerImportAvg_W / 1000
+          peak.ActivePowerImportT1Avg_W / 1000
         )
         : new OzdsIotDeviceBillingData(
             source,
@@ -225,7 +229,7 @@ public partial class OzdsTimeseriesClient
       var last = lastQuery.Value;
       var peak = peakQuery
         .ToList()
-        .OrderByDescending(measurement => measurement.ActivePowerImportAvg_W)
+        .OrderByDescending(measurement => measurement.ActivePowerImportT1Avg_W)
         .FirstOrDefault();
 
       return first is { } && last is { } && peak is { }
@@ -233,17 +237,17 @@ public partial class OzdsTimeseriesClient
           source,
           fromDate,
           toDate,
-          first.ActiveEnergyImportTotal_Wh / 1000,
-          last.ActiveEnergyImportTotal_Wh / 1000,
-          first.ActiveEnergyImportTotal_Wh / 1000,
-          last.ActiveEnergyImportTotal_Wh / 1000,
+          first.ActiveEnergyImportTotalT1_Wh / 1000,
+          last.ActiveEnergyImportTotalT1_Wh / 1000,
+          first.ActiveEnergyImportTotalT2_Wh / 1000,
+          last.ActiveEnergyImportTotalT2_Wh / 1000,
           first.ActiveEnergyImportTotal_Wh / 1000,
           last.ActiveEnergyImportTotal_Wh / 1000,
           first.ReactiveEnergyImportTotal_VARh / 1000,
           last.ReactiveEnergyImportTotal_VARh / 1000,
           first.ReactiveEnergyExportTotal_VARh / 1000,
           last.ReactiveEnergyExportTotal_VARh / 1000,
-          peak.ActivePowerImportAvg_W / 1000
+          peak.ActivePowerImportT1Avg_W / 1000
         )
         : new OzdsIotDeviceBillingData(
             source,
@@ -301,7 +305,7 @@ public partial class OzdsTimeseriesClient
       var last = await lastQuery.ValueAsync();
       var peak = (await peakQuery
         .ToListAsync())
-        .OrderByDescending(measurement => measurement.ActivePowerImportAvg_W)
+        .OrderByDescending(measurement => measurement.ActivePowerImportT1Avg_W)
         .FirstOrDefault();
 
       return first is { } && last is { } && peak is { }
@@ -309,17 +313,17 @@ public partial class OzdsTimeseriesClient
           source,
           fromDate,
           toDate,
-          first.ActiveEnergyImportTotal_Wh / 1000,
-          last.ActiveEnergyImportTotal_Wh / 1000,
-          first.ActiveEnergyImportTotal_Wh / 1000,
-          last.ActiveEnergyImportTotal_Wh / 1000,
+          first.ActiveEnergyImportTotalT1_Wh / 1000,
+          last.ActiveEnergyImportTotalT1_Wh / 1000,
+          first.ActiveEnergyImportTotalT2_Wh / 1000,
+          last.ActiveEnergyImportTotalT2_Wh / 1000,
           first.ActiveEnergyImportTotal_Wh / 1000,
           last.ActiveEnergyImportTotal_Wh / 1000,
           first.ReactiveEnergyImportTotal_VARh / 1000,
           last.ReactiveEnergyImportTotal_VARh / 1000,
           first.ReactiveEnergyExportTotal_VARh / 1000,
           last.ReactiveEnergyExportTotal_VARh / 1000,
-          peak.ActivePowerImportAvg_W / 1000
+          peak.ActivePowerImportT1Avg_W / 1000
         )
         : new OzdsIotDeviceBillingData(
             source,
@@ -373,6 +377,18 @@ public partial class OzdsTimeseriesClient
               !.ActiveEnergyImportTotal_Wh,
             measurements
               .MinBy(measurement => measurement.Timestamp)
+              !.ActiveEnergyImportTotalT1_Wh,
+            measurements
+              .MaxBy(measurement => measurement.Timestamp)
+              !.ActiveEnergyImportTotalT1_Wh,
+            measurements
+              .MinBy(measurement => measurement.Timestamp)
+              !.ActiveEnergyImportTotalT2_Wh,
+            measurements
+              .MaxBy(measurement => measurement.Timestamp)
+              !.ActiveEnergyImportTotalT2_Wh,
+            measurements
+              .MinBy(measurement => measurement.Timestamp)
               !.ReactiveEnergyImportTotal_VARh,
             measurements
               .MaxBy(measurement => measurement.Timestamp)
@@ -396,14 +412,14 @@ public partial class OzdsTimeseriesClient
           (source, measurement) => new BulkPowerPeak(
             source,
             measurement
-              .MaxBy(measurement => measurement.ActiveEnergyImportTotalMax_Wh - measurement.ActiveEnergyImportTotalMin_Wh)
+              .MaxBy(measurement => measurement.ActiveEnergyImportTotalT1Max_Wh - measurement.ActiveEnergyImportTotalT1Min_Wh)
               !.Timestamp,
             measurement
-              .MaxBy(measurement => measurement.ActiveEnergyImportTotalMax_Wh - measurement.ActiveEnergyImportTotalMin_Wh)
-              !.ActiveEnergyImportTotalMin_Wh,
+              .MaxBy(measurement => measurement.ActiveEnergyImportTotalT1Max_Wh - measurement.ActiveEnergyImportTotalT1Min_Wh)
+              !.ActiveEnergyImportTotalT1Min_Wh,
             measurement
-              .MaxBy(measurement => measurement.ActiveEnergyImportTotalMax_Wh - measurement.ActiveEnergyImportTotalMin_Wh)
-              !.ActiveEnergyImportTotalMax_Wh
+              .MaxBy(measurement => measurement.ActiveEnergyImportTotalT1Max_Wh - measurement.ActiveEnergyImportTotalT1Min_Wh)
+              !.ActiveEnergyImportTotalT1Max_Wh
           )
         )
         .Future();
@@ -425,17 +441,17 @@ public partial class OzdsTimeseriesClient
               source,
               fromDate,
               toDate,
-              energyRange.ActiveEnergyImportTotalMin_Wh / 1000,
-              energyRange.ActiveEnergyImportTotalMax_Wh / 1000,
-              energyRange.ActiveEnergyImportTotalMin_Wh / 1000,
-              energyRange.ActiveEnergyImportTotalMax_Wh / 1000,
+              energyRange.ActiveEnergyImportTotalT1Min_Wh / 1000,
+              energyRange.ActiveEnergyImportTotalT1Max_Wh / 1000,
+              energyRange.ActiveEnergyImportTotalT2Min_Wh / 1000,
+              energyRange.ActiveEnergyImportTotalT2Max_Wh / 1000,
               energyRange.ActiveEnergyImportTotalMin_Wh / 1000,
               energyRange.ActiveEnergyImportTotalMax_Wh / 1000,
               energyRange.ReactiveEnergyImportTotalMin_VARh / 1000,
               energyRange.ReactiveEnergyImportTotalMax_VARh / 1000,
               energyRange.ReactiveEnergyExportTotalMin_VARh / 1000,
               energyRange.ReactiveEnergyExportTotalMax_VARh / 1000,
-              (powerPeak.ActiveEnergyImportTotalMax_Wh - powerPeak.ActiveEnergyImportTotalMin_Wh) * 4 / 1000
+              (powerPeak.ActiveEnergyImportTotalT1Max_Wh - powerPeak.ActiveEnergyImportTotalT1Min_Wh) * 4 / 1000
             )
             : new OzdsIotDeviceBillingData(
                 source,
@@ -491,6 +507,18 @@ public partial class OzdsTimeseriesClient
               !.ActiveEnergyImportTotal_Wh,
             measurements
               .MinBy(measurement => measurement.Timestamp)
+              !.ActiveEnergyImportTotalT1_Wh,
+            measurements
+              .MaxBy(measurement => measurement.Timestamp)
+              !.ActiveEnergyImportTotalT1_Wh,
+            measurements
+              .MinBy(measurement => measurement.Timestamp)
+              !.ActiveEnergyImportTotalT2_Wh,
+            measurements
+              .MaxBy(measurement => measurement.Timestamp)
+              !.ActiveEnergyImportTotalT2_Wh,
+            measurements
+              .MinBy(measurement => measurement.Timestamp)
               !.ReactiveEnergyImportTotal_VARh,
             measurements
               .MaxBy(measurement => measurement.Timestamp)
@@ -514,14 +542,14 @@ public partial class OzdsTimeseriesClient
           (source, measurement) => new BulkPowerPeak(
             source,
             measurement
-              .MaxBy(measurement => measurement.ActiveEnergyImportTotalMax_Wh - measurement.ActiveEnergyImportTotalMin_Wh)
+              .MaxBy(measurement => measurement.ActiveEnergyImportTotalT1Max_Wh - measurement.ActiveEnergyImportTotalT1Min_Wh)
               !.Timestamp,
             measurement
-              .MaxBy(measurement => measurement.ActiveEnergyImportTotalMax_Wh - measurement.ActiveEnergyImportTotalMin_Wh)
-              !.ActiveEnergyImportTotalMin_Wh,
+              .MaxBy(measurement => measurement.ActiveEnergyImportTotalT1Max_Wh - measurement.ActiveEnergyImportTotalT1Min_Wh)
+              !.ActiveEnergyImportTotalT1Min_Wh,
             measurement
-              .MaxBy(measurement => measurement.ActiveEnergyImportTotalMax_Wh - measurement.ActiveEnergyImportTotalMin_Wh)
-              !.ActiveEnergyImportTotalMax_Wh
+              .MaxBy(measurement => measurement.ActiveEnergyImportTotalT1Max_Wh - measurement.ActiveEnergyImportTotalT1Min_Wh)
+              !.ActiveEnergyImportTotalT1Max_Wh
           )
         )
         .Future();
@@ -543,17 +571,17 @@ public partial class OzdsTimeseriesClient
               source,
               fromDate,
               toDate,
-              energyRange.ActiveEnergyImportTotalMin_Wh / 1000,
-              energyRange.ActiveEnergyImportTotalMax_Wh / 1000,
-              energyRange.ActiveEnergyImportTotalMin_Wh / 1000,
-              energyRange.ActiveEnergyImportTotalMax_Wh / 1000,
+              energyRange.ActiveEnergyImportTotalT1Min_Wh / 1000,
+              energyRange.ActiveEnergyImportTotalT1Max_Wh / 1000,
+              energyRange.ActiveEnergyImportTotalT2Min_Wh / 1000,
+              energyRange.ActiveEnergyImportTotalT2Max_Wh / 1000,
               energyRange.ActiveEnergyImportTotalMin_Wh / 1000,
               energyRange.ActiveEnergyImportTotalMax_Wh / 1000,
               energyRange.ReactiveEnergyImportTotalMin_VARh / 1000,
               energyRange.ReactiveEnergyImportTotalMax_VARh / 1000,
               energyRange.ReactiveEnergyExportTotalMin_VARh / 1000,
               energyRange.ReactiveEnergyExportTotalMax_VARh / 1000,
-              (powerPeak.ActiveEnergyImportTotalMax_Wh - powerPeak.ActiveEnergyImportTotalMin_Wh) * 4 / 1000
+              (powerPeak.ActiveEnergyImportTotalT1Max_Wh - powerPeak.ActiveEnergyImportTotalT1Min_Wh) * 4 / 1000
             )
             : new OzdsIotDeviceBillingData(
                 source,
@@ -609,6 +637,18 @@ public partial class OzdsTimeseriesClient
               !.ActiveEnergyImportTotal_Wh,
             measurements
               .MinBy(measurement => measurement.Timestamp)
+              !.ActiveEnergyImportTotalT1_Wh,
+            measurements
+              .MaxBy(measurement => measurement.Timestamp)
+              !.ActiveEnergyImportTotalT1_Wh,
+            measurements
+              .MinBy(measurement => measurement.Timestamp)
+              !.ActiveEnergyImportTotalT2_Wh,
+            measurements
+              .MaxBy(measurement => measurement.Timestamp)
+              !.ActiveEnergyImportTotalT2_Wh,
+            measurements
+              .MinBy(measurement => measurement.Timestamp)
               !.ReactiveEnergyImportTotal_VARh,
             measurements
               .MaxBy(measurement => measurement.Timestamp)
@@ -632,14 +672,14 @@ public partial class OzdsTimeseriesClient
           (source, measurement) => new BulkPowerPeak(
             source,
             measurement
-              .MaxBy(measurement => measurement.ActiveEnergyImportTotalMax_Wh - measurement.ActiveEnergyImportTotalMin_Wh)
+              .MaxBy(measurement => measurement.ActiveEnergyImportTotalT1Max_Wh - measurement.ActiveEnergyImportTotalT1Min_Wh)
               !.Timestamp,
             measurement
-              .MaxBy(measurement => measurement.ActiveEnergyImportTotalMax_Wh - measurement.ActiveEnergyImportTotalMin_Wh)
-              !.ActiveEnergyImportTotalMin_Wh,
+              .MaxBy(measurement => measurement.ActiveEnergyImportTotalT1Max_Wh - measurement.ActiveEnergyImportTotalT1Min_Wh)
+              !.ActiveEnergyImportTotalT1Min_Wh,
             measurement
-              .MaxBy(measurement => measurement.ActiveEnergyImportTotalMax_Wh - measurement.ActiveEnergyImportTotalMin_Wh)
-              !.ActiveEnergyImportTotalMax_Wh
+              .MaxBy(measurement => measurement.ActiveEnergyImportTotalT1Max_Wh - measurement.ActiveEnergyImportTotalT1Min_Wh)
+              !.ActiveEnergyImportTotalT1Max_Wh
           )
         )
         .Future();
@@ -661,17 +701,17 @@ public partial class OzdsTimeseriesClient
               source,
               fromDate,
               toDate,
-              energyRange.ActiveEnergyImportTotalMin_Wh / 1000,
-              energyRange.ActiveEnergyImportTotalMax_Wh / 1000,
-              energyRange.ActiveEnergyImportTotalMin_Wh / 1000,
-              energyRange.ActiveEnergyImportTotalMax_Wh / 1000,
+              energyRange.ActiveEnergyImportTotalT1Min_Wh / 1000,
+              energyRange.ActiveEnergyImportTotalT1Max_Wh / 1000,
+              energyRange.ActiveEnergyImportTotalT2Min_Wh / 1000,
+              energyRange.ActiveEnergyImportTotalT2Max_Wh / 1000,
               energyRange.ActiveEnergyImportTotalMin_Wh / 1000,
               energyRange.ActiveEnergyImportTotalMax_Wh / 1000,
               energyRange.ReactiveEnergyImportTotalMin_VARh / 1000,
               energyRange.ReactiveEnergyImportTotalMax_VARh / 1000,
               energyRange.ReactiveEnergyExportTotalMin_VARh / 1000,
               energyRange.ReactiveEnergyExportTotalMax_VARh / 1000,
-              (powerPeak.ActiveEnergyImportTotalMax_Wh - powerPeak.ActiveEnergyImportTotalMin_Wh) * 4 / 1000
+              (powerPeak.ActiveEnergyImportTotalT1Max_Wh - powerPeak.ActiveEnergyImportTotalT1Min_Wh) * 4 / 1000
             )
             : new OzdsIotDeviceBillingData(
                 source,
@@ -727,6 +767,18 @@ public partial class OzdsTimeseriesClient
               !.ActiveEnergyImportTotal_Wh,
             measurements
               .MinBy(measurement => measurement.Timestamp)
+              !.ActiveEnergyImportTotalT1_Wh,
+            measurements
+              .MaxBy(measurement => measurement.Timestamp)
+              !.ActiveEnergyImportTotalT1_Wh,
+            measurements
+              .MinBy(measurement => measurement.Timestamp)
+              !.ActiveEnergyImportTotalT2_Wh,
+            measurements
+              .MaxBy(measurement => measurement.Timestamp)
+              !.ActiveEnergyImportTotalT2_Wh,
+            measurements
+              .MinBy(measurement => measurement.Timestamp)
               !.ReactiveEnergyImportTotal_VARh,
             measurements
               .MaxBy(measurement => measurement.Timestamp)
@@ -750,14 +802,14 @@ public partial class OzdsTimeseriesClient
           (source, measurement) => new BulkPowerPeak(
             source,
             measurement
-              .MaxBy(measurement => measurement.ActiveEnergyImportTotalMax_Wh - measurement.ActiveEnergyImportTotalMin_Wh)
+              .MaxBy(measurement => measurement.ActiveEnergyImportTotalT1Max_Wh - measurement.ActiveEnergyImportTotalT1Min_Wh)
               !.Timestamp,
             measurement
-              .MaxBy(measurement => measurement.ActiveEnergyImportTotalMax_Wh - measurement.ActiveEnergyImportTotalMin_Wh)
-              !.ActiveEnergyImportTotalMin_Wh,
+              .MaxBy(measurement => measurement.ActiveEnergyImportTotalT1Max_Wh - measurement.ActiveEnergyImportTotalT1Min_Wh)
+              !.ActiveEnergyImportTotalT1Min_Wh,
             measurement
-              .MaxBy(measurement => measurement.ActiveEnergyImportTotalMax_Wh - measurement.ActiveEnergyImportTotalMin_Wh)
-              !.ActiveEnergyImportTotalMax_Wh
+              .MaxBy(measurement => measurement.ActiveEnergyImportTotalT1Max_Wh - measurement.ActiveEnergyImportTotalT1Min_Wh)
+              !.ActiveEnergyImportTotalT1Max_Wh
           )
         )
         .Future();
@@ -779,17 +831,17 @@ public partial class OzdsTimeseriesClient
               source,
               fromDate,
               toDate,
-              energyRange.ActiveEnergyImportTotalMin_Wh / 1000,
-              energyRange.ActiveEnergyImportTotalMax_Wh / 1000,
-              energyRange.ActiveEnergyImportTotalMin_Wh / 1000,
-              energyRange.ActiveEnergyImportTotalMax_Wh / 1000,
+              energyRange.ActiveEnergyImportTotalT1Min_Wh / 1000,
+              energyRange.ActiveEnergyImportTotalT1Max_Wh / 1000,
+              energyRange.ActiveEnergyImportTotalT2Min_Wh / 1000,
+              energyRange.ActiveEnergyImportTotalT2Max_Wh / 1000,
               energyRange.ActiveEnergyImportTotalMin_Wh / 1000,
               energyRange.ActiveEnergyImportTotalMax_Wh / 1000,
               energyRange.ReactiveEnergyImportTotalMin_VARh / 1000,
               energyRange.ReactiveEnergyImportTotalMax_VARh / 1000,
               energyRange.ReactiveEnergyExportTotalMin_VARh / 1000,
               energyRange.ReactiveEnergyExportTotalMax_VARh / 1000,
-              (powerPeak.ActiveEnergyImportTotalMax_Wh - powerPeak.ActiveEnergyImportTotalMin_Wh) * 4 / 1000
+              (powerPeak.ActiveEnergyImportTotalT1Max_Wh - powerPeak.ActiveEnergyImportTotalT1Min_Wh) * 4 / 1000
             )
             : new OzdsIotDeviceBillingData(
                 source,
