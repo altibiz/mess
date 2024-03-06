@@ -179,7 +179,7 @@
         // Step 3: Replace _totalConsumption with aggregated results
         _totalConsumption.Clear(); // Clear existing items
         _totalConsumption.AddRange(aggregatedConsumption); // Add aggregated items
-        var minValue = _totalConsumption.Min();
+        var minValue = _totalConsumption.MinBy(consumption => consumption.value);
         if (minValue is not null)
           _leftGraphValues = _totalConsumption.Select(x => {
             return new ChartDataL(
