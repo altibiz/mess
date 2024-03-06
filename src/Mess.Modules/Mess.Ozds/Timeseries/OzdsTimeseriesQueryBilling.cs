@@ -10,11 +10,6 @@ using Z.EntityFramework.Plus;
 
 namespace Mess.Ozds.Timeseries;
 
-// TODO: use group by for bulks
-// use min of active energy import total (cumulative) to get firsts
-// use max of active energy import total (cumulative) to get lasts
-// use max of active energy import (division of cumulative) to skip all the time stuff to get peaks
-
 public partial class OzdsTimeseriesClient
 {
   private record BulkAggregate(
