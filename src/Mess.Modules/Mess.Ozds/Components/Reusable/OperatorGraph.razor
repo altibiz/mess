@@ -33,6 +33,7 @@
                       SeriesType="SeriesType.Line"
                       XValue='x => x.date'
                       YValue="x => x.values[j]"
+                      Stroke="@(ColorGraph(j))"
                     />
                     }
                     @if(leftLineCount == 0){
@@ -42,6 +43,7 @@
                       SeriesType="SeriesType.Line"
                       XValue='x => x.date'
                       YValue="x => 0"
+                      Stroke="@(ColorGraph(0))"
                     />
                     }
                 </ApexChart>
@@ -116,6 +118,7 @@
                       SeriesType="SeriesType.Line"
                       XValue='x => x.date'
                       YValue="x => x.values[j]"
+                      Stroke="@(ColorGraph(j))"
                     />
                     }
                     @if(leftLineCount == 0){
@@ -125,6 +128,7 @@
                       SeriesType="SeriesType.Line"
                       XValue='x => x.date'
                       YValue="x => 0"
+                      Stroke="@(ColorGraph(0))"
                     />
                     }
                 </ApexChart>
@@ -492,5 +496,18 @@
             break;
       }
     await GetValues(_leftTitle, _leftDataTitle);
+  }
+
+  private ApexCharts.SeriesStroke ColorGraph(int index){
+    if(index==0){
+        return new ApexCharts.SeriesStroke { Color = "#673AB7", Width = 4};
+      }
+    if(index==1){
+        return new ApexCharts.SeriesStroke { Color = "#E53935", Width = 4};
+      }
+    if(index==2){
+        return new ApexCharts.SeriesStroke { Color = "#00897B", Width = 4};
+      }
+    return new ApexCharts.SeriesStroke { Color = "#E53935", Width = 4};
   }
 }

@@ -8,6 +8,7 @@
 @using Mess.Billing.Abstractions.Models
 @using OrchardCore.ContentManagement.Records
 @using OrchardCore.Users.Indexes
+@using Mess.Prelude.Extensions.Timestamps;
 
 @inject IContentManager _contentManager;
 @inject IServiceProvider _serviceProvider;
@@ -223,7 +224,7 @@ else{
     private IReadOnlyList<SchneiderAggregate>? _schneiderRange;
     private IReadOnlyList<AbbAggregate>? _abbRangeLastMonth;
     private IReadOnlyList<SchneiderAggregate>? _schneiderRangeLastMonth;
-    private DateTimeOffset nowMonth = DateTimeOffset.UtcNow.AddDays(-DateTimeOffset.UtcNow.Day);
+    private DateTimeOffset nowMonth = DateTimeOffset.UtcNow.GetStartOfMonth();
     private DateTimeOffset now = DateTimeOffset.UtcNow;
     protected override async Task OnInitializedAsync()
     {

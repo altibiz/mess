@@ -43,9 +43,14 @@
   </MudGrid>
 </MudPaper>
 
-<MudText Typo="Typo.h5" class="mt-8">
-  Mrežarina
-</MudText>
+<MudItem Class="d-flex flex-row justify-space-between mt-8">
+  <MudText Typo="Typo.h5">
+    Mrežarina
+  </MudText>
+  <MudText Typo="Typo.h5" Class="mr-4">
+    €
+  </MudText>
+</MudItem>
 @foreach (var row in usageRows) {
   <MudPaper class="mt-2 px-4 py-2">
     <MudGrid Spacing="1">
@@ -73,9 +78,14 @@
   UKUPNO @(data?.UsageExpenditure.Total)
 </MudText>
 
-<MudText Typo="Typo.h5" class="mt-8">
-  Opskrba
-</MudText>
+<MudItem Class="d-flex flex-row justify-space-between mt-8">
+  <MudText Typo="Typo.h5">
+    Opskrba
+  </MudText>
+  <MudText Typo="Typo.h5" Class="mr-4">
+    €
+  </MudText>
+</MudItem>
 @foreach (var row in supplyRows) {
   <MudPaper class="mt-2 px-4 py-2">
     <MudGrid Spacing="1">
@@ -103,7 +113,15 @@
   UKUPNO @(data?.SupplyExpenditure.Total)
 </MudText>
 
-<MudPaper class="mt-8 px-4 py-2">
+<MudItem Class="d-flex flex-row justify-space-between mt-8">
+  <MudText Typo="Typo.h5">
+
+  </MudText>
+  <MudText Typo="Typo.h5" Class="mr-4">
+    €
+  </MudText>
+</MudItem>
+<MudPaper class="px-4 py-2">
   <MudGrid Spacing="1">
     <MudItem xs="12" sm="9">
       <MudText Typo="Typo.body1">

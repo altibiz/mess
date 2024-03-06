@@ -10,6 +10,7 @@
 @using OrchardCore.Users.Indexes
 @using System.Threading;
 @using Mess.Prelude.Extensions.Timestamps;
+
 @inject IOzdsTimeseriesClient _timeseriesClient
 
 @if(_leftGraphValues is not null){
@@ -110,7 +111,7 @@
       graphLOptions.Yaxis.Add(new YAxis()
             {
               Labels = new YAxisLabels(){
-                Formatter = "function(val, index) { return val.toFixed(0); }"
+                Formatter = "function(val, index) { return val.toFixed(0);}"
                 }
             });
       graphLOptionsMob.Xaxis = new XAxis()
@@ -179,7 +180,7 @@
         // Step 3: Replace _totalConsumption with aggregated results
         _totalConsumption.Clear(); // Clear existing items
         _totalConsumption.AddRange(aggregatedConsumption); // Add aggregated items
-        var minValue = _totalConsumption.MinBy(consumption => consumption.value);
+        var minValue = _totalConsumption.Min();
         if (minValue is not null)
           _leftGraphValues = _totalConsumption.Select(x => {
             return new ChartDataL(

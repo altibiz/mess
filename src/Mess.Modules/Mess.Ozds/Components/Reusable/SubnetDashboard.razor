@@ -9,6 +9,7 @@
 @using OrchardCore.ContentManagement.Records
 @using OrchardCore.Users.Indexes
 @using System.Threading;
+@using Mess.Prelude.Extensions.Timestamps;
 
 @inject IOzdsTimeseriesClient _timeseriesClient
 
@@ -54,7 +55,7 @@
   <MudHidden Breakpoint="Breakpoint.SmAndDown">
     <MudGrid Class="my-3">
         <MudItem xs="6">
-          <MudPaper Class="mud-width-full py-8 px-8" Height="300px">
+          <MudPaper Class="mud-width-full py-8 px-8" Height="320px">
             <MudItem Class="" Style="font-size: large; font-weight: bold;">
               <MudText Typo="Typo.h4">
                 @(T["Potrošnja u prethodnom mjesecu(kWh):"].Value)
@@ -69,7 +70,7 @@
           </MudPaper>
         </MudItem>
         <MudItem xs="6">
-          <MudPaper Class="mud-width-full py-8 px-8" Height="300px">
+          <MudPaper Class="mud-width-full py-8 px-8" Height="320px">
             <MudItem Class="" Style="font-size: large; font-weight: bold;">
               <MudText Typo="Typo.h4">
                 @(T["Potrošnja u tekućem mjesecu(kWh):"].Value)
@@ -98,7 +99,7 @@
     private IReadOnlyList<SchneiderAggregate>? _schneiderRange;
     private IReadOnlyList<AbbAggregate>? _abbRangeLastMonth;
     private IReadOnlyList<SchneiderAggregate>? _schneiderRangeLastMonth;
-    private DateTimeOffset nowMonth = DateTimeOffset.UtcNow.AddDays(-DateTimeOffset.UtcNow.Day);
+    private DateTimeOffset nowMonth = DateTimeOffset.UtcNow.GetStartOfMonth();
     private DateTimeOffset now = DateTimeOffset.UtcNow;
     protected override async Task OnInitializedAsync()
     {

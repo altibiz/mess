@@ -8,6 +8,7 @@
 @using Mess.Billing.Abstractions.Models
 @using OrchardCore.ContentManagement.Records
 @using OrchardCore.Users.Indexes
+@using Mess.Prelude.Extensions.Timestamps;
 
 @inject NavigationManager NavigationManager;
 @inject IOzdsTimeseriesClient _timeseriesClient;
@@ -94,7 +95,7 @@
   <MudHidden Breakpoint="Breakpoint.SmAndDown">
     <MudGrid Class="my-3">
         <MudItem xs="4">
-          <MudPaper Class="mud-width-full d-flex flex-column justify-space-between pa-4" Height="300px">
+          <MudPaper Class="mud-width-full d-flex flex-column justify-space-between pa-4" Height="320px">
             <MudItem Class="" Style="font-size: large; font-weight: bold;">
               <MudText Typo="Typo.h5">
                 @(T["Potrošnja u tekućem mjesecu:"].Value)
@@ -109,7 +110,7 @@
           </MudPaper>
         </MudItem>
         <MudItem xs="4">
-          <MudPaper Class="mud-width-full d-flex flex-column justify-space-between pa-4" Height="300px">
+          <MudPaper Class="mud-width-full d-flex flex-column justify-space-between pa-4" Height="320px">
             <MudItem Class="" Style="font-size: large; font-weight: bold;">
               <MudText Typo="Typo.h5">
                 @(T["Potrošnja u prethodnom mjesecu:"].Value)
@@ -124,7 +125,7 @@
           </MudPaper>
         </MudItem>
         <MudItem xs="4">
-          <MudPaper Class="mud-width-full d-flex flex-column justify-space-between pa-4" Height="300px">
+          <MudPaper Class="mud-width-full d-flex flex-column justify-space-between pa-4" Height="320px">
             <MudItem Class="" Style="font-size: large; font-weight: bold;">
               <MudText Typo="Typo.h5">
                 @(T["Trenutna snaga:"].Value)
@@ -230,7 +231,7 @@
     private IReadOnlyList<SchneiderAggregate>? _schneiderRangeLastMonth;
     private IReadOnlyList<AbbMeasurement>? _abbLast;
     private IReadOnlyList<SchneiderMeasurement>? _schneiderLast;
-    private DateTimeOffset nowMonth = DateTimeOffset.UtcNow.AddDays(-DateTimeOffset.UtcNow.Day);
+    private DateTimeOffset nowMonth = DateTimeOffset.UtcNow.GetStartOfMonth();
     private DateTimeOffset now = DateTimeOffset.UtcNow;
     protected override async Task OnInitializedAsync()
     {

@@ -52,7 +52,7 @@
           <MudPaper Class="d-flex align-center justify-stat mud-width-full pa-1 pb-3 flex-column">
             <MudItem Class="d-flex justify-center align-center" Style="font-size: large; font-weight: bold;">
               <MudText Typo="Typo.h6">
-                @(T["Potrošnja u godini (kWh):"].Value)
+                @(T["Potrošnja u godini do "].Value + now.ToString("dd.MM.yyyy") + T[" (kW):"].Value)
               </MudText>
             </MudItem>
             @* <MudContainer Class="d-flex justify-center" MaxWidth="MaxWidth.Small"> *@
@@ -69,7 +69,7 @@
   <MudHidden Breakpoint="Breakpoint.SmAndDown">
     <MudGrid Class="my-3">
         <MudItem xs="4">
-          <MudPaper Class="mud-width-full d-flex flex-column justify-space-between pa-4" Height="300px">
+          <MudPaper Class="mud-width-full d-flex flex-column justify-space-between pa-4" Height="320px">
             <MudItem Class="" Style="font-size: large; font-weight: bold;">
               <MudText Typo="Typo.h5">
                 @(T["Potrošnja u tekućem mjesecu:"].Value)
@@ -85,7 +85,7 @@
           </MudPaper>
         </MudItem>
         <MudItem xs="4">
-          <MudPaper Class="mud-width-full d-flex flex-column justify-space-between pa-4" Height="300px">
+          <MudPaper Class="mud-width-full d-flex flex-column justify-space-between pa-4" Height="320px">
             <MudItem Class="" Style="font-size: large; font-weight: bold;">
               <MudText Typo="Typo.h5">
                 @(T["Potrošnja u prethodnom mjesecu:"].Value)
@@ -101,10 +101,10 @@
           </MudPaper>
         </MudItem>
         <MudItem xs="4">
-          <MudPaper Class="mud-width-full pa-4" Height="300px">
+          <MudPaper Class="mud-width-full pa-4" Height="320px">
             <MudItem Class="" Style="font-size: large; font-weight: bold;">
               <MudText Typo="Typo.h5">
-                @(T["Potrošnja u godini (kWh):"].Value)
+                @(T["Potrošnja u godini do "].Value + now.ToString("dd.MM.yyyy") + T[" (kW):"].Value)
               </MudText>
             </MudItem>
               <TenantGraph LegalEntity="@LegalEntity"></TenantGraph>
@@ -117,7 +117,8 @@
     [Parameter]
     public ContentItem LegalEntity { get; set; } = default!;
     private IEnumerable<ContentItem>? _ioTDevices;
-    private DateTimeOffset nowMonth = DateTimeOffset.UtcNow.AddDays(-DateTimeOffset.UtcNow.Day);
+    private DateTimeOffset now = DateTimeOffset.UtcNow;
+    private DateTimeOffset nowMonth = DateTimeOffset.UtcNow.GetStartOfMonth();
     private (decimal? First, decimal? Last, DateTimeOffset FirstDate) _startEnd;
     private (decimal? First, decimal? Last, DateTimeOffset FirstDate) _startEndLastMonth = new(0, 0, DateTime.UtcNow);
     private decimal? _lastMonthTotal = 0;
@@ -133,7 +134,6 @@
 
 
         if(_ioTDevices is not null){
-          var now = DateTimeOffset.UtcNow;
           var (startThisMonth, startNextMonth) = now.GetMonthRange();
           var startLastMonth = startThisMonth.AddMonths(-2);
           var deviceIds = _ioTDevices.Select(device => (string)device.Content.IotDevicePart.DeviceId.Text).ToList();

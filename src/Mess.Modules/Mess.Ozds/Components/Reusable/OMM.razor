@@ -9,6 +9,7 @@
 @using OrchardCore.ContentManagement.Records
 @using OrchardCore.Users.Indexes
 @using System.Threading;
+@using Mess.Prelude.Extensions.Timestamps;
 
 @inject IOzdsTimeseriesClient _timeseriesClient
 @if(_lastAbbPower is not null || _lastSchneiderPower is not null){
@@ -34,7 +35,7 @@
                                     XValue="@(e => DecimalString((decimal)e.value/1000, 2) + " kW")"
                                     YAggregate="@(e =>  Math.Round(e.First().percent ?? 0M, 2))"
                                     OrderByDescending="e=>e.X" />
-                  <MudText Typo="Typo.body1" Color="MudBlazor.Color.Secondary" Style="font-weight: bold;margin-top: -30px;text-align: center;" Class="m-0">
+                  <MudText Typo="Typo.body1" Style="font-weight: bold;margin-top: -30px;text-align: center; color: #dddddd;" Class="m-0">
                     @T["U usporedbi s maksimalnom snagom u prethodnom mjesecu"].Value (@(DecimalString(lastMonthMaxPower/1000, 2) + " kW"))
                   </MudText>
                 </ApexChart>
@@ -165,7 +166,7 @@
                                     XValue="@(e => DecimalString((decimal)e.value/1000, 2) + " kW")"
                                     YAggregate="@(e =>  Math.Round(e.First().percent ?? 0M, 2))"
                                     OrderByDescending="e=>e.X" />
-                  <MudText Typo="Typo.body1" Color="MudBlazor.Color.Secondary" Style="font-weight: bold;margin-top: -30px;text-align: center;" Class="m-0">
+                  <MudText Typo="Typo.body1" Style="font-weight: bold;margin-top: -30px;text-align: center; color: #dddddd;" Class="m-0">
                     @T["U usporedbi s maksimalnom snagom u prethodnom mjesecu"].Value (@(DecimalString(lastMonthMaxPower/1000, 2) + " kW"))
                   </MudText>
                 </ApexChart>
@@ -201,7 +202,7 @@
     private SchneiderMeasurement? _lastSchneiderPower;
     private IReadOnlyList<SchneiderAggregate>? _lastSchneiderMonthPowerRange;
     private IReadOnlyList<AbbAggregate>? _lastAbbMonthPowerRange;
-    private DateTimeOffset nowMonth = DateTimeOffset.UtcNow.AddDays(-DateTimeOffset.UtcNow.Day);
+    private DateTimeOffset nowMonth = DateTimeOffset.UtcNow.GetStartOfMonth();
     private DateTimeOffset now = DateTime.UtcNow;
   private class Order {
     public decimal? value = 10;
