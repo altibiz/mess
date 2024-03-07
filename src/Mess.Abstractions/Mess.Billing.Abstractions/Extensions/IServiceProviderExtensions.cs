@@ -36,6 +36,7 @@ public static class IServiceProviderExtensions
 
     var currentStart =
       billingPart.LastInvoiceTo is { } lastInvoiceEnd
+        && lastInvoiceEnd != default
         ? lastInvoiceEnd
         : item.CreatedUtc is { } created && created != default ?
           new DateTimeOffset(created)
