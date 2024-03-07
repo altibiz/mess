@@ -79,6 +79,13 @@ public static class IServiceProviderExtensions
         return lastInvoiceContentItemId;
       }
 
+      logger.LogInformation(
+        "Created invoice for {} from {} to {}",
+        item.ContentItemId,
+        currentStart,
+        nextMonthStart
+      );
+
       currentStart = nextMonthStart;
     }
 
