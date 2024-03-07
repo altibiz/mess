@@ -155,9 +155,11 @@
           .Query<ContentItem, OzdsIotDeviceIndex>()
             .Where(index => !index.IsMessenger)
           .Where(x => x.DistributionSystemUnitContentItemId == _units.First().ContentItemId)
+          .LatestPublished()
           .ListAsync();
         var invoices = await session.Query<ContentItem, Mess.Billing.Abstractions.Indexes.PaymentIndex>()
           .Where(index => index.RecipientContentItemId == _units.First().ContentItemId)
+          .LatestPublished()
           .ListAsync();
         var consumption = _units.First().As<DistributionSystemUnitPart>().Consumption;
         if(_ioTDevices is not null){

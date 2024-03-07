@@ -2,6 +2,7 @@ using Mess.Billing.Abstractions.Extensions;
 using Mess.Billing.Abstractions.Indexes;
 using Mess.Billing.Abstractions.Models;
 using Mess.Billing.Abstractions.Services;
+using Mess.Cms.Extensions.OrchardCore;
 using Mess.Prelude.Extensions.Timestamps;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -26,6 +27,7 @@ public class BillingBackgroundTask : IBackgroundTask
     var session = serviceProvider.GetRequiredService<ISession>();
     var billingItems = await session
       .Query<ContentItem, BillingIndex>()
+      .LatestPublished()
       .ListAsync();
 
     var logger = serviceProvider.GetRequiredService<

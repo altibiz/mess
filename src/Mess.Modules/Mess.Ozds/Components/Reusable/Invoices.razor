@@ -9,6 +9,7 @@
 @using OrchardCore.ContentManagement.Records
 @using OrchardCore.Users.Indexes
 @using Mess.Billing.Abstractions.Indexes
+@using Mess.Cms.Extensions.OrchardCore
 
 @inject NavigationManager NavigationManager
 
@@ -145,6 +146,7 @@
             _invoices = await session
               .Query<ContentItem, PaymentIndex>()
               .Where(index => index.IssuerContentItemId == LegalEntity.ContentItemId || index.RecipientContentItemId == LegalEntity.ContentItemId)
+              .LatestPublished()
           .ListAsync();
       });
       if(_invoices is not null){

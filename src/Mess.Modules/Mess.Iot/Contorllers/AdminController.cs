@@ -1,3 +1,4 @@
+using Mess.Cms.Extensions.OrchardCore;
 using Mess.Iot.Abstractions;
 using Mess.Iot.Abstractions.Indexes;
 using Mess.Iot.ViewModels;
@@ -37,6 +38,7 @@ public class AdminController : Controller
 
     var devices = await _session
       .Query<ContentItem, IotDeviceIndex>()
+      .LatestPublished()
       .ListAsync();
 
     return View(new IotDeviceListViewModel { Devices = devices.ToList() });

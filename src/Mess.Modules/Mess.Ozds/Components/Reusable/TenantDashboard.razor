@@ -151,9 +151,11 @@
           .Query<ContentItem, OzdsIotDeviceIndex>()
           .Where(index => index.DistributionSystemUnitContentItemId == LegalEntity.ContentItemId)
           .Where(index => !index.IsMessenger)
+          .LatestPublished()
           .ListAsync();
         var invoices = await session.Query<ContentItem, Mess.Billing.Abstractions.Indexes.PaymentIndex>()
           .Where(index => index.RecipientContentItemId == LegalEntity.ContentItemId)
+          .LatestPublished()
           .ListAsync();
         if(invoices is not null){
           lastInvoice = invoices.OrderBy(x => x.As<InvoicePart>().Date.Value.Value).LastOrDefault();

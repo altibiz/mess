@@ -23,6 +23,7 @@ public class UpdateEventDispatcher : IEventDispatcher
       var contentItem = session
         .Query<ContentItem, IotDeviceIndex>()
         .Where(index => index.DeviceId == @event.DeviceId)
+        .LatestPublished()
         .FirstOrDefaultAsync()
         .Result;
       if (contentItem is null)
@@ -76,6 +77,7 @@ public class UpdateEventDispatcher : IEventDispatcher
       var contentItem = await session
         .Query<ContentItem, IotDeviceIndex>()
         .Where(index => index.DeviceId == @event.DeviceId)
+        .LatestPublished()
         .FirstOrDefaultAsync();
       if (contentItem is null)
       {

@@ -93,6 +93,7 @@
         _systems = await session
           .Query<ContentItem, ClosedDistributionSystemIndex>()
           .Where(index => index.DistributionSystemOperatorContentItemId == LegalEntity.ContentItemId)
+          .LatestPublished()
           .ListAsync();
         foreach(var sys in _systems){
           _shownSubnets.Add( new ExpandThing{data = sys, show = true, expand = false});

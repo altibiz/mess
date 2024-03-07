@@ -1,5 +1,6 @@
 using Mess.Cms;
 using Mess.Cms.Extensions.Microsoft;
+using Mess.Cms.Extensions.OrchardCore;
 using Mess.Ozds.Abstractions.Models;
 using Mess.Ozds.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -35,6 +36,7 @@ public class DistributionSystemOperatorAdminController : Controller
       operators = await _session
         .Query<ContentItem, ContentItemIndex>()
         .Where(index => index.ContentType == "DistributionSystemOperator")
+        .LatestPublished()
         .ListContentAsync<DistributionSystemOperatorItem>();
     else
       return Forbid();
@@ -61,6 +63,7 @@ public class DistributionSystemOperatorAdminController : Controller
       .Query<ContentItem, UserPickerFieldIndex>()
       .Where(index => index.ContentPart == "LegalEntityPart")
       .Where(index => index.SelectedUserId == orchardCoreUser.UserId)
+      .LatestPublished()
       .FirstOrDefaultAsync();
 
     return !orchardCoreUser.RoleNames.Contains("Administrator")

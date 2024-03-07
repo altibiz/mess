@@ -1,5 +1,6 @@
 using Mess.Billing.Abstractions.Services;
 using Mess.Cms;
+using Mess.Cms.Extensions.OrchardCore;
 using Mess.Iot.Abstractions.Models;
 using Mess.Ozds.Abstractions.Indexes;
 using Mess.Ozds.Abstractions.Models;
@@ -66,6 +67,7 @@ public class OzdsClosedDistributionUnitBillingFactory : IBillingFactory
     var iotDevices = await _session
       .Query<ContentItem, OzdsIotDeviceIndex>()
       .Where(index => index.DistributionSystemUnitContentItemId == contentItem.ContentItemId)
+      .LatestPublished()
       .ListAsync();
 
     var calculations = new List<OzdsCalculationData>();

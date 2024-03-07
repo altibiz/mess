@@ -40,6 +40,40 @@
         </MudText>
       </MudHidden>
     </MudItem>
+    <MudItem xs="12" sm="6">
+      <MudText Type="Typo.body2">
+        <strong>Od:</strong>
+      </MudText>
+    </MudItem>
+    <MudItem xs="12" sm="6">
+      <MudHidden Breakpoint="Breakpoint.Xs">
+        <MudText Type="Typo.body2" Align="MudAlign.Right">
+          @(data?.From.ToString("dd. MM. yyyy. hh:mm"))
+        </MudText>
+      </MudHidden>
+      <MudHidden Breakpoint="Breakpoint.SmAndUp">
+        <MudText Type="Typo.body2" Align="MudAlign.Left">
+          @(data?.From.ToString("dd. MM. yyyy. hh:mm"))
+        </MudText>
+      </MudHidden>
+    </MudItem>
+    <MudItem xs="12" sm="6">
+      <MudText Type="Typo.body2">
+        <strong>Do:</strong>
+      </MudText>
+    </MudItem>
+    <MudItem xs="12" sm="6">
+      <MudHidden Breakpoint="Breakpoint.Xs">
+        <MudText Type="Typo.body2" Align="MudAlign.Right">
+          @(data?.To.ToString("dd. MM. yyyy. hh:mm"))
+        </MudText>
+      </MudHidden>
+      <MudHidden Breakpoint="Breakpoint.SmAndUp">
+        <MudText Type="Typo.body2" Align="MudAlign.Left">
+          @(data?.To.ToString("dd. MM. yyyy. hh:mm"))
+        </MudText>
+      </MudHidden>
+    </MudItem>
   </MudGrid>
 </MudPaper>
 

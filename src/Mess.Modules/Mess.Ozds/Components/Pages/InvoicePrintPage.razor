@@ -33,6 +33,7 @@
           var contentInvoice = await session
             .Query<ContentItem, PaymentIndex>()
             .Where(index => index.ContentItemId == InvoiceId)
+            .LatestPublished()
             .FirstOrDefaultAsync();
 
           _invoiceItem = contentInvoice.AsContent<OzdsInvoiceItem>();

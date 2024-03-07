@@ -153,6 +153,7 @@ else if (_legalEntityPart != null && _user != null){
           .Query<ContentItem, UserPickerFieldIndex>()
           .Where(index => index.ContentPart == "LegalEntityPart")
           .Where(index => index.SelectedUserId == _user.UserId)
+          .LatestPublished()
           .FirstOrDefaultAsync();
 
         _legalEntityPart = _legalEntity.As<LegalEntityPart>();

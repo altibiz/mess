@@ -148,6 +148,7 @@
           .Query<ContentItem, OzdsIotDeviceIndex>()
             .Where(index => !index.IsMessenger)
           .Where(x => x.DistributionSystemUnitContentItemId == LegalEntity.ContentItemId)
+          .LatestPublished()
           .ListAsync();
         foreach(var omm in _ioTDevices){
           if(omm.DisplayText.StartsWith("abb")){

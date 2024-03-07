@@ -1,3 +1,4 @@
+using Mess.Cms.Extensions.OrchardCore;
 using Mess.Event.Abstractions.Services;
 using Mess.Iot.Abstractions.Indexes;
 using Mess.Iot.Abstractions.Services;
@@ -24,6 +25,7 @@ public class PidgeonUpdateEventDispatcher : IEventDispatcher
       var contentItem = session
         .Query<ContentItem, IotDeviceIndex>()
         .Where(index => index.DeviceId == @event.DeviceId)
+        .LatestPublished()
         .FirstOrDefaultAsync()
         .Result;
       if (contentItem is null) continue;
@@ -64,6 +66,7 @@ public class PidgeonUpdateEventDispatcher : IEventDispatcher
       var contentItem = await session
         .Query<ContentItem, IotDeviceIndex>()
         .Where(index => index.DeviceId == @event.DeviceId)
+        .LatestPublished()
         .FirstOrDefaultAsync();
       if (contentItem is null) continue;
 

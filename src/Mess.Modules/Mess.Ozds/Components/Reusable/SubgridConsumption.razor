@@ -136,19 +136,23 @@
         _systems = await session
           .Query<ContentItem, ClosedDistributionSystemIndex>()
           .Where(index => index.DistributionSystemOperatorContentItemId == LegalEntity.ContentItemId)
+          .LatestPublished()
           .ListAsync();
         _units = await session
           .Query<ContentItem, DistributionSystemUnitIndex>()
           .Where(index => index.DistributionSystemOperatorContentItemId == LegalEntity.ContentItemId)
+          .LatestPublished()
           .ListAsync();
         _ioTDevices = await session
           .Query<ContentItem, OzdsIotDeviceIndex>()
           .Where(index => index.DistributionSystemOperatorContentItemId == LegalEntity.ContentItemId)
           .Where(index => !index.IsMessenger)
+          .LatestPublished()
           .ListAsync();
         _invoices = await session
           .Query<ContentItem, Mess.Billing.Abstractions.Indexes.PaymentIndex>()
           .Where(index => index.IssuerContentItemId == LegalEntity.ContentItemId)
+          .LatestPublished()
           .ListAsync();
       });
       if(_ioTDevices is not null){

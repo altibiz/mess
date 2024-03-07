@@ -327,6 +327,7 @@
             .Query<ContentItem, OzdsIotDeviceIndex>()
             .Where(index => index.ClosedDistributionSystemContentItemId == LegalEntity.ContentItemId)
             .Where(index => !index.IsMessenger)
+          .LatestPublished()
             .ListAsync();
         }
         else if (LegalEntity.ContentType == "DistributionSystemOperator"){
@@ -334,6 +335,7 @@
             .Query<ContentItem, OzdsIotDeviceIndex>()
             .Where(index => index.DistributionSystemOperatorContentItemId == LegalEntity.ContentItemId)
             .Where(index => !index.IsMessenger)
+          .LatestPublished()
             .ListAsync();
         }
         else if (LegalEntity.ContentType == "DistributionSystemUnit"){
@@ -341,6 +343,7 @@
             .Query<ContentItem, OzdsIotDeviceIndex>()
             .Where(index => index.DistributionSystemUnitContentItemId == LegalEntity.ContentItemId)
             .Where(index => !index.IsMessenger)
+          .LatestPublished()
             .ListAsync();
         }
         if(_ioTDevices is not null && _ioTDevices.Count() > 1){

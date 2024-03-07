@@ -1,5 +1,6 @@
 using Mess.Cms;
 using Mess.Cms.Extensions.Microsoft;
+using Mess.Cms.Extensions.OrchardCore;
 using Mess.Ozds.Abstractions.Indexes;
 using Mess.Ozds.Abstractions.Models;
 using Mess.Ozds.ViewModels;
@@ -34,6 +35,7 @@ public class DistributionSystemUnitAdminController : Controller
       .Query<ContentItem, UserPickerFieldIndex>()
       .Where(index => index.ContentPart == "LegalEntityPart")
       .Where(index => index.SelectedUserId == orchardCoreUser.UserId)
+      .LatestPublished()
       .FirstOrDefaultAsync();
 
     IEnumerable<DistributionSystemUnitItem>? units = null;
@@ -41,6 +43,7 @@ public class DistributionSystemUnitAdminController : Controller
       units = await _session
         .Query<ContentItem, ContentItemIndex>()
         .Where(index => index.ContentType == "DistributionSystemUnit")
+      .LatestPublished()
         .ListContentAsync<DistributionSystemUnitItem>();
     else if (
       orchardCoreUser.RoleNames.Contains("DistributionSystemOperator")
@@ -53,6 +56,7 @@ public class DistributionSystemUnitAdminController : Controller
             index.DistributionSystemOperatorContentItemId
             == legalEntityItem.ContentItemId
         )
+        .LatestPublished()
         .ListContentAsync<DistributionSystemUnitItem>();
     else if (
       orchardCoreUser.RoleNames.Contains("ClosedDistributionSystem")
@@ -65,6 +69,7 @@ public class DistributionSystemUnitAdminController : Controller
             index.ClosedDistributionSystemContentItemId
             == legalEntityItem.ContentItemId
         )
+        .LatestPublished()
         .ListContentAsync<DistributionSystemUnitItem>();
     else
       return Forbid();
@@ -94,6 +99,7 @@ public class DistributionSystemUnitAdminController : Controller
       .Query<ContentItem, UserPickerFieldIndex>()
       .Where(index => index.ContentPart == "LegalEntityPart")
       .Where(index => index.SelectedUserId == orchardCoreUser.UserId)
+      .LatestPublished()
       .FirstOrDefaultAsync();
 
     return !orchardCoreUser.RoleNames.Contains("Administrator")

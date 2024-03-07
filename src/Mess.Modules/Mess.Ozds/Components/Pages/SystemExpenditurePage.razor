@@ -31,6 +31,7 @@
         .Query<ContentItem, UserPickerFieldIndex>()
         .Where(index => index.ContentPart == "LegalEntityPart")
         .Where(index => index.SelectedUserId == _user.UserId)
+          .LatestPublished()
         .FirstOrDefaultAsync();
       });
     }

@@ -239,6 +239,7 @@
         _systems = await session
           .Query<ContentItem, ClosedDistributionSystemIndex>()
           .Where(index => index.ClosedDistributionSystemContentItemId == LegalEntity.ContentItemId)
+          .LatestPublished()
           .ListAsync();
         if(_systems is not null){
           foreach(var sub in _systems){
@@ -246,6 +247,7 @@
               .Query<ContentItem, OzdsIotDeviceIndex>()
               .Where(index => index.ClosedDistributionSystemContentItemId == sub.ContentItemId)
               .Where(index => !index.IsMessenger)
+              .LatestPublished()
               .ListAsync();
           if(ioTDevices is not null){
             _abbRange = await _timeseriesClient.GetBulkAbbMonthlyAggregateAsync(ioTDevices.Where(x => x.DisplayText.StartsWith("abb")).Select(x => x.DisplayText),nowMonth,now);

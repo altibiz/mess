@@ -96,6 +96,7 @@ else if (_legalEntityPart != null){
             .Query<ContentItem, UserPickerFieldIndex>()
             .Where(index => index.ContentPart == "LegalEntityPart")
             .Where(index => index.SelectedUserId == _user.UserId)
+          .LatestPublished()
             .FirstOrDefaultAsync();
 
           _legalEntityPart = _legalEntity.As<LegalEntityPart>();
@@ -105,6 +106,7 @@ else if (_legalEntityPart != null){
             .Query<ContentItem, UserPickerFieldIndex>()
             .Where(index => index.ContentPart == "LegalEntityPart")
             .Where(index => index.ContentItemId == EntityId)
+          .LatestPublished()
             .FirstOrDefaultAsync();
 
           _legalEntityPart = _legalEntity.As<LegalEntityPart>();

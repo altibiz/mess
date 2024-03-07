@@ -46,13 +46,14 @@ public static class IServiceProviderExtensions
     while (currentStart < until)
     {
       var nextMonthStart = currentStart.AddMonths(1).GetStartOfMonth();
+      var currentEnd = until < nextMonthStart ? until : nextMonthStart;
 
       try
       {
         var invoiceItem = await billingFactory.CreateInvoiceAsync(
           item,
           currentStart,
-          nextMonthStart
+          currentEnd
         );
 
         invoiceItem.Alter<InvoicePart>(invoicePart =>
@@ -70,7 +71,7 @@ public static class IServiceProviderExtensions
         {
           part.LastInvoiceCreated = now;
           part.LastInvoiceFrom = currentStart;
-          part.LastInvoiceTo = nextMonthStart;
+          part.LastInvoiceTo = currentEnd;
         });
         await contentManager.UpdateAsync(item);
       }
@@ -84,10 +85,10 @@ public static class IServiceProviderExtensions
         "Created invoice for {} from {} to {}",
         item.ContentItemId,
         currentStart,
-        nextMonthStart
+        currentEnd
       );
 
-      currentStart = nextMonthStart;
+      currentStart = currentEnd;
     }
 
 

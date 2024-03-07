@@ -171,19 +171,23 @@
                   .Query<ContentItem, OzdsIotDeviceIndex>()
                   .Where(index => index.ClosedDistributionSystemContentItemId == LegalEntity.ContentItemId)
                   .Where(index => !index.IsMessenger)
+                  .LatestPublished()
                   .ListAsync();
                 _systems = await session
                   .Query<ContentItem, ClosedDistributionSystemIndex>()
                   .Where(index => index.ClosedDistributionSystemContentItemId == LegalEntity.ContentItemId)
+                  .LatestPublished()
                   .ListAsync();
                 _units = await session
                   .Query<ContentItem, DistributionSystemUnitIndex>()
                   .Where(index => index.ClosedDistributionSystemContentItemId == LegalEntity.ContentItemId)
+                  .LatestPublished()
                   .ListAsync();
                   if(_ioTDevices != null && _ioTDevices.Count() > 0){
                     var a =  await session
                       .Query<ContentItem, Mess.Billing.Abstractions.Indexes.PaymentIndex>()
                       .Where(index => index.RecipientContentItemId == _units.First().ContentItemId) // TODO: fix this, this is real bad
+                      .LatestPublished()
                       .ListAsync();
                     foreach(var omm in _ioTDevices){
                       List<List<OzdsCalculationData>> b = a.Select(x => x.As<OzdsCalculationPart>().Calculations).ToList();
@@ -200,19 +204,23 @@
                   .Query<ContentItem, OzdsIotDeviceIndex>()
                   .Where(index => index.DistributionSystemOperatorContentItemId == LegalEntity.ContentItemId)
                   .Where(index => !index.IsMessenger)
+                  .LatestPublished()
                   .ListAsync();
                 _systems = await session
                   .Query<ContentItem, ClosedDistributionSystemIndex>()
                   .Where(index => index.DistributionSystemOperatorContentItemId == LegalEntity.ContentItemId)
+                  .LatestPublished()
                   .ListAsync();
                 _units = await session
                   .Query<ContentItem, DistributionSystemUnitIndex>()
                   .Where(index => index.DistributionSystemOperatorContentItemId == LegalEntity.ContentItemId)
+                  .LatestPublished()
                   .ListAsync();
                 if(_ioTDevices != null && _ioTDevices.Count() > 0){
                   var a =  await session
                     .Query<ContentItem, Mess.Billing.Abstractions.Indexes.PaymentIndex>()
                     .Where(index => index.IssuerContentItemId == LegalEntity.ContentItemId)
+                    .LatestPublished()
                     .ListAsync();
                   foreach(var omm in _ioTDevices){
                     List<List<OzdsCalculationData>> b = a.Select(x => x.As<OzdsCalculationPart>().Calculations).ToList();

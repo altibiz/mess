@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using Mess.Cms.Extensions.OrchardCore;
 using Mess.Iot.Abstractions.Caches;
 using Mess.Iot.Abstractions.Indexes;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,6 +36,7 @@ public class IotDeviceContentItemCache : IIotDeviceContentItemCache
                 .GetRequiredService<ISession>()
                 .Query<ContentItem?, IotDeviceIndex>()
                 .Where(device => device.DeviceId == deviceId)
+                .LatestPublished()
                 .FirstOrDefaultAsync();
             }
           )
@@ -56,6 +58,7 @@ public class IotDeviceContentItemCache : IIotDeviceContentItemCache
                 .GetRequiredService<ISession>()
                 .Query<ContentItem?, IotDeviceIndex>()
                 .Where(device => device.DeviceId == deviceId)
+                .LatestPublished()
                 .FirstOrDefaultAsync();
             }
           )

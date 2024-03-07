@@ -268,6 +268,7 @@
           .Query<ContentItem, OzdsIotDeviceIndex>()
           .Where(index => index.DistributionSystemOperatorContentItemId == LegalEntity.ContentItemId)
           .Where(index => !index.IsMessenger)
+          .LatestPublished()
           .ListAsync();
         if(_ioTDevices is not null && _ioTDevices.Count() > 1){
           var c = _ioTDevices.Select(x => x).Take(2);

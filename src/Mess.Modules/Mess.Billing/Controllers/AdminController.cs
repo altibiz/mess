@@ -70,10 +70,12 @@ public class AdminController : Controller
             index.SelectedUserId == orchardCoreUser.UserId
             && index.ContentPart == "LegalEntityPart"
         )
+        .LatestPublished()
         .FirstOrDefaultAsync();
       contentItems = await _session
         .Query<ContentItem, BillingIndex>()
         .Where(index => index.IssuerContentItemId == issuerItem.ContentItemId)
+        .LatestPublished()
         .ListAsync();
     }
     else if (
@@ -92,12 +94,14 @@ public class AdminController : Controller
             index.SelectedUserId == orchardCoreUser.UserId
             && index.ContentPart == "LegalEntityPart"
         )
+        .LatestPublished()
         .FirstOrDefaultAsync();
       contentItems = await _session
         .Query<ContentItem, BillingIndex>()
         .Where(
           index => index.RecipientContentItemId == recipientItem.ContentItemId
         )
+        .LatestPublished()
         .ListAsync();
     }
     else

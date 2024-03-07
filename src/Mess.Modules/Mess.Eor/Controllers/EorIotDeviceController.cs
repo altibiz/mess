@@ -1,5 +1,6 @@
 using Mess.Cms;
 using Mess.Cms.Extensions.Microsoft;
+using Mess.Cms.Extensions.OrchardCore;
 using Mess.Eor.Abstractions;
 using Mess.Eor.Abstractions.Indexes;
 using Mess.Eor.Abstractions.Models;
@@ -58,6 +59,7 @@ public class EorIotDeviceController : Controller
           ? index => index.OwnerId == orchardCoreUser.UserId
           : index => index.Author == orchardCoreUser.UserId
       )
+      .LatestPublished()
       .ListAsync();
 
     var eorIotDevices = contentItems.Select(

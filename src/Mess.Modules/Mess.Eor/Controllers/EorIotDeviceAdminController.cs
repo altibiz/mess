@@ -1,5 +1,6 @@
 using Mess.Cms;
 using Mess.Cms.Extensions.Microsoft;
+using Mess.Cms.Extensions.OrchardCore;
 using Mess.Eor.Abstractions.Indexes;
 using Mess.Eor.Abstractions.Models;
 using Mess.Eor.Abstractions.Timeseries;
@@ -52,6 +53,7 @@ public class EorIotDeviceAdminController : Controller
     var contentItems = await _session
       .Query<ContentItem, EorIotDeviceIndex>()
       .Where(index => index.Author == orchardCoreUser.UserId)
+      .LatestPublished()
       .ListAsync();
 
     var eorIotDevices = contentItems.Select(

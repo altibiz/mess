@@ -1,4 +1,5 @@
 using Mess.Cms.Extensions.Microsoft;
+using Mess.Cms.Extensions.OrchardCore;
 using Mess.Iot.Abstractions.Models;
 using Mess.Ozds.Abstractions.Indexes;
 using Mess.Ozds.Abstractions.Models;
@@ -33,12 +34,14 @@ public class OzdsIotDeviceAdminController : Controller
       .Query<ContentItem, UserPickerFieldIndex>()
       .Where(index => index.ContentPart == "LegalEntityPart")
       .Where(index => index.SelectedUserId == orchardCoreUser.UserId)
+      .LatestPublished()
       .FirstOrDefaultAsync();
 
     IEnumerable<ContentItem>? devices = null;
     if (orchardCoreUser.RoleNames.Contains("Administrator"))
       devices = await _session
         .Query<ContentItem, OzdsIotDeviceIndex>()
+        .LatestPublished()
         .ListAsync();
     else if (
       orchardCoreUser.RoleNames.Contains(
@@ -52,6 +55,7 @@ public class OzdsIotDeviceAdminController : Controller
             index.DistributionSystemOperatorContentItemId
             == legalEntityItem.ContentItemId
         )
+        .LatestPublished()
         .ListAsync();
     else if (
       orchardCoreUser.RoleNames.Contains(
@@ -65,6 +69,7 @@ public class OzdsIotDeviceAdminController : Controller
             index.ClosedDistributionSystemContentItemId
             == legalEntityItem.ContentItemId
         )
+        .LatestPublished()
         .ListAsync();
     else if (
       orchardCoreUser.RoleNames.Contains("Distribution System Unit Representative")
@@ -76,6 +81,7 @@ public class OzdsIotDeviceAdminController : Controller
             index.DistributionSystemUnitContentItemId
             == legalEntityItem.ContentItemId
         )
+        .LatestPublished()
         .ListAsync();
     else
       return Forbid();
@@ -116,6 +122,7 @@ public class OzdsIotDeviceAdminController : Controller
       .Query<ContentItem, UserPickerFieldIndex>()
       .Where(index => index.ContentPart == "LegalEntityPart")
       .Where(index => index.SelectedUserId == orchardCoreUser.UserId)
+      .LatestPublished()
       .FirstOrDefaultAsync();
 
     return !orchardCoreUser.RoleNames.Contains("Administrator")
