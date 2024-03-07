@@ -1,3 +1,4 @@
+using Mess.Billing.Abstractions.Extensions;
 using Mess.Billing.Abstractions.Indexes;
 using Mess.Billing.Abstractions.Models;
 using Mess.Billing.Abstractions.Services;
@@ -11,7 +12,7 @@ using YesSql;
 
 namespace Mess.Billing.BackgroundTasks;
 
-[BackgroundTask(Schedule = "0 * * */1 *")] // NOTE: first minute of every month
+[BackgroundTask(Schedule = "1 * * */1 *")] // NOTE: second minute of every month
 public class BillingBackgroundTask : IBackgroundTask
 {
   public async Task DoWorkAsync(
@@ -19,8 +20,8 @@ public class BillingBackgroundTask : IBackgroundTask
     CancellationToken cancellationToken
   )
   {
-    var (nowLastMonthStart, nowLastMonthEnd) =
-      DateTimeOffset.UtcNow.AddMonths(-1).GetMonthRange();
+    var now = DateTimeOffset.UtcNow;
+    var startOfThisMonth = now.GetStartOfMonth();
 
     var session = serviceProvider.GetRequiredService<ISession>();
     var billingItems = await session
@@ -30,46 +31,14 @@ public class BillingBackgroundTask : IBackgroundTask
     var logger = serviceProvider.GetRequiredService<
       ILogger<BillingBackgroundTask>
     >();
-    var contentManager = serviceProvider.GetRequiredService<IContentManager>();
     foreach (var billingItem in billingItems)
     {
-      var billingPart = billingItem.As<BillingPart>()!;
-
-      var billingFactory = serviceProvider
-        .GetServices<IBillingFactory>()
-        .FirstOrDefault(factory => factory.IsApplicable(billingItem));
-      if (billingFactory == null)
-      {
-        logger.LogError("No receipt factory for {}", billingItem.ContentType);
-        continue;
-      }
-
-      try
-      {
-        var invoiceItem = await billingFactory.CreateInvoiceAsync(
-          billingItem,
-          nowLastMonthStart,
-          nowLastMonthEnd
-        );
-        invoiceItem.Alter<InvoicePart>(invoicePart =>
-        {
-          invoicePart.Receipt = new ContentPickerField();
-          invoicePart.Date = new DateField
-          {
-            Value = DateTime.UtcNow
-          };
-        });
-        await contentManager.CreateAsync(invoiceItem);
-      }
-      catch (Exception exception)
-      {
-        logger.LogError(
-          "Failed to create invoice for item '{}' of type '{}': {}",
-          billingItem.ContentItemId,
-          billingItem.ContentType,
-          exception
-        );
-      }
+      var _ = await serviceProvider.CreateInvoicesUntilAsync(
+        logger,
+        billingItem,
+        now,
+        startOfThisMonth
+      );
     }
 
     await session.SaveChangesAsync();

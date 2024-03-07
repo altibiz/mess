@@ -1,4 +1,5 @@
 using Mess.Billing.Abstractions;
+using Mess.Billing.Abstractions.Extensions;
 using Mess.Billing.Abstractions.Indexes;
 using Mess.Billing.Abstractions.Models;
 using Mess.Billing.Abstractions.Services;
@@ -8,6 +9,7 @@ using Mess.Prelude.Extensions.Timestamps;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using OrchardCore.Admin;
 using OrchardCore.ContentFields.Fields;
 using OrchardCore.ContentFields.Indexing.SQL;
@@ -28,13 +30,15 @@ public class AdminController : Controller
   private readonly IServiceProvider _serviceProvider;
   private readonly ISession _session;
   private readonly IUserService _userService;
+  private readonly ILogger _logger;
 
   public AdminController(
     IContentManager contentManager,
     IServiceProvider serviceProvider,
     ISession session,
     IAuthorizationService authorizationService,
-    IUserService userService
+    IUserService userService,
+    ILogger<AdminController> logger
   )
   {
     _contentManager = contentManager;
@@ -42,6 +46,7 @@ public class AdminController : Controller
     _session = session;
     _authorizationService = authorizationService;
     _userService = userService;
+    _logger = logger;
   }
 
   public async Task<IActionResult> Bills()
@@ -128,9 +133,10 @@ public class AdminController : Controller
   public async Task<IActionResult> IssueInvoice(string contentItemId)
   {
     var billingItem = await _contentManager.GetAsync(contentItemId);
-    if (billingItem == null) return NotFound();
-    var billingPart = billingItem.As<BillingPart>();
-    if (billingPart == null) return BadRequest();
+    if (billingItem == null)
+    {
+      return NotFound();
+    }
 
     // if (
     //   !await _authorizationService.AuthorizeAsync(
@@ -141,29 +147,20 @@ public class AdminController : Controller
     // )
     //   return Forbid();
 
-    var billingFactory = _serviceProvider
-                           .GetServices<IBillingFactory>()
-                           .FirstOrDefault(factory =>
-                             factory.IsApplicable(billingItem)) ??
-                         throw new NotImplementedException(
-                           $"No receipt factory for {billingItem.ContentType}"
-                         );
+    var now = DateTimeOffset.UtcNow;
 
-    var (nowLastMonthStart, nowLastMonthEnd) =
-      DateTimeOffset.UtcNow.GetMonthRange();
-    var invoiceItem = await billingFactory.CreateInvoiceAsync(
+    var lastInvoiceContentItemId = await _serviceProvider.CreateInvoicesUntilAsync(
+      _logger,
       billingItem,
-      nowLastMonthStart,
-      nowLastMonthEnd
+      now,
+      now
     );
-    invoiceItem.Alter<InvoicePart>(invoicePart =>
+    if (lastInvoiceContentItemId is null)
     {
-      invoicePart.Receipt = new ContentPickerField();
-      invoicePart.Date = new DateField { Value = DateTime.UtcNow };
-    });
-    await _contentManager.CreateAsync(invoiceItem);
+      return NotFound();
+    }
 
-    return Redirect($"/ozds/app/invoice/{invoiceItem.ContentItemId}");
+    return Redirect($"/ozds/app/invoice/{lastInvoiceContentItemId}");
   }
 
   [HttpPost]
