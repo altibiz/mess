@@ -82,7 +82,7 @@
               @T["Potrošnja u prethodnom mjesecu"].Value: @(dataStruct.data.lastMonthConsumption is null ? null : DecimalString((decimal)dataStruct.data.lastMonthConsumption/1000, 0) + " kWh")
             </MudItem>
             <MudItem xs="12" Class="d-flex align-center justify-start" Style="font-size: large; font-weight: bold;">
-              @T["Trenutna snaga"].Value: @(dataStruct.data.lastPower is null ? null : DecimalString((decimal)dataStruct.data.lastPower/1000, 0) + " kW")
+              @T["Trenutna snaga"].Value: @(dataStruct.data.lastPower is null ? null : DecimalString((decimal)dataStruct.data.lastPower/1000, 2) + " kW")
             </MudItem>
           </MudGrid>
         </MudStack>
@@ -196,7 +196,7 @@
         Property="x => x.consumption"
         Title='@T["Trenutna snaga"].Value'>
             <CellTemplate>
-                @(context.Item.lastPower is null ? null : DecimalString((decimal)context.Item.lastPower/1000, 0) + " kW")
+                @(context.Item.lastPower is null ? null : DecimalString((decimal)context.Item.lastPower/1000, 2) + " kW")
             </CellTemplate>
       </PropertyColumn>
       </Columns>

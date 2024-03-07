@@ -106,7 +106,10 @@
 
       graphLOptionsMob.Yaxis.Add(new YAxis
             {
-                Show = false
+                Show = false,
+                Labels = new YAxisLabels(){
+                  Formatter = "function(val, index) { return val.toFixed(0);}"
+                  }
             });
       graphLOptions.Yaxis.Add(new YAxis()
             {

@@ -86,21 +86,22 @@
         </MudTextField>
       </ToolBarContent>
       <Columns>
-        <TemplateColumn Title="@T["Korisnici mreže"].Value" Sortable="false">
-            <CellTemplate>
-                <MudStack Row>
-                  <MudButton OnClick="() => InspectTenant(context.Item.unit)" Variant="Variant.Outlined" Color="MudBlazor.Color.Primary">
-                    @context.Item.unit.DisplayText
-                  </MudButton>
-                </MudStack>
-            </CellTemplate>
-        </TemplateColumn>
 
         <TemplateColumn Title="@T["Lokacije"].Value" Sortable="false">
             <CellTemplate>
                 <MudStack Row>
                   <MudButton OnClick="() => InspectSubnet(context.Item.system)" Variant="Variant.Outlined" Color="MudBlazor.Color.Primary">
                     @context.Item.system.DisplayText
+                  </MudButton>
+                </MudStack>
+            </CellTemplate>
+        </TemplateColumn>
+
+        <TemplateColumn Title="@T["Korisnici mreže"].Value" Sortable="false">
+            <CellTemplate>
+                <MudStack Row>
+                  <MudButton OnClick="() => InspectTenant(context.Item.unit)" Variant="Variant.Outlined" Color="MudBlazor.Color.Primary">
+                    @context.Item.unit.DisplayText
                   </MudButton>
                 </MudStack>
             </CellTemplate>

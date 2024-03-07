@@ -273,6 +273,7 @@
           var c = _ioTDevices.Select(x => x).Take(2);
           foreach(var omm in c){
             if(omm.DisplayText.StartsWith("abb")){
+              _displayType = new List<string>{"Napon", "Struja", "Snaga", "Jalova Snaga"};
               var a = await _timeseriesClient.GetAbbMeasurementsAsync(omm.DisplayText, DateTimeOffset.UtcNow.AddMinutes(- timeSpanMins), DateTimeOffset.UtcNow);
               if(_leftGraphValues is null){
                 _leftGraphValues = a.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W}, names: new string[]{"L1 Potrošnja", "L2 Potrošnja","L3 Potrošnja"}, date:x.Timestamp, source:x.Source)).ToList();
@@ -280,6 +281,7 @@
                 }
             }
             else if(omm.DisplayText.StartsWith("schneider")){
+              _displayType = new List<string>{"Napon", "Struja", "Snaga", "Jalova Snaga", "Prividna snaga"};
               var a = await _timeseriesClient.GetSchneiderMeasurementsAsync(omm.DisplayText, DateTimeOffset.UtcNow.AddMinutes(- timeSpanMins), DateTimeOffset.UtcNow);
               if(_leftGraphValues is null){
                 _leftGraphValues = a.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W}, names: new string[]{"L1 Potrošnja", "L2 Potrošnja","L3 Potrošnja"}, date:x.Timestamp, source:x.Source)).ToList();
