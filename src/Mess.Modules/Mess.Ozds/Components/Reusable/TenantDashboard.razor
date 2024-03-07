@@ -162,7 +162,7 @@
           var (startThisMonth, startNextMonth) = now.GetMonthRange();
           var startLastMonth = startThisMonth.AddMonths(-1);
           var deviceIds = _ioTDevices.Select(device => (string)device.Content.IotDevicePart.DeviceId.Text).ToList();
-          var resultAbb = await _timeseriesClient.GetBulkAbbMonthlyAggregateAsync(new List<string>{"abb"}, startLastMonth , startNextMonth);
+          var resultAbb = await _timeseriesClient.GetBulkAbbMonthlyAggregateAsync(deviceIds, startLastMonth , startNextMonth);
           var resultSchneider = await _timeseriesClient.GetBulkSchneiderMonthlyAggregateAsync(deviceIds, startLastMonth , startNextMonth);
 
           _thisMonthTotal = resultAbb
