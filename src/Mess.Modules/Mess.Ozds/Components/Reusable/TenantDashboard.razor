@@ -75,13 +75,23 @@
                 @(T["Potrošnja u tekućem mjesecu:"].Value)
               </MudText>
             </MudItem>
-            <MudContainer Class="d-flex align-end justify-center pb-10" MaxWidth="MaxWidth.Small">
+            <MudContainer Class="d-flex align-end justify-center" MaxWidth="MaxWidth.Small">
               <MudText Typo="Typo.h1">
                 @if(_thisMonthTotal is not null)
                   @(DecimalString((decimal)_thisMonthTotal/1000, 0))
               </MudText>
               <MudText Typo="Typo.h4" Class="mb-3 ml-1">kWh</MudText>
             </MudContainer>
+            <MudItem Class="" Style="font-size: large; font-weight: bold;color: white;">
+              <MudText Typo="Typo.h6">
+                _____ __________ _______ ___ ____:
+              </MudText>
+            </MudItem>
+            <MudItem Class="" Style="font-size: large; font-weight: bold;color: white;">
+              <MudText Typo="Typo.h6">
+                ____
+              </MudText>
+            </MudItem>
           </MudPaper>
         </MudItem>
         <MudItem xs="4">
@@ -91,13 +101,23 @@
                 @(T["Potrošnja u prethodnom mjesecu:"].Value)
               </MudText>
             </MudItem>
-            <MudContainer Class="d-flex align-end justify-center pb-10" MaxWidth="MaxWidth.Small">
+            <MudContainer Class="d-flex align-end justify-center" MaxWidth="MaxWidth.Small">
               <MudText Typo="Typo.h1">
                 @if(_lastMonthTotal is not null)
                   @(DecimalString((decimal)_lastMonthTotal/1000, 0))
               </MudText>
               <MudText Typo="Typo.h4" Class="mb-3 ml-1">kWh</MudText>
             </MudContainer>
+            <MudItem Class="" Style="font-size: large; font-weight: bold;">
+              <MudText Typo="Typo.h6">
+                @(T["Račun prethodnog mjeseca bez PDVa: "].Value)
+              </MudText>
+            </MudItem>
+            <MudItem Class="" Style="font-size: large; font-weight: bold; align-self: center;">
+              <MudText Typo="Typo.h6">
+                @(DecimalString((decimal)lastInvoice.As<OzdsInvoicePart>().Data.Total, 2) + " €")
+              </MudText>
+            </MudItem>
           </MudPaper>
         </MudItem>
         <MudItem xs="4">
@@ -123,19 +143,24 @@
     private (decimal? First, decimal? Last, DateTimeOffset FirstDate) _startEndLastMonth = new(0, 0, DateTime.UtcNow);
     private decimal? _lastMonthTotal = 0;
     private decimal? _thisMonthTotal = 0;
+    ContentItem? lastInvoice;
     protected override async Task OnInitializedAsync()
     {
       await WithTransientSessionAsync(async session => {
-          _ioTDevices = await session
-            .Query<ContentItem, OzdsIotDeviceIndex>()
-            .Where(index => index.DistributionSystemUnitContentItemId == LegalEntity.ContentItemId)
-            .Where(index => !index.IsMessenger)
-            .ListAsync();
-
-
+        _ioTDevices = await session
+          .Query<ContentItem, OzdsIotDeviceIndex>()
+          .Where(index => index.DistributionSystemUnitContentItemId == LegalEntity.ContentItemId)
+          .Where(index => !index.IsMessenger)
+          .ListAsync();
+        var invoices = await session.Query<ContentItem, Mess.Billing.Abstractions.Indexes.PaymentIndex>()
+          .Where(index => index.RecipientContentItemId == LegalEntity.ContentItemId)
+          .ListAsync();
+        if(invoices is not null){
+          lastInvoice = invoices.OrderBy(x => x.As<InvoicePart>().Date.Value.Value).LastOrDefault();
+        }
         if(_ioTDevices is not null){
           var (startThisMonth, startNextMonth) = now.GetMonthRange();
-          var startLastMonth = startThisMonth.AddMonths(-2);
+          var startLastMonth = startThisMonth.AddMonths(-1);
           var deviceIds = _ioTDevices.Select(device => (string)device.Content.IotDevicePart.DeviceId.Text).ToList();
           var resultAbb = await _timeseriesClient.GetBulkAbbMonthlyAggregateAsync(new List<string>{"abb"}, startLastMonth , startNextMonth);
           var resultSchneider = await _timeseriesClient.GetBulkSchneiderMonthlyAggregateAsync(deviceIds, startLastMonth , startNextMonth);

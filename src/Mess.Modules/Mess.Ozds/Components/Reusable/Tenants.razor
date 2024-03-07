@@ -36,6 +36,9 @@
               @T["Potrošnja u tekućem mjesecu"].Value: @(dataStruct.data.totalConsumption is null ? null : DecimalString((decimal)dataStruct.data.totalConsumption/1000, 0) + " kWh")
             </MudItem>
             <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large;">
+              @T["Potrošnja u prethodnom mjesecu"].Value: @(dataStruct.data.lastMonthTotalConsumption is null ? null : DecimalString((decimal)dataStruct.data.lastMonthTotalConsumption/1000, 0) + " kWh")
+            </MudItem>
+            <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large;">
               @T["Iznos zadnjeg računa"].Value: @(dataStruct.data.lastInvoiceTotal is null ? null : DecimalString((decimal)dataStruct.data.lastInvoiceTotal) + " €")
             </MudItem>
             <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large;">
@@ -93,6 +96,15 @@
                 @(context.Item.totalConsumption is null ? null : DecimalString((decimal)context.Item.totalConsumption/1000, 0) + " kWh")
           </CellTemplate>
       </PropertyColumn>
+      <PropertyColumn
+      CellStyle="font-size: x-large;"
+      Property="x => x.lastMonthTotalConsumption"
+      Title='@T["Potrošnja u prethodnom mjesecu"].Value'>
+          <CellTemplate>
+                @if(context.Item.lastMonthTotalConsumption is not null)
+                @(DecimalString((decimal)context.Item.lastMonthTotalConsumption/1000, 0) + " kWh")
+          </CellTemplate>
+      </PropertyColumn>
     <PropertyColumn
     CellStyle="font-size: x-large;"
     Property="x => x.unit.As<DistributionSystemUnitPart>().Consumption"
@@ -140,6 +152,9 @@ else{
             </MudItem>
             <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large;">
               @T["Potrošnja u tekućem mjesecu"].Value: @(dataStruct.data.totalConsumption is null ? null : DecimalString((decimal)dataStruct.data.totalConsumption/1000, 0) + " kWh")
+            </MudItem>
+            <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large;">
+              @T["Potrošnja u prethodnom mjesecu"].Value: @(dataStruct.data.lastMonthTotalConsumption is null ? null : DecimalString((decimal)dataStruct.data.lastMonthTotalConsumption/1000, 0) + " kWh")
             </MudItem>
             <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large;">
               @T["Iznos zadnjeg računa"].Value: @(dataStruct.data.lastInvoiceTotal is null ? null : DecimalString((decimal)dataStruct.data.lastInvoiceTotal) + " €")
@@ -192,6 +207,15 @@ else{
                 @(context.Item.totalConsumption is null ? null : DecimalString((decimal)context.Item.totalConsumption/1000, 0) + " kWh")
           </CellTemplate>
       </PropertyColumn>
+      <PropertyColumn
+      CellStyle="font-size: x-large;"
+      Property="x => x.lastMonthTotalConsumption"
+      Title='@T["Potrošnja u prethodnom mjesecu"].Value'>
+          <CellTemplate>
+                @if(context.Item.lastMonthTotalConsumption is not null)
+                @(DecimalString((decimal)context.Item.lastMonthTotalConsumption/1000, 0) + " kWh")
+          </CellTemplate>
+      </PropertyColumn>
     <PropertyColumn
     CellStyle="font-size: x-large;"
     Property="x => x.unit.As<DistributionSystemUnitPart>().Consumption"
@@ -212,12 +236,14 @@ else{
     [Parameter]
     public User User { get; set; } = default!;
     private (decimal? First, decimal? Last, DateTimeOffset FirstDate) _startEnd;
+    private (decimal? First, decimal? Last, DateTimeOffset FirstDate) _startEndLastMonth;
     private string? _searchString;
     private ContentItem? _legalEntity;
     private IEnumerable<ContentItem>? _units;
     private decimal? _totalConsumption = 0;
+    private decimal? _lastMonthTotalConsumption = 0;
     private decimal? _lastInvoiceTotal = 0;
-    public record struct TabularData(ContentItem unit, decimal? totalConsumption, decimal? lastInvoiceTotal);
+    public record struct TabularData(ContentItem unit, decimal? totalConsumption, decimal? lastMonthTotalConsumption, decimal? lastInvoiceTotal);
     private List<TabularData> _dataStruct = new List<TabularData>();
     private IEnumerable<ContentItem>? _systems;
     private IReadOnlyList<AbbAggregate>? _abbRange;
@@ -269,29 +295,52 @@ else{
                   .ListAsync();
             if(ioTDevices is not null){
               _abbRange = await _timeseriesClient.GetBulkAbbMonthlyAggregateAsync(ioTDevices.Where(x => x.DisplayText.StartsWith("abb")).Select(x => x.DisplayText),nowMonth,now);
+              _abbRangeLastMonth = await _timeseriesClient.GetBulkAbbMonthlyAggregateAsync(ioTDevices.Where(x => x.DisplayText.StartsWith("abb")).Select(x => x.DisplayText),nowMonth.AddMonths(-1),nowMonth);
               _schneiderRange = await _timeseriesClient.GetBulkSchneiderMonthlyAggregateAsync(ioTDevices.Where(x => x.DisplayText.StartsWith("schneider")).Select(x => x.DisplayText),nowMonth,now);
+              _schneiderRangeLastMonth = await _timeseriesClient.GetBulkSchneiderMonthlyAggregateAsync(ioTDevices.Where(x => x.DisplayText.StartsWith("schneider")).Select(x => x.DisplayText),nowMonth.AddMonths(-1),nowMonth);
               foreach(var omm in ioTDevices){
                 _startEnd = new();
+                _startEndLastMonth = new();
                 if(omm.DisplayText.StartsWith("abb")){
-                  var device = _abbRange.Where(x => x.Source == omm.DisplayText).FirstOrDefault();
-                  if (device is null){
-                    continue;
+                  if(_abbRange is not null &&_abbRange.Count() > 0){
+                    var device = _abbRange.Where(x => x.Source == omm.DisplayText).FirstOrDefault();
+                    if (device is null){
+                      continue;
+                    }
+                    _startEnd = (device.ActiveEnergyImportTotalMax_Wh, device.ActiveEnergyImportTotalMin_Wh, device.Timestamp);
                   }
-                  _startEnd = (device.ActiveEnergyImportTotalMax_Wh, device.ActiveEnergyImportTotalMin_Wh, device.Timestamp);
+                  if(_abbRangeLastMonth is not null &&_abbRangeLastMonth.Count() > 0){
+                    var deviceLastMonth = _abbRangeLastMonth.Where(x => x.Source == omm.DisplayText).FirstOrDefault();
+                    if (deviceLastMonth is null){
+                      continue;
+                    }
+                    _startEndLastMonth = (deviceLastMonth.ActiveEnergyImportTotalMax_Wh, deviceLastMonth.ActiveEnergyImportTotalMin_Wh, deviceLastMonth.Timestamp);
+                  }
                 }
                 else{
-                  var device = _schneiderRange.Where(x => x.Source == omm.DisplayText).FirstOrDefault();
-                  if (device is null){
-                    continue;
+                  if(_schneiderRange is not null &&_schneiderRange.Count() > 0){
+                    var device = _schneiderRange.Where(x => x.Source == omm.DisplayText).FirstOrDefault();
+                    if (device is null){
+                      continue;
+                    }
+                    _startEnd = (device.ActiveEnergyImportTotalMax_Wh, device.ActiveEnergyImportTotalMin_Wh, device.Timestamp);
                   }
-                  _startEnd = (device.ActiveEnergyImportTotalMax_Wh, device.ActiveEnergyImportTotalMin_Wh, device.Timestamp);
+                  if(_schneiderRangeLastMonth is not null &&_schneiderRangeLastMonth.Count() > 0){
+                    var deviceLastMonth = _schneiderRangeLastMonth.Where(x => x.Source == omm.DisplayText).FirstOrDefault();
+                    if (deviceLastMonth is null){
+                      continue;
+                    }
+                    _startEndLastMonth = (deviceLastMonth.ActiveEnergyImportTotalMax_Wh, deviceLastMonth.ActiveEnergyImportTotalMin_Wh, deviceLastMonth.Timestamp);
+                  }
                 }
                 _totalConsumption += _startEnd.First - _startEnd.Last;
+                if(_startEndLastMonth.First is not null && _startEndLastMonth.Last is not null)
+                  _lastMonthTotalConsumption += _startEndLastMonth.First - _startEndLastMonth.Last;
               }
             }
             if(invoices.Count() > 0)
-              _lastInvoiceTotal = invoices.OrderBy(x => x.As<InvoicePart>().Date.Value).Last().As<OzdsInvoicePart>().Data.TotalWithTax;
-            _dataStruct.Add(new TabularData(unit, _totalConsumption, _lastInvoiceTotal));
+              _lastInvoiceTotal = invoices.OrderBy(x => x.As<InvoicePart>().Date.Value).LastOrDefault().As<OzdsInvoicePart>().Data.TotalWithTax;
+            _dataStruct.Add(new TabularData(unit, _totalConsumption, _lastMonthTotalConsumption, _lastInvoiceTotal));
             foreach(var data in _dataStruct){
               _shownTenants.Add( new ExpandThing{data = data, show = true, expand = false});
             }

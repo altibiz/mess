@@ -30,7 +30,13 @@
                 <MudIconButton OnClick="() => InspectSubnet(dataStruct.data.system)" Icon="@Icons.Material.Filled.RemoveRedEye" Color="MudBlazor.Color.Primary"/>
               </MudItem>
               <MudItem xs="12" Class="d-flex align-center justify-start" Style="font-size: large; font-weight: bold;">
-                @T["Ukupna pretraži tekućeg mjeseca"].Value: @(DecimalString((decimal)dataStruct.data.consumption/1000, 0) + " kWh")
+                @T["Potrošnja u tekućem mjesecu"].Value: @(dataStruct.data.consumption is null ? null : DecimalString((decimal)dataStruct.data.consumption/1000, 0) + " kWh")
+              </MudItem>
+              <MudItem xs="12" Class="d-flex align-center justify-start" Style="font-size: large; font-weight: bold;">
+                @T["Potrošnja u prethodnom mjesecu"].Value: @(dataStruct.data.lastMonthConsumption is null ? null : DecimalString((decimal)dataStruct.data.lastMonthConsumption/1000, 0) + " kWh")
+              </MudItem>
+              <MudItem xs="12" Class="d-flex align-center justify-start" Style="font-size: large; font-weight: bold;">
+                @T["Zbroj računa tokom prethodnog mjeseca"].Value: @(DecimalString((decimal)dataStruct.data.invoiceTotal, 2) + " €")
               </MudItem>
             </MudGrid>
           </MudStack>
@@ -80,6 +86,23 @@
                 @(DecimalString((decimal)context.Item.consumption/1000, 0) + " kWh")
             </CellTemplate>
       </PropertyColumn>
+      <PropertyColumn
+        CellStyle="font-size: x-large;"
+        Property="x => x.lastMonthConsumption"
+        Title='@T["Potrošnja u prethodnom mjesecu"].Value'>
+            <CellTemplate>
+                  @if(context.Item.lastMonthConsumption is not null)
+                  @(DecimalString((decimal)context.Item.lastMonthConsumption/1000, 0) + " kWh")
+            </CellTemplate>
+      </PropertyColumn>
+      <PropertyColumn
+        CellStyle="font-size: x-large;"
+        Property="x => x.invoiceTotal"
+        Title='@T["Zbroj računa tokom prethodnog mjeseca"].Value'>
+              <CellTemplate>
+                    @(DecimalString((decimal)context.Item.invoiceTotal) + " €")
+              </CellTemplate>
+      </PropertyColumn>
     </Columns>
     <PagerContent>
       <MudDataGridPager T="TabularData" />
@@ -92,10 +115,14 @@
     public ContentItem LegalEntity { get; set; } = default!;
     private IEnumerable<ContentItem>? _ioTDevices;
     private (decimal? First, decimal? Last, DateTimeOffset FirstDate) _startEnd;
+    private (decimal? First, decimal? Last, DateTimeOffset FirstDate) _startEndLastMonth;
     private string? _searchString;
     private IEnumerable<ContentItem>? _systems;
-    private decimal? _diagnostics = 0;
-    public record struct TabularData(ContentItem system, decimal? consumption);
+    private IEnumerable<ContentItem>? _units;
+    private IEnumerable<ContentItem>? _invoices;
+    private decimal? _consumption = 0;
+    private decimal? _lastMonthConsumption = 0;
+    public record struct TabularData(ContentItem system, decimal? consumption, decimal? lastMonthConsumption, decimal invoiceTotal);
     private List<TabularData> _dataStruct = new List<TabularData>();
     private IReadOnlyList<AbbAggregate>? _abbRange;
     private IReadOnlyList<SchneiderAggregate>? _schneiderRange;
@@ -110,42 +137,77 @@
           .Query<ContentItem, ClosedDistributionSystemIndex>()
           .Where(index => index.DistributionSystemOperatorContentItemId == LegalEntity.ContentItemId)
           .ListAsync();
+        _units = await session
+          .Query<ContentItem, DistributionSystemUnitIndex>()
+          .Where(index => index.DistributionSystemOperatorContentItemId == LegalEntity.ContentItemId)
+          .ListAsync();
         _ioTDevices = await session
           .Query<ContentItem, OzdsIotDeviceIndex>()
           .Where(index => index.DistributionSystemOperatorContentItemId == LegalEntity.ContentItemId)
           .Where(index => !index.IsMessenger)
           .ListAsync();
+        _invoices = await session
+          .Query<ContentItem, Mess.Billing.Abstractions.Indexes.PaymentIndex>()
+          .Where(index => index.IssuerContentItemId == LegalEntity.ContentItemId)
+          .ListAsync();
       });
       if(_ioTDevices is not null){
-        _abbRange = await _timeseriesClient.GetBulkAbbMonthlyAggregateAsync(_ioTDevices.Select(x => x.DisplayText),nowMonth,now);
-        _schneiderRange = await _timeseriesClient.GetBulkSchneiderMonthlyAggregateAsync(_ioTDevices.Select(x => x.DisplayText),nowMonth,now);
-      }
-      if(_ioTDevices is not null)
-        foreach(var omm in _ioTDevices){
-          _startEnd = new();
-          if(omm.DisplayText.StartsWith("abb")){
-            var device = _abbRange.Where(x => x.Source == omm.DisplayText).FirstOrDefault();
-            if (device is null){
-              continue;
+              _abbRange = await _timeseriesClient.GetBulkAbbMonthlyAggregateAsync(_ioTDevices.Where(x => x.DisplayText.StartsWith("abb")).Select(x => x.DisplayText),nowMonth,now);
+              _abbRangeLastMonth = await _timeseriesClient.GetBulkAbbMonthlyAggregateAsync(_ioTDevices.Where(x => x.DisplayText.StartsWith("abb")).Select(x => x.DisplayText),nowMonth.AddMonths(-1),nowMonth);
+              _schneiderRange = await _timeseriesClient.GetBulkSchneiderMonthlyAggregateAsync(_ioTDevices.Where(x => x.DisplayText.StartsWith("schneider")).Select(x => x.DisplayText),nowMonth,now);
+              _schneiderRangeLastMonth = await _timeseriesClient.GetBulkSchneiderMonthlyAggregateAsync(_ioTDevices.Where(x => x.DisplayText.StartsWith("schneider")).Select(x => x.DisplayText),nowMonth.AddMonths(-1),nowMonth);
+              foreach(var omm in _ioTDevices){
+                _startEnd = new();
+                _startEndLastMonth = new();
+                if(omm.DisplayText.StartsWith("abb")){
+                  if(_abbRange is not null &&_abbRange.Count() > 0){
+                    var device = _abbRange.Where(x => x.Source == omm.DisplayText).FirstOrDefault();
+                    if (device is null){
+                      continue;
+                    }
+                    _startEnd = (device.ActiveEnergyImportTotalMax_Wh, device.ActiveEnergyImportTotalMin_Wh, device.Timestamp);
+                  }
+                  if(_abbRangeLastMonth is not null &&_abbRangeLastMonth.Count() > 0){
+                    var deviceLastMonth = _abbRangeLastMonth.Where(x => x.Source == omm.DisplayText).FirstOrDefault();
+                    if (deviceLastMonth is null){
+                      continue;
+                    }
+                    _startEndLastMonth = (deviceLastMonth.ActiveEnergyImportTotalMax_Wh, deviceLastMonth.ActiveEnergyImportTotalMin_Wh, deviceLastMonth.Timestamp);
+                  }
+                }
+                else{
+                  if(_schneiderRange is not null &&_schneiderRange.Count() > 0){
+                    var device = _schneiderRange.Where(x => x.Source == omm.DisplayText).FirstOrDefault();
+                    if (device is null){
+                      continue;
+                    }
+                    _startEnd = (device.ActiveEnergyImportTotalMax_Wh, device.ActiveEnergyImportTotalMin_Wh, device.Timestamp);
+                  }
+                  if(_schneiderRangeLastMonth is not null &&_schneiderRangeLastMonth.Count() > 0){
+                    var deviceLastMonth = _schneiderRangeLastMonth.Where(x => x.Source == omm.DisplayText).FirstOrDefault();
+                    if (deviceLastMonth is null){
+                      continue;
+                    }
+                    _startEndLastMonth = (deviceLastMonth.ActiveEnergyImportTotalMax_Wh, deviceLastMonth.ActiveEnergyImportTotalMin_Wh, deviceLastMonth.Timestamp);
+                  }
+                }
+                if(_startEnd.First is not null && _startEnd.Last is not null)
+                  _consumption += _startEnd.First - _startEnd.Last;
+                if(_startEndLastMonth.First is not null && _startEndLastMonth.Last is not null)
+                  _lastMonthConsumption += _startEndLastMonth.First - _startEndLastMonth.Last;
+              }
             }
-            _startEnd = (device.ActiveEnergyImportTotalMax_Wh, device.ActiveEnergyImportTotalMin_Wh, device.Timestamp);
-          }
-          else{
-            var device = _schneiderRange.Where(x => x.Source == omm.DisplayText).FirstOrDefault();
-            if (device is null){
-              continue;
-            }
-            _startEnd = (device.ActiveEnergyImportTotalMax_Wh, device.ActiveEnergyImportTotalMin_Wh, device.Timestamp);
-          }
-          _diagnostics += _startEnd.First - _startEnd.Last;
-        }
 
-      if(_systems is not null && _diagnostics is not null)
+      if(_systems is not null && _invoices is not null){
+        var lastMonthInvoices = _invoices.OrderByDescending(x => x.As<InvoicePart>().Date.Value).Where(x => x.As<InvoicePart>().Date.Value > nowMonth.AddMonths(-1)).ToList();
         foreach(var sys in _systems){
-          _dataStruct.Add( new TabularData{system = sys, consumption = _diagnostics});
-          _shownSubnets.Add( new ExpandThing{data = new TabularData{system = sys, consumption = _diagnostics}, show = true, expand = false});
+          var _invoiceTotal = lastMonthInvoices.Where(x => x.As<OzdsInvoicePart>().Data.ClosedDistributionSystem.ContentItemId == sys.ContentItemId).Sum(x => x.As<OzdsInvoicePart>().Data.TotalWithTax);
+          _dataStruct.Add( new TabularData{system = sys, consumption = _consumption, lastMonthConsumption = _lastMonthConsumption, invoiceTotal = _invoiceTotal});
+          foreach(var data in _dataStruct){
+            _shownSubnets.Add( new ExpandThing{data = data, show = true, expand = false});
+          }
         }
-        _diagnostics = 0;
+      }
   }
 
   private Func<TabularData, bool> _quickFilter => x =>

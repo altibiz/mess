@@ -62,7 +62,7 @@
             <MudDataGrid
   T="ContentItem"
   MultiSelection="true"
-  Items="@_invoices"
+  Items="@_orderedInvoices"
   SortMode="SortMode.Multiple"
   Filterable="true"
   QuickFilter="@_quickFilter">
@@ -138,6 +138,7 @@
     List<ExpandThing> _shownInvoices = new();
     private string? _searchString;
     private IEnumerable<ContentItem>? _invoices;
+    private IEnumerable<ContentItem>? _orderedInvoices;
     protected override async Task OnInitializedAsync()
     {
         await WithTransientSessionAsync(async session => {
@@ -147,7 +148,8 @@
           .ListAsync();
       });
       if(_invoices is not null){
-        foreach(var invoice in _invoices){
+        _orderedInvoices = _invoices.OrderByDescending(x => x.As<InvoicePart>().Date.Value).ToList();
+        foreach(var invoice in _orderedInvoices){
           _shownInvoices.Add( new() { invoice = invoice, expand = false, show = true});
         }
       }
