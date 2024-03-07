@@ -37,7 +37,7 @@ public static class IServiceProviderExtensions
     var currentStart =
       billingPart.LastInvoiceTo is { } lastInvoiceEnd
         ? lastInvoiceEnd
-        : item.CreatedUtc is { } created ?
+        : item.CreatedUtc is { } created && created != default ?
           new DateTimeOffset(created)
           : now.AddMonths(-1).GetStartOfMonth();
 
