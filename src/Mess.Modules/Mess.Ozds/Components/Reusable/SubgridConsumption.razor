@@ -203,7 +203,13 @@
             }
 
       if(_systems is not null && _invoices is not null){
-        var lastMonthInvoices = _invoices.OrderByDescending(x => x.As<InvoicePart>().Date.Value).Where(x => x.As<InvoicePart>().Date.Value > nowMonth.AddMonths(-1)).ToList();
+        var lastMonthInvoices = _invoices
+          .OrderByDescending(x => x.As<InvoicePart>().Date.Value)
+          .Where(x => {
+            var date = x.As<InvoicePart>().Date.Value;
+            return date > nowMonth.AddMonths(-1) && date < nowMonth;
+          })
+          .ToList();
         foreach(var sys in _systems){
           var _invoiceTotal = lastMonthInvoices.Where(x => x.As<OzdsInvoicePart>().Data.ClosedDistributionSystem.ContentItemId == sys.ContentItemId).Sum(x => x.As<OzdsInvoicePart>().Data.TotalWithTax);
           _dataStruct.Add( new TabularData{system = sys, consumption = _consumption, lastMonthConsumption = _lastMonthConsumption, invoiceTotal = _invoiceTotal});
