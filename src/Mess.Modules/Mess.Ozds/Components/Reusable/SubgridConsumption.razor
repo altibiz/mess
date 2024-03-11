@@ -36,7 +36,7 @@
                 @T["Potrošnja u prethodnom mjesecu"].Value: @(dataStruct.data.lastMonthConsumption is null ? null : DecimalString((decimal)dataStruct.data.lastMonthConsumption/1000, 0) + " kWh")
               </MudItem>
               <MudItem xs="12" Class="d-flex align-center justify-start" Style="font-size: large; font-weight: bold;">
-                @T["Zbroj računa tokom prethodnog mjeseca"].Value: @(DecimalString((decimal)dataStruct.data.invoiceTotal, 2) + " €")
+                @T["Zbroj računa tokom prethodnog mjeseca"].Value: @(DecimalString((decimal)dataStruct.data.invoiceTotal, 2) + " EUR")
               </MudItem>
             </MudGrid>
           </MudStack>
@@ -100,7 +100,7 @@
         Property="x => x.invoiceTotal"
         Title='@T["Zbroj računa tokom prethodnog mjeseca"].Value'>
               <CellTemplate>
-                    @(DecimalString((decimal)context.Item.invoiceTotal) + " €")
+                    @(DecimalString((decimal)context.Item.invoiceTotal) + " EUR")
               </CellTemplate>
       </PropertyColumn>
     </Columns>
@@ -203,13 +203,7 @@
             }
 
       if(_systems is not null && _invoices is not null){
-        var lastMonthInvoices = _invoices
-          .OrderByDescending(x => x.As<InvoicePart>().Date.Value)
-          .Where(x => {
-            var date = x.As<InvoicePart>().Date.Value;
-            return date > nowMonth.AddMonths(-1) && date < nowMonth;
-          })
-          .ToList();
+        var lastMonthInvoices = _invoices.Where(x => x.As<InvoicePart>().Date.Value > nowMonth.AddMonths(-1)).Where(x => x.As<InvoicePart>().Date.Value <= nowMonth).ToList();
         foreach(var sys in _systems){
           var _invoiceTotal = lastMonthInvoices.Where(x => x.As<OzdsInvoicePart>().Data.ClosedDistributionSystem.ContentItemId == sys.ContentItemId).Sum(x => x.As<OzdsInvoicePart>().Data.TotalWithTax);
           _dataStruct.Add( new TabularData{system = sys, consumption = _consumption, lastMonthConsumption = _lastMonthConsumption, invoiceTotal = _invoiceTotal});

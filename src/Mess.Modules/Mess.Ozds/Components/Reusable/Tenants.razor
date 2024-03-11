@@ -39,7 +39,7 @@
               @T["Potrošnja u prethodnom mjesecu"].Value: @(dataStruct.data.lastMonthTotalConsumption is null ? null : DecimalString((decimal)dataStruct.data.lastMonthTotalConsumption/1000, 0) + " kWh")
             </MudItem>
             <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large;">
-              @T["Iznos zadnjeg računa"].Value: @(dataStruct.data.lastInvoiceTotal is null ? null : DecimalString((decimal)dataStruct.data.lastInvoiceTotal) + " €")
+              @T["Iznos računa u prethodnom mjesecu"].Value: @(dataStruct.data.lastMonthInvoicesTotal is null ? null : DecimalString((decimal)dataStruct.data.lastMonthInvoicesTotal) + " EUR")
             </MudItem>
             <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large;">
               <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
@@ -108,9 +108,9 @@
     <PropertyColumn
     CellStyle="font-size: x-large;"
     Property="x => x.unit.As<DistributionSystemUnitPart>().Consumption"
-    Title='@T["Iznos zadnjeg računa"].Value'>
+    Title='@T["Iznos računa u prethodnom mjesecu"].Value'>
           <CellTemplate>
-                @(context.Item.lastInvoiceTotal is null ? null : DecimalString((decimal)context.Item.lastInvoiceTotal) + " €")
+                @(context.Item.lastMonthInvoicesTotal is null ? null : DecimalString((decimal)context.Item.lastMonthInvoicesTotal) + " EUR")
           </CellTemplate>
       </PropertyColumn>
     <TemplateColumn CellClass="d-flex justify-end">
@@ -157,7 +157,7 @@ else{
               @T["Potrošnja u prethodnom mjesecu"].Value: @(dataStruct.data.lastMonthTotalConsumption is null ? null : DecimalString((decimal)dataStruct.data.lastMonthTotalConsumption/1000, 0) + " kWh")
             </MudItem>
             <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large;">
-              @T["Iznos zadnjeg računa"].Value: @(dataStruct.data.lastInvoiceTotal is null ? null : DecimalString((decimal)dataStruct.data.lastInvoiceTotal) + " €")
+              @T["Iznos računa u prethodnom mjesecu"].Value: @(dataStruct.data.lastMonthInvoicesTotal is null ? null : DecimalString((decimal)dataStruct.data.lastMonthInvoicesTotal) + " EUR")
             </MudItem>
 
           </MudGrid>
@@ -219,9 +219,9 @@ else{
     <PropertyColumn
     CellStyle="font-size: x-large;"
     Property="x => x.unit.As<DistributionSystemUnitPart>().Consumption"
-    Title='@T["Iznos zadnjeg računa"].Value'>
+    Title='@T["Iznos računa u prethodnom mjesecu"].Value'>
           <CellTemplate>
-                @(context.Item.lastInvoiceTotal is null ? null : DecimalString((decimal)context.Item.lastInvoiceTotal) + " €")
+                @(context.Item.lastMonthInvoicesTotal is null ? null : DecimalString((decimal)context.Item.lastMonthInvoicesTotal) + " EUR")
           </CellTemplate>
       </PropertyColumn>
   </Columns>
@@ -242,8 +242,8 @@ else{
     private IEnumerable<ContentItem>? _units;
     private decimal? _totalConsumption = 0;
     private decimal? _lastMonthTotalConsumption = 0;
-    private decimal? _lastInvoiceTotal = 0;
-    public record struct TabularData(ContentItem unit, decimal? totalConsumption, decimal? lastMonthTotalConsumption, decimal? lastInvoiceTotal);
+    private decimal? _lastMonthInvoicesTotal = 0;
+    public record struct TabularData(ContentItem unit, decimal? totalConsumption, decimal? lastMonthTotalConsumption, decimal? lastMonthInvoicesTotal);
     private List<TabularData> _dataStruct = new List<TabularData>();
     private IEnumerable<ContentItem>? _systems;
     private IReadOnlyList<AbbAggregate>? _abbRange;
@@ -345,13 +345,16 @@ else{
                   _lastMonthTotalConsumption += _startEndLastMonth.First - _startEndLastMonth.Last;
               }
             }
-            if(invoices.Count() > 0)
-              _lastInvoiceTotal = invoices.OrderBy(x => x.As<InvoicePart>().Date.Value).LastOrDefault().As<OzdsInvoicePart>().Data.TotalWithTax;
-            _dataStruct.Add(new TabularData(unit, _totalConsumption, _lastMonthTotalConsumption, _lastInvoiceTotal));
+            if(invoices.Count() > 0){
+              var lastMonthInvoices = invoices.Where(x => x.As<InvoicePart>().Date.Value > nowMonth.AddMonths(-1)).Where(x => x.As<InvoicePart>().Date.Value <= nowMonth).ToList();
+              _lastMonthInvoicesTotal = lastMonthInvoices.Where(x => x.As<OzdsInvoicePart>().Data.DistributionSystemUnit.ContentItemId == unit.ContentItemId).Sum(x => x.As<OzdsInvoicePart>().Data.TotalWithTax);
+            }
+            _dataStruct.Add(new TabularData(unit, _totalConsumption, _lastMonthTotalConsumption, _lastMonthInvoicesTotal));
             foreach(var data in _dataStruct){
               _shownTenants.Add( new ExpandThing{data = data, show = true, expand = false});
             }
             _totalConsumption = 0;
+            _lastMonthInvoicesTotal = 0;
           }
         });
     }

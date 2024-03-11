@@ -12,7 +12,7 @@
 @using Mess.Prelude.Extensions.Timestamps;
 
 @inject IOzdsTimeseriesClient _timeseriesClient
-@if(_lastAbbPower is not null || _lastSchneiderPower is not null){
+@if(_abbLastPower is not null || _schneiderLastPower is not null){
 @* MOBILE *@
   <MudHidden Breakpoint="Breakpoint.MdAndUp">
     <MudGrid Class="my-3 pa-1">
@@ -35,7 +35,7 @@
                                     XValue="@(e => DecimalString((decimal)e.value/1000, 2) + " kW")"
                                     YAggregate="@(e =>  Math.Round(e.First().percent ?? 0M, 2))"
                                     OrderByDescending="e=>e.X" />
-                  <MudText Typo="Typo.body1" Style="font-weight: bold;margin-top: -30px;text-align: center; color: #dddddd;" Class="m-0">
+                  <MudText Typo="Typo.body1" Style="font-weight: bold;margin-top: -30px;text-align: center; color: #adadad;" Class="m-0">
                     @T["U usporedbi s maksimalnom snagom u prethodnom mjesecu"].Value (@(DecimalString(lastMonthMaxPower/1000, 2) + " kW"))
                   </MudText>
                 </ApexChart>
@@ -78,6 +78,10 @@
                 @T["Ukupna potrošnja"].Value:
                 @if(dataStruct.data.monthStartTotal is not null && dataStruct.data.monthEndTotal is not null)
                 @(DecimalString((decimal)(dataStruct.data.monthStartTotal - dataStruct.data.monthEndTotal)/1000, 0)) kWh
+              </MudContainer>
+              <MudContainer Style="font-weight:bold;">
+                @T["Maksimalna snaga"].Value:
+                @(DecimalString((dataStruct.data.maxPower)/1000, 2) + " kW")
               </MudContainer>
             </MudStack>
           </MudCollapse>
@@ -143,6 +147,14 @@
                 @(DecimalString((decimal)(context.Item.monthStartTotal - context.Item.monthEndTotal)/1000, 0) + " kWh")
           </CellTemplate>
       </PropertyColumn>
+    <PropertyColumn
+      CellStyle="font-size: x-large;"
+      Property="x => x.maxPower"
+      Title='@T["Maksimalna snaga"].Value'>
+          <CellTemplate>
+                @(DecimalString((context.Item.maxPower)/1000, 2) + " kW")
+          </CellTemplate>
+      </PropertyColumn>
   </Columns>
   <PagerContent>
     <MudDataGridPager T="TabularData" />
@@ -166,7 +178,7 @@
                                     XValue="@(e => DecimalString((decimal)e.value/1000, 2) + " kW")"
                                     YAggregate="@(e =>  Math.Round(e.First().percent ?? 0M, 2))"
                                     OrderByDescending="e=>e.X" />
-                  <MudText Typo="Typo.body1" Style="font-weight: bold;margin-top: -30px;text-align: center; color: #dddddd;" Class="m-0">
+                  <MudText Typo="Typo.body1" Style="font-weight: bold;margin-top: -30px;text-align: center; color: #adadad;" Class="m-0">
                     @T["U usporedbi s maksimalnom snagom u prethodnom mjesecu"].Value (@(DecimalString(lastMonthMaxPower/1000, 2) + " kW"))
                   </MudText>
                 </ApexChart>
@@ -190,18 +202,21 @@
     private List<TabularData> _dataStruct = new List<TabularData>();
     private (decimal? First, decimal? Last, DateTimeOffset FirstDate) _startEnd;
     public record ChartData(decimal? L1, decimal? L2, decimal? L3, DateTimeOffset date);
-    public record struct TabularData(int year, int month, decimal? monthStartTotal, decimal? monthEndTotal);
+    public record struct TabularData(int year, int month, decimal? monthStartTotal, decimal? monthEndTotal, decimal maxPower);
     private int _month = -1;
     private int _year = -1;
     private decimal lastMonthMaxPower = 1000000m;
+    private decimal thisMonthMaxPower = 100000m;
+    private decimal thisMonthCurrentPower = 100000m;
     private IReadOnlyList<AbbAggregate>? _abbRange;
     private IReadOnlyList<SchneiderAggregate>? _schneiderRange;
     private IReadOnlyList<AbbAggregate>? _abbRangeLastMonth;
     private IReadOnlyList<SchneiderAggregate>? _schneiderRangeLastMonth;
-    private AbbMeasurement? _lastAbbPower;
-    private SchneiderMeasurement? _lastSchneiderPower;
-    private IReadOnlyList<SchneiderAggregate>? _lastSchneiderMonthPowerRange;
-    private IReadOnlyList<AbbAggregate>? _lastAbbMonthPowerRange;
+    private AbbMeasurement? _abbLastPower;
+    private SchneiderMeasurement? _schneiderLastPower;
+    private IReadOnlyList<SchneiderAggregate>? _schneiderMonthPowerRange;
+    private IReadOnlyList<AbbAggregate>? _abbMonthPowerRange;
+    private DateTimeOffset nowYear = DateTimeOffset.UtcNow.GetStartOfYear();
     private DateTimeOffset nowMonth = DateTimeOffset.UtcNow.GetStartOfMonth();
     private DateTimeOffset now = DateTime.UtcNow;
   private class Order {
@@ -255,47 +270,74 @@
             Enabled = false,
           };
 
-      _startEnd = new();
-      if(Source.StartsWith("abb")){
-        _abbRange = await _timeseriesClient.GetBulkAbbMonthlyAggregateAsync(new List<string>{Source},nowMonth,now);
-        _abbRangeLastMonth = await _timeseriesClient.GetBulkAbbMonthlyAggregateAsync(new List<string>{Source},nowMonth.AddMonths(-1),nowMonth);
-        var device = _abbRange.Where(x => x.Source == Source).FirstOrDefault();
-        if (device is null){
-          return;
+
+
+      _abbRange = await _timeseriesClient.GetBulkAbbMonthlyAggregateAsync(new List<string>{Source},nowYear,now);
+      _schneiderRange = await _timeseriesClient.GetBulkSchneiderMonthlyAggregateAsync(new List<string>{Source},nowYear,now);
+
+      _abbMonthPowerRange = await _timeseriesClient.GetBulkAbbQuarterHourlyAggregateAsync(new List<string>{Source}, nowMonth.AddMonths(-1), now);
+      _abbLastPower = await _timeseriesClient.GetLastAbbMeasurementAsync(Source);
+      _schneiderMonthPowerRange = await _timeseriesClient.GetBulkSchneiderQuarterHourlyAggregateAsync(new List<string>{Source}, nowMonth.AddMonths(-1), nowMonth);
+      _schneiderLastPower = await _timeseriesClient.GetLastSchneiderMeasurementAsync(Source);
+
+      var a = nowYear.Month;
+      var b = now.Month;
+      var c = nowMonth.Month;
+      var d = nowMonth.AddMonths(-1);
+      for(int i = now.Month; i > 0; i--){
+        var startSpan = nowYear.AddMonths(i);
+        var endSpan = nowYear.AddMonths(i - 1);
+        _startEnd = new();
+        if(Source.StartsWith("abb")){
+          if(_abbRange is not null && _abbRange.Count() > 0){
+            var device = _abbRange.Where(x => x.Timestamp > endSpan).Where(x => x.Timestamp <= startSpan).Where(x => x.Source == Source).FirstOrDefault();
+            if (device is not null)
+              _startEnd = (device.ActiveEnergyImportTotalMax_Wh, device.ActiveEnergyImportTotalMin_Wh, device.Timestamp);
+          }
         }
-        _startEnd = (device.ActiveEnergyImportTotalMax_Wh, device.ActiveEnergyImportTotalMin_Wh, device.Timestamp);
-        _lastAbbPower = await _timeseriesClient.GetLastAbbMeasurementAsync(Source);
-        _lastAbbMonthPowerRange = await _timeseriesClient.GetBulkAbbQuarterHourlyAggregateAsync(new List<string>{Source}, nowMonth.AddMonths(-1), nowMonth);
-        if(_lastAbbPower is not null){
-          var lastTotalPower = _lastAbbPower.ActivePowerL1_W + _lastAbbPower.ActivePowerL2_W + _lastAbbPower.ActivePowerL3_W;
-          if(_lastAbbMonthPowerRange.Count() > 0)
-            lastMonthMaxPower = _lastAbbMonthPowerRange.Select(x => x.ActivePowerImportAvg_W).Max();
-          orders.Add(new Order(lastTotalPower, lastMonthMaxPower));
+        else{
+          if(_schneiderRange is not null && _schneiderRange.Count() > 0){
+            var device = _schneiderRange.Where(x => x.Timestamp > endSpan).Where(x => x.Timestamp <= startSpan).Where(x => x.Source == Source).FirstOrDefault();
+            if (device is not null)
+              _startEnd = (device.ActiveEnergyImportTotalMax_Wh, device.ActiveEnergyImportTotalMin_Wh, device.Timestamp);
+          }
+        }
+        if(_startEnd.First is not null && _startEnd.Last is not null){
+          _month = _startEnd.FirstDate.Month;
+          _year = _startEnd.FirstDate.Year;
+          _dataStruct.Add(new TabularData(_year, _month, _startEnd.First, _startEnd.Last, thisMonthMaxPower));
+          _shownOMMs.Add(new ExpandThing{data = new (_year, _month, _startEnd.First, _startEnd.Last, thisMonthMaxPower), show = true, expand = false});
+        }
+      }
+
+
+      if(Source.StartsWith("abb")){
+        if(_abbMonthPowerRange is not null && _abbMonthPowerRange.Count() > 0){
+          var thisMonth = _abbMonthPowerRange.Where(x => x.Timestamp >= nowMonth).Select(x => x.ActivePowerImportAvg_W);
+          var lastMonth = _abbMonthPowerRange.Where(x => x.Timestamp < nowMonth).Select(x => x.ActivePowerImportAvg_W);
+          if(thisMonth.Count() > 0)
+            thisMonthMaxPower = thisMonth.MaxBy(x => x);
+          if(lastMonth.Count() > 0)
+            lastMonthMaxPower = lastMonth.MaxBy(x => x);
+        }
+        if(_abbLastPower is not null){
+          thisMonthCurrentPower = _abbLastPower.ActivePowerL1_W + _abbLastPower.ActivePowerL2_W + _abbLastPower.ActivePowerL3_W;
         }
       }
       else{
-        _schneiderRange = await _timeseriesClient.GetBulkSchneiderMonthlyAggregateAsync(new List<string>{Source},nowMonth,now);
-        _schneiderRangeLastMonth = await _timeseriesClient.GetBulkSchneiderMonthlyAggregateAsync(new List<string>{Source},nowMonth,now);
-        var device = _schneiderRange.Where(x => x.Source == Source).FirstOrDefault();
-        if (device is null){
-          return;
-        };
-        _startEnd = (device.ActiveEnergyImportTotalMax_Wh, device.ActiveEnergyImportTotalMin_Wh, device.Timestamp);
-        _lastSchneiderPower = await _timeseriesClient.GetLastSchneiderMeasurementAsync(Source);
-        _lastSchneiderMonthPowerRange = await _timeseriesClient.GetBulkSchneiderQuarterHourlyAggregateAsync(new List<string>{Source}, nowMonth.AddMonths(-1), nowMonth);
-        if(_lastSchneiderPower is not null){
-          var lastTotalPower = _lastSchneiderPower.ActivePowerL1_W + _lastSchneiderPower.ActivePowerL2_W + _lastSchneiderPower.ActivePowerL3_W;
-          if(_lastSchneiderMonthPowerRange.Count() > 0)
-            lastMonthMaxPower = _lastSchneiderMonthPowerRange.Select(x => x.ActivePowerImportAvg_W).Max();
-          orders.Add(new Order(lastTotalPower, lastMonthMaxPower));
+        if(_schneiderMonthPowerRange is not null && _schneiderMonthPowerRange.Count() > 0){
+          var thisMonth = _schneiderMonthPowerRange.Where(x => x.Timestamp >= nowMonth).Select(x => x.ActivePowerImportAvg_W);
+          var lastMonth = _schneiderMonthPowerRange.Where(x => x.Timestamp < nowMonth).Select(x => x.ActivePowerImportAvg_W);
+          if(thisMonth.Count() > 0)
+            thisMonthMaxPower = thisMonth.MaxBy(x => x);
+          if(lastMonth.Count() > 0)
+            lastMonthMaxPower = lastMonth.MaxBy(x => x);
+        }
+        if(_schneiderLastPower is not null){
+          thisMonthCurrentPower = _schneiderLastPower.ActivePowerL1_W + _schneiderLastPower.ActivePowerL2_W + _schneiderLastPower.ActivePowerL3_W;
         }
       }
-      if(_startEnd.First != null && _startEnd.Last != null){
-        _month = _startEnd.FirstDate.Month;
-        _year = _startEnd.FirstDate.Year;
-        _dataStruct.Add(new TabularData(_year, _month, _startEnd.First, _startEnd.Last));
-        _shownOMMs.Add(new ExpandThing{data = new (_year, _month, _startEnd.First, _startEnd.Last), show = true, expand = false});
-      }
+      orders.Add(new Order(thisMonthCurrentPower, lastMonthMaxPower));
     }
   private void OnExpandCollapseClick(int year, int month) {
       var a = _shownOMMs.Where(x => x.data.year == year).Where(x => x.data.month == month).FirstOrDefault();

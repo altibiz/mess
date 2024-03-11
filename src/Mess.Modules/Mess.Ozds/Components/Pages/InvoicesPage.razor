@@ -15,13 +15,7 @@
   return;
 }
 
-@if (_user.RoleNames.Contains("Distribution System Operator Representative")) {
-  <Invoices LegalEntity="@_legalEntity"/>
-}
-
-@if (_user.RoleNames.Contains("Distribution System Unit Representative")) {
-  <Invoices LegalEntity="@_legalEntity"/>
-}
+<Invoices LegalEntity="@_legalEntity"/>
 
 @code {
     private User? _user;

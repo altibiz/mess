@@ -48,12 +48,12 @@
     <MudItem xs="12" sm="6">
       <MudHidden Breakpoint="Breakpoint.Xs">
         <MudText Type="Typo.body2" Align="MudAlign.Right">
-          @(data?.From.ToString("dd. MM. yyyy. hh:mm"))
+          @(data?.From.ToString("dd. MM. yyyy. HH:mm"))
         </MudText>
       </MudHidden>
       <MudHidden Breakpoint="Breakpoint.SmAndUp">
         <MudText Type="Typo.body2" Align="MudAlign.Left">
-          @(data?.From.ToString("dd. MM. yyyy. hh:mm"))
+          @(data?.From.ToString("dd. MM. yyyy. HH:mm"))
         </MudText>
       </MudHidden>
     </MudItem>
@@ -65,12 +65,12 @@
     <MudItem xs="12" sm="6">
       <MudHidden Breakpoint="Breakpoint.Xs">
         <MudText Type="Typo.body2" Align="MudAlign.Right">
-          @(data?.To.ToString("dd. MM. yyyy. hh:mm"))
+          @(data?.To.ToString("dd. MM. yyyy. HH:mm"))
         </MudText>
       </MudHidden>
       <MudHidden Breakpoint="Breakpoint.SmAndUp">
         <MudText Type="Typo.body2" Align="MudAlign.Left">
-          @(data?.To.ToString("dd. MM. yyyy. hh:mm"))
+          @(data?.To.ToString("dd. MM. yyyy. HH:mm"))
         </MudText>
       </MudHidden>
     </MudItem>
@@ -82,7 +82,7 @@
     Mrežarina
   </MudText>
   <MudText Typo="Typo.h5" Class="mr-4">
-    €
+    EUR
   </MudText>
 </MudItem>
 @foreach (var row in usageRows) {
@@ -117,7 +117,7 @@
     Opskrba
   </MudText>
   <MudText Typo="Typo.h5" Class="mr-4">
-    €
+    EUR
   </MudText>
 </MudItem>
 @foreach (var row in supplyRows) {
@@ -152,7 +152,7 @@
 
   </MudText>
   <MudText Typo="Typo.h5" Class="mr-4">
-    €
+    EUR
   </MudText>
 </MudItem>
 <MudPaper class="px-4 py-2">

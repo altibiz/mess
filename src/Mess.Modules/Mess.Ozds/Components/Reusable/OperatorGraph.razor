@@ -189,7 +189,7 @@
     private ApexChartOptions<ChartDataL> graphLOptions = new();
     private ApexChartOptions<ChartDataL> graphLOptionsMob = new();
     private List<string> _displayType = new List<string>{
-      "Napon", "Struja", "Snaga", "Jalova Snaga", "Prividna snaga"
+      "Napon", "Struja", "Radna snaga", "Jalova Snaga", "Prividna snaga"
     };
     public int timeSpanMins = 15;
     public int leftLineCount = 0;
@@ -274,18 +274,18 @@
           var c = _ioTDevices.Select(x => x).Take(2);
           foreach(var omm in c){
             if(omm.DisplayText.StartsWith("abb")){
-              _displayType = new List<string>{"Napon", "Struja", "Snaga", "Jalova Snaga"};
+              _displayType = new List<string>{"Napon", "Struja", "Radna snaga", "Jalova Snaga"};
               var a = await _timeseriesClient.GetAbbMeasurementsAsync(omm.DisplayText, DateTimeOffset.UtcNow.AddMinutes(- timeSpanMins), DateTimeOffset.UtcNow);
               if(_leftGraphValues is null){
-                _leftGraphValues = a.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W}, names: new string[]{"L1 Potrošnja", "L2 Potrošnja","L3 Potrošnja"}, date:x.Timestamp, source:x.Source)).ToList();
+                _leftGraphValues = a.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W}, names: new string[]{"L1 Radna snaga", "L2 Radna snaga","L3 Radna snaga"}, date:x.Timestamp, source:x.Source)).ToList();
                 leftLineCount = 3;
                 }
             }
             else if(omm.DisplayText.StartsWith("schneider")){
-              _displayType = new List<string>{"Napon", "Struja", "Snaga", "Jalova Snaga", "Prividna snaga"};
+              _displayType = new List<string>{"Napon", "Struja", "Radna snaga", "Jalova Snaga", "Prividna snaga"};
               var a = await _timeseriesClient.GetSchneiderMeasurementsAsync(omm.DisplayText, DateTimeOffset.UtcNow.AddMinutes(- timeSpanMins), DateTimeOffset.UtcNow);
               if(_leftGraphValues is null){
-                _leftGraphValues = a.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W}, names: new string[]{"L1 Potrošnja", "L2 Potrošnja","L3 Potrošnja"}, date:x.Timestamp, source:x.Source)).ToList();
+                _leftGraphValues = a.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W}, names: new string[]{"L1 Radna snaga", "L2 Radna snaga","L3 Radna snaga"}, date:x.Timestamp, source:x.Source)).ToList();
                 leftLineCount = 3;
               }
             }
@@ -298,7 +298,7 @@
           _leftTitle = "none";
         }
         if(_displayType is not null && _displayType.Count() > 0){
-          _leftDataTitle = "Snaga";
+          _leftDataTitle = "Radna snaga";
         }
         else{
           _leftDataTitle = "none";
@@ -309,12 +309,12 @@
   private async Task LeftMenuItemClicked(string source)
   {
     if(source.StartsWith("abb")){
-      _displayType = new List<string>{"Napon", "Struja", "Snaga", "Jalova Snaga"};
+      _displayType = new List<string>{"Napon", "Struja", "Radna snaga", "Jalova Snaga"};
       if(_leftDataTitle == "Prividna snaga")
         _leftDataTitle = "Jalova Snaga";
     }
     else if(source.StartsWith("schneider")){
-      _displayType = new List<string>{"Napon", "Struja", "Snaga", "Jalova Snaga", "Prividna snaga"};
+      _displayType = new List<string>{"Napon", "Struja", "Radna snaga", "Jalova Snaga", "Prividna snaga"};
     }
     _leftTitle = source;
     await LeftMenuDataItemClicked(_leftDataTitle);
@@ -332,7 +332,7 @@
       else{
         abbAggregate = await _timeseriesClient.GetAbbQuarterHourlyAggregateAsync(source, DateTimeOffset.UtcNow.AddMinutes(- timeSpanMins), DateTimeOffset.UtcNow);
       }
-      _displayType = new List<string>{"Napon", "Struja", "Snaga", "Jalova Snaga"};
+      _displayType = new List<string>{"Napon", "Struja", "Radna snaga", "Jalova Snaga"};
       if(_leftDataTitle == "Prividna snaga")
         _leftDataTitle = "Jalova Snaga";
     }
@@ -343,7 +343,7 @@
       else{
         schneiderAggregate = await _timeseriesClient.GetSchneiderQuarterHourlyAggregateAsync(source, DateTimeOffset.UtcNow.AddMinutes(- timeSpanMins), DateTimeOffset.UtcNow);
       }
-      _displayType = new List<string>{"Napon", "Struja", "Snaga", "Jalova Snaga", "Prividna snaga"};
+      _displayType = new List<string>{"Napon", "Struja", "Radna snaga", "Jalova Snaga", "Prividna snaga"};
     }
     _leftTitle = source;
 
@@ -367,21 +367,21 @@
           leftLineCount = 3;
         }
         break;
-      case "Snaga":
+      case "Radna snaga":
         if(abbMeasurements is not null){
-          _leftGraphValues = abbMeasurements.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W}, names: new string[]{"L1 Potrošnja", "L2 Potrošnja","L3 Potrošnja"}, date:x.Timestamp, source:x.Source)).ToList();
+          _leftGraphValues = abbMeasurements.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W}, names: new string[]{"L1 Radna snaga", "L2 Radna snaga","L3 Radna snaga"}, date:x.Timestamp, source:x.Source)).ToList();
           leftLineCount = 3;
         }
         else if(schneiderMeasurements is not null){
-          _leftGraphValues = schneiderMeasurements.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W}, names: new string[]{"L1 Potrošnja", "L2 Potrošnja","L3 Potrošnja"}, date:x.Timestamp, source:x.Source)).ToList();
+          _leftGraphValues = schneiderMeasurements.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W}, names: new string[]{"L1 Radna snaga", "L2 Radna snaga","L3 Radna snaga"}, date:x.Timestamp, source:x.Source)).ToList();
           leftLineCount = 3;
         }
         else if(abbAggregate is not null){
-          _leftGraphValues = abbAggregate.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1Avg_W, x.ActivePowerL2Avg_W, x.ActivePowerL3Avg_W}, names: new string[]{"L1 Potrošnja", "L2 Potrošnja","L3 Potrošnja"}, date:x.Timestamp, source:x.Source)).ToList();
+          _leftGraphValues = abbAggregate.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1Avg_W, x.ActivePowerL2Avg_W, x.ActivePowerL3Avg_W}, names: new string[]{"L1 Radna snaga", "L2 Radna snaga","L3 Radna snaga"}, date:x.Timestamp, source:x.Source)).ToList();
           leftLineCount = 3;
         }
         else if(schneiderAggregate is not null){
-          _leftGraphValues = schneiderAggregate.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1Avg_W, x.ActivePowerL2Avg_W, x.ActivePowerL3Avg_W}, names: new string[]{"L1 Potrošnja", "L2 Potrošnja","L3 Potrošnja"}, date:x.Timestamp, source:x.Source)).ToList();
+          _leftGraphValues = schneiderAggregate.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1Avg_W, x.ActivePowerL2Avg_W, x.ActivePowerL3Avg_W}, names: new string[]{"L1 Radna snaga", "L2 Radna snaga","L3 Radna snaga"}, date:x.Timestamp, source:x.Source)).ToList();
           leftLineCount = 3;
         }
         break;
@@ -452,8 +452,8 @@
       case "Struja":
         _leftDataTitle = "Struja";
         break;
-      case "Snaga":
-        _leftDataTitle = "Snaga";
+      case "Radna snaga":
+        _leftDataTitle = "Radna snaga";
         break;
       case "Napon":
         _leftDataTitle = "Napon";

@@ -37,7 +37,7 @@
                 @T["Do"].Value: @(dataStruct.invoice.As<OzdsInvoicePart>().Data.To.Date.ToShortDateString())
               </MudItem>
               <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large; font-weight:bold;">
-                @T["Ukupni iznos"].Value:@(DecimalString((decimal)dataStruct.invoice.As<OzdsInvoicePart>().Data.TotalWithTax)) €
+                @T["Ukupni iznos"].Value:@(DecimalString((decimal)dataStruct.invoice.As<OzdsInvoicePart>().Data.TotalWithTax)) EUR
               </MudItem>
                 <MudItem xs="2" Class="d-flex align-center justify-end">
                   <MudIconButton OnClick="() => OnExpandCollapseClick(dataStruct.invoice.ContentItemId)" Icon="@(dataStruct.expand ? Icons.Material.Filled.KeyboardArrowUp : Icons.Material.Filled.KeyboardArrowDown)" Color="MudBlazor.Color.Default"/>
@@ -90,7 +90,7 @@
       Property="x => x.As<OzdsInvoicePart>().Data.TotalWithTax"
       Title='@T["Ukupno"].Value'>
           <CellTemplate>
-              @(DecimalString((decimal)context.Item.As<OzdsInvoicePart>().Data.TotalWithTax) + " €")
+              @(DecimalString((decimal)context.Item.As<OzdsInvoicePart>().Data.TotalWithTax) + " EUR")
           </CellTemplate>
       </PropertyColumn>
     <PropertyColumn
@@ -140,14 +140,31 @@
     private string? _searchString;
     private IEnumerable<ContentItem>? _invoices;
     private IEnumerable<ContentItem>? _orderedInvoices;
+    private IEnumerable<ContentItem>? _units;
     protected override async Task OnInitializedAsync()
     {
-        await WithTransientSessionAsync(async session => {
-            _invoices = await session
-              .Query<ContentItem, PaymentIndex>()
-              .Where(index => index.IssuerContentItemId == LegalEntity.ContentItemId || index.RecipientContentItemId == LegalEntity.ContentItemId)
+      await WithTransientSessionAsync(async session => {
+        if(LegalEntity.ContentType == "ClosedDistributionSystem"){
+            _units = await session
+              .Query<ContentItem, DistributionSystemUnitIndex>()
+              .Where(index => index.ClosedDistributionSystemContentItemId == LegalEntity.ContentItemId)
               .LatestPublished()
-          .ListAsync();
+              .ListAsync();
+            var unitIds = _units.Select(unit => unit.ContentItemId).ToList();
+            _invoices = (await session
+              .Query<ContentItem, PaymentIndex>()
+              .LatestPublished()
+              .ListAsync())
+              .Where(index => unitIds.Contains(index.As<OzdsInvoicePart>().Data.DistributionSystemUnit.ContentItemId))
+              .ToList();
+          }
+          else{
+          _invoices = await session
+            .Query<ContentItem, PaymentIndex>()
+            .Where(index => index.IssuerContentItemId == LegalEntity.ContentItemId || index.RecipientContentItemId == LegalEntity.ContentItemId)
+            .LatestPublished()
+            .ListAsync();
+          }
       });
       if(_invoices is not null){
         _orderedInvoices = _invoices.OrderByDescending(x => x.As<InvoicePart>().Date.Value).ToList();
