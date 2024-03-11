@@ -31,10 +31,10 @@
                 <MudIconButton OnClick="() => InspectInvoice(dataStruct.invoice)" Icon="@Icons.Material.Filled.RemoveRedEye" Color="MudBlazor.Color.Primary"/>
               </MudItem>
               <MudItem xs="6" Class="d-flex align-center justify-start" Style="font-size: medium;">
-                @T["Od"].Value: @(dataStruct.invoice.As<OzdsInvoicePart>().Data.From.Date.ToShortDateString())
+                @T["Od"].Value: @(DateString(dataStruct.invoice.As<OzdsInvoicePart>().Data.From.Date))
               </MudItem>
               <MudItem xs="6" Class="d-flex align-center justify-start" Style="font-size: medium;">
-                @T["Do"].Value: @(dataStruct.invoice.As<OzdsInvoicePart>().Data.To.Date.ToShortDateString())
+                @T["Do"].Value: @(DateString(dataStruct.invoice.As<OzdsInvoicePart>().Data.To.Date))
               </MudItem>
               <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large; font-weight:bold;">
                 @T["Ukupni iznos"].Value:@(DecimalString((decimal)dataStruct.invoice.As<OzdsInvoicePart>().Data.TotalWithTax)) EUR
@@ -95,11 +95,11 @@
       </PropertyColumn>
     <PropertyColumn
       CellStyle="font-size: large;"
-      Property="x => x.As<OzdsInvoicePart>().Data.From.Date.ToShortDateString()"
+      Property="x => DateString(x.As<OzdsInvoicePart>().Data.From.Date)"
       Title='@T["Od"].Value' />
     <PropertyColumn
       CellStyle="font-size: large;"
-      Property="x => x.As<OzdsInvoicePart>().Data.To.Date.ToShortDateString()"
+      Property="x => DateString(x.As<OzdsInvoicePart>().Data.To.Date)"
       Title='@T["Do"].Value' />
     <PropertyColumn
       Property="x => x.ContentItemId"

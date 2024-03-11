@@ -26,7 +26,7 @@
                       Items="@_leftGraphValues"
                       Name="Potrošnja"
                       SeriesType="SeriesType.Area"
-                      XValue='x => x.date'
+                      XValue='x => DateTimeGraph(x.date)'
                       YValue="x => x.value"
                     />
                 </ApexChart>
@@ -47,7 +47,7 @@
             Items="@_leftGraphValues"
             Name="Potrošnja"
             SeriesType="SeriesType.Area"
-            XValue='x => x.date'
+            XValue='x => DateTimeGraph(x.date)'
             YValue="x => x.value"
           />
       </ApexChart>

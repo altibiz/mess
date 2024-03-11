@@ -280,24 +280,20 @@
       _schneiderMonthPowerRange = await _timeseriesClient.GetBulkSchneiderQuarterHourlyAggregateAsync(new List<string>{Source}, nowMonth.AddMonths(-1), nowMonth);
       _schneiderLastPower = await _timeseriesClient.GetLastSchneiderMeasurementAsync(Source);
 
-      var a = nowYear.Month;
-      var b = now.Month;
-      var c = nowMonth.Month;
-      var d = nowMonth.AddMonths(-1);
       for(int i = now.Month; i > 0; i--){
-        var startSpan = nowYear.AddMonths(i);
-        var endSpan = nowYear.AddMonths(i - 1);
+        var endSpan = nowYear.AddMonths(i);
+        var startSpan = nowYear.AddMonths(i - 1);
         _startEnd = new();
         if(Source.StartsWith("abb")){
           if(_abbRange is not null && _abbRange.Count() > 0){
-            var device = _abbRange.Where(x => x.Timestamp > endSpan).Where(x => x.Timestamp <= startSpan).Where(x => x.Source == Source).FirstOrDefault();
+            var device = _abbRange.Where(x => x.Timestamp > startSpan ).Where(x => x.Timestamp <= endSpan).Where(x => x.Source == Source).FirstOrDefault();
             if (device is not null)
               _startEnd = (device.ActiveEnergyImportTotalMax_Wh, device.ActiveEnergyImportTotalMin_Wh, device.Timestamp);
           }
         }
         else{
           if(_schneiderRange is not null && _schneiderRange.Count() > 0){
-            var device = _schneiderRange.Where(x => x.Timestamp > endSpan).Where(x => x.Timestamp <= startSpan).Where(x => x.Source == Source).FirstOrDefault();
+            var device = _schneiderRange.Where(x => x.Timestamp > startSpan).Where(x => x.Timestamp <= endSpan).Where(x => x.Source == Source).FirstOrDefault();
             if (device is not null)
               _startEnd = (device.ActiveEnergyImportTotalMax_Wh, device.ActiveEnergyImportTotalMin_Wh, device.Timestamp);
           }

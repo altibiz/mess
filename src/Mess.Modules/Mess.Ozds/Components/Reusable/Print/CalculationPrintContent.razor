@@ -66,10 +66,10 @@
         @(calculation.IotDevice.As<IotDevicePart>().DeviceId.Text)
       </td>
       <td rowspan="@usageRowspan">
-        @(Item.OzdsInvoicePart.Value.Data.From.ToString("dd. MM. yyyy."))
+        @(DateString(Item.OzdsInvoicePart.Value.Data.From))
       </td>
       <td rowspan="@usageRowspan">
-        @(Item.OzdsInvoicePart.Value.Data.To.AddDays(-1).ToString("dd. MM. yyyy."))
+        @(DateString(Item.OzdsInvoicePart.Value.Data.To.AddDays(-1)))
       </td>
       @(usageItems.FirstOrDefault() is { } usageItem ? renderItem(usageItem) : null)
     </tr>
@@ -133,10 +133,10 @@
         @(calculation.IotDevice.As<IotDevicePart>().DeviceId.Text)
       </td>
       <td rowspan="@supplyRowspan">
-        @(Item.OzdsInvoicePart.Value.Data.From.ToString("dd. MM. yyyy."))
+        @(DateString(Item.OzdsInvoicePart.Value.Data.From))
       </td>
       <td rowspan="@supplyRowspan">
-        @(Item.OzdsInvoicePart.Value.Data.To.AddDays(-1).ToString("dd. MM. yyyy."))
+        @(DateString(Item.OzdsInvoicePart.Value.Data.To.AddDays(-1)))
       </td>
       @(supplyItems.FirstOrDefault() is { } supplyItem ? renderItem(supplyItem) : null)
     </tr>

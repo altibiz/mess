@@ -31,7 +31,7 @@
                       Items="@_leftGraphValues"
                       Name="@_leftGraphValues.Select(x => x.names[j]).FirstOrDefault()"
                       SeriesType="SeriesType.Line"
-                      XValue='x => x.date'
+                      XValue='x => DateTimeGraph(x.date)'
                       YValue="x => x.values[j]"
                       Stroke="@(ColorGraph(j))"
                     />
@@ -41,7 +41,7 @@
                       Items="@_leftGraphValues"
                       Name="n/a"
                       SeriesType="SeriesType.Line"
-                      XValue='x => x.date'
+                      XValue='x => DateTimeGraph(x.date)'
                       YValue="x => 0"
                       Stroke="@(ColorGraph(0))"
                     />
@@ -92,7 +92,6 @@
             <MudContainer Class="d-flex flex-column" MaxWidth="MaxWidth.Medium">
               @if(_leftGraphValues is not null ){
                 <ApexChart TItem="ChartDataL"
-                  XAxisType="XAxisType.Datetime"
                   Options="graphLOptions"
                   @ref="leftChart">
                     @for(int i = 0; i < leftLineCount ; i++){
@@ -101,7 +100,7 @@
                       Items="@_leftGraphValues"
                       Name="@_leftGraphValues.Select(x => x.names[j]).FirstOrDefault()"
                       SeriesType="SeriesType.Line"
-                      XValue='x => x.date'
+                      XValue='x => DateTimeGraph(x.date)'
                       YValue="x => x.values[j]"
                       Stroke="@(ColorGraph(j))"
                     />
@@ -111,7 +110,7 @@
                       Items="@_leftGraphValues"
                       Name="n/a"
                       SeriesType="SeriesType.Line"
-                      XValue='x => x.date'
+                      XValue='x => DateTimeGraph(x.date)'
                       YValue="x => 0"
                       Stroke="@(ColorGraph(0))"
                     />
@@ -200,11 +199,12 @@
             Tools = new Tools { Zoomin = false, Zoomout = false, Download = false, Pan = false, Selection = false }
         }
       };
-      graphLOptions.Tooltip = new ApexCharts.Tooltip { X = new TooltipX { Format = @"hh : mm : ss" } };
-      graphLOptionsMob.Tooltip = new ApexCharts.Tooltip { X = new TooltipX { Format = @"hh : mm : ss" } };
+      graphLOptions.Tooltip = new ApexCharts.Tooltip { X = new TooltipX { Format = @"HH:mm:ss" } };
+      graphLOptionsMob.Tooltip = new ApexCharts.Tooltip { X = new TooltipX { Format = @"HH:mm:ss" } };
       graphLOptionsMob.Yaxis = new List<YAxis>();
       graphLOptions.Yaxis = new List<YAxis>();
       graphLOptionsMob.Xaxis = new XAxis();
+      graphLOptions.Xaxis = new XAxis();
 
       graphLOptionsMob.Yaxis.Add(new YAxis
             {
@@ -219,6 +219,11 @@
       graphLOptionsMob.Xaxis = new XAxis()
             {
               Labels = new XAxisLabels(){ Show = false }
+            };
+      graphLOptions.Xaxis = new XAxis()
+            {
+              Type = XAxisType.Datetime,
+              AxisTicks = new AxisTicks(){}
             };
       graphLOptionsMob.Chart = new Chart
             {

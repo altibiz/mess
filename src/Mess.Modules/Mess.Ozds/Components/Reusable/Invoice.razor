@@ -48,12 +48,12 @@
     <MudItem xs="12" sm="6">
       <MudHidden Breakpoint="Breakpoint.Xs">
         <MudText Type="Typo.body2" Align="MudAlign.Right">
-          @(data?.From.ToString("dd. MM. yyyy. HH:mm"))
+          @(data is null ? null : DateTimeString(data.From))
         </MudText>
       </MudHidden>
       <MudHidden Breakpoint="Breakpoint.SmAndUp">
         <MudText Type="Typo.body2" Align="MudAlign.Left">
-          @(data?.From.ToString("dd. MM. yyyy. HH:mm"))
+          @(data is null ? null : DateTimeString(data.From))
         </MudText>
       </MudHidden>
     </MudItem>
@@ -65,12 +65,12 @@
     <MudItem xs="12" sm="6">
       <MudHidden Breakpoint="Breakpoint.Xs">
         <MudText Type="Typo.body2" Align="MudAlign.Right">
-          @(data?.To.ToString("dd. MM. yyyy. HH:mm"))
+          @(data is null ? null : DateTimeString(data.To))
         </MudText>
       </MudHidden>
       <MudHidden Breakpoint="Breakpoint.SmAndUp">
         <MudText Type="Typo.body2" Align="MudAlign.Left">
-          @(data?.To.ToString("dd. MM. yyyy. HH:mm"))
+          @(data is null ? null : DateTimeString(data.To))
         </MudText>
       </MudHidden>
     </MudItem>

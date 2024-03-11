@@ -68,44 +68,87 @@ public abstract class AbstractComponent : ComponentBase
   private IShapeFactory ShapeFactory => _shapeFactory ??=
     HttpContext.RequestServices.GetRequiredService<IShapeFactory>();
 
-  protected string DecimalString(decimal number, int places = 2)
+  protected string DecimalString(decimal? number, int places = 2)
   {
+    if (number is null)
+    {
+      return "";
+    }
+
     var cultureInfo = new CultureInfo("hr-HR");
 
     var numberFormatInfo = (NumberFormatInfo)cultureInfo.NumberFormat.Clone();
     numberFormatInfo.NumberGroupSeparator = ".";
     numberFormatInfo.NumberDecimalDigits = places;
 
-    decimal roundedNumber = Math.Round(number, places);
+    decimal roundedNumber = Math.Round(number.Value, places);
     return roundedNumber.ToString("N", numberFormatInfo);
   }
 
-  protected string DateTimeString(DateTimeOffset dateTimeOffset)
+  protected string DateTimeString(DateTimeOffset? dateTimeOffset)
   {
+    if (dateTimeOffset is null)
+    {
+      return "";
+    }
+
     var cultureInfo = new CultureInfo("hr-HR");
 
     var withTimezone = dateTimeOffset
+      .Value
       .ToOffset(DateTimeOffsetExtensions.DefaultOffset);
 
-    return withTimezone.ToString(cultureInfo);
+    return withTimezone.ToString("dd. MM. yyyy. HH:mm", cultureInfo);
   }
 
-  protected string DateString(DateTimeOffset dateTimeOffset)
+  protected string DateString(DateTimeOffset? dateTimeOffset)
   {
+    if (dateTimeOffset is null)
+    {
+      return "";
+    }
+
     var cultureInfo = new CultureInfo("hr-HR");
 
     var withTimezone = dateTimeOffset
+      .Value
       .ToOffset(DateTimeOffsetExtensions.DefaultOffset);
 
-    return withTimezone.ToString(cultureInfo);
+    return withTimezone.ToString("dd. MM. yyyy.", cultureInfo);
   }
 
-  protected DateTimeOffset DateTimeOffsetGraph(DateTimeOffset dateTimeOffset)
+  protected string DateTimeString(DateTime? dateTime)
   {
-    var withTimezone = dateTimeOffset
+    if (dateTime is null)
+    {
+      return "";
+    }
+
+    var cultureInfo = new CultureInfo("hr-HR");
+
+    var withTimezone = new DateTimeOffset(dateTime.Value)
       .ToOffset(DateTimeOffsetExtensions.DefaultOffset);
 
-    return withTimezone;
+    return withTimezone.ToString("dd. MM. yyyy. HH:mm", cultureInfo);
+  }
+
+  protected string DateString(DateTime? dateTime)
+  {
+    if (dateTime is null)
+    {
+      return "";
+    }
+
+    var cultureInfo = new CultureInfo("hr-HR");
+
+    var withTimezone = new DateTimeOffset(dateTime.Value)
+      .ToOffset(DateTimeOffsetExtensions.DefaultOffset);
+
+    return withTimezone.ToString("dd. MM. yyyy.", cultureInfo);
+  }
+  protected DateTimeOffset DateTimeGraph(DateTimeOffset dateTimeOffset)
+  {
+    return dateTimeOffset.UtcDateTime.Add(DateTimeOffsetExtensions.DefaultOffset);
   }
 
   /// <summary>
