@@ -2,10 +2,15 @@ namespace Mess.Prelude.Extensions.Timestamps;
 
 public static class DateTimeOffsetExtensions
 {
+  // NOTE: Croatian UTC offset (https://en.wikipedia.org/wiki/List_of_UTC_offsets)
+  public static readonly TimeSpan DefaultOffset = TimeSpan.FromHours(1);
+
   public static (DateTimeOffset, DateTimeOffset) GetMonthRange(
-    this DateTimeOffset dateTimeOffset
+    this DateTimeOffset dateTimeOffset,
+    TimeSpan? offset = null
   )
   {
+    dateTimeOffset = dateTimeOffset.ToOffset(offset ?? DefaultOffset);
     var monthStart = new DateTimeOffset(
       dateTimeOffset.Year,
       dateTimeOffset.Month,
@@ -16,59 +21,75 @@ public static class DateTimeOffsetExtensions
       dateTimeOffset.Offset
     );
     var monthEnd = monthStart.AddMonths(1);
-    return (monthStart, monthEnd);
+    return (monthStart.ToUniversalTime(), monthEnd.ToUniversalTime());
   }
 
-  public static DateTimeOffset GetStartOfQuarterHour(this DateTimeOffset dateTime)
+  public static DateTimeOffset GetStartOfQuarterHour(
+    this DateTimeOffset dateTimeOffset,
+    TimeSpan? offset = null
+  )
   {
-    int quarterHour = dateTime.Minute / 15;
+    dateTimeOffset = dateTimeOffset.ToOffset(offset ?? DefaultOffset);
+    int quarterHour = dateTimeOffset.Minute / 15;
     return new DateTimeOffset(
-      dateTime.Year,
-      dateTime.Month,
-      dateTime.Day,
-      dateTime.Hour,
+      dateTimeOffset.Year,
+      dateTimeOffset.Month,
+      dateTimeOffset.Day,
+      dateTimeOffset.Hour,
       quarterHour * 15,
       0,
-      dateTime.Offset
-    );
+      dateTimeOffset.Offset
+    ).ToUniversalTime();
   }
 
-  public static DateTimeOffset GetStartOfMonth(this DateTimeOffset dateTime)
+  public static DateTimeOffset GetStartOfMonth(
+    this DateTimeOffset dateTimeOffset,
+    TimeSpan? offset = null
+  )
   {
+    dateTimeOffset = dateTimeOffset.ToOffset(offset ?? DefaultOffset);
     return new DateTimeOffset(
-      dateTime.Year,
-      dateTime.Month,
+      dateTimeOffset.Year,
+      dateTimeOffset.Month,
       1,
       0,
       0,
       0,
-      dateTime.Offset
-    );
+      dateTimeOffset.Offset
+    ).ToUniversalTime();
   }
 
-  public static DateTimeOffset GetStartOfDay(this DateTimeOffset dateTime)
+  public static DateTimeOffset GetStartOfDay(
+    this DateTimeOffset dateTimeOffset,
+    TimeSpan? offset = null
+  )
   {
+    dateTimeOffset = dateTimeOffset.ToOffset(offset ?? DefaultOffset);
     return new DateTimeOffset(
-      dateTime.Year,
-      dateTime.Month,
-      dateTime.Day,
+      dateTimeOffset.Year,
+      dateTimeOffset.Month,
+      dateTimeOffset.Day,
       0,
       0,
       0,
-      dateTime.Offset
-    );
+      dateTimeOffset.Offset
+    ).ToUniversalTime();
   }
 
-  public static DateTimeOffset GetStartOfYear(this DateTimeOffset dateTime)
+  public static DateTimeOffset GetStartOfYear(
+    this DateTimeOffset dateTimeOffset,
+    TimeSpan? offset = null
+  )
   {
+    dateTimeOffset = dateTimeOffset.ToOffset(offset ?? DefaultOffset);
     return new DateTimeOffset(
-      dateTime.Year,
+      dateTimeOffset.Year,
       1,
       1,
       0,
       0,
       0,
-      dateTime.Offset
-    );
+      dateTimeOffset.Offset
+    ).ToUniversalTime();
   }
 }
