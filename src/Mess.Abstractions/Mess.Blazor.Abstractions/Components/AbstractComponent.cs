@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Security.Claims;
 using Mess.Blazor.Abstractions.Extensions;
 using Mess.Blazor.Abstractions.Localization;
+using Mess.Prelude.Extensions.Timestamps;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -69,16 +70,32 @@ public abstract class AbstractComponent : ComponentBase
 
   protected string DecimalString(decimal number, int places = 2)
   {
-    CultureInfo cultureInfo = new CultureInfo("hr-HR");
-    // Clone the NumberFormat to avoid modifying the global culture settings
-    NumberFormatInfo nfi = (NumberFormatInfo)cultureInfo.NumberFormat.Clone();
-    // Set the thousand separator to a period
-    nfi.NumberGroupSeparator = ".";
-    // Set the number of decimal places
-    nfi.NumberDecimalDigits = places;
-    // Round the number to the specified number of places
+    var cultureInfo = new CultureInfo("hr-HR");
+
+    var numberFormatInfo = (NumberFormatInfo)cultureInfo.NumberFormat.Clone();
+    numberFormatInfo.NumberGroupSeparator = ".";
+    numberFormatInfo.NumberDecimalDigits = places;
+
     decimal roundedNumber = Math.Round(number, places);
-    return roundedNumber.ToString("N", nfi);
+    return roundedNumber.ToString("N", numberFormatInfo);
+  }
+
+  protected string DateTimeOffsetString(DateTimeOffset dateTimeOffset)
+  {
+    var cultureInfo = new CultureInfo("hr-HR");
+
+    var withTimezone = dateTimeOffset
+      .ToOffset(DateTimeOffsetExtensions.DefaultOffset);
+
+    return withTimezone.ToString(cultureInfo);
+  }
+
+  protected DateTimeOffset DateTimeOffsetGraph(DateTimeOffset dateTimeOffset)
+  {
+    var withTimezone = dateTimeOffset
+      .ToOffset(DateTimeOffsetExtensions.DefaultOffset);
+
+    return withTimezone;
   }
 
   /// <summary>

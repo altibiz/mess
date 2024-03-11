@@ -6,11 +6,10 @@ public static class DateTimeOffsetExtensions
   public static readonly TimeSpan DefaultOffset = TimeSpan.FromHours(1);
 
   public static (DateTimeOffset, DateTimeOffset) GetMonthRange(
-    this DateTimeOffset dateTimeOffset,
-    TimeSpan? offset = null
+    this DateTimeOffset dateTimeOffset
   )
   {
-    dateTimeOffset = dateTimeOffset.ToOffset(offset ?? DefaultOffset);
+    dateTimeOffset = dateTimeOffset.ToOffset(DefaultOffset);
     var monthStart = new DateTimeOffset(
       dateTimeOffset.Year,
       dateTimeOffset.Month,
@@ -25,11 +24,10 @@ public static class DateTimeOffsetExtensions
   }
 
   public static DateTimeOffset GetStartOfQuarterHour(
-    this DateTimeOffset dateTimeOffset,
-    TimeSpan? offset = null
+    this DateTimeOffset dateTimeOffset
   )
   {
-    dateTimeOffset = dateTimeOffset.ToOffset(offset ?? DefaultOffset);
+    dateTimeOffset = dateTimeOffset.ToOffset(DefaultOffset);
     int quarterHour = dateTimeOffset.Minute / 15;
     return new DateTimeOffset(
       dateTimeOffset.Year,
@@ -43,11 +41,10 @@ public static class DateTimeOffsetExtensions
   }
 
   public static DateTimeOffset GetStartOfMonth(
-    this DateTimeOffset dateTimeOffset,
-    TimeSpan? offset = null
+    this DateTimeOffset dateTimeOffset
   )
   {
-    dateTimeOffset = dateTimeOffset.ToOffset(offset ?? DefaultOffset);
+    dateTimeOffset = dateTimeOffset.ToOffset(DefaultOffset);
     return new DateTimeOffset(
       dateTimeOffset.Year,
       dateTimeOffset.Month,
@@ -60,11 +57,10 @@ public static class DateTimeOffsetExtensions
   }
 
   public static DateTimeOffset GetStartOfDay(
-    this DateTimeOffset dateTimeOffset,
-    TimeSpan? offset = null
+    this DateTimeOffset dateTimeOffset
   )
   {
-    dateTimeOffset = dateTimeOffset.ToOffset(offset ?? DefaultOffset);
+    dateTimeOffset = dateTimeOffset.ToOffset(DefaultOffset);
     return new DateTimeOffset(
       dateTimeOffset.Year,
       dateTimeOffset.Month,
@@ -77,11 +73,10 @@ public static class DateTimeOffsetExtensions
   }
 
   public static DateTimeOffset GetStartOfYear(
-    this DateTimeOffset dateTimeOffset,
-    TimeSpan? offset = null
+    this DateTimeOffset dateTimeOffset
   )
   {
-    dateTimeOffset = dateTimeOffset.ToOffset(offset ?? DefaultOffset);
+    dateTimeOffset = dateTimeOffset.ToOffset(DefaultOffset);
     return new DateTimeOffset(
       dateTimeOffset.Year,
       1,
