@@ -80,7 +80,17 @@ public abstract class AbstractComponent : ComponentBase
     return roundedNumber.ToString("N", numberFormatInfo);
   }
 
-  protected string DateTimeOffsetString(DateTimeOffset dateTimeOffset)
+  protected string DateTimeString(DateTimeOffset dateTimeOffset)
+  {
+    var cultureInfo = new CultureInfo("hr-HR");
+
+    var withTimezone = dateTimeOffset
+      .ToOffset(DateTimeOffsetExtensions.DefaultOffset);
+
+    return withTimezone.ToString(cultureInfo);
+  }
+
+  protected string DateString(DateTimeOffset dateTimeOffset)
   {
     var cultureInfo = new CultureInfo("hr-HR");
 
