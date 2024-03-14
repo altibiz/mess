@@ -237,7 +237,7 @@
       {
         Toolbar = new ApexCharts.Toolbar
         {
-            Tools = new Tools { Zoomin = false, Zoomout = false, Download = false, Pan = false, Selection = false }
+          Tools = new Tools { Zoomin = true, Zoomout = true, Zoom = false, Download = false, Pan = true, Selection = false }
         }
       };
       graphLOptions.Tooltip = new ApexCharts.Tooltip { X = new TooltipX { Format = @"HH:mm:ss" } };
@@ -260,7 +260,7 @@
             {
                 Toolbar = new ApexCharts.Toolbar
                 {
-                    Tools = new Tools { Zoomin = false, Zoomout = false, Download = false, Pan = false, Selection = false}
+                  Tools = new Tools { Zoomin = true, Zoomout = true, Zoom = false, Download = false, Pan = true, Selection = false }
                 }
             };
       await WithTransientSessionAsync(async session => {
@@ -506,11 +506,11 @@
         return new ApexCharts.SeriesStroke { Color = "#673AB7", Width = 4};
       }
     if(index==1){
-        return new ApexCharts.SeriesStroke { Color = "#E53935", Width = 4};
+        return new ApexCharts.SeriesStroke { Color = "#FB8C00", Width = 4};
       }
     if(index==2){
         return new ApexCharts.SeriesStroke { Color = "#00897B", Width = 4};
       }
-    return new ApexCharts.SeriesStroke { Color = "#E53935", Width = 4};
+    return new ApexCharts.SeriesStroke { Color = "#FB8C00", Width = 4};
   }
 }

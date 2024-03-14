@@ -5,74 +5,46 @@
 </MudText>
 
 <MudPaper class="mt-4 px-4 py-2">
-  <MudGrid Spacing="2">
-    <MudItem xs="12" sm="6">
-      <MudText Type="Typo.body2">
+  <MudGrid Spacing="1">
+    <MudItem xs="12" sm="12">
+      <MudText Typo="Typo.body1">
         <strong>ZDS:</strong>
       </MudText>
     </MudItem>
-    <MudItem xs="12" sm="6">
-      <MudHidden Breakpoint="Breakpoint.Xs">
-        <MudText Type="Typo.body2" Align="MudAlign.Right">
+    <MudItem xs="12" sm="12">
+        <MudText Typo="Typo.body1" Align="MudAlign.Left">
           @(data?.ClosedDistributionSystem.Content.TitlePart.Title)
         </MudText>
-      </MudHidden>
-      <MudHidden Breakpoint="Breakpoint.SmAndUp">
-        <MudText Type="Typo.body2" Align="MudAlign.Left">
-          @(data?.ClosedDistributionSystem.Content.TitlePart.Title)
-        </MudText>
-      </MudHidden>
     </MudItem>
-    <MudItem xs="12" sm="6">
-      <MudText Type="Typo.body2">
+    <MudItem xs="12" sm="12">
+      <MudText Typo="Typo.body1">
         <strong>Korisnik:</strong>
       </MudText>
     </MudItem>
-    <MudItem xs="12" sm="6">
-      <MudHidden Breakpoint="Breakpoint.Xs">
-        <MudText Type="Typo.body2" Align="MudAlign.Right">
+    <MudItem xs="12" sm="12">
+        <MudText Typo="Typo.body1" Align="MudAlign.Left">
           @(data?.DistributionSystemUnit.Content.TitlePart.Title)
         </MudText>
-      </MudHidden>
-      <MudHidden Breakpoint="Breakpoint.SmAndUp">
-        <MudText Type="Typo.body2" Align="MudAlign.Left">
-          @(data?.DistributionSystemUnit.Content.TitlePart.Title)
-        </MudText>
-      </MudHidden>
     </MudItem>
-    <MudItem xs="12" sm="6">
-      <MudText Type="Typo.body2">
+    <MudItem xs="12" sm="12">
+      <MudText Typo="Typo.body1">
         <strong>Od:</strong>
       </MudText>
     </MudItem>
-    <MudItem xs="12" sm="6">
-      <MudHidden Breakpoint="Breakpoint.Xs">
-        <MudText Type="Typo.body2" Align="MudAlign.Right">
+    <MudItem xs="12" sm="12">
+        <MudText Typo="Typo.body1" Align="MudAlign.Left">
           @(data is null ? null : DateTimeString(data.From))
         </MudText>
-      </MudHidden>
-      <MudHidden Breakpoint="Breakpoint.SmAndUp">
-        <MudText Type="Typo.body2" Align="MudAlign.Left">
-          @(data is null ? null : DateTimeString(data.From))
-        </MudText>
-      </MudHidden>
     </MudItem>
-    <MudItem xs="12" sm="6">
-      <MudText Type="Typo.body2">
+    <MudItem xs="12" sm="12">
+      <MudText Typo="Typo.body1">
         <strong>Do:</strong>
       </MudText>
     </MudItem>
-    <MudItem xs="12" sm="6">
-      <MudHidden Breakpoint="Breakpoint.Xs">
-        <MudText Type="Typo.body2" Align="MudAlign.Right">
+    <MudItem xs="12" sm="12">
+        <MudText Typo="Typo.body1" Align="MudAlign.Left">
           @(data is null ? null : DateTimeString(data.To))
         </MudText>
-      </MudHidden>
-      <MudHidden Breakpoint="Breakpoint.SmAndUp">
-        <MudText Type="Typo.body2" Align="MudAlign.Left">
-          @(data is null ? null : DateTimeString(data.To))
-        </MudText>
-      </MudHidden>
     </MudItem>
   </MudGrid>
 </MudPaper>
@@ -89,18 +61,18 @@
   <MudPaper class="mt-2 px-4 py-2">
     <MudGrid Spacing="1">
       <MudItem xs="12" sm="6">
-        <MudText Typo="Typo.body2">
+        <MudText Typo="Typo.body1">
           @(row.Name)
         </MudText>
       </MudItem>
       <MudItem xs="12" sm="6">
         <MudHidden Breakpoint="Breakpoint.Xs">
-          <MudText Type="Typo.body2" Align="MudAlign.Right">
+          <MudText Typo="Typo.body1" Align="MudAlign.Right">
             @DecimalString(row.Total, 2)
           </MudText>
         </MudHidden>
         <MudHidden Breakpoint="Breakpoint.SmAndUp">
-          <MudText Type="Typo.body2" Align="MudAlign.Left">
+          <MudText Typo="Typo.body1" Align="MudAlign.Left">
             @DecimalString(row.Total, 2)
           </MudText>
         </MudHidden>
@@ -124,18 +96,18 @@
   <MudPaper class="mt-2 px-4 py-2">
     <MudGrid Spacing="1">
       <MudItem xs="12" sm="6">
-        <MudText Typo="Typo.body2">
+        <MudText Typo="Typo.body1">
           @(row.Name)
         </MudText>
       </MudItem>
       <MudItem xs="12" sm="6">
         <MudHidden Breakpoint="Breakpoint.Xs">
-          <MudText Type="Typo.body2" Align="MudAlign.Right">
+          <MudText Typo="Typo.body1" Align="MudAlign.Right">
             @DecimalString(row.Total, 2)
           </MudText>
         </MudHidden>
         <MudHidden Breakpoint="Breakpoint.SmAndUp">
-          <MudText Type="Typo.body2" Align="MudAlign.Left">
+          <MudText Typo="Typo.body1" Align="MudAlign.Left">
             @DecimalString(row.Total, 2)
           </MudText>
         </MudHidden>
@@ -158,53 +130,53 @@
 <MudPaper class="px-4 py-2">
   <MudGrid Spacing="1">
     <MudItem xs="12" sm="9">
-      <MudText Typo="Typo.body1">
+      <MudText Typo="Typo.h5">
         <strong>Ukupno</strong>
       </MudText>
     </MudItem>
     <MudItem xs="12" sm="3">
       <MudHidden Breakpoint="Breakpoint.Xs">
-        <MudText Type="Typo.body2" Align="MudAlign.Right">
+        <MudText Typo="Typo.h5" Align="MudAlign.Right">
           @(data?.Total is null ? null : DecimalString(data.Total, 2))
         </MudText>
       </MudHidden>
       <MudHidden Breakpoint="Breakpoint.SmAndUp">
-        <MudText Type="Typo.body2" Align="MudAlign.Left">
+        <MudText Typo="Typo.h5" Align="MudAlign.Left">
           @(data?.Total is null ? null : DecimalString(data.Total, 2))
         </MudText>
       </MudHidden>
     </MudItem>
     <MudItem xs="12" sm="9">
-      <MudText Typo="Typo.body1">
+      <MudText Typo="Typo.h5">
 
         <strong>PDV (@(data?.TaxRate is null ? null : DecimalString((data.TaxRate * 100M), 2))%)</strong>
       </MudText>
     </MudItem>
     <MudItem xs="12" sm="3">
       <MudHidden Breakpoint="Breakpoint.Xs">
-        <MudText Type="Typo.body2" Align="MudAlign.Right">
+        <MudText Typo="Typo.h5" Align="MudAlign.Right">
           @(data?.Tax is null ? null : DecimalString(data.Tax, 2))
         </MudText>
       </MudHidden>
       <MudHidden Breakpoint="Breakpoint.SmAndUp">
-        <MudText Type="Typo.body2" Align="MudAlign.Left">
+        <MudText Typo="Typo.h5" Align="MudAlign.Left">
           @(data?.Tax is null ? null : DecimalString(data.Tax, 2))
         </MudText>
       </MudHidden>
     </MudItem>
     <MudItem xs="12" sm="9">
-      <MudText Typo="Typo.body1">
+      <MudText Typo="Typo.h5">
         <strong>Sveukupno</strong>
       </MudText>
     </MudItem>
     <MudItem xs="12" sm="3">
       <MudHidden Breakpoint="Breakpoint.Xs">
-        <MudText Type="Typo.body2" Align="MudAlign.Right">
+        <MudText Typo="Typo.h5" Align="MudAlign.Right">
           @(data?.TotalWithTax is null ? null : DecimalString(data.TotalWithTax, 2))
         </MudText>
       </MudHidden>
       <MudHidden Breakpoint="Breakpoint.SmAndUp">
-        <MudText Type="Typo.body2" Align="MudAlign.Left">
+        <MudText Typo="Typo.h5" Align="MudAlign.Left">
           @(data?.TotalWithTax is null ? null : DecimalString(data.TotalWithTax, 2))
         </MudText>
       </MudHidden>
@@ -215,7 +187,7 @@
 <MudText class="mt-8" Align="MudAlign.Right">
   <MudLink class="ml-auto" Href="@printHref">
     <MudButton Variant="Variant.Filled">
-      PRINT
+      PREGLED
     </MudButton>
   </MudLink>
 </MudText>
