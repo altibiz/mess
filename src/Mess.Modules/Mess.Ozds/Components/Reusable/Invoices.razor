@@ -102,14 +102,10 @@
       Property="x => DateString(x.As<OzdsInvoicePart>().Data.To.Date)"
       Title='@T["Do"].Value' />
     <PropertyColumn
+      CellStyle="font-size: large;"
       Property="x => x.ContentItemId"
-      Title='@T["Broj Računa"].Value' Sortable="false" CellClass="">
-          <CellTemplate>
-            <MudText>
-              @(context.Item.ContentItemId)
-            </MudText>
-          </CellTemplate>
-      </PropertyColumn>
+      Sortable="false"
+      Title='@T["Broj Računa"].Value' />
     <TemplateColumn CellClass="d-flex justify-center"  Sortable="false" Filterable="false">
         <CellTemplate>
             <MudStack Row>
