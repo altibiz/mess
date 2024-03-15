@@ -115,7 +115,7 @@
     <tr>
       <td></td>
       <td style="text-align: end;">Naknada za korištenje mreže - UKUPNO</td>
-      <td style="text-align: end;"><strong>@DecimalString(data.UsageExpenditure.Total, 2)</strong></td>
+      <td style="text-align: end;"><strong>@DecimalString(data.UsageExpenditure.Total, 2) EUR</strong></td>
     </tr>
     <tr>
       <td style="text-align: center;">2.)</td>
@@ -132,7 +132,7 @@
     <tr>
       <td></td>
       <td style="text-align: end;">Naknada za opskrbu – UKUPNO</td>
-      <td style="text-align: end;"><strong>@DecimalString(data.SupplyExpenditure.Total, 2)</strong></td>
+      <td style="text-align: end;"><strong>@DecimalString(data.SupplyExpenditure.Total, 2) EUR</strong></td>
     </tr>
   </tbody>
 </table>
@@ -144,17 +144,17 @@
   <thead>
     <tr>
       <th style="text-align: right;">UKUPNO:</th>
-      <th style="text-align: right;">@DecimalString(Item.OzdsInvoicePart.Value.Data.Total, 2)</th>
+      <th style="text-align: right;">@DecimalString(Item.OzdsInvoicePart.Value.Data.Total, 2) EUR</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td style="text-align: right;">PDV (13%):</td>
-      <td style="text-align: right;">@DecimalString(Item.OzdsInvoicePart.Value.Data.Tax, 2)</td>
+      <td style="text-align: right;">@DecimalString(Item.OzdsInvoicePart.Value.Data.Tax, 2) EUR</td>
     </tr>
     <tr>
       <td style="text-align: right;"><strong>SVEUKUPNI IZNOS:</strong></td>
-      <td style="text-align: right;">@DecimalString(Item.OzdsInvoicePart.Value.Data.TotalWithTax, 2)</td>
+      <td style="text-align: right;">@DecimalString(Item.OzdsInvoicePart.Value.Data.TotalWithTax, 2) EUR</td>
     </tr>
   </tbody>
 </table>

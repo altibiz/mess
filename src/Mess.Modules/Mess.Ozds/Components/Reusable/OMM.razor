@@ -204,7 +204,7 @@
     private string _month = "-1";
     private string _year = "-1";
     private decimal lastMonthMaxPower = 1000000m;
-    private decimal thisMonthMaxPower = 100000m;
+    private decimal thisMonthMaxPower = 00m;
     private decimal thisMonthCurrentPower = 100000m;
     private IReadOnlyList<AbbAggregate>? _abbRange;
     private IReadOnlyList<SchneiderAggregate>? _schneiderRange;
@@ -273,32 +273,43 @@
       _abbRange = await _timeseriesClient.GetBulkAbbMonthlyAggregateAsync(new List<string>{Source},nowYear,now);
       _schneiderRange = await _timeseriesClient.GetBulkSchneiderMonthlyAggregateAsync(new List<string>{Source},nowYear,now);
 
-      _abbMonthPowerRange = await _timeseriesClient.GetBulkAbbQuarterHourlyAggregateAsync(new List<string>{Source}, nowMonth.AddMonths(-1), now);
+      _abbMonthPowerRange = await _timeseriesClient.GetBulkAbbQuarterHourlyAggregateAsync(new List<string>{Source}, nowYear, now);
       _abbLastPower = await _timeseriesClient.GetLastAbbMeasurementAsync(Source);
-      _schneiderMonthPowerRange = await _timeseriesClient.GetBulkSchneiderQuarterHourlyAggregateAsync(new List<string>{Source}, nowMonth.AddMonths(-1), nowMonth);
+      _schneiderMonthPowerRange = await _timeseriesClient.GetBulkSchneiderQuarterHourlyAggregateAsync(new List<string>{Source}, nowYear, nowMonth);
       _schneiderLastPower = await _timeseriesClient.GetLastSchneiderMeasurementAsync(Source);
 
       for(int i = now.Month; i > 0; i--){
         var endSpan = nowYear.AddMonths(i);
         var startSpan = nowYear.AddMonths(i - 1);
         _startEnd = new();
+        thisMonthMaxPower = 0m;
+        _month = "00";
+        _year = "00";
         if(Source.StartsWith("abb")){
           if(_abbRange is not null && _abbRange.Count() > 0){
-            var device = _abbRange.Where(x => x.Timestamp > startSpan ).Where(x => x.Timestamp <= endSpan).Where(x => x.Source == Source).FirstOrDefault();
+            var device = _abbRange.Where(x => x.Timestamp >= startSpan ).Where(x => x.Timestamp < endSpan).Where(x => x.Source == Source).FirstOrDefault();
             if (device is not null)
               _startEnd = (device.ActiveEnergyImportTotalMax_Wh, device.ActiveEnergyImportTotalMin_Wh, device.Timestamp);
+
+            var thisMonth = _abbMonthPowerRange.Where(x => x.Timestamp >= startSpan ).Where(x => x.Timestamp < endSpan).Select(x => x.ActivePowerImportAvg_W).ToList();
+            if(thisMonth.Count() > 0)
+              thisMonthMaxPower = thisMonth.MaxBy(x => x);
           }
         }
         else{
           if(_schneiderRange is not null && _schneiderRange.Count() > 0){
-            var device = _schneiderRange.Where(x => x.Timestamp > startSpan).Where(x => x.Timestamp <= endSpan).Where(x => x.Source == Source).FirstOrDefault();
+            var device = _schneiderRange.Where(x => x.Timestamp >= startSpan ).Where(x => x.Timestamp < endSpan).Where(x => x.Source == Source).FirstOrDefault();
             if (device is not null)
               _startEnd = (device.ActiveEnergyImportTotalMax_Wh, device.ActiveEnergyImportTotalMin_Wh, device.Timestamp);
+
+            var thisMonth = _schneiderMonthPowerRange.Where(x => x.Timestamp >= startSpan ).Where(x => x.Timestamp < endSpan).Select(x => x.ActivePowerImportAvg_W).ToList();
+            if(thisMonth.Count() > 0)
+              thisMonthMaxPower = thisMonth.MaxBy(x => x);
           }
         }
         if(_startEnd.First is not null && _startEnd.Last is not null){
-          _month = _startEnd.FirstDate.ToString("MM");
-          _year = _startEnd.FirstDate.ToString("yy");
+          _month = nowYear.AddMonths(i).ToString("MM");
+          _year = nowYear.ToString("yy");
           _dataStruct.Add(new TabularData(_year, _month, _startEnd.First, _startEnd.Last, thisMonthMaxPower));
           _shownOMMs.Add(new ExpandThing{data = new (_year, _month, _startEnd.First, _startEnd.Last, thisMonthMaxPower), show = true, expand = false});
         }
@@ -307,10 +318,7 @@
 
       if(Source.StartsWith("abb")){
         if(_abbMonthPowerRange is not null && _abbMonthPowerRange.Count() > 0){
-          var thisMonth = _abbMonthPowerRange.Where(x => x.Timestamp >= nowMonth).Select(x => x.ActivePowerImportAvg_W);
           var lastMonth = _abbMonthPowerRange.Where(x => x.Timestamp < nowMonth).Select(x => x.ActivePowerImportAvg_W);
-          if(thisMonth.Count() > 0)
-            thisMonthMaxPower = thisMonth.MaxBy(x => x);
           if(lastMonth.Count() > 0)
             lastMonthMaxPower = lastMonth.MaxBy(x => x);
         }
@@ -320,10 +328,7 @@
       }
       else{
         if(_schneiderMonthPowerRange is not null && _schneiderMonthPowerRange.Count() > 0){
-          var thisMonth = _schneiderMonthPowerRange.Where(x => x.Timestamp >= nowMonth).Select(x => x.ActivePowerImportAvg_W);
           var lastMonth = _schneiderMonthPowerRange.Where(x => x.Timestamp < nowMonth).Select(x => x.ActivePowerImportAvg_W);
-          if(thisMonth.Count() > 0)
-            thisMonthMaxPower = thisMonth.MaxBy(x => x);
           if(lastMonth.Count() > 0)
             lastMonthMaxPower = lastMonth.MaxBy(x => x);
         }
@@ -331,6 +336,7 @@
           thisMonthCurrentPower = _schneiderLastPower.ActivePowerL1_W + _schneiderLastPower.ActivePowerL2_W + _schneiderLastPower.ActivePowerL3_W;
         }
       }
+      // max will be priključna snaga maxPower * 3 !!!
       orders.Add(new Order(thisMonthCurrentPower, lastMonthMaxPower));
     }
   private void OnExpandCollapseClick(string year, string month) {

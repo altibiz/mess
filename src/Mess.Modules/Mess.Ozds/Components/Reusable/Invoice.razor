@@ -81,7 +81,7 @@
   </MudPaper>
 }
 <MudText Typo="Typo.subtitle1" class="mt-2" Align="MudAlign.Right">
-  UKUPNO @(data?.UsageExpenditure.Total)
+  UKUPNO @(data?.UsageExpenditure.Total) EUR
 </MudText>
 
 <MudItem Class="d-flex flex-row justify-space-between mt-8">
@@ -116,7 +116,7 @@
   </MudPaper>
 }
 <MudText Typo="Typo.subtitle1" class="mt-2" Align="MudAlign.Right">
-  UKUPNO @(data?.SupplyExpenditure.Total)
+  UKUPNO @(data?.SupplyExpenditure.Total) EUR
 </MudText>
 
 <MudItem Class="d-flex flex-row justify-space-between mt-8">
@@ -137,12 +137,12 @@
     <MudItem xs="12" sm="3">
       <MudHidden Breakpoint="Breakpoint.Xs">
         <MudText Typo="Typo.h5" Align="MudAlign.Right">
-          @(data?.Total is null ? null : DecimalString(data.Total, 2))
+          @(data?.Total is null ? null : DecimalString(data.Total, 2)) EUR
         </MudText>
       </MudHidden>
       <MudHidden Breakpoint="Breakpoint.SmAndUp">
         <MudText Typo="Typo.h5" Align="MudAlign.Left">
-          @(data?.Total is null ? null : DecimalString(data.Total, 2))
+          @(data?.Total is null ? null : DecimalString(data.Total, 2)) EUR
         </MudText>
       </MudHidden>
     </MudItem>
@@ -155,12 +155,12 @@
     <MudItem xs="12" sm="3">
       <MudHidden Breakpoint="Breakpoint.Xs">
         <MudText Typo="Typo.h5" Align="MudAlign.Right">
-          @(data?.Tax is null ? null : DecimalString(data.Tax, 2))
+          @(data?.Tax is null ? null : DecimalString(data.Tax, 2)) EUR
         </MudText>
       </MudHidden>
       <MudHidden Breakpoint="Breakpoint.SmAndUp">
         <MudText Typo="Typo.h5" Align="MudAlign.Left">
-          @(data?.Tax is null ? null : DecimalString(data.Tax, 2))
+          @(data?.Tax is null ? null : DecimalString(data.Tax, 2)) EUR
         </MudText>
       </MudHidden>
     </MudItem>
@@ -172,12 +172,12 @@
     <MudItem xs="12" sm="3">
       <MudHidden Breakpoint="Breakpoint.Xs">
         <MudText Typo="Typo.h5" Align="MudAlign.Right">
-          @(data?.TotalWithTax is null ? null : DecimalString(data.TotalWithTax, 2))
+          @(data?.TotalWithTax is null ? null : DecimalString(data.TotalWithTax, 2)) EUR
         </MudText>
       </MudHidden>
       <MudHidden Breakpoint="Breakpoint.SmAndUp">
         <MudText Typo="Typo.h5" Align="MudAlign.Left">
-          @(data?.TotalWithTax is null ? null : DecimalString(data.TotalWithTax, 2))
+          @(data?.TotalWithTax is null ? null : DecimalString(data.TotalWithTax, 2)) EUR
         </MudText>
       </MudHidden>
     </MudItem>
