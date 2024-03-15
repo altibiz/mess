@@ -26,5 +26,7 @@ public class SchneiderIotDevicePart : ContentPart
 
   public NumericField MaxApparentPower { get; set; } = default!;
 
+  public NumericField ConnectionPower { get; set; } = default!;
+
   public MultiSelectField Phases { get; set; } = default!;
 }
