@@ -22,5 +22,7 @@ public class AbbIotDevicePart : ContentPart
 
   public NumericField MaxReactivePower { get; set; } = default!;
 
+  public NumericField ConnectionPower { get; set; } = default!;
+
   public MultiSelectField Phases { get; set; } = default!;
 }

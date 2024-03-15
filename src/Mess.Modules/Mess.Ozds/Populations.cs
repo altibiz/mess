@@ -442,6 +442,7 @@ internal static partial class CreateAsyncMigrations
         abbIotDevicePart.MaxActivePower = new NumericField { Value = 24000 };
         abbIotDevicePart.MinReactivePower = new NumericField { Value = -24000 };
         abbIotDevicePart.MaxReactivePower = new NumericField { Value = 24000 };
+        abbIotDevicePart.ConnectionPower = new NumericField { Value = 24000 };
         abbIotDevicePart.Phases = new MultiSelectField { SelectedValues = new[] { "L1", "L2", "L3" } };
       }
     );
@@ -472,6 +473,7 @@ internal static partial class CreateAsyncMigrations
         abbIotDevicePart.MaxActivePower = new NumericField { Value = 24000 };
         abbIotDevicePart.MinReactivePower = new NumericField { Value = 0 };
         abbIotDevicePart.MaxReactivePower = new NumericField { Value = 24000 };
+        abbIotDevicePart.ConnectionPower = new NumericField { Value = 24000 };
         abbIotDevicePart.Phases = new MultiSelectField { SelectedValues = new[] { "L1", "L2", "L3" } };
       }
     );
@@ -502,6 +504,7 @@ internal static partial class CreateAsyncMigrations
         abbIotDevicePart.MaxActivePower = new NumericField { Value = 24000 };
         abbIotDevicePart.MinReactivePower = new NumericField { Value = 0 };
         abbIotDevicePart.MaxReactivePower = new NumericField { Value = 24000 };
+        abbIotDevicePart.ConnectionPower = new NumericField { Value = 24000 };
         abbIotDevicePart.Phases = new MultiSelectField { SelectedValues = new[] { "L1" } };
       }
     );
@@ -645,6 +648,7 @@ internal static partial class CreateAsyncMigrations
         schneiderIotDevicePart.MaxReactivePower = new NumericField { Value = 24000 };
         schneiderIotDevicePart.MinApparentPower = new NumericField { Value = -24000 };
         schneiderIotDevicePart.MaxApparentPower = new NumericField { Value = 24000 };
+        schneiderIotDevicePart.ConnectionPower = new NumericField { Value = 24000 };
         schneiderIotDevicePart.Phases = new MultiSelectField { SelectedValues = new[] { "L1", "L2", "L3" } };
       }
     );
