@@ -31,7 +31,7 @@
               </MudGrid>
               <MudGrid Class="d-flex pa-2">
                 <MudItem xs="10" Class="d-flex align-center justify-start" Style="font-size: large; font-weight:bold;">
-                  @T["Prethodni obračun"].Value: @(dataStruct.omm.lastInvoiceTotal is null ? null : DecimalString((decimal)dataStruct.omm.lastInvoiceTotal)) EUR
+                  @T["Prethodni obračun"].Value: @(dataStruct.omm.lastInvoiceTotal == 0m ? T["Račun u izradi..."] : DecimalString((decimal)dataStruct.omm.lastInvoiceTotal)) EUR
                 </MudItem>
                 <MudItem xs="2" Class="d-flex align-center justify-end">
                   <MudIconButton OnClick="() => OnExpandCollapseClick(dataStruct.omm.source)" Icon="@(dataStruct.expand ? Icons.Material.Filled.KeyboardArrowUp : Icons.Material.Filled.KeyboardArrowDown)" Color="MudBlazor.Color.Default"/>
@@ -58,7 +58,7 @@
 @* DESKTOP *@
           <MudHidden Breakpoint="Breakpoint.SmAndDown">
   <MudDataGrid
-  T="(string source, decimal? lastInvoiceTotal, decimal? thisMonthUsage, decimal? lastMonthUsage)"
+  T="(string source, decimal lastInvoiceTotal, decimal? thisMonthUsage, decimal? lastMonthUsage)"
   MultiSelection="true"
   Items="@_lastTotalPerOMM"
   SortMode="SortMode.Multiple"
@@ -112,13 +112,12 @@
       Property="x => x.lastInvoiceTotal"
       Title='@T["Prethodni obračun"].Value'>
           <CellTemplate>
-                @if(context.Item.lastInvoiceTotal is not null)
-                @(DecimalString((decimal)context.Item.lastInvoiceTotal) + " EUR")
+                @(context.Item.lastInvoiceTotal == 0m ? T["Račun u izradi..."] : DecimalString((decimal)context.Item.lastInvoiceTotal) + " EUR")
           </CellTemplate>
       </PropertyColumn>
   </Columns>
   <PagerContent>
-    <MudDataGridPager T="(string source, decimal? lastInvoiceTotal, decimal? thisMonthUsage, decimal? lastMonthUsage)" />
+    <MudDataGridPager T="(string source, decimal lastInvoiceTotal, decimal? thisMonthUsage, decimal? lastMonthUsage)" />
   </PagerContent>
 </MudDataGrid>
           </MudHidden>
@@ -130,7 +129,7 @@
     private (decimal? First, decimal? Last, DateTimeOffset FirstDate) _startEnd;
     private (decimal? First, decimal? Last, DateTimeOffset FirstDate) _startEndLastMonth = new(0, 0, DateTime.UtcNow);
     private class ExpandThing {
-      public (string source, decimal? lastInvoiceTotal, decimal? thisMonthUsage, decimal? lastMonthUsage) omm;
+      public (string source, decimal lastInvoiceTotal, decimal? thisMonthUsage, decimal? lastMonthUsage) omm;
       public bool expand;
       public bool show;
     }
@@ -139,7 +138,7 @@
     private List<(decimal total, string source)> _lastMonthCosts = new();
     private List<ContentItem> _unitsOMMs = new();
     private string? _searchString;
-    private List<(string source, decimal? lastInvoiceTotal, decimal? thisMonthUsage, decimal? lastMonthUsage)> _lastTotalPerOMM = new();
+    private List<(string source, decimal lastInvoiceTotal, decimal? thisMonthUsage, decimal? lastMonthUsage)> _lastTotalPerOMM = new();
     private IReadOnlyList<AbbAggregate>? _abbRange;
     private IReadOnlyList<SchneiderAggregate>? _schneiderRange;
     private IReadOnlyList<AbbAggregate>? _abbRangeLastMonth;
@@ -201,21 +200,25 @@
                 _startEndLastMonth = (deviceLastMonth.ActiveEnergyImportTotalMax_Wh, deviceLastMonth.ActiveEnergyImportTotalMin_Wh, deviceLastMonth.Timestamp);
               }
             }
-            ContentItem lastInvoice = invoices.OrderBy(x => x.As<InvoicePart>().Date.Value.Value).LastOrDefault();
-            if (lastInvoice is null){
+            var lastMonthInvoices = invoices.Where(x => x.As<InvoicePart>().Date.Value >= nowMonth.AddMonths(-1)).Where(x => x.As<InvoicePart>().Date.Value < nowMonth).ToList();
+            if (lastMonthInvoices is null){
               continue;
             }
-            var lastMonth = lastInvoice.As<OzdsCalculationPart>().Calculations.Where(x => x.IotDevice.DisplayText == omm.DisplayText).FirstOrDefault();
-            if(lastMonth is not null){
-              _lastTotalPerOMM.Add(new (omm.DisplayText, lastMonth.Total, _startEnd.First - _startEnd.Last, _startEndLastMonth.First - _startEndLastMonth.Last));
-              _shownOMMs.Add(new ExpandThing{omm = (source: omm.DisplayText, lastMonthTotal: lastMonth.Total, _startEnd.First - _startEnd.Last, _startEndLastMonth.First - _startEndLastMonth.Last), show = true, expand = false});
+            var total = 0m;
+            foreach (var invoice in lastMonthInvoices){
+              var calc = invoice.As<OzdsCalculationPart>().Calculations.Where(x => x.IotDevice.DisplayText == omm.DisplayText).FirstOrDefault();
+              if (calc is not null){
+                total += calc.Total;
+              }
             }
+            _lastTotalPerOMM.Add(new (omm.DisplayText, total, _startEnd.First - _startEnd.Last, _startEndLastMonth.First - _startEndLastMonth.Last));
+            _shownOMMs.Add(new ExpandThing{omm = (source: omm.DisplayText, lastMonthTotal: total, _startEnd.First - _startEnd.Last, _startEndLastMonth.First - _startEndLastMonth.Last), show = true, expand = false});
           }
         }
       }
       });
     }
-     private Func<(string source, decimal? lastInvoiceTotal, decimal? thisMonthUsage, decimal? lastMonthUsage), bool> _quickFilter => x =>
+     private Func<(string source, decimal lastInvoiceTotal, decimal? thisMonthUsage, decimal? lastMonthUsage), bool> _quickFilter => x =>
   {
     if (string.IsNullOrWhiteSpace(_searchString))
       return true;

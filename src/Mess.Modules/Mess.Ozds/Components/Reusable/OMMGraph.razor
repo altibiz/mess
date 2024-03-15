@@ -155,6 +155,8 @@
 @code {
     [Parameter]
     public string Source { get; set; } = "abb";
+    private ContentItem? _iotDevice;
+    AnnotationsYAxis? _annotation;
     private ApexChartOptions<ChartDataL> graphLOptions = new();
     private ApexChartOptions<ChartDataL> graphLOptionsMob = new();
     private List<string> _displayType = new List<string>{
@@ -163,6 +165,7 @@
     public int timeSpanMins = 15;
     public int leftLineCount = 0;
     public int rightLineCount = 0;
+    private decimal? connectionMaxPower = 1000000m;
     public IEnumerable<ChartDataL>? _leftGraphValues;
     private string _leftDataTitle = "";
     private string _leftTimeTitle = "15 min";
@@ -206,16 +209,10 @@
       graphLOptionsMob.Xaxis = new XAxis();
       graphLOptions.Xaxis = new XAxis();
 
-      graphLOptionsMob.Yaxis.Add(new YAxis
+      @* graphLOptionsMob.Yaxis.Add(new YAxis
             {
                 Show = false
-            });
-      graphLOptions.Yaxis.Add(new YAxis()
-            {
-              Labels = new YAxisLabels(){
-                Formatter = "function(val, index) { return val.toFixed(0); }"
-                }
-            });
+            }); *@
       graphLOptionsMob.Xaxis = new XAxis()
             {
               Labels = new XAxisLabels(){ Show = false }
@@ -233,6 +230,11 @@
                 }
             };
       await WithTransientSessionAsync(async session => {
+        _iotDevice = await session
+          .Query<ContentItem, OzdsIotDeviceIndex>()
+          .Where(index => index.DeviceId == Source)
+          .LatestPublished()
+          .FirstOrDefaultAsync();
         if(Source.StartsWith("abb")){
           var a = await _timeseriesClient.GetAbbMeasurementsAsync(Source, DateTimeOffset.UtcNow.AddMinutes(- timeSpanMins), DateTimeOffset.UtcNow);
           if(_leftGraphValues is null){
@@ -255,7 +257,50 @@
         else{
           _leftDataTitle = "none";
         }
+
+        @* Annotation *@
+
+        if(Source.StartsWith("abb")){
+          if (_iotDevice.As<AbbIotDevicePart>() is not null && _iotDevice.As<AbbIotDevicePart>().ConnectionPower is not null)
+            connectionMaxPower = _iotDevice.As<AbbIotDevicePart>().ConnectionPower.Value * 3;
+        }
+        else{
+          if (_iotDevice.As<SchneiderIotDevicePart>() is not null && _iotDevice.As<SchneiderIotDevicePart>().ConnectionPower is not null)
+            connectionMaxPower = _iotDevice.As<SchneiderIotDevicePart>().ConnectionPower.Value * 3;
+        }
+         _annotation = new AnnotationsYAxis
+        {
+          Label = new Label
+            {
+                Text = T["PRIKLJUČENA SNAGA"].Value,
+                Style = new Style { Background ="red", Color="white", FontSize="12px"}
+            },
+          Y = connectionMaxPower,
+          BorderColor = "red",
+          StrokeDashArray = 0
+        };
+        graphLOptions.Yaxis.Add(new YAxis()
+          {
+            Max = connectionMaxPower * 1.2m,
+            Labels = new YAxisLabels(){
+              Formatter = "function(val, index) { return val.toFixed(0); }"
+              }
+          });
+        graphLOptions.Annotations = new(){
+          Yaxis = new List<AnnotationsYAxis>(){_annotation}
+        };
+        graphLOptionsMob.Yaxis.Add(new YAxis()
+          {
+            Max = connectionMaxPower * 1.2m,
+            Labels = new YAxisLabels(){
+              Formatter = "function(val, index) { return val.toFixed(0); }"
+              }
+          });
+        graphLOptionsMob.Annotations = new(){
+          Yaxis = new List<AnnotationsYAxis>(){_annotation}
+        };
       });
+
     }
 
   private async Task LeftMenuItemClicked(string source)
@@ -396,6 +441,7 @@
     }
     StateHasChanged();
     await leftChart.UpdateSeriesAsync(true);
+    await SetAnnotation();
   }
   private async Task LeftMenuDataItemClicked(string type)
   {
@@ -463,5 +509,56 @@
         return new ApexCharts.SeriesStroke { Color = "#00897B", Width = 4};
       }
     return new ApexCharts.SeriesStroke { Color = "#FB8C00", Width = 4};
+  }
+  private async Task SetAnnotation(){
+    if(leftChart is null){
+      return;
+    }
+    if(_leftDataTitle == "Radna snaga"){
+      if(connectionMaxPower is not null){
+
+          graphLOptions.Yaxis.Clear();
+          graphLOptions.Yaxis.Add(new(){
+              Max = connectionMaxPower * 1.2m,
+              Labels = new YAxisLabels(){
+                Formatter = "function(val, index) { return val.toFixed(0); }"
+                }
+             });
+
+          graphLOptionsMob.Yaxis.Clear();
+          graphLOptionsMob.Yaxis.Add(new(){
+            Max = connectionMaxPower * 1.2m,
+            Labels = new YAxisLabels(){
+              Formatter = "function(val, index) { return val.toFixed(0); }"
+              }
+            });
+      await leftChart.RenderAsync();
+      await leftChart.AddYAxisAnnotationAsync(_annotation, true);
+      }
+    }
+    else{
+      graphLOptions.Annotations = new(){};
+      graphLOptions.Yaxis.Clear();
+      graphLOptions.Yaxis.Add(new YAxis()
+        {
+          Labels = new YAxisLabels(){
+            Formatter = "function(val, index) { return val.toFixed(0); }"
+          }
+        }
+      );
+
+      graphLOptionsMob.Annotations = new(){};
+      graphLOptionsMob.Yaxis.Clear();
+      graphLOptionsMob.Yaxis.Add(new YAxis()
+        {
+          Labels = new YAxisLabels(){
+            Formatter = "function(val, index) { return val.toFixed(0); }"
+          }
+        }
+      );
+      await leftChart.ClearAnnotationsAsync();
+      await leftChart.RenderAsync();
+    }
+
   }
 }

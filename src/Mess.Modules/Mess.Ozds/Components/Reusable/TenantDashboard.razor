@@ -54,7 +54,7 @@
             <MudContainer Class="d-flex justify-center" MaxWidth="MaxWidth.Small">
               <MudText Typo="Typo.h6">
                 @if(_lastMonthTotal is not null)
-                  @(DecimalString(lastMonthInvoicesTotal, 2) + " EUR")
+                  @(lastMonthInvoicesTotal == 0m ? T["Račun u izradi..."] : DecimalString(lastMonthInvoicesTotal, 2) + " EUR")
               </MudText>
             </MudContainer>
           </MudPaper>
@@ -126,7 +126,7 @@
             </MudItem>
             <MudItem Class="" Style="font-size: large; font-weight: bold; align-self: center;">
               <MudText Typo="Typo.h5">
-                @(DecimalString(lastMonthInvoicesTotal, 2) + " EUR")
+                @(lastMonthInvoicesTotal == 0m ? T["Račun u izradi..."] : DecimalString(lastMonthInvoicesTotal, 2) + " EUR")
               </MudText>
             </MudItem>
           </MudPaper>
@@ -169,7 +169,7 @@
           .LatestPublished()
           .ListAsync();
         if(invoices is not null){
-          var lastMonthInvoices = invoices.Where(x => x.As<InvoicePart>().Date.Value > nowMonth.AddMonths(-1)).Where(x => x.As<InvoicePart>().Date.Value <= nowMonth).ToList();
+          var lastMonthInvoices = invoices.Where(x => x.As<InvoicePart>().Date.Value >= nowMonth.AddMonths(-1)).Where(x => x.As<InvoicePart>().Date.Value < nowMonth).ToList();
           lastMonthInvoicesTotal = lastMonthInvoices.Where(x => x.As<OzdsInvoicePart>().Data.DistributionSystemUnit.ContentItemId == LegalEntity.ContentItemId).Sum(x => x.As<OzdsInvoicePart>().Data.TotalWithTax);
         }
         if(_ioTDevices is not null){

@@ -48,6 +48,7 @@
                     }
                 </ApexChart>
                 <MudItem Class="d-flex flex-column justify-center gap-2">
+                  <MudTextField Class="pa-4 mt-0" ValueChanged="EventCallback.Factory.Create<string>(this, Filter)" Label="@T["Filtriraj Brojila"].Value" Variant="Variant.Text"></MudTextField>
                   <MudMenu Dense="true" Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
                     <ActivatorContent>
                       <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
@@ -56,9 +57,11 @@
                       </MudButton>
                     </ActivatorContent>
                     <ChildContent>
-                      @if(_ioTDevices is not null){
-                        @foreach(var omm in _ioTDevices){
-                          <MudMenuItem OnClick="@(() => LeftMenuItemClicked(omm.DisplayText))">@omm.DisplayText</MudMenuItem>
+                      @if(_shownIoTDevices is not null){
+                        @foreach(var omm in _shownIoTDevices){
+                          @if(omm.show){
+                            <MudMenuItem OnClick="@(() => LeftMenuItemClicked(omm.device.DisplayText))">@omm.device.DisplayText</MudMenuItem>
+                          }
                         }
                       }
                     </ChildContent>
@@ -100,7 +103,7 @@
 
 @* DESKTOP *@
   <MudHidden Breakpoint="Breakpoint.SmAndDown">
-          <MudPaper Class="d-flex align-center justify-center mud-width-full py-8 px-8 flex-column" Height="500px">
+          <MudPaper Class="d-flex align-center justify-center mud-width-full py-8 px-8 flex-column" Height="525px">
             <MudItem Class="d-flex justify-center align-center" Style="font-size: large; font-weight: bold;">
               @(_leftDataTitle + " za: " + _leftTitle)
             </MudItem>
@@ -132,6 +135,7 @@
                     />
                     }
                 </ApexChart>
+                <MudTextField Class="pa-4 mt-0" ValueChanged="EventCallback.Factory.Create<string>(this, Filter)" Label="@T["Filtriraj Brojila"].Value" Variant="Variant.Text"></MudTextField>
                 <MudItem Class="d-flex flex-row justify-center gap-2">
                   <MudMenu Dense="true" Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
                     <ActivatorContent>
@@ -141,9 +145,11 @@
                       </MudButton>
                     </ActivatorContent>
                     <ChildContent>
-                      @if(_ioTDevices is not null){
-                        @foreach(var omm in _ioTDevices){
-                          <MudMenuItem OnClick="@(() => LeftMenuItemClicked(omm.DisplayText))">@omm.DisplayText</MudMenuItem>
+                      @if(_shownIoTDevices is not null){
+                        @foreach(var omm in _shownIoTDevices){
+                          @if(omm.show){
+                            <MudMenuItem OnClick="@(() => LeftMenuItemClicked(omm.device.DisplayText))">@omm.device.DisplayText</MudMenuItem>
+                          }
                         }
                       }
                     </ChildContent>
@@ -186,6 +192,7 @@
 @code {
     [Parameter]
     public ContentItem LegalEntity { get; set; } = default!;
+    public string TextValue { get; set; } = "";
     private ApexChartOptions<ChartDataL> graphLOptions = new();
     private ApexChartOptions<ChartDataL> graphLOptionsMob = new();
     private List<string> _displayType = new List<string>{
@@ -202,6 +209,11 @@
     public record ChartDataL(decimal?[] values, string[] names, DateTimeOffset date, string source);
     private ApexChart<ChartDataL> leftChart = default!;
     private IEnumerable<ContentItem>? _ioTDevices;
+    private class ExpandThing {
+      public ContentItem device = default!;
+      public bool show;
+    }
+    private List<ExpandThing> _shownIoTDevices = new();
     protected override async Task OnInitializedAsync()
     {
       graphLOptionsMob= new ApexChartOptions<ChartDataL>() {
@@ -270,6 +282,9 @@
           .Where(index => !index.IsMessenger)
           .LatestPublished()
           .ListAsync();
+        foreach (var _device in _ioTDevices){
+          _shownIoTDevices.Add(new ExpandThing{device = _device, show = true} );
+        }
         if(_ioTDevices is not null && _ioTDevices.Count() > 1){
           var c = _ioTDevices.Select(x => x).Take(2);
           foreach(var omm in c){
@@ -512,5 +527,23 @@
         return new ApexCharts.SeriesStroke { Color = "#00897B", Width = 4};
       }
     return new ApexCharts.SeriesStroke { Color = "#FB8C00", Width = 4};
+  }
+
+  @* Search *@
+  private Task Filter(string value) {
+    TextValue = value;
+    foreach (var inv in _shownIoTDevices)
+    {
+      if(value.Trim() != ""){
+        inv.show = false;
+      }
+    };
+    var a = _shownIoTDevices.Where(x => x.device.DisplayText.Contains(value, StringComparison.InvariantCultureIgnoreCase)).ToList();
+    foreach (var inv in a)
+    {
+        inv.show = true;
+    };
+    StateHasChanged();
+    return Task.CompletedTask;
   }
 }
