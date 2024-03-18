@@ -173,8 +173,11 @@
           lastMonthInvoicesTotal = lastMonthInvoices.Where(x => x.As<OzdsInvoicePart>().Data.DistributionSystemUnit.ContentItemId == LegalEntity.ContentItemId).Sum(x => x.As<OzdsInvoicePart>().Data.TotalWithTax);
         }
         if(_ioTDevices is not null){
-          var (startThisMonth, startNextMonth) = now.GetMonthRange();
-          var startLastMonth = startThisMonth.AddMonths(-1);
+          @* var (startThisMonth, startNextMonth) = now.GetMonthRange();
+          var startLastMonth = startThisMonth.AddMonths(-1); *@
+          var startThisMonth = nowMonth;
+          var startNextMonth = nowMonth.AddMonths(1);
+          var startLastMonth = nowMonth.AddMonths(-1);
           var deviceIds = _ioTDevices.Select(device => (string)device.Content.IotDevicePart.DeviceId.Text).ToList();
           var resultAbb = await _timeseriesClient.GetBulkAbbMonthlyAggregateAsync(deviceIds, startLastMonth , startNextMonth);
           var resultSchneider = await _timeseriesClient.GetBulkSchneiderMonthlyAggregateAsync(deviceIds, startLastMonth , startNextMonth);
