@@ -251,6 +251,7 @@ else{
     private IReadOnlyList<AbbAggregate>? _abbRangeLastMonth;
     private IReadOnlyList<SchneiderAggregate>? _schneiderRangeLastMonth;
     private DateTimeOffset nowMonth = DateTimeOffset.UtcNow.GetStartOfMonth();
+    private DateTimeOffset lastMonth = DateTimeOffset.UtcNow.GetStartOfLastMonth();
     private DateTimeOffset now = DateTimeOffset.UtcNow;
     protected override async Task OnInitializedAsync()
     {
@@ -302,9 +303,9 @@ else{
                   .ListAsync();
             if(ioTDevices is not null){
               _abbRange = await _timeseriesClient.GetBulkAbbMonthlyAggregateAsync(ioTDevices.Where(x => x.DisplayText.StartsWith("abb")).Select(x => x.DisplayText),nowMonth,now);
-              _abbRangeLastMonth = await _timeseriesClient.GetBulkAbbMonthlyAggregateAsync(ioTDevices.Where(x => x.DisplayText.StartsWith("abb")).Select(x => x.DisplayText),nowMonth.AddMonths(-1),nowMonth);
+              _abbRangeLastMonth = await _timeseriesClient.GetBulkAbbMonthlyAggregateAsync(ioTDevices.Where(x => x.DisplayText.StartsWith("abb")).Select(x => x.DisplayText),lastMonth,nowMonth);
               _schneiderRange = await _timeseriesClient.GetBulkSchneiderMonthlyAggregateAsync(ioTDevices.Where(x => x.DisplayText.StartsWith("schneider")).Select(x => x.DisplayText),nowMonth,now);
-              _schneiderRangeLastMonth = await _timeseriesClient.GetBulkSchneiderMonthlyAggregateAsync(ioTDevices.Where(x => x.DisplayText.StartsWith("schneider")).Select(x => x.DisplayText),nowMonth.AddMonths(-1),nowMonth);
+              _schneiderRangeLastMonth = await _timeseriesClient.GetBulkSchneiderMonthlyAggregateAsync(ioTDevices.Where(x => x.DisplayText.StartsWith("schneider")).Select(x => x.DisplayText),lastMonth,nowMonth);
               foreach(var omm in ioTDevices){
                 _startEnd = new();
                 _startEndLastMonth = new();
@@ -346,7 +347,7 @@ else{
               }
             }
             if(invoices.Count() > 0){
-              var lastMonthInvoices = invoices.Where(x => x.As<InvoicePart>().Date.Value >= nowMonth.AddMonths(-1)).Where(x => x.As<InvoicePart>().Date.Value < nowMonth).ToList();
+              var lastMonthInvoices = invoices.Where(x => x.As<InvoicePart>().Date.Value >= lastMonth).Where(x => x.As<InvoicePart>().Date.Value < nowMonth).ToList();
               _lastMonthInvoicesTotal = lastMonthInvoices.Where(x => x.As<OzdsInvoicePart>().Data.DistributionSystemUnit.ContentItemId == unit.ContentItemId).Sum(x => x.As<OzdsInvoicePart>().Data.TotalWithTax);
             }
             _dataStruct.Add(new TabularData(unit, _totalConsumption, _lastMonthTotalConsumption, _lastMonthInvoicesTotal));

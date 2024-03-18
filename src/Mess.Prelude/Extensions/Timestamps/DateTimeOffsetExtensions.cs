@@ -56,6 +56,38 @@ public static class DateTimeOffsetExtensions
     ).ToUniversalTime();
   }
 
+  public static DateTimeOffset GetStartOfLastMonth(
+    this DateTimeOffset dateTimeOffset
+  )
+  {
+    dateTimeOffset = dateTimeOffset.ToOffset(DefaultOffset);
+    return new DateTimeOffset(
+      dateTimeOffset.Year,
+      dateTimeOffset.Month,
+      1,
+      0,
+      0,
+      0,
+      dateTimeOffset.Offset
+    ).AddMonths(-1).ToUniversalTime();
+  }
+
+  public static DateTimeOffset GetStartOfNextMonth(
+    this DateTimeOffset dateTimeOffset
+  )
+  {
+    dateTimeOffset = dateTimeOffset.ToOffset(DefaultOffset);
+    return new DateTimeOffset(
+      dateTimeOffset.Year,
+      dateTimeOffset.Month,
+      1,
+      0,
+      0,
+      0,
+      dateTimeOffset.Offset
+    ).AddMonths(1).ToUniversalTime();
+  }
+
   public static DateTimeOffset GetStartOfDay(
     this DateTimeOffset dateTimeOffset
   )
@@ -86,5 +118,25 @@ public static class DateTimeOffsetExtensions
       0,
       dateTimeOffset.Offset
     ).ToUniversalTime();
+  }
+
+  public static IEnumerable<DateTimeOffset> GetThisYearMonthStarts(
+    this DateTimeOffset dateTimeOffset
+  )
+  {
+    dateTimeOffset = dateTimeOffset.ToOffset(DefaultOffset);
+    return Enumerable
+    .Range(1, 12).Select(month =>
+     new DateTimeOffset(
+        dateTimeOffset.Year,
+        month,
+        1,
+        0,
+        0,
+        0,
+        dateTimeOffset.Offset
+      )
+      .ToUniversalTime()
+    );
   }
 }

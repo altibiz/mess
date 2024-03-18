@@ -151,6 +151,7 @@
     private IReadOnlyList<AbbAggregate>? _abbRangeLastMonth;
     private IReadOnlyList<SchneiderAggregate>? _schneiderRangeLastMonth;
     private DateTimeOffset nowMonth = DateTimeOffset.UtcNow.GetStartOfMonth();
+    private DateTimeOffset lastMonth = DateTimeOffset.UtcNow.GetStartOfLastMonth();
     private DateTimeOffset now = DateTime.UtcNow;
     private List<TabularData> _dataStruct = new List<TabularData>();
     private IEnumerable<ContentItem>? _systems;
@@ -235,9 +236,9 @@
       });
       if(_ioTDevices is not null){
         _abbRange = await _timeseriesClient.GetBulkAbbMonthlyAggregateAsync(_ioTDevices.Where(x => x.DisplayText.StartsWith("abb")).Select(x => x.DisplayText),nowMonth,now);
-        _abbRangeLastMonth = await _timeseriesClient.GetBulkAbbMonthlyAggregateAsync(_ioTDevices.Where(x => x.DisplayText.StartsWith("abb")).Select(x => x.DisplayText),nowMonth.AddMonths(-1),nowMonth);
+        _abbRangeLastMonth = await _timeseriesClient.GetBulkAbbMonthlyAggregateAsync(_ioTDevices.Where(x => x.DisplayText.StartsWith("abb")).Select(x => x.DisplayText),lastMonth,nowMonth);
         _schneiderRange = await _timeseriesClient.GetBulkSchneiderMonthlyAggregateAsync(_ioTDevices.Where(x => x.DisplayText.StartsWith("schneider")).Select(x => x.DisplayText),nowMonth,now);
-        _schneiderRangeLastMonth = await _timeseriesClient.GetBulkSchneiderMonthlyAggregateAsync(_ioTDevices.Where(x => x.DisplayText.StartsWith("schneider")).Select(x => x.DisplayText),nowMonth.AddMonths(-1),nowMonth);
+        _schneiderRangeLastMonth = await _timeseriesClient.GetBulkSchneiderMonthlyAggregateAsync(_ioTDevices.Where(x => x.DisplayText.StartsWith("schneider")).Select(x => x.DisplayText),lastMonth,nowMonth);
       }
 
       if(_systems is not null && _units is not null && _ioTDevices is not null) // TODO: THIS DOES NOT WORK FOR MORE SYSTEMS OR UNITS !!!
