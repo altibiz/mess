@@ -238,17 +238,17 @@
         if(Source.StartsWith("abb")){
           var a = await _timeseriesClient.GetAbbMeasurementsAsync(Source, DateTimeOffset.UtcNow.AddMinutes(- timeSpanMins), DateTimeOffset.UtcNow);
           if(_leftGraphValues is null){
-            _leftGraphValues = a.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W}, names: new string[]{"L1 Radna snaga", "L2 Radna snaga","L3 Radna snaga"}, date:x.Timestamp, source:x.Source)).ToList();
+            _leftGraphValues = a.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.ActivePowerL1_W + x.ActivePowerL2_W + x.ActivePowerL3_W}, names: new string[]{"L1 Radna snaga", "L2 Radna snaga","L3 Radna snaga","Ukupna snaga"}, date:x.Timestamp, source:x.Source)).ToList();
             _displayType = new List<string>{"Napon", "Struja", "Radna snaga", "Jalova snaga"};
-            leftLineCount = 3;
+            leftLineCount = 4;
             }
         }
         else if(Source.StartsWith("schneider")){
           var a = await _timeseriesClient.GetSchneiderMeasurementsAsync(Source, DateTimeOffset.UtcNow.AddMinutes(- timeSpanMins), DateTimeOffset.UtcNow);
           if(_leftGraphValues is null){
-            _leftGraphValues = a.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W}, names: new string[]{"L1 Radna snaga", "L2 Radna snaga","L3 Radna snaga"}, date:x.Timestamp, source:x.Source)).ToList();
+            _leftGraphValues = a.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.ActivePowerL1_W + x.ActivePowerL2_W + x.ActivePowerL3_W}, names: new string[]{"L1 Radna snaga", "L2 Radna snaga","L3 Radna snaga","Ukupna snaga"}, date:x.Timestamp, source:x.Source)).ToList();
             _displayType = new List<string>{"Napon", "Struja", "Radna snaga", "Jalova snaga", "Prividna snaga"};
-            leftLineCount = 3;
+            leftLineCount = 4;
           }
         }
         if(_displayType is not null && _displayType.Count() > 0){
@@ -272,33 +272,36 @@
         {
           Label = new Label
             {
-                Text = T["PRIKLJUČENA SNAGA"].Value,
+                Text = T["PRIKLJUČNA SNAGA"].Value,
                 Style = new Style { Background ="red", Color="white", FontSize="12px"}
             },
           Y = connectionMaxPower,
           BorderColor = "red",
           StrokeDashArray = 0
         };
-        graphLOptions.Yaxis.Add(new YAxis()
-          {
-            Max = connectionMaxPower * 1.2m,
-            Labels = new YAxisLabels(){
-              Formatter = "function(val, index) { return val.toFixed(0); }"
-              }
-          });
-        graphLOptions.Annotations = new(){
-          Yaxis = new List<AnnotationsYAxis>(){_annotation}
-        };
-        graphLOptionsMob.Yaxis.Add(new YAxis()
-          {
-            Max = connectionMaxPower * 1.2m,
-            Labels = new YAxisLabels(){
-              Formatter = "function(val, index) { return val.toFixed(0); }"
-              }
-          });
-        graphLOptionsMob.Annotations = new(){
-          Yaxis = new List<AnnotationsYAxis>(){_annotation}
-        };
+        if(_leftGraphValues is not null && _leftGraphValues.Select(x => x.values[3]).ToList().Count > 0){
+          var graphMaxPower = _leftGraphValues.MaxBy(x => x.values[3]).values[3];
+          graphLOptions.Yaxis.Add(new YAxis()
+            {
+              Max = graphMaxPower * 1.5m,
+              Labels = new YAxisLabels(){
+                Formatter = "function(val, index) { return val.toFixed(0); }"
+                }
+            });
+          graphLOptions.Annotations = new(){
+            Yaxis = new List<AnnotationsYAxis>(){_annotation}
+          };
+          graphLOptionsMob.Yaxis.Add(new YAxis()
+            {
+              Max = graphMaxPower * 1.5m,
+              Labels = new YAxisLabels(){
+                Formatter = "function(val, index) { return val.toFixed(0); }"
+                }
+            });
+          graphLOptionsMob.Annotations = new(){
+            Yaxis = new List<AnnotationsYAxis>(){_annotation}
+          };
+        }
       });
 
     }
@@ -366,20 +369,20 @@
         break;
       case "Radna snaga":
         if(abbMeasurements is not null){
-          _leftGraphValues = abbMeasurements.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W}, names: new string[]{"L1 Radna snaga", "L2 Radna snaga","L3 Radna snaga"}, date:x.Timestamp, source:x.Source)).ToList();
-          leftLineCount = 3;
+          _leftGraphValues = abbMeasurements.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.ActivePowerL1_W + x.ActivePowerL2_W + x.ActivePowerL3_W}, names: new string[]{"L1 Radna snaga", "L2 Radna snaga","L3 Radna snaga","Ukupna snaga"}, date:x.Timestamp, source:x.Source)).ToList();
+          leftLineCount = 4;
         }
         else if(schneiderMeasurements is not null){
-          _leftGraphValues = schneiderMeasurements.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W}, names: new string[]{"L1 Radna snaga", "L2 Radna snaga","L3 Radna snaga"}, date:x.Timestamp, source:x.Source)).ToList();
-          leftLineCount = 3;
+          _leftGraphValues = schneiderMeasurements.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.ActivePowerL1_W + x.ActivePowerL2_W + x.ActivePowerL3_W}, names: new string[]{"L1 Radna snaga", "L2 Radna snaga","L3 Radna snaga","Ukupna snaga"}, date:x.Timestamp, source:x.Source)).ToList();
+          leftLineCount = 4;
         }
         else if(abbAggregate is not null){
-          _leftGraphValues = abbAggregate.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1Avg_W, x.ActivePowerL2Avg_W, x.ActivePowerL3Avg_W}, names: new string[]{"L1 Radna snaga", "L2 Radna snaga","L3 Radna snaga"}, date:x.Timestamp, source:x.Source)).ToList();
-          leftLineCount = 3;
+          _leftGraphValues = abbAggregate.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1Avg_W, x.ActivePowerL2Avg_W, x.ActivePowerL3Avg_W, x.ActivePowerL1Avg_W + x.ActivePowerL2Avg_W + x.ActivePowerL3Avg_W}, names: new string[]{"L1 Radna snaga", "L2 Radna snaga","L3 Radna snaga","Ukupna snaga"}, date:x.Timestamp, source:x.Source)).ToList();
+          leftLineCount = 4;
         }
         else if(schneiderAggregate is not null){
-          _leftGraphValues = schneiderAggregate.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1Avg_W, x.ActivePowerL2Avg_W, x.ActivePowerL3Avg_W}, names: new string[]{"L1 Radna snaga", "L2 Radna snaga","L3 Radna snaga"}, date:x.Timestamp, source:x.Source)).ToList();
-          leftLineCount = 3;
+          _leftGraphValues = schneiderAggregate.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1Avg_W, x.ActivePowerL2Avg_W, x.ActivePowerL3Avg_W, x.ActivePowerL1Avg_W + x.ActivePowerL2Avg_W + x.ActivePowerL3Avg_W}, names: new string[]{"L1 Radna snaga", "L2 Radna snaga","L3 Radna snaga","Ukupna snaga"}, date:x.Timestamp, source:x.Source)).ToList();
+          leftLineCount = 4;
         }
         break;
       case "Napon":
@@ -508,6 +511,9 @@
     if(index==2){
         return new ApexCharts.SeriesStroke { Color = "#00897B", Width = 4};
       }
+    if(index==3){
+        return new ApexCharts.SeriesStroke { Color = "#D81B60", Width = 4};
+      }
     return new ApexCharts.SeriesStroke { Color = "#FB8C00", Width = 4};
   }
   private async Task SetAnnotation(){
@@ -515,11 +521,12 @@
       return;
     }
     if(_leftDataTitle == "Radna snaga"){
-      if(connectionMaxPower is not null){
-
+      if(connectionMaxPower is not null && _leftGraphValues is not null && _leftGraphValues.Select(x => x.values[3]).ToList().Count > 0){
+          var graphMaxPower = _leftGraphValues.MaxBy(x => x.values[3]).values[3];
           graphLOptions.Yaxis.Clear();
           graphLOptions.Yaxis.Add(new(){
-              Max = connectionMaxPower * 1.2m,
+              @* Max = connectionMaxPower * 1.2m, *@
+              Max = graphMaxPower * 1.5m,
               Labels = new YAxisLabels(){
                 Formatter = "function(val, index) { return val.toFixed(0); }"
                 }
@@ -527,7 +534,8 @@
 
           graphLOptionsMob.Yaxis.Clear();
           graphLOptionsMob.Yaxis.Add(new(){
-            Max = connectionMaxPower * 1.2m,
+            @* Max = connectionMaxPower * 1.2m, *@
+              Max = graphMaxPower * 1.5m,
             Labels = new YAxisLabels(){
               Formatter = "function(val, index) { return val.toFixed(0); }"
               }
