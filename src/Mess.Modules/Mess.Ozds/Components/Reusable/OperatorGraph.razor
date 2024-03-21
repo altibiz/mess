@@ -249,7 +249,7 @@
       {
         Toolbar = new ApexCharts.Toolbar
         {
-          Tools = new Tools { Zoomin = true, Zoomout = true, Zoom = false, Download = false, Pan = true, Selection = false }
+          Tools = new Tools { Zoomin = true, Zoomout = false, Zoom = false, Download = false, Pan = true, Selection = false }
         }
       };
       graphLOptions.Tooltip = new ApexCharts.Tooltip { X = new TooltipX { Format = @"HH:mm:ss" } };
@@ -272,7 +272,7 @@
             {
                 Toolbar = new ApexCharts.Toolbar
                 {
-                  Tools = new Tools { Zoomin = true, Zoomout = true, Zoom = false, Download = false, Pan = true, Selection = false }
+                  Tools = new Tools { Zoomin = true, Zoomout = false, Zoom = false, Download = false, Pan = true, Selection = false }
                 }
             };
       await WithTransientSessionAsync(async session => {

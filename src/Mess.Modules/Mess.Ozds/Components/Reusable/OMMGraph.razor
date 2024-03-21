@@ -8,37 +8,38 @@
 @using Mess.Billing.Abstractions.Models
 @using OrchardCore.ContentManagement.Records
 @using OrchardCore.Users.Indexes
-@using System.Threading;
+@using System.Timers;
+@implements IDisposable
 
 @inject IOzdsTimeseriesClient _timeseriesClient
 
-@if(_leftGraphValues is not null){
+@if(_graphValues is not null){
 @* MOBILE *@
    <MudHidden Breakpoint="Breakpoint.MdAndUp">
           <MudPaper Class="d-flex align-center justify-stat mud-width-full pa-1 pb-3 flex-column">
             <MudItem Class="d-flex justify-center align-center" Style="font-size: large; font-weight: bold;">
-              @(_leftDataTitle + T[" za"].Value + ": " + Source)
+              @(_dataTitle + T[" za"].Value + ": " + Source)
             </MudItem>
             <MudContainer Class="d-flex flex-column" MaxWidth="MaxWidth.Small">
-              @if(_leftGraphValues is not null ){
-                <ApexChart TItem="ChartDataL"
+              @if(_graphValues is not null ){
+                <ApexChart TItem="ChartData"
                   XAxisType="XAxisType.Datetime"
-                  Options="graphLOptionsMob"
-                  @ref="leftChart">
-                    @for(int i = 0; i < leftLineCount ; i++){
+                  Options="graphOptionsMob"
+                  @ref="chart">
+                    @for(int i = 0; i < lineCount ; i++){
                       var j = i;
-                      <ApexPointSeries TItem="ChartDataL"
-                      Items="@_leftGraphValues"
-                      Name="@_leftGraphValues.Select(x => x.names[j]).FirstOrDefault()"
+                      <ApexPointSeries TItem="ChartData"
+                      Items="@_graphValues"
+                      Name="@_graphValues.Select(x => x.names[j]).FirstOrDefault()"
                       SeriesType="SeriesType.Line"
                       XValue='x => DateTimeGraph(x.date)'
                       YValue="x => x.values[j]"
                       Stroke="@(ColorGraph(j))"
                     />
                     }
-                    @if(leftLineCount == 0){
-                      <ApexPointSeries TItem="ChartDataL"
-                      Items="@_leftGraphValues"
+                    @if(lineCount == 0){
+                      <ApexPointSeries TItem="ChartData"
+                      Items="@_graphValues"
                       Name="n/a"
                       SeriesType="SeriesType.Line"
                       XValue='x => DateTimeGraph(x.date)'
@@ -51,28 +52,28 @@
                   <MudMenu Dense="true" Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
                     <ActivatorContent>
                       <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
-                        @_leftDataTitle
+                        @_dataTitle
                         <MudIcon Icon="@Icons.Material.Filled.KeyboardArrowDown" />
                       </MudButton>
                     </ActivatorContent>
                     <ChildContent>
                       @foreach(var type in _displayType){
-                        <MudMenuItem OnClick="@(() => LeftMenuDataItemClicked(type))">@type</MudMenuItem>
+                        <MudMenuItem OnClick="@(() => DataMenuItemClicked(type))">@type</MudMenuItem>
                       }
                     </ChildContent>
                   </MudMenu>
                   <MudMenu Dense="true" Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
                     <ActivatorContent>
                       <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
-                        @_leftTimeTitle
+                        @_timeTitle
                         <MudIcon Icon="@Icons.Material.Filled.KeyboardArrowDown" />
                       </MudButton>
                     </ActivatorContent>
                     <ChildContent>
-                      <MudMenuItem OnClick="@(() => MenuItemClicked("Scale1"))">15 min</MudMenuItem>
-                      <MudMenuItem OnClick="@(() => MenuItemClicked("Scale2"))">1 h</MudMenuItem>
-                      <MudMenuItem OnClick="@(() => MenuItemClicked("Scale3"))">6 h</MudMenuItem>
-                      <MudMenuItem OnClick="@(() => MenuItemClicked("Scale4"))">24 h</MudMenuItem>
+                      <MudMenuItem OnClick="@(() => TimeMenuItemClicked("Scale1"))">15 min</MudMenuItem>
+                      <MudMenuItem OnClick="@(() => TimeMenuItemClicked("Scale2"))">1 h</MudMenuItem>
+                      <MudMenuItem OnClick="@(() => TimeMenuItemClicked("Scale3"))">6 h</MudMenuItem>
+                      <MudMenuItem OnClick="@(() => TimeMenuItemClicked("Scale4"))">24 h</MudMenuItem>
                     </ChildContent>
                   </MudMenu>
                 </MudItem>
@@ -87,27 +88,27 @@
   <MudHidden Breakpoint="Breakpoint.SmAndDown">
           <MudPaper Class="d-flex align-center justify-center mud-width-full py-8 px-8 flex-column" Height="450px">
             <MudItem Class="d-flex justify-center align-center" Style="font-size: large; font-weight: bold;">
-              @(_leftDataTitle + " za: " + Source)
+              @(_dataTitle + " za: " + Source)
             </MudItem>
             <MudContainer Class="d-flex flex-column" MaxWidth="MaxWidth.Medium">
-              @if(_leftGraphValues is not null ){
-                <ApexChart TItem="ChartDataL"
-                  Options="graphLOptions"
-                  @ref="leftChart">
-                    @for(int i = 0; i < leftLineCount ; i++){
+              @if(_graphValues is not null ){
+                <ApexChart TItem="ChartData"
+                  Options="graphOptions"
+                  @ref="chart">
+                    @for(int i = 0; i < lineCount ; i++){
                       var j = i;
-                      <ApexPointSeries TItem="ChartDataL"
-                      Items="@_leftGraphValues"
-                      Name="@_leftGraphValues.Select(x => x.names[j]).FirstOrDefault()"
+                      <ApexPointSeries TItem="ChartData"
+                      Items="@_graphValues"
+                      Name="@_graphValues.Select(x => x.names[j]).FirstOrDefault()"
                       SeriesType="SeriesType.Line"
                       XValue='x => DateTimeGraph(x.date)'
                       YValue="x => x.values[j]"
                       Stroke="@(ColorGraph(j))"
                     />
                     }
-                    @if(leftLineCount == 0){
-                      <ApexPointSeries TItem="ChartDataL"
-                      Items="@_leftGraphValues"
+                    @if(lineCount == 0){
+                      <ApexPointSeries TItem="ChartData"
+                      Items="@_graphValues"
                       Name="n/a"
                       SeriesType="SeriesType.Line"
                       XValue='x => DateTimeGraph(x.date)'
@@ -120,28 +121,28 @@
                   <MudMenu Dense="true" Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
                     <ActivatorContent>
                       <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
-                        @_leftDataTitle
+                        @_dataTitle
                         <MudIcon Icon="@Icons.Material.Filled.KeyboardArrowDown" />
                       </MudButton>
                     </ActivatorContent>
                     <ChildContent>
                       @foreach(var type in _displayType){
-                        <MudMenuItem OnClick="@(() => LeftMenuDataItemClicked(type))">@type</MudMenuItem>
+                        <MudMenuItem OnClick="@(() => DataMenuItemClicked(type))">@type</MudMenuItem>
                       }
                     </ChildContent>
                   </MudMenu>
                   <MudMenu Dense="true" Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
                     <ActivatorContent>
                       <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Primary">
-                        @_leftTimeTitle
+                        @_timeTitle
                         <MudIcon Icon="@Icons.Material.Filled.KeyboardArrowDown" />
                       </MudButton>
                     </ActivatorContent>
                     <ChildContent>
-                      <MudMenuItem OnClick="@(() => MenuItemClicked("Scale1"))">15 min</MudMenuItem>
-                      <MudMenuItem OnClick="@(() => MenuItemClicked("Scale2"))">1 h</MudMenuItem>
-                      <MudMenuItem OnClick="@(() => MenuItemClicked("Scale3"))">6 h</MudMenuItem>
-                      <MudMenuItem OnClick="@(() => MenuItemClicked("Scale4"))">24 h</MudMenuItem>
+                      <MudMenuItem OnClick="@(() => TimeMenuItemClicked("Scale1"))">15 min</MudMenuItem>
+                      <MudMenuItem OnClick="@(() => TimeMenuItemClicked("Scale2"))">1 h</MudMenuItem>
+                      <MudMenuItem OnClick="@(() => TimeMenuItemClicked("Scale3"))">6 h</MudMenuItem>
+                      <MudMenuItem OnClick="@(() => TimeMenuItemClicked("Scale4"))">24 h</MudMenuItem>
                     </ChildContent>
                   </MudMenu>
                 </MudItem>
@@ -157,350 +158,239 @@
     public string Source { get; set; } = "abb";
     private ContentItem? _iotDevice;
     AnnotationsYAxis? _annotation;
-    private ApexChartOptions<ChartDataL> graphLOptions = new();
-    private ApexChartOptions<ChartDataL> graphLOptionsMob = new();
+    private ApexChartOptions<ChartData> graphOptions = new();
+    private ApexChartOptions<ChartData> graphOptionsMob = new();
     private List<string> _displayType = new List<string>{
       "Napon", "Struja", "Radna snaga", "Jalova snaga", "Prividna snaga"
     };
     public int timeSpanMins = 15;
-    public int leftLineCount = 0;
-    public int rightLineCount = 0;
+    public int lineCount = 0;
     private decimal? connectionMaxPower = 1000000m;
-    public IEnumerable<ChartDataL>? _leftGraphValues;
-    private string _leftDataTitle = "";
-    private string _leftTimeTitle = "15 min";
-    public record ChartDataL(decimal?[] values, string[] names, DateTimeOffset date, string source);
-    private ApexChart<ChartDataL> leftChart = default!;
+    public IEnumerable<ChartData>? _graphValues;
+    private string _dataTitle = "";
+    private string _timeTitle = "15 min";
+    public record ChartData(decimal[] values, string[] names, DateTimeOffset date, string source);
+    private ApexChart<ChartData> chart = default!;
+
+    @* TIME STUFF *@
+    private bool timerInitialized;
+    private Timer timer;
+    private int updateMilisec = 10000;
+    private DateTimeOffset maxDate;
+    private int counter;
+    private DateTimeOffset now = DateTimeOffset.UtcNow;
+
     protected override async Task OnInitializedAsync()
     {
-      graphLOptionsMob= new ApexChartOptions<ChartDataL>() {
-        Grid = new Grid
-        {
-            BorderColor = "#e7e7e7",
-            Row = new GridRow
-            {
-                Colors = new List<string> { "#f3f3f3", "transparent" },
-                Opacity = 0.5d
-            }
-        }
-        };
-      graphLOptions= new ApexChartOptions<ChartDataL>() {
-        Grid = new Grid
-        {
-            BorderColor = "#e7e7e7",
-            Row = new GridRow
-            {
-                Colors = new List<string> { "#f3f3f3", "transparent" },
-                Opacity = 0.5d
-            }
-        }
-        };
-      graphLOptions.Chart = new Chart
-      {
-        Toolbar = new ApexCharts.Toolbar
-        {
-            Tools = new Tools { Zoomin = true, Zoomout = true, Zoom = false,  Download = false, Pan = true, Selection = false }
-        }
-      };
-      graphLOptions.Tooltip = new ApexCharts.Tooltip { X = new TooltipX { Format = @"HH:mm:ss" } };
-      graphLOptionsMob.Tooltip = new ApexCharts.Tooltip { X = new TooltipX { Format = @"HH:mm:ss" } };
-      graphLOptionsMob.Yaxis = new List<YAxis>();
-      graphLOptions.Yaxis = new List<YAxis>();
-      graphLOptionsMob.Xaxis = new XAxis();
-      graphLOptions.Xaxis = new XAxis();
+      SetGraphOptionsStart();
 
-      @* graphLOptionsMob.Yaxis.Add(new YAxis
-            {
-                Show = false
-            }); *@
-      graphLOptionsMob.Xaxis = new XAxis()
-            {
-              Labels = new XAxisLabels(){ Show = false }
-            };
-      graphLOptions.Xaxis = new XAxis()
-            {
-              Type = XAxisType.Datetime,
-              AxisTicks = new AxisTicks(){}
-            };
-      graphLOptionsMob.Chart = new Chart
-            {
-                Toolbar = new ApexCharts.Toolbar
-                {
-                    Tools = new Tools { Zoomin = false, Zoomout = false, Download = false, Pan = false, Selection = false}
-                }
-            };
       await WithTransientSessionAsync(async session => {
         _iotDevice = await session
           .Query<ContentItem, OzdsIotDeviceIndex>()
           .Where(index => index.DeviceId == Source)
           .LatestPublished()
           .FirstOrDefaultAsync();
-        if(Source.StartsWith("abb")){
-          var a = await _timeseriesClient.GetAbbMeasurementsAsync(Source, DateTimeOffset.UtcNow.AddMinutes(- timeSpanMins), DateTimeOffset.UtcNow);
-          if(_leftGraphValues is null){
-            _leftGraphValues = a.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.ActivePowerL1_W + x.ActivePowerL2_W + x.ActivePowerL3_W}, names: new string[]{"L1 Radna snaga", "L2 Radna snaga","L3 Radna snaga","Ukupna snaga"}, date:x.Timestamp, source:x.Source)).ToList();
-            _displayType = new List<string>{"Napon", "Struja", "Radna snaga", "Jalova snaga"};
-            leftLineCount = 4;
-            }
-        }
-        else if(Source.StartsWith("schneider")){
-          var a = await _timeseriesClient.GetSchneiderMeasurementsAsync(Source, DateTimeOffset.UtcNow.AddMinutes(- timeSpanMins), DateTimeOffset.UtcNow);
-          if(_leftGraphValues is null){
-            _leftGraphValues = a.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.ActivePowerL1_W + x.ActivePowerL2_W + x.ActivePowerL3_W}, names: new string[]{"L1 Radna snaga", "L2 Radna snaga","L3 Radna snaga","Ukupna snaga"}, date:x.Timestamp, source:x.Source)).ToList();
-            _displayType = new List<string>{"Napon", "Struja", "Radna snaga", "Jalova snaga", "Prividna snaga"};
-            leftLineCount = 4;
-          }
-        }
-        if(_displayType is not null && _displayType.Count() > 0){
-          _leftDataTitle = "Radna snaga";
-        }
-        else{
-          _leftDataTitle = "none";
-        }
-
-        @* Annotation *@
-
-        if(Source.StartsWith("abb")){
-          if (_iotDevice.As<AbbIotDevicePart>() is not null && _iotDevice.As<AbbIotDevicePart>().ConnectionPower is not null)
-            connectionMaxPower = _iotDevice.As<AbbIotDevicePart>().ConnectionPower.Value * 3;
-        }
-        else{
-          if (_iotDevice.As<SchneiderIotDevicePart>() is not null && _iotDevice.As<SchneiderIotDevicePart>().ConnectionPower is not null)
-            connectionMaxPower = _iotDevice.As<SchneiderIotDevicePart>().ConnectionPower.Value * 3;
-        }
-         _annotation = new AnnotationsYAxis
-        {
-          Label = new Label
-            {
-                Text = T["PRIKLJUČNA SNAGA"].Value,
-                Style = new Style { Background ="red", Color="white", FontSize="12px"}
-            },
-          Y = connectionMaxPower,
-          BorderColor = "red",
-          StrokeDashArray = 0
-        };
-        if(_leftGraphValues is not null && _leftGraphValues.Select(x => x.values[3]).ToList().Count > 0){
-          var graphMaxPower = _leftGraphValues.MaxBy(x => x.values[3]).values[3];
-          graphLOptions.Yaxis.Add(new YAxis()
-            {
-              Max = graphMaxPower * 1.5m,
-              Labels = new YAxisLabels(){
-                Formatter = "function(val, index) { return val.toFixed(0); }"
-                }
-            });
-          graphLOptions.Annotations = new(){
-            Yaxis = new List<AnnotationsYAxis>(){_annotation}
-          };
-          graphLOptionsMob.Yaxis.Add(new YAxis()
-            {
-              Max = graphMaxPower * 1.5m,
-              Labels = new YAxisLabels(){
-                Formatter = "function(val, index) { return val.toFixed(0); }"
-                }
-            });
-          graphLOptionsMob.Annotations = new(){
-            Yaxis = new List<AnnotationsYAxis>(){_annotation}
-          };
-        }
       });
+      await DataMenuItemClicked(_dataTitle);
 
+      SetAnnotationStart();
+
+      await SetAnnotationGraphOptions();
     }
 
-  private async Task LeftMenuItemClicked(string source)
-  {
-    if(source.StartsWith("abb")){
-      _displayType = new List<string>{"Napon", "Struja", "Radna snaga", "Jalova Snaga"};
-      if(_leftDataTitle == "Prividna snaga")
-        _leftDataTitle = "Jalova Snaga";
-    }
-    else if(source.StartsWith("schneider")){
-      _displayType = new List<string>{"Napon", "Struja", "Radna snaga", "Jalova Snaga", "Prividna snaga"};
-    }
-    Source = source;
-    await LeftMenuDataItemClicked(_leftDataTitle);
-  }
-
-  private async Task GetValues(string source, string type){
-    IReadOnlyList<AbbMeasurement>? abbMeasurements = null;
-    IReadOnlyList<SchneiderMeasurement>? schneiderMeasurements = null;
-    IReadOnlyList<AbbAggregate>? abbAggregate = null;
-    IReadOnlyList<SchneiderAggregate>? schneiderAggregate = null;
-    if(source.StartsWith("abb")){
-      if(timeSpanMins <= 60){
-        abbMeasurements = await _timeseriesClient.GetAbbMeasurementsAsync(source, DateTimeOffset.UtcNow.AddMinutes(- timeSpanMins), DateTimeOffset.UtcNow);
-      }
-      else{
-        abbAggregate = await _timeseriesClient.GetAbbQuarterHourlyAggregateAsync(source, DateTimeOffset.UtcNow.AddMinutes(- timeSpanMins), DateTimeOffset.UtcNow);
-      }
-      _displayType = new List<string>{"Napon", "Struja", "Radna snaga", "Jalova Snaga"};
-      if(_leftDataTitle == "Prividna snaga")
-        _leftDataTitle = "Jalova Snaga";
-    }
-    else if(source.StartsWith("schneider")){
-      if(timeSpanMins <= 60){
-        schneiderMeasurements = await _timeseriesClient.GetSchneiderMeasurementsAsync(source, DateTimeOffset.UtcNow.AddMinutes(- timeSpanMins), DateTimeOffset.UtcNow);
-      }
-      else{
-        schneiderAggregate = await _timeseriesClient.GetSchneiderQuarterHourlyAggregateAsync(source, DateTimeOffset.UtcNow.AddMinutes(- timeSpanMins), DateTimeOffset.UtcNow);
-      }
-      _displayType = new List<string>{"Napon", "Struja", "Radna snaga", "Jalova Snaga", "Prividna snaga"};
-    }
-    Source = source;
-
-    switch(type)
-    {
-      case "Struja":
-        if(abbMeasurements is not null){
-          _leftGraphValues = abbMeasurements.Select(x => new ChartDataL(values: new decimal?[]{x.CurrentL1_A, x.CurrentL2_A, x.CurrentL3_A}, names: new string[]{"L1 Struja", "L2 Struja","L3 Struja"}, date:x.Timestamp, source:x.Source)).ToList();
-          leftLineCount = 3;
-        }
-        else if(schneiderMeasurements is not null){
-          _leftGraphValues = schneiderMeasurements.Select(x => new ChartDataL(values: new decimal?[]{x.CurrentL1_A, x.CurrentL2_A, x.CurrentL3_A}, names: new string[]{"L1 Struja", "L2 Struja","L3 Struja"}, date:x.Timestamp, source:x.Source)).ToList();
-          leftLineCount = 3;
-        }
-        else if(abbAggregate is not null){
-          _leftGraphValues = abbAggregate.Select(x => new ChartDataL(values: new decimal?[]{x.CurrentL1Avg_A, x.CurrentL2Avg_A, x.CurrentL3Avg_A}, names: new string[]{"L1 Struja", "L2 Struja","L3 Struja"}, date:x.Timestamp, source:x.Source)).ToList();
-          leftLineCount = 3;
-        }
-        else if(schneiderAggregate is not null){
-          _leftGraphValues = schneiderAggregate.Select(x => new ChartDataL(values: new decimal?[]{x.CurrentL1Avg_A, x.CurrentL2Avg_A, x.CurrentL3Avg_A}, names: new string[]{"L1 Struja", "L2 Struja","L3 Struja"}, date:x.Timestamp, source:x.Source)).ToList();
-          leftLineCount = 3;
-        }
-        break;
-      case "Radna snaga":
-        if(abbMeasurements is not null){
-          _leftGraphValues = abbMeasurements.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.ActivePowerL1_W + x.ActivePowerL2_W + x.ActivePowerL3_W}, names: new string[]{"L1 Radna snaga", "L2 Radna snaga","L3 Radna snaga","Ukupna snaga"}, date:x.Timestamp, source:x.Source)).ToList();
-          leftLineCount = 4;
-        }
-        else if(schneiderMeasurements is not null){
-          _leftGraphValues = schneiderMeasurements.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.ActivePowerL1_W + x.ActivePowerL2_W + x.ActivePowerL3_W}, names: new string[]{"L1 Radna snaga", "L2 Radna snaga","L3 Radna snaga","Ukupna snaga"}, date:x.Timestamp, source:x.Source)).ToList();
-          leftLineCount = 4;
-        }
-        else if(abbAggregate is not null){
-          _leftGraphValues = abbAggregate.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1Avg_W, x.ActivePowerL2Avg_W, x.ActivePowerL3Avg_W, x.ActivePowerL1Avg_W + x.ActivePowerL2Avg_W + x.ActivePowerL3Avg_W}, names: new string[]{"L1 Radna snaga", "L2 Radna snaga","L3 Radna snaga","Ukupna snaga"}, date:x.Timestamp, source:x.Source)).ToList();
-          leftLineCount = 4;
-        }
-        else if(schneiderAggregate is not null){
-          _leftGraphValues = schneiderAggregate.Select(x => new ChartDataL(values: new decimal?[]{x.ActivePowerL1Avg_W, x.ActivePowerL2Avg_W, x.ActivePowerL3Avg_W, x.ActivePowerL1Avg_W + x.ActivePowerL2Avg_W + x.ActivePowerL3Avg_W}, names: new string[]{"L1 Radna snaga", "L2 Radna snaga","L3 Radna snaga","Ukupna snaga"}, date:x.Timestamp, source:x.Source)).ToList();
-          leftLineCount = 4;
-        }
-        break;
-      case "Napon":
-        if(abbMeasurements is not null){
-          _leftGraphValues = abbMeasurements.Select(x => new ChartDataL(values: new decimal?[]{x.VoltageL1_V, x.VoltageL2_V, x.VoltageL3_V}, names: new string[]{"L1 Napon", "L2 Napon","L3 Napon"}, date:x.Timestamp, source:x.Source)).ToList();
-          leftLineCount = 3;
-        }
-        else if(schneiderMeasurements is not null){
-          _leftGraphValues = schneiderMeasurements.Select(x => new ChartDataL(values: new decimal?[]{x.VoltageL1_V, x.VoltageL2_V, x.VoltageL3_V}, names: new string[]{"L1 Napon", "L2 Napon","L3 Napon"}, date:x.Timestamp, source:x.Source)).ToList();
-          leftLineCount = 3;
-        }
-        else if(abbAggregate is not null){
-          _leftGraphValues = abbAggregate.Select(x => new ChartDataL(values: new decimal?[]{x.VoltageL1Avg_V, x.VoltageL2Avg_V, x.VoltageL3Avg_V}, names: new string[]{"L1 Napon", "L2 Napon","L3 Napon"}, date:x.Timestamp, source:x.Source)).ToList();
-          leftLineCount = 3;
-        }
-        else if(schneiderAggregate is not null){
-          _leftGraphValues = schneiderAggregate.Select(x => new ChartDataL(values: new decimal?[]{x.VoltageL1Avg_V, x.VoltageL2Avg_V, x.VoltageL3Avg_V}, names: new string[]{"L1 Napon", "L2 Napon","L3 Napon"}, date:x.Timestamp, source:x.Source)).ToList();
-          leftLineCount = 3;
-        }
-        break;
-      case "Jalova Snaga":
-        if(abbMeasurements is not null){
-          _leftGraphValues = abbMeasurements.Select(x => new ChartDataL(values: new decimal?[]{x.ReactivePowerL1_VAR, x.ReactivePowerL2_VAR, x.ReactivePowerL3_VAR}, names: new string[]{"L1 Jalova snaga", "L2 Jalova snaga","L3 Jalova snaga"}, date:x.Timestamp, source:x.Source)).ToList();
-          leftLineCount = 3;
-        }
-        else if(schneiderMeasurements is not null){
-          _leftGraphValues = schneiderMeasurements.Select(x => new ChartDataL(values: new decimal?[]{x.ReactivePowerTotal_VAR}, names: new string[]{"Jalova snaga"}, date:x.Timestamp, source:x.Source)).ToList();
-          leftLineCount = 1;
-        }
-        else if(abbAggregate is not null){
-          _leftGraphValues = abbAggregate.Select(x => new ChartDataL(values: new decimal?[]{x.ReactivePowerL1Avg_VAR, x.ReactivePowerL2Avg_VAR, x.ReactivePowerL3Avg_VAR}, names: new string[]{"L1 Jalova snaga", "L2 Jalova snaga","L3 Jalova snaga"}, date:x.Timestamp, source:x.Source)).ToList();
-          leftLineCount = 3;
-        }
-        else if(schneiderAggregate is not null){
-          _leftGraphValues = schneiderAggregate.Select(x => new ChartDataL(values: new decimal?[]{x.ReactivePowerTotalAvg_VAR}, names: new string[]{"Jalova snaga"}, date:x.Timestamp, source:x.Source)).ToList();
-          leftLineCount = 1;
-        }
-        break;
-      case "Prividna snaga":
-        if(abbMeasurements is not null){
-          _leftGraphValues = abbMeasurements.Select(x => new ChartDataL(values: new decimal?[]{}, names: new string[]{}, date:x.Timestamp, source:x.Source)).ToList();
-          leftLineCount = 0;
-        }
-        else if(schneiderMeasurements is not null){
-          _leftGraphValues = schneiderMeasurements.Select(x => new ChartDataL(values: new decimal?[]{x.ApparentPowerTotal_VA}, names: new string[]{"Prividna snaga"}, date:x.Timestamp, source:x.Source)).ToList();
-          leftLineCount = 1;
-        }
-        else if(abbAggregate is not null){
-          _leftGraphValues = abbAggregate.Select(x => new ChartDataL(values: new decimal?[]{}, names: new string[]{}, date:x.Timestamp, source:x.Source)).ToList();
-          leftLineCount = 0;
-        }
-        else if(schneiderAggregate is not null){
-          _leftGraphValues = schneiderAggregate.Select(x => new ChartDataL(values: new decimal?[]{x.ApparentPowerTotalAvg_VA}, names: new string[]{"Prividna snaga"}, date:x.Timestamp, source:x.Source)).ToList();
-          leftLineCount = 1;
-        }
-        break;
-      default:
-        break;
-    }
-    StateHasChanged();
-    await leftChart.UpdateSeriesAsync(true);
-    await SetAnnotation();
-  }
-  private async Task LeftMenuDataItemClicked(string type)
+  private async Task DataMenuItemClicked(string type)
   {
     switch(type)
     {
       case "Struja":
-        _leftDataTitle = "Struja";
+        _dataTitle = "Struja";
         break;
       case "Radna snaga":
-        _leftDataTitle = "Radna snaga";
+        _dataTitle = "Radna snaga";
         break;
       case "Napon":
-        _leftDataTitle = "Napon";
+        _dataTitle = "Napon";
         break;
       case "Jalova Snaga":
         if(Source.StartsWith("abb")){
         }
         else if(Source.StartsWith("schneider")){
         }
-        _leftDataTitle = "Jalova Snaga";
+        _dataTitle = "Jalova Snaga";
         break;
       case "Prividna snaga":
         if(Source.StartsWith("abb")){
         }
         else if(Source.StartsWith("schneider")){
         }
-        _leftDataTitle = "Prividna snaga";
+        _dataTitle = "Prividna snaga";
+        break;
+      case "":
+        _dataTitle = "Radna snaga";
         break;
       default:
+        _dataTitle = "none";
         break;
     }
-    await GetValues(Source, _leftDataTitle);
+    await GetValues(_dataTitle, now.AddMinutes(- timeSpanMins), now);
   }
-  private async Task MenuItemClicked(string item)
+  private async Task TimeMenuItemClicked(string item)
   {
       switch(item)
       {
         case "Scale1":
             timeSpanMins = 15;
-            _leftTimeTitle = "15 min";
+            _timeTitle = "15 min";
             break;
         case "Scale2":
             timeSpanMins = 60;
-            _leftTimeTitle = "1 h";
+            _timeTitle = "1 h";
             break;
         case "Scale3":
             timeSpanMins = 60 * 6;
-            _leftTimeTitle = "6 h";
+            _timeTitle = "6 h";
             break;
         case "Scale4":
             timeSpanMins = 60 * 24;
-            _leftTimeTitle = "24 h";
+            _timeTitle = "24 h";
             break;
       }
-    await GetValues(Source, _leftDataTitle);
+    await GetValues(_dataTitle, now.AddMinutes(- timeSpanMins), now);
   }
+
+  private async Task GetValues(string type, DateTimeOffset fromDate, DateTimeOffset toDate, bool reRenderChart = true){
+    IReadOnlyList<AbbMeasurement>? abbMeasurements = null;
+    IReadOnlyList<SchneiderMeasurement>? schneiderMeasurements = null;
+    IReadOnlyList<AbbAggregate>? abbAggregate = null;
+    IReadOnlyList<SchneiderAggregate>? schneiderAggregate = null;
+    if(Source.StartsWith("abb")){
+      if(timeSpanMins <= 60){
+        abbMeasurements = await _timeseriesClient.GetAbbMeasurementsAsync(Source, fromDate, toDate);
+      }
+      else{
+        abbAggregate = await _timeseriesClient.GetAbbQuarterHourlyAggregateAsync(Source, fromDate, toDate);
+      }
+      _displayType = new List<string>{"Napon", "Struja", "Radna snaga", "Jalova Snaga"};
+      if(_dataTitle == "Prividna snaga")
+        _dataTitle = "Jalova Snaga";
+    }
+    else if(Source.StartsWith("schneider")){
+      if(timeSpanMins <= 60){
+        schneiderMeasurements = await _timeseriesClient.GetSchneiderMeasurementsAsync(Source, fromDate, toDate);
+      }
+      else{
+        schneiderAggregate = await _timeseriesClient.GetSchneiderQuarterHourlyAggregateAsync(Source, fromDate, toDate);
+      }
+      _displayType = new List<string>{"Napon", "Struja", "Radna snaga", "Jalova Snaga", "Prividna snaga"};
+    }
+
+    switch(type)
+    {
+      case "Struja":
+        if(abbMeasurements is not null){
+          _graphValues = abbMeasurements.Select(x => new ChartData(values: new decimal[]{x.CurrentL1_A, x.CurrentL2_A, x.CurrentL3_A}, names: new string[]{"L1 Struja", "L2 Struja","L3 Struja"}, date:x.Timestamp, source:x.Source)).ToList();
+          lineCount = 3;
+        }
+        else if(schneiderMeasurements is not null){
+          _graphValues = schneiderMeasurements.Select(x => new ChartData(values: new decimal[]{x.CurrentL1_A, x.CurrentL2_A, x.CurrentL3_A}, names: new string[]{"L1 Struja", "L2 Struja","L3 Struja"}, date:x.Timestamp, source:x.Source)).ToList();
+          lineCount = 3;
+        }
+        else if(abbAggregate is not null){
+          _graphValues = abbAggregate.Select(x => new ChartData(values: new decimal[]{x.CurrentL1Avg_A, x.CurrentL2Avg_A, x.CurrentL3Avg_A}, names: new string[]{"L1 Struja", "L2 Struja","L3 Struja"}, date:x.Timestamp, source:x.Source)).ToList();
+          lineCount = 3;
+        }
+        else if(schneiderAggregate is not null){
+          _graphValues = schneiderAggregate.Select(x => new ChartData(values: new decimal[]{x.CurrentL1Avg_A, x.CurrentL2Avg_A, x.CurrentL3Avg_A}, names: new string[]{"L1 Struja", "L2 Struja","L3 Struja"}, date:x.Timestamp, source:x.Source)).ToList();
+          lineCount = 3;
+        }
+        break;
+      case "Radna snaga":
+        if(abbMeasurements is not null){
+          _graphValues = abbMeasurements.Select(x => new ChartData(values: new decimal[]{x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.ActivePowerL1_W + x.ActivePowerL2_W + x.ActivePowerL3_W}, names: new string[]{"L1 Radna snaga", "L2 Radna snaga","L3 Radna snaga","Ukupna snaga"}, date:x.Timestamp, source:x.Source)).ToList();
+          lineCount = 4;
+        }
+        else if(schneiderMeasurements is not null){
+          _graphValues = schneiderMeasurements.Select(x => new ChartData(values: new decimal[]{x.ActivePowerL1_W, x.ActivePowerL2_W, x.ActivePowerL3_W, x.ActivePowerL1_W + x.ActivePowerL2_W + x.ActivePowerL3_W}, names: new string[]{"L1 Radna snaga", "L2 Radna snaga","L3 Radna snaga","Ukupna snaga"}, date:x.Timestamp, source:x.Source)).ToList();
+          lineCount = 4;
+        }
+        else if(abbAggregate is not null){
+          _graphValues = abbAggregate.Select(x => new ChartData(values: new decimal[]{x.ActivePowerL1Avg_W, x.ActivePowerL2Avg_W, x.ActivePowerL3Avg_W, x.ActivePowerL1Avg_W + x.ActivePowerL2Avg_W + x.ActivePowerL3Avg_W}, names: new string[]{"L1 Radna snaga", "L2 Radna snaga","L3 Radna snaga","Ukupna snaga"}, date:x.Timestamp, source:x.Source)).ToList();
+          lineCount = 4;
+        }
+        else if(schneiderAggregate is not null){
+          _graphValues = schneiderAggregate.Select(x => new ChartData(values: new decimal[]{x.ActivePowerL1Avg_W, x.ActivePowerL2Avg_W, x.ActivePowerL3Avg_W, x.ActivePowerL1Avg_W + x.ActivePowerL2Avg_W + x.ActivePowerL3Avg_W}, names: new string[]{"L1 Radna snaga", "L2 Radna snaga","L3 Radna snaga","Ukupna snaga"}, date:x.Timestamp, source:x.Source)).ToList();
+          lineCount = 4;
+        }
+        break;
+      case "Napon":
+        if(abbMeasurements is not null){
+          _graphValues = abbMeasurements.Select(x => new ChartData(values: new decimal[]{x.VoltageL1_V, x.VoltageL2_V, x.VoltageL3_V}, names: new string[]{"L1 Napon", "L2 Napon","L3 Napon"}, date:x.Timestamp, source:x.Source)).ToList();
+          lineCount = 3;
+        }
+        else if(schneiderMeasurements is not null){
+          _graphValues = schneiderMeasurements.Select(x => new ChartData(values: new decimal[]{x.VoltageL1_V, x.VoltageL2_V, x.VoltageL3_V}, names: new string[]{"L1 Napon", "L2 Napon","L3 Napon"}, date:x.Timestamp, source:x.Source)).ToList();
+          lineCount = 3;
+        }
+        else if(abbAggregate is not null){
+          _graphValues = abbAggregate.Select(x => new ChartData(values: new decimal[]{x.VoltageL1Avg_V, x.VoltageL2Avg_V, x.VoltageL3Avg_V}, names: new string[]{"L1 Napon", "L2 Napon","L3 Napon"}, date:x.Timestamp, source:x.Source)).ToList();
+          lineCount = 3;
+        }
+        else if(schneiderAggregate is not null){
+          _graphValues = schneiderAggregate.Select(x => new ChartData(values: new decimal[]{x.VoltageL1Avg_V, x.VoltageL2Avg_V, x.VoltageL3Avg_V}, names: new string[]{"L1 Napon", "L2 Napon","L3 Napon"}, date:x.Timestamp, source:x.Source)).ToList();
+          lineCount = 3;
+        }
+        break;
+      case "Jalova Snaga":
+        if(abbMeasurements is not null){
+          _graphValues = abbMeasurements.Select(x => new ChartData(values: new decimal[]{x.ReactivePowerL1_VAR, x.ReactivePowerL2_VAR, x.ReactivePowerL3_VAR}, names: new string[]{"L1 Jalova snaga", "L2 Jalova snaga","L3 Jalova snaga"}, date:x.Timestamp, source:x.Source)).ToList();
+          lineCount = 3;
+        }
+        else if(schneiderMeasurements is not null){
+          _graphValues = schneiderMeasurements.Select(x => new ChartData(values: new decimal[]{x.ReactivePowerTotal_VAR}, names: new string[]{"Jalova snaga"}, date:x.Timestamp, source:x.Source)).ToList();
+          lineCount = 1;
+        }
+        else if(abbAggregate is not null){
+          _graphValues = abbAggregate.Select(x => new ChartData(values: new decimal[]{x.ReactivePowerL1Avg_VAR, x.ReactivePowerL2Avg_VAR, x.ReactivePowerL3Avg_VAR}, names: new string[]{"L1 Jalova snaga", "L2 Jalova snaga","L3 Jalova snaga"}, date:x.Timestamp, source:x.Source)).ToList();
+          lineCount = 3;
+        }
+        else if(schneiderAggregate is not null){
+          _graphValues = schneiderAggregate.Select(x => new ChartData(values: new decimal[]{x.ReactivePowerTotalAvg_VAR}, names: new string[]{"Jalova snaga"}, date:x.Timestamp, source:x.Source)).ToList();
+          lineCount = 1;
+        }
+        break;
+      case "Prividna snaga":
+        if(abbMeasurements is not null){
+          _graphValues = abbMeasurements.Select(x => new ChartData(values: new decimal[]{}, names: new string[]{}, date:x.Timestamp, source:x.Source)).ToList();
+          lineCount = 0;
+        }
+        else if(schneiderMeasurements is not null){
+          _graphValues = schneiderMeasurements.Select(x => new ChartData(values: new decimal[]{x.ApparentPowerTotal_VA}, names: new string[]{"Prividna snaga"}, date:x.Timestamp, source:x.Source)).ToList();
+          lineCount = 1;
+        }
+        else if(abbAggregate is not null){
+          _graphValues = abbAggregate.Select(x => new ChartData(values: new decimal[]{}, names: new string[]{}, date:x.Timestamp, source:x.Source)).ToList();
+          lineCount = 0;
+        }
+        else if(schneiderAggregate is not null){
+          _graphValues = schneiderAggregate.Select(x => new ChartData(values: new decimal[]{x.ApparentPowerTotalAvg_VA}, names: new string[]{"Prividna snaga"}, date:x.Timestamp, source:x.Source)).ToList();
+          lineCount = 1;
+        }
+        break;
+      default:
+        break;
+    }
+    if(chart is null){
+      return;
+    }
+    InvokeAsync(() => StateHasChanged());
+    if(reRenderChart){
+      await chart.UpdateSeriesAsync(true);
+      await SetAnnotationGraphOptions();
+    }
+  }
+
+
+
   private ApexCharts.SeriesStroke ColorGraph(int index){
     if(index==0){
         return new ApexCharts.SeriesStroke { Color = "#673AB7", Width = 4};
@@ -516,38 +406,42 @@
       }
     return new ApexCharts.SeriesStroke { Color = "#FB8C00", Width = 4};
   }
-  private async Task SetAnnotation(){
-    if(leftChart is null){
-      return;
-    }
-    if(_leftDataTitle == "Radna snaga"){
-      if(connectionMaxPower is not null && _leftGraphValues is not null && _leftGraphValues.Select(x => x.values[3]).ToList().Count > 0){
-          var graphMaxPower = _leftGraphValues.MaxBy(x => x.values[3]).values[3];
-          graphLOptions.Yaxis.Clear();
-          graphLOptions.Yaxis.Add(new(){
-              @* Max = connectionMaxPower * 1.2m, *@
+  private async Task SetAnnotationGraphOptions(){
+    if(_dataTitle == "Radna snaga"){
+      if(_graphValues is not null && _graphValues.Select(x => x.values[3]).ToList().Count > 0){
+          var graphMaxPower = _graphValues.MaxBy(x => x.values[3]).values[3];
+          graphOptions.Yaxis.Clear();
+          graphOptions.Yaxis.Add(new(){
               Max = graphMaxPower * 1.5m,
               Labels = new YAxisLabels(){
                 Formatter = "function(val, index) { return val.toFixed(0); }"
                 }
              });
+          graphOptions.Annotations = new(){
+            Yaxis = new List<AnnotationsYAxis>(){_annotation}
+          };
 
-          graphLOptionsMob.Yaxis.Clear();
-          graphLOptionsMob.Yaxis.Add(new(){
-            @* Max = connectionMaxPower * 1.2m, *@
+          graphOptionsMob.Yaxis.Clear();
+          graphOptionsMob.Yaxis.Add(new(){
               Max = graphMaxPower * 1.5m,
             Labels = new YAxisLabels(){
               Formatter = "function(val, index) { return val.toFixed(0); }"
               }
             });
-      await leftChart.RenderAsync();
-      await leftChart.AddYAxisAnnotationAsync(_annotation, true);
+          graphOptionsMob.Annotations = new(){
+            Yaxis = new List<AnnotationsYAxis>(){_annotation}
+          };
+      if(chart is null){
+        return;
+      }
+      await chart.RenderAsync();
+      await chart.AddYAxisAnnotationAsync(_annotation, true);
       }
     }
     else{
-      graphLOptions.Annotations = new(){};
-      graphLOptions.Yaxis.Clear();
-      graphLOptions.Yaxis.Add(new YAxis()
+      graphOptions.Annotations = new(){};
+      graphOptions.Yaxis.Clear();
+      graphOptions.Yaxis.Add(new YAxis()
         {
           Labels = new YAxisLabels(){
             Formatter = "function(val, index) { return val.toFixed(0); }"
@@ -555,18 +449,140 @@
         }
       );
 
-      graphLOptionsMob.Annotations = new(){};
-      graphLOptionsMob.Yaxis.Clear();
-      graphLOptionsMob.Yaxis.Add(new YAxis()
+      graphOptionsMob.Annotations = new(){};
+      graphOptionsMob.Yaxis.Clear();
+      graphOptionsMob.Yaxis.Add(new YAxis()
         {
           Labels = new YAxisLabels(){
             Formatter = "function(val, index) { return val.toFixed(0); }"
           }
         }
       );
-      await leftChart.ClearAnnotationsAsync();
-      await leftChart.RenderAsync();
+      if(chart is null){
+        return;
+      }
+      await chart.ClearAnnotationsAsync();
+      await chart.RenderAsync();
+    }
+  }
+
+  private void SetGraphOptionsStart(){
+    graphOptionsMob= new ApexChartOptions<ChartData>() {
+      Grid = new Grid
+      {
+        BorderColor = "#e7e7e7",
+        Row = new GridRow
+        {
+          Colors = new List<string> { "#f3f3f3", "transparent" },
+          Opacity = 0.5d
+        }
+      }
+    };
+    graphOptionsMob.Tooltip = new ApexCharts.Tooltip { X = new TooltipX { Format = @"HH:mm:ss" } };
+    graphOptionsMob.Yaxis = new List<YAxis>();
+    graphOptionsMob.Xaxis = new XAxis();
+    graphOptionsMob.Xaxis = new XAxis()
+    {
+      Labels = new XAxisLabels(){ Show = false },
+      Range = 60000 * timeSpanMins
+    };
+    graphOptionsMob.Chart = new Chart
+    {
+      Toolbar = new ApexCharts.Toolbar
+      {
+          Tools = new Tools { Zoomin = false, Zoomout = false, Download = false, Pan = false, Selection = false}
+      }
+    };
+    graphOptions= new ApexChartOptions<ChartData>() {
+      Grid = new Grid
+      {
+        BorderColor = "#e7e7e7",
+        Row = new GridRow
+        {
+            Colors = new List<string> { "#f3f3f3", "transparent" },
+            Opacity = 0.5d
+        }
+      }
+      };
+    graphOptions.Chart = new Chart
+    {
+      Toolbar = new ApexCharts.Toolbar
+      {
+        Tools = new Tools { Zoomin = false, Zoomout = false, Zoom = false,  Download = false, Pan = true, Selection = false }
+      }
+    };
+    graphOptions.Tooltip = new ApexCharts.Tooltip { X = new TooltipX { Format = @"HH:mm:ss" } };
+    graphOptions.Yaxis = new List<YAxis>();
+    graphOptions.Xaxis = new XAxis();
+    graphOptions.Xaxis = new XAxis()
+    {
+      Type = XAxisType.Datetime,
+      AxisTicks = new AxisTicks(){},
+      Range = 60000 * timeSpanMins
+    };
+  }
+  private void SetAnnotationStart(){
+    if(Source.StartsWith("abb")){
+      if (_iotDevice.As<AbbIotDevicePart>() is not null && _iotDevice.As<AbbIotDevicePart>().ConnectionPower is not null)
+        connectionMaxPower = _iotDevice.As<AbbIotDevicePart>().ConnectionPower.Value * 3;
+    }
+    else{
+      if (_iotDevice.As<SchneiderIotDevicePart>() is not null && _iotDevice.As<SchneiderIotDevicePart>().ConnectionPower is not null)
+        connectionMaxPower = _iotDevice.As<SchneiderIotDevicePart>().ConnectionPower.Value * 3;
+    }
+    _annotation = new AnnotationsYAxis
+    {
+      Label = new Label
+        {
+            Text = T["PRIKLJUČNA SNAGA"].Value,
+            Style = new Style { Background ="red", Color="white", FontSize="12px"}
+        },
+      Y = connectionMaxPower,
+      BorderColor = "red",
+      StrokeDashArray = 0
+    };
+  }
+
+  @* TIME STUFF *@
+
+  protected override void OnAfterRender(bool firstRender)
+  {
+      if (firstRender && !timerInitialized)
+      {
+          timerInitialized = true;
+          timer = new Timer(updateMilisec);
+          timer.Elapsed += async delegate { await UpdateChartSeries(); };
+          timer.Enabled = true;
+      }
+  }
+
+  private async Task UpdateChartSeries()
+  {
+    if(_graphValues is not null){
+      var lastGraphValues = _graphValues.OrderByDescending(x => x.date).FirstOrDefault();
+      if(lastGraphValues is not null){
+        await GetValues(_dataTitle, lastGraphValues.date, DateTimeOffset.UtcNow, false);
+        await chart.AppendDataAsync(_graphValues);
+      }
+    }
+  }
+
+  public class ChartDataComparer : IEqualityComparer<ChartData>
+  {
+    public bool Equals(ChartData x, ChartData y)
+    {
+        return x.date == y.date;
     }
 
+    public int GetHashCode(ChartData obj)
+    {
+        return obj.date.GetHashCode();
+    }
+  }
+
+  void IDisposable.Dispose()
+  {
+    timer?.Dispose();
+    timer = null;
   }
 }

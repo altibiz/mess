@@ -12,7 +12,7 @@
 @using Mess.Prelude.Extensions.Timestamps;
 
 @inject IOzdsTimeseriesClient _timeseriesClient
-@if(_abbLastPower is not null || _schneiderLastPower is not null){
+@if(_dataStruct is not null ){
 @* MOBILE *@
   <MudHidden Breakpoint="Breakpoint.MdAndUp">
     <MudGrid Class="my-3 pa-1">
@@ -20,27 +20,7 @@
           <OMMGraph Source="@Source" />
         </MudItem>
         <MudItem xs="12" Class="pa-1">
-            <MudPaper Class="d-flex align-center justify-start mud-width-full pa-1 flex-column">
-              <MudItem Class="d-flex justify-center align-center" Style="font-size: large; font-weight: bold;">
-                @(T["Trenutna snaga"].Value + ": " + Source)
-              </MudItem>
-        <MudContainer MaxWidth="MaxWidth.Small">
-                <ApexChart TItem="Order"
-                          Options="options"
-                          >
-                    <ApexPointSeries TItem="Order"
-                                    Items="orders"
-                                    SeriesType=SeriesType.RadialBar
-                                    Name="@T["Potrošnja"].Value"
-                                    XValue="@(e => DecimalString((decimal)e.value/1000, 2) + " kW")"
-                                    YAggregate="@(e =>  Math.Round(e.First().percent ?? 0M, 2))"
-                                    OrderByDescending="e=>e.X" />
-                  <MudText Typo="Typo.body1" Style="font-weight: bold;margin-top: -30px;text-align: center; color: #adadad;" Class="m-0">
-                    @T["U usporedbi s maksimalnom snagom u prethodnom mjesecu"].Value (@(DecimalString(connectionMaxPower/1000, 2) + " kW"))
-                  </MudText>
-                </ApexChart>
-        </MudContainer>
-            </MudPaper>
+          <OMMGage Source="@Source" />
         </MudItem>
     </MudGrid>
 
@@ -161,27 +141,7 @@
 
     <MudGrid Class="my-3">
         <MudItem xs="6">
-            <MudPaper Class="d-flex align-center justify-start mud-width-full py-8 px-8 flex-column" Height="450px">
-              <MudItem Class="d-flex" Style="font-size: large; font-weight: bold;">
-                @(T["Trenutna snaga"].Value + ": " + Source)
-              </MudItem>
-        <MudContainer MaxWidth="MaxWidth.Small">
-                <ApexChart TItem="Order"
-                          Options="options"
-                          >
-                    <ApexPointSeries TItem="Order"
-                                    Items="orders"
-                                    SeriesType=SeriesType.RadialBar
-                                    Name="@T["Potrošnja"].Value"
-                                    XValue="@(e => DecimalString((decimal)e.value/1000, 2) + " kW")"
-                                    YAggregate="@(e =>  Math.Round(e.First().percent ?? 0M, 2))"
-                                    OrderByDescending="e=>e.X" />
-                  <MudText Typo="Typo.body1" Style="font-weight: bold;margin-top: -30px;text-align: center; color: #adadad;" Class="m-0">
-                    @T["U usporedbi s maksimalnom snagom u prethodnom mjesecu"].Value (@(DecimalString(connectionMaxPower/1000, 2) + " kW"))
-                  </MudText>
-                </ApexChart>
-        </MudContainer>
-            </MudPaper>
+          <OMMGage Source="@Source" />
         </MudItem>
         <MudItem xs="6">
           <OMMGraph Source="@Source" />
@@ -195,8 +155,6 @@
     public string Source { get; set; } = "abb";
     public string TextValue { get; set; } = "";
     private ContentItem? _iotDevice;
-    private List<Order> orders = new List<Order>();
-    private ApexChartOptions<Order> options = new();
     private string? _searchString;
     private List<TabularData> _dataStruct = new List<TabularData>();
     private (decimal? First, decimal? Last, DateTimeOffset FirstDate) _startEnd;
@@ -204,34 +162,16 @@
     public record struct TabularData(string year, string month, decimal? monthStartTotal, decimal? monthEndTotal, decimal maxPower);
     private string _month = "-1";
     private string _year = "-1";
-    private decimal? connectionMaxPower = 100000m;
     private decimal thisMonthMaxPower = 0m;
-    private decimal thisMonthCurrentPower = 100000m;
     private IReadOnlyList<AbbAggregate>? _abbRange;
     private IReadOnlyList<SchneiderAggregate>? _schneiderRange;
     private IReadOnlyList<AbbAggregate>? _abbRangeLastMonth;
     private IReadOnlyList<SchneiderAggregate>? _schneiderRangeLastMonth;
-    private AbbMeasurement? _abbLastPower;
-    private SchneiderMeasurement? _schneiderLastPower;
     private IReadOnlyList<SchneiderAggregate>? _schneiderMonthPowerRange;
     private IReadOnlyList<AbbAggregate>? _abbMonthPowerRange;
     private DateTimeOffset nowYear = DateTimeOffset.UtcNow.GetStartOfYear();
     private DateTimeOffset nowMonth = DateTimeOffset.UtcNow.GetStartOfMonth();
     private DateTimeOffset now = DateTime.UtcNow;
-  private class Order {
-    public decimal? value = 10;
-    public decimal? valueMax = 100000;
-    public decimal? percent = 50;
-
-    public Order(decimal? val, decimal? max){
-      value = val;
-      valueMax = max;
-      if(valueMax <= 0){
-        valueMax = 100000;
-      }
-      percent = (value / valueMax) * 100;
-    }
-  }
     private class ExpandThing {
       public TabularData data;
       public bool expand;
@@ -249,44 +189,11 @@
           .FirstOrDefaultAsync();
       });
 
-      options.PlotOptions = new PlotOptions { RadialBar = new PlotOptionsRadialBar { StartAngle = -90, EndAngle = 90 } };
-      options.DataLabels = new DataLabels() {
-        Enabled = true,
-        Formatter = @"function(value, opts) {
-            return  Math.round(Number(value)) + '%';}"
-      };
-      options.Xaxis = new XAxis
-            {
-              Labels = new XAxisLabels{
-                Show = false
-              }
-            };
-      options.Yaxis = new();
-      options.Yaxis.Add( new YAxis
-            {
-              Show = true,
-              Labels = new YAxisLabels{
-                Show = false
-              },
-              DecimalsInFloat = 2,
-              Title = new ApexCharts.AxisTitle () {
-                Text = "aa"
-              }
-            });
-      options.Tooltip = new ApexCharts.Tooltip
-          {
-            Enabled = false,
-          };
-
-
-
       _abbRange = await _timeseriesClient.GetBulkAbbMonthlyAggregateAsync(new List<string>{Source},nowYear,now);
       _schneiderRange = await _timeseriesClient.GetBulkSchneiderMonthlyAggregateAsync(new List<string>{Source},nowYear,now);
 
       _abbMonthPowerRange = await _timeseriesClient.GetBulkAbbQuarterHourlyAggregateAsync(new List<string>{Source}, nowYear, now);
-      _abbLastPower = await _timeseriesClient.GetLastAbbMeasurementAsync(Source);
       _schneiderMonthPowerRange = await _timeseriesClient.GetBulkSchneiderQuarterHourlyAggregateAsync(new List<string>{Source}, nowYear, now);
-      _schneiderLastPower = await _timeseriesClient.GetLastSchneiderMeasurementAsync(Source);
 
       foreach (var month in nowYear.GetThisYearMonthStarts().Reverse()){
         _startEnd = new();
@@ -321,34 +228,6 @@
           _dataStruct.Add(new TabularData(_year, _month, _startEnd.First, _startEnd.Last, thisMonthMaxPower));
           _shownOMMs.Add(new ExpandThing{data = new (_year, _month, _startEnd.First, _startEnd.Last, thisMonthMaxPower), show = true, expand = false});
         }
-      }
-
-
-      if(Source.StartsWith("abb")){
-        if(_abbMonthPowerRange is not null && _abbMonthPowerRange.Count() > 0){
-          if (_iotDevice.As<AbbIotDevicePart>() is not null && _iotDevice.As<AbbIotDevicePart>().ConnectionPower is not null)
-            connectionMaxPower = _iotDevice.As<AbbIotDevicePart>().ConnectionPower.Value * 3;
-        }
-        if(_abbLastPower is not null){
-          thisMonthCurrentPower = _abbLastPower.ActivePowerL1_W + _abbLastPower.ActivePowerL2_W + _abbLastPower.ActivePowerL3_W;
-        }
-      }
-      else{
-        if(_schneiderMonthPowerRange is not null && _schneiderMonthPowerRange.Count() > 0){
-          if (_iotDevice.As<SchneiderIotDevicePart>() is not null && _iotDevice.As<SchneiderIotDevicePart>().ConnectionPower is not null)
-            connectionMaxPower = _iotDevice.As<SchneiderIotDevicePart>().ConnectionPower.Value * 3;
-        }
-        if(_schneiderLastPower is not null){
-          thisMonthCurrentPower = _schneiderLastPower.ActivePowerL1_W + _schneiderLastPower.ActivePowerL2_W + _schneiderLastPower.ActivePowerL3_W;
-        }
-      }
-      // max will be priključna snaga maxPower * 3 !!!
-      orders.Add(new Order(thisMonthCurrentPower, connectionMaxPower));
-      if((thisMonthCurrentPower / connectionMaxPower) > 1){
-        options.Colors = new List<string>(){"#E53935"};
-      }
-      else{
-        options.Colors = new List<string>(){"#1E88E5"};
       }
     }
   private void OnExpandCollapseClick(string year, string month) {
