@@ -255,6 +255,7 @@
             _timeTitle = "24 h";
             break;
       }
+    SetGraphTimeRange();
     await GetValues(_dataTitle, now.AddMinutes(- timeSpanMins), now);
   }
 
@@ -518,6 +519,21 @@
     {
       Type = XAxisType.Datetime,
       AxisTicks = new AxisTicks(){},
+      Range = 60000 * timeSpanMins
+    };
+  }
+
+  private void SetGraphTimeRange(){
+    graphOptions.Xaxis = new XAxis()
+    {
+      Type = XAxisType.Datetime,
+      AxisTicks = new AxisTicks(){},
+      Range = 60000 * timeSpanMins
+    };
+
+    graphOptionsMob.Xaxis = new XAxis()
+    {
+      Labels = new XAxisLabels(){ Show = false },
       Range = 60000 * timeSpanMins
     };
   }
