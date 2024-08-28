@@ -9,6 +9,7 @@ public static class IServiceProviderExtensions
   {
     return AppDomain.CurrentDomain
       .GetAssemblies()
+      .Where(assembly => assembly.GetName().Name?.StartsWith("Mess") ?? false)
       .SelectMany(assembly => assembly.GetTypes())
       .Where(type => type.IsAssignableTo(typeof(T)))
       .Select(services.GetService)

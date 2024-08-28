@@ -11,7 +11,7 @@ namespace Mess.Event.Extensions;
 // TODO: fix problems with attaining lock and stuff/projection applicators not
 // being called
 
-public static class MartenConfigurationExpressionExtensions
+/* public static class MartenConfigurationExpressionExtensions
 {
   public static MartenConfigurationExpression
     AddOrchardCoreAsyncProjectionDaemon(
@@ -33,4 +33,4 @@ public static class MartenConfigurationExpressionExtensions
 
     return expression;
   }
-}
+} */
