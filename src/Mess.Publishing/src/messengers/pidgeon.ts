@@ -22,7 +22,7 @@ export const push: Create = async (template) => {
         await Promise.all(
           Object.entries(allowedTemplates).flatMap(([id, push]) =>
             [...Array(1000 / Object.keys(allowedTemplates).length).keys()].map(
-              async (_) => {
+              async () => {
                 const template = templates?.[id]?.push;
                 if (!template) {
                   return null;

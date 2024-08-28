@@ -32,7 +32,7 @@ export default cmd({
         "Migration name must be a valid C# identifier",
       ),
     }),
-})(async ({ project, name, format }) => {
+})(async ({ project, name }) => {
   let isInitial = false;
   if (!(await exists(`src/Mess.Modules/${project}/Timeseries/Migrations`))) {
     isInitial = true;
