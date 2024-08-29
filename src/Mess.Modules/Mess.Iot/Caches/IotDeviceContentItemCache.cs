@@ -10,11 +10,6 @@ namespace Mess.Iot.Caches;
 
 public class IotDeviceContentItemCache : IIotDeviceContentItemCache
 {
-  private readonly ConcurrentDictionary<
-    string,
-    Lazy<Task<ContentItem?>>
-  > _cache = new();
-
   private readonly IServiceProvider _services;
 
   public IotDeviceContentItemCache(IServiceProvider services)
@@ -24,45 +19,23 @@ public class IotDeviceContentItemCache : IIotDeviceContentItemCache
 
   public ContentItem? GetIotDevice(string deviceId)
   {
-    return _cache
-      .GetOrAdd(
-        deviceId,
-        _ =>
-          new Lazy<Task<ContentItem?>>(
-            async () =>
-            {
-              await using var scope = _services.CreateAsyncScope();
-              return await scope.ServiceProvider
-                .GetRequiredService<ISession>()
-                .Query<ContentItem?, IotDeviceIndex>()
-                .Where(device => device.DeviceId == deviceId)
-                .LatestPublished()
-                .FirstOrDefaultAsync();
-            }
-          )
-      )
-      .Value.Result;
+    using var scope = _services.CreateScope();
+    return scope.ServiceProvider
+      .GetRequiredService<ISession>()
+      .Query<ContentItem?, IotDeviceIndex>()
+      .Where(device => device.DeviceId == deviceId)
+      .LatestPublished()
+      .FirstOrDefaultAsync().Result;
   }
 
   public async Task<ContentItem?> GetIotDeviceAsync(string deviceId)
   {
-    return await _cache
-      .GetOrAdd(
-        deviceId,
-        _ =>
-          new Lazy<Task<ContentItem?>>(
-            async () =>
-            {
-              await using var scope = _services.CreateAsyncScope();
-              return await scope.ServiceProvider
-                .GetRequiredService<ISession>()
-                .Query<ContentItem?, IotDeviceIndex>()
-                .Where(device => device.DeviceId == deviceId)
-                .LatestPublished()
-                .FirstOrDefaultAsync();
-            }
-          )
-      )
-      .Value;
+    await using var scope = _services.CreateAsyncScope();
+    return await scope.ServiceProvider
+      .GetRequiredService<ISession>()
+      .Query<ContentItem?, IotDeviceIndex>()
+      .Where(device => device.DeviceId == deviceId)
+      .LatestPublished()
+      .FirstOrDefaultAsync();
   }
 }

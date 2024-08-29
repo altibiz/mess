@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using Mess.Timeseries.Abstractions.Context;
 using Microsoft.EntityFrameworkCore;
 using OrchardCore.Environment.Shell;

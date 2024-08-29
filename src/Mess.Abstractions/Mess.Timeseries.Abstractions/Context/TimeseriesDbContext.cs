@@ -58,8 +58,6 @@ public abstract class TimeseriesDbContext : RelationalDbContext
           nameof(ContinuousAggregateEntity.Source),
           nameof(ContinuousAggregateEntity.Tenant)
         );
-
-        entity.ToTable(@type.Name.RegexRemove("Entity$") + "s");
       }
     );
 
@@ -84,8 +82,6 @@ public abstract class TimeseriesDbContext : RelationalDbContext
           nameof(ContinuousAggregateEntity.Source),
           nameof(ContinuousAggregateEntity.Tenant)
         );
-
-        entity.ToTable(@type.Name.RegexRemove("Entity$") + "s");
       }
     );
 

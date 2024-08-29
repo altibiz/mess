@@ -35,7 +35,7 @@ public class EorUpdateHandler
     EorUpdateRequest request
   )
   {
-    var status = request.ToStatus(_shellSettings.GetTenantName(), deviceId);
+    var status = request.ToStatus(_shellSettings.GetDatabaseTablePrefix(), deviceId);
 
     contentItem.Alter(
       eorIotDevice => eorIotDevice.EorIotDevicePart,
@@ -58,7 +58,7 @@ public class EorUpdateHandler
     EorUpdateRequest request
   )
   {
-    var status = request.ToStatus(_shellSettings.GetTenantName(), deviceId);
+    var status = request.ToStatus(_shellSettings.GetDatabaseTablePrefix(), deviceId);
 
     if (
       contentItem.EorIotDevicePart.Value.Controls.Mode != status.Mode
@@ -77,7 +77,7 @@ public class EorUpdateHandler
           eorIotDevicePart.Controls.RunState = status.RunState;
         }
       );
-      await _contentManager.UpdateAsync(contentItem);
+      await _contentManager.PublishAsync(contentItem);
     }
 
     await _measurementClient.AddEorStatusAsync(status);

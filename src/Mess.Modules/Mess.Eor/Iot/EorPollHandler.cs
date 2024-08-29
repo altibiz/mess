@@ -37,7 +37,9 @@ public class EorPollHandler
       contentItem.EorIotDevicePart.Value.Controls.RunState
       == EorRunState.Started,
       contentItem.EorIotDevicePart.Value.Controls.RunState
-      == EorRunState.Stopped
+      == EorRunState.Stopped ||
+      contentItem.EorIotDevicePart.Value.Controls.RunState
+      == EorRunState.Error
     );
   }
 }
