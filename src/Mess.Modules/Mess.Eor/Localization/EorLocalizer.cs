@@ -49,18 +49,6 @@ public class EorLocalizer : IEorLocalizer
 
   private static Stream Load(string name)
   {
-    // var assembly = typeof(EorLocalizer).Assembly;
-    // var fullName = $"{assembly.GetName().Name}.Assets.{name}";
-
-    // var stream = assembly.GetManifestResourceStream(fullName) ??
-    //   throw new InvalidOperationException(
-    //     $"Resource {fullName} does not exist. "
-    //     + $"Here are the available resources for the given assembly '{assembly.GetName().Name}':\n"
-    //     + string.Join("\n", assembly.GetManifestResourceNames())
-    //   );
-    // return stream;
-
-    // Navigate up from the output directory to reach the root folder
     var projectDirectory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../Mess.Modules/Mess.Eor/Assets"));
 
     var path = Path.Combine(projectDirectory, name);

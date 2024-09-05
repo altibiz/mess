@@ -71,8 +71,8 @@ export type EorIotDeviceStatus = zod.infer<typeof eorIotDeviceStatusSchema>;
 export const eorIotDeviceSummarySchema = zod.object({
   tenant: zod.string(),
   deviceId: zod.string(),
-  lastMeasurement: eorIotDeviceMeasurementSchema,
-  status: eorIotDeviceStatusSchema,
+  lastMeasurement: zod.nullable(eorIotDeviceMeasurementSchema),
+  status: zod.nullable(eorIotDeviceStatusSchema),
 });
 
 export type EorIotDeviceSummary = zod.infer<typeof eorIotDeviceSummarySchema>;

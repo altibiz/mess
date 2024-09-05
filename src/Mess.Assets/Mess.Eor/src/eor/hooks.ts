@@ -40,81 +40,87 @@ export const useRefresh = ({
   const handleSecondPassed = async () => {
     const data = await getData(requestUrlPrefix, contentItemId);
 
-    const status =
-      data.summary.status.processFault === 0
+    // Default status and lastMeasurement objects to prevent undefined values
+    const status = data.summary.status || {
+      processFault: 0,
+      communicationFault: 0,
+      processFaults: [],
+      resetState: "ShouldntReset",
+      runState: "Stopped",
+      doorState: "Closed",
+      mainCircuitBreakerState: "Off",
+      mode: 0,
+    };
+
+    const lastMeasurement = data.summary.lastMeasurement || {
+      voltage: 0,
+      current: 0,
+      temperature: 0,
+    };
+
+    const statusDisplay =
+      status.processFault === 0
         ? { text: "OK", class: "status status-ok" }
-        : data.summary.status.processFault === 999
+        : status.processFault === 999
           ? { text: "OFF", class: "status status-warning" }
           : { text: "ERROR", class: "status status-error" };
-    setElementText(id.status, status.text);
-    setElementClass(id.status, status.class);
+    setElementText(id.status, statusDisplay.text);
+    setElementClass(id.status, statusDisplay.class);
 
-    setElementText(
-      id.communicationFault,
-      data.summary.status.communicationFault,
-    );
-
-    setElementText(id.processFault, data.summary.status.processFault);
+    setElementText(id.communicationFault, status.communicationFault);
+    setElementText(id.processFault, status.processFault);
     setElementInnerHtml(
       id.processFaults,
-      data.summary.status.processFaults
-        ? "<p>" + data.summary.status.processFaults.join("<p>")
-        : "",
+      status.processFaults && status.processFaults.length > 0
+        ? "<p>" + status.processFaults.join("<p>")
+        : "<p>No Faults</p>",
     );
 
     const deviceControlStatus =
-      data.summary.status.resetState === "ShouldReset"
+      status.resetState === "ShouldReset"
         ? { text: "Reset", class: "status status-warning" }
-        : data.summary.status.runState === "Started"
+        : status.runState === "Started"
           ? { text: "Started", class: "status status-ok" }
-          : data.summary.status.runState === "Stopped"
+          : status.runState === "Stopped"
             ? { text: "Stopped", class: "status status-error" }
             : { text: "Unknown", class: "status status-warning" };
-    const serverControlStatus =
-      data.controls.resetState === "ShouldReset"
-        ? { text: "Reset", class: "status status-warning" }
-        : data.controls.runState === "Started"
-          ? { text: "Started", class: "status status-ok" }
-          : data.controls.runState === "Stopped"
-            ? { text: "Stopped", class: "status status-error" }
-            : { text: "Unknown", class: "status status-warning" };
+
+    const serverControlStatus = {
+      text: "Unknown",
+      class: "status status-warning",
+    };
+
     setElementInnerHtml(
       id.controlStatus,
       deviceControlStatus.text !== serverControlStatus.text
         ? `${serverControlStatus.text} <span>(${deviceControlStatus.text})</span>`
         : serverControlStatus.text,
     );
-    setElementClass(id.controlStatus, serverControlStatus.class);
+    setElementClass(id.controlStatus, deviceControlStatus.class);
 
     setElementInnerHtml(
       id.modeLabel,
-      data.controls.mode != data.summary.status.mode
-        ? `Position (${data.summary.status.mode})`
+      data.controls.mode !== status.mode
+        ? `Position (${status.mode})`
         : `Position`,
     );
     setInputElementValue(id.modeInput, data.controls.mode);
 
-    setElementText(id.doorState, data.summary.status.doorState);
-
-    setElementText(
-      id.mainCircuitBreakerState,
-      data.summary.status.mainCircuitBreakerState,
-    );
+    setElementText(id.doorState, status.doorState);
+    setElementText(id.mainCircuitBreakerState, status.mainCircuitBreakerState);
 
     setElementText(
       id.powerRelay,
-      data.summary.status.processFault === 0
+      status.processFault === 0
         ? "On"
-        : data.summary.status.processFault === 999
+        : status.processFault === 999
           ? "Off"
           : "Error",
     );
 
-    setElementText(id.voltage, data.summary.lastMeasurement.voltage);
-
-    setElementText(id.current, data.summary.lastMeasurement.current);
-
-    setElementText(id.temperature, data.summary.lastMeasurement.temperature);
+    setElementText(id.voltage, lastMeasurement.voltage);
+    setElementText(id.current, lastMeasurement.current);
+    setElementText(id.temperature, lastMeasurement.temperature);
   };
 };
 

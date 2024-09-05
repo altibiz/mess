@@ -1,5 +1,6 @@
 @using Microsoft.AspNetCore.Authorization
 @using OrchardCore.Security.Permissions
+@using System.Globalization
 @inject IAuthorizationService AuthorizationService
 
 @{
@@ -82,6 +83,17 @@
       </h1>
     </a>
     <span id="@clockId">--</span>
+    <button id="lang-button" class="lang-button">@CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToUpper()</button>
+    <script>
+      document.getElementById("lang-button").addEventListener("click", function () {
+          var currentUrl = new URL(window.location.href);
+          var currentCulture = "@CultureInfo.CurrentCulture.TwoLetterISOLanguageName";
+          var newCulture = (currentCulture === "en") ? "hr-HR" : "en-EN";
+          currentUrl.searchParams.set('culture', newCulture);
+          window.location.href = currentUrl.toString();
+      });
+  </script>
+
   </div>
   <button id="nav-button" class="nav-button"></button>
   <script>
@@ -90,7 +102,7 @@
           .addEventListener("click",  () => {
             document.querySelector("nav").classList.toggle("closed");
           });
-          
+
         window.addEventListener("scroll", () => {
           document.querySelector("nav").classList.add("closed");
         });
@@ -118,3 +130,36 @@
 <resources type="FootScript"/>
 </body>
 </html>
+
+<style>
+  body {
+  width: 100%;
+  height: fit-content;
+  background-image: url("Mess.Forttech/assets/resources/background.a63a7b0e8bf7cdac33d7.jpg");
+  background-size: cover;
+  background-position: center;
+}
+.lang-button {
+  display: inline-block;
+  padding: 15px 25px;
+  font-size: 24px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  outline: none;
+  color: #fff;
+  background-color: #0072bc;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 9px #999;
+}
+
+.lang-button:hover {background-color: #005d9b}
+
+.lang-button:active {
+  background-color: #004e83;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+
+</style>

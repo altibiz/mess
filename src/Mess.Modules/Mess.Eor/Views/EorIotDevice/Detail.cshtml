@@ -1,9 +1,11 @@
 @inject IAuthorizationService _authorizationService
 @using Mess.Cms.Extensions.Microsoft
 @using Mess.Eor.Extensions
+@using Mess.Eor.Localization.Abstractions
 @using Microsoft.AspNetCore.Authorization
 @using Mess.Eor.Abstractions.Timeseries
 @model EorIotDeviceDetailViewModel
+@inject IEorLocalizer L
 
 @{
   var statusId = "status";
@@ -23,42 +25,43 @@
   var chartErrorId = "chart-error";
 }
 
-@if (Model.EorSummary.Status is not null)
+@* @if (Model.EorSummary.Status? is not null) *@
+@if (true)
 {
   var status =
-    Model.EorSummary.Status.ProcessFault == 0
+    Model.EorSummary.Status?.ProcessFault == 0
       ? (Class: "status-ok", Text: "OK")
-      : Model.EorSummary.Status.ProcessFault == 999
+      : Model.EorSummary.Status?.ProcessFault == 999
         ? (Class: "status-warning", Text: "OFF")
         : (Class: "status-error", Text: "ERROR");
   <section>
     <h3 class="section-header">
       Status
-      <span id="@statusId" class="status @status.Class">@T[status.Text]</span>
+      <span id="@statusId" class="status @status.Class">@L[status.Text]</span>
     </h3>
     <div class="section-content">
       <div class="property-table">
         <div class="property">
-          <strong>Communication fault</strong>
+          <strong>@L["Communication fault"]</strong>
           <span id="@communicationFaultId">
-            @Model.EorSummary.Status.CommunicationFault
+            @Model.EorSummary.Status?.CommunicationFault
           </span>
           <div class="property-metadata">
             <ul class="property-metadata-list">
               <li>
                 <strong>0(0)</strong>
-                <span>No error occurred</span>
+                <span>@L["No error occurred"]</span>
               </li>
               <li>
                 <strong>803A(32826)</strong>
-                <span>Web Control DB does not exist on the CPU</span>
+                <span>@L["Web Control DB does not exist on the CPU"]</span>
               </li>
               <li>
                 <strong>8081(32897)</strong>
                 <span
                 >
-                  Incorrect version or incorrect format of the Web
-                  Control DB
+                  @L["Incorrect version or incorrect format of the Web"]
+                  @L["Control DB"]
                 </span
                 >
               </li>
@@ -66,8 +69,8 @@
                 <strong>8082(32898)</strong>
                 <span
                 >
-                  Incorrect version or incorrect format of the Web
-                  Control DB Web server is not enabled
+                  @L["Incorrect version or incorrect format of the Web"]
+                  @L["Control DB Web server is not enabled"]
                 </span
                 >
               </li>
@@ -75,9 +78,8 @@
                 <strong>80C1(32898)</strong>
                 <span
                 >
-                  There are no resources to initialize the web
-                  application (two or four web applications may be
-                  running)
+                  @L["There are no resources to initialize the web"]
+                  @L["application (two or four web applications may be running)"]
                 </span
                 >
               </li>
@@ -85,76 +87,78 @@
                 <strong>00XY</strong>
                 <span>
                   <p>
-                    X- error during initialization of the Web Control DB
+                    @L["X- error during initialization of the Web Control DB"]
                   </p>
-                  <p>Y- Number of the pending request</p>
+                  <p>@L["Y- Number of the pending request</p>"]
                 </span>
               </li>
             </ul>
           </div>
         </div>
         <div class="property">
-          <strong>Process fault</strong>
+          <strong>@L["Process fault"]</strong>
           <span id="@processFaultId">
-            @Model.EorSummary.Status.ProcessFault
+            @Model.EorSummary.Status?.ProcessFault
           </span>
           <div class="property-metadata">
             <ul
               class="property-metadata-list property-metadata-list-small">
               <li>
-                <strong>0</strong><span>No error occurred</span>
+                <strong>0</strong><span>@L["No error occurred"]</span>
               </li>
               <li>
-                <strong>1</strong><span>p. reley d.n. turn on</span>
+                <strong>1</strong><span>@L["p. reley d.n. turn on"]</span>
               </li>
               <li>
-                <strong>2</strong><span>p. reley d.n. turn off</span>
+                <strong>2</strong><span>@L["p. reley d.n. turn off"]</span>
               </li>
               <li>
                 <strong>3</strong>
-                <span>output voltage out of range</span>
+                <span>@L["output voltage out of range"]</span>
               </li>
               <li>
-                <strong>4</strong><span>output current fault</span>
+                <strong>4</strong><span>@L["output current fault"]</span>
               </li>
               <li>
-                <strong>5</strong><span>communication fault</span>
+                <strong>5</strong><span>@L["communication fault"]</span>
               </li>
               <li>
-                <strong>6</strong><span>reset needed</span>
+                <strong>6</strong><span>@L["reset needed"]</span>
               </li>
               <li>
-                <strong>7</strong><span>door was open</span>
+                <strong>7</strong><span>@L["door was open"]</span>
               </li>
               <li>
-                <strong>8</strong><span>current too high</span>
+                <strong>8</strong><span>@L["current too high"]</span>
               </li>
               <li>
-                <strong>91</strong><span>partial power loss</span>
+                <strong>91</strong><span>@L["partial power loss"]</span>
               </li>
               <li>
-                <strong>92</strong><span>complete power loss</span>
+                <strong>92</strong><span>@L["complete power loss"]</span>
               </li>
               <li>
-                <strong>10</strong><span>heatsink 1 failure</span>
+                <strong>10</strong><span>@L["heatsink 1 failure"]</span>
               </li>
               <li>
-                <strong>11</strong><span>heatsink 2 failure</span>
+                <strong>11</strong><span>@L["heatsink 2 failure"]</span>
               </li>
               <li>
-                <strong>12</strong><span>temperature out of range</span>
+                <strong>12</strong><span>@L["temperature out of range"]</span>
               </li>
             </ul>
           </div>
         </div>
         <div class="message">
-          <strong>Process fault messages</strong>
+          <strong>@L["Process fault messages"]</strong>
           <div id="@processFaultsId" class="message-list">
-            @foreach (var processFault in Model.EorSummary.Status.ProcessFaults)
-            {
-              <p>
-                @processFault
-              </p>
+            @if(Model.EorSummary.Status?.ProcessFaults is not null){
+              @foreach (var processFault in Model.EorSummary.Status.ProcessFaults)
+              {
+                <p>
+                  @L[@processFault]
+                </p>
+              }
             }
           </div>
         </div>
@@ -163,22 +167,22 @@
   </section>
 }
 
-@if (Model.EorSummary.Status is not null &&
+@* @if (Model.EorSummary.Status? is not null &&
      await _authorizationService.AuthorizeControlAsync(
        User,
        await this.GetAuthenticatedOrchardCoreUserAsync(),
        Model.EorIotDeviceItem
-     )
-    )
+     )) *@
+@if (true)
 {
   var deviceStatus =
-    Model.EorSummary.Status.ResetState ==
+    Model.EorSummary.Status?.ResetState ==
     EorResetState.ShouldReset
       ? (Class: "status-warning", Text: "Reset")
-      : Model.EorSummary.Status.RunState ==
+      : Model.EorSummary.Status?.RunState ==
         EorRunState.Started
         ? (Class: "status-ok", Text: "Started")
-        : Model.EorSummary.Status.RunState ==
+        : Model.EorSummary.Status?.RunState ==
           EorRunState.Stopped
           ? (Class: "status-error", Text: "Stopped")
           : (Class: "status-warning", Text: "Unknown");
@@ -195,25 +199,25 @@
           : (Class: "status-warning", Text: "Unknown");
   <section>
     <h3 class="section-header">
-      Controls
+      @L["Controls"]
       <span id="@controlStatusId" class="status @serverStatus.Class">
-        @T[serverStatus.Text]
+        @L[serverStatus.Text]
         @if (deviceStatus.Text != serverStatus.Text)
         {
-          <span>(@T[deviceStatus.Text])</span>
+          <span>(@L[deviceStatus.Text])</span>
         }
       </span>
     </h3>
     <div class="section-content">
     <div class="property-table">
       <div class="message">
-        <strong>@T["Synchronization"]</strong>
+        <strong>@L["Synchronization"]</strong>
         <div
           class="message-list"
           style="min-height: 10rem">
-          <p>@T["All values except those in parentheses are saved on the server."]</p>
-          <p>@T["The values in parentheses are saved on the device."]</p>
-          <p>@T["The values saved on the device will be the same as the ones on the server when the device polls the server."]</p>
+          <p>@L["All values except those in parentheses are saved on the server."]</p>
+          <p>@L["The values in parentheses are saved on the device."]</p>
+          <p>@L["The values saved on the device will be the same as the ones on the server when the device polls the server."]</p>
         </div>
       </div>
       <div class="control-table">
@@ -225,7 +229,7 @@
             asp-route-contentItemId="@Model.EorIotDeviceItem.ContentItemId"
             asp-route-returnUrl="@FullRequestPath">
             <button class="button-success" type="submit">
-              @T["START"]
+              @L["START"]
             </button>
           </form>
           <form
@@ -235,7 +239,7 @@
             asp-route-contentItemId="@Model.EorIotDeviceItem.ContentItemId"
             asp-route-returnUrl="@FullRequestPath">
             <button class="button-danger" type="submit">
-              @T["STOP"]
+              @L["STOP"]
             </button>
           </form>
           <form
@@ -245,7 +249,7 @@
             asp-route-contentItemId="@Model.EorIotDeviceItem.ContentItemId"
             asp-route-returnUrl="@FullRequestPath">
             <button class="button-warning" type="submit">
-              @T["RESET"]
+              @L["RESET"]
             </button>
           </form>
         </div>
@@ -257,11 +261,11 @@
             asp-route-contentItemId="@Model.EorIotDeviceItem.ContentItemId"
             asp-route-returnUrl="@FullRequestPath">
             <label id="@modeLabelId" for="Mode">
-              @T["Position"]
+              @L["Position"]
               @if (Model.EorIotDeviceItem.EorIotDevicePart.Value.Controls.Mode !=
-                   Model.EorSummary.Status.Mode)
+                   Model.EorSummary.Status?.Mode)
               {
-                <span>(@Model.EorSummary.Status.Mode)</span>
+                <span>(@Model.EorSummary.Status?.Mode)</span>
               }
             </label>
             <input
@@ -272,7 +276,7 @@
               name="Mode"
               value="@Model.EorIotDeviceItem.EorIotDevicePart.Value.Controls.Mode"/>
             <button class="button-primary" type="submit">
-              @T["SET"]
+              @L["SET"]
             </button>
           </form>
         </div>
@@ -281,53 +285,54 @@
   </section>
 }
 
-@if (Model.EorSummary.Status is not null &&
-     Model.EorSummary.LastMeasurement is not null)
+@* @if (Model.EorSummary.Status? is not null &&
+     Model.EorSummary.LastMeasurement? is not null) *@
+@if (true)
 {
   var powerRelayText =
-    Model.EorSummary.Status.ProcessFault == 0
+    Model.EorSummary.Status?.ProcessFault == 0
       ? "On"
-      : Model.EorSummary.Status.ProcessFault == 999
+      : Model.EorSummary.Status?.ProcessFault == 999
         ? "Off"
         : "Error";
   <section>
-    <h3 class="section-header">State</h3>
+    <h3 class="section-header">@L["State"]</h3>
     <div class="section-content">
       <div class="property-table">
         <div class="property">
-          <strong>Door state</strong>
+          <strong>@L["Door state"]</strong>
           <span id="@doorStateId">
-            @Model.EorSummary.Status.DoorState
+            @Model.EorSummary.Status?.DoorState
           </span>
         </div>
         <div class="property">
-          <strong>Main circuit braker</strong>
+          <strong>@L["Main circuit braker"]</strong>
           <span id="@mainCircuitBreakerStateId">
-            @Model.EorSummary.Status.MainCircuitBreakerState
+            @Model.EorSummary.Status?.MainCircuitBreakerState
           </span>
         </div>
         <div class="property">
-          <strong>Power relay</strong>
+          <strong>@L["Power relay"]</strong>
           <span id="@powerRelayId">
-            @powerRelayText
+            @L[powerRelayText]
           </span>
         </div>
         <div class="property">
-          <strong>Voltage [V<sub>DC</sub>]</strong>
+          <strong>@L["Voltage"] [V<sub>DC</sub>]</strong>
           <span id="@voltageId">
-            @Model.EorSummary.LastMeasurement.Voltage
+            @Model.EorSummary.LastMeasurement?.Voltage
           </span>
         </div>
         <div class="property">
-          <strong>Current [A<sub>DC</sub>]</strong>
+          <strong>@L["Current"] [A<sub>DC</sub>]</strong>
           <span id="@currentId">
-            @Model.EorSummary.LastMeasurement.Current
+            @Model.EorSummary.LastMeasurement?.Current
           </span>
         </div>
         <div class="property">
-          <strong>Temperature [<sup>o</sup>C]</strong>
+          <strong>@L["Temperature"] [<sup>o</sup>C]</strong>
           <span id="@temperatureId">
-            @Model.EorSummary.LastMeasurement.Temperature
+            @Model.EorSummary.LastMeasurement?.Temperature
           </span>
         </div>
       </div>
