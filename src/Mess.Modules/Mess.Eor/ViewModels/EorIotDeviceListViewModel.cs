@@ -8,5 +8,7 @@ public class EorIotDeviceListViewModel
   public List<(
     EorIotDeviceItem Item,
     EorSummary? Summary
-    )> EorIotDevices { get; set; } = default!;
+    )> EorIotDevices
+  { get; set; } = default!;
+  public string? Culture { get; set; }
 }

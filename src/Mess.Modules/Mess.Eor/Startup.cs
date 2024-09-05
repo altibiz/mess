@@ -7,6 +7,8 @@ using Mess.Eor.Chart;
 using Mess.Eor.Controllers;
 using Mess.Eor.Indexes;
 using Mess.Eor.Iot;
+using Mess.Eor.Localization;
+using Mess.Eor.Localization.Abstractions;
 using Mess.Iot.Abstractions.Extensions;
 using Mess.Timeseries.Abstractions.Extensions;
 using Microsoft.AspNetCore.Builder;
@@ -33,6 +35,9 @@ public class Startup : StartupBase
 
   public override void ConfigureServices(IServiceCollection services)
   {
+    // Localization
+    services.AddSingleton<IEorLocalizer, EorLocalizer>();
+
     // Migrations
     services.AddDataMigration<Migrations>();
 

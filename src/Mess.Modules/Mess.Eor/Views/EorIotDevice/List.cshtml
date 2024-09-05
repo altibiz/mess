@@ -1,18 +1,23 @@
+@using Mess.Eor.Localization.Abstractions
 @using OrchardCore.ContentManagement.Display
 @using OrchardCore.DisplayManagement.ModelBinding
 @model EorIotDeviceListViewModel
 
 @inject IContentItemDisplayManager ContentItemDisplayManager
 @inject IUpdateModelAccessor ModelUpdaterAccessor
+@inject IEorLocalizer L
 
 <section>
-  <h3 class="section-header">@T["Devices"]</h3>
+  <h3 class="section-header">@L["Devices"]</h3>
+
+  <p  style="color: black !important;">@L["Culture:"] @Model.Culture</p>
+
   <table>
     <thead>
-    <th scope="col">@T["Id"]</th>
-    <th scope="col">@T["Mode"]</th>
-    <th scope="col">@T["Voltage"]</th>
-    <th scope="col">@T["Current"]</th>
+    <th scope="col">@L["Id"]</th>
+    <th scope="col">@L["Mode"]</th>
+    <th scope="col">@L["Voltage"]</th>
+    <th scope="col">@L["Current"]</th>
     </thead>
     <tbody>
     @foreach (var (item, summary) in Model.EorIotDevices)
@@ -23,7 +28,8 @@
             asp-route-area="Mess.Eor"
             asp-controller="EorIotDevice"
             asp-action="Detail"
-            asp-route-contentItemId="@item.ContentItemId">
+            asp-route-contentItemId="@item.ContentItemId"
+            asp-route-culture="@Model.Culture">
             <span>
               @item.TitlePart.Value.Title
             </span>
