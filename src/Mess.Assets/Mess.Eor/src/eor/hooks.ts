@@ -139,7 +139,7 @@ const setElementText = (id: string, text: { toString(): string }) => {
     return;
   }
 
-  element.textContent = text.toString();
+  element.textContent = window.translations[text.toString()];
 };
 
 const setElementInnerHtml = (id: string, html: { toString(): string }) => {
@@ -148,7 +148,16 @@ const setElementInnerHtml = (id: string, html: { toString(): string }) => {
     return;
   }
 
-  element.innerHTML = html.toString();
+  const originalText = html.toString();
+  const words = originalText.split(/([^\w\s]+)/);
+  const translatedWords = words.map((word) => {
+    return window.translations && window.translations[word.trim()]
+      ? window.translations[word.trim()]
+      : word;
+  });
+  const translatedHtml = translatedWords.join("");
+
+  element.innerHTML = translatedHtml;
 };
 
 const setInputElementValue = (id: string, value: { toString(): string }) => {

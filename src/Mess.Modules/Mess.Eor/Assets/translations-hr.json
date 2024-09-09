@@ -11,10 +11,11 @@
   "Mode": "Način rada",
   "No error occurred": "Nema greške",
   "Position": "Položaj",
+  "Position (0)": "Položaj (0)",
   "Power relay": "Relej snage",
   "Process fault": "Greška u procesu",
   "Process fault messages": "Poruke o greškama u procesu",
-  "RESET": "RESET",
+  "RESET": "RESETIRAJ",
   "SET": "POSTAVI",
   "START": "POKRENI",
   "STOP": "ZAUSTAVI",
@@ -52,5 +53,10 @@
   "Unknown": "Nepoznato",
   "INPUT": "UNOS",
   "No Faults": "Nema grešaka",
-  "Controls": "Kotrole"
+  "Controls": "Kotrole",
+  "OK": "Uredu",
+  "On": "Upaljen",
+  "Off": "Ugašen",
+  "Error": "Greška",
+  "ERROR": "GREŠKA"
 }

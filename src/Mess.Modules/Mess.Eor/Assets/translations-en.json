@@ -11,6 +11,7 @@
   "Mode": "Mode",
   "No error occurred": "No error occurred",
   "Position": "Position",
+  "Position (0)": "Position (0)",
   "Power relay": "Power relay",
   "Process fault": "Process fault",
   "Process fault messages": "Process fault messages",
@@ -52,5 +53,10 @@
   "Unknown": "Unknown",
   "INPUT": "INPUT",
   "No Faults": "No Faults",
-  "Controls": "Controls"
+  "Controls": "Controls",
+  "OK": "OK",
+  "On": "On",
+  "Off": "Off",
+  "Error": "Error",
+  "ERROR": "ERROR"
 }
