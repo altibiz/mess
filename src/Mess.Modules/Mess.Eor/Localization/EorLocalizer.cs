@@ -32,13 +32,13 @@ public class EorLocalizer : IEorLocalizer
       activeTranslation = _translationsHR.Value;
     }
 
-    if (activeTranslation.Count > 0 &&
+    if (activeTranslation.Count > 0 && notLocalized != null &&
       activeTranslation.TryGetValue(notLocalized, out var value))
     {
       return value;
     }
 
-    return notLocalized;
+    return notLocalized ?? "";
   }
 
   public string this[string notLocalized]

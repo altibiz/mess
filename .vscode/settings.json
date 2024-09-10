@@ -9,7 +9,7 @@
     "**/build": true,
     "**/dist": true,
     "**/.docusaurus": true,
-    "**/Localization": true,
+    "src/Mess.Web/Localization": true,
     "**/Internal/Generated": true,
     "**/Snapshots": true,
     "**/wwwroot": true,
