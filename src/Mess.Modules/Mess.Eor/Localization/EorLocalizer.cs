@@ -13,6 +13,13 @@ public class EorLocalizer : IEorLocalizer
   private static readonly Lazy<Dictionary<string, string>> _translationsHR =
     new(() => LoadTranslations("translations-hr.json"));
 
+  public string FuckThisShit(CultureInfo culture) =>
+    culture.Equals(CultureInfo.CreateSpecificCulture("en-US"))
+      ? JsonSerializer.Serialize(_translations.Value)
+      : culture.Equals(CultureInfo.CreateSpecificCulture("hr-HR"))
+      ? JsonSerializer.Serialize(_translationsHR.Value)
+      : JsonSerializer.Serialize(_translations.Value);
+
   public string ForCulture(CultureInfo culture, string notLocalized)
   {
     Dictionary<string, string> activeTranslation = [];
@@ -49,15 +56,16 @@ public class EorLocalizer : IEorLocalizer
 
   private static Stream Load(string name)
   {
-    var projectDirectory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../Mess.Modules/Mess.Eor/Assets"));
+    var assembly = typeof(EorLocalizer).Assembly;
+    var fullName = $"{assembly.GetName().Name}.Assets.Translations.{name}";
 
-    var path = Path.Combine(projectDirectory, name);
-
-    if (!File.Exists(path))
-    {
-      throw new InvalidOperationException($"File {path} does not exist.");
-    }
-
-    return new FileStream(path, FileMode.Open, FileAccess.Read);
+    var stream = assembly.GetManifestResourceStream(fullName) ??
+      throw new InvalidOperationException(
+        $"Resource {fullName} does not exist. "
+        + $"Here are the available resources for the given assembly '{assembly.GetName().Name}':\n"
+        + string.Join("\n", assembly.GetManifestResourceNames())
+      );
+    return stream;
   }
+
 }

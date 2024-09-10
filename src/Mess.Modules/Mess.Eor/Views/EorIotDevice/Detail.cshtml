@@ -362,15 +362,6 @@
   </section>
 }
 
-@{
-    var culture = System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
-    var jsonFilePath = culture == "hr"
-        ? @"C:\Projects\mess\src\Mess.Modules\Mess.Eor\Assets\translations-hr.json"
-        : @"C:\Projects\mess\src\Mess.Modules\Mess.Eor\Assets\translations-en.json";
-
-    string jsonContent = System.IO.File.ReadAllText(jsonFilePath);
-}
-
 <script asp-name="mess-eor"></script>
 <script>
   window.mess.eor.useRefresh({
@@ -393,5 +384,7 @@
     }
   });
 
-  window.translations = @Html.Raw(jsonContent);
+  window.translations = @Html.Raw(
+    L.FuckThisShit(
+      System.Globalization.CultureInfo.CurrentCulture));
 </script>

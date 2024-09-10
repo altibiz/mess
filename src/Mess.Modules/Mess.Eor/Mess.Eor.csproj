@@ -16,4 +16,8 @@
     <ProjectReference Include="../../../src/Mess.Abstractions/Mess.Population.Abstractions/Mess.Population.Abstractions.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="Assets/Translations/**/*" />
+  </ItemGroup>
+
 </Project>
