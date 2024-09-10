@@ -57,7 +57,7 @@ public class EorLocalizer : IEorLocalizer
   private static Stream Load(string name)
   {
     var assembly = typeof(EorLocalizer).Assembly;
-    var fullName = $"{assembly.GetName().Name}.Assets.Translations.{name}";
+    var fullName = $"{assembly.GetName().Name}.Assets>{name}";
 
     var stream = assembly.GetManifestResourceStream(fullName) ??
       throw new InvalidOperationException(
